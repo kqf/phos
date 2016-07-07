@@ -1,0 +1,81 @@
+void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
+{
+    SetupEnvironment();
+
+    gROOT->LoadMacro("CreatePlugin.C");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode);
+
+    if (!alienHandler) return;
+
+    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
+    AliESDInputHandler * esdH = new AliESDInputHandler();
+    AliAODInputHandler* aodH = new AliAODInputHandler();
+
+    esdH->SetReadFriends( isMC );
+    // mgr->SetInputEventHandler( esdH );
+    mgr->SetInputEventHandler( aodH );
+    esdH->SetNeedField();
+
+    if( isMC )
+    {                                                                                                      
+        AliMCEventHandler* mchandler = new AliMCEventHandler();
+        mchandler->SetReadTR ( kFALSE ); // Not reading track references
+        mgr->SetMCtruthEventHandler ( mchandler );
+    }
+
+    // Connect plug-in to the analysis manager
+    mgr->SetGridHandler(alienHandler);
+    mgr->SetDebugLevel(999999);
+
+    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
+    AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
+
+
+    // Force warnings !!!
+    gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
+    gROOT->LoadMacro("PhotonSelection.cxx+"); 
+    gROOT->LoadMacro("TestPhotonSelection.cxx+"); 
+    gROOT->LoadMacro("PhysPhotonSelection.cxx+"); 
+    gROOT->LoadMacro("AliAnalysisTaskPrompt.cxx+"); 
+    gROOT->LoadMacro("AddMyTask.C"); 
+
+    AliAnalysisTaskSE * myTask = AddMyTask(AliVEvent::kINT7);
+    //AliAnalysisTaskSE * myTask = AddMyTask(AliVEvent::kMB);
+
+    if ( !mgr->InitAnalysis( ) ) return;
+    // mgr->PrintStatus();
+
+
+    mgr->StartAnalysis (runmode);
+    gObjectTable->Print( );
+}
+
+void SetupEnvironment()
+{
+    // ROOT
+    gSystem->Load ( "libCore.so" );
+    gSystem->Load ( "libGeom.so" );
+    gSystem->Load ( "libVMC.so" );
+    gSystem->Load ( "libPhysics.so" );
+    gSystem->Load ( "libTree.so" );
+    gSystem->Load ( "libMinuit.so" );
+    // AliROOT
+    gSystem->Load ( "libSTEERBase.so" );
+    gSystem->Load ( "libESD.so" );
+    gSystem->Load ( "libAOD.so" );
+    gSystem->Load ( "libANALYSIS.so" );
+    gSystem->Load ( "libANALYSISalice.so" );
+    gSystem->Load ( "libPWGGAPHOSTasks.so" );
+
+
+    // for running with root only
+    gSystem->Load( "libTree.so" );
+    gSystem->Load( "libGeom.so" );
+    gSystem->Load( "libVMC.so" );
+    gSystem->Load( "libPhysics.so" );
+
+    //add include path
+    gSystem->AddIncludePath( "-I$ALICE_ROOT/include" );
+    gSystem->AddIncludePath( "-I$ALICE_PHYSICS/include" );
+}
+

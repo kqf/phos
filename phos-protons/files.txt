@@ -1,0 +1,2 @@
+#/afs/cern.ch/user/o/okovalen/private/vproof/qa/ESDs/pass1/AliESDs.root
+/afs/cern.ch/user/o/okovalen/private/phos/phos-protons/ESDs/muon_calo_pass1/AliAOD.root
