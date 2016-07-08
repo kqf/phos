@@ -1,6 +1,6 @@
 # Order-only prerequisite is marked by "|" character
 
-NAME=lhc16g-muon-calo-pass1-2gev-all
+NAME=lhc16g-muon-calo-pass1-2gev-good
 DIRECTORY=../$(NAME)
 
 allplots: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
@@ -11,13 +11,16 @@ allplots: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
 	# ls -ltr
 
 $(DIRECTORY)/trending.root: | $(DIRECTORY)/CaloCellsQA.root
+	mkdir -p $(NAME)
 	mkdir -p fits
 	./form-trending-plots.py $(DIRECTORY)
-	rm -f $(NAME)/fits # delete old version
+	rm -fr $(NAME)/fits # delete old version
 	mv fits $(NAME)/
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
+	# exit
 	./merge.py $(DIRECTORY)
+	# alienv enter VO_ALICE@AliPhysics::v5-08-08-01-1
 
 pics:
 	./draw-pictures.py
