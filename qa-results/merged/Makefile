@@ -34,9 +34,9 @@ clean:
 	rm *.pdf *.eps *.png
 
 images:
-	montage -tile 4x1 hPi0Slice*.png  -geometry +0+0 pi0fits.png
-	convert -resize 999x333 pi0fits.png pi0fits.png
-	convert 'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' hPi0NumRuns.png hPi0MassSigmaRuns.png pi0fits.png -append pictures/$(NAME).png
-	mv *.png pictures
+	montage -tile 4x1 $(NAME)/hPi0Slice*.pdf  -geometry +0+0 $(NAME)/pi0fits.pdf
+	convert -resize 999x333 $(NAME)/pi0fits.pdf $(NAME)/pi0fits.pdf
+	convert $(NAME)/hNEventsPerRunIndex.pdf $(NAME)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf' $(NAME)/hPi0NumRuns.pdf $(NAME)/hPi0MassSigmaRuns.pdf $(NAME)/pi0fits.pdf  $(NAME)/$(NAME).pdf
+	# mv *.png pictures
 
 	#rm *.png
