@@ -549,6 +549,7 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 
   TFile factorfile("factor.root", "recreate");
   for(int i = 0; i < 4; ++i) 
@@ -640,6 +641,7 @@ void DrawDeadNoisyCellMap(TH2* hmap, char* cname)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 // //_________________________________________________________________________
@@ -676,6 +678,7 @@ void DrawDeadNoisyCellMap(TH2* hmap, char* cname)
 
 //   c1->Update();
 // c1->SaveAs(TString(c1->GetName()) + ".pdf");
+// c1->SaveAs(TString(c1->GetName()) + ".png");
 // }
 
 //_________________________________________________________________________
@@ -788,6 +791,7 @@ void DrawDeadNoisyCellPercent(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* 
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -930,6 +934,7 @@ void DrawEMCALOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -977,6 +982,7 @@ void DrawPHOSOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
   fBadMap->Close();
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -1401,6 +1407,7 @@ void Process1(TH1* inhisto, char* label = "", Int_t dnbins = 200,
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 
 
   printf("Bad cells by criterum \"%s\":", label);
@@ -1468,6 +1475,7 @@ void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -1494,6 +1502,7 @@ void DrawCellTime(Int_t absId)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 
@@ -1714,6 +1723,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 
   if (!trendPlotEvents) return;
 
@@ -1938,6 +1948,7 @@ void DrawPi0Slice(Int_t run, Int_t sm = -1)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -2105,6 +2116,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
   leg->Draw("same");
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 
   if (trendPlotEvents) {
 
@@ -2128,6 +2140,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
     leg->Draw("same");
     c2->Update();
     c2->SaveAs(TString(c2->GetName()) + ".pdf");
+    c2->SaveAs(TString(c2->GetName()) + ".png");
 
   }
     
@@ -2189,6 +2202,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
 
   c3->Update();
   c3->SaveAs(TString(c3->GetName()) + ".pdf");
+  c3->SaveAs(TString(c3->GetName()) + ".png");
 
 
   if (trendPlotEvents) {
@@ -2231,6 +2245,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
     leg->Draw("same");
     c4->Update();
     c4->SaveAs(TString(c4->GetName()) + ".pdf");
+    c4->SaveAs(TString(c4->GetName()) + ".png");
   }
 
 }
@@ -2275,6 +2290,7 @@ void DrawPi0Distributions(char *suff, Int_t nbins = 100)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -2449,7 +2465,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
     distrib->Fill(hNEventsPerRunIndex->GetBinContent(i));
 
   // draw histogram + distribution
-  TCanvas *c1 = new TCanvas("hNEventsPerRunIndex","hNEventsPerRunIndex", 800,600);
+  TCanvas *c1 = new TCanvas("hNEventsPerRunIndex","hNEventsPerRunIndex", 1000, 707);
   c1->Divide(1,2);
 
   c1->cd(1);
@@ -2475,6 +2491,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 //x1->SaveAs(TString(c1->GetName()) + ".pdf");
 

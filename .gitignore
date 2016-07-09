@@ -37,3 +37,4 @@ outputs_valid
 *.jpg
 *.root
 *.pyc
+*.DS_Store
