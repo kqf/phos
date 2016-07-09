@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 import ROOT
 import numpy as np
@@ -102,7 +102,7 @@ def Fit(h = None, emin = 0.05, emax = 0.3, rebin = 1):
     enraw = nraw * (eA / A + esigma / sigma);
     h.Draw()
     draw_and_save(h.GetName(), draw=False, save=True)
-    return mass, emass, sigma, esigma, nraw, enraw
+    return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / fitfun.GetNDF(), 0
 
 
 def get_my_list(fname='AnalysisResults.root'):
@@ -140,21 +140,22 @@ def get_pi0_stats(rawhist, nevents):
     data   = np.array([extract_data(rawhist, pt, a, b, nevents) for a, b in zip(ranges[:-1], ranges[1:])]).T
 
     nc = rawhist.GetName()[-1] # ncells
-    histgenerators = [PtDep('mass' + nc, '#pi^{0} mass position', 'm, GeV'), PtDep('width' + nc, '#pi^{0} peak width ', '#sigma, GeV'), PtDep('amount' + nc, '#pi^{0} amount ', 'dN_{rec}/dp_{T}') ]
+    histgenerators = [PtDep('mass' + nc, '#pi^{0} mass position', 'm, GeV/c^{2}'), PtDep('width' + nc, '#pi^{0} peak width ', '#sigma, GeV/c^{2}'), PtDep('amount' + nc, '#pi^{0} amount ', 'dN_{rec}/dp_{T}'),  PtDep('chi2ndf' + nc, '#chi^{2} / N_{dof} (p_{T})', '#chi^{2} / N_{dof} ') ]
     ptedges = map(pt.GetBinCenter, ranges)
-    m, em, s, es, n, en = data
-    data = [(m, em), (s, es), (n, en)]
+    m, em, s, es, n, en, chi, echi = data
+    data = [(m, em), (s, es), (n, en), (chi, echi)]
     return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)]
 
 def nicely_draw(histos, labels, colors):
     n = len(histos) - 1
     map(lambda x, y: x.Draw(y), histos, [''] + n * ['same'])
-
+    ROOT.gPad.SetLogx()
     if 'amount' in histos[0].GetName(): 
         ROOT.gPad.SetLogy()
-        # ROOT.gPad.SetLogx(False)
     else:
-        ROOT.gPad.SetLogx()
+        ROOT.gPad.SetLogy(0)
+
+
 
 
     map(lambda x, y: x.SetLineColor(y), histos, colors)
@@ -167,20 +168,31 @@ def nicely_draw(histos, labels, colors):
     draw_and_save('xlin_' + histos[0].GetName(), save = True)
     # draw_and_save('xlog_' + histos[0].GetName(),)
 
-
-def main():
-    canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
-    lst = get_my_list()
+def get_pi0_histograms(lst):
     nevetns = lst.FindObject('TotalEvents').GetEntries()
-    names = ['hMassPtN3', 'hMassPtN4', 'hMassPtN5'][0:1]
+    names = ['hMassPtN3'][0:1]
     labels = [' N_{cell} > ' + str(i) for i in range(2, 5)][0:1]
     colors = [46, 38, 8][0:1]
     rawhists = [lst.FindObject(n) for n in names]
     histos = [get_pi0_stats(r, nevetns) for r in rawhists]
     histos = map(list, zip(*histos))
     print histos
-    for quantity in histos:
-        nicely_draw(quantity, labels, colors)
+    for quantity in histos: nicely_draw(quantity, labels, colors)
+
+    return [q[0] for q in histos] # Quick fix to aviod multiple histograms in cmp TODO: implement this
+    # return histos
+
+
+import compare as cmpr
+
+def main():
+    canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
+    mfile = ROOT.TFile('AnalysisResults.root')
+    first  = get_pi0_histograms(mfile.Phys)
+    second = get_pi0_histograms(mfile.PhysBetter)
+
+    diff = cmpr.Comparator()
+    diff.compare_lists_of_histograms(first, second)
 
 
 if __name__ == '__main__':
