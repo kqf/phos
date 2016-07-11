@@ -1,22 +1,23 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16g
+PERIOD=LHC16h
 NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
 DIRECTORY=../$(NAME)
+IM = $(DIRECTORY)/images
 
 allplots: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root")'
-	mkdir -p $(NAME)
-	mv *.pdf $(NAME)
-	mv *.png $(NAME)
+	mkdir -p $(IM)
+	mv *.pdf $(IM)
+	mv *.png $(IM)
 	# ls -ltr
 
 $(DIRECTORY)/trending.root: | $(DIRECTORY)/CaloCellsQA.root
-	mkdir -p $(NAME)
+	mkdir -p $(IM)
 	mkdir -p fits
 	./form-trending-plots.py $(DIRECTORY)
-	rm -fr $(NAME)/fits # delete old version
-	mv fits $(NAME)/
+	rm -fr $(IM)/fits # delete old version
+	mv fits $(IM)/
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 	# exit
@@ -36,13 +37,12 @@ clean:
 
 images:
 	make badmap
-	mv *.pdf $(NAME)/
-
-	montage -tile 4x1 $(NAME)/hPi0Slice*.png  -geometry +0+0 $(NAME)/pi0fits.png
-	convert -resize 999x333 $(NAME)/pi0fits.png $(NAME)/pi0fits.png
-	montage -tile 4x1 $(NAME)/hMassSM{1..4}.png  -geometry +0+0 $(NAME)/totmass.png
-	convert -resize 999x333 $(NAME)/totmass.png $(NAME)/totmass.png
-	convert $(NAME)/hNEventsPerRunIndex.png $(NAME)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(NAME)/hPi0NumRuns.png $(NAME)/hPi0MassSigmaRuns.png $(NAME)/pi0fits.png $(NAME)/totmass.png -append $(NAME)/$(NAME).png
+	mv *.pdf $(IM)/
+	montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png
+	convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
+	montage -tile 4x1 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass.png
+	convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.png
+	convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
 	# mv *.png pictures
 
 	#rm *.png

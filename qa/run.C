@@ -1,4 +1,5 @@
-:void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
+:
+void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
 {
     SetupEnvironment();
 
@@ -9,7 +10,7 @@
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_QA");
     AliESDInputHandler * esdH = new AliESDInputHandler();
-    AliAODInputHandler* aodH = new AliAODInputHandler();
+    AliAODInputHandler * aodH = new AliAODInputHandler();
 
     // esdH->SetReadFriends( isMC );
     mgr->SetInputEventHandler(aodH);
@@ -29,13 +30,18 @@
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
-
+    // Add tender
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+    // AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
+    // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+    // PHOSSupply->ForceUsingBadMap("BadMap_LHC16h.root");
+    // PHOSSupply->ForceUsingCalibration();
     // Force warnings !!!
     // gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
     // gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");
 
     // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/macros/AddTaskPHOSQA.C");
-    
+
     // AliAnalysisTaskSE * myTask = AddTaskPHOSQA();
     // myTask->SelectCollisionCandidates(AliVEvent::kINT7);
 
@@ -63,6 +69,7 @@ void SetupEnvironment()
     gSystem->Load ( "libPhysics.so" );
     gSystem->Load ( "libTree.so" );
     gSystem->Load ( "libMinuit.so" );
+
     // AliROOT
     gSystem->Load ( "libSTEERBase.so" );
     gSystem->Load ( "libESD.so" );
@@ -71,6 +78,10 @@ void SetupEnvironment()
     gSystem->Load ( "libANALYSISalice.so" );
     gSystem->Load ( "libPWGGAPHOSTasks.so" );
 
+    // Tender
+    gSystem->Load("libTender.so");
+    gSystem->Load("libTenderSupplies.so");
+    gSystem->Load("libPWGGAPHOSTasks.so");
 
     // for running with root only
     gSystem->Load( "libTree.so" );

@@ -19,7 +19,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 
 	// plugin->SetGridDataDir("/alice/data/2015/LHC15i");
 	// plugin->SetGridDataDir("/alice/data/2016/LHC16g");
-	plugin->SetGridDataDir("/alice/data/2016/LHC16g");
+	plugin->SetGridDataDir("/alice/data/2016/LHC16h");
 	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
 	plugin->SetRunPrefix("000");
 	// plugin->AddRunNumber(236137);
@@ -43,23 +43,25 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 	// 236815, 236816, 236821, 236824, 236835, 236848, 236850, 236860, 236862, 236863, 236866};
 
 	// LHC16g
-	Int_t RunNumbers[] = {     254128, 254147, 254148, 254149, 254174, 254175, 254178, 254193, 254196, 254199, 254204,
-	                           254205, 254214, 254223, 254241, 254270, 254303, 254304, 254330, 254331, 254332
-	                     };
+	// Int_t RunNumbers[] = {     254128, 254147, 254148, 254149, 254174, 254175, 254178, 254193, 254196, 254199, 254204,
+	                           // 254205, 254214, 254223, 254241, 254270, 254303, 254304, 254330, 254331, 254332
+	                     // };
 
 	// LHC16h
-/*  Int_t RunNumbers[] =
+  Int_t RunNumbers[] =
 	{
 		254378, 254381, 254394, 254395, 254396, 254419, 254378, 254381, 254394, 254395, 254396,
 		254419, 254422, 254476, 254479, 254604, 254606, 254607, 254608, 254621, 254629, 254630,
 		254632, 254640, 254644, 254646, 254648, 254649, 254653, 254654, 254983, 254984, 255008,
-		255009, 255010, 255042, 255068, 255071, 255073, 255074, 255075, 255076, 255079, 255082,
+		255009, 255010, 
+		// 255042, 255068, 255071, 255073, 255074, 255075, 255076,  // these are runs with low statistics, excluded
+		255079, 255082,
 		255085, 255086, 255091, 255111, 255154, 255159, 255162, 255167, 255171, 255173, 255176,
 		255177, 255180, 255182, 255240, 255242, 255247, 255248, 255249, 255251, 255252, 255253,
 		255255, 255256, 255275, 255276, 255278, 255280, 255283, 255350, 255351, 255352, 255398,
 		255402, 255407, 255440, 255442, 255447, 255463, 255465, 255466, 255467
 
-	}; */
+	}; 
 
 	Int_t nRuns = sizeof(RunNumbers) / sizeof(Int_t);
 	cout << "We are trying to analyse " << nRuns << " runs" << endl;
@@ -77,7 +79,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 	plugin->SetDefaultOutputs(kFALSE);
 	plugin->SetOutputFiles("CaloCellsQA1.root CaloCellsQA2.root");
 
-	plugin->SetGridWorkingDir("phosqa-16g-muon-calo-pass1-good");
+	plugin->SetGridWorkingDir("phosqa-16h-muon-calo-pass1-good");
 	plugin->SetGridOutputDir("output");
 // plugin->SetDefaultOutputs();
 // Now this should be added in your AddTaskMacro.C
