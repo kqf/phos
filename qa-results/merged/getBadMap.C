@@ -7,7 +7,7 @@ void getBadMap(const char * period = "")
 
 	DrawPHOSOBadMap(period, excells, nexc);
 	ReadPrintBadCells(period, excells, nexc);
-	// ReadPrintBadCells("LHC16h");
+	ReadPrintBadCells("refLHC16h");
 }
 
 //_________________________________________________________________________

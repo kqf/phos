@@ -1,7 +1,7 @@
 # Order-only prerequisite is marked by "|" character
 
 PERIOD=LHC16h
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
 DIRECTORY=../$(NAME)
 IM = $(DIRECTORY)/images
 

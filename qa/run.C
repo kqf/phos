@@ -31,11 +31,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
     // Add tender
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
     // AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
     // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     // PHOSSupply->ForceUsingBadMap("BadMap_LHC16h.root");
-    // PHOSSupply->ForceUsingCalibration();
+    // PHOSSupply->ForceUsingCalibration(0);
     // Force warnings !!!
     // gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
     // gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");

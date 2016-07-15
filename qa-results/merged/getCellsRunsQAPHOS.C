@@ -1730,7 +1730,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
 
-  TFile ofile("cluster-averages.root", "recreate");
+  TFile ofile("cluster-averages.root.png", "recreate");
   hAvECluster->Write();
   hAvNCluster->Write();
   hAvNCellsInCluster->Write();
