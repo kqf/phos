@@ -1,5 +1,6 @@
 // --- Custom header files ---
 #include "PhysPhotonSelection.h"
+#include "AliAnalysisTaskPrompt.h"
 
 // --- ROOT system ---
 #include <TH2F.h>
@@ -56,6 +57,12 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
 
+	for(Int_t sm = AliAnalysisTaskPrompt::kMinModule; sm <= AliAnalysisTaskPrompt::kMaxModule; ++sm)
+	{
+		fListOfHistos->Add(new TH2F(Form("hMassPtSM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
+		fListOfHistos->Add(new TH2F(Form("hMassPtN3SM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, N_{cell}>3 SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
+	}
+
 }
 
 //________________________________________________________________
@@ -68,7 +75,7 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
-	if (psum.Pt() < 2.) return;
+	// if (psum.Pt() < 2.) return;
 
 	Int_t sm1, sm2;
 	if ((sm1 = CheckClusterGetSM(c1)) < 0) return; //  To be sure that everything is Ok
@@ -77,10 +84,17 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	if (c1->GetNCells() > 3 && c2->GetNCells() > 3) FillHistogram("hMassPtN3", ma12 , pt12 );
-	if (c1->GetNCells() > 4 && c2->GetNCells() > 4) FillHistogram("hMassPtN4", ma12 , pt12 );
-	if (c1->GetNCells() > 5 && c2->GetNCells() > 5) FillHistogram("hMassPtN5", ma12 , pt12 );
-	if (c1->GetNCells() > 6 && c2->GetNCells() > 6) FillHistogram("hMassPtN6", ma12 , pt12 );
+	if (c1->GetNCells() >= 3 && c2->GetNCells() >= 3) FillHistogram("hMassPtN3", ma12 , pt12 );
+	if (c1->GetNCells() >= 4 && c2->GetNCells() >= 4) FillHistogram("hMassPtN4", ma12 , pt12 );
+	if (c1->GetNCells() >= 5 && c2->GetNCells() >= 5) FillHistogram("hMassPtN5", ma12 , pt12 );
+	if (c1->GetNCells() >= 6 && c2->GetNCells() >= 6) FillHistogram("hMassPtN6", ma12 , pt12 );
+
+	if(sm1 == sm2) 
+		FillHistogram(Form("hMassPtSM%d", sm1), ma12, pt12);
+
+	Bool_t three_cells_in_clusters = c1->GetNCells() >= 3 && c2->GetNCells() >= 3;
+	if (!three_cells_in_clusters) return;
+	if(sm1 == sm2) FillHistogram(Form("hMassPtN3SM%d", sm1), ma12, pt12);
 }
 
 //________________________________________________________________
