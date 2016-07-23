@@ -8,7 +8,7 @@ class AliCaloCellsQAPt: public AliCaloCellsQA
 {
 public:
 	AliCaloCellsQAPt(): AliCaloCellsQA(), mPairPtCut(1) {} // Required for reading
-	AliCaloCellsQAPt(Int_t nmods, Int_t det = kEMCAL, Int_t startRunNumber = 100000, Int_t endRunNumber = 300000):
+	AliCaloCellsQAPt(Int_t nmods, Int_t det = kPHOS, Int_t startRunNumber = 100000, Int_t endRunNumber = 300000):
 		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1) {}
 	virtual void FillPi0Mass(TObjArray * clusArray, Double_t vertexXYZ[3]);
 	void SetPairPtCut(Double_t c) { mPairPtCut = c; }
@@ -61,6 +61,7 @@ void AliCaloCellsQAPt::FillPi0Mass(TObjArray * clusArray, Double_t vertexXYZ[3])
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
 		if (clus->E() < fPi0EClusMin) continue;
 		if ((sm1 = CheckClusterGetSM(clus)) < 0) continue;
+		if (clus->GetNCells() < 3) continue;
 
 		clus->GetMomentum(p1, vertexXYZ);
 
@@ -70,6 +71,7 @@ void AliCaloCellsQAPt::FillPi0Mass(TObjArray * clusArray, Double_t vertexXYZ[3])
 			AliVCluster * clus2 = (AliVCluster *) clusArray->At(j);
 			if (clus2->E() < fPi0EClusMin) continue;
 			if ((sm2 = CheckClusterGetSM(clus2)) < 0) continue;
+			if (clus2->GetNCells() < 3) continue;
 
 			clus2->GetMomentum(p2, vertexXYZ);
 

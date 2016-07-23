@@ -8,7 +8,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 
 	plugin->SetAPIVersion("V1.1x");
 	// plugin->SetAliROOTVersion("v5-05-Rev-18");
-	plugin->SetAliPhysicsVersion("v5-08-08-01-1");
+	plugin->SetAliPhysicsVersion("vAN-20160717-1");
 	// plugin->SetAliPhysicsVersion("vAN-20150818");
 
 
@@ -19,6 +19,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 
 	// plugin->SetGridDataDir("/alice/data/2010/LHC10e/");
 	plugin->SetGridDataDir("/alice/data/2016/LHC16g/");
+	// plugin->SetGridDataDir("/alice/data/2016/LHC16i/");
 	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
 	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
 	plugin->SetRunPrefix("000");
@@ -51,16 +52,18 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 	// };
 
 	// LHC16i
-	Int_t RunNumbers[] =
-	{
-		// There are 21 reconstructed runs. More precise: "good" runs 16
-		255616, 255615, 255614, 255592, 255591, 255582, 255577, 255543, 255542, 255540, 
-		255538, 255537, 255535, 255534, 255533, 255515,
-		// 4 bad runs (all due to FMD)
-		255618, 255617, 255583, 255539,
-		// And one small run with duration < 10 min.
-		255541	
-	};
+	// Int_t RunNumbers[] =
+	// {
+	// 	// There are 21 reconstructed runs. More precise: "good" runs 16
+	// 	//255616,
+	// 	255615, 255614, 255592, 255591, 255582, 255577, 255543, 255542, 255540, 
+	// 	255538, 255537, 255535, 255534, 255533, 255515,
+	// 	// 4 bad runs (all due to FMD)
+	// 	// 255618, 255617,
+	// 	 255583, 255539,
+	// 	// And one small run with duration < 10 min.
+	// 	255541	
+	// };
 
 	Int_t nRuns = sizeof(RunNumbers) / sizeof(Int_t);
 	cout << "We are trying to analyse " << nRuns << " runs" << endl;

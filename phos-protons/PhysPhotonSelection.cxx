@@ -1,6 +1,6 @@
 // --- Custom header files ---
 #include "PhysPhotonSelection.h"
-#include "AliAnalysisTaskPrompt.h"
+// #include "AliAnalysisTaskPrompt.h"
 
 // --- ROOT system ---
 #include <TH2F.h>
@@ -41,7 +41,10 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	fListOfHistos = new TList();
 	// fListOfHistos->SetName("Data");
 	fListOfHistos->SetOwner(kTRUE);
+	fListOfHistos->Add( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
 	fListOfHistos->Add( new TH1F("TotalEvents", "Total number of analysed events", 1, 0, 1) );
+	fListOfHistos->Add( new TH1F("TotalDiphotonEvents", "Total number of events with 2 photons", 1, 0, 1) );
+
 	// pi0 mass spectrum
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
@@ -57,7 +60,10 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
 
-	for(Int_t sm = AliAnalysisTaskPrompt::kMinModule; sm <= AliAnalysisTaskPrompt::kMaxModule; ++sm)
+	// TODO: fix this for CAF
+	Int_t kMinModule = 1;
+	Int_t kMaxModule = 4;
+	for(Int_t sm = /*AliAnalysisTaskPrompt::*/kMinModule; sm <= /*AliAnalysisTaskPrompt::*/kMaxModule; ++sm)
 	{
 		fListOfHistos->Add(new TH2F(Form("hMassPtSM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("hMassPtN3SM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, N_{cell}>3 SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -115,6 +121,8 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
 		FillHistogram("hNcellsE", clus->GetNCells(), p.E());
 	}
+
+	if (candidates->GetEntriesFast() > 1) FillHistogram("TotalDiphotonEvents", 0.5);
 }
 
 //________________________________________________________________

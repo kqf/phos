@@ -8,8 +8,10 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 
 	plugin->SetAPIVersion("V1.1x");
 	// plugin->SetAliROOTVersion("v5-05-Rev-18");
-	plugin->SetAliPhysicsVersion("v5-08-08-01-1");
 	// plugin->SetAliPhysicsVersion("vAN-20150818");
+	// plugin->SetAliPhysicsVersion("v5-08-08-01-1");
+	// This works for the new tender
+	plugin->SetAliPhysicsVersion("vAN-20160717-1");
 
 
 	plugin->SetExecutableCommand("aliroot");
@@ -19,8 +21,10 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 
 	// plugin->SetGridDataDir("/alice/data/2015/LHC15i");
 	// plugin->SetGridDataDir("/alice/data/2016/LHC16g");
-	plugin->SetGridDataDir("/alice/data/2016/LHC16h");
-	// plugin->SetGridDataDir("/alice/data/2016/LHC16i");
+	// plugin->SetGridDataDir("/alice/data/2016/LHC16h");
+	plugin->SetGridDataDir("/alice/data/2016/LHC16i");
+	// plugin->SetGridDataDir("/alice/data/2016/LHC16j");
+	// plugin->SetDataPattern("/muon_calo_pass1/AOD/*/AliAOD.root");
 	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
 	plugin->SetRunPrefix("000");
 	// plugin->AddRunNumber(236137);
@@ -49,36 +53,60 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 	// };
 
 	// LHC16h
-	Int_t RunNumbers[] =
-	{
-		// "Good for analysis" runs = 92 - 5 (low statistics) - 7 (bad runs) = 80
-		// We fould 73  very small runs => 80 - 7 = 73
-		255275, 254983, 254984, 255242, 254604, 254606, 254607, 254608, 255249, 255251, 
-		255252, 255253, 255255, 255256, 255177, 254621, 255466, 255008, 255009, 255010, 
-		254629, 254630, 254632, 254378, 255111, 255276, 254381, 255278, 255407, 254640, 
-		255240, 255154, 255283, 254644, 255467, 254646, 255159, 254648, 254649, 254394, 
-		254395, 254396, 254653, 254654, 255167, 255171, 255173, 255176, 254476, 255180, 
-		255182, 255280, 255440, 255442, 254419, 254422, 255447, 254479, 255162, 255248, 
-		255398, 255079, 255465, 255082, 255463, 255085, 255086, 255247, 255091, 255350,
-	    255351, 255352, 255402,
-	    // Then we decided to include 4 runs with low statistics + 5 bad runs (not because of PHOS) = 9
-	    // With these we have 73 + 9 = 82 runs valid for the QA.
-	    254418, 255011, 255174, 255181, // low statistics
-	    255415, 255418, 255419, 255420, 255421  // marked as bad runs
-	};
+	// Int_t RunNumbers[] =
+	// {
+	// 	// "Good for analysis" runs = 92 - 5 (low statistics) - 7 (bad runs) = 80
+	// 	// We fould 7 very small runs => 80 - 7 = 73
+	// 	255275, 254983, 254984, 255242, 254604, 254606, 254607, 254608, 255249, 255251,
+	// 	255252, 255253, 255255, 255256, 255177, 254621, 255466, 255008, 255009, 255010,
+	// 	254629, 254630, 254632, 254378, 255111, 255276, 254381, 255278, 255407, 254640,
+	// 	255240, 255154, 255283, 254644, 255467, 254646, 255159, 254648, 254649, 254394,
+	// 	254395, 254396, 254653, 254654, 255167, 255171, 255173, 255176, 254476, 255180,
+	// 	255182, 255280, 255440, 255442, 254419, 254422, 255447, 254479, 255162, 255248,
+	// 	255398, 255079, 255465, 255082, 255463, 255085, 255086, 255247, 255091, 255350,
+	//     255351, 255352, 255402,
+	//     // Then we decided to include 4 runs with low statistics + 5 bad runs (not because of PHOS) = 9
+	//     // With these we have 73 + 9 = 82 runs valid for the QA.
+	//     254418, 255011, 255174, 255181, // low statistics
+	//     255415, 255418, 255419, 255420, 255421  // marked as bad runs
+	// };
 
 	// // LHC16i
 	// Int_t RunNumbers[] =
 	// {
 	// 	// There are 21 reconstructed runs. More precise: "good" runs 16
-	// 	255616, 255615, 255614, 255592, 255591, 255582, 255577, 255543, 255542, 255540, 
-	// 	255538, 255537, 255535, 255534, 255533, 255515,
+	// 	255615, 255614, 255592, 255591, 255582, 255577, 255543, 255542, 255540,
+	// 	255538, 255537, 255535, 255534, 255533, 255515, 
+	// 	// 255616,  // noisy FEE card
 	// 	// 4 bad runs (all due to FMD)
-	// 	255618, 255617, 255583, 255539,
+	// 	// 255618, 255617, // noisy FEE card
+	// 	255583, 255539,
 	// 	// And one small run with duration < 10 min.
-	// 	255541	
+	// 	255541
 	// };
 
+	// LHC16i FEE
+	Int_t RunNumbers[] =
+	{
+		// There 3 runs with one noisy FEE card
+		255616, 255617, 255617
+	};
+
+	// // LHC16j
+	// Int_t RunNumbers[] =
+	// {
+	// 	// Total number of reconstructed runs is 54.
+	// 	// There are 40 "good" runs:
+	// 	256146, 256147, 256148, 256149, 256156, 256157, 256158, 256161, 256169, 256219,
+	// 	256222, 256223, 256225, 256227, 256228, 256231, 256281, 256283, 256284, 256289,
+	// 	256290, 256292, 256297, 256298, 256299, 256302, 256307, 256309, 256311, 256356,
+	// 	256357, 256363, 256364, 256365, 256366, 256367, 256368, 256371, 256372, 256415,
+	// 	// 13 "red" runs (FMD, TOF, TPC):
+	// 	256162, 256166, 256210, 256212, 256213, 256215, 256282, 256287, 256361, 256362,
+	// 	256417, 256418, 256420,
+	// 	// there is a run with duration ~5min
+	// 	256152
+	// };
 
 	Int_t nRuns = sizeof(RunNumbers) / sizeof(Int_t);
 	cout << "We are trying to analyse " << nRuns << " runs" << endl;
@@ -96,13 +124,14 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 	plugin->SetDefaultOutputs(kFALSE);
 	plugin->SetOutputFiles("CaloCellsQA1.root CaloCellsQA2.root");
 
-	plugin->SetGridWorkingDir("phosqa-16h-muon-calo-pass1-good");
+	plugin->SetGridWorkingDir("phosqa-16i-muon-calo-pass1-fee-all");
+	// plugin->SetGridWorkingDir("phosqa-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
-// plugin->SetDefaultOutputs();
-// Now this should be added in your AddTaskMacro.C
+	// plugin->SetDefaultOutputs();
+	// Now this should be added in your AddTaskMacro.C
 
-// plugin->SetAnalysisSource("ChargedTrack.h MyTaskHelper.cxx AliAnalysisTaskSimplePt.cxx");
-// plugin->SetAdditionalLibs("ChargedTrack.h MyTaskHelper.h MyTaskHelper.cxx AliAnalysisTaskSimplePt.h AliAnalysisTaskSimplePt.cxx");
+	// plugin->SetAnalysisSource("ChargedTrack.h MyTaskHelper.cxx AliAnalysisTaskSimplePt.cxx");
+	// plugin->SetAdditionalLibs("ChargedTrack.h MyTaskHelper.h MyTaskHelper.cxx AliAnalysisTaskSimplePt.h AliAnalysisTaskSimplePt.cxx");
 
 	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
 	// plugin->SetAnalysisSource("AliAnalysisTaskPi0QA.cxx");
@@ -112,13 +141,13 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test")
 	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so AliAnalysisTaskCaloCellsQAPt.h");
 
 
-	plugin->SetAnalysisMacro("TaskQA.C");
+	plugin->SetAnalysisMacro("TaskQAi.C");
 	plugin->SetSplitMaxInputFileNumber(100);
-	plugin->SetExecutable("TaskQA.sh");
+	plugin->SetExecutable("TaskQAi.sh");
 
 	plugin->SetTTL(30000);
 	plugin->SetInputFormat("xml-single");
-	plugin->SetJDLName("TaskQA.jdl");
+	plugin->SetJDLName("TaskQAi.jdl");
 	plugin->SetPrice(1);
 	plugin->SetSplitMode("se");
 
