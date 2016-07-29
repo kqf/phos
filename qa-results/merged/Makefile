@@ -1,6 +1,6 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16g
+PERIOD=LHC16j
 NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
 DIRECTORY=../$(NAME)
 IM = $(DIRECTORY)/images
@@ -41,6 +41,8 @@ images:
 	montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png
 	convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
 	montage -tile 4x1 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass.png
+	montage -tile 2x2 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass4.png
+	convert $(IM)/totmass4.png $(IM)/totmass4.pdf
 	convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.png
 	convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
 	# mv *.png pictures

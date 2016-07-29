@@ -1,9 +1,19 @@
+#include "algorithm"
 void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
 {
     SetupEnvironment();
 
+    TString period = "LHC16g";
+    Int_t * excells;
+    Int_t * good_runs;
+    Int_t nexc;
+    Int_t nruns;
+    gROOT->LoadMacro("getRunsBadCells.C");
+    getRunsBadCells(period, good_runs, nruns, excells, nexc);
+
+
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-TEST");
 
     if (!alienHandler) return;
 
@@ -29,30 +39,25 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
-    // Add tender
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
-    // AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
-    // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    // PHOSSupply->ForceUsingBadMap("BadMap_LHC16i.root");
-    // PHOSSupply->ForceUsingCalibration(0);
-    // Force warnings !!!
-    // gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
-    // gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");
+    if (period.Contains("tender"))
+    {
+        gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+        AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
+        AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
+        // PHOSSupply->ForceUsingCalibration(0);
+    }
 
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/macros/AddTaskPHOSQA.C");
-
-    // AliAnalysisTaskSE * myTask = AddTaskPHOSQA();
-    // myTask->SelectCollisionCandidates(AliVEvent::kINT7);
-
-    gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
+    gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");
     gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddMyTask.C");
 
-    AliAnalysisTaskSE * myTask = AddMyTask();
+
+    AliAnalysisTaskSE * myTask = AddMyTask(excells, nexc);
 
     if ( !mgr->InitAnalysis( ) ) return;
-    // mgr->PrintStatus();
+    mgr->PrintStatus();
 
 
     mgr->StartAnalysis (runmode);
@@ -91,5 +96,6 @@ void SetupEnvironment()
     //add include path
     gSystem->AddIncludePath( "-I$ALICE_ROOT/include" );
     gSystem->AddIncludePath( "-I$ALICE_PHYSICS/include" );
+    gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
 }
 
