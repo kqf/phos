@@ -1,8 +1,8 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16j
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
-DIRECTORY=../$(NAME)
+PERIOD=LHC16h
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
+DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
 allplots: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
@@ -30,12 +30,19 @@ pics:
 
 badmap: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
+	mv BadMap_$(PERIOD).root ../$(PERIOD)
 
 
 clean:
 	rm *.pdf *.eps *.png
 
-images:
+# this one requires alienv
+images:  ../$(PERIOD)/TriggerQA.root
+	root -l -b -q  DrawTriggerQA.C'("../$(PERIOD)/TriggerQA.root", "L0")'
+	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root", kFALSE)'
+	mkdir -p $(IM)
+	mv *.pdf $(IM)
+	mv *.png $(IM)
 	make badmap
 	mv *.pdf $(IM)/
 	montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png

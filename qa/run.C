@@ -3,7 +3,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    TString period = "LHC16g";
+    TString period = "LHC16itrg";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
@@ -13,7 +13,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-TEST");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-good");
 
     if (!alienHandler) return;
 
@@ -21,10 +21,10 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-    // esdH->SetReadFriends( isMC );
-    mgr->SetInputEventHandler(aodH);
-    // mgr->SetInputEventHandler( esdH );
-    // esdH->SetNeedField();
+    esdH->SetReadFriends( isMC );
+    // mgr->SetInputEventHandler(aodH);
+    mgr->SetInputEventHandler( esdH );
+    esdH->SetNeedField();
 
     if ( isMC )
     {
@@ -47,12 +47,18 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
         // PHOSSupply->ForceUsingCalibration(0);
     }
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
+    // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
+
+
+    gROOT->LoadMacro("AddTasksTriggerQA.C");
+    AddTasksTriggerQA();
 
     gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");
     gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddMyTask.C");
-
 
     AliAnalysisTaskSE * myTask = AddMyTask(excells, nexc);
 
@@ -60,7 +66,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     mgr->PrintStatus();
 
 
-    mgr->StartAnalysis (runmode);
+mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
 
