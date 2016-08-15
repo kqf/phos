@@ -20,8 +20,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, In
 	TString dir(period, 6); // fancy slicing
 	plugin->SetGridDataDir("/alice/data/2016/" + dir);
 	cout << "/alice/data/2016/" + dir << endl;
-	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
-	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
+	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
+	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
 	plugin->SetRunPrefix("000");
 
 
@@ -32,7 +32,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, In
 		plugin->AddRunNumber(runs[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
-	plugin->SetOutputFiles("CaloCellsQA2.root TriggerQA.root");
+	plugin->SetOutputFiles("CaloCellsQA2.root");
+	// plugin->SetOutputFiles("CaloCellsQA2.root TriggerQA.root");
 	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();

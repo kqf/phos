@@ -3,7 +3,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    TString period = "LHC16itrg";
+    TString period = "LHC16j";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
@@ -13,7 +13,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-good");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-best");
 
     if (!alienHandler) return;
 
@@ -21,10 +21,10 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-    esdH->SetReadFriends( isMC );
-    // mgr->SetInputEventHandler(aodH);
-    mgr->SetInputEventHandler( esdH );
-    esdH->SetNeedField();
+    // esdH->SetReadFriends( isMC );
+    mgr->SetInputEventHandler(aodH);
+    // mgr->SetInputEventHandler( esdH );
+    // esdH->SetNeedField();
 
     if ( isMC )
     {
@@ -52,8 +52,8 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
 
 
-    gROOT->LoadMacro("AddTasksTriggerQA.C");
-    AddTasksTriggerQA();
+    // gROOT->LoadMacro("AddTasksTriggerQA.C");
+    // AddTasksTriggerQA();
 
     gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");
     gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
