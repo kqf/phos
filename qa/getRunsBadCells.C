@@ -3,6 +3,10 @@
 
 void getRunsBadCells(TString period, Int_t *& good_runs, Int_t *& nruns, Int_t *& excells, Int_t & nexc)
 {
+	// Get list of runs suitable for physics analysis and array of bad channels
+	// This script should be updated according to CellQA
+	// CellQA uses this script since QA algorithms are recursive.
+
 	// Future me, perhaps you don't remember your logic and you are wondering what is going on here.
 	// Perhaps you are asking yourself why did I use this strange way of writing this piece of code. 
 	// Couldn't I use something more eloquent, like std::map<TString, std::vector<Int_t>>?
