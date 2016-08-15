@@ -47,4 +47,4 @@ counter=1; for f in $(find . -z -name CaloCellsQA2.root); do cp $f file:$((count
 ```
 
 
-All subsequent steps are (will be ... in neares future) described [here](qa-results/)
+All subsequent steps are (will be ... in neares future) described [here](../qa-results/).
