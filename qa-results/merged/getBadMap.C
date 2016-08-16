@@ -1,16 +1,27 @@
-void getBadMap(const char * period = "")
+void getBadMap(const char * period = "", TString filename = "")
 {
 	gROOT->SetBatch();
     gROOT->LoadMacro("../../qa/getRunsBadCells.C");
     Int_t * excells;
     Int_t nexc;
 
+    if(filename.Length())
+    { 
+    	// Just read a file if file name is specified
+    	// othervise extract Bad channel map
+    	cout << "Here " << bool(filename) << endl;
+    	ReadPrintBadCells(period, excells, nexc, filename);
+    	return;
+    }
+
+
+    // Export map of bad channels to root file
     getRunsBadCells(period, 0, 0, excells, nexc);
 	DrawPHOSOBadMap(period, excells, nexc);
 	
+
 	// Verify the BadMap
 	ReadPrintBadCells(period, excells, nexc);
-	// ReadPrintBadCells("LHC16h");
 }
 
 //_________________________________________________________________________
@@ -38,8 +49,8 @@ void DrawPHOSOBadMap(char * cname = "LHC16g", Int_t * excells = 0, Int_t nexc)
 
 		for (Int_t i = 0; i < nexc; ++i)
 		{
-			bool lower_cut = excells[i] >= (3584 * (sm - 1) + 1);
-			bool upper_cut = excells[i] <= (3584 * (sm)  );
+			Bool_t lower_cut = excells[i] >= (3584 * (sm - 1) + 1);
+			Bool_t upper_cut = excells[i] <= (3584 * (sm)  );
 
 			if ( !(lower_cut && upper_cut) ) continue;
 			Int_t nModule, xCell, zCell;
@@ -57,11 +68,13 @@ void DrawPHOSOBadMap(char * cname = "LHC16g", Int_t * excells = 0, Int_t nexc)
 	c1->SaveAs(TString("BadMap_") + TString(c1->GetName()) + ".pdf");
 }
 
-void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0)
+void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0, TString filepath = "")
 {
 	// Draw bad cell map for PHOS;
 
-	TFile * bfile = TFile::Open(Form("BadMap_%s.root", cname));
+	TString fname = filepath.Length() ? filepath : Form("BadMap_%s.root", cname);
+	TFile * bfile = TFile::Open(fname);
+
 	gROOT->cd();
 
 	TH2 * badmap[4] = {0};
@@ -71,6 +84,7 @@ void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0)
 		badmap[module - 1] = new TH2I(*h);
 		cout << "Set " <<  badmap[module - 1]->GetName() << endl;
 	}
+
 	bfile->Close();
 	cout << "\n\n...PHOS BadMap is set now." << endl;
 

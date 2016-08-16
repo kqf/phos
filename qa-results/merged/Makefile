@@ -1,7 +1,7 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16j
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-better
+PERIOD=LHC16k
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
 DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
@@ -28,9 +28,12 @@ pics:
 	./draw-pictures.py
 	cd pictures;  pdfunite `ls -tr *.pdf` result.pdf
 
-badmap: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
+badmap: | ../../qa/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
 	mv BadMap_$(PERIOD).root ../$(PERIOD)
+
+initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
+	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
 
 trigger: | ../$(PERIOD)
