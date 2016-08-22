@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/python
 
 
 
@@ -27,7 +27,8 @@ def main():
 	ROOT.gROOT.LoadMacro("MakeTrendingPHOSQA.C")
 
 	for run in runNumbers:
-		ROOT.MakeTrendingPHOSQAE(path, ifile, run)
+		res = subprocess.call("root -l -q -b 'MakeTrendingPHOSQA.C(\"%s\", \"%s\", %d)'" %(path, ifile, run), shell=True)  
+		# ROOT.MakeTrendingPHOSQAE(path, ifile, run)
 
 	files = ['%strending' % path + str(r) + '.root' for r in runNumbers]
 	subprocess.call("rm %strending.root" % path, shell=True)  

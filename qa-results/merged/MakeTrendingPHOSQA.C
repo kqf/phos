@@ -1,4 +1,4 @@
-void MakeTrendingPHOSQAE(const char * path = "", const char * file = "QAresults.root", Int_t runNumber, Bool_t IsOnGrid = kFALSE)
+void MakeTrendingPHOSQA(const char * path = "", const char * file = "QAresults.root", Int_t runNumber, Bool_t IsOnGrid = kFALSE)
 {
   //const char* dirNames[] = {"PHOSCellsQA_AnyInt","PHOSCellsQA_PHI7","PHOSPbPbQAResults","PHOSTriggerQAResults"};
 
