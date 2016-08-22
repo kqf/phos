@@ -3,7 +3,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    TString period = "LHC16j";
+    TString period = "LHC16k";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
@@ -13,7 +13,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-best");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-all");
 
     if (!alienHandler) return;
 
