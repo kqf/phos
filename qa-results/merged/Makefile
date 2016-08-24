@@ -1,7 +1,8 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16j
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-evenbetter
+PERIOD=LHC16k
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
+TRIGGER_NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-trigger
 DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
@@ -20,9 +21,8 @@ $(DIRECTORY)/trending.root: | $(DIRECTORY)/CaloCellsQA.root
 	mv fits $(IM)/
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
-	# exit
-	./merge.py $(DIRECTORY)
-	# alienv enter VO_ALICE@AliPhysics::v5-08-08-01-1
+	# Merge all outputs
+	root -l -b -q 'merge.C("$(DIRECTORY)")'
 
 pics:
 	./draw-pictures.py
@@ -34,6 +34,9 @@ badmap: | ../../qa/getRunsBadCells.C
 
 initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
+
+triggers: 
+	root -l -b -q  merge.C'("../$(PERIOD)/triggers", "TriggerQA" , "L0")'
 
 
 trigger: | ../$(PERIOD)
@@ -47,9 +50,9 @@ clean:
 
 # this one requires alienv
 # it's not default tasks as it needs to be run only once
-images:  ../$(PERIOD)/TriggerQA.root
+images:  
 	# Run Trigger QA
-	make trigger
+	# make trigger
 
 	# Run QA in full mode
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root", kFALSE)'

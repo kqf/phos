@@ -13,7 +13,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-all");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-good");
 
     if (!alienHandler) return;
 
