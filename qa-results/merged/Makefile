@@ -2,7 +2,6 @@
 
 PERIOD=LHC16k
 NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
-TRIGGER_NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-trigger
 DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
@@ -35,15 +34,14 @@ badmap: | ../../qa/getRunsBadCells.C
 initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
-triggers: 
-	root -l -b -q  merge.C'("../$(PERIOD)/triggers", "TriggerQA" , "L0")'
+TriggerQASingle.root: 
+	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
 
-
-trigger: | ../$(PERIOD)
-	root -l -b -q  DrawTriggerQA.C'("../$(PERIOD)/TriggerQA.root", "L0")'
-	root -l -b -q  DrawTriggerQA.C'("../$(PERIOD)/TriggerQA.root", "L1low")'
-	root -l -b -q  DrawTriggerQA.C'("../$(PERIOD)/TriggerQA.root", "L1medium")'
-	root -l -b -q  DrawTriggerQA.C'("../$(PERIOD)/TriggerQA.root", "L1high")'
+trigger: | TriggerQASingle.root 
+	mkdir -p $(IM)
+	root -l -b -q  ExtractTriggerQA.C'("$(DIRECTORY)/")'
+	./triggers-trending.py $(DIRECTORY)/
+	mv *.pdf $(IM)
 
 clean:
 	rm *.pdf *.eps *.png

@@ -1,10 +1,11 @@
-DrawTriggerQA(const char * filename = "TriggerQA_253436-253591.root",
-              const char * trigger = "L0")
+DrawTriggerQA(TList * hList = 0, const char * trigger = "L0", Int_t run = 123456)
 {
 	//Author: Yuri Kharlov (Yuri.Kharlov@cern.ch)
 
-	file = new TFile(filename);
-	hList = (TList *)file->Get(Form("PHOSTriggerQAResults%s", trigger));
+	// file = new TFile(filename);
+	// hList = (TList *)file->Get(Form("PHOSTriggerQAResults%s", trigger));
+	// cout << hList->GetName() << endl;
+
 
 	h4x4SM1 = (TH2F *)hList->FindObject("h4x4SM1");
 	h4x4SM2 = (TH2F *)hList->FindObject("h4x4SM2");
@@ -212,14 +213,25 @@ DrawTriggerQA(const char * filename = "TriggerQA_253436-253591.root",
 	gPad->SetLogy();
 	rTrigRatioSM4->Draw();
 	c5->Print(Form("TrigPhotE_ratio_%s.pdf", trigger));
+
+	cout << "Reached here " << endl;
+
+	TList * olist = gDirectory->GetList();
+	olist->SetOwner(kTRUE);
+	TFile f("ResultsTriggerQA.root", "update");
+	for (Int_t i = 1; i < 6; ++i)
+		olist->Add(gROOT->FindObject(Form("c%d", i)));
+	olist->Write(Form("%d", run), TObject::kSingleKey | TObject::kOverwrite);
+	f.Write();
+	f.Close();
+
+	gDirectory->Clear();
 }
 //-----------------------------------------------------------------------------
-DrawTriggerQATRU(const char * filename = "TriggerQA_253436-253591.root",
-                 const char * trigger = "L0",
-                 const char * module  = "M2")
+DrawTriggerQATRU(TList * hList, const char * trigger = "L0", const char * module  = "M2", Int_t run = 1234678)
 {
-	file = new TFile(filename);
-	hList = (TList *)file->Get(Form("PHOSTriggerQAResults%s", trigger));
+	// file = new TFile(filename);
+	// hList = (TList *)file->Get(Form("PHOSTriggerQAResults%s", trigger));
 
 	hPhotAllTRU1i = (TH1F *)hList->FindObject(Form("hPhotAllS%sTRU1", module));
 	hPhotAllTRU2i = (TH1F *)hList->FindObject(Form("hPhotAllS%sTRU2", module));
@@ -329,13 +341,13 @@ DrawTriggerQATRU(const char * filename = "TriggerQA_253436-253591.root",
 	leg->AddEntry(hPhotTrigTRU1, "Triggered clusters", "l");
 
 	TH1F * rTrigRatioTRU1 = (TH1F *)hPhotTrigTRU1->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU2 = (TH1F *)hPhotTrigTRU2->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU3 = (TH1F *)hPhotTrigTRU3->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU4 = (TH1F *)hPhotTrigTRU4->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU5 = (TH1F *)hPhotTrigTRU5->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU6 = (TH1F *)hPhotTrigTRU6->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU7 = (TH1F *)hPhotTrigTRU7->Clone("rTrigRatioTRU1");
-	TH1F * rTrigRatioTRU8 = (TH1F *)hPhotTrigTRU8->Clone("rTrigRatioTRU1");
+	TH1F * rTrigRatioTRU2 = (TH1F *)hPhotTrigTRU2->Clone("rTrigRatioTRU2");
+	TH1F * rTrigRatioTRU3 = (TH1F *)hPhotTrigTRU3->Clone("rTrigRatioTRU3");
+	TH1F * rTrigRatioTRU4 = (TH1F *)hPhotTrigTRU4->Clone("rTrigRatioTRU4");
+	TH1F * rTrigRatioTRU5 = (TH1F *)hPhotTrigTRU5->Clone("rTrigRatioTRU5");
+	TH1F * rTrigRatioTRU6 = (TH1F *)hPhotTrigTRU6->Clone("rTrigRatioTRU6");
+	TH1F * rTrigRatioTRU7 = (TH1F *)hPhotTrigTRU7->Clone("rTrigRatioTRU7");
+	TH1F * rTrigRatioTRU8 = (TH1F *)hPhotTrigTRU8->Clone("rTrigRatioTRU8");
 
 	rTrigRatioTRU1->Divide(rTrigRatioTRU1, hPhotAllTRU1, 1, 1, "B");
 	rTrigRatioTRU2->Divide(rTrigRatioTRU2, hPhotAllTRU2, 1, 1, "B");
@@ -421,6 +433,17 @@ DrawTriggerQATRU(const char * filename = "TriggerQA_253436-253591.root",
 	rTrigRatioTRU8->Draw();
 
 	c22->Print(Form("TrigEffiperTRU_%s_%s.pdf", trigger, module));
+
+	TList * olist = gDirectory->GetList();
+	olist->SetOwner(kTRUE);
+	TFile f("ratio.root", "update");
+	olist->Add(c21);
+	olist->Add(c22);
+	olist->Write(Form("%d", run) + TString(module), TObject::kSingleKey | TObject::kOverwrite);
+	f.Write();
+	f.Close();
+
+	gDirectory->Clear();	
 
 }
 //-----------------------------------------------------------------------------
