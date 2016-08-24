@@ -1,0 +1,2 @@
+/afs/cern.ch/user/o/okovalen/private/grid/centrality-naive/ESDs/pass2/AliESDs.root
+/afs/cern.ch/user/o/okovalen/private/phos/phos-protons/ESDs/pass1/AliESDs.root
