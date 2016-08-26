@@ -3,10 +3,8 @@ AliAnalysisTaskSE * AddMyTask(Int_t * excells, Int_t nexc)
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
-	for(int i = 0; i < nexc; ++i)
-		cout << " " << excells[i] << endl;
-
-	cout << " there are nexc " <<  nexc	 << endl;
+	// for(int i = 0; i < nexc; ++i) cout << " " << excells[i] << endl;
+	cout << " There are nexc " <<  nexc	 << endl;
 
 	if(!excells) cout << "ERRROR\nERRROR\nERRROR\nERRROR\nCells are not set" << endl;
 

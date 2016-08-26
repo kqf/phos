@@ -5,27 +5,16 @@ NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
 DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
-allplots: | $(DIRECTORY)/trending.root $(DIRECTORY)/CaloCellsQA.root
+allplots: | $(DIRECTORY)/CaloCellsQA.root 
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root")'
 	mkdir -p $(IM)
 	mv *.pdf $(IM)
 	mv *.png $(IM)
-	# ls -ltr
-
-$(DIRECTORY)/trending.root: | $(DIRECTORY)/CaloCellsQA.root
-	mkdir -p $(IM)
-	mkdir -p fits
-	./form-trending-plots.py $(DIRECTORY)
-	rm -fr $(IM)/fits # delete old version
-	mv fits $(IM)/
+	mv *.move.* $(IM)
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
-
-pics:
-	./draw-pictures.py
-	cd pictures;  pdfunite `ls -tr *.pdf` result.pdf
 
 badmap: | ../../qa/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
@@ -53,6 +42,7 @@ images:
 	# make trigger
 
 	# Run QA in full mode
+	mkdir -p fits
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root", kFALSE)'
 
 	# Extract map of bad channels
@@ -61,9 +51,13 @@ images:
 	mkdir -p $(IM)
 	mv *.pdf $(IM)
 	mv *.png $(IM)
+	mv *.move.* $(IM)
+	rm -rf $(IM)/fits
+	mv fits $(IM)
 
 	@  # Hidden operations, don't spoil your output
-	@montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png
+
+	@montage -tile 4x1 $(IM)/hPi0Slice_*.png  -geometry +0+0 $(IM)/pi0fits.png
 	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
 	@montage -tile 4x1 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass.png
 	@montage -tile 2x2 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass4.png

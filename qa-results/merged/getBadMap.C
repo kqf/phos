@@ -20,6 +20,7 @@ void getBadMap(const char * period = "", TString filename = "")
 	DrawPHOSOBadMap(period, excells, nexc);
 	
 
+	cout << "# excluded cells for this badmap " << nexc << endl;
 	// Verify the BadMap
 	ReadPrintBadCells(period, excells, nexc);
 }
@@ -119,7 +120,7 @@ void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0, T
 	for (int i = 0; i < nexc; ++i)
 	{
 		if (ref[i] == excells[i]) continue;
-		cout << "ERROR: found diviation in how I read and write the Bad Map" << excells[i] << endl;
+		cout << "ERROR: found deviation in how I read and write the Bad Map" << excells[i] << endl;
 		break;
 	}
 

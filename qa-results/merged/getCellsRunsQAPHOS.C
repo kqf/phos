@@ -544,7 +544,7 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
 
-  TFile factorfile("factor.root", "recreate");
+  TFile factorfile("factor.move.root", "recreate");
   for(int i = 0; i < 4; ++i) 
     hFactorDistr[i]->Write();
   factorfile.Write();
@@ -942,7 +942,7 @@ void DrawPHOSOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
   TCanvas *c1 = new TCanvas(cname, cname, 64*10*vsize,56*10);
   c1->Divide(vsize,1);
 
-  TFile *fBadMap = TFile::Open("PHOS_BadMap.root","recreate");
+  TFile *fBadMap = TFile::Open("PHOS_BadMap.move.root","recreate");
   for (Int_t sm = 1; sm <= nmods; sm++)
   {
     c1->cd(sm);
@@ -1725,7 +1725,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
 
-  TFile ofile("cluster-averages.root.png", "recreate");
+  TFile ofile("cluster-averages.move.root.png", "recreate");
   hAvECluster->Write();
   hAvNCluster->Write();
   hAvNCellsInCluster->Write();
@@ -2043,6 +2043,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
       hPi0MassSM[sm] ->SetBinError(ri+1, emass);
       hPi0SigmaSM[sm]->SetBinError(ri+1, esigma);
 
+      SavePi0Histogram(h, sm, runNumbers[ri]);
       delete h;
     } // supermodule loop
 
@@ -2594,4 +2595,30 @@ void SetRunLabel(TH1 *histo, Int_t nruns, Int_t *runNumbers, Int_t axis)
       histo->GetYaxis()->SetBinLabel(i+1,runText.Data());
   }
   histo->LabelsOption("v");
+}
+
+void SavePi0Histogram(TH1 * histo, Int_t sm, Int_t run)
+{
+
+  TCanvas * canvas = new TCanvas("hPi0FitResult", Form("hPi0fitSM%i_run%i",sm,run), 400, 400); 
+  histo->Draw();
+  TF1* fitfun = histo->GetFunction("fitfun");
+  if (fitfun) 
+  {
+    Double_t emin, emax;
+    fitfun->GetRange(emin, emax);
+
+    backgr = new TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", emin, emax);
+    backgr->SetLineColor(kBlue);
+    backgr->SetLineWidth(2);
+    backgr->SetLineStyle(3);
+    backgr->SetParameters(fitfun->GetParameter(3), fitfun->GetParameter(4), fitfun->GetParameter(5));
+    backgr->Draw("same");
+  }
+
+  cout << canvas << endl;
+  canvas->Update();
+  canvas->SaveAs(Form("fits/%d_SM_%d", run, sm) + TString(".png"));
+  canvas->SaveAs(Form("fits/%d_SM_%d", run, sm) + TString(".pdf"));
+  delete canvas;
 }
