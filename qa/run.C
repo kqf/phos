@@ -13,7 +13,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-good");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-good");
 
     if (!alienHandler) return;
 
@@ -29,7 +29,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     if ( isMC )
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Not reading track references
+        mchandler->SetReadTR ( kFALSE ); // Don't read track references
         mgr->SetMCtruthEventHandler ( mchandler );
     }
 

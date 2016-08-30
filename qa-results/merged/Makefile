@@ -11,10 +11,16 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.pdf $(IM)
 	mv *.png $(IM)
 	mv *.move.* $(IM)
+	@echo -e "\x07"
 
-$(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
+$(DIRECTORY)/CaloCellsQA.root: $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
+
+$(DIRECTORY):
+	mkdir -p $(DIRECTORY)
+	./download.sh phosqa-$(NAME) $(DIRECTORY)
+	@echo -e "\x07"
 
 badmap: | ../../qa/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
@@ -33,7 +39,10 @@ trigger: | TriggerQASingle.root
 	mv *.pdf $(IM)
 
 clean:
-	rm *.pdf *.eps *.png
+	rm *.pdf *.eps *.png 
+
+reset:
+	rm -rf $(DIRECTORY)
 
 # this one requires alienv
 # it's not default tasks as it needs to be run only once
@@ -57,10 +66,11 @@ images:
 
 	@  # Hidden operations, don't spoil your output
 
-	@montage -tile 4x1 $(IM)/hPi0Slice_*.png  -geometry +0+0 $(IM)/pi0fits.png
+	@montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png
 	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
 	@montage -tile 4x1 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass.png
 	@montage -tile 2x2 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass4.png
 	@convert $(IM)/totmass4.png $(IM)/totmass4.pdf
 	@convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.png
 	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
+	@echo -e "\x07"
