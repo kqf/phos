@@ -1,7 +1,7 @@
 # Order-only prerequisite is marked by "|" character
 
 PERIOD=LHC16k
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-trigger
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 FILE_NAME=TriggerQA.root
 # FILE_NAME=CaloCellsQA2.root
 DIRECTORY=../$(PERIOD)/$(NAME)
@@ -34,10 +34,9 @@ initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 $(DIRECTORY)/TriggerQASingle.root: | $(DIRECTORY)
 	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
 
-$(DIRECTORY)/ratio.root:
+$(DIRECTORY)/ratio.root: | $(DIRECTORY)/TriggerQASingle.root
 	mkdir -p $(IM)
 	root -l -b -q  ExtractTriggerQA.C'("$(DIRECTORY)/")'
-	@mv *.root $(DIRECTORY)
 	@mv *.pdf $(IM)
 
 	@pdfunite $(IM)/trigger_occupancy_cluster_*.pdf $(IM)/$(PERIOD)_trigger_occupancy_cluster.pdf
@@ -70,7 +69,10 @@ clean:
 	rm *.pdf *.eps *.png 
 
 reset:
-	rm -rf $(DIRECTORY)
+	rm -rf $(DIRECTORY)/Trigger*
+	rm -rf $(DIRECTORY)/Calo*
+	rm -rf $(DIRECTORY)/ratio.root
+	rm -rf $(DIRECTORY)/ResultsTriggerQA.root
 
 # this one requires alienv
 # it's not default tasks as it needs to be run only once

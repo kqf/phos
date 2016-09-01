@@ -4,7 +4,7 @@ void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cnam
 	TList * files = TSystemDirectory(directory, directory).GetListOfFiles();
 	if (!files) return;
 
-	TObjArray * output = new TObjArray();
+	TList * output = new TList();
 	output->SetOwner(kTRUE);
 
 	for(Int_t i = 0; i < files->GetEntries(); ++i)
@@ -15,7 +15,7 @@ void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cnam
 
 		fname = directory + "/" + fname;
 		cout << fname << endl;
-		merge_file(fname, output);
+		merge_file(fname, output, oname.Contains("TriggerQA"));
 	}
 
     TFile fout2(directory + "/" + oname + "Single.root", "recreate");
@@ -31,7 +31,7 @@ void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cnam
     fout1.Close();
 }
 
-void merge_file(const char * filename, TObjArray * output)
+void merge_file(const char * filename, TList * output, Bool_t add_lists)
 {
 	gROOT->Clear();
 	if(!output) return;
@@ -46,21 +46,34 @@ void merge_file(const char * filename, TObjArray * output)
 		return;
 	}
 
-	add_list(output, input);
+	add_list(output, input, add_lists);
 	file.Close();
 }
 
-void add_list(TObjArray * output, TList * input)
+void add_list(TList * output, TList * input, Bool_t add_lists)
 {
+
+
+	TList * previous = dynamic_cast<TList *>(output->FindObject(input->GetName()));
+	if(!previous && add_lists)
+	{
+		output->Add(input->Clone());
+		delete input;
+		return;
+	}
+
+	TList * to_merge = add_lists ? previous : output; // Decide wheter to add to output list or to sublist in output list
+
+
 	for(Int_t i = 0; i < input->GetEntries(); ++i)
 	{
 		TObject * entry = input->At(i);
-		add_object(output, entry);
+		add_object(to_merge, entry);
 	}
 	if(input) delete input;
 }
 
-void add_object(TObjArray * output, TObject * entry)
+void add_object(TList * output, TObject * entry)
 {
 	TH1 * hist = dynamic_cast<TH1 *>(entry);
 	if(hist)

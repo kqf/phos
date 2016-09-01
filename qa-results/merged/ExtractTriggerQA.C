@@ -11,10 +11,10 @@ void ExtractTriggerQA(TString direcotry = "./", Bool_t only_stats = kFALSE)
 		TList * run = dynamic_cast<TList *>(inlist->At(i));
 		Int_t rnumber = TString(run->GetName()).Atoi();
 
-		DrawTriggerQA(run, "L0", rnumber);
+		DrawTriggerQA(run, "L0", rnumber, direcotry);
 
 		for (int sm = 1; sm < 5; ++sm)
-			DrawTriggerQATRU(run, "L0", Form("M%d", sm), rnumber);
+			DrawTriggerQATRU(run, "L0", Form("M%d", sm), rnumber, direcotry);
 	}
 
 	if(!only_stats)
