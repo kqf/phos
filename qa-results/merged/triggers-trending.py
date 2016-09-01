@@ -31,20 +31,21 @@ def nicelydraw(tru):
 	raw_input('...')		
 
 class TrendDrawer(object):
-	def __init__(self, fname, quantity):
+	def __init__(self, path, fname, quantity):
 		super(TrendDrawer, self).__init__()
+		self.path = path
 		self.ntrus = 8
 		self.quantity = quantity
 		self.colors = [8, 9, 38, 48, 41, 5, 12, 1]
 
-		data = self.quantity.extract_modules(fname)
+		data = self.quantity.extract_modules(path + fname)
 		self.draw_trending_plots(data)
 
 	def form_trending_plots(self, sm, runs):
 		namef = lambda x, y: 'h_%s_TRU_%s' % (str(x), str(y))
 		nbins, title = len(runs), self.quantity.title
 		hists = [ROOT.TH1F( namef(sm, i + 1), title % sm, nbins, 0, nbins) for i in range(self.ntrus)]
-		for i, h in enumerate(hists): h.label = 'TRU ' + str(i + 1)
+		for i, h in enumerate(hists): h.label = 'TRU ' + str(i + 1) # custom legend label
 
 		for ibin, run in enumerate(sorted(runs)):
 			for itru, tru in enumerate(runs[run]):
@@ -52,9 +53,13 @@ class TrendDrawer(object):
 				hists[itru].SetBinContent(ibin + 1, val)
 				hists[itru].SetBinError(ibin + 1, err)
 				hists[itru].GetXaxis().SetBinLabel(ibin + 1, run)
+				if ibin == 0: hists[itru].LabelsOption('v') # This is completely different thing: makes vertical bins
+
 		return hists
 
 	def draw_trending_plots(self, data):
+		optstat = ROOT.gStyle.GetOptStat()
+		ROOT.gStyle.SetOptStat(0)
 		for sm in sorted(data):
 			hists  = [h for h in self.form_trending_plots(sm, data[sm]) if h.GetMaximum() > 0]
 			hists[0].SetAxisRange(0.01, 1.01 * max(h.GetMaximum() for h in hists), 'Y');
@@ -63,7 +68,9 @@ class TrendDrawer(object):
 			legend = draw_multiple(hists, colors)
 			legend.Draw('same')
 			canvas.Update()
-			raw_input('Press <ENTER> ...')
+			canvas.SaveAs(self.path + '/images/' + self.quantity.oname + '_' + sm + '.pdf')
+			# raw_input('Press <ENTER> ...')
+		ROOT.gStyle.SetOptStat(optstat)
 
 class Quantity(object):
 	def __init__(self, title):
@@ -71,6 +78,7 @@ class Quantity(object):
 		self.title = title
 		self.threshod = 4.5
 		self.maxenergy = 20.
+		self.oname = title.split()[0]
 
 	def extract_tru(self, tru):
 		fitf = ROOT.TF1('fitf', "[0]", self.threshod, self.maxenergy)
@@ -107,14 +115,18 @@ def tru_coordinates(itru):
 
 			
 class QuantityChannels(Quantity):
-	def __init__(self, title):
+	def __init__(self, title, **kwargs):
 		super(QuantityChannels, self).__init__(title)
+		self.cell_function = kwargs['cellf']
+		self.histname = 'h4x4' + kwargs['cluster']
+		self.nevents  = 'hNev'
+		self.oname = title.split()[0] + kwargs['cluster']
 
 	def extract_tru(self, itru, hist): 
 		x, y = tru_coordinates(itru)
 		# [hist.SetBinContent(i, j, 1)  for j in y for i in x]
-		# value = sum(1  for j in y for i in x if hist.GetBinContent(i, j) > 0)
-		value = hist.Integral(x[0], x[-1], y[0], y[-1])
+		# value = hist.Integral(x[0], x[-1], y[0], y[-1])
+		value = self.cell_function(hist, x, y)
 		return value, 0
 
 	def extract_run(self, perrun):
@@ -127,10 +139,10 @@ class QuantityChannels(Quantity):
 		ilist = ROOT.TFile(fname).L0
 		run_numbers = sorted(r.GetName() for r in ilist)
 		supermods = list('SM' + str(i) for i in range(1, 5))
-		get_hist = lambda run, sm: ilist.FindObject(run).FindObject('h4x4Clu' + sm)
+		get_hist = lambda run, sm: ilist.FindObject(run).FindObject(self.histname + sm)
 		raw  = {sm: {run: get_hist(run, sm) for run in run_numbers} for sm in supermods}
 
-		get_nevents = lambda run : ilist.FindObject(run).FindObject('hNev').GetBinContent(1)
+		get_nevents = lambda run : ilist.FindObject(run).FindObject(self.nevents).GetBinContent(1)
 		for sm in raw: 
 			for run in raw[sm]:
 				raw[sm][run].Rebin2D(2, 2)
@@ -139,16 +151,26 @@ class QuantityChannels(Quantity):
 		data = {sm: {run: self.extract_run(raw[sm][run]) for run in sorted(raw[sm])} for sm in raw}
 		return data
 
-
 		
 def main():
 	path = './' if len(sys.argv) < 2 else sys.argv[1]
 
-	# ratio = Quantity("Trigered clusters / all clusters in %s in E > 4.5 GeV region;;Trigered clusters / all clusters")
-	# TrendDrawer(path + 'ratio.root', ratio)
+	ratio = Quantity("Triggered clusters / all clusters in %s in E > 4.5 GeV region;;Triggered clusters / all clusters")
+	TrendDrawer(path, 'ratio.root', ratio)
 
-	channels = QuantityChannels("Number of TRU channels fired in %s;; # of TRU channels")
-	TrendDrawer(path + 'TriggerQASingle.root', channels)
+	cluster_types = {'': '', 'matching cluters with E > 2 GeV': 'Clu'}
+	for tp in cluster_types:
+		cltype = cluster_types[tp]
+
+		integral = lambda h, x, y: h.Integral(x[0], x[-1], y[0], y[-1])
+		ctitle   = "Probability for TRUs in %s to be fired, " + tp + " ;; N_{Fired channels} / N_{kINT7}" 
+		probability = QuantityChannels(ctitle, cluster=cltype, cellf=integral)
+		TrendDrawer(path, 'TriggerQASingle.root', probability)
+
+		sumfunc  = lambda h, x, y: sum(1  for j in y for i in x if h.GetBinContent(i, j) > 0)
+		ptitle   = "Number of TRU channels fired in %s " + tp + ";; # of TRU channels"
+		channels = QuantityChannels(ptitle, cluster=cltype, cellf=sumfunc)
+		TrendDrawer(path, 'TriggerQASingle.root', channels)
 
 
 if __name__ == '__main__':

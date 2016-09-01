@@ -17,10 +17,13 @@ void ExtractTriggerQA(TString direcotry = "./", Bool_t only_stats = kFALSE)
 			DrawTriggerQATRU(run, "L0", Form("M%d", sm), rnumber);
 	}
 
-	if(!only_stats) SaveImages(direcotry);
+	if(!only_stats)
+	{
+		SaveImages(direcotry, "c1"); // Save trigger occupancy
+		SaveImages(direcotry, "c2"); // Save trigger occupacy for high energy clusters
+	}
 
-
-		cout << "For run "  << "<Numb>" << fixed << setw(1)  << " " << "TrigCount" << " " << setw(1)<< "<N events>" << endl;
+	cout << "For run "  << "<Numb>" << fixed << setw(1)  << " " << "TrigCount" << " " << setw(1)<< "<N events>" << endl;
 	for (Int_t i = 0; i < inlist->GetEntries(); ++i)
 	{
 		TList * run = dynamic_cast<TList *>(inlist->At(i));
@@ -31,13 +34,14 @@ void ExtractTriggerQA(TString direcotry = "./", Bool_t only_stats = kFALSE)
 	}
 }
 
-void SaveImages(TString direcotry)
+void SaveImages(TString direcotry, TString cname = "c1")
 {
 	gStyle->SetOptStat(0);
 
 	Bool_t batch = gROOT->IsBatch();
 	gROOT->SetBatch(kTRUE);
 
+	cout << "PROCESSING " << cname << endl;
 	TList * data = TFile(direcotry + "ResultsTriggerQA.root", "read").GetListOfKeys();
 	for (Int_t i = 0; i < data->GetEntries(); ++i)
 	{
@@ -50,15 +54,18 @@ void SaveImages(TString direcotry)
 		TList * run = dynamic_cast<TList *>(key->ReadObj());
 		if (!run) continue;
 
-		TCanvas * c1 = dynamic_cast<TCanvas *>(run->FindObject("c1"));
+		TCanvas * c1 = dynamic_cast<TCanvas *>(run->FindObject(cname));
 		if (!c1) continue;
 
 		c1->Draw();
 
-		TText t(0.35, 0.49, "trigger occupancy run  " + name);
+		TString descr = cname.Contains("c2") ? " high energy clusters" : "";
+		TText t(0.35, 0.49, Form("trigger occupancy run %s %s", (const char *) name, (const char *) descr));
 		t.SetTextSize(0.03);
 		t.Draw();
-		c1->SaveAs(direcotry + "/images/trigger_occupancy_" + name + ".pdf");
+
+		TString ctype = cname.Contains("c2") ? "cluster_" : "";
+		c1->SaveAs(direcotry + "/images/trigger_occupancy_" + ctype + name + ".pdf");
 
 		delete run;
 	}
