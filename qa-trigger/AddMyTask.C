@@ -11,10 +11,11 @@ AliAnalysisTaskSE * AddMyTask()
 	mgr->AddTask(task);
 
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
-	coutput = mgr->CreateContainer("Data",
+	coutput = mgr->CreateContainer("TriggerQA",
 	                               TList::Class(),
 	                               AliAnalysisManager::kOutputContainer,
-	                               AliAnalysisManager::GetCommonFileName());
+	                               "TriggerQA.root");
+	                               // AliAnalysisManager::GetCommonFileName());
 	mgr->ConnectOutput(task, 1, coutput);
 	return task;
 }

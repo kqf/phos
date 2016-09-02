@@ -3,7 +3,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    TString period = "LHC16g";
+    TString period = "LHC16k";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
@@ -37,23 +37,22 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     mgr->SetGridHandler(alienHandler);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
-    
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
-    triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
+    // AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
+
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
+    // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
 
 
-    // gROOT->LoadMacro("AliAnalysisTaskPHOSTriggerQAPerRun.h+g");
-    // gROOT->LoadMacro("AddMyTask.C");
-
-    // AliAnalysisTaskSE * myTask = AddMyTask();
+    gROOT->LoadMacro("AliAnalysisTaskPHOSTriggerQAPerRun.h+g");
+    gROOT->LoadMacro("AddMyTask.C");
+    AddMyTask();
 
     if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
 
 
-mgr->StartAnalysis (runmode);
+    mgr->StartAnalysis(runmode);
     gObjectTable->Print( );
 }
 
