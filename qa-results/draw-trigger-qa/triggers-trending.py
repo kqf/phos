@@ -62,6 +62,10 @@ class TrendDrawer(object):
 		ROOT.gStyle.SetOptStat(0)
 		for sm in sorted(data):
 			hists  = [h for h in self.form_trending_plots(sm, data[sm]) if h.GetMaximum() > 0]
+			if not hists: 
+				print 'No data available for', sm
+				continue
+
 			hists[0].SetAxisRange(0.01, 1.01 * max(h.GetMaximum() for h in hists), 'Y');
 			colors = self.colors[:len(hists)]
 			canvas = ROOT.TCanvas('c' + str(sm), 'canvas', 1200, 403)
@@ -126,6 +130,7 @@ class QuantityChannels(Quantity):
 		x, y = tru_coordinates(itru)
 		# [hist.SetBinContent(i, j, 1)  for j in y for i in x]
 		# value = hist.Integral(x[0], x[-1], y[0], y[-1])
+		if not hist: return 137, 137
 		value = self.cell_function(hist, x, y)
 		return value, 0
 
@@ -145,6 +150,7 @@ class QuantityChannels(Quantity):
 		get_nevents = lambda run : ilist.FindObject(run).FindObject(self.nevents).GetBinContent(1)
 		for sm in raw: 
 			for run in raw[sm]:
+				if not raw[sm][run]: continue
 				raw[sm][run].Rebin2D(2, 2)
 				raw[sm][run].Scale(1./ get_nevents(run))
 

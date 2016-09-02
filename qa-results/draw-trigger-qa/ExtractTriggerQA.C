@@ -8,7 +8,14 @@ void ExtractTriggerQA(TString direcotry = "./", Bool_t only_stats = kFALSE)
 	{
 		if(only_stats) continue;
 
-		TList * run = dynamic_cast<TList *>(inlist->At(i));
+		// inlist->ls();
+
+		TObject * obj = inlist->At(i);
+		if(!TString(obj->GetName()).IsDigit()) continue;
+
+		TList * run = dynamic_cast<TList *>(obj);
+		if(!run) continue;
+
 		Int_t rnumber = TString(run->GetName()).Atoi();
 
 		DrawTriggerQA(run, "L0", rnumber, direcotry);
@@ -27,6 +34,7 @@ void ExtractTriggerQA(TString direcotry = "./", Bool_t only_stats = kFALSE)
 	for (Int_t i = 0; i < inlist->GetEntries(); ++i)
 	{
 		TList * run = dynamic_cast<TList *>(inlist->At(i));
+		if(!TString(inlist->At(i)->GetName()).IsDigit()) continue;
 		TH1 * stat = dynamic_cast<TH1 *>(run->FindObject("hNev"));
 
 		cout.precision(0);

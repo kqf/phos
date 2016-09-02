@@ -15,6 +15,9 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.move.* $(IM)
 	@echo -e "\x07"
 
+trigger: | $(DIRECTORY)
+	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
+
 $(DIRECTORY)/CaloCellsQA.root: $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
@@ -31,48 +34,15 @@ badmap: | ../../qa/getRunsBadCells.C
 initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
-$(DIRECTORY)/TriggerQASingle.root: | $(DIRECTORY)
-	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
-
-$(DIRECTORY)/ratio.root: | $(DIRECTORY)/TriggerQASingle.root
-	mkdir -p $(IM)
-	root -l -b -q  ExtractTriggerQA.C'("$(DIRECTORY)/")'
-	@mv *.pdf $(IM)
-
-	@pdfunite $(IM)/trigger_occupancy_cluster_*.pdf $(IM)/$(PERIOD)_trigger_occupancy_cluster.pdf
-	@rm $(IM)/trigger_occupancy_cluster_*.pdf
-
-	@pdfunite $(IM)/trigger_occupancy_*.pdf $(IM)/$(PERIOD)_trigger_occupancy.pdf
-	@rm $(IM)/trigger_occupancy_*.pdf
-
-
-trigger: | $(DIRECTORY)/ratio.root 
-	./triggers-trending.py $(DIRECTORY)/
-
-	@pdfunite $(IM)/NumberClu_*.pdf $(IM)/$(PERIOD)_NumberClu.pdf
-	@rm $(IM)/NumberClu_*.pdf	
-
-	@pdfunite $(IM)/Number_*.pdf $(IM)/$(PERIOD)_Number.pdf
-	@rm $(IM)/Number_*.pdf	
-
-	@pdfunite $(IM)/ProbabilityClu_*.pdf $(IM)/$(PERIOD)_ProbabilityClu.pdf
-	@rm $(IM)/ProbabilityClu_*.pdf	
-
-	@pdfunite $(IM)/Probability_*.pdf $(IM)/$(PERIOD)_Probability.pdf
-	@rm $(IM)/Probability_*.pdf	
-
-	@pdfunite $(IM)/Triggered_*.pdf $(IM)/$(PERIOD)_Triggered.pdf
-	@rm $(IM)/Triggered_*.pdf	
-
-
 clean:
 	rm *.pdf *.eps *.png 
 
 reset:
 	rm -rf $(DIRECTORY)/Trigger*
 	rm -rf $(DIRECTORY)/Calo*
-	rm -rf $(DIRECTORY)/ratio.root
-	rm -rf $(DIRECTORY)/ResultsTriggerQA.root
+
+reset_hard: 
+	rm -rf $(DIRECTORY)
 
 # this one requires alienv
 # it's not default tasks as it needs to be run only once
