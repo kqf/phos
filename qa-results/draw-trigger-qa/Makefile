@@ -22,8 +22,10 @@ trigger: | $(DIRECTORY)/ratio.root
 
 	pdfunite $(IM)/Triggered_*.pdf $(IM)/$(PERIOD)_Triggered.pdf
 	rm $(IM)/Triggered_*.pdf	
-	echo "DONE DONE DONE DONE"
-
+	
+	@echo
+	@echo
+	@echo "DONE DONE DONE DONE"
 
 
 $(DIRECTORY)/ratio.root: | $(DIRECTORY)/TriggerQASingle.root
@@ -40,7 +42,7 @@ $(DIRECTORY)/ratio.root: | $(DIRECTORY)/TriggerQASingle.root
 
 $(DIRECTORY)/TriggerQASingle.root:
 	mkdir -p $(DIRECTORY)
-	rsync okovalen@lxplus.cern.ch:~/private/phos/qa-result/$(PERIOD)/$(DIRECTORY)/TriggerQASingle.root $(DIRECTORY)
+	rsync okovalen@lxplus.cern.ch:~/private/phos/qa-results/$(PERIOD)/$(DIRECTORY)/TriggerQASingle.root $(DIRECTORY)
 
 
 clean:
@@ -51,4 +53,4 @@ reset:
 	rm -rf $(DIRECTORY)/ResultsTriggerQA.root
 
 reset_hard: 
-	rm -rf $(DIRECTORY)/Trigger*	
+	rm -rf $(DIRECTORY)/
