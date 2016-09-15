@@ -1,9 +1,10 @@
 # Order-only prerequisite is marked by "|" character
 
 PERIOD=LHC16k
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
-FILE_NAME=TriggerQA.root
-# FILE_NAME=CaloCellsQA2.root
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
+# NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
+# FILE_NAME=TriggerQA.root
+FILE_NAME=CaloCellsQA2.root
 DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
@@ -15,9 +16,6 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.move.* $(IM)
 	@echo -e "\x07"
 
-trigger: | $(DIRECTORY)
-	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
-
 $(DIRECTORY)/CaloCellsQA.root: $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
@@ -26,6 +24,10 @@ $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
 	./download.sh phosqa-$(NAME) $(FILE_NAME) $(DIRECTORY)
 	@echo -e "\x07"
+
+trigger: | $(DIRECTORY)
+	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
+
 
 badmap: | ../../qa/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
