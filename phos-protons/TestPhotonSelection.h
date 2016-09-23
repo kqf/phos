@@ -22,7 +22,7 @@ public:
 	virtual ~TestPhotonSelection();
 
 	virtual void InitSummaryHistograms();
-	virtual Bool_t SelectEvent(const EventFlags & flgs) {  fEvents->Fill(0.5); return kTRUE; }
+	virtual Bool_t SelectEvent(const EventFlags & flgs) {  fEvents->Fill(0.5); return PhotonSelection::SelectEvent(flgs); }
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
 
 protected:
@@ -33,9 +33,9 @@ protected:
 	TestPhotonSelection & operator = (const TestPhotonSelection &);
 
 private:
+	TH1F * fEvents;//!
 	TList  * fListOfHistos;  //! list of histograms
 	TH1F * fhPi0Mass[10][10];//!
-	TH1F * fEvents;//!
 	ClassDef(TestPhotonSelection, 2)
 };
 #endif

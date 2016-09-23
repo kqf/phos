@@ -30,7 +30,7 @@ PhysPhotonSelection::~PhysPhotonSelection()
 //________________________________________________________________
 Bool_t PhysPhotonSelection::SelectEvent(const EventFlags & flgs)
 {
-	if(TMath::Abs(flgs.vtxBest[3]) > 10) return kFALSE;
+	if (TMath::Abs(flgs.vtxBest[2]) > 10) return kFALSE;
 	FillHistogram("TotalEvents", 0.5);
 	return kTRUE;
 }
@@ -63,7 +63,7 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
 	Int_t kMaxModule = 4;
-	for(Int_t sm = /*AliAnalysisTaskPrompt::*/kMinModule; sm <= /*AliAnalysisTaskPrompt::*/kMaxModule; ++sm)
+	for (Int_t sm = /*AliAnalysisTaskPrompt::*/kMinModule; sm <= /*AliAnalysisTaskPrompt::*/kMaxModule; ++sm)
 	{
 		fListOfHistos->Add(new TH2F(Form("hMassPtSM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("hMassPtN3SM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, N_{cell}>3 SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -95,12 +95,12 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	if (c1->GetNCells() >= 5 && c2->GetNCells() >= 5) FillHistogram("hMassPtN5", ma12 , pt12 );
 	if (c1->GetNCells() >= 6 && c2->GetNCells() >= 6) FillHistogram("hMassPtN6", ma12 , pt12 );
 
-	if(sm1 == sm2) 
+	if (sm1 == sm2)
 		FillHistogram(Form("hMassPtSM%d", sm1), ma12, pt12);
 
 	Bool_t three_cells_in_clusters = c1->GetNCells() >= 3 && c2->GetNCells() >= 3;
 	if (!three_cells_in_clusters) return;
-	if(sm1 == sm2) FillHistogram(Form("hMassPtN3SM%d", sm1), ma12, pt12);
+	if (sm1 == sm2) FillHistogram(Form("hMassPtN3SM%d", sm1), ma12, pt12);
 }
 
 //________________________________________________________________

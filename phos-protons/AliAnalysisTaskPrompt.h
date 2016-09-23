@@ -16,7 +16,7 @@ class AliAnalysisTaskPrompt : public AliAnalysisTaskSE
 public:
 	enum {kMinModule = 1, kMaxModule=4};
 	AliAnalysisTaskPrompt();
-	AliAnalysisTaskPrompt(const char * name, Int_t nmodules = 4);
+	AliAnalysisTaskPrompt(const char * name);
 	virtual ~AliAnalysisTaskPrompt();
 
 	void   UserCreateOutputObjects();

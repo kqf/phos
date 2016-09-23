@@ -34,7 +34,7 @@ AliAnalysisTaskPrompt::AliAnalysisTaskPrompt() : AliAnalysisTaskSE(),
 }
 
 //________________________________________________________________
-AliAnalysisTaskPrompt::AliAnalysisTaskPrompt(const char * name, Int_t nmodules) :
+AliAnalysisTaskPrompt::AliAnalysisTaskPrompt(const char * name) :
 	AliAnalysisTaskSE(name),
 	fSelections(new TList()),
 	fPHOSBadMap(),
@@ -189,7 +189,7 @@ Bool_t AliAnalysisTaskPrompt::CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, In
 {
 	// Converts cell absId --> (sm,ix,iz);
 	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance();
-	if(!geomPHOS)
+	if (!geomPHOS)
 	{
 		AliWarning("Something is wrong with PHOS Geometry. Check if you initialize it in UserExec!");
 		return kTRUE;
@@ -214,12 +214,12 @@ Bool_t AliAnalysisTaskPrompt::IsClusterBad(AliVCluster * clus) const
 
 	// If fBadCells array is empty then use BadMap
 
-	if( !fPHOSBadMap[0] ) return kFALSE;
+	if ( !fPHOSBadMap[0] ) return kFALSE;
 
 	Int_t sm, ix, iz;
 	for (Int_t c = 0; c < clus->GetNCells(); c++) // Loop over all cells in cluster
 	{
-		if(!CellInPhos(clus->GetCellAbsId(c), sm, ix, iz)) // Reject cells outside PHOS
+		if (!CellInPhos(clus->GetCellAbsId(c), sm, ix, iz)) // Reject cells outside PHOS
 			return kTRUE;
 
 		if (!fPHOSBadMap[sm - kMinModule]) // Warn if something is wrong
@@ -232,6 +232,8 @@ Bool_t AliAnalysisTaskPrompt::IsClusterBad(AliVCluster * clus) const
 
 	return kFALSE;
 }
+
+//________________________________________________________________
 void AliAnalysisTaskPrompt::SetBadMap(const char * filename)
 {
 	TFile * fBadMap = TFile::Open(filename);

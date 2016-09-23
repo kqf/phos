@@ -26,7 +26,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
-    mgr->SetDebugLevel(999999);
+    // mgr->SetDebugLevel(999999);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
@@ -39,7 +39,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
-    if(!useTender) AddMyTask(AliVEvent::kINT7, "LHC16i ## only my badmap ## no tender", "NoTender", "BadMap_LHC16i.root");
+    if (!useTender) AddMyTask(AliVEvent::kINT7, "LHC16i ## only my badmap ## no tender", "NoTender", "BadMap_LHC16i.root");
 
     // Add tender
     if (useTender)

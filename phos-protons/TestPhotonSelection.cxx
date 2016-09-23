@@ -64,6 +64,11 @@ void TestPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 void TestPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
 	// Don't return TObjArray: force user to handle candidates lifetime
+
+	// Don't test mixed data
+	if(eflags.isMixing)
+		return;
+
 	Double_t pi0EClusMin = 0.3;
 	Int_t sm1;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)

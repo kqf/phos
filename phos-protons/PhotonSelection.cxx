@@ -30,6 +30,7 @@ Int_t PhotonSelection::CheckClusterGetSM(const AliVCluster * clus) const
 	// Return -1 if cuts not passed or an error occured.
 
 	if (!clus->IsPHOS()) return -1;
+	if (clus->GetType() != AliVCluster::kPHOSNeutral) return -1; // don't use CPV
 	if (clus->GetNCells() < 1) return -1;
 
 	Int_t sm = 1 + (clus->GetCellAbsId(0) - 1) / 3584;
