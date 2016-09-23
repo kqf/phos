@@ -16,7 +16,7 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.move.* $(IM)
 	@echo -e "\x07"
 
-$(DIRECTORY)/CaloCellsQA.root: $(DIRECTORY)
+$(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
 
@@ -37,7 +37,8 @@ initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
 clean:
-	rm *.pdf *.eps *.png 
+	rm -f *.pdf *.eps *.png 
+	rm -rf $(DIRECTORY)/{0..10000}.root
 
 reset:
 	rm -rf $(DIRECTORY)/Trigger*

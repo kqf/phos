@@ -78,6 +78,10 @@ public:
 			if (!cluster->IsPHOS())
 				continue;
 
+			// Reject CPV clusters
+			if (cluster->GetType() != AliVCluster::kPHOSNeutral)
+				continue;
+
 			if (IsClusterBad(cluster))
 				continue;
 

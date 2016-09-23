@@ -1,5 +1,10 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
 
+test:
+	root -l -q 'run.C("local", "test")'
+	echo "Local analysis" >> .runhistory
+	# make compare
+
 grid:
 	root -l -b -q 'run.C("grid", "full")'
 	echo "Started grid analysis" >> .runhistory
@@ -8,10 +13,6 @@ terminate:
 	root -l -q 'run.C("grid", "terminate")'
 	echo "Terminated grid analysis" >> .runhistory
 
-test:
-	root -l -q 'run.C("local", "test")'
-	echo "Local analysis" >> .runhistory
-	# make compare
 
 clean:
 	rm *.so *.d *~ Task*
