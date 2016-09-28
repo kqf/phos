@@ -12,7 +12,7 @@ def draw_and_save(name, draw=False, save=True):
     canvas = ROOT.gROOT.FindObject('c1')
     if not canvas: return
     canvas.Update()
-    if save: canvas.SaveAs(name + '.png')
+    if save: canvas.SaveAs(name + '.pdf')
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
     if draw:# raw_input('Enter some data ...')
         ROOT.gApplication.Run(True)
@@ -51,12 +51,23 @@ def compare_chi(hist1, hist2):
     if isclose(1., percentile): return #everything is fine
     print bcolors.WARNING + 'Rate of change of %s%s%s is' % (bcolors.OKGREEN, h.GetName(), bcolors.WARNING), percentile, bcolors.ENDC
 
-def compare_visually(hist1, hist2):
-    hist1.SetLineColor(37)
-    hist2.SetLineColor(48)
+def compare_visually(hist1, hist2, ci):
+    hist1.SetLineColor(ci)
+    hist2.SetLineColor(ci + 4)
 
     hist1.Draw()
     hist2.Draw('same')
+
+    legend = ROOT.TLegend(0.9, 0.4, 1.0, 0.6)
+    legend.SetBorderSize(0)
+    legend.SetFillStyle(0)
+    legend.SetTextSize(0.04)
+    legend.AddEntry(hist1, hist1.label)
+    legend.AddEntry(hist2, hist2.label)
+    legend.Draw('same')
+
+    if 'spectr' in hist1.GetName():
+        ROOT.gPad.SetLogy()
 
     draw_and_save(hist1.GetName(), True, True)
 
@@ -64,7 +75,8 @@ def compare_visually(hist1, hist2):
 class Comparator(object):
     def __init__(self, ):
         super(Comparator, self).__init__()
-        
+        self.ci, self.colors = self.define_colors()
+
     def compare_lists_of_histograms(self, l1, l2, ignore = [], compare = compare_visually):
         if len(l1) != len(l2): 
             print bcolors.FAIL + 'Warning files have different size' + bcolors.ENDC
@@ -72,9 +84,15 @@ class Comparator(object):
         for h in l1: 
             candidate = find_similar_in(l2, h)
             if not candidate or candidate.GetName() in ignore: continue
-            compare(h, candidate)
+            compare(h, candidate, self.ci)
 
         print "That's it!! Your computation is done"
+
+    def define_colors(self, ci = 1000):
+        colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)]
+        rcolors = [[b / 255. for b in c] for c in colors]
+        rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
+        return ci, rcolors
 
 def compare_histograms():
     ROOT.gROOT.cd()
