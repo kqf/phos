@@ -3,7 +3,7 @@
 import ROOT
 import numpy as np
 from math import pi
-from CrystalBall import Fit
+from CrystalBall import ExtractQuantities, Fit
 
 def draw_and_save(name, draw=True, save=False):
     canvas = ROOT.gROOT.FindObject('c1')
@@ -37,30 +37,61 @@ class PtAnalyzer(object):
         self.rawmix = lst.FindObject('hMix' + name[1:])
         self.label = label
 
+    def divide_into_bins(self, n = 20):
+        # hist = self.rawhist.ProjectionY()
+        # a, b, xmax, surf  = hist.FindBin(1.0001), hist.FindLastBinAbove(), hist.GetNbinsX(), int(hist.Integral() / n)
+        # edges = [a]
+        # for i in range(a, xmax):
+            # s = hist.Integral(a, i)
+            # print surf - s, hist.Integral() 
+            # def compare(a, b, tol = 1.): return int(a / tol) == int(b / tol)
+            # if compare(s, surf) or (surf - s) < 0:
+                # a = i
+                # edges.append(i)
+        # edges.append(b)
+        # return edges[1:]
+        res = list(np.logspace(np.log10(1.) , np.log10(15), n))
+        bins = map(self.rawhist.GetYaxis().FindBin, res)
+        bins = sorted(set(bins))
+        return bins
+
+    def estimate_background(self, real, mixed):
+        canvas = ROOT.gROOT.FindObject('c1')
+
+        ratio = real.Clone()
+        ratio.Divide(mixed)
+
+        fitf, bckgrnd = Fit(ratio)
+        canvas.Update()
+
+        mixed.Sumw2()
+        mixed.Multiply(bckgrnd)
+
+        mixed.SetLineColor(46)
+
+        real.Draw()
+        mixed.Draw('same')
+        canvas.Update()
+
+        # if self.label != 'Mixing':raw_input()
+        real.SetAxisRange(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax(), "X");
+        return mixed
+
+
     def extract_data(self, a, b):
         canvas = ROOT.gROOT.FindObject('c1')
         name = self.rawhist.GetName() + '_%d_%d' % (a, b)
-        hist, histmc = self.rawhist.ProjectionX(name, a, b), self.rawmix.ProjectionX(name + 'mix', a, b)
+        real, mixed = self.rawhist.ProjectionX(name, a, b), self.rawmix.ProjectionX(name + 'mix', a, b)
+        real.Sumw2()
 
 
-        start, stop = hist.FindBin(0.2), hist.FindBin(1.5)
-        histmc.Scale(hist.Integral(start, stop) / histmc.Integral(start, stop))
-        histmc.SetLineColor(46)
+        mixed = self.estimate_background(real, mixed)
+        if self.label == 'Mixing': real.Add(mixed, -1)
 
-        hist.Draw()
-        histmc.Draw('same')
-        canvas.Update()
-        canvas.SaveAs('mixed_background_%d_%d.pdf'% (a, b))
-
-        if self.label == 'Mixing': hist.Add(histmc, -1)
         lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
-        hist.SetLineColor(8)
-        hist.Draw('same')
-
-
-
-        hist.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
-        res = Fit(hist)
+        real.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
+        res = ExtractQuantities(real)
+        if self.label == 'Mixing': raw_input()
         return res
 
     def quantities(self):
@@ -87,23 +118,6 @@ class PtAnalyzer(object):
         map(nicely_draw, histos)
         return histos
 
-    def divide_into_bins(self, n = 20):
-        # hist = self.rawhist.ProjectionY()
-        # a, b, xmax, surf  = hist.FindBin(1.0001), hist.FindLastBinAbove(), hist.GetNbinsX(), int(hist.Integral() / n)
-        # edges = [a]
-        # for i in range(a, xmax):
-            # s = hist.Integral(a, i)
-            # print surf - s, hist.Integral() 
-            # def compare(a, b, tol = 1.): return int(a / tol) == int(b / tol)
-            # if compare(s, surf) or (surf - s) < 0:
-                # a = i
-                # edges.append(i)
-        # edges.append(b)
-        # return edges[1:]
-        res = list(np.logspace(np.log10(1.) , np.log10(15), n))
-        bins = map(self.rawhist.GetYaxis().FindBin, res)
-        bins = sorted(set(bins))
-        return bins
 
 def nicely_draw(hist, option = '', legend = None):
     hist.Draw(option)
@@ -127,8 +141,8 @@ def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
     mfile = ROOT.TFile('LHC16h.root')
 
-    first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
     second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
+    first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
 
     import compare as cmpr
     diff = cmpr.Comparator()

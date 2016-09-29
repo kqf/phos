@@ -10,6 +10,16 @@ def draw_and_save(name, draw=True, save=False):
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
     if draw: ROOT.gApplication.Run(True)
 
+def CBParameters():
+    # crystal ball parameters (fixed by hand for EMCAL) TODO: PHOS parameters?
+    alpha = 1.1  # alpha >= 0
+    n = 2.       # n > 1
+
+    # CB tail parameters
+    a = ROOT.TMath.Exp(-alpha * alpha / 2.) * (n / alpha) ** n 
+    b = n / alpha - alpha
+    return alpha, n, a, b
+
 def Fit(h = None, emin = 0.05, emax = 0.3, rebin = 1):
     # Fits the pi0 peak with crystal ball + pol2,
     # fills number of pi0s, mass, width and their errors.
@@ -19,13 +29,7 @@ def Fit(h = None, emin = 0.05, emax = 0.3, rebin = 1):
     h.GetXaxis().SetTitle('M_{#gamma#gamma}, GeV')
     ROOT.gStyle.SetOptFit()
 
-    # crystal ball parameters (fixed by hand for EMCAL) TODO: PHOS parameters?
-    alpha = 1.1  # alpha >= 0
-    n = 2.       # n > 1
-
-    # CB tail parameters
-    a = ROOT.TMath.Exp(-alpha * alpha / 2.) * (n / alpha) ** n 
-    b = n / alpha - alpha
+    alpha, n, a, b = CBParameters()
 
     # signal (crystal ball)
     signal = ROOT.TF1("cball", "(x-[1])/[2] > -%f ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%f*(%f-(x-[1])/[2])^(-%f)" % (alpha, a, b, n) )
@@ -53,8 +57,19 @@ def Fit(h = None, emin = 0.05, emax = 0.3, rebin = 1):
     fitfun.SetParameters(ff.GetParameter(0), ff.GetParameter(1), ff.GetParameter(2), ff.GetParameter(3))
     h.Fit(fitfun,"QLR", "")
 
+    # For background extraction
+    background.SetParameter(0, fitfun.GetParameter(3))
+    background.SetParameter(1, fitfun.GetParameter(4))
+    background.SetParameter(2, fitfun.GetParameter(5))
+
+    return fitfun, background
+
+def ExtractQuantities(h = None, emin = 0.05, emax = 0.3, rebin = 1):
+    fitfun, background = Fit(h, emin, emax, rebin)
+
     # integral value under crystal ball with amplitude = 1, sigma = 1
     # (will be sqrt(2pi) at alpha = infinity)
+    alpha, n, a, b = CBParameters()
     nraw11 = a * pow(b + alpha, 1. - n) / (n - 1.) + ROOT.TMath.Sqrt(ROOT.TMath.Pi() / 2.) * ROOT.TMath.Erfc( -alpha / ROOT.TMath.Sqrt(2.))
 
     # calculate pi0 values
