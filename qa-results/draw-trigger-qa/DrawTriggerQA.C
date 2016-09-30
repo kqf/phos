@@ -1,4 +1,4 @@
-DrawTriggerQA(TList * hList = 0, const char * trigger = "L0", Int_t run = 123456)
+DrawTriggerQA(TList * hList = 0, const char * trigger = "L0", Int_t run = 123456, TString dir = "")
 {
 	//Author: Yuri Kharlov (Yuri.Kharlov@cern.ch)
 
@@ -214,11 +214,10 @@ DrawTriggerQA(TList * hList = 0, const char * trigger = "L0", Int_t run = 123456
 	rTrigRatioSM4->Draw();
 	c5->Print(Form("TrigPhotE_ratio_%s.pdf", trigger));
 
-	cout << "Reached here " << endl;
 
 	TList * olist = gDirectory->GetList();
 	olist->SetOwner(kTRUE);
-	TFile f("ResultsTriggerQA.root", "update");
+	TFile f(dir + "/ResultsTriggerQA.root", "update");
 	for (Int_t i = 1; i < 6; ++i)
 		olist->Add(gROOT->FindObject(Form("c%d", i)));
 	olist->Write(Form("%d", run), TObject::kSingleKey | TObject::kOverwrite);
@@ -228,7 +227,7 @@ DrawTriggerQA(TList * hList = 0, const char * trigger = "L0", Int_t run = 123456
 	gDirectory->Clear();
 }
 //-----------------------------------------------------------------------------
-DrawTriggerQATRU(TList * hList, const char * trigger = "L0", const char * module  = "M2", Int_t run = 1234678)
+DrawTriggerQATRU(TList * hList, const char * trigger = "L0", const char * module  = "M2", Int_t run = 1234678, TString dir = "")
 {
 	// file = new TFile(filename);
 	// hList = (TList *)file->Get(Form("PHOSTriggerQAResults%s", trigger));
@@ -436,7 +435,7 @@ DrawTriggerQATRU(TList * hList, const char * trigger = "L0", const char * module
 
 	TList * olist = gDirectory->GetList();
 	olist->SetOwner(kTRUE);
-	TFile f("ratio.root", "update");
+	TFile f(dir + "/ratio.root", "update");
 	olist->Add(c21);
 	olist->Add(c22);
 	olist->Write(Form("%d", run) + TString(module), TObject::kSingleKey | TObject::kOverwrite);

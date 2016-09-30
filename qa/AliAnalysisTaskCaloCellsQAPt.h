@@ -14,6 +14,15 @@ public:
 	void SetPairPtCut(Double_t c) { mPairPtCut = c; }
 
 protected:
+	Int_t CheckClusterGetSM(AliVCluster * clus)
+	{
+		// Reject CPV clusters (new in luster
+		if (clus->GetType() != AliVCluster::kPHOSNeutral) return -1;
+		// if (clus->GetNCells() < 3) return -1;
+		// if (clus->E() < 0.3) return -1;
+		return AliCaloCellsQA::CheckClusterGetSM(clus);
+	}
+
 	Double_t mPairPtCut;
 	ClassDef(AliCaloCellsQAPt, 2);
 };
@@ -39,11 +48,10 @@ public:
 	void SetPairPtCut(Double_t cut)
 	{
 		AliCaloCellsQAPt * cqa = dynamic_cast<AliCaloCellsQAPt * >(fCellsQA);
-		if(!cqa) cout <<"ERROR ERROR ERROR"<< endl;
+		if (!cqa) cout << "ERROR ERROR ERROR" << endl;
 
-		cqa->SetPairPtCut(cut); 
+		cqa->SetPairPtCut(cut);
 	}
-
 	ClassDef(AliAnalysisTaskCaloCellsQAPt, 2);
 };
 

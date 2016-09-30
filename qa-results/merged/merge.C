@@ -4,7 +4,7 @@ void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cnam
 	TList * files = TSystemDirectory(directory, directory).GetListOfFiles();
 	if (!files) return;
 
-	TObjArray * output = new TObjArray();
+	TList * output = new TList();
 	output->SetOwner(kTRUE);
 
 	for(Int_t i = 0; i < files->GetEntries(); ++i)
@@ -31,7 +31,7 @@ void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cnam
     fout1.Close();
 }
 
-void merge_file(const char * filename, TObjArray * output)
+void merge_file(const char * filename, TList * output)
 {
 	gROOT->Clear();
 	if(!output) return;
@@ -50,7 +50,7 @@ void merge_file(const char * filename, TObjArray * output)
 	file.Close();
 }
 
-void add_list(TObjArray * output, TList * input)
+void add_list(TList * output, TList * input)
 {
 	for(Int_t i = 0; i < input->GetEntries(); ++i)
 	{
@@ -60,7 +60,7 @@ void add_list(TObjArray * output, TList * input)
 	if(input) delete input;
 }
 
-void add_object(TObjArray * output, TObject * entry)
+void add_object(TList * output, TObject * entry)
 {
 	TH1 * hist = dynamic_cast<TH1 *>(entry);
 	if(hist)

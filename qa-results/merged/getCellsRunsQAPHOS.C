@@ -2622,3 +2622,10 @@ void SavePi0Histogram(TH1 * histo, Int_t sm, Int_t run)
   canvas->SaveAs(Form("fits/%d_SM_%d", run, sm) + TString(".pdf"));
   delete canvas;
 }
+
+Bool_t IsCellInModule(Int_t c, Int_t msm = 3)
+{
+  Bool_t lower_cut = c >= (3584 * (msm - 1) + 1);
+  Bool_t upper_cut = c <= (3584 * (msm)  );
+  return upper_cut && lower_cut;
+}

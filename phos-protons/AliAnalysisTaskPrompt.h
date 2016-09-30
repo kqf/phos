@@ -9,6 +9,7 @@
 
 // --- Custom libraries ---
 #include "PhotonSelection.h"
+#include "MixingSample.h"
 
 class EventFlags;
 class AliAnalysisTaskPrompt : public AliAnalysisTaskSE
@@ -16,7 +17,7 @@ class AliAnalysisTaskPrompt : public AliAnalysisTaskSE
 public:
 	enum {kMinModule = 1, kMaxModule=4};
 	AliAnalysisTaskPrompt();
-	AliAnalysisTaskPrompt(const char * name, Int_t nmodules = 4);
+	AliAnalysisTaskPrompt(const char * name);
 	virtual ~AliAnalysisTaskPrompt();
 
 	void   UserCreateOutputObjects();
@@ -35,6 +36,7 @@ protected:
 	AliAnalysisTaskPrompt(const AliAnalysisTaskPrompt & c);
 
 private:
+	MixingSample * fPreviousEvents;
 	TList * fSelections;     // analysis instance
 	TH2I  * fPHOSBadMap[kMaxModule - kMinModule + 1];  // bad channel maps
 	Int_t fNBad;             // number of entries in fBadCells

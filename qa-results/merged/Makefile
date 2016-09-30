@@ -1,7 +1,10 @@
 # Order-only prerequisite is marked by "|" character
 
 PERIOD=LHC16k
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
+# NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
+# FILE_NAME=TriggerQA.root
+FILE_NAME=CaloCellsQA2.root
 DIRECTORY=../$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
@@ -11,16 +14,21 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.pdf $(IM)
 	mv *.png $(IM)
 	mv *.move.* $(IM)
+	make clean
 	@echo -e "\x07"
 
-$(DIRECTORY)/CaloCellsQA.root: $(DIRECTORY)
+$(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
-	./download.sh phosqa-$(NAME) $(DIRECTORY)
+	./download.sh phosqa-$(NAME) $(FILE_NAME) $(DIRECTORY)
 	@echo -e "\x07"
+
+trigger: | $(DIRECTORY)
+	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
+
 
 badmap: | ../../qa/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
@@ -29,19 +37,15 @@ badmap: | ../../qa/getRunsBadCells.C
 initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
-TriggerQASingle.root: 
-	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
-
-trigger: | TriggerQASingle.root 
-	mkdir -p $(IM)
-	root -l -b -q  ExtractTriggerQA.C'("$(DIRECTORY)/")'
-	./triggers-trending.py $(DIRECTORY)/
-	mv *.pdf $(IM)
-
 clean:
-	rm *.pdf *.eps *.png 
+	rm -f *.pdf *.eps *.png 
+	rm -rf $(DIRECTORY)/{0..10000}.root
 
 reset:
+	rm -rf $(DIRECTORY)/Trigger*
+	rm -rf $(DIRECTORY)/Calo*
+
+reset_hard: 
 	rm -rf $(DIRECTORY)
 
 # this one requires alienv

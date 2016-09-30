@@ -1,24 +1,18 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
 
-caf:
-	root -l RunPoD.C
-	# root -l -q RunPoD.C
-	
+test:
+	root -l -q 'run.C("local", "test")'
+	echo "Local analysis" >> .runhistory
+	# make compare
+
 grid:
-	aliroot -l -b -q 'run.C("grid", "full")'
+	root -l -b -q 'run.C("grid", "full")'
 	echo "Started grid analysis" >> .runhistory
-	@echo -e "\x07"
 
 terminate:
 	root -l -q 'run.C("grid", "terminate")'
 	echo "Terminated grid analysis" >> .runhistory
-	@echo -e "\x07"
 
-test:
-	root -l -q 'run.C("local", "test")'
-	echo "Local analysis" >> .runhistory
-	./dumpres.py 2> /dev/null
-	@echo -e "\x07"
 
 clean:
 	rm *.so *.d *~ Task*

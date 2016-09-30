@@ -11,6 +11,9 @@
 #include <AliVCluster.h>
 #include <AliLog.h>
 
+#include <iostream>
+using namespace std;
+
 ClassImp(PhysPhotonSelection);
 
 PhysPhotonSelection::PhysPhotonSelection():
@@ -30,7 +33,7 @@ PhysPhotonSelection::~PhysPhotonSelection()
 //________________________________________________________________
 Bool_t PhysPhotonSelection::SelectEvent(const EventFlags & flgs)
 {
-	if(TMath::Abs(flgs.vtxBest[3]) > 10) return kFALSE;
+	if (TMath::Abs(flgs.vtxBest[2]) > 10) return kFALSE;
 	FillHistogram("TotalEvents", 0.5);
 	return kTRUE;
 }
@@ -60,15 +63,23 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
 
+
+	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
 	Int_t kMaxModule = 4;
-	for(Int_t sm = /*AliAnalysisTaskPrompt::*/kMinModule; sm <= /*AliAnalysisTaskPrompt::*/kMaxModule; ++sm)
-	{
-		fListOfHistos->Add(new TH2F(Form("hMassPtSM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
-		fListOfHistos->Add(new TH2F(Form("hMassPtN3SM%d", sm), Form("(M,p_{T})_{#gamma#gamma}, N_{cell}>3 SM%d", sm)  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	}
 
+	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
+		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
+			fListOfHistos->Add(new TH2F(Form("hMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+
+	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
+		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
+			fListOfHistos->Add(new TH2F(Form("hMixMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
 }
 
 //________________________________________________________________
@@ -78,6 +89,9 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	c1->GetMomentum(p1, eflags.vtxBest);
 	c2->GetMomentum(p2, eflags.vtxBest);
 	psum = p1 + p2;
+
+	// Only physical clusters
+    if(c1->GetNCells() < 3 || c2->GetNCells() < 3) return;
 
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
@@ -90,17 +104,19 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	if (c1->GetNCells() >= 3 && c2->GetNCells() >= 3) FillHistogram("hMassPtN3", ma12 , pt12 );
-	if (c1->GetNCells() >= 4 && c2->GetNCells() >= 4) FillHistogram("hMassPtN4", ma12 , pt12 );
-	if (c1->GetNCells() >= 5 && c2->GetNCells() >= 5) FillHistogram("hMassPtN5", ma12 , pt12 );
-	if (c1->GetNCells() >= 6 && c2->GetNCells() >= 6) FillHistogram("hMassPtN6", ma12 , pt12 );
+	if(pt12 < 1) return;
 
-	if(sm1 == sm2) 
-		FillHistogram(Form("hMassPtSM%d", sm1), ma12, pt12);
+	const char * suff = eflags.isMixing ? "Mix" : "";
+	if (c1->GetNCells() >= 3 && c2->GetNCells() >= 3) FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12 );
+	if (c1->GetNCells() >= 4 && c2->GetNCells() >= 4) FillHistogram(Form("h%sMassPtN4", suff), ma12 , pt12 );
+	if (c1->GetNCells() >= 5 && c2->GetNCells() >= 5) FillHistogram(Form("h%sMassPtN5", suff), ma12 , pt12 );
+	if (c1->GetNCells() >= 6 && c2->GetNCells() >= 6) FillHistogram(Form("h%sMassPtN6", suff), ma12 , pt12 );
 
-	Bool_t three_cells_in_clusters = c1->GetNCells() >= 3 && c2->GetNCells() >= 3;
-	if (!three_cells_in_clusters) return;
-	if(sm1 == sm2) FillHistogram(Form("hMassPtN3SM%d", sm1), ma12, pt12);
+	if(sm1 < sm2)
+		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm1, sm2), ma12, pt12);
+	else
+		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm2, sm1), ma12, pt12);
+
 }
 
 //________________________________________________________________
@@ -118,11 +134,15 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		candidates->Add(clus);
 
 		clus->GetMomentum(p, eflags.vtxBest);
-		FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
-		FillHistogram("hNcellsE", clus->GetNCells(), p.E());
+
+		if (!eflags.isMixing)
+		{
+			FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
+			FillHistogram("hNcellsE", clus->GetNCells(), p.E());
+		}
 	}
 
-	if (candidates->GetEntriesFast() > 1) FillHistogram("TotalDiphotonEvents", 0.5);
+	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("TotalDiphotonEvents", 0.5);
 }
 
 //________________________________________________________________

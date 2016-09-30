@@ -1,74 +1,68 @@
+#include "algorithm"
 void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
 {
     SetupEnvironment();
 
-    bool useTender = kFALSE;
-    TString period = "LHC16h";
+    TString period = "LHC16k";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
     Int_t nruns;
-    gROOT->LoadMacro("../qa/getRunsBadCells.C");
+    gROOT->LoadMacro("getRunsBadCells.C");
     getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
 
-
-
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-heatmap");
+
     if (!alienHandler) return;
 
-    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
+    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_QA");
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-    esdH->SetReadFriends( isMC );
+    // esdH->SetReadFriends( isMC );
+    mgr->SetInputEventHandler(aodH);
     // mgr->SetInputEventHandler( esdH );
-    mgr->SetInputEventHandler( aodH );
-    esdH->SetNeedField();
+    // esdH->SetNeedField();
 
     if ( isMC )
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Not reading track references
+        mchandler->SetReadTR ( kFALSE ); // Don't read track references
         mgr->SetMCtruthEventHandler ( mchandler );
     }
 
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
-    // mgr->SetDebugLevel(999999);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
+    AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
-    gROOT->LoadMacro("PhotonSelection.cxx+");
-    gROOT->LoadMacro("TestPhotonSelection.cxx+");
-    gROOT->LoadMacro("PhysPhotonSelection.cxx+");
-    gROOT->LoadMacro("MixingSample.h+");
-    gROOT->LoadMacro("AliAnalysisTaskPrompt.cxx+");
-    gROOT->LoadMacro("AddMyTask.C");
-
-    // Add task without tender
-    // Tender doesn't allow us to run the macro before and after TENDER Task
-    if (!useTender) AddMyTask(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
-
-    // Add tender
-    if (useTender)
+    if (period.Contains("tender"))
     {
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16i.root");
-
-        AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "BadMap_LHC16i.root");
-        AddMyTask(AliVEvent::kINT7, "LHC16i ## only my(!) badmap in tender ## only tender", "OnlyTender");
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
+        // PHOSSupply->ForceUsingCalibration(0);
     }
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
+    // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
+
+
+    // gROOT->LoadMacro("AddTasksTriggerQA.C");
+    // AddTasksTriggerQA();
+
+    gROOT->LoadMacro("AddHeatMapTask.C");
+    AddHeatMapTask(excells, nexc);
 
     if ( !mgr->InitAnalysis( ) ) return;
-    // mgr->PrintStatus();
+    mgr->PrintStatus();
 
 
-    mgr->StartAnalysis (runmode);
+mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
 

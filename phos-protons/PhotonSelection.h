@@ -17,7 +17,10 @@ struct EventFlags
 	Double_t vtxBest[3];   // Calculated vertex position
 	Int_t  centr;
 	Int_t  zvtx;
+	Bool_t isMixing;
 };
+
+// Useless conditions are needed to kill unused warning.
 
 class PhotonSelection : public TNamed
 {
@@ -27,17 +30,18 @@ public:
 	PhotonSelection(const char * name, const char * title): TNamed(name, title) {}
 	virtual ~PhotonSelection() {}
 	virtual void InitSummaryHistograms() = 0;
-	virtual TList * GetListOfHistos() = 0; 
+	virtual TList * GetListOfHistos() = 0;
 
-	virtual Bool_t SelectEvent(const EventFlags & flgs) { return kTRUE; }
+	virtual Bool_t SelectEvent(const EventFlags & flgs) { if (flgs.zvtx > 0) return kTRUE; return kTRUE; }
 
-	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells) {}
-	virtual	void FillCells(AliVCaloCells * cells) {}
-	virtual void FillPi0Mass(TObjArray * clusArray, const EventFlags & eflags); // implements algorithm
+	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells) { if (!clusArray && !cells) return;}
+	virtual	void FillCells(AliVCaloCells * cells) { if (!cells) return; }
+	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
+	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags) = 0;
-	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags) {}
+	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags) { if (!c1 && !c2 && eflags.zvtx) return; }
 	// TODO: Fix values (0, 9) ==> (1, 5)
 	virtual Int_t CheckClusterGetSM(const AliVCluster * clus) const;
 
