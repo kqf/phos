@@ -36,6 +36,7 @@ class PtAnalyzer(object):
         self.rawhist = lst.FindObject(name)
         self.rawmix = lst.FindObject('hMix' + name[1:])
         self.label = label
+        self.get_fit_range = None
 
     def divide_into_bins(self, n = 20):
         # hist = self.rawhist.ProjectionY()
@@ -50,19 +51,24 @@ class PtAnalyzer(object):
                 # edges.append(i)
         # edges.append(b)
         # return edges[1:]
-        res = list(np.logspace(np.log10(1.) , np.log10(15), n))
-        bins = map(self.rawhist.GetYaxis().FindBin, res)
-        bins = sorted(set(bins))
-        return bins
+        # res = list(np.logspace(np.log10(1.) , np.log10(15), n))
+        # bins = map(self.rawhist.GetYaxis().FindBin, res)
+        # bins = sorted(set(bins))
+
+        bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12.,       13., 15., 20.]
+
+        return map(self.rawhist.GetYaxis().FindBin, bins)
 
     def estimate_background(self, real, mixed):
         canvas = ROOT.gROOT.FindObject('c1')
 
         ratio = real.Clone()
         ratio.Divide(mixed)
+        ratio.GetYaxis().SetTitle("Real/ Mixed")
 
         fitf, bckgrnd = Fit(ratio)
         canvas.Update()
+        canvas.SaveAs('results/ratio' + real.GetName() + '.pdf')
 
         mixed.Sumw2()
         mixed.Multiply(bckgrnd)
@@ -90,7 +96,7 @@ class PtAnalyzer(object):
 
         lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
         real.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
-        res = ExtractQuantities(real)
+        res = ExtractQuantities(real)# if not self.get_fit_range else ExtractQuantities(real, *self.get_fit_range((upper - lower)/ 2.))
         if self.label == 'Mixing': raw_input()
         return res
 
@@ -109,14 +115,43 @@ class PtAnalyzer(object):
 
         m, em, s, es, n, en, chi, echi = data
 
-        n = [n[i] / (b - a) / (2. * pi)   for i, (a, b) in enumerate(intervals)]
-        en = [en[i] / (b - a) / (2. * pi) for i, (a, b) in enumerate(intervals)]
+        n = [n[i] / (b - a) / (2. * pi)     for i, (a, b) in enumerate(intervals)]
+        en = [en[i] / (b - a) / (2. * pi)   for i, (a, b) in enumerate(intervals)]
 
         data = [(m, em), (s, es), (n, en), (chi, echi)]
 
         histos = [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)] 
         map(nicely_draw, histos)
+
+        # if not self.get_fit_range:
+            # self.get_fit_range = self.sigma_dependence(histos[0], histos[1])
+            # histos =  self.quantities()
+        self.sigma_dependence(histos[0], histos[1])
+
         return histos
+
+    def sigma_dependence(self, mass, sigma):
+        # This is needed to estimate background
+        canvas = ROOT.gROOT.FindObject('c1')
+        self.fitsigma = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        # self.fitsigma = ROOT.TF1("self.fitsigma", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        sigma.Draw()
+        self.fitsigma.SetParameter(0, 0.11 * 0.11)
+        self.fitsigma.SetParameter(1, 0.006)
+        self.fitsigma.SetParameter(2, 0)
+        self.fitsigma.SetParameter(3, 0)
+        sigma.Fit(self.fitsigma, "r")
+
+        canvas.Clear()
+        mass.Draw()
+        self.fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        self.fitmass.SetParameter(0, 1)
+        self.fitmass.SetParameter(1, 1)
+        self.fitmass.SetParameter(2, 1)
+        mass.Fit(self.fitmass, "r")
+        canvas.Update()
+        raw_input("")
+        return lambda pt: (self.fitmass.Eval(pt) - 3 * self.fitsigma.Eval(pt), self.fitmass.Eval(pt) + 3 * self.fitsigma.Eval(pt))
 
 
 def nicely_draw(hist, option = '', legend = None):
@@ -141,8 +176,8 @@ def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
     mfile = ROOT.TFile('LHC16h.root')
 
-    second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
     first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
+    second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
 
     import compare as cmpr
     diff = cmpr.Comparator()
