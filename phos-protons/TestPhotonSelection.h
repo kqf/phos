@@ -24,6 +24,9 @@ public:
 	virtual void InitSummaryHistograms();
 	virtual Bool_t SelectEvent(const EventFlags & flgs) {  fEvents->Fill(0.5); return PhotonSelection::SelectEvent(flgs); }
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
+	
+	// This selection doesn't require mixing
+	virtual void MixPhotons(TObjArray & p, TList * pl, const EventFlags & e) { if(p.GetEntries() && pl && e.isMixing) return; }
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);

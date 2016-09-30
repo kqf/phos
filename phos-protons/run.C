@@ -2,10 +2,20 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    gROOT->LoadMacro("CreatePlugin.C");
     bool useTender = kFALSE;
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, "LHC16i");
+    TString period = "LHC16h";
+    Int_t * excells;
+    Int_t * good_runs;
+    Int_t nexc;
+    Int_t nruns;
+    gROOT->LoadMacro("../qa/getRunsBadCells.C");
+    getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
+
+
+
+    gROOT->LoadMacro("CreatePlugin.C");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
@@ -34,12 +44,13 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     gROOT->LoadMacro("PhotonSelection.cxx+");
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
+    gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPrompt.cxx+");
     gROOT->LoadMacro("AddMyTask.C");
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
-    if (!useTender) AddMyTask(AliVEvent::kINT7, "LHC16i ## only my badmap ## no tender", "NoTender", "BadMap_LHC16i.root");
+    if (!useTender) AddMyTask(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
 
     // Add tender
     if (useTender)

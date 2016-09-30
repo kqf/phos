@@ -14,6 +14,7 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.pdf $(IM)
 	mv *.png $(IM)
 	mv *.move.* $(IM)
+	make clean
 	@echo -e "\x07"
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)

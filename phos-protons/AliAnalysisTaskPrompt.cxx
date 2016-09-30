@@ -25,6 +25,7 @@ ClassImp(AliAnalysisTaskPrompt)
 
 //________________________________________________________________
 AliAnalysisTaskPrompt::AliAnalysisTaskPrompt() : AliAnalysisTaskSE(),
+	fPreviousEvents(0),
 	fSelections(0),
 	fPHOSBadMap(),
 	fNBad(0),
@@ -36,6 +37,7 @@ AliAnalysisTaskPrompt::AliAnalysisTaskPrompt() : AliAnalysisTaskSE(),
 //________________________________________________________________
 AliAnalysisTaskPrompt::AliAnalysisTaskPrompt(const char * name) :
 	AliAnalysisTaskSE(name),
+	fPreviousEvents(0),
 	fSelections(new TList()),
 	fPHOSBadMap(),
 	fNBad(0),
@@ -53,6 +55,7 @@ AliAnalysisTaskPrompt::~AliAnalysisTaskPrompt()
 {
 	if (!AliAnalysisManager::GetAnalysisManager()->IsProofMode()) delete fSelections;
 	if (fBadCells) delete [] fBadCells;
+	if (fPreviousEvents) delete fPreviousEvents;
 }
 
 //________________________________________________________________
@@ -65,6 +68,8 @@ void AliAnalysisTaskPrompt::UserCreateOutputObjects()
 		fCellsQA->InitSummaryHistograms();
 		PostData(i + 1, fCellsQA->GetListOfHistos()); // Output starts from 1
 	}
+
+	fPreviousEvents = new MixingSample(100);
 }
 
 //________________________________________________________________
@@ -114,7 +119,7 @@ void AliAnalysisTaskPrompt::UserExec(Option_t *)
 	// No need to check. We have already done it in SelectEvent
 	AliVCaloCells * cells = event->GetPHOSCells();
 
-
+	TList * pool = fPreviousEvents->GetPool();
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
 	{
 		PhotonSelection * fCellsQA = dynamic_cast<PhotonSelection *> (fSelections->At(i));
@@ -124,10 +129,11 @@ void AliAnalysisTaskPrompt::UserExec(Option_t *)
 
 		fCellsQA->FillCellsInCluster(&clusArray, cells);
 		fCellsQA->FillCells(cells);
-		fCellsQA->FillPi0Mass(&clusArray, evtProperties);
+		fCellsQA->FillPi0Mass(&clusArray, pool, evtProperties);
 
 		PostData(i + 1, fCellsQA->GetListOfHistos()); // Output starts from 1
 	}
+	fPreviousEvents->UpdatePool(clusArray);
 }
 
 //________________________________________________________________

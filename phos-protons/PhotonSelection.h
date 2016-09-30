@@ -36,7 +36,8 @@ public:
 
 	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells) { if (!clusArray && !cells) return;}
 	virtual	void FillCells(AliVCaloCells * cells) { if (!cells) return; }
-	virtual void FillPi0Mass(TObjArray * clusArray, const EventFlags & eflags); // implements algorithm
+	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
+	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags) = 0;
