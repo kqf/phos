@@ -147,7 +147,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   DrawRunsDistribution(nruns, runNumbers, 100);
 
   // ... and exclude runs with number of events < 1k.
-  ExcludeSmallRuns(nruns, runNumbers, 100);
+
+  ExcludeSmallRuns(nruns, runNumbers, 132850);
 
   // You may wish to exclude particular runs:
   //   Int_t runs2Exclude[] = {111222,333444,555666};
