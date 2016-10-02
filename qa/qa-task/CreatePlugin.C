@@ -5,6 +5,10 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, In
 
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
+	
+	plugin->SetMergeViaJDL(); 
+	plugin->SetOutputToRunNo(kTRUE); 
+
 
 	plugin->SetRunMode(pluginmode);
 

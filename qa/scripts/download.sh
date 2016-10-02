@@ -2,10 +2,12 @@ function download_from_grid()
 {
 	counter=1
     MHOME=/alice/cern.ch/user/o/okovalen
-	for f in $(alien_find $MHOME/$1 $2 | grep -i alice) 
+
+    # for run in $$(alien_ls /$(MPATH) | grep 000);do alien_cp alien://$(MPATH)/$$run/AnalysisResults.root $(PERIOD)/$$run.root; done
+	for run in $(alien_ls $MHOME/$1/output | grep 000) 
 	do 
-		echo $f
-		alien_cp alien://$f $3/$((counter++)).root
+		echo $run
+		alien_cp alien://$MHOME/$1/output/$run/$2 $3/$((counter++)).root
 	done
 }
 
