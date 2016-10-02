@@ -72,8 +72,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   gROOT->SetBatch(kTRUE);
 
   // this sets excluded cells
-  gROOT->LoadMacro("../../qa/getRunsBadCells.C");
-  TString period(TString(infile)(3, 6));
+  gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
+  TString period(TString(infile)(11, 6));
   getRunsBadCells(period, 0, 0, excells, nexc);
 
   gRandom->SetSeed(0);

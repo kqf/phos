@@ -5,7 +5,7 @@ NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
 FILE_NAME=CaloCellsQA2.root
-DIRECTORY=../$(PERIOD)/$(NAME)
+DIRECTORY=../results/$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
 allplots: | $(DIRECTORY)/CaloCellsQA.root 
@@ -30,11 +30,11 @@ trigger: | $(DIRECTORY)
 	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
 
 
-badmap: | ../../qa/getRunsBadCells.C
+badmap: | ../qa-task/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
-	mv BadMap_$(PERIOD).root ../$(PERIOD)
+	mv BadMap_$(PERIOD).root ../results/$(PERIOD)
 
-initmap: ../$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
+initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
 clean:
