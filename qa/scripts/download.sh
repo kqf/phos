@@ -7,7 +7,7 @@ function download_from_grid()
 	for run in $(alien_ls $MHOME/$1/output | grep 000) 
 	do 
 		echo $run
-		alien_cp alien://$MHOME/$1/output/$run/$2 $3/$((counter++)).root
+		until alien_cp alien://$MHOME/$1/output/$run/$2 $3/$((counter++)).root; do echo 'Trying again in 10 sec.'; sleep 10; done
 	done
 }
 

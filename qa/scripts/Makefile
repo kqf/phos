@@ -14,7 +14,6 @@ allplots: | $(DIRECTORY)/CaloCellsQA.root
 	mv *.pdf $(IM)
 	mv *.png $(IM)
 	mv *.move.* $(IM)
-	make clean
 	@echo -e "\x07"
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
@@ -40,19 +39,21 @@ initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 clean:
 	rm -f *.pdf *.eps *.png 
 	rm -rf $(DIRECTORY)/{0..10000}.root
+	rm -f $(IM)/Makefile
 
 reset:
 	rm -rf $(DIRECTORY)/Trigger*
 	rm -rf $(DIRECTORY)/Calo*
 
-reset_hard: 
+reset-hard: 
 	rm -rf $(DIRECTORY)
 
 # this one requires alienv
 # it's not default tasks as it needs to be run only once
 images:  
-	# Run Trigger QA
-	# make trigger
+	# clean the directory befor starting
+	# don't merge multiple times 
+	make clean
 
 	# Run QA in full mode
 	mkdir -p fits
@@ -74,7 +75,10 @@ images:
 	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
 	@montage -tile 4x1 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass.png
 	@montage -tile 2x2 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass4.png
-	@convert $(IM)/totmass4.png $(IM)/totmass4.pdf
 	@convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.png
+	@convert -resize 999x333 $(IM)/totmass4.png $(IM)/totmass4.pdf
+	@convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.pdf
+	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.pdf
 	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
+	@echo -e "$(PERIOD).pdf:\n\tpdfunite hNEventsPerRunIndex.pdf ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf hPi0NumRuns.pdf hPi0MassSigmaRuns.pdf pi0fits.pdf totmass.pdf $(PERIOD).pdf" > $(IM)/Makefile
 	@echo -e "\x07"

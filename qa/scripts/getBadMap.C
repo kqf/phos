@@ -1,7 +1,7 @@
 void getBadMap(const char * period = "", TString filename = "")
 {
 	gROOT->SetBatch();
-    gROOT->LoadMacro("../../qa/getRunsBadCells.C");
+    gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
     Int_t * excells;
     Int_t nexc;
 
