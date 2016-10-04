@@ -39,24 +39,7 @@ class PtAnalyzer(object):
         self.get_fit_range = None
 
     def divide_into_bins(self, n = 20):
-        # hist = self.rawhist.ProjectionY()
-        # a, b, xmax, surf  = hist.FindBin(1.0001), hist.FindLastBinAbove(), hist.GetNbinsX(), int(hist.Integral() / n)
-        # edges = [a]
-        # for i in range(a, xmax):
-            # s = hist.Integral(a, i)
-            # print surf - s, hist.Integral() 
-            # def compare(a, b, tol = 1.): return int(a / tol) == int(b / tol)
-            # if compare(s, surf) or (surf - s) < 0:
-                # a = i
-                # edges.append(i)
-        # edges.append(b)
-        # return edges[1:]
-        # res = list(np.logspace(np.log10(1.) , np.log10(15), n))
-        # bins = map(self.rawhist.GetYaxis().FindBin, res)
-        # bins = sorted(set(bins))
-
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12.,       13., 15., 20.]
-
         return map(self.rawhist.GetYaxis().FindBin, bins)
 
     def estimate_background(self, real, mixed):
@@ -70,7 +53,6 @@ class PtAnalyzer(object):
         canvas.Update()
         canvas.SaveAs('results/ratio' + real.GetName() + '.pdf')
 
-        mixed.Sumw2()
         mixed.Multiply(bckgrnd)
 
         mixed.SetLineColor(46)
@@ -80,7 +62,7 @@ class PtAnalyzer(object):
         canvas.Update()
 
         # if self.label != 'Mixing':raw_input()
-        real.SetAxisRange(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax(), "X");
+        real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax());
         return mixed
 
 
@@ -88,11 +70,23 @@ class PtAnalyzer(object):
         canvas = ROOT.gROOT.FindObject('c1')
         name = self.rawhist.GetName() + '_%d_%d' % (a, b)
         real, mixed = self.rawhist.ProjectionX(name, a, b), self.rawmix.ProjectionX(name + 'mix', a, b)
+        mixed.Sumw2()
         real.Sumw2()
 
 
         mixed = self.estimate_background(real, mixed)
-        if self.label == 'Mixing': real.Add(mixed, -1)
+
+        zero_bins = [i for i in range(1, real.GetNbinsX()) if real.GetBinContent(i) < 1]
+        if self.label == 'Mixing': 
+            real.Add(mixed, -1)
+            [real.SetBinContent(i, 0) for i in zero_bins]
+
+            if len(zero_bins) > 410: real.Rebin(2)
+            if len(zero_bins) > 600: real.Rebin(2)
+
+            start, stop = 0.05, 0.3
+            real.SetAxisRange(1.5 * start, 0.85 * stop)
+  
 
         lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
         real.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
@@ -176,12 +170,12 @@ def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
     mfile = ROOT.TFile('LHC16h.root')
 
-    first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
     second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
+    # first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
 
-    import compare as cmpr
-    diff = cmpr.Comparator()
-    diff.compare_lists_of_histograms(first, second)
+    # import compare as cmpr
+    # diff = cmpr.Comparator()
+    # diff.compare_lists_of_histograms(first, second)
 
 
 if __name__ == '__main__':
