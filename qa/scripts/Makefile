@@ -36,6 +36,10 @@ badmap: | ../qa-task/getRunsBadCells.C
 initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
+compare: | ../results/$(PERIOD)/goodruns.csv
+	./explore-treding-plots.py ../results/$(PERIOD) $(IM)
+
+
 clean:
 	rm -f *.pdf *.eps *.png 
 	rm -rf $(DIRECTORY)/{0..10000}.root
@@ -44,6 +48,7 @@ clean:
 reset:
 	rm -rf $(DIRECTORY)/Trigger*
 	rm -rf $(DIRECTORY)/Calo*
+	rm -rf $(IM)/*
 
 reset-hard: 
 	rm -rf $(DIRECTORY)
