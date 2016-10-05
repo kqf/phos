@@ -105,7 +105,12 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // 3 GeV -- the spectrum is drawn up to this value, -1 = no limit;
   // last argument -- histogram name to process, possible values are:
   //    hCellAmplitude, hCellAmplitudeEHigh, hCellAmplitudeNonLocMax or fhCellAmplitudeEhighNonLocMax.
+
+  // Draw Spectrum of all cells in module1
+  // DrawCellsInModule(1);
   DrawCell(1+gRandom->Integer(10752), 0.25, 1., 4., "hCellAmplitude");  // common cell region for EMCAL2010 and for PHOS
+  DrawTotalEnergyOfCellsinModule(1);
+
 
   // Draw a random cell time spectrum
   // DrawCellTime(1+gRandom->Integer(10752));
@@ -127,6 +132,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   DrawPi0Total(nruns, runNumbers,  2);
   DrawPi0Total(nruns, runNumbers,  3);
   DrawPi0Total(nruns, runNumbers,  4);
+
+
 
   // int tttest[] = {236850, 236813, 236563, 236137};
   // for (int i = 0; i < 4; ++i)
@@ -1419,7 +1426,7 @@ void Process1(TH1* inhisto, char* label = "", Int_t dnbins = 200,
 
 //_________________________________________________________________________
 void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
-              Double_t Emax = -1, char* hname = "hCellAmplitude")
+              Double_t Emax = -1, char* hname = "hCellAmplitude", Double_t chi2 = 2.)
 {
   // Draw one cell spectrum with a fit.
   //
@@ -1468,6 +1475,8 @@ void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
   leg->Draw("same");
 
   c1->Update();
+
+  if(fit->GetChisquare() / fit->GetNDF() < chi2 || hCell->GetEntries() == 0) return;
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
 }
@@ -1616,16 +1625,20 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
 
         delete hNCellsInClusterSM;
 
-      // correct for acceptance
+           // correct for acceptance
+      Double_t accep = 1.;
       if (hmap) {
-        Double_t accep = GetAcceptance(sm, hmap, ri);
-        if (accep > 0) {
-          Eclus_totalSM /= accep;
-          Nclus_totalSM /= accep;
-          Ncells_totalSM /= accep;
+        accep = GetAcceptance(sm, hmap, ri);
+        if(!(accep > 0))
+        {
+          accep = 1.;
+          noSM++;
         }
-        else noSM++;
       }
+
+      Eclus_totalSM /= accep;
+      Nclus_totalSM /= accep;
+      Ncells_totalSM /= accep;
 
       Eclus_total += Eclus_totalSM;
       Nclus_total += Nclus_totalSM;
@@ -1635,7 +1648,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
       Double_t dnevents = TMath::Sqrt(nevents);
 
       hAvNClusterSM[sm]->SetBinContent(ri+1, Nclus_totalSM/nevents);
-      hAvNClusterSM[sm]->SetBinError(ri+1, TMath::Sqrt( TMath::Power(dNclus_totalSM/nevents, 2) +  TMath::Power(Nclus_totalSM/(nevents * nevents) * dnevents, 2) ) );
+      hAvNClusterSM[sm]->SetBinError(ri+1, TMath::Sqrt(Nclus_totalSM) / nevents / TMath::Sqrt(accep) );
+      // hAvNClusterSM[sm]->SetBinError(ri+1, TMath::Sqrt( TMath::Power(dNclus_totalSM/nevents, 2) +  TMath::Power(Nclus_totalSM/(nevents * nevents) * dnevents, 2) ) );
+
       if (Nclus_totalSM > 0) hAvEClusterSM[sm]->SetBinContent(ri+1, Eclus_totalSM/Nclus_totalSM);
       if (Nclus_totalSM > 0) hAvEClusterSM[sm]->SetBinContent(ri+1, Eclus_totalSM/Nclus_totalSM);
       if (Nclus_totalSM > 0) hAvNCellsInClusterSM[sm]->SetBinContent(ri+1, Ncells_totalSM/Nclus_totalSM);
@@ -1687,7 +1702,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetGridy();
   leg = new TLegend(0.625,0.16,0.725,0.15+0.08*(SM2-SM1+1));
 
-  hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.2,"Y");
+  hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.6,"Y");
   hAvNCluster->SetLineWidth(2);
   hAvNCluster->Draw();
   leg->AddEntry(hAvNCluster, Form("(All Modules)/%i",SM2-SM1+1),"l");
@@ -1726,7 +1741,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
 
-  TFile ofile("cluster-averages.move.root.png", "recreate");
+  TFile ofile("cluster-averages.move.root", "recreate");
   hAvECluster->Write();
   hAvNCluster->Write();
   hAvNCellsInCluster->Write();
@@ -1735,6 +1750,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
     hAvEClusterSM[sm]->Write();
     hAvNClusterSM[sm]->Write();
     hAvNCellsInClusterSM[sm]->Write();
+    c1->Write();
   }
   ofile.Write();
   ofile.Close();
@@ -1805,9 +1821,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   hAvNCellsInClusterEvents->Draw("same"); // to top
   leg->Draw("same");
 
-  c2->Update();
+ cout << "Reached Here" << endl  c2->Update();
   c2->SaveAs(TString(c2->GetName()) + ".pdf");
-
+  c2->SaveAs(TString(c2->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -2629,4 +2645,55 @@ Bool_t IsCellInModule(Int_t c, Int_t msm = 3)
   Bool_t lower_cut = c >= (3584 * (msm - 1) + 1);
   Bool_t upper_cut = c <= (3584 * (msm)  );
   return upper_cut && lower_cut;
+}
+
+Bool_t IsCellBad(Int_t c)
+{
+  for(Int_t i = 0; i < nexc; ++i)
+  {
+    if(excells[i] == c)
+      return kFALSE;
+  }
+  return kTRUE;
+}
+
+
+void DrawCellsInModule(Int_t mod, Double_t chi2 = 2.)
+{
+  for(Int_t i = 1; i < 56 * 64 * 5; ++i)
+  {
+    if(IsCellInModule(i, mod) && !IsCellBad(i))
+      DrawCell(i, 0.25, 1., 4., "hCellAmplitude", chi);  // common cell region for EMCAL2010 and for PHOS
+  }
+}
+
+
+void DrawTotalEnergyOfCellsinModule(Int_t mod, Int_t nbins = 100,  Int_t start=0, Int_t stop = 1e5, Int_t cut = 0.45e5)
+{
+  TCanvas *c1 = new TCanvas(Form("cTotalCellEnergy%d", mod), "" , 400,400);
+  gPad->SetLeftMargin(0.12);
+  gPad->SetRightMargin(0.08);
+  gPad->SetBottomMargin(0.12);
+  gPad->SetLogy(); 
+
+  TH1* hEnergy = new TH1F(Form("cTotalCellEnergy%d", mod), Form("Energy of cells in module %d; total cell Energy, GeV", mod), nbins, start, stop);
+  TString hname = "hCellAmplitude";
+  for(Int_t i = 1; i < 56 * 64 * 5; ++i)
+  {
+    if(!IsCellInModule(i, mod) || IsCellBad(i)) continue;
+
+    TH2* hCellAmplitude = (TH2*) gInputFile->Get(hname);
+    Int_t bin = hCellAmplitude->GetXaxis()->FindBin(i);
+    TH1* hCell = hCellAmplitude->ProjectionY(Form("hCell%i_%s",i,hname),bin,bin);
+    Int_t totEnergy = hCell->Integral();
+    hEnergy->Fill(totEnergy);
+
+    if(totEnergy > cut) cout << i << ",";
+    delete hCell;
+  } 
+  cout<< endl;
+  hEnergy->Draw();
+  c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  c1->SaveAs(TString(c1->GetName()) + ".png");
+  delete hEnergy;
 }

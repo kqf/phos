@@ -38,3 +38,4 @@ outputs_valid
 *.root
 *.pyc
 *.DS_Store
+*/images/Makefile
