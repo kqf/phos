@@ -1,7 +1,7 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16k
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-good
+PERIOD=LHC16l
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
 FILE_NAME=CaloCellsQA2.root
@@ -42,7 +42,7 @@ compare: | ../results/$(PERIOD)/goodruns.csv
 
 clean:
 	rm -f *.pdf *.eps *.png 
-	rm -rf $(DIRECTORY)/{0..10000}.root
+	rm -rf $(DIRECTORY)/{0..10000}.*.root
 	rm -f $(IM)/Makefile
 
 reset:
