@@ -1,7 +1,12 @@
 void getBadMap(const char * period = "", TString filename = "")
 {
+	// If no geometry class -- nothing to do here
+	if(!gROOT->GetListOfTypes()->FindObject("AliPHOSGeometry"))
+		return;
+
 	gROOT->SetBatch();
     gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
+    
     Int_t * excells;
     Int_t nexc;
 

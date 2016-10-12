@@ -111,6 +111,10 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   DrawCell(1+gRandom->Integer(10752), 0.25, 1., 4., "hCellAmplitude");  // common cell region for EMCAL2010 and for PHOS
   DrawTotalEnergyOfCellsinModule(1);
 
+  // Let's find problematic cells
+  DrawCellsInModule(3);
+  DrawCellsInModule(4);
+
 
   // Draw a random cell time spectrum
   // DrawCellTime(1+gRandom->Integer(10752));
@@ -261,10 +265,11 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // PrintDeadNoisyCells(hBadCellMapPrimary, 0.1, 0.5);      // in 10-50% of runs
 
   // visualize dead/noisy cell map for EMCAL/PHOS; requires aliroot
-  DrawOccupancy(nruns, runNumbers, hBadCellMapPrimary, "hDeadNoisyCellsOccupancy");
+  if(gROOT->GetListOfTypes()->FindObject("AliPHOSGeometry"))
+    DrawOccupancy(nruns, runNumbers, hBadCellMapPrimary, "hDeadNoisyCellsOccupancy");
 
   // EMCAL: print full information on missing/noisy parts (e.g. RCUs); requires aliroot
-//   PrintEMCALProblematicBlocks(nruns, runNumbers, hBadCellMapPrimary);
+  //   PrintEMCALProblematicBlocks(nruns, runNumbers, hBadCellMapPrimary);
 
 
   /* RUNS QUALITY SECTION: CLUSTER AVERAGES + PI0 AVERAGES
@@ -2663,7 +2668,7 @@ void DrawCellsInModule(Int_t mod, Double_t chi2 = 2.)
   for(Int_t i = 1; i < 56 * 64 * 5; ++i)
   {
     if(IsCellInModule(i, mod) && !IsCellBad(i))
-      DrawCell(i, 0.25, 1., 4., "hCellAmplitude", chi);  // common cell region for EMCAL2010 and for PHOS
+      DrawCell(i, 0.25, 1., 4., "hCellAmplitude", chi2);  // common cell region for EMCAL2010 and for PHOS
   }
 }
 

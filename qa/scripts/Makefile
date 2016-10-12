@@ -31,8 +31,8 @@ trigger: | $(DIRECTORY)
 
 badmap: | ../qa-task/getRunsBadCells.C
 	root -l -b -q  'getBadMap.C("$(PERIOD)")'
-	mv BadMap_$(PERIOD).root ../results/$(PERIOD)
-
+	@if [ -f BadMap_$(PERIOD).root ]; then mv BadMap_$(PERIOD).root ../results/$(PERIOD); fi
+	
 initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
@@ -85,5 +85,5 @@ images:
 	@convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.pdf
 	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.pdf
 	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
-	@echo -e "$(PERIOD).pdf:\n\tpdfunite hNEventsPerRunIndex.pdf ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf hPi0NumRuns.pdf hPi0MassSigmaRuns.pdf pi0fits.pdf totmass.pdf $(PERIOD).pdf" > $(IM)/Makefile
+	@# @echo -e "$(PERIOD).pdf:\n\tpdfunite hNEventsPerRunIndex.pdf ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf hPi0NumRuns.pdf hPi0MassSigmaRuns.pdf pi0fits.pdf totmass.pdf $(PERIOD).pdf" > $(IM)/Makefile
 	@echo -e "\x07"

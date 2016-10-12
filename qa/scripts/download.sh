@@ -8,6 +8,7 @@ function download_from_grid()
 	do 
 		echo $run
 		until alien_cp alien://$MHOME/$1/output/$run/$2 $3/$((counter++)).$run.root; do echo 'Trying again in 10 sec.'; sleep 10; done
+		# alien_cp alien://$MHOME/$1/output/$run/$2 $3/$((counter++)).$run.root
 	done
 }
 
