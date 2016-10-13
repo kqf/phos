@@ -10,11 +10,11 @@ IM = $(DIRECTORY)/images
 
 allplots: | $(DIRECTORY)/CaloCellsQA.root 
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root")'
-	mkdir -p $(IM)
-	mv *.pdf $(IM)
-	mv *.png $(IM)
-	mv *.move.* $(IM)
-	@echo -e "\x07"
+	@ mkdir -p $(IM)
+	@ mv *.pdf $(IM)
+	@ mv *.png $(IM)
+	@ mv *.move.* $(IM)
+	@ echo -e "\x07"
 
 $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 	# Merge all outputs
@@ -42,13 +42,12 @@ compare: | ../results/$(PERIOD)/goodruns.csv
 
 clean:
 	rm -f *.pdf *.eps *.png 
-	rm -rf $(DIRECTORY)/{0..10000}.*.root
-	rm -f $(IM)/Makefile
+	rm -rf $(DIRECTORY)/*.*.root
+	rm -rf $(IM)/*
 
 reset:
 	rm -rf $(DIRECTORY)/Trigger*
 	rm -rf $(DIRECTORY)/Calo*
-	rm -rf $(IM)/*
 
 reset-hard: 
 	rm -rf $(DIRECTORY)
