@@ -109,11 +109,11 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // Draw Spectrum of all cells in module1
   // DrawCellsInModule(1);
   DrawCell(1+gRandom->Integer(10752), 0.25, 1., 4., "hCellAmplitude");  // common cell region for EMCAL2010 and for PHOS
-  DrawTotalEnergyOfCellsinModule(1);
+  // DrawTotalEnergyOfCellsinModule(3, 100, 0, 100, 50);
 
   // Let's find problematic cells
-  DrawCellsInModule(3);
-  DrawCellsInModule(4);
+  // DrawCellsInModule(3);
+  // DrawCellsInModule(4);
 
 
   // Draw a random cell time spectrum
@@ -160,6 +160,7 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // ... and exclude runs with number of events < 1k.
 
   ExcludeSmallRuns(nruns, runNumbers, 55859);
+  // ExcludeSmallRuns(nruns, runNumbers, 100);
 
   // You may wish to exclude particular runs:
   //   Int_t runs2Exclude[] = {111222,333444,555666};
@@ -1483,7 +1484,7 @@ void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
 
   if(fit->GetChisquare() / fit->GetNDF() < chi2 || hCell->GetEntries() == 0) return;
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
-  c1->SaveAs(TString(c1->GetName()) + ".png");
+  // c1->SaveAs(TString(c1->GetName()) + ".png");
 }
 
 //_________________________________________________________________________
@@ -2657,9 +2658,9 @@ Bool_t IsCellBad(Int_t c)
   for(Int_t i = 0; i < nexc; ++i)
   {
     if(excells[i] == c)
-      return kFALSE;
+      return kTRUE;
   }
-  return kTRUE;
+  return kFALSE;
 }
 
 
@@ -2691,9 +2692,9 @@ void DrawTotalEnergyOfCellsinModule(Int_t mod, Int_t nbins = 100,  Int_t start=0
     Int_t bin = hCellAmplitude->GetXaxis()->FindBin(i);
     TH1* hCell = hCellAmplitude->ProjectionY(Form("hCell%i_%s",i,hname),bin,bin);
     Int_t totEnergy = hCell->Integral();
-    hEnergy->Fill(totEnergy);
+    hEnergy->Fill(totEnergy / 1.0e3);
 
-    if(totEnergy > cut) cout << i << ",";
+    if(totEnergy > cut && !IsCellBad(i) ) cout << i << ",";
     delete hCell;
   } 
   cout<< endl;
