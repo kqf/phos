@@ -77,13 +77,24 @@ images:
 	@  # Hidden operations, don't spoil your output
 
 	@montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png
-	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
+	@montage -tile 4x1 $(IM)/hPi0Slice*.pdf  -geometry +0+0 $(IM)/pi0fits.pdf
+
 	@montage -tile 4x1 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass.png
 	@montage -tile 2x2 $(IM)/hMassSM{1..4}.png  -geometry +0+0 $(IM)/totmass4.png
+
+	@montage -tile 4x1 $(IM)/hMassSM{1..4}.pdf  -geometry +0+0 $(IM)/totmass.pdf
+	@montage -tile 2x2 $(IM)/hMassSM{1..4}.pdf  -geometry +0+0 $(IM)/totmass4.pdf
+
 	@convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.png
-	@convert -resize 999x333 $(IM)/totmass4.png $(IM)/totmass4.pdf
-	@convert -resize 999x333 $(IM)/totmass.png $(IM)/totmass.pdf
-	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.pdf
+	@convert $(IM)/totmass.pdf $(IM)/totmass.pdf
+
+	@convert -resize 999x333 $(IM)/totmass4.png $(IM)/totmass4.png
+	@convert $(IM)/totmass4.pdf $(IM)/totmass4.pdf
+
+	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
+	@convert $(IM)/pi0fits.pdf $(IM)/pi0fits.pdf
+
 	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
-	@# @echo -e "$(PERIOD).pdf:\n\tpdfunite hNEventsPerRunIndex.pdf ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf hPi0NumRuns.pdf hPi0MassSigmaRuns.pdf pi0fits.pdf totmass.pdf $(PERIOD).pdf" > $(IM)/Makefile
+	@pdfunite $(IM)/hNEventsPerRunIndex.pdf $(IM)/ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf $(IM)/hPi0NumRuns.pdf $(IM)/hPi0MassSigmaRuns.pdf $(IM)/$(NAME).pdf
+	@convert $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/pi0.png
 	@echo -e "\x07"
