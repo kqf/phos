@@ -34,9 +34,10 @@ def draw_averages(indeces, averages, avtitle):
 
 def draw_data(i, frame, averages, runs, avtitle):
     if 'time' in i.lower() : return
+    if 'with_beam' in i.lower(): return
+
     data = frame[i].dropna()
     averages = scale_averages(data, averages)
-
     if not len(averages) > 1: return
 
     # Draw Scaled averages
@@ -76,11 +77,23 @@ def read_averages(mdir):
 
 
 def main():
-    frame = pd.read_csv(PERIOD + '/goodruns.csv', delimiter=';').sort_values(by='run')
+    frame = pd.read_csv(PERIOD + '/goodruns.csv', delimiter=';', index_col='run')
     frame = frame[frame.applymap(np.isreal)]
+    frame['run'] = frame.index
+    
+    try: 
+        triginfo = pd.read_csv(PERIOD + '/triginfo.csv', delimiter=';', index_col='run')
+        triginfo = triginfo[triginfo.applymap(np.isreal)]
+    except: 
+        print 'There is no triginfo.csv file. Skipping' 
+        triginfo = pd.DataFrame()
+    frame = pd.concat([frame, triginfo], axis=1)
+
     averages, runs, t = read_averages(DIRECTORY)
-    frame = frame[frame['run'].isin(runs)]
-    frame.sort_values('run')
+    frame = frame[frame.index.isin(runs)]
+    frame = frame.sort_index()
+
+    # Now we reset default numeration
     frame = frame.reset_index(drop=True) # No gaps
     for i in frame: draw_data(i, frame, averages, runs, t)
 

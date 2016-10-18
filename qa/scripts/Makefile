@@ -1,8 +1,8 @@
 # Order-only prerequisite is marked by "|" character
 
 PERIOD=LHC16m
-#NAME=iteration6
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
+NAME=iteration2
+# NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
 FILE_NAME=CaloCellsQA2.root
@@ -38,7 +38,7 @@ initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
 compare: | ../results/$(PERIOD)/goodruns.csv
-	./explore-treding-plots.py ../results/$(PERIOD) $(IM)
+	python2 explore-treding-plots.py ../results/$(PERIOD) $(IM)
 
 
 clean:
