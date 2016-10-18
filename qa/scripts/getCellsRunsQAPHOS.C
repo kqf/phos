@@ -159,8 +159,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // ... and exclude runs with number of events < 1k.
 
-  ExcludeSmallRuns(nruns, runNumbers, 55859);
-  // ExcludeSmallRuns(nruns, runNumbers, 100);
+  // ExcludeSmallRuns(nruns, runNumbers, 55859);
+  ExcludeSmallRuns(nruns, runNumbers, 100);
 
   // You may wish to exclude particular runs:
   //   Int_t runs2Exclude[] = {111222,333444,555666};
@@ -1919,6 +1919,7 @@ void DrawPi0Total(Int_t nruns, Int_t runNumbers[], Int_t sm = -1)
 
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".png");
+  c1->SaveAs(TString(c1->GetName()) + ".pdf");
 }
 //_________________________________________________________________________
 void DrawPi0Slice(Int_t run, Int_t sm = -1)
