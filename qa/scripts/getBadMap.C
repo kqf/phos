@@ -1,7 +1,7 @@
 void getBadMap(const char * period = "", TString filename = "")
 {
 	// If no geometry class -- nothing to do here
-	if(!gROOT->GetListOfTypes()->FindObject("AliPHOSGeometry"))
+	if(!gROOT->GetClass("AliPHOSGeometry"))
 		return;
 
 	gROOT->SetBatch();
