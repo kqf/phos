@@ -266,7 +266,7 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // PrintDeadNoisyCells(hBadCellMapPrimary, 0.1, 0.5);      // in 10-50% of runs
 
   // visualize dead/noisy cell map for EMCAL/PHOS; requires aliroot
-  if(gROOT->FindClass("AliPHOSGeometry"))
+  if(gROOT->GetClass("AliPHOSGeometry"))
     DrawOccupancy(nruns, runNumbers, hBadCellMapPrimary, "hDeadNoisyCellsOccupancy");
 
   // EMCAL: print full information on missing/noisy parts (e.g. RCUs); requires aliroot
