@@ -45,6 +45,21 @@ public:
 		// DefineOutput(1, TObjArray::Class());
 
 	}
+
+	void UserExec(Option_t * opt)
+	{
+		AliVEvent * event = InputEvent();
+		if (!event) return;
+
+		AliVVertex * vertex = (AliVVertex *) event->GetPrimaryVertex();
+		if (!vertex) return;
+
+		if (TMath::Abs(vertex->GetZ()) > 10) return;	
+
+		AliAnalysisTaskCaloCellsQA::UserExec(opt);
+	}
+
+
 	void SetPairPtCut(Double_t cut)
 	{
 		AliCaloCellsQAPt * cqa = dynamic_cast<AliCaloCellsQAPt * >(fCellsQA);
