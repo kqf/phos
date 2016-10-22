@@ -3,7 +3,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    TString period = "LHC16m";
+    TString period = "LHC16l";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
