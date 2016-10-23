@@ -163,8 +163,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   ExcludeSmallRuns(nruns, runNumbers, 100);
 
   // You may wish to exclude particular runs:
-  //   Int_t runs2Exclude[] = {111222,333444,555666};
-  //   ExcludeRunNumbers(nruns, runNumbers, 3, runs2Exclude);
+  Int_t runs2Exclude[] = {259381,259979,259264, 258883, 258884, 258885, 258886, 258889, 258890, 258919, 258920, 258921, 258923, 258926, 258931, 258962, 258964, 259086, 259088, 259090, 259091, 259096, 259099, 259117, 259162, 259164, 259204, 259261, 259263, 259269, 259270, 259271, 259272, 259273, 259274, 259302, 259303, 259305, 259307, 259334, 259336, 259339, 259340, 259341, 259342, 259378, 259379, 259382, 259388, 259389, 259394, 259395, 259396, 259469, 259470, 259471, 259473, 259477, 259649, 259650, 259668, 259697, 259700, 259703, 259704, 259705, 259711, 259713, 259747, 259748, 259750, 259751, 259752, 259756, 259788, 259789, 259792, 259822, 259841, 259842, 259860, 259866, 259867, 259868, 259888, 259961,  260010, 260011, 260014};
+  ExcludeRunNumbers(nruns, runNumbers, sizeof(runs2Exclude)/sizeof(Int_t), runs2Exclude);
 
   Printf("Number of runs to be analysed: %i", nruns);
 
@@ -522,9 +522,13 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
         hFactorDistr[k]->Fill(fac);
 
         if ( (fac <= factorDead) && (k != 3) )
-          hBadCellMap[k]->SetBinContent(c, ri+1, -1);
+        {
+          // hBadCellMap[k]->SetBinContent(c, ri+1, -1);
+
+        }
         else if (fac >= factorNoisy)
-          hBadCellMap[k]->SetBinContent(c, ri+1, 1);
+          if(IsCellInModule(c, 4))
+            hBadCellMap[k]->SetBinContent(c, ri+1, 1);
       }
 
       delete one;
