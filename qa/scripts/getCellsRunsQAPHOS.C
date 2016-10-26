@@ -108,8 +108,11 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // Draw Spectrum of all cells in module1
   
-  Int_t explr[] = {178,406,472,510,711,718,823,826,1171,1227,1393,1451,1460,1508,1673,1954,2226,2407,2784,3248,3263,3461};
+  Int_t explr[] = {7412,7469,7475,7616,7634,7659,7679,7722,7893,7916,8072,8100,8112,8150,8215,8223,8238,8297,8322,8324,8329,8350,8355,8375,8377,8378,8380,8434,8439,8453,8467,8489,8490,8557,8587,8616,8680,8685,8713,8768,8831,8865,8869,8880,8886,8941,8946,8968,8990,8994,8997,9002,9028,9047,9056,9120,9160,9170,9173,9193,9199,9240,9243,9250,9258,9278,9282,9328,9341,9366,9377,9446,9447,9469,9487,9527,9533,9536,9544,9588,9645,9659,9789,9845,9892,9895,9898,9920,9945,9948,10008,10009,10072,10073,10113,10116,10119,10159,10160,10161,10162,10186,10231,10274,10329,10342,10376,10409,10425,10431,10502};
+  // Int_t explr[] = {178,406,472,510,711,718,823,826,1171,1227,1393,1451,1460,1508,1673,1954,2226,2407,2784,3248,3263,3461};
+  // Int_t explr[] = {495,777,804,1236,1356,1518,1740,1908,2235,2505,2617,2618,2619,2673,2674,2728,2730,2741,2783,2785};
   ExploreCells(explr, sizeof(explr)/sizeof(Int_t));
+  return;
 
   DrawCellsInModule(1);
   DrawCell(1+gRandom->Integer(10752), 0.25, 1., 4., "hCellAmplitude");  // common cell region for EMCAL2010 and for PHOS
@@ -168,7 +171,7 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // You may wish to exclude particular runs:
   // 260338, 260471, 260497,
-  Int_t runs2Exclude[] = {260497,260338,260218, 260240, 260310, 260312, 260313,  260340, 260351, 260354, 260357, 260379, 260411, 260429, 260432, 260435, 260437, 260440, 260441, 260447, 260472, 260475, 260476, 260481, 260482, 260487, 260490, 260495, 260496, 260537, 260539, 260540, 260541, 260542, 260564, 260565, 260586, 260611, 260613, 260614, 260615, 260616, 260647};
+  Int_t runs2Exclude[] = {260497,260218, 260240, 260310, 260312, 260313,  260340, 260351, 260354, 260357, 260379, 260411, 260429, 260432, 260435, 260437, 260440, 260441, 260447, 260472, 260475, 260476, 260481, 260482, 260487, 260490, 260495, 260496, 260537, 260539, 260540, 260541, 260542, 260564, 260565, 260586, 260611, 260613, 260614, 260615, 260616, 260647};
   ExcludeRunNumbers(nruns, runNumbers, sizeof(runs2Exclude)/sizeof(Int_t), runs2Exclude);
 
   Printf("Number of runs to be analysed: %i", nruns);
@@ -532,7 +535,7 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
 
         }
         else if (fac >= factorNoisy)
-          if(IsCellInModule(c, 1))
+          if(IsCellInModule(c, 3))
             hBadCellMap[k]->SetBinContent(c, ri+1, 1);
       }
 
@@ -1441,7 +1444,7 @@ void Process1(TH1* inhisto, char* label = "", Int_t dnbins = 200,
 
 //_________________________________________________________________________
 void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
-              Double_t Emax = -1, char* hname = "hCellAmplitude", Double_t chi2 = 2.)
+              Double_t Emax = -1, char* hname = "hCellAmplitude", Double_t chi2 = 2., Bool_t drawCellAnyway = kFALSE)
 {
   // Draw one cell spectrum with a fit.
   //
@@ -1491,7 +1494,7 @@ void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
 
   c1->Update();
 
-  if(fit->GetChisquare() / fit->GetNDF() < chi2 || hCell->GetEntries() == 0) return;
+  if(!drawCellAnyway && (fit->GetChisquare() / fit->GetNDF() < chi2 || hCell->GetEntries() == 0)) return;
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   // c1->SaveAs(TString(c1->GetName()) + ".png");
 }
@@ -2688,7 +2691,7 @@ void ExploreCells(Int_t *  explcells, Int_t n, Double_t chi2 = 2.)
   for(Int_t i = 0; i < n; ++i)
   {
     // if(IsCellInModule(i, mod) && !IsCellBad(i))
-      DrawCell(explcells[i], 0.25, 1., 4., "hCellAmplitude", chi2);  // common cell region for EMCAL2010 and for PHOS
+      DrawCell(explcells[i], 0.25, 1., 4., "hCellAmplitude", chi2, kTRUE);  // common cell region for EMCAL2010 and for PHOS
   }
 }
 
