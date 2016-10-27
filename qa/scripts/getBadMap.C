@@ -5,6 +5,7 @@ void getBadMap(const char * period = "", TString filename = "")
 		return;
 
 	gROOT->SetBatch();
+	gStyle->SetOptStat(0);
     gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
     
     Int_t * excells;

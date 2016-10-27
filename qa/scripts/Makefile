@@ -53,6 +53,12 @@ reset:
 reset-hard: 
 	rm -rf $(DIRECTORY)
 
+save-iteration:
+	@echo 'Last available folder: ' iteration.b$(shell cd $(DIRECTORY)/../; ls -d iteration.b* | grep -o '[0-9]*' | sort -g | tail -1)
+	@mv $(DIRECTORY) $(DIRECTORY)/../iteration.b$(shell cd $(DIRECTORY)/../; ls -d iteration.b* | grep -o '[0-9]*' | sort -g | tail -1 | xargs echo "1 + " | bc)
+
+
+
 # this one requires alienv
 # it's not default tasks as it needs to be run only once
 images:  
