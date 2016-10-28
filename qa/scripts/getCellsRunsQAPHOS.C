@@ -166,13 +166,13 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // ... and exclude runs with number of events < 1k.
 
-  // ExcludeSmallRuns(nruns, runNumbers, 55859);
+  ExcludeSmallRuns(nruns, runNumbers, 51820);
   ExcludeSmallRuns(nruns, runNumbers, 100);
 
   // You may wish to exclude particular runs:
   // 260338, 260471, 260497,
-  // Int_t runs2Exclude[] = {260497,260218, 260240, 260310, 260312, 260313,  260340, 260351, 260354, 260357, 260379, 260411, 260429, 260432, 260435, 260437, 260440, 260441, 260447, 260472, 260475, 260476, 260481, 260482, 260487, 260490, 260495, 260496, 260537, 260539, 260540, 260541, 260542, 260564, 260565, 260586, 260611, 260613, 260614, 260615, 260616, 260647};
-  // ExcludeRunNumbers(nruns, runNumbers, sizeof(runs2Exclude)/sizeof(Int_t), runs2Exclude);
+  Int_t runs2Exclude[] = {262395, 262396, 262397, 262398, 262399, 262418, 262419, 262422, 262423, 262424, 262425, 262426, 262427, 262428, 262429, 262430, 262450, 262451, 262487, 262489, 262490, 262492, 262528, 262532, 262533, 262537, 262563, 262567, 262568, 262569, 262570, 262571, 262572, 262574, 262578, 262583, 262593, 262624, 262628, 262632};
+  ExcludeRunNumbers(nruns, runNumbers, sizeof(runs2Exclude)/sizeof(Int_t), runs2Exclude);
 
   Printf("Number of runs to be analysed: %i", nruns);
 
@@ -205,7 +205,7 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // X axis -- cell absId, Y axis -- run index, content: 0=not bad, 1=noisy, -1=dead.
   //
 
-  TH2** hBadCellMap = FindDeadNoisyCellsPerRun(nruns, runNumbers, 0.05, 2.5, 200, 10.);
+  TH2** hBadCellMap = FindDeadNoisyCellsPerRun(nruns, runNumbers, 0.05, 3.5, 200, 10.);
 
   // Look for noisy channels only:
   // TH2** hBadCellMap = FindDeadNoisyCellsPerRun(nruns, runNumbers, -1.0, 2.5, 200, 20.);

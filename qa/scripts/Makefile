@@ -1,6 +1,6 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16m
+PERIOD=LHC16o
 # NAME=iteration2
 NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-2gev-test
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
@@ -54,8 +54,8 @@ reset-hard:
 	rm -rf $(DIRECTORY)
 
 save-iteration:
-	@echo 'Last available folder: ' iteration.b$(shell cd $(DIRECTORY)/../; ls -d iteration.b* | grep -o '[0-9]*' | sort -g | tail -1)
-	@mv $(DIRECTORY) $(DIRECTORY)/../iteration.b$(shell cd $(DIRECTORY)/../; ls -d iteration.b* | grep -o '[0-9]*' | sort -g | tail -1 | xargs echo "1 + " | bc)
+	@echo 'Last available folder: ' iteration$(shell cd $(DIRECTORY)/../; ls -d iteration* | grep -o '[0-9]*' | sort -g | tail -1)
+	@mv $(DIRECTORY) $(DIRECTORY)/../iteration$(shell cd $(DIRECTORY)/../; ls -d iteration* | grep -o '[0-9]*' | sort -g | tail -1 | xargs echo "1 + " | bc)
 
 
 
