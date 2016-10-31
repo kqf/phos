@@ -205,7 +205,7 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // X axis -- cell absId, Y axis -- run index, content: 0=not bad, 1=noisy, -1=dead.
   //
 
-  TH2** hBadCellMap = FindDeadNoisyCellsPerRun(nruns, runNumbers, 0.05, 3.5, 200, 10.);
+  TH2** hBadCellMap = FindDeadNoisyCellsPerRun(nruns, runNumbers, 0.05, 2.5, 200, 10.);
 
   // Look for noisy channels only:
   // TH2** hBadCellMap = FindDeadNoisyCellsPerRun(nruns, runNumbers, -1.0, 2.5, 200, 20.);
