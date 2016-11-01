@@ -18,7 +18,7 @@ protected:
 	{
 		// Reject CPV clusters (new in luster
 		if (clus->GetType() != AliVCluster::kPHOSNeutral) return -1;
-		// if (clus->GetNCells() < 3) return -1;
+		if (clus->GetNCells() < 3) return -1;
 		if (clus->E() < 0.3) return -1;
 		return AliCaloCellsQA::CheckClusterGetSM(clus);
 	}

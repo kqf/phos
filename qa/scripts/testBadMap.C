@@ -97,8 +97,11 @@ void testBadMap()
 	// DrawExcludeFEE("LHC16test", excells, nexc,  0, 16,  30, 32, 3);
 
 
-	// Noisy FEE
-	DrawExcludeFEE("LHC16test", excells, nexc, 0, 16, 46, 48, 2);
+	// Noisy FEE in sm 2
+	// DrawExcludeFEE("LHC16test", excells, nexc, 0, 16, 46, 48, 2);
+
+	// 
+	DrawExcludeFEE("LHC16test", excells, nexc, 48, 64, 16, 18, 3);
 
 
 }
