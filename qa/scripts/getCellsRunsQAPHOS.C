@@ -1714,9 +1714,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetBottomMargin(0.14);
   gPad->SetGridx();
   gPad->SetGridy();
-  leg = new TLegend(0.625,0.16,0.725,0.15+0.08*(SM2-SM1+1));
+  leg = new TLegend(0.625,0.46,0.725,0.45+0.08*(SM2-SM1+1));
 
-  hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.1,"Y");
+  hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.6,"Y");
   hAvNCluster->SetLineWidth(2);
   hAvNCluster->Draw();
   leg->AddEntry(hAvNCluster, Form("(All Modules)/%i",SM2-SM1+1),"l");
