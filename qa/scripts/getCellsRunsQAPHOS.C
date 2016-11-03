@@ -171,8 +171,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // You may wish to exclude particular runs:
   // 260338, 260471, 260497,
-  Int_t runs2Exclude[] = {262395, 262396, 262397, 262398, 262399, 262418, 262419, 262422, 262423, 262424, 262425, 262426, 262427, 262428, 262429, 262430, 262450, 262451, 262487, 262489, 262490, 262492, 262528, 262532, 262533, 262537, 262563, 262567, 262568, 262569, 262570, 262571, 262572, 262574, 262578, 262583, 262593, 262624, 262628, 262632};
-  ExcludeRunNumbers(nruns, runNumbers, sizeof(runs2Exclude)/sizeof(Int_t), runs2Exclude);
+  // Int_t runs2Exclude[] = {262395, 262396, 262397, 262398, 262399, 262418, 262419, 262422, 262423, 262424, 262425, 262426, 262427, 262428, 262429, 262430, 262450, 262451, 262487, 262489, 262490, 262492, 262528, 262532, 262533, 262537, 262563, 262567, 262568, 262569, 262570, 262571, 262572, 262574, 262578, 262583, 262593, 262624, 262628, 262632};
+  // ExcludeRunNumbers(nruns, runNumbers, sizeof(runs2Exclude)/sizeof(Int_t), runs2Exclude);
 
   Printf("Number of runs to be analysed: %i", nruns);
 
@@ -1716,7 +1716,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetGridy();
   leg = new TLegend(0.625,0.16,0.725,0.15+0.08*(SM2-SM1+1));
 
-  hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.6,"Y");
+  hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.1,"Y");
   hAvNCluster->SetLineWidth(2);
   hAvNCluster->Draw();
   leg->AddEntry(hAvNCluster, Form("(All Modules)/%i",SM2-SM1+1),"l");
