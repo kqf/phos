@@ -4,14 +4,7 @@ import ROOT
 import numpy as np
 from math import pi
 from CrystalBall import ExtractQuantities, Fit
-
-def draw_and_save(name, draw=True, save=False):
-    canvas = ROOT.gROOT.FindObject('c1')
-    if not canvas: return
-    canvas.Update()
-    if save: canvas.SaveAs('results/' + name + '.pdf')
-    canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-    if draw: ROOT.gApplication.Run(True)
+from sutils import draw_and_save
 
 class PtDependent(object):
     def __init__(self, name, title, label):
@@ -91,7 +84,7 @@ class PtAnalyzer(object):
         lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
         real.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
         res = ExtractQuantities(real)# if not self.get_fit_range else ExtractQuantities(real, *self.get_fit_range((upper - lower)/ 2.))
-        if self.label == 'Mixing': raw_input()
+        if self.label == 'Mixing': draw_and_save(real.GetName())
         return res
 
     def quantities(self):
@@ -144,7 +137,7 @@ class PtAnalyzer(object):
         self.fitmass.SetParameter(2, 1)
         mass.Fit(self.fitmass, "r")
         canvas.Update()
-        raw_input("")
+        draw_and_save(sigma.GetName())
         return lambda pt: (self.fitmass.Eval(pt) - 3 * self.fitsigma.Eval(pt), self.fitmass.Eval(pt) + 3 * self.fitsigma.Eval(pt))
 
 
@@ -168,14 +161,14 @@ def nicely_draw(hist, option = '', legend = None):
 
 def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
-    mfile = ROOT.TFile('LHC16h.root')
+    mfile = ROOT.TFile('input-data/LHC16k.root')
 
     second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
-    # first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
+    first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
 
-    # import compare as cmpr
-    # diff = cmpr.Comparator()
-    # diff.compare_lists_of_histograms(first, second)
+    import comparator as cmpr
+    diff = cmpr.Comparator()
+    diff.compare_lists_of_histograms(first, second)
 
 
 if __name__ == '__main__':

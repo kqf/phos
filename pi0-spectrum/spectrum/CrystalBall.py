@@ -1,14 +1,7 @@
 #!/usr/bin/python
 
 import ROOT
-
-def draw_and_save(name, draw=True, save=False):
-    canvas = ROOT.gROOT.FindObject('c1')
-    if not canvas: return
-    canvas.Update()
-    if save: canvas.SaveAs('results/' + name + '.pdf')
-    canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-    if draw: ROOT.gApplication.Run(True)
+from sutils import draw_and_save
 
 def CBParameters():
     # crystal ball parameters (fixed by hand for EMCAL) TODO: PHOS parameters?
