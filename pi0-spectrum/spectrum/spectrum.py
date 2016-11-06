@@ -23,13 +23,14 @@ class PtDependent(object):
         return hist 
 
 class PtAnalyzer(object):
-    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3'):
+    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v'):
         super(PtAnalyzer, self).__init__()
         self.nevents = lst.FindObject('TotalEvents').GetEntries()
         self.rawhist = lst.FindObject(name)
         self.rawmix = lst.FindObject('hMix' + name[1:])
         self.label = label
         self.get_fit_range = None
+        self.show_img, self.save_img = (True, True) if not 'q' in mode else (False, False)
 
     def divide_into_bins(self, n = 20):
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12.,       13., 15., 20.]
@@ -43,8 +44,8 @@ class PtAnalyzer(object):
         ratio.GetYaxis().SetTitle("Real/ Mixed")
 
         fitf, bckgrnd = Fit(ratio)
-        canvas.Update()
-        canvas.SaveAs('results/ratio' + real.GetName() + '.pdf')
+        if canvas: canvas.Update()
+        if canvas and self.save_img: canvas.SaveAs('results/ratio' + real.GetName() + '.pdf')
 
         mixed.Multiply(bckgrnd)
 
@@ -52,7 +53,7 @@ class PtAnalyzer(object):
 
         real.Draw()
         mixed.Draw('same')
-        canvas.Update()
+        if canvas: canvas.Update()
 
         # if self.label != 'Mixing':raw_input()
         real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax());
@@ -83,8 +84,8 @@ class PtAnalyzer(object):
 
         lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
         real.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
-        res = ExtractQuantities(real)# if not self.get_fit_range else ExtractQuantities(real, *self.get_fit_range((upper - lower)/ 2.))
-        if self.label == 'Mixing': draw_and_save(real.GetName())
+        res = ExtractQuantities(real, save_img = self.save_img)# if not self.get_fit_range else ExtractQuantities(real, *self.get_fit_range((upper - lower)/ 2.))
+        if self.label == 'Mixing': draw_and_save(real.GetName(), self.show_img, self.save_img)
         return res
 
     def quantities(self):
@@ -108,7 +109,7 @@ class PtAnalyzer(object):
         data = [(m, em), (s, es), (n, en), (chi, echi)]
 
         histos = [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)] 
-        map(nicely_draw, histos)
+        if self.save_img: map(nicely_draw, histos)
 
         # if not self.get_fit_range:
             # self.get_fit_range = self.sigma_dependence(histos[0], histos[1])
@@ -127,7 +128,7 @@ class PtAnalyzer(object):
         self.fitsigma.SetParameter(1, 0.006)
         self.fitsigma.SetParameter(2, 0)
         self.fitsigma.SetParameter(3, 0)
-        sigma.Fit(self.fitsigma, "r")
+        sigma.Fit(self.fitsigma, "qr")
 
         # canvas.Clear()
         mass.Draw()
@@ -135,8 +136,8 @@ class PtAnalyzer(object):
         self.fitmass.SetParameter(0, 1)
         self.fitmass.SetParameter(1, 1)
         self.fitmass.SetParameter(2, 1)
-        mass.Fit(self.fitmass, "r")
+        mass.Fit(self.fitmass, "qr")
         canvas.Update()
-        draw_and_save(sigma.GetName())
+        draw_and_save(sigma.GetName(), self.show_img, self.save_img)
         return lambda pt: (self.fitmass.Eval(pt) - 3 * self.fitsigma.Eval(pt), self.fitmass.Eval(pt) + 3 * self.fitsigma.Eval(pt))
 

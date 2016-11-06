@@ -57,7 +57,7 @@ def Fit(h = None, emin = 0.05, emax = 0.3, rebin = 1):
 
     return fitfun, background
 
-def ExtractQuantities(h = None, emin = 0.05, emax = 0.3, rebin = 1):
+def ExtractQuantities(h = None, emin = 0.05, emax = 0.3, rebin = 1, save_img = True):
     fitfun, background = Fit(h, emin, emax, rebin)
 
     # integral value under crystal ball with amplitude = 1, sigma = 1
@@ -78,7 +78,7 @@ def ExtractQuantities(h = None, emin = 0.05, emax = 0.3, rebin = 1):
     nraw = nraw11 * A * sigma / h.GetBinWidth(1)
     enraw = nraw * (eA / A + esigma / sigma)
     h.Draw()
-    draw_and_save(h.GetName(), draw=False, save=True)
+    draw_and_save(h.GetName(), draw=False, save=save_img)
     return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / fitfun.GetNDF(), 0
     
 

@@ -1,6 +1,7 @@
 #!/usr/bin/python2
 
 import ROOT
+from sutils import draw_and_save
 
 class bcolors:
     OKGREEN = '\033[92m'
@@ -8,14 +9,6 @@ class bcolors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
-def draw_and_save(name, draw=False, save=True):
-    canvas = ROOT.gROOT.FindObject('c1')
-    if not canvas: return
-    canvas.Update()
-    if save: canvas.SaveAs(name + '.pdf')
-    canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-    if draw:# raw_input('Enter some data ...')
-        ROOT.gApplication.Run(True)
 
 def hist_cut(h, namecut = lambda x: True): 
     res = namecut( h.GetName() ) and h.GetEntries() > 0 and h.Integral() > 0
