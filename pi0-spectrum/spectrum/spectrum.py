@@ -4,7 +4,7 @@ import ROOT
 import numpy as np
 from math import pi
 from CrystalBall import ExtractQuantities, Fit
-from sutils import draw_and_save
+from sutils import draw_and_save, nicely_draw
 
 class PtDependent(object):
     def __init__(self, name, title, label):
@@ -129,7 +129,7 @@ class PtAnalyzer(object):
         self.fitsigma.SetParameter(3, 0)
         sigma.Fit(self.fitsigma, "r")
 
-        canvas.Clear()
+        # canvas.Clear()
         mass.Draw()
         self.fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
         self.fitmass.SetParameter(0, 1)
@@ -140,36 +140,3 @@ class PtAnalyzer(object):
         draw_and_save(sigma.GetName())
         return lambda pt: (self.fitmass.Eval(pt) - 3 * self.fitsigma.Eval(pt), self.fitmass.Eval(pt) + 3 * self.fitsigma.Eval(pt))
 
-
-def nicely_draw(hist, option = '', legend = None):
-    hist.Draw(option)
-
-    if 'spectrum' in hist.GetName(): 
-        ROOT.gPad.SetLogy()
-    else:
-        ROOT.gPad.SetLogy(0)
-
-    legend = legend if legend else ROOT.TLegend(0.9, 0.4, 1.0, 0.6)
-    legend.SetBorderSize(0)
-    legend.SetFillStyle(0)
-    legend.SetTextSize(0.04)
-    legend.AddEntry(hist, hist.label)
-    legend.Draw('same')
-    draw_and_save('xlin_' + hist.GetName(), save = True)
-
-
-
-def main():
-    canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
-    mfile = ROOT.TFile('input-data/LHC16k.root')
-
-    second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
-    first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
-
-    import comparator as cmpr
-    diff = cmpr.Comparator()
-    diff.compare_lists_of_histograms(first, second)
-
-
-if __name__ == '__main__':
-    main()
