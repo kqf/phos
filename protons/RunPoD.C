@@ -64,7 +64,7 @@ void RunPoD(
 	gProof->Load("PhotonSelection.cxx++");
     gProof->Load("TestPhotonSelection.cxx++");
     gProof->Load("PhysPhotonSelection.cxx++"); 
-	gProof->Load("AliAnalysisTaskPrompt.cxx++");
+	gProof->Load("AliAnalysisTaskPP.cxx++");
 	gROOT->LoadMacro("AddMyTask.C");
 
     AddMyTask(AliVEvent::kINT7);

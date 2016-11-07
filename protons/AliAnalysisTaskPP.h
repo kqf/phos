@@ -12,13 +12,13 @@
 #include "MixingSample.h"
 
 class EventFlags;
-class AliAnalysisTaskPrompt : public AliAnalysisTaskSE
+class AliAnalysisTaskPP : public AliAnalysisTaskSE
 {
 public:
 	enum {kMinModule = 1, kMaxModule=4};
-	AliAnalysisTaskPrompt();
-	AliAnalysisTaskPrompt(const char * name);
-	virtual ~AliAnalysisTaskPrompt();
+	AliAnalysisTaskPP();
+	AliAnalysisTaskPP(const char * name);
+	virtual ~AliAnalysisTaskPP();
 
 	void   UserCreateOutputObjects();
 	void   UserExec(Option_t *);
@@ -32,8 +32,8 @@ protected:
 	Bool_t IsClusterBad(AliVCluster * clus) const;
 	Bool_t CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, Int_t & iz) const;
 
-	AliAnalysisTaskPrompt & operator =(const AliAnalysisTaskPrompt &);
-	AliAnalysisTaskPrompt(const AliAnalysisTaskPrompt & c);
+	AliAnalysisTaskPP & operator =(const AliAnalysisTaskPP &);
+	AliAnalysisTaskPP(const AliAnalysisTaskPP & c);
 
 private:
 	MixingSample * fPreviousEvents;
@@ -42,7 +42,7 @@ private:
 	Int_t fNBad;             // number of entries in fBadCells
 	Int_t * fBadCells;       //[fNBad] bad cells array
 
-	ClassDef(AliAnalysisTaskPrompt, 2);
+	ClassDef(AliAnalysisTaskPP, 2);
 };
 
 #endif

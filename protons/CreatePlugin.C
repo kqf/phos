@@ -35,16 +35,16 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test",Int_t * runs, Int_t n
 
 
 	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
-	plugin->SetAnalysisSource("PhotonSelection.cxx TestPhotonSelection.cxx PhysPhotonSelection.cxx MixingSample.h AliAnalysisTaskPrompt.cxx");
-	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so PhotonSelection.cxx PhotonSelection.h TestPhotonSelection.cxx TestPhotonSelection.h PhysPhotonSelection.cxx PhysPhotonSelection.h MixingSample.h AliAnalysisTaskPrompt.cxx AliAnalysisTaskPrompt.h");
+	plugin->SetAnalysisSource("PhotonSelection.cxx TestPhotonSelection.cxx PhysPhotonSelection.cxx MixingSample.h AliAnalysisTaskPP.cxx");
+	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so PhotonSelection.cxx PhotonSelection.h TestPhotonSelection.cxx TestPhotonSelection.h PhysPhotonSelection.cxx PhysPhotonSelection.h MixingSample.h AliAnalysisTaskPP.cxx AliAnalysisTaskPP.h");
 
-	plugin->SetAnalysisMacro("TaskPrompt.C");
+	plugin->SetAnalysisMacro("TaskProtons.C");
 	plugin->SetSplitMaxInputFileNumber(100);
-	plugin->SetExecutable("TaskPrompt.sh");
+	plugin->SetExecutable("TaskProtons.sh");
 
 	plugin->SetTTL(30000);
 	plugin->SetInputFormat("xml-single");
-	plugin->SetJDLName("TaskPrompt.jdl");
+	plugin->SetJDLName("TaskProtons.jdl");
 	plugin->SetPrice(1);
 	plugin->SetSplitMode("se");
 

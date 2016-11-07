@@ -45,7 +45,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
-    gROOT->LoadMacro("AliAnalysisTaskPrompt.cxx+");
+    gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
     gROOT->LoadMacro("AddMyTask.C");
 
     // Add task without tender

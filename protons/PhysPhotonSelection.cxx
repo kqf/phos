@@ -1,6 +1,6 @@
 // --- Custom header files ---
 #include "PhysPhotonSelection.h"
-// #include "AliAnalysisTaskPrompt.h"
+// #include "AliAnalysisTaskPP.h"
 
 // --- ROOT system ---
 #include <TH2F.h>

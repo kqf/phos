@@ -1,9 +1,9 @@
-AliAnalysisTaskPrompt * AddMyTask(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "",Int_t * excells = 0, Int_t nexc = 0)
+AliAnalysisTaskPP * AddMyTask(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "",Int_t * excells = 0, Int_t nexc = 0)
 {
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
-	AliAnalysisTaskPrompt * task = new AliAnalysisTaskPrompt("PhosProtons");
+	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons");
 	if( !badmap.IsNull() ) task->SetBadMap(badmap);
     if(nexc > 0) task->SetBadCells(excells, nexc);
     if( (nexc > 0) && (!badmap.IsNull())) cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;

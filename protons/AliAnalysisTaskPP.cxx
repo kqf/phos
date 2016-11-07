@@ -6,7 +6,7 @@
 #include <TROOT.h>
 
 // --- AliRoot header files ---
-#include "AliAnalysisTaskPrompt.h"
+#include "AliAnalysisTaskPP.h"
 #include "AliAnalysisManager.h"
 #include <AliVEvent.h>
 #include <AliVCaloCells.h>
@@ -21,10 +21,10 @@
 
 
 
-ClassImp(AliAnalysisTaskPrompt)
+ClassImp(AliAnalysisTaskPP)
 
 //________________________________________________________________
-AliAnalysisTaskPrompt::AliAnalysisTaskPrompt() : AliAnalysisTaskSE(),
+AliAnalysisTaskPP::AliAnalysisTaskPP() : AliAnalysisTaskSE(),
 	fPreviousEvents(0),
 	fSelections(0),
 	fPHOSBadMap(),
@@ -35,7 +35,7 @@ AliAnalysisTaskPrompt::AliAnalysisTaskPrompt() : AliAnalysisTaskSE(),
 }
 
 //________________________________________________________________
-AliAnalysisTaskPrompt::AliAnalysisTaskPrompt(const char * name) :
+AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name) :
 	AliAnalysisTaskSE(name),
 	fPreviousEvents(0),
 	fSelections(new TList()),
@@ -51,7 +51,7 @@ AliAnalysisTaskPrompt::AliAnalysisTaskPrompt(const char * name) :
 }
 
 //________________________________________________________________
-AliAnalysisTaskPrompt::~AliAnalysisTaskPrompt()
+AliAnalysisTaskPP::~AliAnalysisTaskPP()
 {
 	if (!AliAnalysisManager::GetAnalysisManager()->IsProofMode()) delete fSelections;
 	if (fBadCells) delete [] fBadCells;
@@ -59,7 +59,7 @@ AliAnalysisTaskPrompt::~AliAnalysisTaskPrompt()
 }
 
 //________________________________________________________________
-void AliAnalysisTaskPrompt::UserCreateOutputObjects()
+void AliAnalysisTaskPP::UserCreateOutputObjects()
 {
 	// Initialization of all outputs
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
@@ -73,7 +73,7 @@ void AliAnalysisTaskPrompt::UserCreateOutputObjects()
 }
 
 //________________________________________________________________
-void AliAnalysisTaskPrompt::UserExec(Option_t *)
+void AliAnalysisTaskPP::UserExec(Option_t *)
 {
 	// Does the job for one event
 
@@ -137,11 +137,11 @@ void AliAnalysisTaskPrompt::UserExec(Option_t *)
 }
 
 //________________________________________________________________
-void AliAnalysisTaskPrompt::Terminate(Option_t *)
+void AliAnalysisTaskPP::Terminate(Option_t *)
 {
 }
 
-Bool_t AliAnalysisTaskPrompt::EventSelected(const AliVEvent * event, EventFlags & eprops) const
+Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & eprops) const
 {
 	// pileup
 	if (event->IsPileupFromSPD(3, 0.8, 3., 2., 5.))
@@ -169,7 +169,7 @@ Bool_t AliAnalysisTaskPrompt::EventSelected(const AliVEvent * event, EventFlags 
 }
 
 //____________________________________________________________
-void AliAnalysisTaskPrompt::SetBadCells(Int_t badcells[], Int_t nbad)
+void AliAnalysisTaskPP::SetBadCells(Int_t badcells[], Int_t nbad)
 {
 	// Set absId numbers for bad cells;
 	// clusters which contain a bad cell will be rejected.
@@ -191,7 +191,7 @@ void AliAnalysisTaskPrompt::SetBadCells(Int_t badcells[], Int_t nbad)
 }
 
 //________________________________________________________________
-Bool_t AliAnalysisTaskPrompt::CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, Int_t & iz) const
+Bool_t AliAnalysisTaskPP::CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, Int_t & iz) const
 {
 	// Converts cell absId --> (sm,ix,iz);
 	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance();
@@ -210,7 +210,7 @@ Bool_t AliAnalysisTaskPrompt::CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, In
 }
 
 //________________________________________________________________
-Bool_t AliAnalysisTaskPrompt::IsClusterBad(AliVCluster * clus) const
+Bool_t AliAnalysisTaskPP::IsClusterBad(AliVCluster * clus) const
 {
 	// Returns true if cluster contains a bad cell
 	for (Int_t b = 0; b < fNBad; b++)
@@ -240,7 +240,7 @@ Bool_t AliAnalysisTaskPrompt::IsClusterBad(AliVCluster * clus) const
 }
 
 //________________________________________________________________
-void AliAnalysisTaskPrompt::SetBadMap(const char * filename)
+void AliAnalysisTaskPP::SetBadMap(const char * filename)
 {
 	TFile * fBadMap = TFile::Open(filename);
 	if (!fBadMap->IsOpen())
