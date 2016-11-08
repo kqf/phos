@@ -3,12 +3,13 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     SetupEnvironment();
 
     bool useTender = kFALSE;
-    TString period = "LHC16h";
+    // TString period = "LHC16h";
+    TString period = "LHC16k";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
     Int_t nruns;
-    gROOT->LoadMacro("../qa/getRunsBadCells.C");
+    gROOT->LoadMacro("../qa/qa-task/getRunsBadCells.C");
     getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
 

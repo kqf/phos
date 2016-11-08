@@ -33,8 +33,14 @@ PhysPhotonSelection::~PhysPhotonSelection()
 //________________________________________________________________
 Bool_t PhysPhotonSelection::SelectEvent(const EventFlags & flgs)
 {
+	// All events
+	FillHistogram("EventCounter", 0.5);
+
 	if (TMath::Abs(flgs.vtxBest[2]) > 10) return kFALSE;
 	FillHistogram("TotalEvents", 0.5);
+
+	// Physical Events
+	FillHistogram("EventCounter", 1.5);
 	return kTRUE;
 }
 
@@ -45,8 +51,17 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	// fListOfHistos->SetName("Data");
 	fListOfHistos->SetOwner(kTRUE);
 	fListOfHistos->Add( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
+
+	// This histo is here for backward compatibility
 	fListOfHistos->Add( new TH1F("TotalEvents", "Total number of analysed events", 1, 0, 1) );
-	fListOfHistos->Add( new TH1F("TotalDiphotonEvents", "Total number of events with 2 photons", 1, 0, 1) );
+
+	// The true event counter
+	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 3, 0, 3);
+	evntCounter->GetXaxis()->SetBinLabel(1, "all");
+	evntCounter->GetXaxis()->SetBinLabel(2, "|Z_{vtx}| < 10");
+	evntCounter->GetXaxis()->SetBinLabel(3, "N_{#gamma} > 2");
+
+	fListOfHistos->Add(evntCounter);
 
 	// pi0 mass spectrum
 	Int_t nM       = 750;
@@ -142,7 +157,7 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		}
 	}
 
-	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("TotalDiphotonEvents", 0.5);
+	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
 }
 
 //________________________________________________________________
