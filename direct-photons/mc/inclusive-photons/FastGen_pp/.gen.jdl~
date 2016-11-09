@@ -1,0 +1,25 @@
+Executable = "fastsim_pp.sh";
+Jobtag={"comment:PHOS, pions"} ;
+
+Packages={"VO_ALICE@AliPhysics::vAN-20160405-1",
+         "VO_ALICE@APISCONFIG::V1.1x"};
+
+
+#TTL = "6 h";
+
+InputFile= {"LF:/alice/cern.ch/user/p/pkurash/FastGen_pp/fastGen_pp.C",
+            "LF:/alice/cern.ch/user/p/pkurash/FastGen_pp/readKine.C" 
+            };
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"generated.root@disk2"};
+
+splitarguments="#alien_counter#";
+split="production:1-1500";
+
+OutputDir="/alice/cern.ch/user/p/pkurash/FastGen_pp/output/$1/#alien_counter#";
+
+
+Workdirectorysize={"4000MB"};
+Email="podist.kurashvili@cern.ch";
+

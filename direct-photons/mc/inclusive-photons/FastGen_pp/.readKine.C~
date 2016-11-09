@@ -1,0 +1,143 @@
+readKine()
+{
+
+  // Read primary particles from Kinematics.root,
+  // look for pi0 and and print them
+  Int_t nPt      = 400;
+  Double_t ptMin = 0;
+  Double_t ptMax = 40;
+
+  Int_t pdgMC;
+//=============================
+  TH1F *hgenPi0=new TH1F("hgenPi0","Particle p_{T}",nPt,ptMin,ptMax); 
+  hgenPi0->Sumw2();
+  TH1F *hgenGamma=new TH1F("hgenGamma","Particle p_{T}, #gamma-s",nPt,ptMin,ptMax); 
+  hgenGamma->Sumw2();
+  TH1F *hgenBeta=new TH1F("hgenBeta","Particle p_{T}, #beta-s",nPt,ptMin,ptMax); 
+  hgenBeta->Sumw2();
+
+   TH2F *fhPi0MC=     new TH2F("fhPi0MC", "MC distribution of #pi^{0}-s ", nPt,ptMin,ptMax, 240, -1.2, 1.2);
+   TH2F *fhEtaMC=     new  TH2F("fhEtaMC", "MC distribution of #eta^{0}-s ", nPt,ptMin,ptMax, 240, -1.2, 1.2);
+   TH2F *fhEtaPrimeMC= new  TH2F("fhEtaPrimeMC", "MC distribution of #eta'", nPt,ptMin,ptMax,240, -1.2, 1.2);
+   TH2F *fhOmegaMC=    new  TH2F("fhOmegaMC", "MC distribution of #omega", nPt,ptMin,ptMax, 240, -1.2, 1.2);
+   TH2F *fhGammaMC=    new  TH2F("fhGammaMC", "MC distribution of #gamma-s", nPt,ptMin,ptMax, 240, -1.2, 1.2);
+   TH2F *fhK0MC   =    new TH2F("fhK0MC", "MC distribution of #K_{0}^{L}-s", nPt,ptMin,ptMax, 240, -1.2, 1.2);
+
+   fhPi0MC->Sumw2();
+   fhEtaMC->Sumw2();
+   fhEtaPrimeMC->Sumw2();
+   fhOmegaMC->Sumw2();
+   fhGammaMC->Sumw2();
+   fhK0MC->Sumw2();
+
+
+   TH2F *fhPdgvsPt_MCTracks = new  TH2F("fhPdgvsPt_MCTracks","MC Particle PDG code vs Pt", nPt,ptMin,ptMax , 4000, 0, 4000);
+ 
+  TH2F *hGammaSources = new TH2F("hGammaSources","Sources of #gamma-s, r_{v}<1 cm", nPt,ptMin,ptMax,4000, 0, 4000);
+
+   TH1F *hGammaPrim= new TH1F("hGammaPrim","Primary #gamma",nPt,ptMin,ptMax);
+
+   TH1F *hCounter=new TH1F("hCounter","Event count",1,0,1);
+
+    fhPdgvsPt_MCTracks->Sumw2();
+   hGammaSources->Sumw2();
+   hGammaPrim->Sumw2();
+    
+
+//=========================================
+
+  AliRunLoader* rl = AliRunLoader::Open("galice.root");
+
+  for (Int_t ievent = 0; ievent < rl->GetNumberOfEvents(); ievent++) {
+    printf("\nEvent %d\n",ievent);
+    rl->GetEvent(ievent);
+    rl->LoadKinematics();
+    AliStack *stack = rl->Stack();
+    Int_t nPrim = stack->GetNtrack();
+    TParticle *particle;
+    Int_t iPi0 = 0;
+   
+     hCounter->Fill(0.5);
+
+    for (Int_t iPrim=0; iPrim<nPrim; iPrim++) {
+
+      particle = stack->Particle(iPrim);
+      if (TMath::Abs(particle->Y())>1.) continue;
+      if (particle->Vx()*particle->Vx()+particle->Vy()*particle->Vy()>1.0) continue;
+      Int_t kf = particle->GetPdgCode();
+        if (kf==111) {
+	iPi0++;
+       //  printf("%d primaries, %d tracks\n",stack->GetNprimary(), stack->GetNtrack());
+          /*
+	printf("E=%.1f GeV, status=%d, daughter=(%d:%d)\n",
+	       particle->Energy(),
+	       particle->GetStatusCode(),
+	       particle->GetFirstDaughter(),
+	       particle->GetLastDaughter()); */
+        hgenPi0->Fill(particle->Pt());
+      }
+        if(kf==22)hgenGamma->Fill(particle->Pt());
+        if(TMath::Abs(kf)==11) hgenBeta->Fill(particle->Pt());
+  
+
+  //-------------------------------------
+         //  if(particle->Vx()*particle->Vx()+particle->Vy()*particle->Vy()<1.0){
+
+              fhPdgvsPt_MCTracks->Fill( particle->Pt(),particle->GetPdgCode());  
+		 if(particle->GetPdgCode()==111){
+			fhPi0MC->Fill(particle->Pt(), particle->Eta()); 
+                         }
+		 if(particle->GetPdgCode()==221){
+			fhEtaMC->Fill(particle->Pt(), particle->Eta()); 
+                         }
+		 if(particle->GetPdgCode()==331){
+			fhEtaPrimeMC->Fill(particle->Pt(), particle->Eta()); 
+                         }
+		 if(particle->GetPdgCode()==223){
+			fhOmegaMC->Fill(particle->Pt(), particle->Eta()); 
+                         }
+                 if(particle->GetPdgCode()==310){ 
+                         fhK0MC->Fill( particle->Pt(),  particle->Eta());
+
+
+                } 
+
+
+    if(particle->GetPdgCode()==22) { 
+
+                   
+                    fhGammaMC->Fill( particle->Pt(), particle->Eta()); 
+                                        
+                   if(particle->IsPrimary()) hGammaPrim->Fill(particle->Pt()); 
+                  TParticle *mparticle=stack->ParticleFromTreeK(particle->GetFirstMother());
+
+                  if(mparticle->Vx()*mparticle->Vx()+mparticle->Vy()*mparticle->Vy()>1e-7){
+                         hGammaSources->Fill(particle->Pt(),310);}
+                   // else{  
+                 hGammaSources->Fill(particle->Pt(),  mparticle->GetPdgCode());
+              // );         
+                //     } //end else   
+                   }  //endif22
+              }  //loop over tracks
+           }  //loop over events
+ 
+  TFile ff("generated.root","recreate");
+
+  hgenPi0->Write();
+  hgenGamma->Write();
+  hgenBeta->Write();
+
+  fhPi0MC->Write();
+  fhEtaMC->Write();
+  fhEtaPrimeMC->Write();
+  fhOmegaMC->Write();
+  fhGammaMC->Write();
+  fhK0MC->Write();
+  hGammaSources->Write();
+  hGammaPrim->Write();
+  fhPdgvsPt_MCTracks->Write();
+  hCounter->Write();
+
+  ff.Close();
+ hgenPi0->Draw();
+}
