@@ -1,37 +1,25 @@
-void sim(Int_t nev=20000) {
+Executable = "/alice/cern.ch/user/o/okovalen/FastGen_pp/fastsim_pp.sh";
+Jobtag={"comment:PHOS, pions"} ;
 
-  gSystem->Load("liblhapdf");
-  gSystem->Load("libqpythia");
-  gSystem->Load("libEGPythia6");
-  gSystem->Load("libpythia6");
-  gSystem->Load("libAliPythia6");
-  gSystem->Load("libhijing");
-  gSystem->Load("libTHijing");
-  gSystem->Load("libgeant321");
+Packages={"VO_ALICE@AliPhysics::v5-07-16-02-1",
+         "VO_ALICE@APISCONFIG::V1.1x"};
 
-  if (gSystem->Getenv("EVENT"))
-   nev = atoi(gSystem->Getenv("EVENT")) ;   
-  
-  AliSimulation simulator;
- // simulator.SetMakeSDigits("TRD TOF PHOS HMPID EMCAL MUON FMD ZDC PMD T0 VZERO");
- // simulator.SetMakeDigitsFromHits("ITS TPC");
-//  simulator.SetWriteRawData("ALL","raw.root",kTRUE);
 
-  simulator.SetDefaultStorage("local://$ALICE_ROOT/OCDB");
-  simulator.SetSpecificStorage("GRP/GRP/Data",
-			       Form("local://%s",gSystem->pwd()));
-  
- // simulator.SetRunQA("ALL:ALL") ; 
-  
- // simulator.SetQARefDefaultStorage("local://$ALICE_ROOT/QAref") ;
+#TTL = "6 h";
 
-  for (Int_t det = 0 ; det < AliQA::kNDET ; det++) {
-    simulator.SetQACycles((AliQAv1::DETECTORINDEX_t)det, nev+1) ;
-  }
-  
-  TStopwatch timer;
-  timer.Start();
-  simulator.Run(nev);
-  timer.Stop();
-  timer.Print();
-}
+InputFile= {"LF:/alice/cern.ch/user/o/okovalen/FastGen_pp/fastGen_pp.C",
+            "LF:/alice/cern.ch/user/o/okovalen/FastGen_pp/readKine.C" 
+            };
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"generated.root@disk2"};
+
+splitarguments="#alien_counter#";
+split="production:1-1500";
+
+OutputDir="/alice/cern.ch/user/o/okovalen/FastGen_pp/output/$1/#alien_counter#";
+
+
+Workdirectorysize={"4000MB"};
+Email="oleksandr.kovalenko@cern.ch";
+

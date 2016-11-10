@@ -39,3 +39,4 @@ outputs_valid
 *.pyc
 *.DS_Store
 */images/Makefile
+nnl-code/

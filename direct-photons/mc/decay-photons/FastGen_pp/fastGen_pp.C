@@ -3,7 +3,7 @@
 #include <TVirtualMC.h>
 
 //void ProcessEnvironmentVars();
-void fastGen_pp(Int_t nev = 30, char * filename = "galice.root")
+void fastGen_pp(Int_t nev = 50, char * filename = "galice.root")
 {
 	// load libraries
 	gSystem->AddIncludePath("-I$ALICE_ROOT/include -I$ALICE_ROOT/EVGEN -I$ALICE_PHYSICS/include");
@@ -75,23 +75,12 @@ void fastGen_pp(Int_t nev = 30, char * filename = "galice.root")
 	// Set External decayer
 	// AliDecayer *decayer = new AliDecayerPythia();
 	AliDecayerPythia * decayer = new AliDecayerPythia();
-
 	decayer->DecayLongLivedParticles();
-
-
 	decayer->SetForceDecay(kAll);
-
 	decayer->Init();
 	//  vmc->SetExternalDecayer(decayer);
 
-	//
-	//
-
-
-
-
-
-	//        AliGenPythia *gener = new AliGenPythia(-1);
+	// AliGenPythia * gener = new AliGenPythia(-1);
 	// AliGenPythia * gener = new AliGenPythia(1);
 	AliGenPythia * gener = new AliGenPythia(10000);
 	gener->SetMomentumRange(0, 999999);
@@ -110,15 +99,7 @@ void fastGen_pp(Int_t nev = 30, char * filename = "galice.root")
 	gener->SetVertexSmear(kPerEvent);
 	gener->SetTrackingFlag(0);
 	gener->Init();
-
-
-
-
-
-
 	gener->SetStack(stack);
-
-
 
 	//
 	//  Event Loop
