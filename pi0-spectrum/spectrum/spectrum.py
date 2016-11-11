@@ -59,7 +59,6 @@ class PtAnalyzer(object):
         real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax());
         return mixed
 
-
     def extract_data(self, a, b):
         canvas = ROOT.gROOT.FindObject('c1')
         name = self.rawhist.GetName() + '_%d_%d' % (a, b)
@@ -88,7 +87,7 @@ class PtAnalyzer(object):
         if self.label == 'Mixing': draw_and_save(real.GetName(), self.show_img, self.save_img)
         return res
 
-    def quantities(self):
+    def quantities(self, pi0interval = None):
         ranges = self.divide_into_bins()
         intervals = zip(ranges[:-1], ranges[1:])
         data   = np.array([self.extract_data(a, b) for a, b in intervals]).T
@@ -140,4 +139,18 @@ class PtAnalyzer(object):
         canvas.Update()
         draw_and_save(sigma.GetName(), self.show_img, self.save_img)
         return lambda pt: (self.fitmass.Eval(pt) - 3 * self.fitsigma.Eval(pt), self.fitmass.Eval(pt) + 3 * self.fitsigma.Eval(pt))
+
+class Spectrum(object):
+    def __init__(self, lst, nsigmas = 2, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v'):
+        super(Spectrum, self).__init__()
+        self.nsigmas = nsigmas
+        self.analyzer = PtAnalyzer(name, label, mode)
+
+    def evaluate(self):
+        quantities = self.analyzer.quantities()
+        ranges = self.fit_ranges(quantities)
+        return self.analyzer(ranges)
+
+    def fit_ranges(self, quantities):
+        return [[0, 0]] * quantities[0].GetNbinsX()
 
