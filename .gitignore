@@ -40,3 +40,4 @@ outputs_valid
 *.DS_Store
 */images/Makefile
 nnl-code/
+result.out
