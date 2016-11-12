@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 
 import ROOT
-from sutils import draw_and_save
+from sutils import wait 
 
 class bcolors:
     OKGREEN = '\033[92m'
@@ -62,7 +62,7 @@ def compare_visually(hist1, hist2, ci):
     if 'spectr' in hist1.GetName():
         ROOT.gPad.SetLogy()
 
-    draw_and_save(hist1.GetName(), True, True)
+    wait(hist1.GetName(), True)
 
 
 class Comparator(object):

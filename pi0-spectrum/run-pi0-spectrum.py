@@ -2,13 +2,13 @@
 
 import ROOT
 
-from spectrum.spectrum import PtAnalyzer
+from spectrum.spectrum import PtAnalyzer, Spectrum
 
 def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
     mfile = ROOT.TFile('input-data/LHC16k.root')
 
-    second = PtAnalyzer(mfile.PhysNoTender, label = 'Mixing').quantities()
+    second = Spectrum(mfile.PhysNoTender, label = 'Mixing', mode='v').evaluate()
     first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing').quantities()
 
     import spectrum.comparator as cmpr

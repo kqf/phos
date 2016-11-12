@@ -26,72 +26,85 @@ class PtAnalyzer(object):
     def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v'):
         super(PtAnalyzer, self).__init__()
         self.nevents = lst.FindObject('TotalEvents').GetEntries()
+        print 'searching for ', name
         self.rawhist = lst.FindObject(name)
         self.rawmix = lst.FindObject('hMix' + name[1:])
         self.label = label
         self.get_fit_range = None
-        self.show_img, self.save_img = (True, True) if not 'q' in mode else (False, False)
+        self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False}.get(mode, True)
 
-    def divide_into_bins(self, n = 20):
-        bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12.,       13., 15., 20.]
+    def divide_into_bins(self):
+        bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
         return map(self.rawhist.GetYaxis().FindBin, bins)
 
     def estimate_background(self, real, mixed):
         canvas = ROOT.gROOT.FindObject('c1')
 
+        # Divide real/mixed
         ratio = real.Clone()
         ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
+        
+        # This parameter changes the final values
+        # 
+        # ratio.SetAxisRange(0.04, 0.6, 'X')
 
-        fitf, bckgrnd = Fit(ratio)
-        if canvas: canvas.Update()
-        if canvas and self.save_img: canvas.SaveAs('results/ratio' + real.GetName() + '.pdf')
+        # Fit the ratio
+        fitf, bckgrnd = Fit(ratio, name = 'ratio_real_to_mixed', show_img = self.show_img)
 
+        # Scale the mixed distribution
         mixed.Multiply(bckgrnd)
-
         mixed.SetLineColor(46)
 
+        # Draw the results
         real.Draw()
         mixed.Draw('same')
-        if canvas: canvas.Update()
-
-        # if self.label != 'Mixing':raw_input()
         real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax());
+        draw_and_save([real, mixed], 'real_and_scaled_background', self.show_img)
         return mixed
 
-    def extract_data(self, a, b):
+    def substract_background(self, real, mixed):
+        # Identify 0 bins. To get throw them out later
+        zero_bins = [i for i in range(1, real.GetNbinsX()) if real.GetBinContent(i) < 1]
+
+        # Substract 
+        real.Add(mixed, -1)
+
+        # Reset zero bins
+        [real.SetBinContent(i, 0) for i in zero_bins]
+
+        # Take into account the statistics
+        if len(zero_bins) > 410: real.Rebin(2)
+        if len(zero_bins) > 600: real.Rebin(2)
+
+        # Drawing range
+        start, stop = 0.05, 0.3
+        real.SetAxisRange(1.5 * start, 0.85 * stop)
+        return real, mixed
+
+    def extract_data(self, a, b, intgr_range):
         canvas = ROOT.gROOT.FindObject('c1')
+
         name = self.rawhist.GetName() + '_%d_%d' % (a, b)
         real, mixed = self.rawhist.ProjectionX(name, a, b), self.rawmix.ProjectionX(name + 'mix', a, b)
+
+        lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
+        real.SetTitle('%.4g < P_{T} < %.4g #events = %d; M_{#gamma#gamma}, GeV/c^{2}' % (lower, upper, self.nevents)) 
+
         mixed.Sumw2()
         real.Sumw2()
 
-
         mixed = self.estimate_background(real, mixed)
-
-        zero_bins = [i for i in range(1, real.GetNbinsX()) if real.GetBinContent(i) < 1]
         if self.label == 'Mixing': 
-            real.Add(mixed, -1)
-            [real.SetBinContent(i, 0) for i in zero_bins]
-
-            if len(zero_bins) > 410: real.Rebin(2)
-            if len(zero_bins) > 600: real.Rebin(2)
-
-            start, stop = 0.05, 0.3
-            real.SetAxisRange(1.5 * start, 0.85 * stop)
+            real, mixed = self.substract_background(real, mixed)
   
-
-        lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
-        real.SetTitle('%.4g < P_{T} < %.4g #events = %d' % (lower, upper, self.nevents) )
-        res = ExtractQuantities(real, save_img = self.save_img)# if not self.get_fit_range else ExtractQuantities(real, *self.get_fit_range((upper - lower)/ 2.))
-        if self.label == 'Mixing': draw_and_save(real.GetName(), self.show_img, self.save_img)
+        res = ExtractQuantities(real, intgr_range, show_img = self.show_img)
         return res
 
-    def quantities(self, pi0interval = None):
-        ranges = self.divide_into_bins()
+    def histograms(self, data, ranges):
         intervals = zip(ranges[:-1], ranges[1:])
-        data   = np.array([self.extract_data(a, b) for a, b in intervals]).T
 
+        # Book histograms
         histgenerators = [PtDependent('mass', '#pi^{0} mass position;;m, GeV/c^{2}', self.label),
                           PtDependent('width', '#pi^{0} peak width ;;#sigma, GeV/c^{2}', self.label),
                           PtDependent('spectrum', 'raw #pi^{0} spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}', self.label),  
@@ -99,58 +112,69 @@ class PtAnalyzer(object):
 
         ptedges = map(self.rawhist.GetYaxis().GetBinCenter, ranges)
 
-
+        # Extract the data
         m, em, s, es, n, en, chi, echi = data
 
-        n = [n[i] / (b - a) / (2. * pi)     for i, (a, b) in enumerate(intervals)]
-        en = [en[i] / (b - a) / (2. * pi)   for i, (a, b) in enumerate(intervals)]
+        # Calculate the yields
+        n = [n[i] / (b - a) / (2. * pi)   for i, (a, b) in enumerate(intervals)]
+        en = [en[i] / (b - a) / (2. * pi) for i, (a, b) in enumerate(intervals)]
 
+        # Group the data
         data = [(m, em), (s, es), (n, en), (chi, echi)]
 
-        histos = [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)] 
-        if self.save_img: map(nicely_draw, histos)
+        # Create the histograms
+        return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)]
 
-        # if not self.get_fit_range:
-            # self.get_fit_range = self.sigma_dependence(histos[0], histos[1])
-            # histos =  self.quantities()
-        self.sigma_dependence(histos[0], histos[1])
+    def quantities(self, intgr_ranges = None):
+        # Prepare Pt ranges and corresponding M_eff integration intervals
+        ranges = self.divide_into_bins()
+        if not intgr_ranges: 
+            intgr_ranges = [None] * (len(ranges) - 1)
 
+        # Estimate quantities for every Pt bin
+        intervals = zip(ranges[:-1], ranges[1:], intgr_ranges)
+        data = np.array([self.extract_data(low_pt, up_pt, c) for low_pt, up_pt, c in intervals]).T
+
+        # Create hitograms
+        histos = self.histograms(data, ranges)
+        if self.show_img: map(nicely_draw, histos)
         return histos
 
-    def sigma_dependence(self, mass, sigma):
-        # This is needed to estimate background
-        canvas = ROOT.gROOT.FindObject('c1')
-        self.fitsigma = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
-        # self.fitsigma = ROOT.TF1("self.fitsigma", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
-        sigma.Draw()
-        self.fitsigma.SetParameter(0, 0.11 * 0.11)
-        self.fitsigma.SetParameter(1, 0.006)
-        self.fitsigma.SetParameter(2, 0)
-        self.fitsigma.SetParameter(3, 0)
-        sigma.Fit(self.fitsigma, "qr")
-
-        # canvas.Clear()
-        mass.Draw()
-        self.fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
-        self.fitmass.SetParameter(0, 1)
-        self.fitmass.SetParameter(1, 1)
-        self.fitmass.SetParameter(2, 1)
-        mass.Fit(self.fitmass, "qr")
-        canvas.Update()
-        draw_and_save(sigma.GetName(), self.show_img, self.save_img)
-        return lambda pt: (self.fitmass.Eval(pt) - 3 * self.fitsigma.Eval(pt), self.fitmass.Eval(pt) + 3 * self.fitsigma.Eval(pt))
 
 class Spectrum(object):
-    def __init__(self, lst, nsigmas = 2, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v'):
+    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v', nsigmas = 2):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
-        self.analyzer = PtAnalyzer(name, label, mode)
+        self.analyzer = PtAnalyzer(lst, name, label, mode)
 
     def evaluate(self):
         quantities = self.analyzer.quantities()
         ranges = self.fit_ranges(quantities)
-        return self.analyzer(ranges)
+        return self.analyzer.quantities(ranges)
 
     def fit_ranges(self, quantities):
-        return [[0, 0]] * quantities[0].GetNbinsX()
+        mass, sigma = quantities[0:2]
+        canvas = ROOT.gROOT.FindObject('c1')
+        fitsigma = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        # fitsigma = ROOT.TF1("fitsigma", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        sigma.Draw()
+        fitsigma.SetParameter(0, 0.11 * 0.11)
+        fitsigma.SetParameter(1, 0.006)
+        fitsigma.SetParameter(2, 0)
+        fitsigma.SetParameter(3, 0)
+        sigma.Fit(fitsigma, "qr")
 
+        # canvas.Clear()
+        mass.Draw()
+        fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
+        fitmass.SetParameter(0, 1)
+        fitmass.SetParameter(1, 1)
+        fitmass.SetParameter(2, 1)
+        mass.Fit(fitmass, "qr")
+        canvas.Update()
+
+        mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
+                                 fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt)) 
+
+        pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
+        return map(mass_range, pt_values) 
