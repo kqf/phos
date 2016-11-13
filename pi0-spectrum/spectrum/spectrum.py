@@ -32,12 +32,13 @@ class PtAnalyzer(object):
         self.label = label
         self.get_fit_range = None
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False}.get(mode, True)
+        self.default_range = (0.05, 0.3)
 
     def divide_into_bins(self):
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
         return map(self.rawhist.GetYaxis().FindBin, bins)
 
-    def estimate_background(self, real, mixed):
+    def estimate_background(self, real, mixed, intgr_range):
         canvas = ROOT.gROOT.FindObject('c1')
 
         # Divide real/mixed
@@ -50,7 +51,9 @@ class PtAnalyzer(object):
         # ratio.SetAxisRange(0.04, 0.6, 'X')
 
         # Fit the ratio
+        # Change here definition if integration range
         fitf, bckgrnd = Fit(ratio, name = 'ratio_real_to_mixed', show_img = self.show_img)
+        # fitf, bckgrnd = Fit(ratio, intgr_range, name = 'ratio_real_to_mixed', show_img = self.show_img)
 
         # Scale the mixed distribution
         mixed.Multiply(bckgrnd)
@@ -94,7 +97,7 @@ class PtAnalyzer(object):
         mixed.Sumw2()
         real.Sumw2()
 
-        mixed = self.estimate_background(real, mixed)
+        mixed = self.estimate_background(real, mixed, intgr_range)
         if self.label == 'Mixing': 
             real, mixed = self.substract_background(real, mixed)
   
@@ -129,7 +132,7 @@ class PtAnalyzer(object):
         # Prepare Pt ranges and corresponding M_eff integration intervals
         ranges = self.divide_into_bins()
         if not intgr_ranges: 
-            intgr_ranges = [None] * (len(ranges) - 1)
+            intgr_ranges = [self.default_range] * (len(ranges) - 1)
 
         # Estimate quantities for every Pt bin
         intervals = zip(ranges[:-1], ranges[1:], intgr_ranges)
@@ -142,7 +145,7 @@ class PtAnalyzer(object):
 
 
 class Spectrum(object):
-    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v', nsigmas = 2):
+    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v', nsigmas = 3):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
         self.analyzer = PtAnalyzer(lst, name, label, mode)
@@ -163,16 +166,18 @@ class Spectrum(object):
         fitsigma.SetParameter(2, 0)
         fitsigma.SetParameter(3, 0)
         sigma.Fit(fitsigma, "qr")
+        draw_and_save([sigma], draw=True)
 
         # canvas.Clear()
         mass.Draw()
         fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
-        fitmass.SetParameter(0, 1)
-        fitmass.SetParameter(1, 1)
-        fitmass.SetParameter(2, 1)
+        fitmass.SetParameter(0, 10.99)
+        fitmass.SetParameter(1, 0.037)
+        fitmass.SetParameter(2, 2.38)
+        fitmass.SetParameter(3, 0.0033)
         mass.Fit(fitmass, "qr")
+        draw_and_save([mass], draw=True)
         canvas.Update()
-
         mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
                                  fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt)) 
 
