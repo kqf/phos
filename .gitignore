@@ -41,3 +41,4 @@ outputs_valid
 */images/Makefile
 nnl-code/
 result.out
+*.out

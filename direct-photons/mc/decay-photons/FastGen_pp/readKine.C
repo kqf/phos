@@ -1,14 +1,5 @@
-#include <TRandom.h>
-#include <TSystem.h>
-#include <TVirtualMC.h>
-
-//void ProcessEnvironmentVars();
-void fastGen_pp(Int_t nev = 30, char * filename = "galice.root")
+readKine()
 {
-	// load libraries
-	gSystem->AddIncludePath("-I$ALICE_ROOT/include -I$ALICE_ROOT/EVGEN -I$ALICE_PHYSICS/include");
-
-
 	gSystem->Load("liblhapdf");
 	gSystem->Load("libpythia6");
 	// gSystem->Load("libpythia6_4_28");
@@ -18,177 +9,144 @@ void fastGen_pp(Int_t nev = 30, char * filename = "galice.root")
 	gSystem->Load("libAliPythia6");
 
 
-	// gSystem->ListLibraries()->Print();
-
-	//seed
-
-	//static Int_t    sseed = 0; //Set 0 to use the current time
-	//TDatime tt;
-	//static Int_t seed    = tt.Get();
+	// Read primary particles from Kinematics.root,
+	// look for pi0 and and print them
 
 
+	Int_t nPt      = 400;
+	Double_t ptMin = 0;
+	Double_t ptMax = 40;
 
-	gRandom->SetSeed(0);
+	Int_t pdgMC;
+	//=============================
+	TH1F * hgenPi0 = new TH1F("hgenPi0", "Particle p_{T}", nPt, ptMin, ptMax);
+	hgenPi0->Sumw2();
+	TH1F * hgenGamma = new TH1F("hgenGamma", "Particle p_{T}, #gamma-s", nPt, ptMin, ptMax);
+	hgenGamma->Sumw2();
+	TH1F * hgenBeta = new TH1F("hgenBeta", "Particle p_{T}, #beta-s", nPt, ptMin, ptMax);
+	hgenBeta->Sumw2();
 
-	if (gSystem->Getenv("CONFIG_SEED"))
-		seed = atoi(gSystem->Getenv("CONFIG_SEED"));
+	TH2F * fhPi0MC =     new TH2F("fhPi0MC", "MC distribution of #pi^{0}-s ", nPt, ptMin, ptMax, 240, -1.2, 1.2);
+	TH2F * fhEtaMC =     new  TH2F("fhEtaMC", "MC distribution of #eta^{0}-s ", nPt, ptMin, ptMax, 240, -1.2, 1.2);
+	TH2F * fhEtaPrimeMC = new  TH2F("fhEtaPrimeMC", "MC distribution of #eta'", nPt, ptMin, ptMax, 240, -1.2, 1.2);
+	TH2F * fhOmegaMC =    new  TH2F("fhOmegaMC", "MC distribution of #omega", nPt, ptMin, ptMax, 240, -1.2, 1.2);
+	TH2F * fhGammaMC =    new  TH2F("fhGammaMC", "MC distribution of #gamma-s", nPt, ptMin, ptMax, 240, -1.2, 1.2);
+	TH2F * fhK0MC   =    new TH2F("fhK0MC", "MC distribution of #K_{0}^{L}-s", nPt, ptMin, ptMax, 240, -1.2, 1.2);
 
-	cout << "seed=" << gRandom->GetSeed() << endl;
-
-
-	// Runloader
-
-	AliRunLoader * rl = AliRunLoader::Open("galice.root", "FASTRUN", "recreate");
-
-	rl->SetCompressionLevel(2);
-	rl->SetNumberOfEventsPerFile(nev);
-	rl->LoadKinematics("RECREATE");
-	rl->MakeTree("E");
-	gAlice->SetRunLoader(rl);
-
-	// Create stack
-	rl->MakeStack();
-	AliStack * stack      = rl->Stack();
-
-	// Header
-	AliHeader * header = rl->GetHeader();
-
-	// Create and Initialize Generator
-
+	fhPi0MC->Sumw2();
+	fhEtaMC->Sumw2();
+	fhEtaPrimeMC->Sumw2();
+	fhOmegaMC->Sumw2();
+	fhGammaMC->Sumw2();
+	fhK0MC->Sumw2();
 
 
+	TH2F * fhPdgvsPt_MCTracks = new  TH2F("fhPdgvsPt_MCTracks", "MC Particle PDG code vs Pt", nPt, ptMin, ptMax , 4000, 0, 4000);
+
+	TH2F * hGammaSources = new TH2F("hGammaSources", "Sources of #gamma-s, r_{v}<1 cm", nPt, ptMin, ptMax, 4000, 0, 4000);
+
+	TH1F * hGammaPrim = new TH1F("hGammaPrim", "Primary #gamma", nPt, ptMin, ptMax);
+
+	TH1F * hCounter = new TH1F("hCounter", "Event count", 1, 0, 1);
+
+	fhPdgvsPt_MCTracks->Sumw2();
+	hGammaSources->Sumw2();
+	hGammaPrim->Sumw2();
 
 
-	// gROOT->LoadMacro("AliGenPHOSlibPlus.h++") ;
+	//=========================================
 
+	AliRunLoader * rl = AliRunLoader::Open("galice.root");
 
-	// AliGenerator *gener  = new AliGenerator();
-
-	//=======================================================================
-	// Set External decayer
-
-	// Set the trigger configuration
-	AliSimulation::Instance()->SetTriggerConfig("p-p");
-	cout << "Trigger configuration is set to  " << "kDefaultPPTrig" << endl;
-
-	//
-	// Set External decayer
-	// AliDecayer *decayer = new AliDecayerPythia();
-	AliDecayerPythia * decayer = new AliDecayerPythia();
-
-	decayer->DecayLongLivedParticles();
-
-
-	decayer->SetForceDecay(kAll);
-
-	decayer->Init();
-	//  vmc->SetExternalDecayer(decayer);
-
-	//
-	//
-
-
-
-
-
-	//        AliGenPythia *gener = new AliGenPythia(-1);
-	// AliGenPythia * gener = new AliGenPythia(1);
-	AliGenPythia * gener = new AliGenPythia(10000);
-	gener->SetMomentumRange(0, 999999);
-	gener->SetThetaRange(0., 180.);
-	gener->SetYRange(-1, 1);
-	gener->SetPtRange(0, 10000);
-	gener->SetProcess(kPyMb);
-	gener->SetEnergyCMS(13000.);
-	gener->SetProjectile("p", 1, 1) ;
-	gener->SetTarget("p", 1, 1) ;
-	gGener = gener;
-
-	gener->SetOrigin(0, 0, 0);    // vertex position
-	gener->SetSigma(0, 0, 5.3);   // Sigma in (X,Y,Z) (cm) on IP position
-	gener->SetCutVertexZ(1.);     // Truncate at 1 sigma
-	gener->SetVertexSmear(kPerEvent);
-	gener->SetTrackingFlag(0);
-	gener->Init();
-
-
-
-
-
-
-	gener->SetStack(stack);
-
-
-
-	//
-	//  Event Loop
-	//
-
-	Int_t iev;
-
-	for (iev = 0; iev < nev; iev++)
+	for (Int_t ievent = 0; ievent < rl->GetNumberOfEvents(); ievent++)
 	{
+		printf("\nEvent %d\n", ievent);
+		rl->GetEvent(ievent);
+		rl->LoadKinematics();
+		AliStack * stack = rl->Stack();
+		Int_t nPrim = stack->GetNtrack();
+		TParticle * particle;
+		Int_t iPi0 = 0;
 
-		printf("\n \n Event number %d \n \n", iev);
+		hCounter->Fill(0.5);
 
-		// Initialize event
-		header->Reset(0, iev);
-		rl->SetEventNumber(iev);
-		stack->Reset();
-		rl->MakeTree("K");
-		//  stack->ConnectTree();
-
-		// Generate event
-		gener->Generate();
-		// Analysis
-		Int_t npart = stack->GetNprimary();
-		printf("Analyse %d Particles\n", npart);
-		for (Int_t part = 0; part < npart; part++)
+		for (Int_t iPrim = 0; iPrim < nPrim; iPrim++)
 		{
-			// printf("Analysing %d \n", part);
-			TParticle * MPart = stack->Particle(part);
-			Int_t mpart  = MPart->GetPdgCode();
-			// printf("Particle %d\n", mpart);
+
+			particle = stack->Particle(iPrim);
+			if (TMath::Abs(particle->Y()) > 1.) continue;
+			if (particle->Vx()*particle->Vx() + particle->Vy()*particle->Vy() > 1.0) continue;
+			Int_t kf = particle->GetPdgCode();
+			if (kf == 111)
+			{
+				iPi0++;
+				//  printf("%d primaries, %d tracks\n",stack->GetNprimary(), stack->GetNtrack());
+				/*
+				   printf("E=%.1f GeV, status=%d, daughter=(%d:%d)\n",
+				   particle->Energy(),
+				   particle->GetStatusCode(),
+				   particle->GetFirstDaughter(),
+				   particle->GetLastDaughter()); */
+				hgenPi0->Fill(particle->Pt());
+			}
+			if (kf == 22)hgenGamma->Fill(particle->Pt());
+			if (TMath::Abs(kf) == 11) hgenBeta->Fill(particle->Pt());
 
 
-		}
+			//-------------------------------------
+			//  if(particle->Vx()*particle->Vx()+particle->Vy()*particle->Vy()<1.0){
 
-		// Finish event
-		header->SetNprimary(stack->GetNprimary());
-		header->SetNtrack(stack->GetNtrack());
-		// I/O
-		// +
-		stack->FinishEvent();
-		header->SetStack(stack);
-		rl->TreeE()->Fill();
-		rl->WriteKinematics("OVERWRITE");
-
-	} //event loop
-
-	//Termination
-	//Generator
-	gener->FinishRun();
-	//Write file
-	rl->WriteHeader("OVERWRITE");
-	gener->Write();
-	rl->Write();
-}
+			fhPdgvsPt_MCTracks->Fill( particle->Pt(), particle->GetPdgCode());
+			if (particle->GetPdgCode() == 111)
+				fhPi0MC->Fill(particle->Pt(), particle->Eta());
+			if (particle->GetPdgCode() == 221)
+				fhEtaMC->Fill(particle->Pt(), particle->Eta());
+			if (particle->GetPdgCode() == 331)
+				fhEtaPrimeMC->Fill(particle->Pt(), particle->Eta());
+			if (particle->GetPdgCode() == 223)
+				fhOmegaMC->Fill(particle->Pt(), particle->Eta());
+			if (particle->GetPdgCode() == 310)
+				fhK0MC->Fill( particle->Pt(),  particle->Eta());
 
 
 
 
+			if (particle->GetPdgCode() == 22)
+			{
 
-void ProcessEnvironmentVars()
-{
-	// Colliding system
-	if (gSystem->Getenv("CONFIG_BEAMS"))
-		beams = gSystem->Getenv("CONFIG_BEAMS");
 
-	// PDG code of neutral meson
-	if (gSystem->Getenv("CONFIG_MESON_PDG"))
-		mesonPDG = atoi(gSystem->Getenv("CONFIG_MESON_PDG"));
+				fhGammaMC->Fill( particle->Pt(), particle->Eta());
 
-	// Random Number seed
-	if (gSystem->Getenv("CONFIG_SEED"))
-		sseed = atoi(gSystem->Getenv("CONFIG_SEED"));
+				if (particle->IsPrimary()) hGammaPrim->Fill(particle->Pt());
+				TParticle * mparticle = stack->ParticleFromTreeK(particle->GetFirstMother());
+
+				if (mparticle->Vx()*mparticle->Vx() + mparticle->Vy()*mparticle->Vy() > 1e-7)
+					hGammaSources->Fill(particle->Pt(), 310);
+				// else{
+				hGammaSources->Fill(particle->Pt(),  mparticle->GetPdgCode());
+				// );
+				//     } //end else
+			}  //endif22
+		}  //loop over tracks
+	}  //loop over events
+
+	TFile ff("generated.root", "recreate");
+
+	hgenPi0->Write();
+	hgenGamma->Write();
+	hgenBeta->Write();
+
+	fhPi0MC->Write();
+	fhEtaMC->Write();
+	fhEtaPrimeMC->Write();
+	fhOmegaMC->Write();
+	fhGammaMC->Write();
+	fhK0MC->Write();
+	hGammaSources->Write();
+	hGammaPrim->Write();
+	fhPdgvsPt_MCTracks->Write();
+	hCounter->Write();
+
+	ff.Close();
+	hgenPi0->Draw();
 }

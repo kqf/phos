@@ -8,29 +8,41 @@ print sys.argv[1]
 class NNL2ROOT(object):
     def __init__(self, fname, scale = 1):
         super(NNL2ROOT, self).__init__()
-        self.scale = scale = 1 
-        self.data, self.sqrts = self.read(fname)
-        self.graph()
+        self.scale = scale
+        self.data, self.sqrts, self.factor = self.read(fname)
 
+        # Minimum bias cross section (in mb) for different energies:
+        cs = {7000: 54.3, 13000: 74}.get(self.sqrts, 0)
+        assert cs > 0, "The cross-section for this energy is unknown. Probably you are doing somethig wrong"
+        self.scale = self.scale * cs
 
     def read(self, fname):
         with open(fname, 'r') as ff:
             f = ff.readlines()
             lines = (l for l in f if '*****' in l)
             data = [[float(token) for token in line.split() if '.' in token] for line in lines]
-            sqrts = float([l for l in f if 'square root of' in l][0].split()[4])
-            for i in f: print i
+            sqrts = int(float([l for l in f if 'square root of' in l][0].split()[4]))
+            # Initial factorisation scale
+            factor = float([l for l in f if 'FACTO SCALE**2' in l][0].split('=')[1].split()[0]) ** 0.5
 
-        return data, sqrts
-
+        return data, sqrts, factor
 
     def graph(self):
         graph = ROOT.TGraph()
-        graph.SetName('nll')
+        graph.SetName('nnl')
         for i, (pt, sig) in enumerate(self.data): graph.SetPoint(i, pt, sig * self.scale)
-        graph.SetTitle('NNL theoretical curve #sqrt{s} = %0.2g TeV' %  (self.sqrts ) + '; P_{t}, GeV/c')
+        graph.SetTitle('NNL theoretical curve #sqrt{s} = %0.2g TeV | scale %0.2g' %  (self.sqrts / 1000., self.factor) +  '; P_{t}, GeV/c; #sigma_{MB} #sigma_{#gamma direct}, mb')
         return graph
 
+    def histogram(self):
+        # The histogram parameters below should be modified according to bin centers
+        # that are listed conf file for nnl calculation .
+        hist = ROOT.TH1D('hnnl', 'NNL theoretical curve #sqrt{s} = %0.2g TeV | scale %0.2g' %  (self.sqrts / 1000, self.factor) + '; P_{t}, GeV/c; #sigma_{MB} #sigma_{#gamma direct}, mb', 400, 0, 40)
+        hist.Rebin(16)
+        # hist.Sumw2()
+        for pt, sig in self.data: hist.Fill(pt, sig * self.scale)
+        for i in range(hist.GetNbinsX()): hist.SetBinError(i + 1, 0)
+        return hist
 
     def draw(self):
         graph = self.graph()
@@ -41,19 +53,18 @@ class NNL2ROOT(object):
         raw_input('...')
 
     def save(self, filename):
+        hist, graph = self.histogram(), self.graph() 
         ofile = ROOT.TFile(filename, 'recreate')
-        graph = self.graph()
-        graph.Write('nnl')
+        hist.Write()
+        graph.Write()
         ofile.Write()
 
 
 def main():
     if len(sys.argv) < 2: print 'Please, specify the input file.'
-    reader = NNL2ROOT(sys.argv[1])
-    # When it will be clear what is the scale then
-    # All the parameters can be hardcoded.
-    # reader = NNL2ROOT(sys.argv[1],  1. / 74. / 1e6 * 1e3)
-    reader.save('nnl.root')
+    # Default values are given in pb ~ 1e12b but we need mb ~ 1e3b.
+    reader = NNL2ROOT(sys.argv[1], 1e3 * 1e-12)
+    reader.save(sys.argv[1].replace('.out', '') + '.root')
 
 if __name__ == '__main__':
     main()
