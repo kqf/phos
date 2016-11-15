@@ -1,0 +1,45 @@
+readKine()
+{
+
+  // Read primary particles from Kinematics.root,
+  // look for pi0 and and print them
+
+  AliRunLoader* rl = AliRunLoader::Open("galice.root");
+  TH1F *hgenPi0=new TH1F("hgenPi0","Particle p_{T}",250,0.,25.);
+  TH1F *hgenGamma=new TH1F("hgenGamma","Particle p_{T}, #gamma-s",250,0,25);
+  TH1F *hgenBeta=new TH1F("hgenBeta","Particle p_{T}, #beta-s",250,0,25);
+
+
+  for (Int_t ievent = 0; ievent < rl->GetNumberOfEvents(); ievent++) {
+    printf("\nEvent %d\n",ievent);
+    rl->GetEvent(ievent);
+    rl->LoadKinematics();
+    AliStack *stack = rl->Stack();
+    Int_t nPrim = stack->GetNprimary();
+    TParticle *particle;
+    Int_t iPi0 = 0;
+
+    for (Int_t iPrim=0; iPrim<nPrim; iPrim++) {
+      particle = stack->Particle(iPrim);
+      Int_t kf = particle->GetPdgCode();
+        if (kf==111) {
+	iPi0++;
+	printf("E=%.1f GeV, status=%d, daughter=(%d:%d)\n",
+	       particle->Energy(),
+	       particle->GetStatusCode(),
+	       particle->GetFirstDaughter(),
+	       particle->GetLastDaughter());
+        hgenPi0->Fill(particle->Pt());
+      }
+        if(kf==22)hgenGamma->Fill(particle->Pt());
+        if(TMath::Abs(kf)==11) hgenBeta->Fill(particle->Pt());
+    }
+    printf("N(pi0)=%d\n",iPi0);
+  }
+  TFile ff("generated.root","recreate");
+  hgenPi0->Write();
+  hgenGamma->Write();
+  hgenBeta->Write();
+  ff.Close();
+ hgenPi0->Draw();
+}

@@ -27,4 +27,4 @@ Histograms and distributions obtained here should be processed further locally.
 --------------------------------
 
 This subfolder contains all the macros to calculate and plot physical results.
-Right now it contains some scripts that extract [;\pi^{0};] raw [;p_T$;] spectrum.
+Right now it contains some scripts that extract $\pi^{0}$ raw $p_T$$ spectrum.
