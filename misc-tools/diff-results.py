@@ -13,6 +13,8 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def error(s): print bcolors.FAIL + s + bcolors.ENDC
+
 def draw_and_save(name, draw=False, save=True):
     canvas = ROOT.gROOT.FindObject('c1')
     if not canvas: return
@@ -57,6 +59,12 @@ def compare_chi(hist1, hist2):
     if isclose(1., percentile): return #everything is fine
     print bcolors.WARNING + 'Rate of change of %s%s%s is' % (bcolors.OKGREEN, h.GetName(), bcolors.WARNING), percentile, bcolors.ENDC
 
+def compare_bin_by_bin(hist1, hist2):
+    i1, i2 = hist1.Integral(), hist2.Integral()
+    if int(i1 - i2) != 0: return error('The histograms ' + hist1.GetName() + ' are different. Integral1 - Integral2 = ' + str(i1 - i2))
+    f = lambda x: [ x.GetBinContent(i + 1) for i in range(x.GetNbinsX())]
+    if not f(hist1) == [i for i in f(hist2)]: error('Some bins are different in ' + hist1.GetName())
+
 def compare_visually(hist1, hist2):
     hist1.SetLineColor(37)
     hist2.SetLineColor(48)
@@ -96,8 +104,10 @@ def compare_visually(hist1, hist2):
 
     draw_and_save(hist1.GetName(), True, True)
 
+
 def Sum(lst):
     return sum(i.GetEntries() for i in lst)
+
 
 def compare_lists_of_histograms(l1, l2, ignore = [], compare = compare_chi):
     if len(l1) != len(l2): 
@@ -117,19 +127,16 @@ def compare_histograms():
     ROOT.gROOT.cd()
     ROOT.gStyle.SetOptStat(False)
 
-
-    if len(sys.argv) < 3:
-        print 'Usage: diff-results file1.root file2.root'
-        return
     hists1 = get_my_list(sys.argv[1])
     hists2 = get_my_list(sys.argv[2])
 
     not_reliable = []
-    compare_lists_of_histograms(hists1, hists2, not_reliable, compare_visually)
+    compare_lists_of_histograms(hists1, hists2, not_reliable, compare_bin_by_bin)
 
 
 
 def main():
+    assert len(sys.argv) > 2, 'Usage: diff-results file1.root file2.root'
     compare_histograms()
 
 if __name__ == '__main__':
