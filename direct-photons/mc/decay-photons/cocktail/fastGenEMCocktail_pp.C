@@ -6,8 +6,6 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 {
 	SetupEnvironment();
 	//===============
-	static Int_t mesonPDG = 111; // PDG code of a neutral meson to generate
-
 	Double_t yMin = -0.30;
 	Double_t yMax =  0.30;
 
@@ -15,7 +13,6 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 	Double_t phiMax = 340;
 
 	//===============
-
 	//seed
 	if (gSystem->Getenv("CONFIG_SEED"))
 		seed = atoi(gSystem->Getenv("CONFIG_SEED"));
@@ -45,7 +42,7 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 
 
 	// TODO: rewrite me
-	TString mesonParamFile = "pi0_Tsallis_pp_7Tev.root";
+	TString mesonParamFile = "pi0-7TeV-tsallis.root";
 	TFile * fpp = TFile::Open(mesonParamFile);
 	if (!fpp) Fatal("", Form("Cannot open file %s", mesonParamFile));
 	TF1  * ptSpectrum = (TF1 *)fpp->Get("Tsalis");
@@ -57,8 +54,8 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 
 	AliGenParam * genMeson = new AliGenParam(20, AliGenPHOSlib::kPion,
 	        myGener->GetPt(AliGenPHOSlib::kPion, ""),
-	        myGener->GetY (AliGenPHOSlib::kPi0Flat, ""),
-	        myGener->GetV2 (AliGenPHOSlib::kPi0Flat, ""),
+	        myGener->GetY (AliGenPHOSlib::kPion, ""),
+	        myGener->GetV2 (AliGenPHOSlib::kPion, ""),
 	        myGener->GetIp(AliGenPHOSlib::kPion, ""));
 
 
@@ -149,13 +146,7 @@ void ProcessEnvironmentVars()
 	if (gSystem->Getenv("CONFIG_BEAMS"))
 		beams = gSystem->Getenv("CONFIG_BEAMS");
 
-	// PDG code of neutral meson
-	if (gSystem->Getenv("CONFIG_MESON_PDG"))
-		mesonPDG = atoi(gSystem->Getenv("CONFIG_MESON_PDG"));
-
 	// Random Number seed
 	if (gSystem->Getenv("CONFIG_SEED"))
 		sseed = atoi(gSystem->Getenv("CONFIG_SEED"));
-
-
 }

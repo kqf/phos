@@ -9,7 +9,10 @@ simulate: $(FILES)
 	# aliroot -b -l -q fastGenEMCocktail2.C
 	aliroot -b -l -q fastGenEMCocktail_pp.C
 	aliroot -b -l -q readKine.C
-	../../../../misc-tools/diff-results.py generated.root  old-version.root 2> /dev/null 
+	
+	../../../../misc-tools/diff-results.py generated.root  pi0-old.root 2> /dev/null 
+	# ../../../../misc-tools/diff-results.py generated.root  eta-old.root 2> /dev/null 
+	# ../../../../misc-tools/diff-results.py generated.root  omega-old.root 2> /dev/null 
 
 
 upload:
