@@ -1,50 +1,48 @@
 readKine()
 {
+	gROOT->LoadMacro("fastGenEMCocktail_pp.C");
+	SetupEnvironment();
+
+	gROOT->LoadMacro("ParticleKinematics.h+");
 
 	// Read primary particles from Kinematics.root,
 	// look for pi0 and and print them
+	AliRunLoader * runloader = AliRunLoader::Open("galice.root");
 
-	AliRunLoader * rl = AliRunLoader::Open("galice.root");
-	TH1F * hgenPi0 = new TH1F("hgenPi0", "Particle p_{T}", 250, 0., 25.);
-	TH1F * hgenGamma = new TH1F("hgenGamma", "Particle p_{T}, #gamma-s", 250, 0, 25);
-	TH1F * hgenBeta = new TH1F("hgenBeta", "Particle p_{T}, #beta-s", 250, 0, 25);
-
-
-	for (Int_t ievent = 0; ievent < rl->GetNumberOfEvents(); ievent++)
+	ParticleKinematics particles[] =
 	{
-		printf("\nEvent %d\n", ievent);
-		rl->GetEvent(ievent);
-		rl->LoadKinematics();
-		AliStack * stack = rl->Stack();
-		Int_t nPrim = stack->GetNprimary();
-		TParticle * particle;
-		Int_t iPi0 = 0;
+		  ParticleKinematics(ParticleKinematics::kPion)
+		, ParticleKinematics(ParticleKinematics::kEta)
+		, ParticleKinematics(ParticleKinematics::kOmega)
+	};
+	Int_t nspecies = sizeof(particles) / sizeof(ParticleKinematics);
 
-		for (Int_t iPrim = 0; iPrim < nPrim; iPrim++)
+	TH1F * totalGammas = new TH1F("hgenGamma", "Total amount of #gamma-s p_{T}; p_{t}, GeV/c; counts", 250, 0, 25);
+
+	for (Int_t ievent = 0; ievent < runloader->GetNumberOfEvents(); ievent++)
+	{
+		cout << "Processing event # " << ievent << endl;
+
+		runloader->GetEvent(ievent);
+		runloader->LoadKinematics();
+		AliStack * stack = runloader->Stack();
+
+		for (Int_t iPrim = 0; iPrim < stack->GetNprimary(); iPrim++)
 		{
-			particle = stack->Particle(iPrim);
-			Int_t kf = particle->GetPdgCode();
-			if (kf == 111)
-			{
-				iPi0++;
+			TParticle * particle = stack->Particle(iPrim);
 
-				printf("E=%.1f GeV, status=%d, daughter=(%d:%d)\n",
-						particle->Energy(),
-						particle->GetStatusCode(),
-						particle->GetFirstDaughter(),
-						particle->GetLastDaughter());
+			for (int i = 0; i < nspecies; ++i)
+				particles[i].Fill(stack, particle);
 
-				hgenPi0->Fill(particle->Pt());
-			}
-			if (kf == 22)hgenGamma->Fill(particle->Pt());
-			if (TMath::Abs(kf) == 11) hgenBeta->Fill(particle->Pt());
+			if(particle->GetPdgCode() == 22) 
+				totalGammas->Fill(particle->Pt());
 		}
-		printf("N(pi0)=%d\n", iPi0);
 	}
+
 	TFile ff("generated.root", "recreate");
-	hgenPi0->Write();
-	hgenGamma->Write();
-	hgenBeta->Write();
+	totalGammas->Write();
+	for (int i = 0; i < nspecies; ++i) 
+		particles[i].Write();
+
 	ff.Close();
-	hgenPi0->Draw();
 }

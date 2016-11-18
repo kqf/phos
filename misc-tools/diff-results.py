@@ -38,8 +38,6 @@ def get_my_list(filename = 'AnalysisResults.root'):
     for h in hists:
         h.label = filename.split('_')[-1].replace('.root','')
     return hists
-    
-
 
 def find_similar_in(lst, ref):
     candidates = [h for h in lst if h.GetName() == ref.GetName() ]
@@ -64,6 +62,7 @@ def compare_bin_by_bin(hist1, hist2):
     if int(i1 - i2) != 0: return error('The histograms ' + hist1.GetName() + ' are different. Integral1 - Integral2 = ' + str(i1 - i2))
     f = lambda x: [ x.GetBinContent(i + 1) for i in range(x.GetNbinsX())]
     if not f(hist1) == [i for i in f(hist2)]: error('Some bins are different in ' + hist1.GetName())
+    print bcolors.OKGREEN + 'Histograms '  + hist1.GetName() + ' are OK!' + bcolors.ENDC
 
 def compare_visually(hist1, hist2):
     hist1.SetLineColor(37)
@@ -104,17 +103,15 @@ def compare_visually(hist1, hist2):
 
     draw_and_save(hist1.GetName(), True, True)
 
-
 def Sum(lst):
     return sum(i.GetEntries() for i in lst)
-
 
 def compare_lists_of_histograms(l1, l2, ignore = [], compare = compare_chi):
     if len(l1) != len(l2): 
         print bcolors.FAIL + 'Warning files have different size' + bcolors.ENDC
 
     if Sum(l1) != Sum(l2):
-        print 'Total entries: ', Sum(l1), Sum(l2)
+        print 'Total entries in the the lists (sum over all! objects): ', Sum(l1), Sum(l2)
 
     for h in l1: 
         candidate = find_similar_in(l2, h)
@@ -132,7 +129,6 @@ def compare_histograms():
 
     not_reliable = []
     compare_lists_of_histograms(hists1, hists2, not_reliable, compare_bin_by_bin)
-
 
 
 def main():

@@ -42,32 +42,28 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 
 
 	// TODO: rewrite me
-	TString mesonParamFile = "pi0-7TeV-tsallis.root";
-	TFile * fpp = TFile::Open(mesonParamFile);
-	if (!fpp) Fatal("", Form("Cannot open file %s", mesonParamFile));
-	TF1  * ptSpectrum = (TF1 *)fpp->Get("Tsalis");
-	Info("", Form("\n\tGenerator %s is initialized\n", ptSpectrum->GetTitle()));
-
 	gROOT->LoadMacro("AliGenPHOSMesons.h++") ;
 	AliGenPHOSMesons * myGener = new AliGenPHOSMesons() ;
 
+	AliGenParam * genMesons[] = {    new AliGenParam(20, myGener, AliGenPHOSlib::kPion, "")
+									,new AliGenParam(20, myGener, AliGenPHOSlib::kEta, "") 
+									,new AliGenParam(20, myGener, AliGenPHOSlib::kOmega, "") 
+								};
 
-	AliGenParam * genMeson = new AliGenParam(20, AliGenPHOSlib::kPion,
-	        myGener->GetPt(AliGenPHOSlib::kPion, ""),
-	        myGener->GetY (AliGenPHOSlib::kPion, ""),
-	        myGener->GetV2 (AliGenPHOSlib::kPion, ""),
-	        myGener->GetIp(AliGenPHOSlib::kPion, ""));
-
-
-	genMeson->SetPhiRange(phiMin, phiMax);
-	genMeson->SetYRange  (yMin, yMax) ;
-	genMeson->SetPtRange (0.5, 100.) ;
-	genMeson->SetOrigin  (0, 0, 0);
-	genMeson->SetSigma   (0., 0., 0.);
-	genMeson->SetDecayer(decayer);
+	Int_t nComponents = sizeof(genMesons)/sizeof(AliGenParam *);
+	for(Int_t i = 0; i < nComponents; ++i)
+	{
+		genMesons[i]->SetPhiRange(phiMin, phiMax);
+		genMesons[i]->SetYRange  (yMin, yMax) ;
+		genMesons[i]->SetPtRange (0.5, 100.) ;
+		genMesons[i]->SetOrigin  (0, 0, 0);
+		genMesons[i]->SetSigma   (0., 0., 0.);
+		genMesons[i]->SetDecayer(decayer);
+	}
 
 	AliGenCocktail * cocktail_generator = new AliGenCocktail();
-	cocktail_generator->AddGenerator(genMeson, "Tsalis", 1) ;
+	for(Int_t i = 0; i < nComponents; ++i) 
+		cocktail_generator->AddGenerator(genMesons[i], "Tsalis", 1) ;
 	cocktail_generator->SetOrigin(0., 0., 0.);
 	cocktail_generator->SetSigma(0., 0., 0.);
 	cocktail_generator->Init();
