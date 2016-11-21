@@ -1,4 +1,6 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
+RESULTS = LHC16k
+MPATH = /alice/cern.ch/user/o/okovalen/phos-protons-example/LHC16k/
 
 caf:
 	root -l RunPoD.C
@@ -11,6 +13,7 @@ grid:
 
 terminate:
 	root -l -q 'run.C("grid", "terminate")'
+	mv AnalysisResults.root $(RESULTS).root
 	echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\x07"
 
@@ -19,6 +22,11 @@ test:
 	echo "Local analysis" >> .runhistory
 	./dumpres.py 2> /dev/null
 	@echo -e "\x07"
+
+runs:
+	mkdir -p $(RESULTS)
+	for run in $$(alien_ls /$(MPATH) | grep 000);do alien_cp alien://$(MPATH)/$$run/AnalysisResults.root $(RESULTS)/$$run.root; done	
+	echo -e "\x07"
 
 clean:
 	rm *.so *.d *~ Task*
