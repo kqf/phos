@@ -10,7 +10,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test",Int_t * runs, Int_t n
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20160717-1");
+	plugin->SetAliPhysicsVersion("vAN-20161119-1");
 
 
 	plugin->SetExecutableCommand("aliroot");
