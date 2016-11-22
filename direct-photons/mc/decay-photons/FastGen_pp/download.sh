@@ -1,22 +1,9 @@
-SEED=6543
+function download_from_grid()
+{
+	counter=1
+    MHOME=/alice/cern.ch/user/o/okovalen
+	for run in $(alien_find $MHOME/$1/output/$2/ $3 | grep .root); do echo $run; alien_cp alien:$run tmp_results/$((counter++)).root; done
+}
 
-MHOME=/alice/cern.ch/user/o/okovalen
-REPO=FastGen_pp
-OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
-
-
-upload:
-	alien_rmdir $(MHOME)/$(REPO)
-	alien_mkdir $(MHOME)/$(REPO)/
-	alien_cp -n * alien:$(MHOME)/$(REPO)/
-
-generated.root:
-	mkdir -p tmp_results/
-	./download.sh $(OUTPUT) generated.root
-	ls -ltr tmp_results | wc -l
-	hadd generated.root tmp_results/*.root 
-	echo -e "\x07"
-
-clean:
-	rm -rf tmp_results
-	rm -f *.root *~ 
+# download_from_grid Task SEED filename
+download_from_grid $1 $2 $3

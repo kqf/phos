@@ -1,0 +1,26 @@
+Executable = "/alice/cern.ch/user/o/okovalen/fast-cocktail/fast_cocktail_pp.sh";
+Jobtag={"comment:PHOS, pions"} ;
+
+Packages={"VO_ALICE@AliPhysics::vAN-20160717-1",
+         "VO_ALICE@APISCONFIG::V1.1x"};
+
+
+#TTL = "6 h";
+
+InputFile= {"LF:/alice/cern.ch/user/o/okovalen/fast-cocktail/fastGenEMCocktail_pp.C",
+            "LF:/alice/cern.ch/user/o/okovalen/fast-cocktail/AliGenPHOSMesons.h",
+            "LF:/alice/cern.ch/user/o/okovalen/fast-cocktail/ParticleKinematics.h",
+            "LF:/alice/cern.ch/user/o/okovalen/fast-cocktail/readKine.C" 
+            };
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"generated.root@disk2"};
+
+splitarguments="#alien_counter#";
+split="production:1-2000";
+
+OutputDir="/alice/cern.ch/user/o/okovalen/fast-cocktail/output/$1/#alien_counter#";
+
+
+Workdirectorysize={"4000MB"};
+Email="oleksandr.kovalenko@cern.ch";

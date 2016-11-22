@@ -11,16 +11,18 @@ readKine()
 
 	ParticleKinematics particles[] =
 	{
-		  ParticleKinematics(ParticleKinematics::kPion)
+		  ParticleKinematics(ParticleKinematics::kAny)
+		, ParticleKinematics(ParticleKinematics::kPion)
 		, ParticleKinematics(ParticleKinematics::kEta)
 		, ParticleKinematics(ParticleKinematics::kOmega)
 	};
 	Int_t nspecies = sizeof(particles) / sizeof(ParticleKinematics);
 
-	TH1F * totalGammas = new TH1F("hgenGamma", "Total amount of #gamma-s p_{T}; p_{t}, GeV/c; counts", 250, 0, 25);
+	TH1F * counter = new TH1F("hCounter", "Event counter", 1, 0, 1);
 
 	for (Int_t ievent = 0; ievent < runloader->GetNumberOfEvents(); ievent++)
 	{
+		counter->Fill(0.5);
 		cout << "Processing event # " << ievent << endl;
 
 		runloader->GetEvent(ievent);
@@ -33,14 +35,11 @@ readKine()
 
 			for (int i = 0; i < nspecies; ++i)
 				particles[i].Fill(stack, particle);
-
-			if(particle->GetPdgCode() == 22) 
-				totalGammas->Fill(particle->Pt());
 		}
 	}
 
 	TFile ff("generated.root", "recreate");
-	totalGammas->Write();
+	counter->Write();
 	for (int i = 0; i < nspecies; ++i) 
 		particles[i].Write();
 

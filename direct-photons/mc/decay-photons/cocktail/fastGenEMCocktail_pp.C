@@ -14,11 +14,11 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 
 	//===============
 	//seed
+	Int_t seed = 0;
 	if (gSystem->Getenv("CONFIG_SEED"))
 		seed = atoi(gSystem->Getenv("CONFIG_SEED"));
-	gRandom->SetSeed(1);
-	cout << "seed = " << gRandom->GetSeed() << endl;
-
+	gRandom->SetSeed(seed);
+	// cout << "seed = " << gRandom->GetSeed() << endl;
 
 	// Runloader
 	AliRunLoader * runloader = AliRunLoader::Open("galice.root", "FASTRUN", "recreate");
