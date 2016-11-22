@@ -4,12 +4,27 @@ import ROOT
 
 from spectrum.spectrum import PtAnalyzer, Spectrum
 
+def my_input(filename):
+    lst = ROOT.TFile(filename).PhysNoTender
+    nevents = lst.FindObject('TotalEvents').GetEntries()
+    rawhist = lst.FindObject('hMassPtN3')
+    rawmix = lst.FindObject('hMixMassPtN3')
+    return [nevents, rawhist, rawmix]
+
+def example_input(filename):
+    lst = ROOT.TFile(filename).Data
+    nevents = lst.FindObject('hSelEvents').GetBinContent(4)
+    rawhist = lst.FindObject('hMassPtN3')
+    rawmix = lst.FindObject('hMiMassPtN3')
+    return [nevents, rawhist, rawmix]
+
+
 def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
-    mfile = ROOT.TFile('input-data/LHC16k.root')
+    nfile = ROOT.TFile('input-data/LHC16k-NoBadmap.root')
 
-    second = Spectrum(mfile.PhysNoTender, label = 'Mixing', mode='q').evaluate()
-    first  = PtAnalyzer(mfile.PhysNoTender, label = 'No Mixing', mode='q').quantities()
+    first = PtAnalyzer(my_input('input-data/LHC16k.root'), label = 'BadMap', mode='q').quantities()
+    second = PtAnalyzer(example_input('input-data/LHC16k-NoBadmap.root'), label = 'Tender', mode='q').quantities()
 
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()

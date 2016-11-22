@@ -23,14 +23,10 @@ class PtDependent(object):
         return hist 
 
 class PtAnalyzer(object):
-    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v'):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v'):
         super(PtAnalyzer, self).__init__()
-        self.nevents = lst.FindObject('TotalEvents').GetEntries()
-        print 'searching for ', name
-        self.rawhist = lst.FindObject(name)
-        self.rawmix = lst.FindObject('hMix' + name[1:])
+        self.nevents, self.rawhist, self.rawmix = lst
         self.label = label
-        self.get_fit_range = None
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False}.get(mode, True)
         self.default_range = (0.05, 0.3)
 
@@ -98,8 +94,8 @@ class PtAnalyzer(object):
         real.Sumw2()
 
         mixed = self.estimate_background(real, mixed, intgr_range)
-        if self.label == 'Mixing': 
-            real, mixed = self.substract_background(real, mixed)
+        # if self.label == 'Mixing': 
+        real, mixed = self.substract_background(real, mixed)
   
         res = ExtractQuantities(real, intgr_range, show_img = self.show_img)
         return res
@@ -145,10 +141,10 @@ class PtAnalyzer(object):
 
 
 class Spectrum(object):
-    def __init__(self, lst, name= 'hMassPtN3', label ='N_{cell} > 3', mode = 'v', nsigmas = 3):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 3):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
-        self.analyzer = PtAnalyzer(lst, name, label, mode)
+        self.analyzer = PtAnalyzer(lst, label, mode)
 
     def evaluate(self):
         quantities = self.analyzer.quantities()
