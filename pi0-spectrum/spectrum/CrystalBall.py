@@ -59,7 +59,7 @@ def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1, name = '', show_img = Fals
     return fitfun, background
 
 def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1, show_img = True):
-    fitfun, background = Fit(h, intgr_range, rebin, show_img = show_img)
+    fitfun, background = Fit(h, rebin = rebin, show_img = show_img)
 
     # integral value under crystal ball with amplitude = 1, sigma = 1
     # (will be sqrt(2pi) at alpha = infinity)
@@ -76,8 +76,13 @@ def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1, show_img = T
     A = fitfun.GetParameter(0)
     eA = fitfun.GetParError(0)
 
-    nraw = nraw11 * A * sigma / h.GetBinWidth(1)
-    enraw = nraw * (eA / A + esigma / sigma)
+    # nraw = nraw11 * A * sigma / h.GetBinWidth(1)
+    # enraw = nraw * (eA / A + esigma / sigma)
+
+    # TODO: compare this to analytic formula.
+    a, b = intgr_range
+    nraw = fitfun.Integral(a, b)
+    enraw = fitfun.IntegralError(a, b)
 
     ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
     return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / ndf, 0

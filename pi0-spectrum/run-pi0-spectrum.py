@@ -23,8 +23,8 @@ def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
     nfile = ROOT.TFile('input-data/LHC16k-NoBadmap.root')
 
-    first = PtAnalyzer(my_input('input-data/LHC16k.root'), label = 'BadMap', mode='q').quantities()
-    second = PtAnalyzer(example_input('input-data/LHC16k-NoBadmap.root'), label = 'Tender', mode='q').quantities()
+    first = Spectrum(my_input('input-data/LHC16k.root'), label = 'BadMap', mode='q').evaluate()
+    second = Spectrum(example_input('input-data/LHC16k-NoBadmap.root'), label = 'Tender', mode='q').evaluate()
 
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()
