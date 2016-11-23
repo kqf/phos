@@ -29,6 +29,7 @@ class PtAnalyzer(object):
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False}.get(mode, True)
         self.default_range = (0.05, 0.3)
+        self.save_img = True
 
     def divide_into_bins(self):
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
@@ -48,7 +49,8 @@ class PtAnalyzer(object):
 
         # Fit the ratio
         # Change here definition if integration range
-        fitf, bckgrnd = Fit(ratio, name = 'ratio_real_to_mixed', show_img = self.show_img)
+        fitf, bckgrnd = Fit(ratio)
+        draw_and_save([ratio], name = 'ratio_real_to_mixed', draw= self.show_img, save= self.save_img, suffix = self.label)
         # fitf, bckgrnd = Fit(ratio, intgr_range, name = 'ratio_real_to_mixed', show_img = self.show_img)
 
         # Scale the mixed distribution
@@ -59,7 +61,7 @@ class PtAnalyzer(object):
         real.Draw()
         mixed.Draw('same')
         real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax());
-        draw_and_save([real, mixed], 'real_and_scaled_background', self.show_img)
+        draw_and_save([real, mixed], 'real_and_scaled_background', self.show_img, self.save_img, suffix = self.label)
         return mixed
 
     def substract_background(self, real, mixed):
@@ -97,7 +99,8 @@ class PtAnalyzer(object):
         # if self.label == 'Mixing': 
         real, mixed = self.substract_background(real, mixed)
   
-        res = ExtractQuantities(real, intgr_range, show_img = self.show_img)
+        res = ExtractQuantities(real, intgr_range)
+        draw_and_save([real], 'fit_', self.show_img, self.save_img, suffix = self.label)
         return res
 
     def histograms(self, data, ranges):
@@ -145,10 +148,12 @@ class Spectrum(object):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
         self.analyzer = PtAnalyzer(lst, label, mode)
+        self.analyzer.save_img = False
 
     def evaluate(self):
         quantities = self.analyzer.quantities()
         ranges = self.fit_ranges(quantities)
+        self.analyzer.save_img = True
         return self.analyzer.quantities(ranges)
 
     def fit_ranges(self, quantities):
@@ -162,7 +167,7 @@ class Spectrum(object):
         fitsigma.SetParameter(2, 0)
         fitsigma.SetParameter(3, 0)
         sigma.Fit(fitsigma, "qr")
-        draw_and_save([sigma], draw=True)
+        draw_and_save([sigma], draw=True, suffix= self.analyzer.label)
 
         # canvas.Clear()
         mass.Draw()
@@ -172,8 +177,8 @@ class Spectrum(object):
         fitmass.SetParameter(2, 2.38)
         fitmass.SetParameter(3, 0.0033)
         mass.Fit(fitmass, "qr")
-        draw_and_save([mass], draw=True)
-        canvas.Update()
+        draw_and_save([mass], draw=True, suffix= self.analyzer.label)
+        if canvas: canvas.Update()
         mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
                                  fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt)) 
 

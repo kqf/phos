@@ -13,7 +13,7 @@ def CBParameters():
     b = n / alpha - alpha
     return alpha, n, a, b
 
-def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1, name = '', show_img = False):
+def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     # Fits the pi0 peak with crystal ball + pol2,
 
     if (not h) or (h.GetEntries() == 0): return [0] * 8
@@ -55,11 +55,10 @@ def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1, name = '', show_img = Fals
     background.SetParameter(1, fitfun.GetParameter(4))
     background.SetParameter(2, fitfun.GetParameter(5))
 
-    draw_and_save([h], name, show_img)
     return fitfun, background
 
-def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1, show_img = True):
-    fitfun, background = Fit(h, rebin = rebin, show_img = show_img)
+def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1):
+    fitfun, background = Fit(h, rebin = rebin)
 
     # integral value under crystal ball with amplitude = 1, sigma = 1
     # (will be sqrt(2pi) at alpha = infinity)

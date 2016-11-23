@@ -1,23 +1,25 @@
 import ROOT
 
 
-def wait(name, draw):
+def wait(name, draw, save = True, suffix = ''):
     canvas = ROOT.gROOT.FindObject('c1')
     canvas.Update()
-    canvas.SaveAs('results/' + name + '.pdf')
+    suffix = suffix.replace(' ', '_')
+    if save: canvas.SaveAs('results/' + name+ '.pdf')
 
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
     if draw: ROOT.gApplication.Run(True)
 
 
-def draw_and_save(histograms, name = '', draw = True):
+def draw_and_save(histograms, name = '', draw = True, save = True, suffix = ''):
+    ROOT.gStyle.SetOptStat('erm')
     histograms = [h.Clone(h.GetName() + str(id(h))) for h in histograms]
     if name: 
-        for h in histograms: h.SetTitle(name.replace('_', ' '))
+        for h in histograms: h.SetTitle(name.replace('_', ' ') + ' ' + suffix + ' ' + h.GetTitle())
 
     histograms[0].Draw()
     for h in histograms: h.Draw('same')
-    wait(name + '_' + histograms[0].GetName(), draw)
+    wait(name + histograms[0].GetName() +  '_' + suffix , draw, save, suffix)
 
        
 def nicely_draw(hist, option = '', legend = None):
@@ -34,5 +36,5 @@ def nicely_draw(hist, option = '', legend = None):
     legend.SetTextSize(0.04)
     legend.AddEntry(hist, hist.label)
     legend.Draw('same')
-    wait('xlin_' + hist.GetName(), draw = True)
+    wait('xlin_' + hist.GetName(), draw = True, save = True, suffix = '')
   
