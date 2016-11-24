@@ -83,6 +83,20 @@ def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     nraw = fitfun.Integral(a, b)
     enraw = fitfun.IntegralError(a, b)
 
+    # Analytic formula for CB integral in this case
+    # def S(mean, sigma, up, low, A):
+    #     first  =  a * pow(b + alpha, 1. - n) / (n - 1.) 
+    #     second = a * pow(b - low/sigma + mean/sigma, 1. - n) / (n - 1.) 
+    #     third  = ROOT.TMath.Erf( (up/sigma - mean/sigma) / ROOT.TMath.Sqrt(2.)) 
+    #     fourth = ROOT.TMath.Erf( -alpha / ROOT.TMath.Sqrt(2.)) 
+    #     return sigma * A * ( first - second + ROOT.TMath.Sqrt(ROOT.TMath.Pi() / 2.) * (third - fourth) )
+
+    # low, up = intgr_range 
+    # analytic = S(mass, sigma, up, low, A)
+    # print 'Difference numeric - analytic ', nraw - analytic, '  numeric ',  nraw, 'analytic ',analytic 
+    # nraw =  (nraw - analytic) / nraw
+
+
     ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
     return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / ndf, 0
     
