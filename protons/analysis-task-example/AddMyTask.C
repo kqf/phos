@@ -4,8 +4,7 @@ AliAnalysisTaskPi0v4 * AddMyTask(UInt_t offlineTriggerMask, TString description,
 	if (!mgr) return;
 
 	AliAnalysisTaskPi0v4 * task = new AliAnalysisTaskPi0v4("Pi0Task");
-
-	// if( !badmap.IsNull() ) task->SetBadMap(badmap);
+	task->SetBadMap(badmap);
     // if(nexc > 0) task->SetBadCells(excells, nexc);
     // if( (nexc > 0) && (!badmap.IsNull())) cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;
 

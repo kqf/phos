@@ -7,6 +7,9 @@
 // Analysis task for pi0 and eta meson analysis in pp collisions in AOD
 // Authors: Yuri Kharlov, Dmitri Peressounko
 
+#include "TROOT.h"
+#include "TFile.h"
+
 class TObjArray;
 class TList;
 class TClonesArray;
@@ -15,6 +18,7 @@ class TH2I;
 class TH2F;
 class TH3F;
 class AliPHOSGeometry;
+class TFile;
 // class AliTriggerAnalysis;
 
 #include "TH2I.h"
@@ -42,6 +46,28 @@ public:
     fPHOSBadMap[mod]=new TH2I(*h) ;
     printf("Set %s \n",fPHOSBadMap[mod]->GetName());
   }
+
+  void SetBadMap(const char * filename)
+  {
+    TFile * fBadMap = TFile::Open(filename);
+    if (!fBadMap->IsOpen())
+      AliFatal(Form("Cannot set BadMap %s doesn't exist", filename));
+
+    cout << "\n\n...Adding PHOS bad channel map \n"  << endl;
+    gROOT->cd();
+
+    for (Int_t module = 1; module <= 4; ++module)
+    {
+      TH2I * h = (TH2I *) fBadMap->Get(Form("PHOS_BadMap_mod%d", module));
+      if (!h) AliFatal( Form("PHOS_BadMap_mod%d doesn't exist", module));
+
+      fPHOSBadMap[module - 1] = new TH2I(*h);
+      cout << "Set " <<  fPHOSBadMap[module - 1]->GetName() << endl;
+    }
+    fBadMap->Close();
+    cout << "\n\n...PHOS BadMap is set now." << endl;
+  }
+
   
 private:
   AliAnalysisTaskPi0v4(const AliAnalysisTaskPi0v4&); // not implemented
