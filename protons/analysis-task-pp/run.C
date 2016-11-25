@@ -2,14 +2,14 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    bool useTender = kFALSE;
+    bool useTender = kTRUE;
     // TString period = "LHC16h";
     TString period = "LHC16k";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
     Int_t nruns;
-    gROOT->LoadMacro("../qa/qa-task/getRunsBadCells.C");
+    gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
     getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
 
@@ -59,10 +59,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16i.root");
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "BadMap_LHC16i.root");
-        AddMyTask(AliVEvent::kINT7, "LHC16i ## only my(!) badmap in tender ## only tender", "OnlyTender");
+        AddMyTask(AliVEvent::kINT7, period + "## my badmap ## tender", "Tender", "", excells, nexc);
+        // AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "", nexc);
+        // AddMyTask(AliVEvent::kINT7, "LHC16i ## only my(!) badmap in tender ## only tender", "OnlyTender");
     }
 
     if ( !mgr->InitAnalysis( ) ) return;

@@ -55,9 +55,9 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "BadMap_LHC16i.root");
+        AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "BadMap_LHC16k.root");
         // AddMyTask(AliVEvent::kINT7, "LHC16i ## only my(!) badmap in tender ## only tender", "OnlyTender");
     }
 

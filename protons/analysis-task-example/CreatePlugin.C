@@ -4,7 +4,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test",Int_t * runs, Int_t n
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
 
-    plugin->SetMergeViaJDL(); 
+    plugin->SetMergeViaJDL(kTRUE); 
 	plugin->SetOutputToRunNo(kTRUE); 
 	
 	plugin->SetRunMode(pluginmode);
@@ -19,7 +19,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test",Int_t * runs, Int_t n
 	plugin->SetCheckCopy(kFALSE);
 
 	plugin->SetGridDataDir("/alice/data/2016/" + period);
-	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
+	plugin->SetDataPattern("/pass1/*.*/AliAOD.root");
 	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
 	plugin->SetRunPrefix("000");
 
