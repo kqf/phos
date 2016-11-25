@@ -89,7 +89,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	if (!AliPHOSGeometry::GetInstance())
 	{
 		AliInfo("PHOS geometry not initialized, initializing it for you");
-		AliPHOSGeometry::GetInstance("IHEP");
+		AliPHOSGeometry::GetInstance("Run2");
 	}
 
 	// Select Event

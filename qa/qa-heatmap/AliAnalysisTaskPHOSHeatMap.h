@@ -12,7 +12,7 @@
 void RelativeCoordinates(Int_t absId, Int_t & sm, Int_t & cellX, Int_t & cellZ)
 {
 	// Converts cell absId --> (sm, cellX, cellZ);
-	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("IHEP");
+	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
 
 	Int_t relid[4];
 	geomPHOS->AbsToRelNumbering(absId, relid);
@@ -55,7 +55,7 @@ public:
 		if (!AliPHOSGeometry::GetInstance())
 		{
 			AliInfo("PHOS geometry not initialized, initializing it for you");
-			AliPHOSGeometry::GetInstance("IHEP");
+			AliPHOSGeometry::GetInstance("Run2");
 		}
 
 		// Primary vertex

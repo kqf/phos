@@ -1134,7 +1134,7 @@ void AbsId2EtaPhi(Int_t absId, Int_t &nModule, Int_t &eta, Int_t &phi, Int_t det
 
   // PHOS
   else if (det == 1) {
-    AliPHOSGeometry *geomPHOS = AliPHOSGeometry::GetInstance("IHEP");
+    AliPHOSGeometry *geomPHOS = AliPHOSGeometry::GetInstance("Run2");
 
     Int_t relid[4];
     geomPHOS->AbsToRelNumbering(absId, relid);
