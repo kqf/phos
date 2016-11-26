@@ -404,8 +404,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   TLorentzVector p1, p2, p12, pv1, pv2, pv12;
   AliVCaloCells *cells      = event->GetPHOSCells();
 
-  Int_t multClust = event->GetNumberOfCaloClusters();
-  FillHistogram("hClusterMult", multClust);
+
 
   // Printf("Event %d, trig.class %s, period %d, bc %d, orbit %d",
   //    eventNumberInFile,trigClasses.Data(),event->GetPeriodNumber(),
@@ -467,68 +466,10 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
 
 
   //Select photons for inv mass calculation
-  Int_t inPHOS = 0 ;
-  for (Int_t i1 = 0; i1 < multClust; i1++)
-  {
-    clu1 = event->GetCaloCluster(i1);
-    if ( !clu1->IsPHOS() || clu1->E() < 0.3) continue;
-    if (  clu1->GetType() != AliVCluster::kPHOSNeutral) continue;
-
-    clu1->GetPosition(position);
-    TVector3 global1(position) ;
-    fPHOSGeo->GlobalPos2RelId(global1, relId) ;
-    mod1  = relId[0] ;
-    cellX = relId[2];
-    cellZ = relId[3] ;
-    if ( !IsGoodChannel("PHOS", mod1, cellX, cellZ) ) continue ;
-
-    if (mod1 < 1 || mod1 > 4)
-    {
-      AliError(Form("Wrong module number %d", mod1));
-      return;
-    }
-
-    //..................................................
-    // Apply module misalignment if analyzing ESD
-    if (eventESD)
-    {
-
-      Float_t dXmodule[4] = { -2.30, -2.11, -1.53, 0.00}; // X-shift in local system for module 1,2,3,4
-      Float_t dZmodule[4] = { -0.40, +0.52, +0.80, 0.00}; // Z-shift in local system for module 1,2,3,4
-
-      TVector3 globalXYZ(position[0], position[1], position[2]);
-      TVector3 localXYZ;
-      fPHOSGeo->Global2Local(localXYZ, globalXYZ, mod1) ;
-      fPHOSGeo->Local2Global(mod1, localXYZ.X() + dXmodule[mod1 - 1], localXYZ.Z() + dZmodule[mod1 - 1], globalXYZ);
-      for (Int_t ixyz = 0; ixyz < 3; ixyz++) position[ixyz] = globalXYZ[ixyz] ;
-      clu1->SetPosition(position) ;
-    }
-
-    //..................................................
-
-    clu1 ->GetMomentum(p1 , vtx0);
-    clu1 ->GetMomentum(pv1, vtxBest);
-
-    p1 *= fRecalib[mod1 - 1];
-
-    digMult   = clu1->GetNCells();
-    new((*fPHOSEvent)[inPHOS]) AliCaloPhoton(p1.X(), p1.Py(), p1.Z(), p1.E()) ;
-    AliCaloPhoton * ph = (AliCaloPhoton*)fPHOSEvent->At(inPHOS) ;
-    ph->SetModule(mod1) ;
-    ph->SetMomV2(&pv1) ;
-    ph->SetNCells(clu1->GetNCells());
-    ph->SetEMCx(global1.X());
-    ph->SetEMCy(global1.Y());
-    ph->SetEMCz(global1.Z());
-    ph->SetDispBit(TestLambda(clu1->GetM20(), clu1->GetM02())) ;
-    ph->SetCPVBit(clu1->GetEmcCpvDistance() > 10.) ;
-    ph->SetBC(TestBC(clu1->GetTOF()));
-
-    inPHOS++ ;
-  }
+  SelectPhotons(event, fPHOSEvent, vtxBest);
+  Int_t inPHOS = fPHOSEvent->GetEntriesFast();
 
   // Fill Real disribution
-
   for (Int_t i1 = 0; i1 < inPHOS - 1; i1++)
   {
     AliCaloPhoton * ph1 = (AliCaloPhoton*)fPHOSEvent->At(i1) ;
@@ -1062,4 +1003,80 @@ void AliAnalysisTaskPi0v4::FillClusterHistograms(AliVEvent * event, Double_t vtx
   FillHistogram("hPHOSClusterMult"  , multPHOSClust[0]);
   for (Int_t i = 1; i < 5; ++i) 
     FillHistogram(Form("hPHOSClusterMultM%d", i), multPHOSClust[i]); 
+}
+
+void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOSEvent, Double_t vtxBest[3])
+{
+  AliVCluster *clu1;
+  TLorentzVector p1, p2, p12, pv1, pv2, pv12;
+  Float_t  energy, tof;
+  Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
+  Int_t inPHOS = 0 ;
+  Int_t digMult;
+  Float_t  position[3];
+  Bool_t eventESD = dynamic_cast<AliESDEvent *> (event);
+  Double_t vtx0[3] = {0, 0, 0};
+
+  Int_t multClust = event->GetNumberOfCaloClusters();
+  for (Int_t i1 = 0; i1 < multClust; i1++)
+  {
+    clu1 = event->GetCaloCluster(i1);
+    if ( !clu1->IsPHOS() || clu1->E() < 0.3) continue;
+    if (  clu1->GetType() != AliVCluster::kPHOSNeutral) continue;
+
+    clu1->GetPosition(position);
+    TVector3 global1(position) ;
+    fPHOSGeo->GlobalPos2RelId(global1, relId) ;
+    mod1  = relId[0] ;
+    cellX = relId[2];
+    cellZ = relId[3] ;
+    if ( !IsGoodChannel("PHOS", mod1, cellX, cellZ) ) continue ;
+
+    if (mod1 < 1 || mod1 > 4)
+    {
+      AliError(Form("Wrong module number %d", mod1));
+      return;
+    }
+
+    //..................................................
+    // Apply module misalignment if analyzing ESD
+    if (eventESD)
+    {
+
+      Float_t dXmodule[4] = { -2.30, -2.11, -1.53, 0.00}; // X-shift in local system for module 1,2,3,4
+      Float_t dZmodule[4] = { -0.40, +0.52, +0.80, 0.00}; // Z-shift in local system for module 1,2,3,4
+
+      TVector3 globalXYZ(position[0], position[1], position[2]);
+      TVector3 localXYZ;
+      fPHOSGeo->Global2Local(localXYZ, globalXYZ, mod1) ;
+      fPHOSGeo->Local2Global(mod1, localXYZ.X() + dXmodule[mod1 - 1], localXYZ.Z() + dZmodule[mod1 - 1], globalXYZ);
+      for (Int_t ixyz = 0; ixyz < 3; ixyz++) position[ixyz] = globalXYZ[ixyz] ;
+      clu1->SetPosition(position) ;
+    }
+
+    //..................................................
+
+    clu1 ->GetMomentum(p1 , vtx0);
+    clu1 ->GetMomentum(pv1, vtxBest);
+
+    p1 *= fRecalib[mod1 - 1];
+
+    digMult   = clu1->GetNCells();
+    new((*fPHOSEvent)[inPHOS]) AliCaloPhoton(p1.X(), p1.Py(), p1.Z(), p1.E()) ;
+    AliCaloPhoton * ph = (AliCaloPhoton*)fPHOSEvent->At(inPHOS) ;
+    ph->SetModule(mod1) ;
+    ph->SetMomV2(&pv1) ;
+    ph->SetNCells(clu1->GetNCells());
+    ph->SetEMCx(global1.X());
+    ph->SetEMCy(global1.Y());
+    ph->SetEMCz(global1.Z());
+    ph->SetDispBit(TestLambda(clu1->GetM20(), clu1->GetM02())) ;
+    ph->SetCPVBit(clu1->GetEmcCpvDistance() > 10.) ;
+    ph->SetBC(TestBC(clu1->GetTOF()));
+
+    inPHOS++ ;
+  }
+}
+void FillCombinations(AliCaloPhoton * ph1, AliCaloPhoton * ph2, const char * suff)
+{
 }
