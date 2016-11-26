@@ -53,7 +53,7 @@
 ClassImp(AliAnalysisTaskPi0v4)
 
 //________________________________________________________________________
-AliAnalysisTaskPi0v4::AliAnalysisTaskPi0v4(const char *name)
+AliAnalysisTaskPi0v4::AliAnalysisTaskPi0v4(const char * name)
   : AliAnalysisTaskSE(name),
     fOutputContainer(0),
     fPHOSEvent(0),
@@ -97,9 +97,7 @@ void AliAnalysisTaskPi0v4::UserCreateOutputObjects()
 
   // AOD histograms
   if (fOutputContainer != NULL)
-  {
     delete fOutputContainer;
-  }
   fOutputContainer = new THashList();
   fOutputContainer->SetOwner(kTRUE);
 
@@ -295,15 +293,15 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   // Main loop, called for each event
   // Analyze AOD
 
-  AliVEvent *event = InputEvent();
+  AliVEvent * event = InputEvent();
   // AliVEvent *event = dynamic_cast<AliVEvent*>(InputEvent());
   if (!event)
   {
     Printf("ERROR: Could not retrieve event");
     return;
   }
-  AliESDEvent *eventESD = dynamic_cast<AliESDEvent*> (event);
-  AliAODEvent *eventAOD = dynamic_cast<AliAODEvent*> (event);
+  AliESDEvent * eventESD = dynamic_cast<AliESDEvent *> (event);
+  AliAODEvent * eventAOD = dynamic_cast<AliAODEvent *> (event);
 
   Int_t runNumber = event->GetRunNumber();
 
@@ -327,7 +325,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   // Checks if we have a primary vertex
   // Get primary vertices form AOD
 
-  const AliVVertex *primaryVertex = event->GetPrimaryVertex();
+  const AliVVertex * primaryVertex = event->GetPrimaryVertex();
   if (primaryVertex)
     eventVtxExist    = kTRUE;
 
@@ -350,16 +348,18 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
     Int_t nPileupVertices = 0;
     if     ( eventESD )
       nPileupVertices = eventESD->GetNumberOfPileupVerticesSPD();
-    else if ( eventAOD )
-      nPileupVertices = eventAOD->GetNumberOfPileupVerticesSPD();
+    else
+      if ( eventAOD )
+        nPileupVertices = eventAOD->GetNumberOfPileupVerticesSPD();
     FillHistogram("hNPileupVtx", nPileupVertices);
     for (Int_t puVtx = 0; puVtx < nPileupVertices; puVtx++)
     {
       Double_t dZpileup = 0;
       if     ( eventESD )
         dZpileup = primaryVertex->GetZ() - eventESD->GetPileupVertexSPD(puVtx)->GetZ();
-      else if ( eventAOD )
-        dZpileup = primaryVertex->GetZ() - eventAOD->GetPileupVertexSPD(puVtx)->GetZ();
+      else
+        if ( eventAOD )
+          dZpileup = primaryVertex->GetZ() - eventAOD->GetPileupVertexSPD(puVtx)->GetZ();
       FillHistogram("hZPileupVtx", dZpileup);
     }
   }
@@ -380,9 +380,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   if (eventPileup)
     FillHistogram("hSelEvents", 6) ;
   if (eventV0AND)
-  {
     FillHistogram("hSelEvents", 7) ;
-  }
 
   //Vtx class z-bin
   Int_t zvtx = (Int_t)((vtxBest[2] + 10.) / 2.) ;
@@ -400,9 +398,9 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   if (!fPHOSEvents[zvtx][centr]) fPHOSEvents[zvtx][centr] = new TList() ;
   TList * prevPHOS = fPHOSEvents[zvtx][centr] ;
 
-  AliVCluster *clu1;
+  AliVCluster * clu1;
   TLorentzVector p1, p2, p12, pv1, pv2, pv12;
-  AliVCaloCells *cells      = event->GetPHOSCells();
+  AliVCaloCells * cells      = event->GetPHOSCells();
 
 
 
@@ -427,7 +425,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   {
     AliOADBContainer geomContainer("phosGeo");
     geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root", "PHOSRotationMatrixes");
-    TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(runNumber, "PHOSRotationMatrixes");
+    TObjArray * matrixes = (TObjArray *)geomContainer.GetObject(runNumber, "PHOSRotationMatrixes");
     fPHOSGeo =  AliPHOSGeometry::GetInstance("Run2") ;
     for (Int_t mod = 0; mod < 5; mod++)
     {
@@ -439,7 +437,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
       }
       else
       {
-        fPHOSGeo->SetMisalMatrix(((TGeoHMatrix*)matrixes->At(mod)), mod) ;
+        fPHOSGeo->SetMisalMatrix(((TGeoHMatrix *)matrixes->At(mod)), mod) ;
         if ( fDebug > 1 )
           AliInfo(Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
       }
@@ -469,309 +467,32 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   SelectPhotons(event, fPHOSEvent, vtxBest);
   Int_t inPHOS = fPHOSEvent->GetEntriesFast();
 
+
+  EventProperties eprop(eventVtxExist, eventVtxZ10cm, eventPileup, eventV0AND);
   // Fill Real disribution
   for (Int_t i1 = 0; i1 < inPHOS - 1; i1++)
   {
-    AliCaloPhoton * ph1 = (AliCaloPhoton*)fPHOSEvent->At(i1) ;
+    AliCaloPhoton * ph1 = (AliCaloPhoton *)fPHOSEvent->At(i1) ;
     for (Int_t i2 = i1 + 1; i2 < inPHOS; i2++)
     {
-      AliCaloPhoton * ph2 = (AliCaloPhoton*)fPHOSEvent->At(i2) ;
-      p12  = *ph1  + *ph2;
-      pv12 = *(ph1->GetMomV2()) + *(ph2->GetMomV2());
-      Bool_t mainBC = (ph1->GetBC() == 0 && ph2->GetBC() == 0);
-      Bool_t mainBC1 = (ph1->GetBC() == 0 || ph2->GetBC() == 0);
-      Bool_t diffBC = ((ph1->GetBC() == 0 && ph2->GetBC() != ph1->GetBC()) ||
-                       (ph2->GetBC() == 0 && ph2->GetBC() != ph1->GetBC()));
-      Double_t asym  = TMath::Abs((ph1->Energy() - ph2->Energy()) / (ph1->Energy() + ph2->Energy()));
-      Double_t ma12 = p12.M();
-      Double_t pt12 = p12.Pt();
+      AliCaloPhoton * ph2 = (AliCaloPhoton *)fPHOSEvent->At(i2) ;
+      FillCombinations(ph1, ph2, eprop, "");
+    }
 
-      if (ph1->GetNCells() > 2 && ph2->GetNCells() > 2)
-      {
-        FillHistogram("hMassPtA10", ma12 , pt12 );
-        FillHistogram("hMassPtvA10", pv12.M(), pv12.Pt());
-        FillHistogram("hMassPtCA10", ma12 , pt12, centr + 0.5);
-        FillHistogram("hMassSingle_all", ma12, ph1->Pt()) ;
-        FillHistogram("hMassSingle_all", ma12, ph2->Pt()) ;
-        if (mainBC)
-          FillHistogram("hMassPtA10BC0", ma12 , pt12 );
-        if (diffBC)
-          FillHistogram("hMassPtA10BC1", ma12 , pt12 );
-        if (mainBC1)
-          FillHistogram("hMassPtA10BC2", ma12 , pt12 );
-
-        if (!eventVtxExist)
-          FillHistogram("hMassPtA10nvtx", ma12 , pt12 );
-        if (eventVtxExist)
-          FillHistogram("hMassPtA10vtx"  , ma12 , pt12 );
-        if (eventVtxExist & eventVtxZ10cm)
-          FillHistogram("hMassPtA10vtx10", ma12 , pt12 );
-        if (eventV0AND)
-          FillHistogram("hMassPtA10V0AND", ma12 , pt12 );
-        if (eventPileup)
-          FillHistogram("hMassPtA10PU"   , ma12 , pt12 );
-
-        if (ph1->IsCPVOK())
-          FillHistogram("hMassSingle_cpv", ma12, ph1->Pt()) ;
-        if (ph2->IsCPVOK())
-          FillHistogram("hMassSingle_cpv", ma12, ph2->Pt()) ;
-        if (ph1->IsDispOK())
-          FillHistogram("hMassSingle_disp", ma12, ph1->Pt()) ;
-        if (ph2->IsDispOK())
-          FillHistogram("hMassSingle_disp", ma12, ph2->Pt()) ;
-        if (ph1->IsCPVOK() && ph1->IsDispOK())
-          FillHistogram("hMassSingle_both", ma12, ph1->Pt()) ;
-        if (ph2->IsCPVOK() && ph2->IsDispOK())
-          FillHistogram("hMassSingle_both", ma12, ph2->Pt()) ;
-
-
-        if (ph1->IsCPVOK() && ph2->IsCPVOK())
-          FillHistogram("hMassPtCA10_cpv", ma12 , pt12, centr + 0.5);
-        if (ph1->IsDispOK() && ph2->IsDispOK())
-        {
-          FillHistogram("hMassPtCA10_disp", ma12 , pt12, centr + 0.5);
-          if (ph1->IsCPVOK() && ph2->IsCPVOK())
-            FillHistogram("hMassPtCA10_both", ma12 , pt12, centr + 0.5);
-        }
-        if (asym < 0.8)
-        {
-          FillHistogram("hMassPtA08", ma12, pt12);
-        }
-        if (asym < 0.7)
-        {
-          FillHistogram("hMassPtA07", ma12, pt12);
-          FillHistogram("hMassPtvA07", pv12.M(), pv12.Pt());
-          FillHistogram("hMassPtCA07", ma12 , pt12, centr + 0.5);
-          if (!eventVtxExist)
-            FillHistogram("hMassPtA07nvtx", ma12 , pt12 );
-          if (eventVtxExist)
-            FillHistogram("hMassPtA07vtx"  , ma12 , pt12 );
-          if (eventVtxExist && eventV0AND)
-            FillHistogram("hMassPtA07V0AND", ma12 , pt12 );
-          if (eventPileup)
-            FillHistogram("hMassPtA07PU"   , ma12 , pt12 );
-          if (ph1->IsCPVOK() && ph2->IsCPVOK())
-            FillHistogram("hMassPtCA07_cpv", ma12 , pt12, centr + 0.5);
-          if (ph1->IsDispOK() && ph2->IsDispOK())
-          {
-            FillHistogram("hMassPtCA07_disp", ma12 , pt12, centr + 0.5);
-            if (ph1->IsCPVOK() && ph2->IsCPVOK())
-              FillHistogram("hMassPtCA07_both", ma12 , pt12, centr + 0.5);
-          }
-
-        }
-        if (asym < 0.1)
-        {
-          FillHistogram("hMassPtA01", ma12, pt12);
-        }
-        if (TMath::Abs(ma12 - 0.135) < 0.03)
-          FillHistogram("hAsymPtPi0", asym   , pt12);
-        if (TMath::Abs(ma12 - 0.547) < 0.09)
-          FillHistogram("hAsymPtEta", asym   , pt12);
-
-        if (ph1->Module() == 1 && ph2->Module() == 1)
-        {
-          FillHistogram("hMassPtM1", ma12 , pt12 );
-          if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram("hAsymPtPi0M1", asym   , pt12);
-        }
-        if (ph1->Module() == 2 && ph2->Module() == 2)
-        {
-          FillHistogram("hMassPtM2", ma12 , pt12 );
-          if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram("hAsymPtPi0M2", asym   , pt12);
-        }
-        if (ph1->Module() == 3 && ph2->Module() == 3)
-        {
-          FillHistogram("hMassPtM3", ma12 , pt12 );
-          if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram("hAsymPtPi0M3", asym   , pt12);
-        }
-        if (ph1->Module() == 4 && ph2->Module() == 4)
-        {
-          FillHistogram("hMassPtM4", ma12 , pt12 );
-          if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram("hAsymPtPi0M4", asym   , pt12);
-        }
-        if ((ph1->Module() == 1 && ph2->Module() == 2) ||
-            (ph1->Module() == 2 && ph2->Module() == 1))
-        {
-          FillHistogram("hMassPtM12", ma12 , pt12 );
-          if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram("hAsymPtPi0M12", asym   , pt12);
-        }
-        if ((ph1->Module() == 2 && ph2->Module() == 3) ||
-            (ph1->Module() == 3 && ph2->Module() == 2))
-        {
-          FillHistogram("hMassPtM23", ma12 , pt12 );
-          if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram("hAsymPtPi0M23", asym   , pt12);
-        }
-        if ((ph1->Module() == 1 && ph2->Module() == 3) ||
-            (ph1->Module() == 3 && ph2->Module() == 1)) FillHistogram("hMassPtM13", ma12 , pt12 );
-        if ((ph1->Module() == 3 && ph2->Module() == 4) ||
-            (ph1->Module() == 4 && ph2->Module() == 3)) FillHistogram("hMassPtM34", ma12 , pt12 );
-
-        if ( TMath::Abs(ph1->EMCz()) < 20. || TMath::Abs(ph2->EMCz()) < 20.)
-          FillHistogram("hMassPt20cm", ma12 , pt12 );
-        if ((TMath::Abs(ph1->EMCz()) > 20. && TMath::Abs(ph1->EMCz()) < 40.) ||
-            (TMath::Abs(ph2->EMCz()) > 20. && TMath::Abs(ph2->EMCz()) < 40.))
-          FillHistogram("hMassPt40cm", ma12 , pt12 );
-        if ( TMath::Abs(ph1->EMCz()) > 40. || TMath::Abs(ph2->EMCz()) > 40.)
-          FillHistogram("hMassPt60cm", ma12 , pt12 );
-
-      }
-
-      if (ph1->GetNCells() > 3 && ph2->GetNCells() > 3)
-      {
-        FillHistogram("hMassPtN3", ma12 , pt12 );
-      }
-      if (ph1->GetNCells() > 4 && ph2->GetNCells() > 4)
-      {
-        FillHistogram("hMassPtN4", ma12 , pt12 );
-      }
-      if (ph1->GetNCells() > 5 && ph2->GetNCells() > 5)
-      {
-        FillHistogram("hMassPtN5", ma12 , pt12 );
-      }
-      if (ph1->GetNCells() > 6 && ph2->GetNCells() > 6)
-      {
-        FillHistogram("hMassPtN6", ma12 , pt12 );
-      }
-
-    } // end of loop i2
+    // end of loop i2
   } // end of loop i1
 
   //now mixed
   for (Int_t i1 = 0; i1 < inPHOS; i1++)
   {
-    AliCaloPhoton * ph1 = (AliCaloPhoton*)fPHOSEvent->At(i1) ;
+    AliCaloPhoton * ph1 = (AliCaloPhoton *)fPHOSEvent->At(i1) ;
     for (Int_t ev = 0; ev < prevPHOS->GetSize(); ev++)
     {
-      TClonesArray * mixPHOS = static_cast<TClonesArray*>(prevPHOS->At(ev)) ;
+      TClonesArray * mixPHOS = static_cast<TClonesArray *>(prevPHOS->At(ev)) ;
       for (Int_t i2 = 0; i2 < mixPHOS->GetEntriesFast(); i2++)
       {
-        AliCaloPhoton * ph2 = (AliCaloPhoton*)mixPHOS->At(i2) ;
-        p12  = *ph1  + *ph2;
-        pv12 = *(ph1->GetMomV2()) + *(ph2->GetMomV2());
-        Bool_t mainBC = (ph1->GetBC() == 0 && ph2->GetBC() == 0);
-        Bool_t mainBC1 = (ph1->GetBC() == 0 || ph2->GetBC() == 0);
-        Bool_t diffBC = ((ph1->GetBC() == 0 && ph2->GetBC() != ph1->GetBC()) ||
-                         (ph2->GetBC() == 0 && ph2->GetBC() != ph1->GetBC()));
-        Double_t asym  = TMath::Abs((ph1->Energy() - ph2->Energy()) / (ph1->Energy() + ph2->Energy()));
-        Double_t ma12 = p12.M();
-        Double_t pt12 = p12.Pt();
-
-        if (ph1->GetNCells() > 2 && ph2->GetNCells() > 2)
-        {
-          FillHistogram("hMiMassPtA10", ma12 , pt12 );
-          FillHistogram("hMiMassPtvA10", pv12.M(), pv12.Pt());
-          FillHistogram("hMiMassPtCA10", ma12 , pt12, centr + 0.5);
-          FillHistogram("hMiMassSingle_all", ma12, ph1->Pt()) ;
-          FillHistogram("hMiMassSingle_all", ma12, ph2->Pt()) ;
-          if (mainBC)
-            FillHistogram("hMiMassPtA10BC0", ma12 , pt12 );
-          if (diffBC)
-            FillHistogram("hMiMassPtA10BC1", ma12 , pt12 );
-          if (mainBC1)
-            FillHistogram("hMiMassPtA10BC2", ma12 , pt12 );
-
-          if (!eventVtxExist)
-            FillHistogram("hMiMassPtA10nvtx", ma12 , pt12 );
-          if (eventVtxExist)
-            FillHistogram("hMiMassPtA10vtx"  , ma12 , pt12 );
-          if (eventVtxExist & eventVtxZ10cm)
-            FillHistogram("hMiMassPtA10vtx10", ma12 , pt12 );
-          if (eventV0AND)
-            FillHistogram("hMiMassPtA10V0AND", ma12 , pt12 );
-          if (eventPileup)
-            FillHistogram("hMiMassPtA10PU"   , ma12 , pt12 );
-
-          if (ph1->IsCPVOK())
-            FillHistogram("hMiMassSingle_cpv", ma12, ph1->Pt()) ;
-          if (ph2->IsCPVOK())
-            FillHistogram("hMiMassSingle_cpv", ma12, ph2->Pt()) ;
-          if (ph1->IsDispOK())
-            FillHistogram("hMiMassSingle_disp", ma12, ph1->Pt()) ;
-          if (ph2->IsDispOK())
-            FillHistogram("hMiMassSingle_disp", ma12, ph2->Pt()) ;
-          if (ph1->IsCPVOK() && ph1->IsDispOK())
-            FillHistogram("hMiMassSingle_both", ma12, ph1->Pt()) ;
-          if (ph2->IsCPVOK() && ph2->IsDispOK())
-            FillHistogram("hMiMassSingle_both", ma12, ph2->Pt()) ;
-
-
-          if (ph1->IsCPVOK() && ph2->IsCPVOK())
-            FillHistogram("hMiMassPtCA10_cpv", ma12 , pt12, centr + 0.5);
-          if (ph1->IsDispOK() && ph2->IsDispOK())
-          {
-            FillHistogram("hMiMassPtCA10_disp", ma12 , pt12, centr + 0.5);
-            if (ph1->IsCPVOK() && ph2->IsCPVOK())
-              FillHistogram("hMiMassPtCA10_both", ma12 , pt12, centr + 0.5);
-          }
-          if (asym < 0.8)
-          {
-            FillHistogram("hMiMassPtA08", ma12, pt12);
-          }
-          if (asym < 0.7)
-          {
-            FillHistogram("hMiMassPtA07", ma12, pt12);
-            FillHistogram("hMiMassPtvA07", pv12.M(), pv12.Pt());
-            FillHistogram("hMiMassPtCA07", ma12 , pt12, centr + 0.5);
-            if (!eventVtxExist)
-              FillHistogram("hMiMassPtA07nvtx", ma12 , pt12 );
-            if (eventVtxExist)
-              FillHistogram("hMiMassPtA07vtx"  , ma12 , pt12 );
-            if (eventVtxExist && eventV0AND)
-              FillHistogram("hMiMassPtA07V0AND", ma12 , pt12 );
-            if (eventPileup)
-              FillHistogram("hMiMassPtA07PU"   , ma12 , pt12 );
-            if (ph1->IsCPVOK() && ph2->IsCPVOK())
-              FillHistogram("hMiMassPtCA07_cpv", ma12 , pt12, centr + 0.5);
-            if (ph1->IsDispOK() && ph2->IsDispOK())
-            {
-              FillHistogram("hMiMassPtCA07_disp", ma12 , pt12, centr + 0.5);
-              if (ph1->IsCPVOK() && ph2->IsCPVOK())
-                FillHistogram("hMiMassPtCA07_both", ma12 , pt12, centr + 0.5);
-            }
-          }
-          if (asym < 0.1)
-          {
-            FillHistogram("hMiMassPtA01", ma12, pt12);
-          }
-          FillHistogram("hMiAsymPt", asym   , pt12);
-
-          if (ph1->Module() == 1 && ph2->Module() == 1) FillHistogram("hMiMassPtM1", ma12 , pt12 );
-          if (ph1->Module() == 2 && ph2->Module() == 2) FillHistogram("hMiMassPtM2", ma12 , pt12 );
-          if (ph1->Module() == 3 && ph2->Module() == 3) FillHistogram("hMiMassPtM3", ma12 , pt12 );
-          if ((ph1->Module() == 1 && ph2->Module() == 2) ||
-              (ph1->Module() == 2 && ph2->Module() == 1)) FillHistogram("hMiMassPtM12", ma12 , pt12 );
-          if ((ph1->Module() == 2 && ph2->Module() == 3) ||
-              (ph1->Module() == 3 && ph2->Module() == 2)) FillHistogram("hMiMassPtM23", ma12 , pt12 );
-          if ((ph1->Module() == 1 && ph2->Module() == 3) ||
-              (ph1->Module() == 3 && ph2->Module() == 1)) FillHistogram("hMiMassPtM13", ma12 , pt12 );
-
-          if (TMath::Abs(ph1->EMCz()) < 20. || TMath::Abs(ph2->EMCz()) < 20.)
-            FillHistogram("hMiMassPt20cm", ma12 , pt12 );
-          if ((TMath::Abs(ph1->EMCz()) > 20. && TMath::Abs(ph1->EMCz()) < 40.) ||
-              (TMath::Abs(ph2->EMCz()) > 20. && TMath::Abs(ph2->EMCz()) < 40.))
-            FillHistogram("hMiMassPt40cm", ma12 , pt12 );
-          if (TMath::Abs(ph1->EMCz()) > 40. || TMath::Abs(ph2->EMCz()) > 40.)
-            FillHistogram("hMiMassPt60cm", ma12 , pt12 );
-
-        }
-
-        if (ph1->GetNCells() > 3 && ph2->GetNCells() > 3)
-        {
-          FillHistogram("hMiMassPtN3", ma12 , pt12 );
-        }
-        if (ph1->GetNCells() > 4 && ph2->GetNCells() > 4)
-        {
-          FillHistogram("hMiMassPtN4", ma12 , pt12 );
-        }
-        if (ph1->GetNCells() > 5 && ph2->GetNCells() > 5)
-        {
-          FillHistogram("hMiMassPtN5", ma12 , pt12 );
-        }
-        if (ph1->GetNCells() > 6 && ph2->GetNCells() > 6)
-        {
-          FillHistogram("hMiMassPtN6", ma12 , pt12 );
-        }
-
+        AliCaloPhoton * ph2 = (AliCaloPhoton *)mixPHOS->At(i2) ;
+        FillCombinations(ph1, ph2, eprop, "Mi");
       } // end of loop i2
     }
   } // end of loop i1
@@ -785,7 +506,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
     fPHOSEvent = 0;
     if (prevPHOS->GetSize() > 100) //Remove redundant events
     {
-      TClonesArray * tmp = static_cast<TClonesArray*>(prevPHOS->Last()) ;
+      TClonesArray * tmp = static_cast<TClonesArray *>(prevPHOS->Last()) ;
       prevPHOS->RemoveLast() ;
       delete tmp ;
     }
@@ -826,16 +547,14 @@ Bool_t AliAnalysisTaskPi0v4::IsGoodChannel(const char * det, Int_t mod, Int_t ix
       return kTRUE ;
   }
   else
-  {
     AliError(Form("Can not find bad channels for detector %s ", det)) ;
-  }
   return kTRUE ;
 }
 //_____________________________________________________________________________
 void AliAnalysisTaskPi0v4::FillHistogram(const char * key, Double_t x)const
 {
   //FillHistogram
-  TH1 * hist = dynamic_cast<TH1*>(fOutputContainer->FindObject(key)) ;
+  TH1 * hist = dynamic_cast<TH1 *>(fOutputContainer->FindObject(key)) ;
   if (hist)
     hist->Fill(x) ;
   else
@@ -845,7 +564,7 @@ void AliAnalysisTaskPi0v4::FillHistogram(const char * key, Double_t x)const
 void AliAnalysisTaskPi0v4::FillHistogram(const char * key, Double_t x, Double_t y)const
 {
   //FillHistogram
-  TH1 * th1 = dynamic_cast<TH1*> (fOutputContainer->FindObject(key));
+  TH1 * th1 = dynamic_cast<TH1 *> (fOutputContainer->FindObject(key));
   if (th1)
     th1->Fill(x, y) ;
   else
@@ -858,13 +577,13 @@ void AliAnalysisTaskPi0v4::FillHistogram(const char * key, Double_t x, Double_t 
   //Fills 1D histograms with key
   TObject * obj = fOutputContainer->FindObject(key);
 
-  TH2 * th2 = dynamic_cast<TH2*> (obj);
+  TH2 * th2 = dynamic_cast<TH2 *> (obj);
   if (th2)
   {
     th2->Fill(x, y, z) ;
     return;
   }
-  TH3 * th3 = dynamic_cast<TH3*> (obj);
+  TH3 * th3 = dynamic_cast<TH3 *> (obj);
   if (th3)
   {
     th3->Fill(x, y, z) ;
@@ -939,7 +658,7 @@ void AliAnalysisTaskPi0v4::FillClusterHistograms(AliVEvent * event, Double_t vtx
 
   for (Int_t i1 = 0; i1 < multClust; i1++)
   {
-    AliVCluster *clu1 = event->GetCaloCluster(i1);
+    AliVCluster * clu1 = event->GetCaloCluster(i1);
     if ( !clu1->IsPHOS() ) continue;
     if (  clu1->GetType() != AliVCluster::kPHOSNeutral) continue;
 
@@ -1001,13 +720,13 @@ void AliAnalysisTaskPi0v4::FillClusterHistograms(AliVEvent * event, Double_t vtx
   }
 
   FillHistogram("hPHOSClusterMult"  , multPHOSClust[0]);
-  for (Int_t i = 1; i < 5; ++i) 
-    FillHistogram(Form("hPHOSClusterMultM%d", i), multPHOSClust[i]); 
+  for (Int_t i = 1; i < 5; ++i)
+    FillHistogram(Form("hPHOSClusterMultM%d", i), multPHOSClust[i]);
 }
 
 void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOSEvent, Double_t vtxBest[3])
 {
-  AliVCluster *clu1;
+  AliVCluster * clu1;
   TLorentzVector p1, p2, p12, pv1, pv2, pv12;
   Float_t  energy, tof;
   Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
@@ -1063,7 +782,7 @@ void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOS
 
     digMult   = clu1->GetNCells();
     new((*fPHOSEvent)[inPHOS]) AliCaloPhoton(p1.X(), p1.Py(), p1.Z(), p1.E()) ;
-    AliCaloPhoton * ph = (AliCaloPhoton*)fPHOSEvent->At(inPHOS) ;
+    AliCaloPhoton * ph = (AliCaloPhoton *)fPHOSEvent->At(inPHOS) ;
     ph->SetModule(mod1) ;
     ph->SetMomV2(&pv1) ;
     ph->SetNCells(clu1->GetNCells());
@@ -1077,6 +796,154 @@ void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOS
     inPHOS++ ;
   }
 }
-void FillCombinations(AliCaloPhoton * ph1, AliCaloPhoton * ph2, const char * suff)
+
+void AliAnalysisTaskPi0v4::FillCombinations(AliCaloPhoton * ph1, AliCaloPhoton * ph2, const EventProperties & eprop, const char * suff)
 {
+  TLorentzVector p12  = *ph1  + *ph2;
+  TLorentzVector pv12 = *(ph1->GetMomV2()) + *(ph2->GetMomV2());
+
+  Bool_t mainBC = (ph1->GetBC() == 0 && ph2->GetBC() == 0);
+  Bool_t mainBC1 = (ph1->GetBC() == 0 || ph2->GetBC() == 0);
+  Bool_t diffBC = ((ph1->GetBC() == 0 && ph2->GetBC() != ph1->GetBC()) ||
+                   (ph2->GetBC() == 0 && ph2->GetBC() != ph1->GetBC()));
+  Double_t asym  = TMath::Abs((ph1->Energy() - ph2->Energy()) / (ph1->Energy() + ph2->Energy()));
+  Double_t ma12 = p12.M();
+  Double_t pt12 = p12.Pt();
+  Int_t centr = 0;
+
+  if (ph1->GetNCells() > 2 && ph2->GetNCells() > 2)
+  {
+    FillHistogram(Form("h%sMassPtA10", suff), ma12 , pt12 );
+    FillHistogram(Form("h%sMassPtvA10", suff), pv12.M(), pv12.Pt());
+    FillHistogram(Form("h%sMassPtCA10", suff), ma12 , pt12, centr + 0.5);
+    FillHistogram(Form("h%sMassSingle_all", suff), ma12, ph1->Pt()) ;
+    FillHistogram(Form("h%sMassSingle_all", suff), ma12, ph2->Pt()) ;
+    if (mainBC)
+      FillHistogram(Form("h%sMassPtA10BC0", suff), ma12 , pt12 );
+    if (diffBC)
+      FillHistogram(Form("h%sMassPtA10BC1", suff), ma12 , pt12 );
+    if (mainBC1)
+      FillHistogram(Form("h%sMassPtA10BC2", suff), ma12 , pt12 );
+
+    if (!eprop.eventVtxExist)
+      FillHistogram(Form("h%sMassPtA10nvtx", suff), ma12 , pt12 );
+    if (eprop.eventVtxExist)
+      FillHistogram(Form("h%sMassPtA10vtx", suff)  , ma12 , pt12 );
+    if (eprop.eventVtxExist & eprop.eventVtxZ10cm)
+      FillHistogram(Form("h%sMassPtA10vtx10", suff), ma12 , pt12 );
+    if (eprop.eventV0AND)
+      FillHistogram(Form("h%sMassPtA10V0AND", suff), ma12 , pt12 );
+    if (eprop.eventPileup)
+      FillHistogram(Form("h%sMassPtA10PU", suff)   , ma12 , pt12 );
+
+    if (ph1->IsCPVOK())
+      FillHistogram(Form("h%sMassSingle_cpv", suff), ma12, ph1->Pt()) ;
+    if (ph2->IsCPVOK())
+      FillHistogram(Form("h%sMassSingle_cpv", suff), ma12, ph2->Pt()) ;
+    if (ph1->IsDispOK())
+      FillHistogram(Form("h%sMassSingle_disp", suff), ma12, ph1->Pt()) ;
+    if (ph2->IsDispOK())
+      FillHistogram(Form("h%sMassSingle_disp", suff), ma12, ph2->Pt()) ;
+    if (ph1->IsCPVOK() && ph1->IsDispOK())
+      FillHistogram(Form("h%sMassSingle_both", suff), ma12, ph1->Pt()) ;
+    if (ph2->IsCPVOK() && ph2->IsDispOK())
+      FillHistogram(Form("h%sMassSingle_both", suff), ma12, ph2->Pt()) ;
+
+
+    if (ph1->IsCPVOK() && ph2->IsCPVOK())
+      FillHistogram(Form("h%sMassPtCA10_cpv", suff), ma12 , pt12, centr + 0.5);
+    if (ph1->IsDispOK() && ph2->IsDispOK())
+    {
+      FillHistogram(Form("h%sMassPtCA10_disp", suff), ma12 , pt12, centr + 0.5);
+      if (ph1->IsCPVOK() && ph2->IsCPVOK())
+        FillHistogram(Form("h%sMassPtCA10_both", suff), ma12 , pt12, centr + 0.5);
+    }
+    if (asym < 0.8)
+      FillHistogram(Form("h%sMassPtA08", suff), ma12, pt12);
+    if (asym < 0.7)
+    {
+      FillHistogram(Form("h%sMassPtA07", suff), ma12, pt12);
+      FillHistogram(Form("h%sMassPtvA07", suff), pv12.M(), pv12.Pt());
+      FillHistogram(Form("h%sMassPtCA07", suff), ma12 , pt12, centr + 0.5);
+      if (!eprop.eventVtxExist)
+        FillHistogram(Form("h%sMassPtA07nvtx", suff), ma12 , pt12 );
+      if (eprop.eventVtxExist)
+        FillHistogram(Form("h%sMassPtA07vtx", suff)  , ma12 , pt12 );
+      if (eprop.eventVtxExist && eprop.eventV0AND)
+        FillHistogram(Form("h%sMassPtA07V0AND", suff), ma12 , pt12 );
+      if (eprop.eventPileup)
+        FillHistogram(Form("h%sMassPtA07PU", suff)   , ma12 , pt12 );
+      if (ph1->IsCPVOK() && ph2->IsCPVOK())
+        FillHistogram(Form("h%sMassPtCA07_cpv", suff), ma12 , pt12, centr + 0.5);
+      if (ph1->IsDispOK() && ph2->IsDispOK())
+      {
+        FillHistogram(Form("h%sMassPtCA07_disp", suff), ma12 , pt12, centr + 0.5);
+        if (ph1->IsCPVOK() && ph2->IsCPVOK())
+          FillHistogram(Form("h%sMassPtCA07_both", suff), ma12 , pt12, centr + 0.5);
+      }
+
+    }
+    if (asym < 0.1)
+      FillHistogram(Form("h%sMassPtA01", suff), ma12, pt12);
+    if (TMath::Abs(ma12 - 0.135) < 0.03)
+      FillHistogram(Form("h%sAsymPtPi0", suff), asym   , pt12);
+    if (TMath::Abs(ma12 - 0.547) < 0.09)
+      FillHistogram(Form("h%sAsymPtEta", suff), asym   , pt12);
+
+    if (ph1->Module() == 1 && ph2->Module() == 1)
+    {
+      FillHistogram(Form("h%sMassPtM1", suff), ma12 , pt12 );
+      if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram(Form("h%sAsymPtPi0M1", suff), asym   , pt12);
+    }
+    if (ph1->Module() == 2 && ph2->Module() == 2)
+    {
+      FillHistogram(Form("h%sMassPtM2", suff), ma12 , pt12 );
+      if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram(Form("h%sAsymPtPi0M2", suff), asym   , pt12);
+    }
+    if (ph1->Module() == 3 && ph2->Module() == 3)
+    {
+      FillHistogram(Form("h%sMassPtM3", suff), ma12 , pt12 );
+      if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram(Form("h%sAsymPtPi0M3", suff), asym   , pt12);
+    }
+    if (ph1->Module() == 4 && ph2->Module() == 4)
+    {
+      FillHistogram(Form("h%sMassPtM4", suff), ma12 , pt12 );
+      if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram(Form("h%sAsymPtPi0M4", suff), asym   , pt12);
+    }
+    if ((ph1->Module() == 1 && ph2->Module() == 2) ||
+        (ph1->Module() == 2 && ph2->Module() == 1))
+    {
+      FillHistogram(Form("h%sMassPtM12", suff), ma12 , pt12 );
+      if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram(Form("h%sAsymPtPi0M12", suff), asym   , pt12);
+    }
+    if ((ph1->Module() == 2 && ph2->Module() == 3) ||
+        (ph1->Module() == 3 && ph2->Module() == 2))
+    {
+      FillHistogram(Form("h%sMassPtM23", suff), ma12 , pt12 );
+      if (TMath::Abs(ma12 - 0.135) < 0.03) FillHistogram(Form("h%sAsymPtPi0M23", suff), asym   , pt12);
+    }
+    if ((ph1->Module() == 1 && ph2->Module() == 3) ||
+        (ph1->Module() == 3 && ph2->Module() == 1)) FillHistogram(Form("h%sMassPtM13", suff), ma12 , pt12 );
+    if ((ph1->Module() == 3 && ph2->Module() == 4) ||
+        (ph1->Module() == 4 && ph2->Module() == 3)) FillHistogram(Form("h%sMassPtM34", suff), ma12 , pt12 );
+
+    if ( TMath::Abs(ph1->EMCz()) < 20. || TMath::Abs(ph2->EMCz()) < 20.)
+      FillHistogram(Form("h%sMassPt20cm", suff), ma12 , pt12 );
+    if ((TMath::Abs(ph1->EMCz()) > 20. && TMath::Abs(ph1->EMCz()) < 40.) ||
+        (TMath::Abs(ph2->EMCz()) > 20. && TMath::Abs(ph2->EMCz()) < 40.))
+      FillHistogram(Form("h%sMassPt40cm", suff), ma12 , pt12 );
+    if ( TMath::Abs(ph1->EMCz()) > 40. || TMath::Abs(ph2->EMCz()) > 40.)
+      FillHistogram(Form("h%sMassPt60cm", suff), ma12 , pt12 );
+
+  }
+
+  if (ph1->GetNCells() > 3 && ph2->GetNCells() > 3)
+    FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12 );
+  if (ph1->GetNCells() > 4 && ph2->GetNCells() > 4)
+    FillHistogram(Form("h%sMassPtN4", suff), ma12 , pt12 );
+  if (ph1->GetNCells() > 5 && ph2->GetNCells() > 5)
+    FillHistogram(Form("h%sMassPtN5", suff), ma12 , pt12 );
+  if (ph1->GetNCells() > 6 && ph2->GetNCells() > 6)
+    FillHistogram(Form("h%sMassPtN6", suff), ma12 , pt12 );
+
 }
