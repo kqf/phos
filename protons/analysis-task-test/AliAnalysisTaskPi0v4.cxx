@@ -311,17 +311,11 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
 
   AliVCaloCells * cells = event->GetPHOSCells();
   FillCellsHistograms(cells);
+
   Double_t vtx0[3] = {0, 0, 0};
   FillClusterHistograms(event, vtx0);
 
-  Float_t  energy, tof;
-  Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
-
   // Single loop over clusters fills cluster histograms
-  Int_t    digMult;
-  Int_t    multPHOSClust[5]  = {0, 0, 0, 0, 0};
-  Float_t  position[3];
-
   if (fPHOSEvent)
     fPHOSEvent->Clear();
   else
@@ -476,20 +470,21 @@ void AliAnalysisTaskPi0v4::FillCellsHistograms(AliVCaloCells * cells)
 {
   Int_t multCells = cells->GetNumberOfCells();
   FillHistogram("hCellMultEvent", multCells);
-  Float_t  energy, tof;
-  Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
 
   // Single loop over cells
-
   Int_t nCellModule[5] = {0, 0, 0, 0, 0};
   for (Int_t iCell = 0; iCell < multCells; iCell++)
   {
-    cellAbsId = cells->GetCellNumber(iCell);
+
+    Int_t relId[4];
+    Int_t cellAbsId = cells->GetCellNumber(iCell);
+
     fPHOSGeo->AbsToRelNumbering(cellAbsId, relId);
-    mod1  = relId[0];
-    cellX = relId[2];
-    cellZ = relId[3] ;
-    energy = cells->GetAmplitude(iCell);
+
+    Int_t mod1  = relId[0];
+    Int_t cellX = relId[2];
+    Int_t cellZ = relId[3] ;
+    Float_t  energy = cells->GetAmplitude(iCell);
 
     if (mod1 < 1 || mod1 > 4) continue;
     FillHistogram("hCellEnergy", energy);
@@ -505,38 +500,34 @@ void AliAnalysisTaskPi0v4::FillCellsHistograms(AliVCaloCells * cells)
 void AliAnalysisTaskPi0v4::FillClusterHistograms(AliVEvent * event, Double_t vtx0[3])
 {
 
-  TLorentzVector p1;
   Int_t multClust = event->GetNumberOfCaloClusters();
   FillHistogram("hClusterMult", multClust);
 
-  Float_t  energy, tof;
-  Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
-
   // Single loop over clusters fills cluster histograms
-  Int_t    digMult;
   Int_t    multPHOSClust[5]  = {0, 0, 0, 0, 0};
-  Float_t  position[3];
-
   for (Int_t i1 = 0; i1 < multClust; i1++)
   {
     AliVCluster * clu1 = event->GetCaloCluster(i1);
     if ( !clu1->IsPHOS() ) continue;
     if (  clu1->GetType() != AliVCluster::kPHOSNeutral) continue;
 
-    digMult = clu1->GetNCells();
+    Int_t digMult = clu1->GetNCells();
+    Float_t  position[3];
     clu1->GetPosition(position);
     TVector3 global1(position) ;
+    Int_t relId[4];
+
     fPHOSGeo->GlobalPos2RelId(global1, relId) ;
-    mod1  = relId[0];
-    cellX = relId[2];
-    cellZ = relId[3];
+    Int_t mod1  = relId[0];
+    Int_t cellX = relId[2];
+    Int_t cellZ = relId[3];
     if ( !IsGoodChannel("PHOS", mod1, cellX, cellZ) ) continue ;
 
     // cellAbsId = clu1->GetCellAbsId(0);
     // fPHOSGeo->AbsToRelNumbering(cellAbsId,relId);
     // mod1   = relId[0];
-    energy = clu1->E();
-    tof    = clu1->GetTOF();
+    Float_t energy = clu1->E();
+    Float_t tof    = clu1->GetTOF();
 
     // Printf("\tmodule=%d, xyz=(%.3f,%.3f,%.3f) cm, E=%.3f GeV",
     //     mod1,position[0],position[1],position[2],energy);
@@ -565,6 +556,7 @@ void AliAnalysisTaskPi0v4::FillClusterHistograms(AliVEvent * event, Double_t vtx
 
     if (digMult > 2)
     {
+      TLorentzVector p1;
       clu1 ->GetMomentum(p1 , vtx0);
       Double_t pAbs = p1.P();
       Double_t pT   = p1.Pt();
@@ -587,29 +579,23 @@ void AliAnalysisTaskPi0v4::FillClusterHistograms(AliVEvent * event, Double_t vtx
 
 void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOSEvent, Double_t vtxBest[3])
 {
-  AliVCluster * clu1;
-  TLorentzVector p1, p2, p12, pv1, pv2, pv12;
-  Float_t  energy, tof;
-  Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
   Int_t inPHOS = 0 ;
-  Int_t digMult;
-  Float_t  position[3];
-  Bool_t eventESD = dynamic_cast<AliESDEvent *> (event);
-  Double_t vtx0[3] = {0, 0, 0};
-
   Int_t multClust = event->GetNumberOfCaloClusters();
   for (Int_t i1 = 0; i1 < multClust; i1++)
   {
-    clu1 = event->GetCaloCluster(i1);
+    AliVCluster * clu1 = event->GetCaloCluster(i1);
     if ( !clu1->IsPHOS() || clu1->E() < 0.3) continue;
     if (  clu1->GetType() != AliVCluster::kPHOSNeutral) continue;
 
+    Float_t  position[3];
     clu1->GetPosition(position);
-    TVector3 global1(position) ;
+    TVector3 global1(position);
+    Int_t relId[4];
+
     fPHOSGeo->GlobalPos2RelId(global1, relId) ;
-    mod1  = relId[0] ;
-    cellX = relId[2];
-    cellZ = relId[3] ;
+    Int_t mod1  = relId[0];
+    Int_t cellX = relId[2];
+    Int_t cellZ = relId[3];
     if ( !IsGoodChannel("PHOS", mod1, cellX, cellZ) ) continue ;
 
     if (mod1 < 1 || mod1 > 4)
@@ -620,7 +606,7 @@ void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOS
 
     //..................................................
     // Apply module misalignment if analyzing ESD
-    if (eventESD)
+    if (dynamic_cast<AliESDEvent *> (event))
     {
 
       Float_t dXmodule[4] = { -2.30, -2.11, -1.53, 0.00}; // X-shift in local system for module 1,2,3,4
@@ -636,12 +622,14 @@ void AliAnalysisTaskPi0v4::SelectPhotons(AliVEvent * event, TClonesArray * fPHOS
 
     //..................................................
 
+    TLorentzVector p1, pv1;
+    Double_t vtx0[3] = {0, 0, 0};
     clu1 ->GetMomentum(p1 , vtx0);
     clu1 ->GetMomentum(pv1, vtxBest);
 
     p1 *= fRecalib[mod1 - 1];
 
-    digMult   = clu1->GetNCells();
+    // Int_t digMult   = clu1->GetNCells();
     new((*fPHOSEvent)[inPHOS]) AliCaloPhoton(p1.X(), p1.Py(), p1.Z(), p1.E()) ;
     AliCaloPhoton * ph = (AliCaloPhoton *)fPHOSEvent->At(inPHOS) ;
     ph->SetModule(mod1) ;
