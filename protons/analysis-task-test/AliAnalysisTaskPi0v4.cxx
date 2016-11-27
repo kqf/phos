@@ -300,154 +300,19 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
     Printf("ERROR: Could not retrieve event");
     return;
   }
-  AliESDEvent * eventESD = dynamic_cast<AliESDEvent *> (event);
-  AliAODEvent * eventAOD = dynamic_cast<AliAODEvent *> (event);
 
-  Int_t runNumber = event->GetRunNumber();
-
-  FillHistogram("hSelEvents", 0) ; // All events accepted by PSel
-
-  // Select events from the needed trigger class
-
-  TString trigClasses = event->GetFiredTriggerClasses();
-  // if (!trigClasses.Contains(fSelectTrigClass)) {
-  //   return;
-  // }
-  AliInfo(Form("Select event with triggers %s", trigClasses.Data()));
-
-  // Event selection flags
-
-  Bool_t eventVtxExist    = kFALSE;
-  Bool_t eventVtxZ10cm    = kFALSE;
-  Bool_t eventPileup      = kFALSE;
-  Bool_t eventV0AND       = kFALSE;
-
-  // Checks if we have a primary vertex
-  // Get primary vertices form AOD
-
-  const AliVVertex * primaryVertex = event->GetPrimaryVertex();
-  if (primaryVertex)
-    eventVtxExist    = kTRUE;
-
-  Double_t vtx0[3] = {0, 0, 0}; // don't rely on AOD vertex, assume (0,0,0)
   Double_t vtxBest[3];
-  vtxBest[0] = primaryVertex->GetX();
-  vtxBest[1] = primaryVertex->GetY();
-  vtxBest[2] = primaryVertex->GetZ();
-
-  FillHistogram("hNvertexTracks", primaryVertex->GetNContributors());
-  FillHistogram("hZvertex"      , primaryVertex->GetZ());
-  if (TMath::Abs(primaryVertex->GetZ()) < 10. )
-    eventVtxZ10cm = kTRUE;
-
-  // Check for pileup and fill pileup histograms
-  if ( eventESD && eventESD->IsPileupFromSPD() ||
-       eventAOD && eventAOD->IsPileupFromSPD() )
-  {
-    eventPileup = kTRUE;
-    Int_t nPileupVertices = 0;
-    if     ( eventESD )
-      nPileupVertices = eventESD->GetNumberOfPileupVerticesSPD();
-    else
-      if ( eventAOD )
-        nPileupVertices = eventAOD->GetNumberOfPileupVerticesSPD();
-    FillHistogram("hNPileupVtx", nPileupVertices);
-    for (Int_t puVtx = 0; puVtx < nPileupVertices; puVtx++)
-    {
-      Double_t dZpileup = 0;
-      if     ( eventESD )
-        dZpileup = primaryVertex->GetZ() - eventESD->GetPileupVertexSPD(puVtx)->GetZ();
-      else
-        if ( eventAOD )
-          dZpileup = primaryVertex->GetZ() - eventAOD->GetPileupVertexSPD(puVtx)->GetZ();
-      FillHistogram("hZPileupVtx", dZpileup);
-    }
-  }
-
-  // eventV0AND = fTriggerAnalysis->IsOfflineTriggerFired(event, AliTriggerAnalysis::kV0AND);
-
-  // Fill event statistics for different selection criteria
-
-  FillHistogram("hSelEvents", 1) ;
-  if (eventVtxExist)
-    FillHistogram("hSelEvents", 2) ;
-  if (eventVtxExist && eventVtxZ10cm)
-    FillHistogram("hSelEvents", 3) ;
-  if (eventVtxExist && eventVtxZ10cm && eventV0AND)
-    FillHistogram("hSelEvents", 4) ;
-  if (eventVtxExist && eventVtxZ10cm && eventV0AND && eventPileup)
-    FillHistogram("hSelEvents", 5) ;
-  if (eventPileup)
-    FillHistogram("hSelEvents", 6) ;
-  if (eventV0AND)
-    FillHistogram("hSelEvents", 7) ;
-
-  //Vtx class z-bin
-  Int_t zvtx = (Int_t)((vtxBest[2] + 10.) / 2.) ;
-  if (zvtx < 0)zvtx = 0 ;
-  if (zvtx > 9)zvtx = 9 ;
-
-  Float_t tV0A = event->GetVZEROData()->GetV0ATime();
-  Float_t tV0C = event->GetVZEROData()->GetV0CTime();
-  FillHistogram("hV0Atime", tV0A);
-  FillHistogram("hV0Atime", tV0C);
-  FillHistogram("hV0AV0Ctime", tV0A, tV0C);
+  EventProperties eprop = SelectEvent(event, vtxBest);
 
   Int_t centr = 0 ;
   //always zero centrality
-  if (!fPHOSEvents[zvtx][centr]) fPHOSEvents[zvtx][centr] = new TList() ;
-  TList * prevPHOS = fPHOSEvents[zvtx][centr] ;
+  if (!fPHOSEvents[eprop.zvtx][centr]) fPHOSEvents[eprop.zvtx][centr] = new TList() ;
+  TList * prevPHOS = fPHOSEvents[eprop.zvtx][centr];
 
-  AliVCluster * clu1;
-  TLorentzVector p1, p2, p12, pv1, pv2, pv12;
-  AliVCaloCells * cells      = event->GetPHOSCells();
-
-
-
-  // Printf("Event %d, trig.class %s, period %d, bc %d, orbit %d",
-  //    eventNumberInFile,trigClasses.Data(),event->GetPeriodNumber(),
-  //    event->GetBunchCrossNumber(),event->GetOrbitNumber());
-  // Printf("\tthere are %d caloclusters and %d calocells", multClust, multCells);
-
-  // Get PHOS rotation matrices from ESD and set them to the PHOS geometry
-  if ( eventESD && fEventCounter == 0)
-  {
-    // Initialize the PHOS geometry
-    fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") ;
-    for (Int_t mod = 0; mod < 5; mod++)
-    {
-      if (!event->GetPHOSMatrix(mod)) continue;
-      fPHOSGeo->SetMisalMatrix(event->GetPHOSMatrix(mod), mod) ;
-      Printf("PHOS geo matrix %p for module # %d is set\n", event->GetPHOSMatrix(mod), mod);
-    }
-  }
-  if ( eventAOD && fEventCounter == 0)
-  {
-    AliOADBContainer geomContainer("phosGeo");
-    geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root", "PHOSRotationMatrixes");
-    TObjArray * matrixes = (TObjArray *)geomContainer.GetObject(runNumber, "PHOSRotationMatrixes");
-    fPHOSGeo =  AliPHOSGeometry::GetInstance("Run2") ;
-    for (Int_t mod = 0; mod < 5; mod++)
-    {
-      if (!matrixes->At(mod))
-      {
-        if ( fDebug )
-          AliInfo(Form("No PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
-        continue;
-      }
-      else
-      {
-        fPHOSGeo->SetMisalMatrix(((TGeoHMatrix *)matrixes->At(mod)), mod) ;
-        if ( fDebug > 1 )
-          AliInfo(Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
-      }
-    }
-  }
-
-  Int_t multCells = cells->GetNumberOfCells();
-
+  AliVCaloCells * cells = event->GetPHOSCells();
   FillCellsHistograms(cells);
-  FillClusterHistograms(InputEvent(), vtx0);
+  Double_t vtx0[3] = {0, 0, 0};
+  FillClusterHistograms(event, vtx0);
 
   Float_t  energy, tof;
   Int_t    mod1, relId[4], cellAbsId, cellX, cellZ;
@@ -467,8 +332,6 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
   SelectPhotons(event, fPHOSEvent, vtxBest);
   Int_t inPHOS = fPHOSEvent->GetEntriesFast();
 
-
-  EventProperties eprop(eventVtxExist, eventVtxZ10cm, eventPileup, eventV0AND);
   // Fill Real disribution
   for (Int_t i1 = 0; i1 < inPHOS - 1; i1++)
   {
@@ -477,9 +340,7 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
     {
       AliCaloPhoton * ph2 = (AliCaloPhoton *)fPHOSEvent->At(i2) ;
       FillCombinations(ph1, ph2, eprop, "");
-    }
-
-    // end of loop i2
+    } // end of loop i2
   } // end of loop i1
 
   //now mixed
@@ -946,4 +807,142 @@ void AliAnalysisTaskPi0v4::FillCombinations(AliCaloPhoton * ph1, AliCaloPhoton *
   if (ph1->GetNCells() > 6 && ph2->GetNCells() > 6)
     FillHistogram(Form("h%sMassPtN6", suff), ma12 , pt12 );
 
+}
+
+EventProperties AliAnalysisTaskPi0v4::SelectEvent(AliVEvent * event, Double_t vtxBest[3])
+{
+
+  FillHistogram("hSelEvents", 0) ; // All events accepted by PSel
+
+  // Select events from the needed trigger class
+
+  TString trigClasses = event->GetFiredTriggerClasses();
+  // if (!trigClasses.Contains(fSelectTrigClass)) {
+  //   return;
+  // }
+  AliInfo(Form("Select event with triggers %s", trigClasses.Data()));
+
+  // Event selection flags
+
+  EventProperties eprop(kFALSE, kFALSE, kFALSE, kFALSE, 0);
+
+  const AliVVertex * primaryVertex = event->GetPrimaryVertex();
+  if (primaryVertex)
+    eprop.eventVtxExist    = kTRUE;
+
+  vtxBest[0] = primaryVertex->GetX();
+  vtxBest[1] = primaryVertex->GetY();
+  vtxBest[2] = primaryVertex->GetZ();
+
+  FillHistogram("hNvertexTracks", primaryVertex->GetNContributors());
+  FillHistogram("hZvertex"      , primaryVertex->GetZ());
+
+  if (TMath::Abs(primaryVertex->GetZ()) < 10. )
+    eprop.eventVtxZ10cm = kTRUE;
+
+
+  // Check for pileup and fill pileup histograms
+  if(dynamic_cast<AliESDEvent *> (event))
+  {
+    AliESDEvent * eventESD = dynamic_cast<AliESDEvent *> (event);
+    eprop.eventPileup = eventESD->IsPileupFromSPD();
+    if (eprop.eventPileup)
+    {
+      Int_t nPileupVertices = eventESD->GetNumberOfPileupVerticesSPD();
+      FillHistogram("hNPileupVtx", nPileupVertices);
+
+      for (Int_t puVtx = 0; puVtx < nPileupVertices; puVtx++)
+      {
+        Double_t dZpileup = primaryVertex->GetZ() - eventESD->GetPileupVertexSPD(puVtx)->GetZ();
+        FillHistogram("hZPileupVtx", dZpileup);
+      }
+    }
+  }
+
+  if(dynamic_cast<AliAODEvent *> (event))
+  {
+    AliAODEvent * eventAOD = dynamic_cast<AliAODEvent *> (event);
+    eprop.eventPileup = eventAOD->IsPileupFromSPD();
+    if (eprop.eventPileup)
+    {
+      Int_t nPileupVertices = eventAOD->GetNumberOfPileupVerticesSPD();
+      FillHistogram("hNPileupVtx", nPileupVertices);
+
+      for (Int_t puVtx = 0; puVtx < nPileupVertices; puVtx++)
+      {
+        Double_t dZpileup = primaryVertex->GetZ() - eventAOD->GetPileupVertexSPD(puVtx)->GetZ();
+        FillHistogram("hZPileupVtx", dZpileup);
+      }
+    }
+  }
+  // eprop.eventV0AND = fTriggerAnalysis->IsOfflineTriggerFired(event, AliTriggerAnalysis::kV0AND);
+
+  // Fill event statistics for different selection criteria
+  FillHistogram("hSelEvents", 1) ;
+  if (eprop.eventVtxExist)
+    FillHistogram("hSelEvents", 2) ;
+  if (eprop.eventVtxExist && eprop.eventVtxZ10cm)
+    FillHistogram("hSelEvents", 3) ;
+  if (eprop.eventVtxExist && eprop.eventVtxZ10cm && eprop.eventV0AND)
+    FillHistogram("hSelEvents", 4) ;
+  if (eprop.eventVtxExist && eprop.eventVtxZ10cm && eprop.eventV0AND && eprop.eventPileup)
+    FillHistogram("hSelEvents", 5) ;
+  if (eprop.eventPileup)
+    FillHistogram("hSelEvents", 6) ;
+  if (eprop.eventV0AND)
+    FillHistogram("hSelEvents", 7) ;
+
+  Float_t tV0A = event->GetVZEROData()->GetV0ATime();
+  Float_t tV0C = event->GetVZEROData()->GetV0CTime();
+  FillHistogram("hV0Atime", tV0A);
+  FillHistogram("hV0Atime", tV0C);
+  FillHistogram("hV0AV0Ctime", tV0A, tV0C);
+
+  //Vtx class z-bin
+  eprop.zvtx = (Int_t)((vtxBest[2] + 10.) / 2.) ;
+  if (eprop.zvtx < 0) eprop.zvtx = 0 ;
+  if (eprop.zvtx > 9) eprop.zvtx = 9 ;
+
+  if(fEventCounter != 0)
+    return eprop;
+
+  // Get PHOS rotation matrices from ESD and set them to the PHOS geometry
+  if (dynamic_cast<AliESDEvent *>(event))
+  {
+    // Initialize the PHOS geometry
+    fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") ;
+    for (Int_t mod = 0; mod < 5; mod++)
+    {
+      if (!event->GetPHOSMatrix(mod)) continue;
+      fPHOSGeo->SetMisalMatrix(event->GetPHOSMatrix(mod), mod) ;
+      Printf("PHOS geo matrix %p for module # %d is set\n", event->GetPHOSMatrix(mod), mod);
+    }
+  }
+
+  if (dynamic_cast<AliAODEvent *>(event))
+  {
+    AliOADBContainer geomContainer("phosGeo");
+    geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root", "PHOSRotationMatrixes");
+
+    Int_t runNumber = event->GetRunNumber();
+    TObjArray * matrixes = (TObjArray *)geomContainer.GetObject(runNumber, "PHOSRotationMatrixes");
+    fPHOSGeo =  AliPHOSGeometry::GetInstance("Run2") ;
+    for (Int_t mod = 0; mod < 5; mod++)
+    {
+      if (!matrixes->At(mod))
+      {
+        if ( fDebug )
+          AliInfo(Form("No PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
+        continue;
+      }
+      else
+      {
+        fPHOSGeo->SetMisalMatrix(((TGeoHMatrix *)matrixes->At(mod)), mod) ;
+        if ( fDebug > 1 )
+          AliInfo(Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
+      }
+    }
+  }
+
+  return eprop;
 }
