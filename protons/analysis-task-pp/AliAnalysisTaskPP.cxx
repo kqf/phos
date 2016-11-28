@@ -143,6 +143,19 @@ void AliAnalysisTaskPP::Terminate(Option_t *)
 
 Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & eprops) const
 {
+	// Do not apply this criteria yet.
+	// TODO: Do we need all these flags.
+	// If yes then this method should be completely changed
+	// PhotonSelection * phys = dynamic_cast<PhotonSelection *> (fSelections - FindObject("Phys"));
+	// TH1 * hSelected = phys ? dynamic_cast<TH1 *> (phys->GetListOfHistos()->FindObject("EventCounter")) : 0;
+	// hSelected->Fill(1) ;
+	// if (eventVtxExist) hSelected->Fill(2) ;
+	// if (eventVtxExist && eventVtxZ10cm) hSelected->Fill(3) ;
+	// if (eventVtxExist && eventVtxZ10cm && eventV0AND) hSelected->Fill(4) ;
+	// if (eventVtxExist && eventVtxZ10cm && eventV0AND && eventPileup) hSelected->Fill(5) ;
+	// if (eventPileup) hSelected->Fill(6) ;
+	// if (eventV0AND) hSelected->Fill(7) ;
+
 	// pileup
 	if (event->IsPileupFromSPD(3, 0.8, 3., 2., 5.))
 		return kFALSE;
@@ -194,7 +207,7 @@ void AliAnalysisTaskPP::SetBadCells(Int_t badcells[], Int_t nbad)
 Bool_t AliAnalysisTaskPP::CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, Int_t & iz) const
 {
 	// Converts cell absId --> (sm,ix,iz);
-	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance();
+	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
 	if (!geomPHOS)
 	{
 		AliWarning("Something is wrong with PHOS Geometry. Check if you initialize it in UserExec!");

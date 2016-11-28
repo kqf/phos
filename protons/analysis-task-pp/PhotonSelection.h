@@ -14,10 +14,22 @@
 
 struct EventFlags
 {
+	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFalse, Bool_t p = kFalse, Bool_t vtx = kFalse/*, Bool_t v0 = kFalse*/):
+		centr(c),
+		zvtx(z),
+		isMixing(m),
+		eventPileup(p),
+		eventVtxExist(vtx)
+		//, eventV0AND(v0) 
+		{}
+
 	Double_t vtxBest[3];   // Calculated vertex position
 	Int_t  centr;
 	Int_t  zvtx;
 	Bool_t isMixing;
+	Bool_t eventPileup;
+	Bool_t eventVtxExists;
+	// Bool_t eventV0AND;
 };
 
 // Useless conditions are needed to kill unused warning.
