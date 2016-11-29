@@ -4,7 +4,7 @@ import ROOT
 def wait(name, draw, save = True, suffix = ''):
     canvas = ROOT.gROOT.FindObject('c1')
     canvas.Update()
-    suffix = suffix.replace(' ', '_')
+    name = name.replace(' ', '_')
     if save: canvas.SaveAs('results/' + name+ '.pdf')
 
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
@@ -18,8 +18,10 @@ def draw_and_save(histograms, name = '', draw = True, save = True, suffix = ''):
         for h in histograms: h.SetTitle(name.replace('_', ' ') + ' ' + suffix + ' ' + h.GetTitle())
 
     histograms[0].Draw()
+    ROOT.gPad.SetTickx()
+    ROOT.gPad.SetTicky() 
     for h in histograms: h.Draw('same')
-    wait(name + histograms[0].GetName() +  '_' + suffix , draw, save, suffix)
+    wait(name + histograms[0].GetName() +  '_' + suffix , draw, save)
 
        
 def nicely_draw(hist, option = '', legend = None):
@@ -36,5 +38,5 @@ def nicely_draw(hist, option = '', legend = None):
     legend.SetTextSize(0.04)
     legend.AddEntry(hist, hist.label)
     legend.Draw('same')
-    wait('xlin_' + hist.GetName(), draw = True, save = True, suffix = '')
+    wait('xlin_' + hist.GetName(), draw = True, save = True)
   

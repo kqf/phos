@@ -1,17 +1,11 @@
-LABEL1 = BadMap
-LABEL2 = Tender
+LABELS = No_Tender_with_BMap Tender_No_BMap Tender_And_BadMap
 
 images:
-	python2 run-pi0-spectrum.py
+	./run-pi0-spectrum.py
 
-	pdfunite `ls -tr results/ratio*$(LABEL1).pdf` results/initial_fit_$(LABEL1).pdf
-	pdfunite `ls -tr results/fit*$(LABEL1).pdf` results/signal$(LABEL1).pdf
-	pdfunite `ls -tr results/real*$(LABEL1).pdf` results/background_$(LABEL1).pdf
-	rm -f results/real*$(LABEL1).pdf results/fit*$(LABEL1).pdf results/ratio*$(LABEL1).pdf
-
-	pdfunite `ls -tr results/ratio*$(LABEL2).pdf` results/initial_fit_$(LABEL2).pdf
-	pdfunite `ls -tr results/fit*$(LABEL2).pdf` results/signal$(LABEL2).pdf
-	pdfunite `ls -tr results/real*$(LABEL2).pdf` results/background_$(LABEL2).pdf
-	rm -f results/real*$(LABEL2).pdf results/fit*$(LABEL2).pdf results/ratio*$(LABEL2).pdf
-
-	ls -ltr results
+	for label in $(LABELS); do \
+		pdfunite `ls -tr results/ratio*$$label.pdf` results/initial_fit_$$label.pdf; \
+		pdfunite `ls -tr results/fit*$$label.pdf` results/signal$$label.pdf; \
+		pdfunite `ls -tr results/real*$$label.pdf` results/background_$$label.pdf; \
+		rm -f results/real*$$label.pdf results/fit*$$label.pdf results/ratio*$$label.pdf; \
+	done

@@ -6,16 +6,18 @@ from spectrum.spectrum import PtAnalyzer, Spectrum
 
 def my_input(filename):
     lst = ROOT.TFile(filename).PhysNoTender
-    nevents = lst.FindObject('TotalEvents').GetEntries()
+    nevents = lst.FindObject('TotalEvents').GetBinContent(1)
     rawhist = lst.FindObject('hMassPtN3')
     rawmix = lst.FindObject('hMixMassPtN3')
     return [nevents, rawhist, rawmix]
 
 def example_input(filename):
     lst = ROOT.TFile(filename).Data
-    nevents = lst.FindObject('hSelEvents').GetBinContent(4)
-    rawhist = lst.FindObject('hMassPtN3')
-    rawmix = lst.FindObject('hMiMassPtN3')
+    nevents = lst.FindObject('hSelEvents').GetBinContent(1)
+    # pattern = "MassPtN3"
+    pattern = "MassPtA10vtx10"
+    rawhist = lst.FindObject('h' + pattern)
+    rawmix = lst.FindObject('hMi' + pattern)
     return [nevents, rawhist, rawmix]
 
 
@@ -27,12 +29,15 @@ def main():
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
 
-    first = f(my_input('input-data/LHC16k-NoTender.root'), 'BadMap', 'q')
-    second = f(example_input('input-data/LHC16k-NoBadmap.root'), 'Tender', 'q')
+    # first = f(example_input('input-data/LHC16k-pass1-tender-and-my-bmap.root'), 'BadMap', 'v')
+    first = f(my_input('input-data/LHC16k.root'), 'No Tender with BMap', 'q')
+    second = f(example_input('input-data/LHC16k-NoBadmap.root'), 'Tender No BMap', 'q')
+    third = f(example_input('input-data/LHC16k-pass1-tender-and-my-bmap.root'), 'Tender And BadMap', 'q')
 
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()
-    diff.compare_lists_of_histograms(first, second)
+    # diff.compare_lists_of_histograms([first, second])
+    diff.compare_set_of_histograms([first, second, third])
 
 
 if __name__ == '__main__':

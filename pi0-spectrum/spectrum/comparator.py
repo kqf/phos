@@ -44,31 +44,34 @@ def compare_chi(hist1, hist2):
     if isclose(1., percentile): return #everything is fine
     print bcolors.WARNING + 'Rate of change of %s%s%s is' % (bcolors.OKGREEN, h.GetName(), bcolors.WARNING), percentile, bcolors.ENDC
 
-def compare_visually(hist1, hist2, ci):
-    hist1.SetLineColor(ci)
-    hist2.SetLineColor(ci + 4)
-
-    hist1.Draw()
-    hist2.Draw('same')
-
-    legend = ROOT.TLegend(0.9, 0.4, 1.0, 0.6)
+def compare_visually(hists, ci):
+    legend = ROOT.TLegend(0.8, 0.4, 0.9, 0.6)
     legend.SetBorderSize(0)
-    legend.SetFillStyle(0)
+    # legend.SetFillStyle(0)
     legend.SetTextSize(0.04)
-    legend.AddEntry(hist1, hist1.label)
-    legend.AddEntry(hist2, hist2.label)
+
+    hists[0].Draw()
+    for i, h in enumerate(hists): 
+        h.SetLineColor(ci + i)
+        h.Draw('same')
+        legend.AddEntry(h, h.label)
+
     legend.Draw('same')
 
-    if 'spectr' in hist1.GetName():
+    if 'spectr' in hists[0].GetName():
         ROOT.gPad.SetLogy()
 
-    wait(hist1.GetName(), True)
+    wait(hists[0].GetName(), True)
 
 
 class Comparator(object):
     def __init__(self, ):
         super(Comparator, self).__init__()
         self.ci, self.colors = self.define_colors()
+
+    def compare_set_of_histograms(self, l, compare = compare_visually):
+        for hists in zip(*l):
+            compare(hists, self.ci)
 
     def compare_lists_of_histograms(self, l1, l2, ignore = [], compare = compare_visually):
         if len(l1) != len(l2): 
