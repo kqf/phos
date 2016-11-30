@@ -2,7 +2,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 {
     SetupEnvironment();
 
-    bool useTender = kTRUE;
+    bool useTender = kFALSE;
     // TString period = "LHC16h";
     TString period = "LHC16k";
     Int_t * excells;
@@ -47,7 +47,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
-    if (!useTender) AddMyTask(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
+    if (!useTender) AddMyTask(AliVEvent::kINT7, "None", "NoTender", "BadMap_LHC16k.root");;
 
     // Add tender
     if (useTender)
@@ -55,9 +55,9 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
+        //PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "BadMap_LHC16k.root");
+        AddMyTask(AliVEvent::kINT7, "None", "WithTender", "BadMap_LHC16k.root");
         // AddMyTask(AliVEvent::kINT7, "LHC16i ## only my(!) badmap in tender ## only tender", "OnlyTender");
     }
 
