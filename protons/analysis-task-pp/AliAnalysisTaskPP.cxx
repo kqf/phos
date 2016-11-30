@@ -119,7 +119,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	// No need to check. We have already done it in SelectEvent
 	AliVCaloCells * cells = event->GetPHOSCells();
 
-	TList * pool = fPreviousEvents->GetPool();
+	TList * pool = fPreviousEvents->GetPool(evtProperties);
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
 	{
 		PhotonSelection * fCellsQA = dynamic_cast<PhotonSelection *> (fSelections->At(i));
@@ -133,7 +133,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 
 		PostData(i + 1, fCellsQA->GetListOfHistos()); // Output starts from 1
 	}
-	fPreviousEvents->UpdatePool(clusArray);
+	fPreviousEvents->UpdatePool(clusArray, evtProperties);
 }
 
 //________________________________________________________________

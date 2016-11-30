@@ -7,18 +7,36 @@
 #include <TObject.h>
 #include <TObjArray.h>
 
+// --- My Code ---
+#include "PhotonSelection.h"
+
 class MixingSample : public TObject
 {
 public:
 
-	MixingSample(): TObject(), fPool(0), fPoolSize(0) {}
-	MixingSample(Int_t psize): TObject(), fPool(0), fPoolSize(psize) { fPool = new TList(); fPool->SetOwner(kTRUE); }
-	virtual ~MixingSample() { if(fPool) delete fPool; }
-	virtual TList * GetPool() { return fPool; }     /* zvtx, centrality ?*/
-	virtual void UpdatePool(const TObjArray & clusters /* zvtx, centrality ?*/); 
+	MixingSample(): TObject(), fPool(), fPoolSize(0) {}
+	MixingSample(Int_t psize): TObject(), fPool(), fPoolSize(psize) 
+	{
+		for(Int_t i = 0; i < 10; ++i)
+		{
+			fPool[i] = new TList(); 
+			fPool[i]->SetOwner(kTRUE); 
+		}
+	}
+
+	virtual ~MixingSample() 
+	{
+		for(Int_t i = 0; i < 10; ++i)
+		{
+			if(fPool[i]) delete fPool[i];
+		}
+	}
+
+	virtual TList * GetPool(EventFlags & e);
+	virtual void UpdatePool(const TObjArray & clusters, EventFlags & e); 
 
 protected:
-	TList * fPool;
+	TList * fPool[10];
 	Int_t fPoolSize;
 
 private:
@@ -28,13 +46,28 @@ private:
 	ClassDef(MixingSample, 1)
 };
 
-void MixingSample::UpdatePool(const TObjArray & clusters)
+TList * MixingSample::GetPool(EventFlags & e)
 {
-	if(clusters.GetEntries() > 1)
-		fPool->AddFirst(clusters.Clone());
+	Int_t zbin = Int_t((e.vtxBest[2] + 10.) / 2.); 
+	if(zbin < 0) zbin = 0;
+	if(zbin > 9) zbin = 9;
 
-	if(fPool->GetEntries() > fPoolSize)
-		fPool->RemoveLast();
+	return fPool[zbin];
+}   
+
+void MixingSample::UpdatePool(const TObjArray & clusters, EventFlags & e)
+{
+	TList * pool = GetPool(e);
+
+	if(clusters.GetEntries() > 0)
+		pool->AddFirst(clusters.Clone());
+
+	if(pool->GetEntries() > fPoolSize)
+	{
+		TObject * tmp = pool->Last();
+		pool->RemoveLast();
+		delete tmp;
+	}
 }
 
 #endif
