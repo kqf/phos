@@ -1,7 +1,7 @@
-LABELS = No_Tender_with_BMap Tender_No_BMap Tender_And_BadMap
+LABELS = No_Tender_with_BMap Tender_No_BMap Tender_And_BadMap my_task
 
 images:
-	./run-pi0-spectrum.py
+	python2 run-pi0-spectrum.py
 
 	for label in $(LABELS); do \
 		pdfunite `ls -tr results/ratio*$$label.pdf` results/initial_fit_$$label.pdf; \

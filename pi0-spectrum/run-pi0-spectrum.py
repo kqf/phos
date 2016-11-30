@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# /usr/bin/python
 
 import ROOT
 
@@ -30,14 +30,15 @@ def main():
 
 
     # first = f(example_input('input-data/LHC16k-pass1-tender-and-my-bmap.root'), 'BadMap', 'v')
-    first = f(my_input('input-data/LHC16k.root'), 'No Tender with BMap', 'q')
+    zero = f(my_input('input-data/LHC16k-my-notender.root'), 'my task', 'q')
+    first = f(example_input('input-data/LHC16k-pass1-no-tender-example.root'), 'No Tender with BMap', 'q')
     second = f(example_input('input-data/LHC16k-NoBadmap.root'), 'Tender No BMap', 'q')
     third = f(example_input('input-data/LHC16k-pass1-tender-and-my-bmap.root'), 'Tender And BadMap', 'q')
 
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()
     # diff.compare_lists_of_histograms([first, second])
-    diff.compare_set_of_histograms([first, second, third])
+    diff.compare_set_of_histograms([zero, first, second, third])
 
 
 if __name__ == '__main__':

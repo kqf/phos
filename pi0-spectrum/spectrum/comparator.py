@@ -85,7 +85,7 @@ class Comparator(object):
         print "That's it!! Your computation is done"
 
     def define_colors(self, ci = 1000):
-        colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)]
+        colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)][::-1]
         rcolors = [[b / 255. for b in c] for c in colors]
         rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
         return ci, rcolors
