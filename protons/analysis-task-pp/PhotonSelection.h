@@ -14,12 +14,12 @@
 
 struct EventFlags
 {
-	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFalse, Bool_t p = kFalse, Bool_t vtx = kFalse/*, Bool_t v0 = kFalse*/):
+	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFALSE, Bool_t p = kFALSE, Bool_t vtx = kFALSE/*, Bool_t v0 = kFalse*/):
 		centr(c),
 		zvtx(z),
 		isMixing(m),
 		eventPileup(p),
-		eventVtxExist(vtx)
+		eventVtxExists(vtx)
 		//, eventV0AND(v0) 
 		{}
 
