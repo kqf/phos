@@ -61,8 +61,8 @@ public:
       TH2I * h = (TH2I *) fBadMap->Get(Form("PHOS_BadMap_mod%d", module));
       if (!h) AliFatal( Form("PHOS_BadMap_mod%d doesn't exist", module));
 
-      fPHOSBadMap[module - 1] = new TH2I(*h);
-      cout << "Set " <<  fPHOSBadMap[module - 1]->GetName() << endl;
+      fPHOSBadMap[module] = new TH2I(*h);
+      cout << "Set " <<  fPHOSBadMap[module]->GetName() << endl;
     }
     fBadMap->Close();
     cout << "\n\n...PHOS BadMap is set now." << endl;

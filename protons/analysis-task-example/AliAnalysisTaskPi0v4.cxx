@@ -79,11 +79,12 @@ AliAnalysisTaskPi0v4::AliAnalysisTaskPi0v4(const char *name)
     fPHOSBadMap[i]=new TH2I(key,"Bad Modules map",64,0.,64.,56,0.,56.) ;
   }
 
-  // Absolute recalibration for LHC11a. Use SetRecalib(mod,recalib) to change it
-  fRecalib[0] = 0.9942;
-  fRecalib[1] = 0.9822;
-  fRecalib[2] = 1.0072;
-  fRecalib[3] = 1.0000;
+  // Absolute recalibration for LHC11a.
+  // Don't use manual recalibration
+  fRecalib[0] = 1.;
+  fRecalib[1] = 1.;
+  fRecalib[2] = 1.;
+  fRecalib[3] = 1.;
 
 }
 
