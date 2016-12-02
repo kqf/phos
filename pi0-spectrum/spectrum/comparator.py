@@ -44,23 +44,66 @@ def compare_chi(hist1, hist2):
     if isclose(1., percentile): return #everything is fine
     print bcolors.WARNING + 'Rate of change of %s%s%s is' % (bcolors.OKGREEN, h.GetName(), bcolors.WARNING), percentile, bcolors.ENDC
 
+def preare_ratio_plot(hists):
+    c1 = ROOT.gROOT.FindObject('c1')
+    if not c1: c1 = ROOT.TCanvas("c1", "compare", 1000, 600)
+    if len(hists) != 2: return c1, c1, c1
+    pad1 = ROOT.TPad("pad1","main plot", 0, 0.3, 1, 1);
+    pad1.SetBottomMargin(0);
+    pad1.Draw()
+    c1.cd()
+    pad2 = ROOT.TPad("pad2","ratio", 0, 0, 1, 0.3);
+    pad2.SetTopMargin(0);
+    pad2.Draw();
+    pad2.SetTickx()
+    pad2.SetTicky()
+    return c1, pad1, pad2
+
+def draw_ratio(hists):
+    if len(hists) != 2: return
+    a, b = hists
+    ratio = a.Clone('ratio' + a.GetName())
+    ratio.GetYaxis().SetTitleSize(0.06)
+    ratio.GetYaxis().SetTitleOffset(0.3)
+    ratio.GetYaxis().CenterTitle(True)
+    ratio.GetXaxis().SetTitleSize(0.06)
+    ratio.GetXaxis().SetTitleOffset(0.7) 
+    ratio.GetXaxis().SetLabelSize(0.08) 
+
+    ratio.Divide(b)
+    label = a.label + ' / ' + b.label
+    ratio.SetTitle('')
+    ratio.GetYaxis().SetTitle(label)
+    ratio.Draw()
+    ROOT.gPad.SetGridy()
+    return ratio 
+
 def compare_visually(hists, ci):
+    canvas, mainpad, ratio = preare_ratio_plot(hists)
+
     legend = ROOT.TLegend(0.8, 0.4, 0.9, 0.6)
     legend.SetBorderSize(0)
     # legend.SetFillStyle(0)
     legend.SetTextSize(0.04)
 
-    hists[0].Draw()
+    mainpad.cd()
+    hists[0].DrawCopy()
     for i, h in enumerate(hists): 
         h.SetLineColor(ci + i)
-        h.Draw('same')
+        h.DrawCopy('same')
+        # h.SetFillColor(ci + i)
         legend.AddEntry(h, h.label)
 
     legend.Draw('same')
 
     if 'spectr' in hists[0].GetName():
         ROOT.gPad.SetLogy()
+    ROOT.gStyle.SetOptStat(0)
+    ROOT.gPad.SetTickx()
+    ROOT.gPad.SetTicky() 
 
+    ratio.cd()
+    ratio = draw_ratio(hists)
     wait(hists[0].GetName(), True)
 
 
