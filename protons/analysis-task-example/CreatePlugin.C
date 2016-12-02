@@ -1,10 +1,11 @@
-AliAnalysisGrid * CreatePlugin(TString pluginmode = "test",Int_t * runs, Int_t nruns, TString period)
+AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kTRUE, Int_t * runs, Int_t nruns, TString period)
 {
 
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
 
-    plugin->SetMergeViaJDL(kTRUE); 
+	plugin->SetMergeViaJDL(mergeJDL); 
+
 	plugin->SetOutputToRunNo(kTRUE); 
 	
 	plugin->SetRunMode(pluginmode);

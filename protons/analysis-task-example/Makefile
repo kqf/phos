@@ -11,10 +11,16 @@ grid:
 	echo "Started grid analysis" >> .runhistory
 	@echo -e "\x07"
 
-terminate:
-	root -l -q 'run.C("grid", "terminate")'
+merge:
+	root -l -q 'run.C("grid", "terminate", kTRUE)'
 	mv AnalysisResults.root $(RESULTS).root
 	echo "Terminated grid analysis" >> .runhistory
+	@echo -e "\x07"
+
+download:
+	root -l -q 'run.C("grid", "terminate", kFALSE)'
+	mv AnalysisResults.root $(RESULTS).root
+	echo "Downloaded files analysis" >> .runhistory
 	@echo -e "\x07"
 
 test:

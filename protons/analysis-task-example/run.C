@@ -1,4 +1,4 @@
-void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
+void run(const char * runmode = "local", const char * pluginmode = "test", bool mergeJDL = kTRUE, bool isMC = kFALSE)
 {
     SetupEnvironment();
 
@@ -16,7 +16,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
@@ -40,7 +40,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     // mgr->SetDebugLevel(999999);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
+    AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, kTRUE for MC
 
     gROOT->LoadMacro("AliAnalysisTaskPi0v4.cxx+");
     gROOT->LoadMacro("AddMyTask.C");

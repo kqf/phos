@@ -1,4 +1,4 @@
-void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
+void run(const char * runmode = "local", const char * pluginmode = "test", bool mergeJDL = kTRUE, bool isMC = kFALSE)
 {
     SetupEnvironment();
 
@@ -16,7 +16,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
