@@ -457,22 +457,22 @@ void AliAnalysisTaskPi0v4::UserExec(Option_t *)
     }
   }
   if( eventAOD && fEventCounter == 0) {
-    AliOADBContainer geomContainer("phosGeo");
-    geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root","PHOSRotationMatrixes");
-    TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(runNumber,"PHOSRotationMatrixes");
+  //   AliOADBContainer geomContainer("phosGeo");
+  //   geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root","PHOSRotationMatrixes");
+  //   TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(runNumber,"PHOSRotationMatrixes");
     fPHOSGeo =  AliPHOSGeometry::GetInstance("Run2") ;
-    for(Int_t mod=0; mod<5; mod++) {
-      if(!matrixes->At(mod)) {
-  if( fDebug )
-    AliInfo(Form("No PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
-  continue;
-      }
-      else {
-  fPHOSGeo->SetMisalMatrix(((TGeoHMatrix*)matrixes->At(mod)),mod) ;
-  if( fDebug >1 )
-    AliInfo(Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
-      }
-    }
+  //   for(Int_t mod=0; mod<5; mod++) {
+  //     if(!matrixes->At(mod)) {
+  // if( fDebug )
+  //   AliInfo(Form("No PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
+  // continue;
+  //     }
+  //     else {
+  // fPHOSGeo->SetMisalMatrix(((TGeoHMatrix*)matrixes->At(mod)),mod) ;
+  // if( fDebug >1 )
+  //   AliInfo(Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, fPHOSGeo));
+  //     }
+  //   }
   }
 
   Float_t  energy, tof;

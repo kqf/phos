@@ -1,5 +1,5 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
-RESULTS = LHC16k-pass1-no-tender-example
+RESULTS = LHC16k-tender
 MPATH = /alice/cern.ch/user/o/okovalen/phos-protons-example/LHC16k/
 
 caf:

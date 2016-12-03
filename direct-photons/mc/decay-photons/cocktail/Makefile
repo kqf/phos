@@ -1,4 +1,4 @@
-SEED=123456
+SEED=87654
 GHOME=/alice/cern.ch/user/o/okovalen
 REPO = fast-cocktail
 OUTPUT=$(GHOME)/$(REPO)/output/$(SEED)

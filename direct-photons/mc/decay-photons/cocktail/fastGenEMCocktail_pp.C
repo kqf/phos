@@ -2,7 +2,7 @@
 #include <TSystem.h>
 #include <TVirtualMC.h>
 
-void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
+void fastGenEMCocktail_pp(Int_t nev = 500, char * filename = "galice.root")
 {
 	SetupEnvironment();
 	//===============
@@ -45,9 +45,9 @@ void fastGenEMCocktail_pp(Int_t nev = 1000, char * filename = "galice.root")
 	gROOT->LoadMacro("AliGenPHOSMesons.h++") ;
 	AliGenPHOSMesons * myGener = new AliGenPHOSMesons() ;
 
-	AliGenParam * genMesons[] = {    new AliGenParam(20, myGener, AliGenPHOSlib::kPion, "")
-									,new AliGenParam(20, myGener, AliGenPHOSlib::kEta, "") 
-									,new AliGenParam(20, myGener, AliGenPHOSlib::kOmega, "") 
+	AliGenParam * genMesons[] = {    new AliGenParam(200, myGener, AliGenPHOSlib::kPion, "")
+									,new AliGenParam(200, myGener, AliGenPHOSlib::kEta, "") 
+									,new AliGenParam(200, myGener, AliGenPHOSlib::kOmega, "") 
 								};
 
 	Int_t nComponents = sizeof(genMesons)/sizeof(AliGenParam *);
