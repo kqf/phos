@@ -1,6 +1,7 @@
 
 import unittest
 import ROOT
+import json
 
 
 from math import sqrt
@@ -21,12 +22,8 @@ def get_spectrum(name, a, b, par):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        # TODO: move these values to json
-        particles = {'pion' :  [0.135, 0.135, [2.4, 0.139, 6.88]],
-                     'eta'  :  [0.547, 0.547, [0.201, 0.229, 7.]],
-                     'omega':  [0.135, 0.547, [1.0, 0.139, 6.88]]
-                    }
-
+        with open('test/particles.json') as f: 
+            particles = json.load(f)
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
     def testCompareMultiple(self):
