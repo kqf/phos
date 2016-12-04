@@ -59,6 +59,21 @@ def check_multiple(gyield):
 		hist.Draw('same')
 		update()
 
+class CocktailYield(YieldEstimator):
+	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False):
+		super(CocktailYield, self).__init__(filenme, yrange, checky)
+
+	def extract_data(self, filenme):
+		infile = ROOT.TFile(filenme)
+		rates = [1., 1., 1.]
+		raw, counter = [infile.fhGammaMCPi0, infile.fhGammaMCEta, infile.fhGammaMCOmega], infile.hCounter
+		map(lambda x, y: x.Scale(1. / y), raw, rates)
+		for h in raw[1:]: raw[0].Add(h)
+		raw = raw[0]
+		raw.Scale(1. / counter.GetBinContent(1))
+		return raw	
+		
+
 def double_ratio(decay_photons, direct_photons, label):
 	ratio = decay_photons.Clone('double_ratio' + label.replace(' ', ''))
 	ratio.SetTitle('Double Ratio MC; p_{t}, GeV/c; R_{d} #approx #frac{#gamma inclul}{#gamma decay}')
