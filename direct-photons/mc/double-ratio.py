@@ -1,11 +1,15 @@
 #!/usr/bin/python
 
+import json
+import sys
 import ROOT 
 ROOT.TH1.AddDirectory(False)
 
 def update():
-	ROOT.gROOT.FindObject('c1').Update()
-	raw_input('Press ENTER ...')
+	canvas = ROOT.gROOT.FindObject('c1')
+	canvas.Update()
+	canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
+	ROOT.gApplication.Run(True)
 
 def draw_hist(hist):
 	hist.Draw()
@@ -13,10 +17,11 @@ def draw_hist(hist):
 
 
 class YieldEstimator(object):
-	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False):
+	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False, energy = '7 TeV'):
 		super(YieldEstimator, self).__init__()
 		self.checky = checky
 		self.raw_hist = self.extract_data(filenme) 
+		self.energy = energy.replace('T', ' T')
 		self.default = self.calculate(*yrange) 
 
 
@@ -37,8 +42,9 @@ class YieldEstimator(object):
 		a, b = bin(ya), bin(yb)
 		pt = self.raw_hist.ProjectionX('pythia_%d_%d' % (a, b), a, b)
 		pt.Scale(1./(yb - ya))
-		pt.SetTitle('MC pythia; p_{t}, GeV/c; #frac{1}{N_{ev}}#frac{d^{2}N}{dp_{t}dy}')
+		pt.SetTitle(self.energy + ' MC pythia; p_{t}, GeV/c; #frac{1}{N_{ev}}#frac{d^{2}N}{dp_{t}dy}')
 		pt.label = 'mc'
+		pt.energy = self.energy
 		return pt
 
 	def draw(self):
@@ -57,17 +63,18 @@ def check_multiple(gyield):
 		hist = gyield.calculate(-1. * i / 100., i/ 100.)
 		hist.SetLineColor(i)
 		hist.Draw('same')
-		update()
+	update()
 
 class CocktailYield(YieldEstimator):
-	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False):
-		super(CocktailYield, self).__init__(filenme, yrange, checky)
+	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False, energy = '7 TeV', prates = ''):
+		with open(prates, 'r') as f:
+			self.rates = json.load(f)[energy]
+		super(CocktailYield, self).__init__(filenme, yrange, checky, energy)
 
 	def extract_data(self, filenme):
 		infile = ROOT.TFile(filenme)
-		rates = [1., 1., 1.]
 		raw, counter = [infile.fhGammaMCPi0, infile.fhGammaMCEta, infile.fhGammaMCOmega], infile.hCounter
-		map(lambda x, y: x.Scale(1. / y), raw, rates)
+		map(lambda x, y: x.Scale(1. / y), raw, self.rates)
 		for h in raw[1:]: raw[0].Add(h)
 		raw = raw[0]
 		raw.Scale(1. / counter.GetBinContent(1))
@@ -76,7 +83,7 @@ class CocktailYield(YieldEstimator):
 
 def double_ratio(decay_photons, direct_photons, label):
 	ratio = decay_photons.Clone('double_ratio' + label.replace(' ', ''))
-	ratio.SetTitle('Double Ratio MC; p_{t}, GeV/c; R_{d} #approx #frac{#gamma inclul}{#gamma decay}')
+	ratio.SetTitle('Double Ratio MC, ' + decay_photons.energy + '; p_{t}, GeV/c; R_{d} #approx #frac{#gamma inclul}{#gamma decay}')
 	ratio.Add(direct_photons)
 	ratio.Divide(decay_photons)
 	ratio.label = label
@@ -108,11 +115,21 @@ def draw_multiple(histograms, log=True):
 	ROOT.gPad.SetLogy(log)
 	update()
 
-def main():
-	pp_7tev = YieldEstimator('decay-photons/FastGen_pp/generated.root')
-	decay_photons = pp_7tev.adjusted_bins()
+def get_arguments():
+	parameters = sys.argv[1:]
+	if len(parameters) < 4: 
+		return parameters + ['']
+	return parameters
 
-	direct_photons = [ROOT.TFile('direct-photons/%s.root'%i).hnnl for i in ['0.5', '1', '2']]
+
+def main():
+	decay_sim, direct_photons_dir, energy, prates = get_arguments()
+
+	estimator = CocktailYield(decay_sim, energy=energy, prates=prates) if prates else YieldEstimator(decay_sim, energy = energy)
+	decay_photons = estimator.adjusted_bins()
+
+	pQCD = direct_photons_dir + '%s.root'
+	direct_photons = [ROOT.TFile(pQCD % i).hnnl for i in ['0.5', '1', '2']]
 	for d in direct_photons: d.label = d.GetTitle().split('|')[1]
 
 	draw_multiple([decay_photons] + direct_photons)
@@ -120,11 +137,7 @@ def main():
 
 	ratios = [double_ratio(decay_photons, d, d.label) for d in direct_photons]
 	draw_multiple(ratios, False)
-	update()
-
-
-
-	# check_multiple(pp_7tev)
+	check_multiple(estimator)
 
 if __name__ == '__main__':
 	main()
