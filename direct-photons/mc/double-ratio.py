@@ -17,20 +17,30 @@ def draw_hist(hist):
 
 
 class YieldEstimator(object):
-	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False, energy = '7 TeV'):
+	def __init__(self, filenme, energy = '7TeV', prates = '', yrange = (-0.12, 0.12), checky = False):
 		super(YieldEstimator, self).__init__()
+		self.energy = energy.replace('T', ' T')
+		with open(prates, 'r') as f:
+			self.prates = json.load(f)
 		self.checky = checky
 		self.raw_hist = self.extract_data(filenme) 
-		self.energy = energy.replace('T', ' T')
 		self.default = self.calculate(*yrange) 
 
+	def normalization(self, hist):
+		func = ROOT.TF1('tsallis', '[3] *' + self.prates['Tsallis'], 0.5, 25.)
+		for i, p in enumerate(self.prates['Parameters Tsallis ' + self.energy]): 
+			func.FixParameter(i, p)
+		func.SetParameter(3, 1)
+		hist.Fit(func, 'R')
+		update()
+		return func.GetParameter(3)
 
 	def extract_data(self, filenme):
 		infile = ROOT.TFile(filenme)
 		raw, counter = infile.fhEtaMC, infile.hCounter
-		raw.Scale(1. / counter.GetBinContent(1))
+		norm = self.normalization(infile.hgenPi0)
+		raw.Scale(1. / counter.GetBinContent(1)/ norm)
 		return raw
-
 
 	def calculate(self, ya, yb):
 		if self.checky:
@@ -50,7 +60,6 @@ class YieldEstimator(object):
 	def draw(self):
 		draw_hist(self.default)
 
-
 	def adjusted_bins(self, n = 16):
 		self.default.Rebin(n)
 		self.default.Scale(1./ n)
@@ -66,18 +75,18 @@ def check_multiple(gyield):
 	update()
 
 class CocktailYield(YieldEstimator):
-	def __init__(self, filenme, yrange = (-0.12, 0.12), checky = False, energy = '7 TeV', prates = ''):
-		with open(prates, 'r') as f:
-			self.rates = json.load(f)[energy]
-		super(CocktailYield, self).__init__(filenme, yrange, checky, energy)
+	def __init__(self, filenme, energy = '7TeV', prates = '', yrange = (-0.12, 0.12), checky = False):
+		super(CocktailYield, self).__init__(filenme, energy, prates, yrange, checky)
 
 	def extract_data(self, filenme):
 		infile = ROOT.TFile(filenme)
 		raw, counter = [infile.fhGammaMCPi0, infile.fhGammaMCEta, infile.fhGammaMCOmega], infile.hCounter
-		map(lambda x, y: x.Scale(1. / y), raw, self.rates)
+		rates = self.prates[self.energy]
+		norm = self.normalization(infile.hgenPi0)
+		map(lambda x, y: x.Scale(y / norm), raw, rates)
 		for h in raw[1:]: raw[0].Add(h)
 		raw = raw[0]
-		raw.Scale(1. / counter.GetBinContent(1))
+		# raw.Scale(1. / counter.GetBinContent(1))
 		return raw	
 		
 
@@ -106,7 +115,7 @@ def draw_multiple(histograms, log=True):
 	for h, c in zip(histograms[1:], colors): h.SetLineColor(c)
 	for h, c in zip(histograms[1:], colors): h.SetMarkerColor(c)
 	# for h in histograms[1:]: h.SetMarkerStyle(20)
-	for h in histograms[1:]: h.Draw('p same')
+	for h in histograms[1:]: h.Draw('same')
 
 	legend = ROOT.TLegend(0.9, 0.4, 1.0, 0.6)
 	for h in histograms: legend.AddEntry(h, h.label)
@@ -117,15 +126,15 @@ def draw_multiple(histograms, log=True):
 
 def get_arguments():
 	parameters = sys.argv[1:]
-	if len(parameters) < 4: 
+	if len(parameters) < 5: 
 		return parameters + ['']
 	return parameters
 
 
 def main():
-	decay_sim, direct_photons_dir, energy, prates = get_arguments()
+	decay_sim, direct_photons_dir, energy, prates, cocktail = get_arguments()
 
-	estimator = CocktailYield(decay_sim, energy=energy, prates=prates) if prates else YieldEstimator(decay_sim, energy = energy)
+	estimator = CocktailYield(decay_sim, energy, prates) if cocktail else YieldEstimator(decay_sim, energy, prates)
 	decay_photons = estimator.adjusted_bins()
 
 	pQCD = direct_photons_dir + '%s.root'

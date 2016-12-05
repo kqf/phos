@@ -88,7 +88,7 @@ void fastGen_pp(Int_t nev = 50, char * filename = "galice.root")
 	gener->SetYRange(-1, 1);
 	gener->SetPtRange(0, 10000);
 	gener->SetProcess(kPyMb);
-	gener->SetEnergyCMS(13000.);
+	gener->SetEnergyCMS(7000.);
 	gener->SetProjectile("p", 1, 1) ;
 	gener->SetTarget("p", 1, 1) ;
 	gGener = gener;
