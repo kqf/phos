@@ -10,6 +10,7 @@
 #include <AliVCaloCells.h>
 #include <AliVCluster.h>
 #include <AliLog.h>
+#include <AliPHOSGeometry.h>
 
 #include <iostream>
 using namespace std;
@@ -67,9 +68,9 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
 	Double_t mMax  = 1.5;
-	Int_t nPt      = 400;
+	Int_t nPt      = 500;
 	Double_t ptMin = 0;
-	Double_t ptMax = 40;
+	Double_t ptMax = 100;
 
 	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2"  , nM, mMin, mMax, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3"  , nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -95,6 +96,17 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
 		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
 			fListOfHistos->Add(new TH2F(Form("hMixMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+
+
+	fListOfHistos->Add(new TH2F("hClusterEvsTM", "Cluster energy vs time, all modules", 1000, 0., 200., 1200, -6.e-6, +6.e-6));
+	for (Int_t i = 1; i < 5;  ++i)
+	{
+		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), Form("Cluster energy vs time, M%d", i), 1000, 0., 200., 1200, -6.e-6, +6.e-6));
+		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_0", i), Form("Clu  (X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+		fListOfHistos->Add(new TH2F(Form("hCluEXZM%d_0", i), Form("Clu E(X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_1", i), Form("Clu  (X,Z),  M%d, E>1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+		fListOfHistos->Add(new TH2F(Form("hCluEXZM%d_1", i), Form("Clu E(X,Z),  M%d, E>1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	}
 }
 
 //________________________________________________________________
@@ -106,20 +118,20 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	psum = p1 + p2;
 
 	// Only physical clusters
-    if(c1->GetNCells() < 3 || c2->GetNCells() < 3) return;
+	if (c1->GetNCells() < 3 || c2->GetNCells() < 3) return;
 
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
 	// if (psum.Pt() < 2.) return;
 
-	Int_t sm1, sm2;
-	if ((sm1 = CheckClusterGetSM(c1)) < 0) return; //  To be sure that everything is Ok
-	if ((sm2 = CheckClusterGetSM(c2)) < 0) return; //  To be sure that everything is Ok
+	Int_t sm1, sm2, x1, z1, x2, z2;
+	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
+	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
 
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	if(pt12 < 1) return;
+	if (pt12 < 1) return;
 
 	const char * suff = eflags.isMixing ? "Mix" : "";
 	if (c1->GetNCells() >= 3 && c2->GetNCells() >= 3) FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12 );
@@ -127,11 +139,10 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	if (c1->GetNCells() >= 5 && c2->GetNCells() >= 5) FillHistogram(Form("h%sMassPtN5", suff), ma12 , pt12 );
 	if (c1->GetNCells() >= 6 && c2->GetNCells() >= 6) FillHistogram(Form("h%sMassPtN6", suff), ma12 , pt12 );
 
-	if(sm1 < sm2)
+	if (sm1 < sm2)
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm1, sm2), ma12, pt12);
 	else
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm2, sm1), ma12, pt12);
-
 }
 
 //________________________________________________________________
@@ -139,22 +150,31 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 {
 	// Don't return TObjArray: force user to handle candidates lifetime
 	Double_t pi0EClusMin = 0.3;
-	Int_t sm;
-	TLorentzVector p;
+	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
 		if (clus->E() < pi0EClusMin) continue;
-		if ((sm = CheckClusterGetSM(clus)) < 0) continue;
+		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 		candidates->Add(clus);
 
+
+		// Fill histograms only for real events
+		if (eflags.isMixing)
+			continue;
+		TLorentzVector p;
 		clus->GetMomentum(p, eflags.vtxBest);
 
-		if (!eflags.isMixing)
-		{
-			FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
-			FillHistogram("hNcellsE", clus->GetNCells(), p.E());
-		}
+		FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
+		FillHistogram("hNcellsE", clus->GetNCells(), p.E());
+
+		Float_t energy = clus->E();
+		FillHistogram(Form("hCluNXZM%d_%d", sm, Int_t(energy > 1.)), x, z, 1.);
+		FillHistogram(Form("hCluEXZM%d_%d", sm, Int_t(energy > 1.)), x, z, energy);
+
+		Float_t tof = clus->GetTOF();
+		FillHistogram("hClusterEvsTM", energy, tof);
+		FillHistogram(Form("hClusterEvsTM%d", sm), energy, tof);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);

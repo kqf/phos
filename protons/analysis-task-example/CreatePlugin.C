@@ -20,15 +20,13 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 	plugin->SetCheckCopy(kFALSE);
 
 	plugin->SetGridDataDir("/alice/data/2016/" + period);
-	plugin->SetDataPattern("/pass1/*.*/AliAOD.root");
+	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
 	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
 	plugin->SetRunPrefix("000");
 
 	cout << "We are trying to analyse " << nruns << " runs" << endl;
 
-	// test test test
-	// for (Int_t i = 0; i < nruns; ++i)
-	for (Int_t i = 0; i < 2; ++i)
+    for (Int_t i = 0; i < nruns; ++i)
 		plugin->AddRunNumber(runs[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);

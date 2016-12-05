@@ -49,9 +49,14 @@ public:
 
   void SetBadMap(const char * filename)
   {
-    TFile * fBadMap = TFile::Open(filename);
+    return;
+    TFile * fBadMap = TFile::Open(filename, "read");
     if (!fBadMap->IsOpen())
-      AliFatal(Form("Cannot set BadMap %s doesn't exist", filename));
+    {
+     cout << Form("Cannot set BadMap %s doesn't exist", filename) << endl;
+     return;
+    }
+      // AliFatal(Form("Cannot set BadMap %s doesn't exist", filename));
 
     cout << "\n\n...Adding PHOS bad channel map \n"  << endl;
     gROOT->cd();

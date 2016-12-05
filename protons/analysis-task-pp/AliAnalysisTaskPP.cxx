@@ -44,8 +44,8 @@ AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name) :
 	fBadCells(0)
 {
 	fSelections->SetOwner(kTRUE);
-	fSelections->Add(new TestPhotonSelection("Data", "SOMETITLE")) ;
-	fSelections->Add(new PhysPhotonSelection("Phys", "SOMETITLE")) ;
+	// fSelections->Add(new TestPhotonSelection("Data", "SOMETITLE")) ;
+	fSelections->Add(new PhysPhotonSelection("Phys", "Physics Selection")) ;
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 		DefineOutput(i + 1, TList::Class()); // Output starts from 1
 }

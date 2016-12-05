@@ -51,7 +51,8 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
-    if (!useTender) AddMyTask(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
+    // if (!useTender) 
+    AddMyTask(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
 
     // Add tender
     if (useTender)
@@ -61,9 +62,8 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        AddMyTask(AliVEvent::kINT7, period + "## my badmap and tender, improved mixing ## tender", "Tender", "", excells, nexc);
-        // AddMyTask(AliVEvent::kINT7, "LHC16i ## my badmap + my(!) badmap in tender ## with tender", "WithTender", "", nexc);
-        // AddMyTask(AliVEvent::kINT7, "LHC16i ## only my(!) badmap in tender ## only tender", "OnlyTender");
+        AddMyTask(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc);
+        AddMyTask(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", excells, nexc);
     }
 
     if ( !mgr->InitAnalysis( ) ) return;

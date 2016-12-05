@@ -49,9 +49,9 @@ void TestPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	if (psum.M2() < 0)  return;
 	if (psum.Pt() < 2.) return;
 
-	Int_t sm1, sm2;
-	if ((sm1 = CheckClusterGetSM(c1)) < 0) return; //  To be sure that everything is Ok
-	if ((sm2 = CheckClusterGetSM(c2)) < 0) return; //  To be sure that everything is Ok
+	Int_t sm1, sm2, x, z; // x, z are unused here 
+	if ((sm1 = CheckClusterGetSM(c1, x, z)) < 0) return; //  To be sure that everything is Ok
+	if ((sm2 = CheckClusterGetSM(c2, x, z)) < 0) return; //  To be sure that everything is Ok
 
 	Int_t s1 = (sm1 <= sm2) ? sm1 : sm2;
 	Int_t s2 = (sm1 <= sm2) ? sm2 : sm1;
@@ -70,12 +70,12 @@ void TestPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		return;
 
 	Double_t pi0EClusMin = 0.3;
-	Int_t sm1;
+	Int_t sm1, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
 		if (clus->E() < pi0EClusMin) continue;
-		if ((sm1 = CheckClusterGetSM(clus)) < 0) continue;
+		if ((sm1 = CheckClusterGetSM(clus, x, z)) < 0) continue;
 		candidates->Add(clus);
 	}
 }

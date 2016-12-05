@@ -8,7 +8,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20161119-1");
+	plugin->SetAliPhysicsVersion("vAN-20161203-1");
 
 
 	plugin->SetExecutableCommand("aliroot");
@@ -23,7 +23,8 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 
 	cout << "We are trying to analyse " << nruns << " runs" << endl;
 
-	for (Int_t i = 0; i < nruns; ++i)
+	// for (Int_t i = 0; i < nruns; ++i)
+	for (Int_t i = 0; i < 2; ++i)
 		plugin->AddRunNumber(runs[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);

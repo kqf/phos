@@ -55,7 +55,7 @@ protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags) = 0;
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags) { if (!c1 && !c2 && eflags.zvtx) return; }
 	// TODO: Fix values (0, 9) ==> (1, 5)
-	virtual Int_t CheckClusterGetSM(const AliVCluster * clus) const;
+	virtual Int_t CheckClusterGetSM(const AliVCluster * clus, Int_t & x, Int_t & z) const;
 
 	PhotonSelection(const PhotonSelection &);
 	PhotonSelection & operator = (const PhotonSelection &);
