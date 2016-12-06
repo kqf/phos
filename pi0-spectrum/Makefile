@@ -1,11 +1,21 @@
-LABELS = No_Tender_with_BMap Tender_No_BMap Tender_And_BadMap my_task
-
+LABELS = Tender_No_BMap my_task_and_tender my_task_no_tender
+RESULT = 1-MyTaskVsTender
 images:
-	./run-pi0-spectrum.py
+	python2 run-pi0-spectrum.py
+	$(call save_images, $(LABELS), $(RESULT))
 
-	for label in $(LABELS); do \
+per-module:
+	python2 different-modules.py
+	$(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, different-modules)
+
+define save_images
+	for label in $(1); do \
 		pdfunite `ls -tr results/ratio*$$label.pdf` results/initial_fit_$$label.pdf; \
 		pdfunite `ls -tr results/fit*$$label.pdf` results/signal$$label.pdf; \
 		pdfunite `ls -tr results/real*$$label.pdf` results/background_$$label.pdf; \
+		pdfunite results/spectrum.pdf results/mass.pdf results/width.pdf results/chi2ndf.pdf $(2).pdf; \
 		rm -f results/real*$$label.pdf results/fit*$$label.pdf results/ratio*$$label.pdf; \
 	done
+endef
+
+

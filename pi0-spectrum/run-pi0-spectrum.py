@@ -1,19 +1,19 @@
-# /usr/bin/python
+#!/usr/bin/python
 
 import ROOT
 
 from spectrum.spectrum import PtAnalyzer, Spectrum
 
-def my_input(filename):
-    lst = ROOT.TFile(filename).PhysNoTender
-    nevents = lst.FindObject('TotalEvents').GetBinContent(1)
+def my_input(filename, f = lambda x: x.PhysNoTender):
+    lst = f(ROOT.TFile(filename))
+    nevents = lst.FindObject('EventCounter').GetBinContent(2)
     rawhist = lst.FindObject('hMassPtN3')
     rawmix = lst.FindObject('hMixMassPtN3')
     return [nevents, rawhist, rawmix]
 
 def example_input(filename):
     lst = ROOT.TFile(filename).Data
-    nevents = lst.FindObject('hSelEvents').GetBinContent(1)
+    nevents = lst.FindObject('hSelEvents').GetBinContent(4)
     # pattern = "MassPtN3"
     pattern = "MassPtA10vtx10"
     rawhist = lst.FindObject('h' + pattern)
@@ -23,22 +23,21 @@ def example_input(filename):
 
 def main():
     canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
-    nfile = ROOT.TFile('input-data/LHC16k-NoBadmap.root')
 
     # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
-
     # first = f(example_input('input-data/LHC16k-pass1-tender-and-my-bmap.root'), 'BadMap', 'v')
-    zero = f(my_input('input-data/LHC16k-my-notender.root'), 'my task', 'q')
-    first = f(example_input('input-data/LHC16k-pass1-no-tender-example.root'), 'No Tender with BMap', 'q')
-    second = f(example_input('input-data/LHC16k-NoBadmap.root'), 'Tender No BMap', 'q')
-    third = f(example_input('input-data/LHC16k-pass1-tender-and-my-bmap.root'), 'Tender And BadMap', 'q')
+    results = [
+               f(my_input('input-data/LHC16k-MyTask.root'), 'my task no tender', 'q'),
+               f(my_input('input-data/LHC16k-MyTask.root', lambda x: x.PhysTender), 'my task and tender', 'q'), 
+               f(example_input('input-data/LHC16k-NoBadmap.root'), 'Tender No BMap', 'q')
+              ]
 
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()
     # diff.compare_lists_of_histograms([first, second])
-    diff.compare_set_of_histograms([zero, first, second, third])
+    diff.compare_set_of_histograms(results)
 
 
 if __name__ == '__main__':

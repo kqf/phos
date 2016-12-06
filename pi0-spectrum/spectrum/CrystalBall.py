@@ -16,7 +16,8 @@ def CBParameters():
 def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     # Fits the pi0 peak with crystal ball + pol2,
 
-    if (not h) or (h.GetEntries() == 0): return [0] * 8
+    if (not h) or (h.GetEntries() == 0): return
+
     if rebin > 1: h.Rebin(rebin)
     h.GetXaxis().SetTitle('M_{#gamma#gamma}, GeV')
     ROOT.gStyle.SetOptFit()
@@ -58,6 +59,7 @@ def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     return fitfun, background
 
 def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1):
+    if not h: return [0] * 8
     fitfun, background = Fit(h, rebin = rebin)
 
     # integral value under crystal ball with amplitude = 1, sigma = 1

@@ -91,12 +91,14 @@ def compare_visually(hists, ci):
     for i, h in enumerate(hists): 
         h.SetLineColor(ci + i)
         h.DrawCopy('same')
-        # h.SetFillColor(ci + i)
+        h.SetFillColor(ci + i)
+        h.SetMarkerStyle(21)
+        h.SetMarkerColor(ci + i)
         legend.AddEntry(h, h.label)
 
     legend.Draw('same')
 
-    if 'spectr' in hists[0].GetName():
+    if 'spectr' in hists[0].GetName() or 'chi' in hists[0].GetName() :
         ROOT.gPad.SetLogy()
     ROOT.gStyle.SetOptStat(0)
     ROOT.gPad.SetTickx()
@@ -104,6 +106,9 @@ def compare_visually(hists, ci):
 
     ratio.cd()
     ratio = draw_ratio(hists)
+
+    # ctrl+alt+f4 closes enire canvas not just a pad.
+    canvas.cd()
     wait(hists[0].GetName(), True)
 
 

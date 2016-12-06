@@ -36,6 +36,8 @@ class PtAnalyzer(object):
         return map(self.rawhist.GetYaxis().FindBin, bins)
 
     def estimate_background(self, real, mixed, intgr_range):
+        if real.GetEntries() == 0: return mixed
+
         canvas = ROOT.gROOT.FindObject('c1')
 
         # Divide real/mixed
@@ -49,6 +51,7 @@ class PtAnalyzer(object):
 
         # Fit the ratio
         # Change here definition if integration range
+        if ratio.GetEntries() == 0: return mixed
         fitf, bckgrnd = Fit(ratio)
         draw_and_save([ratio], name = 'ratio_real_to_mixed', draw= self.show_img, save= self.save_img, suffix = self.label)
         # fitf, bckgrnd = Fit(ratio, intgr_range, name = 'ratio_real_to_mixed', show_img = self.show_img)
@@ -65,6 +68,7 @@ class PtAnalyzer(object):
         return mixed
 
     def substract_background(self, real, mixed):
+        if real.GetEntries() == 0: return real, mixed
         # Identify 0 bins. To get throw them out later
         zero_bins = [i for i in range(1, real.GetNbinsX()) if real.GetBinContent(i) < 1]
 
