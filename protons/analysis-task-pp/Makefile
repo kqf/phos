@@ -1,4 +1,5 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
+RESULTS = LHC16k-MyTask
 
 caf:
 	root -l RunPoD.C

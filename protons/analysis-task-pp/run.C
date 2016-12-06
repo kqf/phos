@@ -63,7 +63,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
         AddMyTask(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc);
-        AddMyTask(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", excells, nexc);
+        AddMyTask(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", 0, 0);
     }
 
     if ( !mgr->InitAnalysis( ) ) return;
