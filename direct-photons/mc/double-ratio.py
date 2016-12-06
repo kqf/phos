@@ -65,6 +65,15 @@ class YieldEstimator(object):
 		self.default.Scale(1./ n)
 		return self.default 
 
+	def read_direct_photons(self, filename, renorm = ['0.5', '1', '2']):
+		# TODO: Normalize this spectrum to match MC
+		# Former normalization
+		# scale =  cs * 1e3 * 1e-12; => Fill(pt, sig * scale)
+		direct_photons = map(lambda x: ROOT.TFile(filename % x).hnnl, renorm)
+		for d in direct_photons: 
+			d.label = d.GetTitle().split('|')[1]
+		return direct_photons
+
 def check_multiple(gyield):
 	for i in [4, 8, 10, 14, 16]:
 		print i
@@ -136,14 +145,9 @@ def main():
 
 	estimator = CocktailYield(decay_sim, energy, prates) if cocktail else YieldEstimator(decay_sim, energy, prates)
 	decay_photons = estimator.adjusted_bins()
-
-	pQCD = direct_photons_dir + '%s.root'
-	direct_photons = [ROOT.TFile(pQCD % i).hnnl for i in ['0.5', '1', '2']]
-	for d in direct_photons: d.label = d.GetTitle().split('|')[1]
+	direct_photons = estimator.read_direct_photons(direct_photons_dir + '%s.root')
 
 	draw_multiple([decay_photons] + direct_photons)
-
-
 	ratios = [double_ratio(decay_photons, d, d.label) for d in direct_photons]
 	draw_multiple(ratios, False)
 	check_multiple(estimator)

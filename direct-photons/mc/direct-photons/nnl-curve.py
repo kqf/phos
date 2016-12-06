@@ -11,10 +11,6 @@ class NNL2ROOT(object):
         self.scale = scale
         self.data, self.sqrts, self.factor = self.read(fname)
 
-        # Minimum bias cross section (in mb) for different energies:
-        cs = {7000: 54.3, 13000: 74}.get(self.sqrts, 0)
-        assert cs > 0, "The cross-section for this energy is unknown. Probably you are doing somethig wrong"
-        self.scale = self.scale * cs
 
     def read(self, fname):
         with open(fname, 'r') as ff:
@@ -31,13 +27,13 @@ class NNL2ROOT(object):
         graph = ROOT.TGraph()
         graph.SetName('nnl')
         for i, (pt, sig) in enumerate(self.data): graph.SetPoint(i, pt, sig * self.scale)
-        graph.SetTitle('NNL theoretical curve #sqrt{s} = %0.2g TeV | scale %0.2g' %  (self.sqrts / 1000., self.factor) +  '; P_{t}, GeV/c; #sigma_{MB} #sigma_{#gamma direct}, mb')
+        graph.SetTitle('NNL theoretical curve #sqrt{s} = %0.2g TeV | scale %0.2g' %  (self.sqrts / 1000., self.factor) +  '; P_{t}, GeV/c; #sigma_{fb} #sigma_{#gamma direct}, fb')
         return graph
 
     def histogram(self):
         # The histogram parameters below should be modified according to bin centers
         # that are listed conf file for nnl calculation .
-        hist = ROOT.TH1D('hnnl', 'NNL theoretical curve #sqrt{s} = %0.2g TeV | scale %0.2g' %  (self.sqrts / 1000, self.factor) + '; P_{t}, GeV/c; #sigma_{MB} #sigma_{#gamma direct}, mb', 400, 0, 40)
+        hist = ROOT.TH1D('hnnl', 'NNL theoretical curve #sqrt{s} = %0.2g TeV | scale %0.2g' %  (self.sqrts / 1000, self.factor) + '; P_{t}, GeV/c; #sigma_{fb} #sigma_{#gamma direct}, fb', 400, 0, 40)
         hist.Rebin(16)
         # hist.Sumw2()
         for pt, sig in self.data: hist.Fill(pt, sig * self.scale)
@@ -63,7 +59,7 @@ class NNL2ROOT(object):
 def main():
     if len(sys.argv) < 2: print 'Please, specify the input file.'
     # Default values are given in pb ~ 1e12b but we need mb ~ 1e3b.
-    reader = NNL2ROOT(sys.argv[1], 1e3 * 1e-12)
+    reader = NNL2ROOT(sys.argv[1])
     reader.save(sys.argv[1].replace('.out', '') + '.root')
 
 if __name__ == '__main__':
