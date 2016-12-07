@@ -31,6 +31,7 @@ def main():
     results = [
                f(my_input('input-data/LHC16k-MyTask.root'), 'my task no tender', 'q'),
                f(my_input('input-data/LHC16k-MyTask.root', lambda x: x.PhysTender), 'my task and tender', 'q'), 
+               f(my_input('input-data/LHC16k-MyTask.root', lambda x: x.PhysOnlyTender), 'my task only tender', 'q'), 
                f(example_input('input-data/LHC16k-NoBadmap.root'), 'Tender No BMap', 'q')
               ]
 

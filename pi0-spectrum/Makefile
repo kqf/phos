@@ -1,5 +1,6 @@
-LABELS = Tender_No_BMap my_task_and_tender my_task_no_tender
+LABELS = Tender_No_BMap my_task_and_tender my_task_no_tender my_task_only_tender
 RESULT = 1-MyTaskVsTender
+
 images:
 	python2 run-pi0-spectrum.py
 	$(call save_images, $(LABELS), $(RESULT))

@@ -3,6 +3,7 @@
 import json
 import sys
 import ROOT 
+import re
 ROOT.TH1.AddDirectory(False)
 
 def update():
@@ -33,13 +34,14 @@ class YieldEstimator(object):
 		func.SetParameter(3, 1)
 		hist.Fit(func, 'R')
 		update()
-		return func.GetParameter(3)
+		# luminosity in mb^{-1}
+		return func.GetParameter(3) / self.prates['CS INEL ' + self.energy]
 
 	def extract_data(self, filenme):
 		infile = ROOT.TFile(filenme)
 		raw, counter = infile.fhEtaMC, infile.hCounter
 		norm = self.normalization(infile.hgenPi0)
-		raw.Scale(1. / counter.GetBinContent(1)/ norm)
+		raw.Scale(1. / norm)
 		return raw
 
 	def calculate(self, ya, yb):
@@ -71,7 +73,10 @@ class YieldEstimator(object):
 		# scale =  cs * 1e3 * 1e-12; => Fill(pt, sig * scale)
 		direct_photons = map(lambda x: ROOT.TFile(filename % x).hnnl, renorm)
 		for d in direct_photons: 
-			d.label = d.GetTitle().split('|')[1]
+			title, d.label = d.GetTitle().split('|')
+			# Cross-section in mb -> fb.
+			cs = 1e-3 * 1e+12
+			d.Scale(1. / cs)
 		return direct_photons
 
 def check_multiple(gyield):
