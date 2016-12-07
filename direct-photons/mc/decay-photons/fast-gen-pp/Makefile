@@ -1,4 +1,4 @@
-SEED=6543
+SEED=1123444
 
 MHOME=/alice/cern.ch/user/o/okovalen
 REPO=FastGen_pp
@@ -10,12 +10,13 @@ upload:
 	alien_mkdir $(MHOME)/$(REPO)/
 	$(foreach file, $(FILES), alien_cp -n $(file) alien:$(MHOME)/$(REPO)/;)
 
-generated.root:
-	mkdir -p tmp_results/
-	./download.sh $(OUTPUT) generated.root
-	ls -ltr tmp_results | wc -l
-	hadd generated.root tmp_results/*.root 
-	echo -e "\x07"
+download:
+	mkdir -p results 
+	for run in $$(alien_ls /$(OUTPUT) | grep .[0-9]*); do alien_cp alien://$(OUTPUT)/$$run/generated.root results/$$run.root; done	
+	rm -rf generated.root
+	hadd generated.root results/*.root
+	rm -rf results
+	echo -e "\x07
 
 clean:
 	rm -rf tmp_results
