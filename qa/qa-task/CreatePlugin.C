@@ -1,19 +1,19 @@
-AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, Int_t nruns, TString period, TString comment)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment)
 {
-	if (period.Length() < 6) 
+	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
 
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
-	
-	plugin->SetMergeViaJDL(); 
-	plugin->SetOutputToRunNo(kTRUE); 
+
+	plugin->SetMergeViaJDL();
+	plugin->SetOutputToRunNo(kTRUE);
 
 
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20160717-1");
+	plugin->SetAliPhysicsVersion("vAN-20161203-1");
 
 
 	plugin->SetExecutableCommand("aliroot");
@@ -21,10 +21,15 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, In
 
 	plugin->SetCheckCopy(kFALSE);
 
+	// Extract period and reconstruction pass
 	TString dir(period, 6); // fancy slicing
+	TString reconstruction(period);
+	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
+	reconstruction.ReplaceAll("-", "_");
+
 	plugin->SetGridDataDir("/alice/data/2016/" + dir);
 	cout << "/alice/data/2016/" + dir << endl;
-	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
+	plugin->SetDataPattern("/" + reconstruction + "/*.*/AliAOD.root");
 	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
 	plugin->SetRunPrefix("000");
 
@@ -36,12 +41,11 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, In
 		plugin->AddRunNumber(runs[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
-	plugin->SetOutputFiles("CaloCellsQA2.root");
 	// plugin->SetOutputFiles("CaloCellsQA2.root TriggerQA.root");
 	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();
-	plugin->SetGridWorkingDir("phosqa-" + period + "-muon-calo-pass1" + comment);
+	plugin->SetGridWorkingDir("phosqa-" + period + comment);
 	// plugin->SetGridWorkingDir("phosqa-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
 	// plugin->SetDefaultOutputs();
@@ -52,6 +56,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test",Int_t * runs, In
 	// plugin->SetAnalysisSource("AliAnalysisTaskPi0QA.cxx");
 	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so");// AliAnalysisTaskPi0QA.cxx AliAnalysisTaskPi0QA.h");
 
+	period.ReplaceAll('-', '_');
 	plugin->SetAnalysisSource("AliAnalysisTaskCaloCellsQAPt.h");
 	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so AliAnalysisTaskCaloCellsQAPt.h");
 

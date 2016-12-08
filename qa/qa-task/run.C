@@ -1,9 +1,10 @@
 #include "algorithm"
-void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = false)
+void run(const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE)
 {
     SetupEnvironment();
 
-    TString period = "LHC16o";
+    TString period = "LHC16k-pass1";
+    Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
@@ -39,34 +40,40 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
-    if (period.Contains("tender"))
-    {
-        gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
-        AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
-        AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
-        // PHOSSupply->ForceUsingCalibration(0);
-    }
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    // AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
-    // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
-
-
-    // gROOT->LoadMacro("AddTasksTriggerQA.C");
-    // AddTasksTriggerQA();
-
-    gROOT->LoadMacro("AliAnalysisTaskPi0QA.cxx+");
     gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddMyTask.C");
 
-    AliAnalysisTaskSE * myTask = AddMyTask(excells, nexc);
+    // No badmap
+    TString files = AddMyTask(0, 0, "NoBadmap");
+
+    // My badmap
+    files += AddMyTask(excells, nexc);
+    if (use_tender)
+    {
+        gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+        AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
+        // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+        // PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
+        // PHOSSupply->ForceUsingCalibration(0);
+        files += AddMyTask(0, 0, "TenderNoBadmap");
+        files += AddMyTask(excells, nexc, "TenderMyBadmap");
+    }
+
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
+    // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
+
+    // gROOT->LoadMacro("AddTasksTriggerQA.C");
+    // AddTasksTriggerQA();
+
 
     if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
 
 
-mgr->StartAnalysis (runmode);
+    alienHandler->SetOutputFiles(files);
+    mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
 
