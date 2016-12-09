@@ -36,8 +36,8 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 
 
 	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
-	plugin->SetAnalysisSource("PhotonSelection.cxx TestPhotonSelection.cxx PhysPhotonSelection.cxx MixingSample.h AliAnalysisTaskPP.cxx");
-	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so PhotonSelection.cxx PhotonSelection.h TestPhotonSelection.cxx TestPhotonSelection.h PhysPhotonSelection.cxx PhysPhotonSelection.h MixingSample.h AliAnalysisTaskPP.cxx AliAnalysisTaskPP.h");
+	plugin->SetAnalysisSource("PhotonSelection.cxx TestPhotonSelection.cxx PhysPhotonSelection.cxx PhotonTimecutSelection.h MixingSample.h AliAnalysisTaskPP.cxx");
+	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so PhotonSelection.cxx PhotonSelection.h TestPhotonSelection.cxx TestPhotonSelection.h PhysPhotonSelection.cxx PhysPhotonSelection.h PhotonTimecutSelection.h MixingSample.h AliAnalysisTaskPP.cxx AliAnalysisTaskPP.h");
 
 	plugin->SetAnalysisMacro("TaskProtons.C");
 	plugin->SetSplitMaxInputFileNumber(100);

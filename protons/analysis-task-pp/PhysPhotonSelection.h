@@ -32,9 +32,9 @@ protected:
 	PhysPhotonSelection & operator = (const PhysPhotonSelection &);
 
 	void FillHistogram(const char * key, Double_t x, Double_t y = 1, Double_t z = 1); //Fill 3D histogram witn name key
+	TList  * fListOfHistos;  //! list of histograms
 
 private:
-	TList  * fListOfHistos;  //! list of histograms
 	ClassDef(PhysPhotonSelection, 2)
 };
 #endif

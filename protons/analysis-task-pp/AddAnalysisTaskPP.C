@@ -13,11 +13,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	if ( (nexc > 0) && (!badmap.IsNull())) 
 		cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;
 
+	// task->GetSelections()->Add
 	task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
 
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
-
 	AliAnalysisDataContainer * coutput = 0;
 	for (int i = 0; i < task->GetSelections()->GetEntries(); ++ i)
 	{
