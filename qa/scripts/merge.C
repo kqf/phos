@@ -43,14 +43,22 @@ void merge_file(const char * filename, TList * output)
 	if(!input)
 	{
 		cout << "Container is not a list!!!" << endl;
-		return;
+		TObjArray * arrinput = dynamic_cast<TObjArray *>(get_container(file));
+		if(!arrinput)
+			cout << "Container is not an ObjArray either!!!" << endl;
+
+		cout << " Reached here " << endl;
+		add_list(output, arrinput);
+		cout << " Reached here  << " << endl;
+		file.Close();
 	}
 
 	add_list(output, input);
 	file.Close();
 }
 
-void add_list(TList * output, TList * input)
+template <typename T>
+void add_list(TList * output, T * input)
 {
 	for(Int_t i = 0; i < input->GetEntries(); ++i)
 	{
@@ -87,8 +95,8 @@ void add_object(TList * output, TObject * entry)
 
 TObject * get_container(TFile & file)
 {
-	const Int_t nposs_containers = 4;
-	const char * names[nposs_containers] = {"PHOSCellsQA2", "PHOSCellsQA1", "PHOSCellsQA", "TriggerQA" } ;
+	const Int_t nposs_containers = 8;
+	const char * names[nposs_containers] = {"PHOSCellsQA2", "PHOSCellsQA1", "PHOSCellsQA", "TriggerQA" , "CaloCellsQA2", "NoBadmap", "TenderNoBadmap", "TenderMyBadmap"} ;
 	for(Int_t i = 0; i < nposs_containers; ++i)
 	{
 		TObject * result  = file.Get(names[i]);
