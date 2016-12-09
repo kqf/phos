@@ -23,8 +23,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 
 	cout << "We are trying to analyse " << nruns << " runs" << endl;
 
-    for (Int_t i = 0; i < 1; ++i)
-    // for (Int_t i = 0; i < nruns; ++i)
+    for (Int_t i = 0; i < nruns; ++i)
 		plugin->AddRunNumber(runs[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);

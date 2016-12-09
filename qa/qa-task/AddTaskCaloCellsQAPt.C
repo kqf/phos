@@ -1,49 +1,77 @@
-AliAnalysisTaskCaloCellsQAPt * AddTaskCaloCellsQAPt(Int_t nmods = 10, Int_t det = 0,
-        char * fname = "CellsQA.root", char * contname = NULL)
+TString  AddTaskCaloCellsQAPt(Int_t * excells, Int_t nexc, const char * name = "CaloCellsQA2" )
 {
-	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
-	if (!mgr)
-	{
-		::Error("AddTaskCaloCellsQA", "No analysis manager to connect to");
-		return NULL;
-	}
+    AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
+    if (!mgr) return;
 
-	// check the analysis type using the event handlers connected to the analysis manager
-	if (!mgr->GetInputEventHandler())
-	{
-		::Error("AddTaskCaloCellsQA", "This task requires an input event handler");
-		return NULL;
-	}
+    AliAnalysisGrid * plugin = (AliAnalysisGrid *) mgr->GetGridHandler();
+    if (!plugin) return;
 
-	// Configure analysis
-	//===========================================================================
+    // for(int i = 0; i < nexc; ++i) cout << " " << excells[i] << endl;
+    cout << " There are nexc " <<  nexc  << endl;
 
-	// detector number
-	Int_t det2 = -1;
-	if (det == 1) det2 = AliAnalysisTaskCaloCellsQAPt::kPHOS;
-	else
-		::Fatal("AddTaskCaloCellsQA", "Wrong detector provided");
+    if (!excells) cout << "ERRROR\nERRROR\nERRROR\nERRROR\nCells are not set" << endl;
 
-	AliAnalysisTaskCaloCellsQAPt * task;
+    // AliAnalysisTaskCaloCellsQAPt * taskPHOSCellQA = TuneCaloCellsQAPt(5, 1, "CaloCellsQA1.root", "PHOSCellsQA1");
+    // taskPHOSCellQA->GetCaloCellsQA()->SetClusterEnergyCuts(0.3, 0.3, 1.0)[];
 
-	if (fname && !contname) task = new AliAnalysisTaskCaloCellsQAPt("AliAnalysisTaskCaloCellsQAPt", nmods, det2, fname);
-	else                    task = new AliAnalysisTaskCaloCellsQAPt("AliAnalysisTaskCaloCellsQAPt", nmods, det2);
-	mgr->AddTask(task);
+    // if(excells) taskPHOSCellQA->SetBadCells(excells, nexc);
+    // taskPHOSCellQA->SetPairPtCut(1); // 1 GeV cut
+    // taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
 
-	mgr->ConnectInput(task, 0, mgr->GetCommonInputContainer());
+    // Second Task
+    AliAnalysisTaskCaloCellsQAPt * taskPHOSCellQA = TuneCaloCellsQAPt(5, 1, TString(name) + ".root", name);
+    taskPHOSCellQA->GetCaloCellsQA()->SetClusterEnergyCuts(0.3, 0.3, 1.0);
 
-	// container output into particular file
-	if (fname && contname)
-		mgr->ConnectOutput(task, 1, mgr->CreateContainer(contname,
-		                   TObjArray::Class(), AliAnalysisManager::kOutputContainer, fname));
+    if (excells) taskPHOSCellQA->SetBadCells(excells, nexc);
+    taskPHOSCellQA->SetPairPtCut(2); // 2 GeV cut
+    taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
+    return  + TString(name) + ".root "; // Note extra space
+}
 
-	// container output into common file
-	if (!fname)
-	{
-		if (!contname) contname = "CellsQAResults";
-		mgr->ConnectOutput(task, 1, mgr->CreateContainer(contname,
-		                   TObjArray::Class(), AliAnalysisManager::kOutputContainer, mgr->GetCommonFileName()));
-	}
+AliAnalysisTaskCaloCellsQAPt * TuneCaloCellsQAPt(Int_t nmods = 10, Int_t det = 0, char * fname = "CellsQA.root", char * contname = NULL)
+{
+    AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
+    if (!mgr)
+    {
+        ::Error("AddTaskCaloCellsQA", "No analysis manager to connect to");
+        return NULL;
+    }
 
-	return task;
+    // check the analysis type using the event handlers connected to the analysis manager
+    if (!mgr->GetInputEventHandler())
+    {
+        ::Error("AddTaskCaloCellsQA", "This task requires an input event handler");
+        return NULL;
+    }
+
+    // Configure analysis
+    //===========================================================================
+
+    // detector number
+    Int_t det2 = -1;
+    if (det == 1) det2 = AliAnalysisTaskCaloCellsQAPt::kPHOS;
+    else
+        ::Fatal("AddTaskCaloCellsQA", "Wrong detector provided");
+
+    AliAnalysisTaskCaloCellsQAPt * task;
+
+    if (fname && !contname) task = new AliAnalysisTaskCaloCellsQAPt("AliAnalysisTaskCaloCellsQAPt", nmods, det2, fname);
+    else                    task = new AliAnalysisTaskCaloCellsQAPt("AliAnalysisTaskCaloCellsQAPt", nmods, det2);
+    mgr->AddTask(task);
+
+    mgr->ConnectInput(task, 0, mgr->GetCommonInputContainer());
+
+    // container output into particular file
+    if (fname && contname)
+        mgr->ConnectOutput(task, 1, mgr->CreateContainer(contname,
+                           TObjArray::Class(), AliAnalysisManager::kOutputContainer, fname));
+
+    // container output into common file
+    if (!fname)
+    {
+        if (!contname) contname = "CellsQAResults";
+        mgr->ConnectOutput(task, 1, mgr->CreateContainer(contname,
+                           TObjArray::Class(), AliAnalysisManager::kOutputContainer, mgr->GetCommonFileName()));
+    }
+    return task;
 }

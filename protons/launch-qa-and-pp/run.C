@@ -2,6 +2,10 @@
 void run(const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE)
 {
     SetupEnvironment();
+    TString qa_dir = "";
+    gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
+
+    TString pp_dir = "";
 
     TString period = "LHC16k-pass1";
     Bool_t use_tender = kTRUE;
@@ -9,12 +13,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     Int_t * good_runs;
     Int_t nexc;
     Int_t nruns;
-    gROOT->LoadMacro("getRunsBadCells.C");
     getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test", qa_dir, pp_dir);
 
     if (!alienHandler) return;
 
@@ -40,15 +43,21 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
-    gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
-    gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
-    gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
+    gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
+    gROOT->LoadMacro(qa_dir + "AliAnalysisTaskCaloCellsQAPt.h+g");
+    gROOT->LoadMacro(qa_dir + "AddTaskCaloCellsQAPt.C");
 
-    // No badmap
-    TString files = AddTaskCaloCellsQAPt(0, 0, "NoBadmap");
 
-    // My badmap
-    files += AddTaskCaloCellsQAPt(excells, nexc);
+    gROOT->LoadMacro(pp_dir + "PhotonSelection.cxx+");
+    gROOT->LoadMacro(pp_dir + "TestPhotonSelection.cxx+");
+    gROOT->LoadMacro(pp_dir + "PhysPhotonSelection.cxx+");
+    gROOT->LoadMacro(pp_dir + "PhotonTimecutSelection.h+");
+    gROOT->LoadMacro(pp_dir + "MixingSample.h+");
+    gROOT->LoadMacro(pp_dir + "AliAnalysisTaskPP.cxx+");
+    gROOT->LoadMacro(pp_dir + "AddAnalysisTaskPP.C");
+
+    TString files = "";
+
     if (use_tender)
     {
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
@@ -56,16 +65,9 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
         // PHOSSupply->ForceUsingCalibration(0);
-        files += AddTaskCaloCellsQAPt(0, 0, "TenderNoBadmap");
-        files += AddTaskCaloCellsQAPt(excells, nexc, "TenderMyBadmap");
+        files += AddTaskCaloCellsQAPt(excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## pass1 testing badmap for a new calibration, added timecut ## tender", "Tender", "", excells, nexc);
     }
-
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    // AliAnalysisTaskPHOSTriggerQA * triggertask = AddTaskPHOSTriggerQA("TriggerQA.root", "TriggerQA");
-    // triggertask->SelectCollisionCandidates(AliVEvent::kINT7);
-
-    // gROOT->LoadMacro("AddTasksTriggerQA.C");
-    // AddTasksTriggerQA();
 
 
     if ( !mgr->InitAnalysis( ) ) return;

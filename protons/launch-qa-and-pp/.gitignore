@@ -1,0 +1,16 @@
+Task*.C
+Task*.sh
+*.jdl
+*.xml
+*.o
+*.d
+*.pdf
+*.swp
+*.so
+event_stat.root
+EventStat_temp.root
+*.root
+.runhistory
+outputs_valid
+*.log
+
