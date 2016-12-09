@@ -47,12 +47,12 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
-    gROOT->LoadMacro("AddMyTask.C");
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
     // if (!useTender) 
-    AddMyTask(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
+    TString files = AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
 
     // Add tender
     if (useTender)
@@ -62,14 +62,15 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        AddMyTask(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc);
-        AddMyTask(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", 0, 0);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", 0, 0);
     }
 
     if ( !mgr->InitAnalysis( ) ) return;
     // mgr->PrintStatus();
 
 
+    alienHandler->SetOutputFiles(files);
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
