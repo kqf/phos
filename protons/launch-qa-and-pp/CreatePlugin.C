@@ -1,4 +1,4 @@
-AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, TString qa_dir, TString pp_dir)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, TString qa_dir, TString pp_dir, Bool_t useJDL)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -6,7 +6,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
 
-	plugin->SetMergeViaJDL();
+	plugin->SetMergeViaJDL(kTRUE);
 	plugin->SetOutputToRunNo(kTRUE);
 
 

@@ -24,6 +24,12 @@ terminate: | *.cxx
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
+download: | *.cxx
+	root -l -q 'run.C("grid", "terminate", kFALSE)' || make unlink
+	@make unlink || echo "Directory is clean"
+	echo "Terminated grid analysis" >> .runhistory
+
+
 
 test:
 	root -l -q 'run.C("local", "test")'

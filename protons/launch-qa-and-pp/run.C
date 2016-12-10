@@ -1,5 +1,5 @@
 #include "algorithm"
-void run(const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE)
+void run(const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
     TString qa_dir = "";
@@ -17,7 +17,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test", qa_dir, pp_dir);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test", qa_dir, pp_dir, useJDL);
 
     if (!alienHandler) return;
 

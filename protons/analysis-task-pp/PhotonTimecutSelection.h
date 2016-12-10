@@ -24,8 +24,8 @@ public:
 		fListOfHistos->SetOwner(kTRUE);
 		for (Int_t i = 0; i < 5;  ++i)
 		{
-			fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), Form("Cluster energy vs time, M%d", i), 1000, 0., 200., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
-			fListOfHistos->Add(new TH2F(Form("hClusterPtvsTM%d", i), Form("Cluster Pt vs time, M%d", i), 1000, 0., 200., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+			fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), Form("Cluster energy vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+			fListOfHistos->Add(new TH2F(Form("hClusterPtvsTM%d", i), Form("Cluster Pt vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 			fListOfHistos->Add(new TH2F(Form("hClusterXvsTM%d", i), Form("Cluster X vs time, M%d", i),  64, 0.5, 64.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 			fListOfHistos->Add(new TH2F(Form("hClusterZvsTM%d", i), Form("Cluster Z vs time, M%d", i),  56, 0.5, 56.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 			fListOfHistos->Add(new TH2F(Form("hClusterTimeMap%d", i), Form("Cluster time map, M%d", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
