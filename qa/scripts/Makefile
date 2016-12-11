@@ -40,6 +40,10 @@ initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 compare: | ../results/$(PERIOD)/goodruns.csv
 	python2 explore-treding-plots.py ../results/$(PERIOD) $(IM)
 
+inspect-cells: $(CELLS_TO_INSPECT)
+	@# assuming that CELLS_TO_INSPECT is a bash varaible
+	@# CELLS_TO_INSPECT=../path/to/cells.json
+	./convert-xz-to-abs.py $(CELLS_TO_INSPECT)
 
 clean:
 	rm -f *.pdf *.eps *.png 
