@@ -51,7 +51,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     gROOT->LoadMacro(pp_dir + "PhotonSelection.cxx+");
     gROOT->LoadMacro(pp_dir + "TestPhotonSelection.cxx+");
     gROOT->LoadMacro(pp_dir + "PhysPhotonSelection.cxx+");
-    gROOT->LoadMacro(pp_dir + "PhotonTimecutSelection.h+");
+    gROOT->LoadMacro(pp_dir + "PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro(pp_dir + "MixingSample.h+");
     gROOT->LoadMacro(pp_dir + "AliAnalysisTaskPP.cxx+");
     gROOT->LoadMacro(pp_dir + "AddAnalysisTaskPP.C");
@@ -62,11 +62,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     {
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
-        // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        // PHOSSupply->ForceUsingBadMap("BadMap_LHC16g.root");
-        // PHOSSupply->ForceUsingCalibration(0);
-        files += AddTaskCaloCellsQAPt(excells, nexc);
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## pass1 testing badmap for a new calibration, added timecut ## tender", "Tender", "", excells, nexc);
+        AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
+
+        files += AddTaskCaloCellsQAPt(0, 0);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## pass1 testing badmap for a new calibration, added timecut ## tender", "Tender", "", 0, 0);
     }
 
 

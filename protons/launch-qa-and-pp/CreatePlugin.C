@@ -64,7 +64,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	    pp_dir + "PhotonSelection.cxx " +
 	    pp_dir + "TestPhotonSelection.cxx " +
 	    pp_dir + "PhysPhotonSelection.cxx " +
-	    pp_dir + "PhotonTimecutSelection.h " +
+	    pp_dir + "PhotonTimecutSelection.cxx " +
 	    pp_dir + "MixingSample.h " +
 	    pp_dir + "AliAnalysisTaskPP.cxx"
 	);
@@ -78,6 +78,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	    pp_dir + "TestPhotonSelection.h " +
 	    pp_dir + "PhysPhotonSelection.cxx " +
 	    pp_dir + "PhysPhotonSelection.h " +
+	    pp_dir + "PhotonTimecutSelection.cxx " +
 	    pp_dir + "PhotonTimecutSelection.h " +
 	    pp_dir + "MixingSample.h " +
 	    pp_dir + "AliAnalysisTaskPP.cxx " +
