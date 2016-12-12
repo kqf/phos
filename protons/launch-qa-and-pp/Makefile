@@ -25,7 +25,7 @@ terminate: | *.cxx
 	echo "Terminated grid analysis" >> .runhistory
 
 download: | *.cxx
-	root -l -q 'run.C("grid", "terminate", kFALSE)' || make unlink
+	root -l -q 'run.C("grid", "terminate", kFALSE, kFALSE)' || make unlink
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 

@@ -43,7 +43,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
 
-    gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
+    //gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
     gROOT->LoadMacro(qa_dir + "AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro(qa_dir + "AddTaskCaloCellsQAPt.C");
 
