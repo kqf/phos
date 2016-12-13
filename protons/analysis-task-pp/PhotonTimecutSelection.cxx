@@ -22,9 +22,11 @@ Bool_t PhotonTimecutSelection::IsMainBC(const AliVCluster * clus) const
 	// The value obtained from the fit
 
 	// It's unknown if I should implement symmetric cut or not.
-	Float_t timesigma = 23.e-9; // 23 ns
+	// Float_t timesigma = 23.e-9; // 23 ns
+	// Timecut from histogram scaled by energy
+	Float_t timesigma = 50.e-9; // 50 ns
 
-	if (TMath::Abs(clus->GetTOF()) < 3 * timesigma) return kTRUE;
+	if (TMath::Abs(clus->GetTOF()) < timesigma) return kTRUE;
 	return kFALSE;
 }
 
@@ -55,7 +57,7 @@ void PhotonTimecutSelection::InitSummaryHistograms()
 
 	for (Int_t i = 0; i < 5;  ++i)
 	{
-		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), Form("Cluster Time scaled by E, M%d", i), 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), Form("Cluster Time scaled by E, M%d; t, s", i), 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), Form("Cluster energy vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterPtvsTM%d", i), Form("Cluster Pt vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterXvsTM%d", i), Form("Cluster X vs time, M%d", i),  64, 0.5, 64.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));

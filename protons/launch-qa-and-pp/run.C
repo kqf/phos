@@ -62,11 +62,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     {
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
-        AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
+        // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+        // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        files += AddTaskCaloCellsQAPt(0, 0);
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## pass1 testing badmap for a new calibration, added timecut ## tender", "Tender", "", 0, 0);
+        files += AddTaskCaloCellsQAPt(excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## pass1 testing badmap for a new calibration, added timecut, timecut value 50ns, strict cuts ## tender", "Tender", "", excells, nexc);
     }
 
 
