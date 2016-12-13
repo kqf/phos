@@ -14,8 +14,21 @@ class Converter(object):
 
 	def __init__(self, input_file):
 		super(Converter, self).__init__()
-		self.cells, self.fees = self.read(input_file)
+		if '.root' in input_file:
+			self.cells, self.fees = self.from_root(input_file)
+		else:
+			self.cells, self.fees = self.read(input_file)
 		assert self.cells or self.fees, "Nothing to convert!"
+
+	def from_root(self, input_file):
+		import ROOT
+
+		infile = ROOT.TFile.Open(input_file, 'r')
+		hists = [infile.Get('PHOS_BadMap_mod%d;1' % i) for i in range(1, 5)]
+		inspect_modules = lambda hists: [[[x, z, i + 1] for x in range(h.GetNbinsX()) for z in range(h.GetNbinsY()) if h.GetBinContent(x + 1, z + 1) > 0] for i, h in enumerate(hists)]
+
+		cells = inspect_modules(hists)
+		return sum(cells, []), []
 
 	def read(self, input_file):
 		with open(input_file, 'r') as f:
@@ -51,6 +64,8 @@ class Converter(object):
 		# Convert fee coordinate to a set of 32 cell coordinates
 		cells = [ (i, j, sm) for i in range(x, x + self.feex) for j in range(z, z + self.feez)]
 		return map(self.convert_cell, *zip(*cells))
+
+
 
 def main():
 	if len(sys.argv) < 2: 
