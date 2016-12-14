@@ -97,16 +97,14 @@ void PhysPhotonSelection::InitSummaryHistograms()
 		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
 			fListOfHistos->Add(new TH2F(Form("hMixMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
 
-
-	fListOfHistos->Add(new TH2F("hClusterEvsTM", "Cluster energy vs time, all modules", 1000, 0., 200., 1200, -6.e-6, +6.e-6));
 	for (Int_t i = 1; i < 5;  ++i)
-	{
-		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), Form("Cluster energy vs time, M%d", i), 1000, 0., 200., 1200, -6.e-6, +6.e-6));
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_0", i), Form("Clu  (X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM%d_0", i), Form("Clu E(X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_1", i), Form("Clu  (X,Z),  M%d, E>1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM%d_1", i), Form("Clu E(X,Z),  M%d, E>1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	}
+		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_0", i), Form("Cluster N(X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hCluEXZM%d_0", i), Form("Cluster E(X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_1", i), Form("Cluster N(X,Z),  M%d, E>1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hCluEXZM%d_1", i), Form("Cluster E(X,Z),  M%d, E>1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 }
 
 //________________________________________________________________
@@ -171,10 +169,6 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		Float_t energy = clus->E();
 		FillHistogram(Form("hCluNXZM%d_%d", sm, Int_t(energy > 1.)), x, z, 1.);
 		FillHistogram(Form("hCluEXZM%d_%d", sm, Int_t(energy > 1.)), x, z, energy);
-
-		Float_t tof = clus->GetTOF();
-		FillHistogram("hClusterEvsTM", energy, tof);
-		FillHistogram(Form("hClusterEvsTM%d", sm), energy, tof);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
@@ -186,10 +180,10 @@ void PhysPhotonSelection::FillHistogram(const char * key, Double_t x, Double_t y
 	//FillHistogram
 	TObject * obj = fListOfHistos->FindObject(key);
 
-	TH1 * th1 = dynamic_cast<TH1 *> (obj);
-	if (th1)
+	TH3 * th3 = dynamic_cast<TH3 *> (obj);
+	if (th3)
 	{
-		th1->Fill(x, y);
+		th3->Fill(x, y, z);
 		return;
 	}
 
@@ -199,10 +193,11 @@ void PhysPhotonSelection::FillHistogram(const char * key, Double_t x, Double_t y
 		th2->Fill(x, y, z);
 		return;
 	}
-	TH3 * th3 = dynamic_cast<TH3 *> (obj);
-	if (th3)
+
+	TH1 * th1 = dynamic_cast<TH1 *> (obj);
+	if (th1)
 	{
-		th3->Fill(x, y, z);
+		th1->Fill(x, y);
 		return;
 	}
 

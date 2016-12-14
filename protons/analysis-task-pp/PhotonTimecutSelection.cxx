@@ -4,6 +4,7 @@
 // --- ROOT system ---
 #include <TH2F.h>
 #include <TH3F.h>
+// #include "THashList.h"
 
 // --- AliRoot header files ---
 #include <AliVCaloCells.h>
@@ -50,6 +51,7 @@ void PhotonTimecutSelection::InitSummaryHistograms()
 	for (Int_t i = 0; i < 2; i++)
 	{
 		const char * suff = (i == 0) ? "" : "Mix";
+		fListOfHistos->Add(new TH3F(Form("h%sMassPtTOF", suff), "(M,p_{T})_{#gamma#gamma}, main-main", nM, mMin, mMax, nPt, ptMin, ptMax, 100, -0.15 * 1e-6, 0.15 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtMainMain", suff), "(M,p_{T})_{#gamma#gamma}, main-main", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtMainPileup", suff), "(M,p_{T})_{#gamma#gamma}, main-pileup", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtPileupPileup", suff), "(M,p_{T})_{#gamma#gamma}, pileup-pileup", nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -57,7 +59,7 @@ void PhotonTimecutSelection::InitSummaryHistograms()
 
 	for (Int_t i = 0; i < 5;  ++i)
 	{
-		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), Form("Cluster Time scaled by E, M%d; t, s", i), 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), Form("Cluster Time scaled by E, M%d; t, s", i), 4800, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), Form("Cluster energy vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterPtvsTM%d", i), Form("Cluster Pt vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterXvsTM%d", i), Form("Cluster X vs time, M%d", i),  64, 0.5, 64.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));
@@ -92,6 +94,10 @@ void PhotonTimecutSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 	const char * suff = eflags.isMixing ? "Mix" : "";
 	Bool_t bc1 = IsMainBC(c1);
 	Bool_t bc2 = IsMainBC(c2);
+
+	Float_t tof1 = TMath::Abs(c1->GetTOF());
+	Float_t tof2 = TMath::Abs(c2->GetTOF());
+	FillHistogram(Form("h%sMassPtTOF", suff), ma12, pt12, TMath::Max(tof1, tof2));
 
 	if (bc1 && bc1)
 		FillHistogram(Form("h%sMassPtMainMain", suff), ma12, pt12);
