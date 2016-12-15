@@ -9,9 +9,9 @@ from sutils import draw_and_save, nicely_draw
 class PtDependent(object):
     def __init__(self, name, title, label):
         super(PtDependent, self).__init__()
-        self.name = name
         self.title = title
         self.label = label
+        self.name = name + '_' + filter(str.isalnum, self.label)
 
     def get_hist(self, bins, data):
         from array import array
@@ -25,11 +25,17 @@ class PtDependent(object):
 class PtAnalyzer(object):
     def __init__(self, lst, label ='N_{cell} > 3', mode = 'v'):
         super(PtAnalyzer, self).__init__()
+
         self.nevents, self.rawhist, self.rawmix = lst
+        self.rawhist.Sumw2()
+        self.rawmix.Sumw2()
+
         self.label = label
-        self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False}.get(mode, True)
+        self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
         self.default_range = (0.05, 0.3)
         self.save_img = True
+        self.deadmode = 'dead' in mode
+
 
     def divide_into_bins(self):
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
@@ -53,7 +59,8 @@ class PtAnalyzer(object):
         # Change here definition if integration range
         if ratio.GetEntries() == 0: return mixed
         fitf, bckgrnd = Fit(ratio)
-        draw_and_save([ratio], name = 'ratio_real_to_mixed', draw= self.show_img, save= self.save_img, suffix = self.label)
+        if not self.deadmode: 
+            draw_and_save([ratio], name = 'ratio_real_to_mixed', draw= self.show_img, save= self.save_img, suffix = self.label)
         # fitf, bckgrnd = Fit(ratio, intgr_range, name = 'ratio_real_to_mixed', show_img = self.show_img)
 
         # Scale the mixed distribution
@@ -61,10 +68,12 @@ class PtAnalyzer(object):
         mixed.SetLineColor(46)
 
         # Draw the results
-        real.Draw()
-        mixed.Draw('same')
-        real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax());
-        draw_and_save([real, mixed], 'real_and_scaled_background', self.show_img, self.save_img, suffix = self.label)
+        if not self.deadmode:
+            real.Draw()
+            mixed.Draw('same')
+            real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax()); 
+            draw_and_save([real, mixed], 'real_and_scaled_background', self.show_img, self.save_img, suffix = self.label)
+
         return mixed
 
     def substract_background(self, real, mixed):
@@ -96,15 +105,15 @@ class PtAnalyzer(object):
         lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
         real.SetTitle('%.4g < P_{T} < %.4g #events = %d; M_{#gamma#gamma}, GeV/c^{2}' % (lower, upper, self.nevents)) 
 
-        mixed.Sumw2()
-        real.Sumw2()
-
         mixed = self.estimate_background(real, mixed, intgr_range)
         # if self.label == 'Mixing': 
         real, mixed = self.substract_background(real, mixed)
   
         res = ExtractQuantities(real, intgr_range)
-        draw_and_save([real], 'fit_', self.show_img, self.save_img, suffix = self.label)
+
+        if not self.deadmode: 
+            draw_and_save([real], 'fit_', self.show_img, self.save_img, suffix = self.label)
+
         return res
 
     def histograms(self, data, ranges):

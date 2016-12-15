@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import ROOT
-from sutils import draw_and_save
 
 def CBParameters():
     # crystal ball parameters (fixed by hand for EMCAL) TODO: PHOS parameters?

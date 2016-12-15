@@ -20,7 +20,7 @@ def main():
 
     results = [
                f(my_input('input-data/LHC16k-pass1-tender.root'), 'no timecut', 'q'),
-               f(my_input('input-data/LHC16k-pass1-tender.root', 'MassPtMainMain' , lambda x: x.TimeTender), '23ns', 'q'), 
+               f(my_input('input-data/LHC16k-pass1-half-almost-clean.root', 'MassPtMainMain' , lambda x: x.TimeTender), '23ns', 'q'), 
               ]
 
     import spectrum.comparator as cmpr
