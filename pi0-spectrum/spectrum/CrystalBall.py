@@ -20,6 +20,7 @@ def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     if rebin > 1: h.Rebin(rebin)
     h.GetXaxis().SetTitle('M_{#gamma#gamma}, GeV')
     ROOT.gStyle.SetOptFit()
+    ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
 
     alpha, n, a, b = CBParameters()
 
@@ -84,6 +85,10 @@ def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     nraw = fitfun.Integral(a, b)
     enraw = fitfun.IntegralError(a, b)
 
+    sbkg = background.Integral(a, b)
+    # esbkg = background.IntegralError(a, b)
+    esbkg = abs(sbkg) ** 0.5 
+
     # Analytic formula for CB integral in this case
     # def S(mean, sigma, up, low, A):
     #     first  =  a * pow(b + alpha, 1. - n) / (n - 1.) 
@@ -99,7 +104,11 @@ def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1):
 
 
     ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
-    return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / ndf, 0
+
+    sb = nraw / sbkg
+    esb = sb * ((enraw / nraw)**2 + (esbkg/ sbkg)** 2) ** 0.5
+
+    return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / ndf, 0, sb, esb
     
 
 if __name__ == '__main__':

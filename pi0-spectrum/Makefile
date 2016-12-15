@@ -9,9 +9,12 @@ per-module:
 	python2 different-modules.py
 	$(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, different-modules)
 
-timecut:
+pileup:
 	python2 pileup.py
 	$(call save_images, no_timecut 23ns, different-modules)
+
+timecut:
+	python2 -m unittest test.timecut_optimization
 
 define save_images
 	for label in $(1); do \

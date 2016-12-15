@@ -123,19 +123,20 @@ class PtAnalyzer(object):
         histgenerators = [PtDependent('mass', '#pi^{0} mass position;;m, GeV/c^{2}', self.label),
                           PtDependent('width', '#pi^{0} peak width ;;#sigma, GeV/c^{2}', self.label),
                           PtDependent('spectrum', 'raw #pi^{0} spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}', self.label),  
-                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label) ]
+                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label),
+                          PtDependent('signalbkgrnd', ' S_{signal} / S_{bkgrnd} (p_{T});; signal / bkgr', self.label) ]
 
         ptedges = map(self.rawhist.GetYaxis().GetBinCenter, ranges)
 
         # Extract the data
-        m, em, s, es, n, en, chi, echi = data
+        m, em, s, es, n, en, chi, echi, sign, esign  = data
 
         # Calculate the yields
         n = [n[i] / (b - a) / (2. * pi)   for i, (a, b) in enumerate(intervals)]
         en = [en[i] / (b - a) / (2. * pi) for i, (a, b) in enumerate(intervals)]
 
         # Group the data
-        data = [(m, em), (s, es), (n, en), (chi, echi)]
+        data = [(m, em), (s, es), (n, en), (chi, echi), (sign, esign)]
 
         # Create the histograms
         return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)]
