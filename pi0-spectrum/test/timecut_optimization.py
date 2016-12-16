@@ -1,22 +1,24 @@
 import unittest
-from optimizer.optimizer import Optimizer, Input
+
+from optimizer.optimizer import Optimizer, MinimizerInput
 from spectrum.spectrum import PtAnalyzer, Spectrum
 import ROOT
 
 class TimecutOptimizer(unittest.TestCase):
 
     def setUp(self):
-        pass
+        # This should be done because fitter is a static object.
+        ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
 
-    # def testRanges(self):
-        # inp = Input('input-data/LHC16k-pass1-ok.root', 'MassPtTOF')
-        # for i in [10, 12, 20, 25, 50, 100]:
-            # inp.project(i * 1e-9, True)
-
+    def Ranges(self):
+        inp = Input('input-data/LHC16k-pass1-ok.root', 'MassPtTOF')
+        for i in [10, 12, 20, 25, 50, 100]:
+            inp.project(i * 1e-9, True)
 
     def testCut(self):
-        ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
-        opt = Optimizer('input-data/LHC16k-pass1-ok.root', 'MassPtTOF')
+        inp = MinimizerInput('input-data/LHC16k-pass1-ok.root', 'TimeTender', 'MassPtTOF')
+        opt = Optimizer(inp)
+        opt.minimize()
 
 
 

@@ -5,18 +5,13 @@ from array import array
 
 from spectrum.spectrum import PtAnalyzer, Spectrum
 from spectrum.sutils import wait
+from spectrum.input import TimecutInput
 ROOT.TH1.AddDirectory(False)
 
-class Input(object):
-    def __init__(self, filename, histname, f = lambda x: x.TimeTender):
-        super(Input, self).__init__()
-        self.nevents, self.data, self.mixing = self.read(filename, histname, f)
-
-    def read(self, filename, histname, f):
-        nevents = ROOT.TFile(filename).PhysTender.FindObject('EventCounter').GetBinContent(2)
-        lst = f(ROOT.TFile(filename))
-        rawhist, rawmix = lst.FindObject('h' + histname), lst.FindObject('hMix' + histname)
-        return nevents, rawhist, rawmix
+class MinimizerInput(TimecutInput):
+    def __init__(self, filename, listname, histname, mixprefix = 'Mix'):
+        super(TimecutInput, self).__init__(filename, listname, histname, mixprefix)
+        self.nevents, self.data, self.mixing = self.read()
 
     def project(self, cut, draw = False):
         self.data.SetAxisRange(0, cut, 'Z')
@@ -35,10 +30,9 @@ class Input(object):
 
 
 class Optimizer(object):
-    def __init__(self, filename, histname):
+    def __init__(self, inp):
         super(Optimizer, self).__init__()
-        self.inp = Input(filename, histname)
-        self.minimize()
+        self.inp = inp
 
     def minimize(self):
         minuit = ROOT.TMinuit(1)

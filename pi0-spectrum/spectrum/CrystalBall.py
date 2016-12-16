@@ -20,7 +20,7 @@ def Fit(h = None, intgr_range=(0.05, 0.3), rebin = 1):
     if rebin > 1: h.Rebin(rebin)
     h.GetXaxis().SetTitle('M_{#gamma#gamma}, GeV')
     ROOT.gStyle.SetOptFit()
-    ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
+    # ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
 
     alpha, n, a, b = CBParameters()
 
@@ -105,8 +105,8 @@ def ExtractQuantities(h = None, intgr_range=(0.05, 0.3), rebin = 1):
 
     ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
 
-    sb = nraw / sbkg
-    esb = sb * ((enraw / nraw)**2 + (esbkg/ sbkg)** 2) ** 0.5
+    sb = nraw / sbkg if sbkg != 0 else 0
+    esb = sb * ((enraw / nraw)**2 + (esbkg/ sbkg)** 2) ** 0.5 if sbkg != 0  and nraw !=0 else 0
 
     return mass, emass, sigma, esigma, nraw, enraw, fitfun.GetChisquare() / ndf, 0, sb, esb
     
