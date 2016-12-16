@@ -51,7 +51,7 @@ void PhotonTimecutSelection::InitSummaryHistograms()
 	for (Int_t i = 0; i < 2; i++)
 	{
 		const char * suff = (i == 0) ? "" : "Mix";
-		fListOfHistos->Add(new TH3F(Form("h%sMassPtTOF", suff), "(M,p_{T})_{#gamma#gamma}, main-main", nM, mMin, mMax, nPt, ptMin, ptMax, 100, -0.15 * 1e-6, 0.15 * 1e-6));
+		fListOfHistos->Add(new TH3F(Form("h%sMassPtTOF", suff), "(M,p_{T})_{#gamma#gamma}, main-main", nM, mMin, mMax, nPt, ptMin, ptMax, 100, 0, 0.15 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtMainMain", suff), "(M,p_{T})_{#gamma#gamma}, main-main", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtMainPileup", suff), "(M,p_{T})_{#gamma#gamma}, main-pileup", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtPileupPileup", suff), "(M,p_{T})_{#gamma#gamma}, pileup-pileup", nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -65,7 +65,7 @@ void PhotonTimecutSelection::InitSummaryHistograms()
 		fListOfHistos->Add(new TH2F(Form("hClusterXvsTM%d", i), Form("Cluster X vs time, M%d", i),  64, 0.5, 64.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterZvsTM%d", i), Form("Cluster Z vs time, M%d", i),  56, 0.5, 56.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 		fListOfHistos->Add(new TH2F(Form("hClusterTimeMap%d", i), Form("Cluster time map, M%d", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-		fListOfHistos->Add(new TH2F(Form("hClusterNvsTM%d", i), Form("Cluster energy vs time, M%d", i), 25, 0.5, 25.5, 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+		fListOfHistos->Add(new TH2F(Form("hClusterNvsTM%d", i), Form("Cluster energy/N_{cells} vs time, M%d", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 	}
 }
 
@@ -137,7 +137,7 @@ void PhotonTimecutSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		FillHistogram(Form("hClusterXvsTM%d", sm), x, tof);
 		FillHistogram(Form("hClusterZvsTM%d", sm), z, tof);
 		FillHistogram(Form("hClusterTimeMap%d", sm), x, z, tof);
-		FillHistogram(Form("hClusterNvsTM%d", sm), clus->GetNCells(), tof);
+		FillHistogram(Form("hClusterNvsTM%d", sm), clus->E()/clus->GetNCells(), tof);
 
 
 		FillHistogram(Form("hClusterTime%d", 0), tof, clus->E());
@@ -147,7 +147,7 @@ void PhotonTimecutSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		FillHistogram(Form("hClusterXvsTM%d", 0), x, tof);
 		FillHistogram(Form("hClusterZvsTM%d", 0), z, tof);
 		FillHistogram(Form("hClusterTimeMap%d", 0), x, z, tof);
-		FillHistogram(Form("hClusterNvsTM%d", 0), clus->GetNCells(), tof);
+		FillHistogram(Form("hClusterNvsTM%d", 0), clus->E()/clus->GetNCells(), tof);
 
 	}
 
