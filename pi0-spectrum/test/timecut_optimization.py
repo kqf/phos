@@ -15,7 +15,7 @@ class TimecutOptimizer(unittest.TestCase):
         for i in [10, 12, 20, 25, 50, 100]:
             inp.project(i * 1e-9, True)
 
-    def testCut(self):
+    def retestCut(self):
         inp = MinimizerInput('input-data/LHC16k-pass1-ok.root', 'TimeTender', 'MassPtTOF')
         opt = Optimizer(inp)
         opt.minimize()

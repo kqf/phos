@@ -6,11 +6,11 @@ images:
 	$(call save_images, $(LABELS), $(RESULT))
 
 per-module:
-	$(ROOT_PYTHON) -m unittest test.check_different_modules
+	$(ROOT_PYTHON) -m unittest test.test_check_different_modules
 	$(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, results/different-modules)
 
 pileup:
-	$(ROOT_PYTHON) -m unittest test.check_pileup_contribution
+	$(ROOT_PYTHON) -m unittest test.test_check_pileup_contribution
 	$(call save_images, no_timecut 23ns, results/timecut)
 
 timecut:
