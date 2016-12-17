@@ -2,19 +2,19 @@ LABELS = Tender_No_BMap my_task_and_tender my_task_no_tender my_task_only_tender
 RESULT = results/1-MyTaskVsTender
 
 images:
-	python2 run-pi0-spectrum.py
-	# $(call save_images, $(LABELS), $(RESULT))
+	$(ROOT_PYTHON) run-pi0-spectrum.py
+	$(call save_images, $(LABELS), $(RESULT))
 
 per-module:
-	python2 different-modules.py
-	$(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, different-modules)
+	$(ROOT_PYTHON) -m unittest test.check_different_modules
+	$(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, results/different-modules)
 
 pileup:
-	python2 pileup.py
-	$(call save_images, no_timecut 23ns, different-modules)
+	$(ROOT_PYTHON) -m unittest test.check_pileup_contribution
+	$(call save_images, no_timecut 23ns, results/timecut)
 
 timecut:
-	python2 -m unittest test.timecut_optimization
+	$(ROOT_PYTHON) -m unittest test.timecut_optimization
 
 define save_images
 	for label in $(1); do \
