@@ -20,6 +20,7 @@ class PtDependent(object):
         [hist.SetBinContent(i + 1, m) for i, m in enumerate(data[0])]
         [hist.SetBinError(i + 1, m) for i, m in enumerate(data[1])]
         hist.label = self.label
+        hist.Sumw2()
         return hist 
 
 class PtAnalyzer(object):

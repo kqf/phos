@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
-
 from spectrum.input import TimecutInput
-from spectrum.spectrum import PtAnalyzer, Spectrum
+from spectrum.spectrum import PtAnalyzer, Spectrum 
+from spectrum.sutils import wait
+
 import ROOT
 ROOT.TH1.AddDirectory(False)
 
@@ -27,12 +28,10 @@ class MetricInput(TimecutInput):
         return [[self.nevents, data, mixing], 'cut %0.2f' % cut, 'dead']
 
 
-# Default arguments should be removed
-class Metrics(object):
-    def __init__(self, inp = None, reference = None):
-        super(Metrics, self).__init__()
-        self.reference = reference
-        self.input = inp
+# Abstract class just to check minimizer interface.
+class TestMetrics(object):
+    def __init__(self):
+        super(TestMetrics, self).__init__()
 
     def fcn(self, npar, gin, f, par, iflag ):
         f[0] = self.distance(par)
@@ -40,6 +39,16 @@ class Metrics(object):
     def distance(self, par):
         x = par[0]
         return (x - 45.1234) ** 2
-        # singnal = PtAnalyzer(*self.inp.extract(x)).quantities()[-1]
-        # data = [singnal.GetBinContent(i) / singnal.GetBinError(i) for i in range(1, singnal.GetNbinsX() + 1) if singnal.GetBinContent(i) > 0 ] 
-        # bins = sum(data)
+
+
+# Default arguments should be removed
+class MaximumSignalMetrics(TestMetrics):
+    def __init__(self, inp):
+        super(MaximumSignalMetrics, self).__init__()
+        self.input = inp 
+
+    def distance(self, par):
+        x = par[0] * 1e-9
+        singnal = PtAnalyzer(*self.input.extract(x)).quantities()[-1]
+        data = [singnal.GetBinContent(i) / singnal.GetBinError(i) for i in range(1, singnal.GetNbinsX() + 1) if singnal.GetBinContent(i) > 0 ] 
+        return sum(data) ** 2
