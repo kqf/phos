@@ -16,11 +16,11 @@ class PtDependent(object):
     def get_hist(self, bins, data):
         from array import array
         hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
+        if not hist.GetSumw2N(): hist.Sumw2()
         hist.GetXaxis().SetTitle('P_{T}, GeV/c')
         [hist.SetBinContent(i + 1, m) for i, m in enumerate(data[0])]
         [hist.SetBinError(i + 1, m) for i, m in enumerate(data[1])]
         hist.label = self.label
-        hist.Sumw2()
         return hist 
 
 class PtAnalyzer(object):

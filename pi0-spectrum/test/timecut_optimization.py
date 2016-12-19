@@ -1,7 +1,7 @@
 import unittest
 
 from optimizer.optimizer import Optimizer
-from optimizer.metrics import MaximumSignalMetrics, MetricInput
+from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
 
 class TimecutOptimizer(unittest.TestCase):
@@ -15,10 +15,17 @@ class TimecutOptimizer(unittest.TestCase):
         for i in [10, 12, 20, 25, 50, 100]:
             inp.project(i * 1e-9, True)
 
-    def testCut(self):
+    def ktestCutMaxSignal(self):
         inp = MetricInput('input-data/LHC16k-pass1-ok.root', 'TimeTender', 'MassPtTOF')
         opt = Optimizer(MaximumSignalMetrics(inp))
         opt.minimize()
+
+    def testCutMaxRatio(self):
+        ref = MetricInput('input-data/LHC16k-pass1-ok.root', 'PhysTender', 'MassPtN3')
+        inp = MetricInput('input-data/LHC16k-pass1-ok.root', 'TimeTender', 'MassPtTOF')
+        opt = Optimizer(MaximumDeviationMetrics(inp, ref))
+        opt.minimize()
+
 
 
 

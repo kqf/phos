@@ -3,6 +3,7 @@
 from spectrum.input import TimecutInput
 from spectrum.spectrum import PtAnalyzer, Spectrum 
 from spectrum.sutils import wait
+from math import exp
 
 import ROOT
 ROOT.TH1.AddDirectory(False)
@@ -52,3 +53,24 @@ class MaximumSignalMetrics(TestMetrics):
         singnal = PtAnalyzer(*self.input.extract(x)).quantities()[-1]
         data = [singnal.GetBinContent(i) / singnal.GetBinError(i) for i in range(1, singnal.GetNbinsX() + 1) if singnal.GetBinContent(i) > 0 ] 
         return sum(data) ** 2
+
+# Default arguments should be removed
+class MaximumDeviationMetrics(MaximumSignalMetrics):
+    def __init__(self, inp, reference):
+        super(MaximumDeviationMetrics, self).__init__(inp)
+        self.reference = self.extract_reference(reference)
+
+    def extract_reference(self, ref):
+        return PtAnalyzer(ref.read(), 'no cut', 'dead').quantities()
+
+    def distance(self, par):
+        x = par[0] * 1e-9
+        spectrum = PtAnalyzer(*self.input.extract(x)).quantities()[2]
+        bins = self.ratios(spectrum)
+        return -sum(map(lambda x: x ** 2, bins))
+
+    def ratios(self, x):
+        ratio = self.reference[2].Clone('ratio_' + self.reference[2].GetName())
+        ratio.Divide(x)
+        bins = [ratio.GetBinContent(i) / ratio.GetBinError(i) for i in range(1, ratio.GetNbinsX() + 1) if ratio.GetBinContent(i) > 0 ] 
+        return bins

@@ -28,11 +28,11 @@ class Optimizer(object):
         p, pe = ROOT.Double(0), ROOT.Double(0)
         minuit.GetParameter(0, p, pe) 
         print 'Estimated value :', p
-        # self.compare(p)
+        self.compare(p)
 
 
     def compare(self, pmin):
-       res = [PtAnalyzer(*self.metrics.input.extract(pmin)).quantities(), PtAnalyzer(*self.inp.extract(140.e-9)).quantities()]
+       res = [PtAnalyzer(*self.metrics.input.extract(pmin)).quantities(), PtAnalyzer(*self.metrics.input.extract(140.e-9)).quantities()]
        import spectrum.comparator as cmpr
        diff = cmpr.Comparator()
        diff.compare_set_of_histograms(res)
