@@ -99,10 +99,10 @@ void PhysPhotonSelection::InitSummaryHistograms()
 
 	// Check abs Id numbering
 	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_SM%d", i), Form("Cluster N(Id),  M%d, E>0.5 GeV", i), 3584, 1 + (i - 1) * 3584 , i * 3584 ));
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_SM%d", i), Form("Cluster N(Id),  M%d, E>0.5 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
 
 	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_SM%d", i), Form("Cluster N(Id),  M%d, E>0.5 GeV", i), 3584, 1 + (i - 1) * 3584 , i * 3584 ));
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_SM%d", i), Form("Cluster N(Id),  M%d, E>0.5 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
 
 	for (Int_t i = 1; i < 5;  ++i)
 		fListOfHistos->Add(new TH2F(Form("hCluNXZM%d_0", i), Form("Cluster N(X,Z),  M%d, E>0.5 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
@@ -177,7 +177,10 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		FillHistogram(Form("hCluNXZM%d_%d", sm, Int_t(energy > 1.)), x, z, 1.);
 		FillHistogram(Form("hCluEXZM%d_%d", sm, Int_t(energy > 1.)), x, z, energy);
 
-		for (Int_t c = 0; clus->GetNCells(); ++c)
+		if(energy > 1.)
+			continue;
+
+		for (Int_t c = 0; c < clus->GetNCells(); ++c)
 		{
 			FillHistogram(Form("hClusterIdN_SM%d", sm), clus->GetCellAbsId(c) + 1);
 			FillHistogram(Form("hClusterIdE_SM%d", sm), clus->GetCellAbsId(c) + 1, energy);

@@ -4,6 +4,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
 
+	plugin->SetOutputToRunNo(kTRUE);
     plugin->SetMergeViaJDL(mergeJDL); 
 	plugin->SetRunMode(pluginmode);
 
@@ -16,8 +17,14 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 
 	plugin->SetCheckCopy(kFALSE);
 
-	plugin->SetGridDataDir("/alice/data/2016/" + period);
-	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
+	// Extract period and reconstruction pass
+	TString dir(period, 6); // fancy slicing
+	TString reconstruction(period);
+	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
+	reconstruction.ReplaceAll("-", "_");
+
+	plugin->SetGridDataDir("/alice/data/2016/" + dir);
+	plugin->SetDataPattern("/" + reconstruction + "/*.*/AliAOD.root");
 	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
 	plugin->SetRunPrefix("000");
 

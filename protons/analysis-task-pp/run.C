@@ -4,7 +4,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
     bool useTender = kTRUE;
     // TString period = "LHC16h";
-    TString period = "LHC16k";
+    TString period = "LHC16k-pass1";
     Int_t * excells;
     Int_t * good_runs;
     Int_t nexc;
@@ -53,7 +53,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
     // if (!useTender) 
-    TString files = AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
+    TString files ; //= AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
 
     // Add tender
     if (useTender)
@@ -64,7 +64,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
         files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc);
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", 0, 0);
+        // files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", 0, 0);
     }
 
     if ( !mgr->InitAnalysis( ) ) return;
