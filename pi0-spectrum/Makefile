@@ -1,9 +1,6 @@
-LABELS = Tender_No_BMap my_task_and_tender my_task_no_tender my_task_only_tender
-RESULT = results/1-MyTaskVsTender
-
 images:
 	$(ROOT_PYTHON) run-pi0-spectrum.py
-	$(call save_images, $(LABELS), $(RESULT))
+	$(call save_images, my_map default, results/my-bmap-vs-tender.pdf)
 
 per-module:
 	$(ROOT_PYTHON) -m unittest test.test_check_different_modules

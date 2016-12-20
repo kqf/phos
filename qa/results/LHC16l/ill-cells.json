@@ -1,0 +1,6 @@
+{
+	"comment": "This is a list of cells that are noisy in LHC16k/257691/sm1",
+    "cells":[[50, 50, 1], [33, 23, 2], [53, 42, 2], [1, 10, 3], [0, 11, 3]],
+	"fees": [],
+	"fees [[0, 0, 3]]": ""
+}

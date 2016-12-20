@@ -4,19 +4,17 @@ import ROOT
 
 from spectrum.spectrum import PtAnalyzer, Spectrum
 from spectrum.input import Input, ExampleInput
+from spectrum.sutils import get_canvas
 
 def main():
-    canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
-
+    c1 = get_canvas()
     # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
-    infile = 'input-data/LHC16k-MyTask.root'
+    infile = 'input-data/LHC16k-pass1.root'
     results = [
-               f(Input(infile, 'PhysNoTender').read(), 'my task no tender', 'q'),
-               f(Input(infile, 'PhysTender').read(), 'my task and tender', 'q'), 
-               f(Input(infile, 'PhysOnlyTender').read(), 'my task only tender', 'q'), 
-               f(ExampleInput('input-data/LHC16k-NoBadmap.root').read(), 'Tender No BMap', 'q')
+               f(Input(infile, 'PhysTender').read(), 'my map', 'q'), 
+               f(ExampleInput('input-data/LHC16k-NoBadmap.root').read(), 'default', 'q')
               ]
 
     import spectrum.comparator as cmpr

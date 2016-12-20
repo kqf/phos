@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 
 import ROOT
-from sutils import wait 
+from sutils import wait, get_canvas
 
 class bcolors:
     OKGREEN = '\033[92m'
@@ -45,8 +45,7 @@ def compare_chi(hist1, hist2):
     print bcolors.WARNING + 'Rate of change of %s%s%s is' % (bcolors.OKGREEN, h.GetName(), bcolors.WARNING), percentile, bcolors.ENDC
 
 def preare_ratio_plot(hists):
-    c1 = ROOT.gROOT.FindObject('c1')
-    if not c1: c1 = ROOT.TCanvas("c1", "compare", 1000, 600)
+    c1 = get_canvas()
     if len(hists) != 2: return c1, c1, c1
     pad1 = ROOT.TPad("pad1","main plot", 0, 0.3, 1, 1);
     pad1.SetBottomMargin(0);

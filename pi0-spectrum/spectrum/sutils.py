@@ -2,7 +2,7 @@ import ROOT
 
 
 def wait(name, draw, save = True, suffix = ''):
-    canvas = ROOT.gROOT.FindObject('c1')
+    canvas = get_canvas()
     canvas.Update()
     name = name.replace(' ', '_')
     if save: canvas.SaveAs('results/' + name+ '.pdf')
@@ -39,4 +39,13 @@ def nicely_draw(hist, option = '', legend = None):
     legend.AddEntry(hist, hist.label)
     legend.Draw('same')
     wait('xlin_' + hist.GetName(), draw = True, save = True)
+
+def get_canvas():
+    canvas = ROOT.gROOT.FindObject('c1')
+    if canvas: 
+        return canvas 
+
+    scale = 8
+    return ROOT.TCanvas('c1', 'Canvas', 128 * scale / 2, 96 * scale)
+
   
