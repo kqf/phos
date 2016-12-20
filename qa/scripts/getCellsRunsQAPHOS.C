@@ -2647,8 +2647,8 @@ void SavePi0Histogram(TH1 * histo, Int_t sm, Int_t run)
     backgr->SetParameters(fitfun->GetParameter(3), fitfun->GetParameter(4), fitfun->GetParameter(5));
     backgr->Draw("same");
   }
+  histo->SetTitle(Form("%s run %d sm %d", histo->GetTitle(), run, sm));
 
-  cout << canvas << endl;
   canvas->Update();
   canvas->SaveAs(Form("fits/%d_SM_%d", run, sm) + TString(".png"));
   canvas->SaveAs(Form("fits/%d_SM_%d", run, sm) + TString(".pdf"));

@@ -1,30 +1,31 @@
 void getBadMap(const char * period = "", TString filename = "")
 {
 	// If no geometry class -- nothing to do here
-	if(!gROOT->GetClass("AliPHOSGeometry"))
+	if (!gROOT->GetClass("AliPHOSGeometry"))
 		return;
+	SetupGeometry();
 
 	gROOT->SetBatch();
 	// gStyle->SetOptStat(0);
-    gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
-    
-    Int_t * excells;
-    Int_t nexc;
+	gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
 
-    if(filename.Length())
-    { 
-    	// Just read a file if file name is specified
-    	// othervise extract Bad channel map
-    	cout << "Here " << bool(filename) << endl;
-    	ReadPrintBadCells(period, excells, nexc, filename);
-    	return;
-    }
+	Int_t * excells;
+	Int_t nexc;
+
+	if (filename.Length())
+	{
+		// Just read a file if file name is specified
+		// othervise extract Bad channel map
+		cout << "Here " << bool(filename) << endl;
+		ReadPrintBadCells(period, excells, nexc, filename);
+		return;
+	}
 
 
-    // Export map of bad channels to root file
-    getRunsBadCells(period, 0, 0, excells, nexc);
+	// Export map of bad channels to root file
+	getRunsBadCells(period, 0, 0, excells, nexc);
 	DrawPHOSOBadMap(period, excells, nexc);
-	
+
 
 	cout << "# excluded cells for this badmap " << nexc << endl;
 	// Verify the BadMap
@@ -143,4 +144,21 @@ void AbsId2EtaPhi(Int_t absId, Int_t & nModule, Int_t & eta, Int_t & phi)
 	//sm = relid[0];
 	eta = relid[2];
 	phi = relid[3];
+}
+
+
+void SetupGeometry()
+{
+	AliPHOSGeometry * geo = AliPHOSGeometry::GetInstance("Run2");
+
+	AliOADBContainer geomContainer("phosGeo");
+	geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root","PHOSRotationMatrixes");
+	TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(258391, "PHOSRotationMatrixes");
+
+	for (Int_t mod = 0; mod < 5; mod++)
+	{
+		if (!matrixes->At(mod)) continue;
+		geo->SetMisalMatrix(((TGeoHMatrix*)matrixes->At(mod)), mod) ;
+		cout << (Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, geo)) << endl;
+	}
 }

@@ -182,8 +182,8 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 
 		for (Int_t c = 0; c < clus->GetNCells(); ++c)
 		{
-			FillHistogram(Form("hClusterIdN_SM%d", sm), clus->GetCellAbsId(c) + 1);
-			FillHistogram(Form("hClusterIdE_SM%d", sm), clus->GetCellAbsId(c) + 1, energy);
+			FillHistogram(Form("hClusterIdN_SM%d", sm), clus->GetCellAbsId(c));
+			FillHistogram(Form("hClusterIdE_SM%d", sm), clus->GetCellAbsId(c), energy);
 		}
 	}
 
