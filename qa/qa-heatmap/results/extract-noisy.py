@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 import ROOT
 
@@ -36,11 +36,24 @@ class ExctractNoisy(object):
         ofile.Write()
         ofile.Close()
 
+class AbsIdExtractor(ExctractNoisy):
+    def __init__(self, filename, function, name):
+        super(AbsIdExtractor, self).__init__(filename, function, name)
+
+    def noisy_cells(self, hists, thresholds):
+        return [[int(h.GetBinCenter(i + 1)) for i in range(h.GetNbinsX()) if h.GetBinContent(i + 1) > t] for h, t in zip(hists, thresholds)]
+
+    def inspect(self, thresholds):
+        self.cells = self.noisy_cells(self.modules, thresholds)
+        for i, cells in enumerate(self.cells):
+            print ','.join(map(str, cells)) + ',' ,' //',  len(cells),  'cells in module', i + 1
+
 
 def main():
-    extractor = ExctractNoisy('LHC16k-pass1-half-almost-clean.root', lambda x: x.PhysTender, 'hCluNXZM%d_0')
-    extractor.inspect(2000)
-    extractor.save('very-noisy-cells-LHC16k.root', 'PHOS_BadMap_mod%d')
+    extractor = AbsIdExtractor('LHC16l.root', lambda x: x.PhysTender, 'hClusterIdN_SM%d')
+    extractor.inspect([6000, 6500, 6500, 6500])
+    # extractor.save('very-noisy-cells-LHC16k.root', 'PHOS_BadMap_mod%d')
+
 
 if __name__ == '__main__':
     main()
