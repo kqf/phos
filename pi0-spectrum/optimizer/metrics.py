@@ -51,7 +51,7 @@ class MaximumSignalMetrics(TestMetrics):
     def distance(self, par):
         x = par[0] * 1e-9
         singnal = PtAnalyzer(*self.input.extract(x)).quantities()[-1]
-        data = [singnal.GetBinContent(i) / singnal.GetBinError(i) for i in range(1, singnal.GetNbinsX() + 1) if singnal.GetBinContent(i) > 0 ] 
+        data = [ (singnal.GetBinContent(i) / singnal.GetBinError(i)) ** 2 for i in range(1, singnal.GetNbinsX() + 1) if singnal.GetBinContent(i) > 0 ] 
         return sum(data) ** 2
 
 # Default arguments should be removed

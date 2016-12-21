@@ -3,12 +3,14 @@ import unittest
 import ROOT
 import sys
 
+from spectrum.sutils import get_canvas
+
 class CheckDefault(unittest.TestCase):
 
     def setUp(self):
         self.discover = 'discover' in sys.argv
         self.mode = 'dead' if self.discover else 'q'
-        self.canvas = ROOT.TCanvas('c1', 'Canvas', 1000, 500)
+        self.canvas = get_canvas() 
 
     def testCompareResults(self):
         if self.discover:

@@ -1,0 +1,16 @@
+{
+    "histograms": 
+    {
+        "with-noisy-cells.root/TimeTender/hClusterTime0": {"label": "noisy cells", "color": 37, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"},
+        "LHC16k-pass1.root/TimeTender/hClusterTime0": {"label": "clean x3", "color": 46, "normalize": 3, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"}
+    },
+
+    "canvas":
+    {
+        "size":  5,
+        "logy":  1,
+        "gridx": 1,
+        "legend": [0.75, 0.75, 0.89, 0.88],
+        "output": "timecut.pdf"
+    }
+}

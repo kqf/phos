@@ -16,13 +16,13 @@ class Optimizer(object):
         minuit = ROOT.TMinuit(1)
         minuit.SetFCN(self.metrics.fcn)
         arglist, ierflg = array( 'd', 10*[0.] ),  ROOT.Long(1982)
-        # arglist[0] = 1
-        minuit.mnexcm( "SET ERR", arglist, 1, ierflg )
-        minuit.mnparm( 0, "cut", 50, 1, 20, 100, ierflg)
+        arglist[0] = 1
+        minuit.mnexcm("SET ERR", arglist, 1, ierflg )
+        minuit.mnparm(0, "cut",  27.3117362405, 20, 1, 100, ierflg)
 
         # Now ready for minimization step
-        arglist[0] = 500
-        arglist[1] = 1
+        arglist[0] = 1000
+        arglist[1] = 0
         print 'reached here'
         minuit.mnexcm( "MIGRAD", arglist, 2, ierflg )
         p, pe = ROOT.Double(0), ROOT.Double(0)
