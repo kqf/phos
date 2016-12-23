@@ -51,7 +51,7 @@ class AbsIdExtractor(ExctractNoisy):
 
 def main():
     extractor = AbsIdExtractor('LHC16l.root', lambda x: x.PhysTender, 'hClusterIdN_SM%d')
-    extractor.inspect([6000, 6500, 6500, 6500])
+    extractor.inspect([7000, 5750, 6300, 6000])
     # extractor.save('very-noisy-cells-LHC16k.root', 'PHOS_BadMap_mod%d')
 
 

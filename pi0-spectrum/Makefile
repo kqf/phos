@@ -13,6 +13,10 @@ pileup:
 timecut:
 	$(ROOT_PYTHON) -m unittest test.timecut_optimization
 
+check-cut:
+	$(ROOT_PYTHON) -m unittest test.timecut_evaluation
+
+
 define save_images
 	for label in $(1); do \
 		pdfunite `ls -tr results/ratio*$$label.pdf` results/initial_fit_$$label.pdf; \
