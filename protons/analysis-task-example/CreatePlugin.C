@@ -11,7 +11,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20161203-1");
+	plugin->SetAliPhysicsVersion("vAN-20161222-1");
 
 
 	plugin->SetExecutableCommand("aliroot");

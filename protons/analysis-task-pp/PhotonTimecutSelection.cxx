@@ -25,8 +25,8 @@ Bool_t PhotonTimecutSelection::IsMainBC(const AliVCluster * clus) const
 	// It's unknown if I should implement symmetric cut or not.
 	// Float_t timesigma = 23.e-9; // 23 ns
 	// Timecut from histogram scaled by energy
-	Float_t timesigma = 50.e-9; // 50 ns
-
+	// Timecut according to resolution
+	Float_t timesigma = 12.5e-9; // 50 ns
 	if (TMath::Abs(clus->GetTOF()) < timesigma) return kTRUE;
 	return kFALSE;
 }

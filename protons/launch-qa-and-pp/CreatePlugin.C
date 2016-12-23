@@ -13,7 +13,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20161203-1");
+	plugin->SetAliPhysicsVersion("vAN-20161222-1");
 
 
 	plugin->SetExecutableCommand("aliroot");
