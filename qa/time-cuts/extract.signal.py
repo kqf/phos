@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 import numpy as np
 import ROOT
@@ -15,8 +15,8 @@ def wait(name = 'default', draw = True, save = False):
     if draw: ROOT.gApplication.Run(True)
 
 def fit_function(h):
-    f = ROOT.TF1('f1', 'gaus(0)', -0.1 * 1e-6, 0.1 * 1e-6)
-    f.SetParameters(1.6e+06, 0, 2.1e-08)
+    f = ROOT.TF1('f1', 'gaus(0)', -2 * 1e-8, 2 * 1e8)
+    f.SetParameters(1.7e+05, 0, 4.8e-10)
     h.Fit(f, 'R')
     return f
 
@@ -28,8 +28,8 @@ class Analyser2D(object):
 
     @staticmethod
     def from_file(filename):
-        inlist = ROOT.TFile.Open(filename, 'r').PhysTender
-        histogram = inlist.FindObject('hClusterEvsTM')
+        inlist = ROOT.TFile.Open(filename, 'r').TimeTender
+        histogram = inlist.FindObject('hClusterEvsTM0')
         return Analyser2D(histogram)
 
     def trim(self, threshold):
@@ -58,33 +58,46 @@ class Analyser2D(object):
 
     def estimate_cut(self):
         s = 200
-        # TODO1: try this for the finer bins
-        # TODO2: Approximate precision
-        # TODO3: Additional histograms in example task?
         self.hist.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'Y')
 
         data, initial = [], self.hist.Integral()
         for i in np.linspace(1e3, 6e4, 20):
-            # canvas = ROOT.TCanvas('c1', 'test', 4 * s, 3 * s)
-            # canvas.Divide(2, 1)
             x = self.trim(i) / initial
-            # canvas.cd(1)
-            # self.hist.Draw('colz')
             time = self.hist.ProjectionY()
             time.SetTitle('ToF distribution in all modules %d; t, s' %i)
             time.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'X')
-            # canvas.cd(2).SetLogy()
             f = fit_function(time)
             data.append([x, f.GetParameter(1), f.GetParameter(2)])
             time.Draw('same')
-            # f.Draw('same')
-            # wait()
+
         self.check_convergence(data)
+
+    def check_distribution(self):
+        s = 200
+        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'Y')
+
+        canvas = ROOT.TCanvas('c1', 'test', 4 * s, 3 * s)
+        canvas.Divide(2, 1)
+        canvas.cd(1)
+        self.hist.Draw('colz')
+
+        canvas.cd(2).SetLogy()
+        axis = self.hist.GetXaxis()
+        a, b = axis.FindBin(2), axis.GetNbins() - 1
+        time = self.hist.ProjectionY("_py", a, b)
+        time.SetTitle('ToF distribution in all modules; t, s')
+        time.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'X')
+
+        f = fit_function(time)
+        time.Draw('same')
+        f.Draw('same')
+        wait()
+
 
 
 def main():
-    analyzer = Analyser2D.from_file("LHC16k-MyTask.root")
-    analyzer.estimate_cut()
+    analyzer = Analyser2D.from_file("LHC16k-pass1.root")
+    analyzer.check_distribution()
 
 
 if __name__ == '__main__':
