@@ -16,7 +16,7 @@ def wait(name = 'default', draw = True, save = False):
 
 def fit_function(h):
     f = ROOT.TF1('f1', 'gaus(0)', -2 * 1e-8, 2 * 1e8)
-    f.SetParameters(1.7e+05, 0, 4.8e-10)
+    f.SetParameters(4.7e+03, 0, 2.8e-9)
     h.Fit(f, 'R')
     return f
 
