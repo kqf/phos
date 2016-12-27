@@ -22,7 +22,7 @@ protected:
 		if (clus->E() < 0.3) return -1;
 
 		Float_t timesigma = 12.5e-9; 
-		if (TMath::Abs(clus->GetTOF()) < timesigma) return -1;
+		if (TMath::Abs(clus->GetTOF()) > timesigma) return -1;
 
 		return AliCaloCellsQA::CheckClusterGetSM(clus);
 	}
