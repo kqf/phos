@@ -4,6 +4,7 @@ import numpy as np
 import ROOT
 
 ROOT.TH1.AddDirectory(False)
+ROOT.gStyle.SetOptStat('erm')
 
 def wait(name = 'default', draw = True, save = False):
     canvas = ROOT.gROOT.FindObject('c1')
@@ -27,9 +28,9 @@ class Analyser2D(object):
         self.hist = hist 
 
     @staticmethod
-    def from_file(filename):
+    def from_file(filename, i = 0):
         inlist = ROOT.TFile.Open(filename, 'r').TimeTender
-        histogram = inlist.FindObject('hClusterEvsTM0')
+        histogram = inlist.FindObject('hClusterEvsTM%d' % i)
         return Analyser2D(histogram)
 
     def trim(self, threshold):
@@ -93,11 +94,63 @@ class Analyser2D(object):
         f.Draw('same')
         wait()
 
+    def get_images(self):
+        s = 200
+        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'Y')
+        self.hist.Draw('colz')
+
+        axis = self.hist.GetXaxis()
+        a, b = axis.FindBin(2), axis.GetNbins() - 1
+        time = self.hist.ProjectionY("_py", a, b)
+        time.SetTitle('ToF distribution in all modules; t, s')
+        time.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'X')
+        return self.hist, time
 
 
 def main():
     analyzer = Analyser2D.from_file("LHC16k-pass1.root")
     analyzer.check_distribution()
+
+def main():
+    analyzers = [Analyser2D.from_file("LHC16k-pass1.root", i + 1) for i in range(4)]
+    energy, proj = zip(*[a.get_images() for a in analyzers])
+
+    scale, rows = 8, 1
+    canvas = ROOT.TCanvas('c1', 'Canvas', 128 * scale / rows , 96 * scale)
+    canvas.Divide(2, 2)
+
+    for i, e in enumerate(energy):
+        canvas.cd(i + 1)
+        e.SetTitle(e.GetTitle() + '; energy, GeV; time, s')
+        e.Draw('colz')
+    canvas.Update()
+    canvas.SaveAs('energy-time.pdf')
+
+    legend = ROOT.TLegend(0.9, 0.4, 1.0, 0.6)
+    legend.SetBorderSize(0)
+    legend.SetFillStyle(0)
+    legend.SetTextSize(0.04)
+
+    ROOT.gStyle.SetOptStat(0)
+    canvas = ROOT.TCanvas('c2', 'Canvas', 128 * scale / rows , 96 * scale)
+    canvas.cd()
+    proj[0].Draw()
+    colors = [37, 46, 8, 1]
+    for i, (p, c) in enumerate(zip(proj, colors)):
+        canvas.SetLogy()
+        canvas.SetGridx()
+        p.SetAxisRange(-0.15 * 1e-6, 0.15* 1e-6, 'X')
+        p.Draw('same')
+        p.SetLineColor(c)
+        legend.AddEntry(p, 'SM %d' % (i + 1))
+
+    legend.Draw('same')
+    canvas.SaveAs('time.pdf')
+    canvas.Update()
+    raw_input('...')
+
+
+
 
 
 if __name__ == '__main__':

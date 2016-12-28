@@ -38,7 +38,7 @@ initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
 
 compare: | ../results/$(PERIOD)/goodruns.csv
-	python2 explore-treding-plots.py ../results/$(PERIOD) $(IM)
+	$(ROOT_PYTHON) explore-treding-plots.py ../results/$(PERIOD) $(IM)
 
 inspect-cells: $(CELLS_TO_INSPECT)
 	@# assuming that CELLS_TO_INSPECT is a bash varaible
