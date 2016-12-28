@@ -23,7 +23,7 @@ TString  AddTaskCaloCellsQAPt(Int_t * excells, Int_t nexc, const char * name = "
     taskPHOSCellQA->GetCaloCellsQA()->SetClusterEnergyCuts(0.3, 0.3, 1.0);
 
     if (excells) taskPHOSCellQA->SetBadCells(excells, nexc);
-    taskPHOSCellQA->SetPairPtCut(2); // 2 GeV cut
+    taskPHOSCellQA->SetPairPtCut(1); // 2 GeV cut
     taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
     return  + TString(name) + ".root "; // Note extra space
 }
