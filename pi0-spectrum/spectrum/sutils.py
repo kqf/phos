@@ -45,7 +45,7 @@ def get_canvas():
     if canvas: 
         return canvas 
 
-    scale, rows = 8, 1
+    scale, rows = 8, 2
     return ROOT.TCanvas('c1', 'Canvas', 128 * scale / rows , 96 * scale)
 
   

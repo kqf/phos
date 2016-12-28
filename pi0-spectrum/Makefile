@@ -8,7 +8,7 @@ per-module:
 
 pileup:
 	$(ROOT_PYTHON) -m unittest test.test_check_pileup_contribution
-	$(call save_images, no_timecut 23ns, results/timecut)
+	$(call save_images, no_timecut 12.5_ns, results/no_timecut)
 
 timecut:
 	$(ROOT_PYTHON) -m unittest test.timecut_optimization
