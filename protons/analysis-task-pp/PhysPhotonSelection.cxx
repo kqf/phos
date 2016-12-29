@@ -183,6 +183,10 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		Float_t energy = clus->E();
 		Int_t isHighECluster = Int_t(energy > 1.);
 
+		Float_t timesigma = 12.5e-9; // 12.5 ns
+		if (TMath::Abs(clus->GetTOF()) > timesigma) 
+			continue;
+
 		FillHistogram(Form("hCluNXZM_%d_SM%d", isHighECluster, sm), x, z, 1.);
 		FillHistogram(Form("hCluEXZM_%d_SM%d", isHighECluster, sm), x, z, energy);
 

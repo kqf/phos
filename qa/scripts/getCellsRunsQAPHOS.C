@@ -166,8 +166,8 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // ... and exclude runs with number of events < 1k.
 
-  ExcludeSmallRuns(nruns, runNumbers, 51820);
-  ExcludeSmallRuns(nruns, runNumbers, 100);
+  // ExcludeSmallRuns(nruns, runNumbers, 10000);
+  ExcludeSmallRuns(nruns, runNumbers, 10000);
 
   // You may wish to exclude particular runs:
   // 260338, 260471, 260497,
@@ -898,6 +898,7 @@ void DrawOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
   // Draw bad cell map for EMCAL or PHOS;
   // cname -- canvas name.
 
+  SetupGeometry();
   gStyle->SetPalette(1);
 
   // guess detector
@@ -1692,6 +1693,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetGridx();
   gPad->SetGridy();
   TLegend *leg = new TLegend(0.65,0.16,0.75,0.15+0.08*(SM2-SM1+1));
+  leg->SetBorderSize(0)
+  leg->SetFillStyle(0)
+  leg->SetTextSize(0.04)
 
   hAvECluster->SetAxisRange(hAvECluster->GetMinimum()*0.5, hAvECluster->GetMaximum()*1.2,"Y");
   hAvECluster->SetLineWidth(2);
@@ -1738,6 +1742,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetGridx();
   gPad->SetGridy();
   leg = new TLegend(0.65,0.16,0.75,0.15+0.08*(SM2-SM1+1));
+  leg->SetBorderSize(0)
+  leg->SetFillStyle(0)
+  leg->SetTextSize(0.04)
 
   hAvNCellsInCluster->SetAxisRange(0, hAvNCellsInCluster->GetMaximum()* 1.2,"Y");
   hAvNCellsInCluster->SetLineWidth(2);
@@ -2721,4 +2728,20 @@ void DrawTotalEnergyOfCellsinModule(Int_t mod, Int_t nbins = 100,  Int_t start=0
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
   delete hEnergy;
+}
+
+void SetupGeometry()
+{
+  AliPHOSGeometry * geo = AliPHOSGeometry::GetInstance("Run2");
+
+  AliOADBContainer geomContainer("phosGeo");
+  geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root","PHOSRotationMatrixes");
+  TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(258391, "PHOSRotationMatrixes");
+
+  for (Int_t mod = 0; mod < 5; mod++)
+  {
+    if (!matrixes->At(mod)) continue;
+    geo->SetMisalMatrix(((TGeoHMatrix*)matrixes->At(mod)), mod) ;
+    cout << (Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, geo)) << endl;
+  }
 }
