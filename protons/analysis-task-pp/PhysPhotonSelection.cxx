@@ -89,6 +89,13 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	Int_t kMinModule = 1;
 	Int_t kMaxModule = 4;
 
+
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterEnergy_SM%d", i), Form("Cluster energy, SM%d; cluster energy, GeV", i), 1000, 0., 200.));
+
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), Form("Cluster energy, SM%d; cluster energy, GeV", i), 1000, 0., 200.));
+
 	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
 		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
 			fListOfHistos->Add(new TH2F(Form("hMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -106,7 +113,7 @@ void PhysPhotonSelection::InitSummaryHistograms()
 
 	for (Int_t i = 1; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), Form("Cluster N(Id),  M%d, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	
+
 	for (Int_t i = 1; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), Form("Cluster E(Id),  M%d, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
 
@@ -180,12 +187,19 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
 		FillHistogram("hNcellsE", clus->GetNCells(), p.E());
 
+		FillHistogram(Form("hClusterEnergy_SM%d", 0), p.E());
+		FillHistogram(Form("hClusterEnergy_SM%d", sm), p.E());
+
 		Float_t energy = clus->E();
 		Int_t isHighECluster = Int_t(energy > 1.);
 
 		Float_t timesigma = 12.5e-9; // 12.5 ns
-		if (TMath::Abs(clus->GetTOF()) > timesigma) 
+		if (TMath::Abs(clus->GetTOF()) > timesigma)
 			continue;
+
+		FillHistogram(Form("hMainClusterEnergy_SM%d", 0), p.E());
+		FillHistogram(Form("hMainClusterEnergy_SM%d", sm), p.E());
+
 
 		FillHistogram(Form("hCluNXZM_%d_SM%d", isHighECluster, sm), x, z, 1.);
 		FillHistogram(Form("hCluEXZM_%d_SM%d", isHighECluster, sm), x, z, energy);

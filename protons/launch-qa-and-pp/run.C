@@ -7,7 +7,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     TString pp_dir = "";
 
-    TString period = "LHC16o-muon-calo-pass1";
+    TString period = "LHC16l-muon-calo-pass1";
     Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
@@ -41,7 +41,9 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     mgr->SetGridHandler(alienHandler);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    AddTaskPhysicsSelection ( isMC );  //false for data, true for MC
+
+    Bool_t enablePileupCuts = kTRUE;
+    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     //gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
     gROOT->LoadMacro(qa_dir + "AliAnalysisTaskCaloCellsQAPt.h+g");
