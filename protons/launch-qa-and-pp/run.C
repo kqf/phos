@@ -42,7 +42,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
-    Bool_t enablePileupCuts = kTRUE;
+    Bool_t enablePileupCuts = kFALSE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     //gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
@@ -68,7 +68,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
         files += AddTaskCaloCellsQAPt(excells, nexc);
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## pass1 testing badmap for a new calibration, added timecut, timecut value 50ns, strict cuts ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, testing physics selection (pileup cuts) ## tender", "Tender", "", excells, nexc);
     }
 
 
