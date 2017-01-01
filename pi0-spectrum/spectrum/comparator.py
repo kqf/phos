@@ -97,8 +97,9 @@ def compare_visually(hists, ci):
 
     legend.Draw('same')
 
-    if 'spectr' in hists[0].GetName() or 'chi' in hists[0].GetName() :
+    if 'spectr' in hists[0].GetName() or 'chi' in hists[0].GetName()  or 'logy' in dir(hists[0]):
         ROOT.gPad.SetLogy()
+        
     ROOT.gStyle.SetOptStat(0)
     ROOT.gPad.SetTickx()
     ROOT.gPad.SetTicky() 

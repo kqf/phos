@@ -16,6 +16,9 @@ timecut:
 check-cut:
 	$(ROOT_PYTHON) -m unittest test.timecut_evaluation
 
+selection:
+	$(ROOT_PYTHON) -m unittest test.check_physics_selection
+
 
 define save_images
 	for label in $(1); do \
