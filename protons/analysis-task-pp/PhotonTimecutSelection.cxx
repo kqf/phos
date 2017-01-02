@@ -65,13 +65,13 @@ void PhotonTimecutSelection::InitSummaryHistograms()
 	}
 
 	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), mtitle("Cluster Time scaled by E, SM%s; t, s", i), 4800, -0.25 * 1e-6, 0.25 * 1e-6));
+		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), mtitle("Cluster Time scaled by E, %s; t, s", i), 4800, -0.25 * 1e-6, 0.25 * 1e-6));
 
 	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), mtitle("Cluster energy vs time, SM%s; cluster energy, GeV; time, s", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), mtitle("Cluster energy vs time, %s; cluster energy, GeV; time, s", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
 
 	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hClusterTimeMap%d", i), mtitle("Cluster time map, SM%s; X; Z", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+		fListOfHistos->Add(new TH2F(Form("hClusterTimeMap%d", i), mtitle("Cluster time map, %s; X; Z", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 
 }
 
