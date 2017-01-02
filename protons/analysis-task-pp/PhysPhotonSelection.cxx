@@ -15,6 +15,7 @@
 #include <iostream>
 using namespace std;
 
+
 ClassImp(PhysPhotonSelection);
 
 PhysPhotonSelection::PhysPhotonSelection():
@@ -38,7 +39,6 @@ Bool_t PhysPhotonSelection::SelectEvent(const EventFlags & flgs)
 	FillHistogram("EventCounter", 0.5);
 
 	if (TMath::Abs(flgs.vtxBest[2]) > 10) return kFALSE;
-	FillHistogram("TotalEvents", 0.5);
 
 	// Physical Events
 	FillHistogram("EventCounter", 1.5);
@@ -48,13 +48,12 @@ Bool_t PhysPhotonSelection::SelectEvent(const EventFlags & flgs)
 //________________________________________________________________
 void PhysPhotonSelection::InitSummaryHistograms()
 {
+	// Find better place to apply this
+	TH1::SetDefaultSumw2(kTRUE);
+
 	fListOfHistos = new TList();
-	// fListOfHistos->SetName("Data");
 	fListOfHistos->SetOwner(kTRUE);
 	fListOfHistos->Add( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
-
-	// This histo is here for backward compatibility
-	fListOfHistos->Add( new TH1F("TotalEvents", "Total number of analysed events", 1, 0, 1) );
 
 	// The true event counter
 	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 3, 0, 3);
@@ -72,60 +71,61 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	Double_t ptMin = 0;
 	Double_t ptMax = 100;
 
-	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 
 
-	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4"  , nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+
+	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
 	Int_t kMaxModule = 4;
 
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterEnergy_SM%d", i), Form("Cluster energy, SM%d; cluster energy, GeV", i), 1000, 0., 200.));
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), Form("Cluster energy, SM%d; cluster energy, GeV", i), 1000, 0., 200.));
-
+	// Different modules histograms
 	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
 		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
 			fListOfHistos->Add(new TH2F(Form("hMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
 
 	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
 		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
-			fListOfHistos->Add(new TH2F(Form("hMixMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));
+			fListOfHistos->Add(new TH2F(Form("hMixMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));	
 
-	// Check abs Id numbering
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), Form("Cluster N(Id),  M%d, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	// Info about selected clusters
+	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
 
+	// Heatmap check for physics + check abs Id numbering
 	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), Form("Cluster E(Id),  M%d, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
 
+	// Heatmap check for physics 
 	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), Form("Cluster N(Id),  M%d, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+		fListOfHistos->Add(new TH2F(Form("hCluNXZM_0_SM%d", i), mtitle("Cluster N(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hCluEXZM_0_SM%d", i), mtitle("Cluster E(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hCluNXZM_1_SM%d", i), mtitle("Cluster N(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hCluEXZM_1_SM%d", i), mtitle("Cluster E(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), Form("Cluster E(Id),  M%d, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	// Test physics selection in RUN2
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
 
-
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM_0_SM%d", i), Form("Cluster N(X,Z),  M%d, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM_0_SM%d", i), Form("Cluster E(X,Z),  M%d, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM_1_SM%d", i), Form("Cluster N(X,Z),  M%d, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM_1_SM%d", i), Form("Cluster E(X,Z),  M%d, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 }
 
 //________________________________________________________________

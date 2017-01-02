@@ -15,9 +15,7 @@ public:
 	PhotonTimecutSelection(): PhysPhotonSelection() {}
 	PhotonTimecutSelection(const char * name, const char * title): PhysPhotonSelection(name, title) {}
 
-	virtual Bool_t SelectEvent(const EventFlags & eflags) { if (TMath::Abs(eflags.vtxBest[2]) > 10) return kFALSE; return kTRUE; }
 	virtual void InitSummaryHistograms();
-
 	void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	

@@ -25,7 +25,11 @@ download:
 test:
 	root -l -q 'run.C("local", "test")'
 	echo "Local analysis" >> .runhistory
-	./dumpres.py 2> /dev/null
+	-./dumpres.py 2> /dev/null
+
+	@# Rename and move the results
+	@mv AnalysisResults.root test-pp-task.root
+	alien_cp -n test-pp-task.root alien:$(ALIEN_HOME)
 	@echo -e "\x07"
 
 clean:

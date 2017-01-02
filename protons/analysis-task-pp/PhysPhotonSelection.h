@@ -12,6 +12,12 @@
 #include <AliVCluster.h>
 #include <AliLog.h>
 
+TString mtitle(const char * title, Int_t i)
+{
+	TString s = (i == 0) ? " all modules " : Form("SM%d", i);
+	return Form(title, s.Data());
+}
+
 class PhysPhotonSelection : public PhotonSelection
 {
 public:
