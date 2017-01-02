@@ -40,12 +40,11 @@ def nicely_draw(hist, option = '', legend = None):
     legend.Draw('same')
     wait('xlin_' + hist.GetName(), draw = True, save = True)
 
-def get_canvas():
+def get_canvas(x = 1, y = 1):
     canvas = ROOT.gROOT.FindObject('c1')
     if canvas: 
         return canvas 
 
-    scale, rows = 8, 2
-    return ROOT.TCanvas('c1', 'Canvas', 128 * scale / rows , 96 * scale)
+    return ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
 
   

@@ -30,7 +30,7 @@ class CheckPhysicsSelection(unittest.TestCase):
 
     def test_selection(self):
 
-        hists = [self.extract_data('input-data/LHC16l-psel.root', 'std'), self.extract_data('input-data/LHC16l-psel.root', 'PS')]
+        hists = [self.extract_data('input-data/LHC16l.root', 'old'), self.extract_data('input-data/LHC16l-psel.root', 'PS')]
 
         import spectrum.comparator as cmpr
         diff = cmpr.Comparator()
