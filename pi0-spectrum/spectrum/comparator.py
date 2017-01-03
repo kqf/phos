@@ -13,9 +13,10 @@ class Visualizer(object):
     def __init__(self, size):
         super(Visualizer, self).__init__()
         self.size = size
+        self.cache = []
         
-    def preare_ratio_plot(self, hists):
-        c1 = get_canvas(*self.size)
+    def preare_ratio_plot(self, hists, canvas):
+        c1 = canvas if canvas else get_canvas(*self.size)
         if len(hists) != 2: return c1, c1, c1
         pad1 = ROOT.TPad("pad1","main plot", 0, 0.3, 1, 1);
         pad1.SetBottomMargin(0);
@@ -47,8 +48,8 @@ class Visualizer(object):
         ROOT.gPad.SetGridy()
         return ratio 
 
-    def compare_visually(self, hists, ci):
-        canvas, mainpad, ratio = self.preare_ratio_plot(hists)
+    def compare_visually(self, hists, ci, stop = True, canvas = None):
+        canvas, mainpad, ratio = self.preare_ratio_plot(hists, canvas)
 
         legend = ROOT.TLegend(0.8, 0.4, 0.9, 0.6)
         legend.SetBorderSize(0)
@@ -79,8 +80,25 @@ class Visualizer(object):
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-        wait(hists[0].GetName(), True)
+        if stop: wait(hists[0].GetName(), True)
+        self.cache.append(ratio)
+        self.cache.append(legend)
 
+    def compare_multiple(self, hists, ci):
+        canvas = get_canvas(*self.size)
+        canvas.Clear()
+        canvas.Divide(2, 2)
+
+        hists = zip(*hists)
+
+        for h in hists:
+            print h
+
+        for i, h in enumerate(hists):
+            self.compare_visually(h, ci, False, canvas.cd(i + 1))
+
+        canvas.cd()
+        wait(hists[0][0].GetName(), True)
 
 class Comparator(object):
     def __init__(self, size = (1, 1)):
@@ -109,6 +127,9 @@ class Comparator(object):
 
         print "That's it!! Your computation is done"
 
+    def compare_multiple(self, l):
+        for hists in zip(*l):
+            self.vi.compare_multiple(hists, self.ci)
 
     @staticmethod
     def find_similar_in(self, lst, ref):
