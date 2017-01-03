@@ -49,8 +49,6 @@ Bool_t PhysPhotonSelection::SelectEvent(const EventFlags & flgs)
 void PhysPhotonSelection::InitSummaryHistograms()
 {
 	// Find better place to apply this
-	TH1::SetDefaultSumw2(kTRUE);
-
 	fListOfHistos = new TList();
 	fListOfHistos->SetOwner(kTRUE);
 	fListOfHistos->Add( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
@@ -126,6 +124,13 @@ void PhysPhotonSelection::InitSummaryHistograms()
 	for (Int_t i = 0; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
 
+	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
+	{
+		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
+		if(!hist) continue;
+		cout << "REACHED HERE " << endl;
+		hist->Sumw2();
+	}
 }
 
 //________________________________________________________________
