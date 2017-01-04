@@ -28,8 +28,8 @@ class PtAnalyzer(object):
         super(PtAnalyzer, self).__init__()
 
         self.nevents, self.rawhist, self.rawmix = lst
-        self.rawhist.Sumw2()
-        self.rawmix.Sumw2()
+        if not self.rawhist.GetSumw2N(): self.rawhist.Sumw2()
+        if not self.rawmix.GetSumw2N(): self.rawmix.Sumw2()
 
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)

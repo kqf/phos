@@ -17,6 +17,7 @@ class Visualizer(object):
         
     def preare_ratio_plot(self, hists, canvas):
         c1 = canvas if canvas else get_canvas(*self.size)
+        c1.Clear()
         if len(hists) != 2: return c1, c1, c1
         pad1 = ROOT.TPad("pad1","main plot", 0, 0.3, 1, 1);
         pad1.SetBottomMargin(0);
