@@ -26,13 +26,17 @@ def decorate_hist(h, label, logy = False, norm = 1, rebin = 1):
     return h
 
 def multiple_plot(hists, name):
+    ROOT.gStyle.SetOptStat('erm')
     canvas = get_canvas(1, 1)
     canvas.Clear()
     canvas.Divide(2, 2)
 
     for i, h in enumerate(hists):
-        canvas.cd(i + 1)
+        pad = canvas.cd(i + 1)
+
         h.Draw('colz')
+        pad.SetTickx()
+        pad.SetTicky() 
 
     wait(name, True)
 
@@ -43,13 +47,14 @@ class CheckPhysicsSelection(unittest.TestCase):
         self.canvas = get_canvas()
 
     def test_selection(self):
-        hists, multiples = zip(*[self.extract_data('input-data/LHC16l.root', 'old'), self.extract_data('input-data/LHC16l-psel.root', 'PS')])
+        hists, multiples = zip(*[self.extract_data('input-data/LHC16l.root', 'old PS'), self.extract_data('input-data/LHC16l-psel.root', 'new PS')])
         multiples = [[h] for h in sum(multiples, [])] 
 
         import spectrum.comparator as cmpr
-        diff = cmpr.Comparator()
-
+        diff = cmpr.Comparator((1./3, 1))
         diff.compare_set_of_histograms(hists)
+
+        diff = cmpr.Comparator()
         diff.compare_set_of_histograms(multiples)
 
     def extract_data(self, filename, label = ''):
@@ -67,13 +72,15 @@ class CheckPhysicsSelection(unittest.TestCase):
 
         def hist(h, i):
             axis = h.GetXaxis()
-            a, b = axis.FindBin(2), axis.GetNbins() - 1
+            a, b = axis.FindBin(i), axis.GetNbins() - 1
             time = h.ProjectionY(h.GetName() + "_%s_%d" %(label, i) , a, b) 
-            time.SetOption('hist p')
-            return decorate_hist(time, label + '> %d GeV' % i, True, 1, 50)
+            time.SetOption('p hist')
+            time = decorate_hist(time, label + ' > %d GeV' % i, True, 1, 10)
+            time.Sumw2(False)
+            return time
 
         etimes = [f('hClusterEvsTM%d' % i) for i in range(5)]
-        multiple = [hist(etimes[0], i) for i in [1, 4, 8]]
+        multiple = [hist(etimes[0], i) for i in [1, 2, 3]]
         multiple_plot(etimes[1:], 'e_vs_time_' + label)
         return multiple
   

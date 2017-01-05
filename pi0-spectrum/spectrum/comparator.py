@@ -28,6 +28,7 @@ class Visualizer(object):
         pad2.Draw();
         pad2.SetTickx()
         pad2.SetTicky()
+        pad2.SetGridy()
         return c1, pad1, pad2
 
     def draw_ratio(self, hists):
@@ -58,6 +59,9 @@ class Visualizer(object):
         legend.SetTextSize(0.04)
 
         mainpad.cd()
+        mainpad.SetGridx()
+        mainpad.SetGridy()
+
         hists[0].DrawCopy()
         for i, h in enumerate(hists): 
             h.SetLineColor(ci + i)
@@ -73,8 +77,8 @@ class Visualizer(object):
             ROOT.gPad.SetLogy()
 
         ROOT.gStyle.SetOptStat(0)
-        ROOT.gPad.SetTickx()
-        ROOT.gPad.SetTicky() 
+        mainpad.SetTickx()
+        mainpad.SetTicky() 
 
         ratio.cd()
         ratio = self.draw_ratio(hists)
@@ -101,10 +105,17 @@ class Visualizer(object):
         canvas.cd()
         wait(hists[0][0].GetName(), True)
 
+def define_colors(ci = 1000):
+    colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)][::-1]
+    rcolors = [[b / 255. for b in c] for c in colors]
+    rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
+    return ci, rcolors
+
 class Comparator(object):
+    ci, colors = define_colors()
+
     def __init__(self, size = (1, 1)):
         super(Comparator, self).__init__()
-        self.ci, self.colors = self.define_colors()
         self.vi = Visualizer(size)
 
     def compare_set_of_histograms(self, l, compare = None):
@@ -140,13 +151,7 @@ class Comparator(object):
             return None
         if len(candidates) > 1: print bcolors.WARNING + 'Warning: you have multiple histograms with the same name!!! Act!!' + bcolors.ENDC
         return candidates[0]
-
-    def define_colors(self, ci = 1000):
-        colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)][::-1]
-        rcolors = [[b / 255. for b in c] for c in colors]
-        rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
-        return ci, rcolors
-
+        
 def main():
     print "Use:\n\t... \n\tcmp = Comparator((0.5, 2))\n\t...\n\nto compare lists of histograms."
 
