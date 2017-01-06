@@ -47,4 +47,21 @@ def get_canvas(x = 1, y = 1):
 
     return ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
 
-  
+class Cc:
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+    @staticmethod
+    def fail(s): 
+        return Cc.FAIL + s + Cc.ENDC
+
+    @staticmethod
+    def warning(s): 
+        return Cc.WARNING + s + Cc.ENDC
+
+    @staticmethod
+    def ok(s): 
+        return Cc.OKGREEN + s + Cc.ENDC 
+ 

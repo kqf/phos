@@ -1,13 +1,7 @@
 #!/usr/bin/python2
 
 import ROOT
-from sutils import wait, get_canvas
-
-class bcolors:
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
+from sutils import wait, get_canvas, Cc
 
 class Visualizer(object):
     def __init__(self, size):
@@ -15,6 +9,7 @@ class Visualizer(object):
         self.size = size
         self.cache = []
         
+
     def preare_ratio_plot(self, hists, canvas):
         c1 = canvas if canvas else get_canvas(*self.size)
         c1.Clear()
@@ -30,6 +25,7 @@ class Visualizer(object):
         pad2.SetTicky()
         pad2.SetGridy()
         return c1, pad1, pad2
+
 
     def draw_ratio(self, hists):
         if len(hists) != 2: return
@@ -49,6 +45,7 @@ class Visualizer(object):
         ratio.Draw()
         ROOT.gPad.SetGridy()
         return ratio 
+
 
     def compare_visually(self, hists, ci, stop = True, canvas = None):
         canvas, mainpad, ratio = self.preare_ratio_plot(hists, canvas)
@@ -89,6 +86,7 @@ class Visualizer(object):
         self.cache.append(ratio)
         self.cache.append(legend)
 
+        
     def compare_multiple(self, hists, ci):
         canvas = get_canvas(*self.size)
         canvas.Clear()
@@ -118,6 +116,7 @@ class Comparator(object):
         super(Comparator, self).__init__()
         self.vi = Visualizer(size)
 
+
     def compare_set_of_histograms(self, l, compare = None):
         if not compare:
             compare = self.vi.compare_visually
@@ -125,9 +124,10 @@ class Comparator(object):
         for hists in zip(*l):
             compare(hists, self.ci)
 
+
     def compare_lists_of_histograms(self, l1, l2, ignore = [], compare = None):
         if len(l1) != len(l2): 
-            print bcolors.FAIL + 'Warning files have different size' + bcolors.ENDC
+            print Cc.fail('Warning files have different size')
 
         if not compare:
             compare = self.vi.compare_visually
@@ -139,6 +139,7 @@ class Comparator(object):
 
         print "That's it!! Your computation is done"
 
+
     def compare_multiple(self, l):
         for hists in zip(*l):
             self.vi.compare_multiple(hists, self.ci)
@@ -147,9 +148,9 @@ class Comparator(object):
     def find_similar_in(self, lst, ref):
         candidates = [h for h in lst if h.GetName() == ref.GetName() ]
         if not candidates:
-            print bcolors.WARNING + 'Warning: There is no such histogram %s%s%s in second file or it\'s empty' % (bcolors.OKGREEN, ref.GetName(), bcolors.WARNING) + bcolors.ENDC
+            print Cc.warning('Warning: There is no such histogram ') + Cc.ok(ref.GetName()) + Cc.warning(' in the second file or it\'s empty')
             return None
-        if len(candidates) > 1: print bcolors.WARNING + 'Warning: you have multiple histograms with the same name!!! Act!!' + bcolors.ENDC
+        if len(candidates) > 1: print Cc.warning('Warning: you have multiple histograms with the same name!!! Act!!')
         return candidates[0]
         
 def main():

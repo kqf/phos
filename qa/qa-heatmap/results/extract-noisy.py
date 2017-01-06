@@ -41,17 +41,36 @@ class AbsIdExtractor(ExctractNoisy):
         super(AbsIdExtractor, self).__init__(filename, function, name)
 
     def noisy_cells(self, hists, thresholds):
-        return [[int(h.GetBinCenter(i + 1)) for i in range(h.GetNbinsX()) if h.GetBinContent(i + 1) > t] for h, t in zip(hists, thresholds)]
+        return [[ [int(h.GetBinCenter(i + 1)), h.GetBinContent(i + 1)] for i in range(h.GetNbinsX()) if h.GetBinContent(i + 1) > t] for h, t in zip(hists, thresholds)]
+
 
     def inspect(self, thresholds):
         self.cells = self.noisy_cells(self.modules, thresholds)
         for i, cells in enumerate(self.cells):
+            if not cells: continue
+            cells, values = zip(*cells)
             print ','.join(map(str, cells)) + ',' ,' //',  len(cells),  'cells in module', i + 1
+            # print ','.join(map(str, values)) + ',' ,' //',  len(cells),  'cells in module', i + 1
 
+    def local_noise(self, cells):
+        pass
+        #TODO: 
+        #       Don't exclude neighbor cells, only the most noisy one.
 
 def main():
-    extractor = AbsIdExtractor('LHC16l.root', lambda x: x.PhysTender, 'hClusterIdN_SM%d')
-    extractor.inspect([7000, 5750, 6300, 6000])
+    infile = 'LHC16o.root'
+
+    print '// Low energy noise'
+    extractor_low = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_0_SM%d')
+    extractor_low.inspect([4000, 3750, 3300, 26600])
+
+    print 
+    print '// Now high energy noise'
+    print 
+
+    extractor_high = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_1_SM%d')
+    extractor_high.inspect([7000, 5750, 6300, 6000])
+
     # extractor.save('very-noisy-cells-LHC16k.root', 'PHOS_BadMap_mod%d')
 
 
