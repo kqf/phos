@@ -31,7 +31,7 @@ download: | *.cxx
 
 
 
-test:
+test: | *.cxx
 	root -l -q 'run.C("local", "test")'
 	echo "Local analysis" >> .runhistory
 	# make compare

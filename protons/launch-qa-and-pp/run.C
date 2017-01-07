@@ -7,7 +7,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     TString pp_dir = "";
 
-    TString period = "LHC16l-muon-calo-pass1";
+    TString period = "LHC16o-muon-calo-pass1";
     Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
@@ -24,7 +24,6 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_QA");
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
-
     // esdH->SetReadFriends( isMC );
     mgr->SetInputEventHandler(aodH);
     // mgr->SetInputEventHandler( esdH );
@@ -42,7 +41,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
-    Bool_t enablePileupCuts = kFALSE;
+    Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     //gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
@@ -64,11 +63,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     {
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
-        // AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
+        AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+        PHOSSupply->ForceUsingBadMap("REFERENCE_BadMap_LHC16k.root");
 
         files += AddTaskCaloCellsQAPt(excells, nexc);
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, No Pileup Cuts, testing physics selection (pileup cuts) ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, WITH NEW! Pileup Cuts, testing physics selection (pileup cuts) ## tender", "Tender", "", excells, nexc);
     }
 
 
