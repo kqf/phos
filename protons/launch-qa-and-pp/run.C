@@ -66,7 +66,10 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
         PHOSSupply->ForceUsingBadMap("REFERENCE_BadMap_LHC16k.root");
 
-        files += AddTaskCaloCellsQAPt(excells, nexc);
+        // There is no need to download QA when we use don't use JDL
+        if (useJDL)
+            files += AddTaskCaloCellsQAPt(excells, nexc);
+
         files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, WITH NEW! Pileup Cuts, testing physics selection (pileup cuts) ## tender", "Tender", "", excells, nexc);
     }
 
