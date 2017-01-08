@@ -36,33 +36,49 @@ class ExctractNoisy(object):
         ofile.Write()
         ofile.Close()
 
+
 class AbsIdExtractor(ExctractNoisy):
-    def __init__(self, filename, function, name):
+    def __init__(self, filename, function, name, tolerance = 3):
         super(AbsIdExtractor, self).__init__(filename, function, name)
+        # Number of cells that are neighboring
+        self.tol = tolerance
 
     def noisy_cells(self, hists, thresholds):
-        return [[ [int(h.GetBinCenter(i + 1)), h.GetBinContent(i + 1)] for i in range(h.GetNbinsX()) if h.GetBinContent(i + 1) > t] for h, t in zip(hists, thresholds)]
+        return [{ int(h.GetBinCenter(i + 1)): h.GetBinContent(i + 1) for i in range(h.GetNbinsX()) if h.GetBinContent(i + 1) > t} for h, t in zip(hists, thresholds)]
 
 
     def inspect(self, thresholds):
-        self.cells = self.noisy_cells(self.modules, thresholds)
+        self.cells = self.local_noise(self.noisy_cells(self.modules, thresholds))
         for i, cells in enumerate(self.cells):
             if not cells: continue
-            cells, values = zip(*cells)
             print ','.join(map(str, cells)) + ',' ,' //',  len(cells),  'cells in module', i + 1
             # print ','.join(map(str, values)) + ',' ,' //',  len(cells),  'cells in module', i + 1
 
     def local_noise(self, cells):
-        pass
-        #TODO: 
-        #       Don't exclude neighbor cells, only the most noisy one.
+        import operator
+        # Find key (Id) with maximal value (entries)
+        max_key = lambda inp:  max(inp.iteritems(), key=operator.itemgetter(1))[0]
+        # Find all neighbour cells
+        close_cells = lambda inp: [{c: inp[c] for c in inp if are_close(k, c, self.tol)} for k in inp]
+        # Convert list of keys to a sub dictionary of original dictionary orig
+        sublist = lambda keys, orig: {k: orig[k] for k in keys}
+
+        maximal = [sublist(set(max_key(s) for s in close_cells(sm)), sm) for sm in cells]
+        return maximal
+
+def are_close(a, b, tol):
+    cell_x = lambda c: c / 56 + 1
+    cell_z = lambda c: c % 56
+    return abs(cell_x(a) - cell_x(b)) <= tol or abs(cell_z(a) - cell_z(b)) <= tol
+
+
 
 def main():
     infile = 'LHC16o.root'
 
     print '// Low energy noise'
-    extractor_low = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_0_SM%d')
-    extractor_low.inspect([4000, 3750, 3300, 26600])
+    extractor_low = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_0_SM%d', tolerance = 2)
+    extractor_low.inspect([1000, 3750, 3300, 2000])
 
     print 
     print '// Now high energy noise'
