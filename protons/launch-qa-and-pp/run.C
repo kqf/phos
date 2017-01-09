@@ -70,7 +70,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         if (useJDL)
             files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, WITH NEW! Pileup Cuts, testing physics selection (pileup cuts) ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, NO Pileup Cuts, trying to eliminate noise ## tender", "Tender", "", excells, nexc);
     }
 
 
