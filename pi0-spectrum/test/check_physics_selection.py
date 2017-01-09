@@ -14,7 +14,7 @@ def ratio(hist1, hist2, title, label = ''):
     ratio.SetTitle(title)
     ratio.label = label
 
-    ratio.Divide(hist2)
+    ratio.Divide(hist1, hist2, 1, 1, "B")
     return ratio
 
 def decorate_hist(h, label, logy = False, norm = 1, rebin = 1):
@@ -51,7 +51,7 @@ class CheckPhysicsSelection(unittest.TestCase):
         multiples = [[h] for h in sum(multiples, [])] 
 
         import spectrum.comparator as cmpr
-        diff = cmpr.Comparator((1./3, 1))
+        diff = cmpr.Comparator((1./2, 1), rrange=(0.94, 1.07))
         diff.compare_set_of_histograms(hists)
 
         diff = cmpr.Comparator()

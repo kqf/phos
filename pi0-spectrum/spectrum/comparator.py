@@ -4,10 +4,11 @@ import ROOT
 from sutils import wait, get_canvas, Cc
 
 class Visualizer(object):
-    def __init__(self, size):
+    def __init__(self, size, rrange):
         super(Visualizer, self).__init__()
         self.size = size
         self.cache = []
+        self.rrange = rrange
         
 
     def preare_ratio_plot(self, hists, canvas):
@@ -18,7 +19,7 @@ class Visualizer(object):
         pad1.SetBottomMargin(0);
         pad1.Draw()
         c1.cd()
-        pad2 = ROOT.TPad("pad2","ratio", 0, 0, 1, 0.3);
+        pad2 = ROOT.TPad("pad2","ratio", 0, 0.05, 1, 0.3);
         pad2.SetTopMargin(0);
         pad2.Draw();
         pad2.SetTickx()
@@ -31,18 +32,25 @@ class Visualizer(object):
         if len(hists) != 2: return
         a, b = hists
         ratio = a.Clone('ratio' + a.GetName())
-        ratio.GetYaxis().SetTitleSize(0.06)
-        ratio.GetYaxis().SetTitleOffset(0.3)
-        ratio.GetYaxis().CenterTitle(True)
-        ratio.GetXaxis().SetTitleSize(0.06)
-        ratio.GetXaxis().SetTitleOffset(0.7) 
-        ratio.GetXaxis().SetLabelSize(0.08) 
 
-        ratio.Divide(b)
+
+        # Enable binomail errors
+        ratio.Divide(a, b, 1, 1, "B")
         label = a.label + ' / ' + b.label
         ratio.SetTitle('')
         ratio.GetYaxis().SetTitle(label)
         ratio.Draw()
+
+        ratio.GetYaxis().SetTitleOffset(0.10)
+        ratio.GetYaxis().SetTitleSize(0.10)
+        ratio.GetYaxis().SetTitleOffset(0.5)
+        ratio.GetYaxis().SetLabelSize(0.10) 
+        ratio.GetYaxis().CenterTitle(True)
+
+        ratio.GetXaxis().SetTitleSize(0.06)
+        ratio.GetXaxis().SetTitleOffset(0.9) 
+        ratio.GetXaxis().SetLabelSize(0.10)  
+        if self.rrange: ratio.SetAxisRange(self.rrange[0], self.rrange[1] , 'Y')
         ROOT.gPad.SetGridy()
         return ratio 
 
@@ -112,9 +120,9 @@ def define_colors(ci = 1000):
 class Comparator(object):
     ci, colors = define_colors()
 
-    def __init__(self, size = (1, 1)):
+    def __init__(self, size = (1, 1), rrange = None):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size)
+        self.vi = Visualizer(size, rrange)
 
 
     def compare_set_of_histograms(self, l, compare = None):
