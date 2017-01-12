@@ -1,4 +1,4 @@
-void getBadMap(const char * period = "", TString filename = "")
+void saveBadMap(const char * period = "", TString filename = "")
 {
 	// If no geometry class -- nothing to do here
 	if (!gROOT->GetClass("AliPHOSGeometry"))
@@ -33,16 +33,14 @@ void getBadMap(const char * period = "", TString filename = "")
 }
 
 //_________________________________________________________________________
-void DrawPHOSOBadMap(char * cname = "LHC16g", Int_t * excells = 0, Int_t nexc)
+TCanvas * DrawPHOSOBadMap(char * cname = "LHC16g", Int_t * excells = 0, Int_t nexc)
 {
 	// Draw bad cell map for PHOS;
 	// cname -- canvas name.
 
-	Int_t nmods = 4; // number of supermodules
-	Int_t vsize = nmods;                   // vertical size in canvas
-
+	const Int_t nmods = 4; // number of supermodules
 	TCanvas * c1 = new TCanvas(cname, cname, 4 * 64 * 10, 4 * 56 * 10);
-	c1->Divide(vsize / 2, 2);
+	c1->Divide(nmods / 2, 2);
 
 	TFile * fBadMap = TFile::Open(Form("BadMap_%s.root", cname), "recreate");
 	for (Int_t sm = 1; sm <= nmods; sm++)
@@ -53,27 +51,31 @@ void DrawPHOSOBadMap(char * cname = "LHC16g", Int_t * excells = 0, Int_t nexc)
 		gPad->SetTopMargin(0.05);
 		gPad->SetBottomMargin(0.10);
 
-		TH2 * hSM = new TH2F(Form("PHOS_BadMap_mod%i", sm), Form("Bad Channel Map in Module %i", sm), 64, 0.5, 64.5, 56, 0.5, 56.5);
-
-		for (Int_t i = 0; i < nexc; ++i)
-		{
-			Bool_t lower_cut = excells[i] >= (3584 * (sm - 1) + 1);
-			Bool_t upper_cut = excells[i] <= (3584 * (sm)  );
-
-			if ( !(lower_cut && upper_cut) ) continue;
-			Int_t nModule, xCell, zCell;
-			AbsId2EtaPhi(excells[i], nModule, xCell, zCell);
-			hSM->Fill(xCell, zCell);
-
-		}
-
+		TH2 * hSM = InitiateHistogramForSM(sm, excells, nexc);
 		hSM->Write();
 		hSM->DrawCopy("colz");
-	} // supermodule loop
+	} 
 
 	fBadMap->Close();
 	c1->Update();
-	c1->SaveAs(TString("BadMap_") + TString(c1->GetName()) + ".pdf");
+	c1->SaveAs(TString("BadMap_") + TString(c1->GetName()) + ".pdf");	
+	return c1;
+}
+
+TH2 * InitiateHistogramForSM(Int_t sm, Int_t * excells, Int_t nexc)
+{
+	TH2 * hSM = new TH2F(Form("PHOS_BadMap_mod%i", sm), Form("Bad Channel Map in Module %i", sm), 64, 0.5, 64.5, 56, 0.5, 56.5);
+	for (Int_t i = 0; i < nexc; ++i)
+	{
+		bool lower_cut = excells[i] >= (3584 * (sm - 1) + 1);
+		bool upper_cut = excells[i] <= (3584 * (sm)  );
+
+		if ( !(lower_cut && upper_cut) ) continue;
+		Int_t nModule, xCell, zCell;
+		AbsId2EtaPhi(excells[i], nModule, xCell, zCell);
+		hSM->Fill(xCell, zCell);
+	}
+	return hSM;
 }
 
 void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0, TString filepath = "")
@@ -132,6 +134,13 @@ void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0, T
 	}
 
 
+}
+
+void RelPosToAbsId(Int_t sm, Int_t x, Int_t z, Int_t & id)
+{
+	// Converts cell absId --> (sm,eta,phi);
+	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
+	geomPHOS->RelPosToAbsId(sm, x, z, id);
 }
 
 void AbsId2EtaPhi(Int_t absId, Int_t & nModule, Int_t & eta, Int_t & phi)

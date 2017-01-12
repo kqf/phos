@@ -31,11 +31,11 @@ trigger: | $(DIRECTORY)
 
 
 badmap: | ../qa-task/getRunsBadCells.C
-	root -l -b -q  'getBadMap.C("$(PERIOD)")'
+	root -l -b -q  'saveBadMap.C("$(PERIOD)")'
 	@if [ -f BadMap_$(PERIOD).root ]; then mv BadMap_$(PERIOD).root ../results/$(PERIOD); fi
 	
 initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
-	root -l -b -q  'getBadMap.C("$(PERIOD)", "$<")'
+	root -l -b -q  'saveBadMap.C("$(PERIOD)", "$<")'
 
 compare: | ../results/$(PERIOD)/goodruns.csv
 	$(ROOT_PYTHON) explore-treding-plots.py ../results/$(PERIOD) $(IM)
