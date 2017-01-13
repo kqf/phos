@@ -27,19 +27,7 @@ void removeChannels()
 	ExcludeRegion(canvas, 48, 64, 28, 30, 3);
 	ExcludeRegion(canvas, 48, 64, 46, 48, 4);
 
-	// Example:
-	// Cells cells;
-	// {
-	// 	cells.push_back( Cell(0, 0) ); cells.push_back( Cell(0, 0) ); cells.push_back( Cell(1, 43) ); cells.push_back( Cell(1, 44) ); cells.push_back( Cell(2, 43) );
-	// 	cells.push_back( Cell(2, 44) ); cells.push_back( Cell(3, 43) ); cells.push_back( Cell(3, 44) ); cells.push_back( Cell(4, 43) ); cells.push_back( Cell(4, 44) );
-	// 	cells.push_back( Cell(5, 43) ); cells.push_back( Cell(5, 44) ); cells.push_back( Cell(6, 43) ); cells.push_back( Cell(6, 44) ); cells.push_back( Cell(7, 43) );
-	// 	cells.push_back( Cell(7, 44) ); cells.push_back( Cell(8, 43) ); cells.push_back( Cell(8, 44) ); cells.push_back( Cell(9, 43) ); cells.push_back( Cell(9, 44) );
-	// 	cells.push_back( Cell(10, 43) ); cells.push_back( Cell(10, 44) ); cells.push_back( Cell(11, 43) ); cells.push_back( Cell(11, 44) ); cells.push_back( Cell(12, 43) );
-	// 	cells.push_back( Cell(12, 44) ); cells.push_back( Cell(13, 43) ); cells.push_back( Cell(13, 44) ); cells.push_back( Cell(14, 43) ); cells.push_back( Cell(14, 44) );
-	// 	cells.push_back( Cell(15, 43) ); cells.push_back( Cell(15, 44) ); cells.push_back( Cell(16, 43) ); cells.push_back( Cell(16, 44) );
-	// 	ExcludeCells(canvas, cells, 3);
-	// }
-
+	// Third (optional), Exclude some cells.
 	Cells sm1;
 	{
 		sm1.push_back(Cell( 7, 20));
@@ -80,8 +68,8 @@ void ExcludeRegion(TCanvas * c1, Int_t startx, Int_t stopx, Int_t starty, Int_t 
 {
 	TH2 * hSM = c1->FindObject(Form("PHOS_BadMap_mod%i", inmodule));
 
-	std::vector<int> bad_cells;
-	for (int k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
+	std::vector<Int_t> bad_cells;
+	for (Int_t k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
 	{
 		Int_t nModule, xCell, zCell;
 		AbsId2EtaPhi(k, nModule, xCell, zCell);
@@ -107,8 +95,8 @@ void ExcludeCells(TCanvas * c1, Cells cells, Int_t inmodule)
 {
 	TH2 * hSM = c1->FindObject(Form("PHOS_BadMap_mod%i", inmodule));
 
-	std::vector<int> bad_cells;
-	for (int k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
+	std::vector<Int_t> bad_cells;
+	for (Int_t k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
 	{
 
 		Int_t nModule, xCell, zCell;

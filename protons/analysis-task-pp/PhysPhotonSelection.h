@@ -41,6 +41,7 @@ protected:
 	TList  * fListOfHistos;  //! list of histograms
 
 private:
+	virtual Int_t AbsId(Int_t x, Int_t z, Int_t sm) const;
 	ClassDef(PhysPhotonSelection, 2)
 };
 #endif

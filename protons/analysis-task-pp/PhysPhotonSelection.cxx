@@ -208,11 +208,8 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		FillHistogram(Form("hCluNXZM_%d_SM%d", isHighECluster, sm), x, z, 1.);
 		FillHistogram(Form("hCluEXZM_%d_SM%d", isHighECluster, sm), x, z, energy);
 
-		for (Int_t c = 0; c < clus->GetNCells(); ++c)
-		{
-			FillHistogram(Form("hClusterIdN_%d_SM%d", isHighECluster, sm), clus->GetCellAbsId(c));
-			FillHistogram(Form("hClusterIdE_%d_SM%d", isHighECluster, sm), clus->GetCellAbsId(c), energy);
-		}
+		FillHistogram(Form("hClusterIdN_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm));
+		FillHistogram(Form("hClusterIdE_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm), energy);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
@@ -246,4 +243,27 @@ void PhysPhotonSelection::FillHistogram(const char * key, Double_t x, Double_t y
 	}
 
 	AliError(Form("Can't find histogram (instance of TH*) <%s> ", key));
+}
+
+// Default version defined in PHOSutils uses ideal geometry
+// use this instead
+Int_t PhysPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
+{
+	// Converts cell absId --> (sm,eta,phi);
+	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
+
+	if(!geomPHOS)
+		AliFatal("Geometry is not defined");
+
+	for (Int_t id = (3584 * (sm - 1) + 1); id <= (3584 * (sm)); ++id)
+	{
+		Int_t rel[4];
+		geomPHOS->AbsToRelNumbering(id, rel);
+
+		if(rel[2] == x && rel[3] == z)
+			return id;
+	}
+
+	// There is no such a cell
+	return -1;
 }
