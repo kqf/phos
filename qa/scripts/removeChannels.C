@@ -2,7 +2,7 @@
 #include <vector>
 
 typedef std::pair<Int_t, Int_t> Cell;
-
+typedef std::vector<Cell> Cells;
 // This scripts removes channels manually
 
 void removeChannels()
@@ -23,44 +23,64 @@ void removeChannels()
 	TCanvas * canvas = DrawPHOSOBadMap("testmap", excells, nexc);
 
 	// Second (optional), Exclude suspicious FEE(s).
-	ExcludeRegion(canvas, 0, 16,  42, 44, 3);
+	ExcludeRegion(canvas,  0, 16, 46, 48, 2);
+	ExcludeRegion(canvas, 48, 64, 28, 30, 3);
+	ExcludeRegion(canvas, 48, 64, 46, 48, 4);
+
+	// Example:
+	// Cells cells;
+	// {
+	// 	cells.push_back( Cell(0, 0) ); cells.push_back( Cell(0, 0) ); cells.push_back( Cell(1, 43) ); cells.push_back( Cell(1, 44) ); cells.push_back( Cell(2, 43) );
+	// 	cells.push_back( Cell(2, 44) ); cells.push_back( Cell(3, 43) ); cells.push_back( Cell(3, 44) ); cells.push_back( Cell(4, 43) ); cells.push_back( Cell(4, 44) );
+	// 	cells.push_back( Cell(5, 43) ); cells.push_back( Cell(5, 44) ); cells.push_back( Cell(6, 43) ); cells.push_back( Cell(6, 44) ); cells.push_back( Cell(7, 43) );
+	// 	cells.push_back( Cell(7, 44) ); cells.push_back( Cell(8, 43) ); cells.push_back( Cell(8, 44) ); cells.push_back( Cell(9, 43) ); cells.push_back( Cell(9, 44) );
+	// 	cells.push_back( Cell(10, 43) ); cells.push_back( Cell(10, 44) ); cells.push_back( Cell(11, 43) ); cells.push_back( Cell(11, 44) ); cells.push_back( Cell(12, 43) );
+	// 	cells.push_back( Cell(12, 44) ); cells.push_back( Cell(13, 43) ); cells.push_back( Cell(13, 44) ); cells.push_back( Cell(14, 43) ); cells.push_back( Cell(14, 44) );
+	// 	cells.push_back( Cell(15, 43) ); cells.push_back( Cell(15, 44) ); cells.push_back( Cell(16, 43) ); cells.push_back( Cell(16, 44) );
+	// 	ExcludeCells(canvas, cells, 3);
+	// }
+
+	Cells sm1;
+	{
+		sm1.push_back(Cell( 7, 20));
+		sm1.push_back(Cell(34, 14));
+		sm1.push_back(Cell(62,  3));
+		sm1.push_back(Cell(54, 31));
+		sm1.push_back(Cell(53, 31));
+		sm1.push_back(Cell(53, 33));
+		ExcludeCells(canvas, sm1, 1);
+	}
+
+	Cells sm3;
+	{
+		sm3.push_back(Cell(42,  4));
+		sm3.push_back(Cell(17,  2));
+		ExcludeCells(canvas, sm3, 3);
+	}
+
+	Cells sm4;
+	{
+		sm4.push_back(Cell(33,  1));
+		ExcludeCells(canvas, sm4, 4);
+	}
 
 
-	// Third (optional), Excludes list(s) of suspicious cells in module(s).
-	//
-	// Important: Due to CINT limitations one should use POINTERS here!
-	//
-
-	Cell * cells[] = { 
-		new Cell(1, 43), new Cell(1, 44), new Cell(2, 43), new Cell(2, 44), new Cell(3, 43), new Cell(3, 44), new Cell(4, 43), new Cell(4, 44), new Cell(5, 43), new Cell(5, 44), 
-		new Cell(6, 43), new Cell(6, 44), new Cell(7, 43), new Cell(7, 44), new Cell(8, 43), new Cell(8, 44), new Cell(9, 43), new Cell(9, 44), new Cell(10, 43), new Cell(10, 44),
-		new Cell(11, 43), new Cell(11, 44), new Cell(12, 43), new Cell(12, 44), new Cell(13, 43), new Cell(13, 44), new Cell(14, 43), new Cell(14, 44), new Cell(15, 43),
-		new Cell(15, 44), new Cell(16, 43), new Cell(16, 44)
-	};
-	Int_t ncells = sizeof(cells)/sizeof(Cell *);
-	ExcludeCells(canvas, cells, ncells, 3);
-
-
-	// Fourth, draw and save to a testbmap.png.
+	// Forth, draw and save to a testbmap.png.
 	// This name is important!
 	canvas->Update();
 	canvas->SaveAs("testbmap.png");
 
+	// Fifth, write root file of a new badmap
+	TFile ofile("testbmap.root", "recreate");
+	canvas->Write();
+	ofile.Close();
 }
-
-// TODO: Rewrite this using Rel to abs id and test simple
-// Example:
-//			ExcludeRegion(canvas, 0, 16,  42, 44, 3); 
-// 
-//          Output:
-//  7211, 7212, 7267, 7268, 7323, 7324, 7379, 7380, 7435, 7436, 7491, 7492, 7547, 7548, 7603, 7604, 7659, 7660, 7715, 7716, 7771, 7772, 7827, 7828, 7883, 7884, 7939, 7940, 7995, 7996, 8051, 8052, 
-// 
 
 void ExcludeRegion(TCanvas * c1, Int_t startx, Int_t stopx, Int_t starty, Int_t stopy, Int_t inmodule)
 {
 	TH2 * hSM = c1->FindObject(Form("PHOS_BadMap_mod%i", inmodule));
 
-	cout << "Cell ids from your FEE card:" << endl;
+	std::vector<int> bad_cells;
 	for (int k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
 	{
 		Int_t nModule, xCell, zCell;
@@ -72,37 +92,43 @@ void ExcludeRegion(TCanvas * c1, Int_t startx, Int_t stopx, Int_t starty, Int_t 
 		if (xrange && zrange)
 		{
 			hSM->Fill(xCell, zCell);
-			cout << k << ", ";
+			bad_cells.push_back(k);
 		}
 	}
-	cout << endl;
+
+	for(Int_t i = 0; i < bad_cells.size(); ++i)
+			cout << bad_cells[i] << ", ";
+	cout << "// " << bad_cells.size() << " cells in sm " << inmodule << endl;
 }
 
 // Warning: RelPosToAbsId will not work here: It doesn't take into account misalignment.
 //  		Use for loop instead.
-void ExcludeCells(TCanvas * c1, Cell ** cells, Int_t ncells, Int_t inmodule)
+void ExcludeCells(TCanvas * c1, Cells cells, Int_t inmodule)
 {
 	TH2 * hSM = c1->FindObject(Form("PHOS_BadMap_mod%i", inmodule));
 
-	cout << "Cell ids from your list of bad cells" << endl;
-
+	std::vector<int> bad_cells;
 	for (int k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
 	{
+
 		Int_t nModule, xCell, zCell;
 		AbsId2EtaPhi(k, nModule, xCell, zCell);
 		Cell kcell(xCell, zCell);
-		
-		Bool_t isBadCell = kFALSE;
-		for(Int_t i = 0; (i < ncells) && (!isBadCell); ++i)
-			isBadCell = (( *cells[i]) ==  kcell);
 
-		if (!isBadCell) 
+		Bool_t isBadCell = kFALSE;
+		for (Int_t i = 0; (i < cells.size()) && (!isBadCell); ++i)
+			isBadCell = (cells[i] == kcell);
+
+		if (!isBadCell)
 			continue;
 
-		hSM->Fill(cells[i]->first, cells[i]->second);
-		cout << k << ", ";
-	}	
-	cout << endl;
+		hSM->Fill(cells[i].first, cells[i].second);
+		bad_cells.push_back(k);
+	}
+
+	for(Int_t i = 0; i < bad_cells.size(); ++i)
+			cout << bad_cells[i] << ", ";
+	cout << "// " << bad_cells.size() << " cells in sm " << inmodule << endl;
 }
 
 
