@@ -19,16 +19,32 @@ void removeChannels()
 	gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
 	getRunsBadCells("LHC16o", 0, 0, excells, nexc);
 
-	TCanvas * canvas = DrawPHOSOBadMap("testmap", excells, nexc); //
-	cout << std::make_pair(1, 1).first << endl;
+	// First, create canvas and draw original map of bad channels
+	TCanvas * canvas = DrawPHOSOBadMap("testmap", excells, nexc);
 
-	// Excludes suspicious FEE.
+	// Second (optional), Exclude suspicious FEE(s).
 	ExcludeRegion(canvas, 0, 16,  42, 44, 3);
 
+
+	// Third (optional), Excludes list(s) of suspicious cells in module(s).
+	//
 	// Important: Due to CINT limitations one should use POINTERS here!
-	Cell * cells[] = { new Cell(0, 0), new Cell(0, 0), new Cell(12, 12)};
+	//
+
+	Cell * cells[] = { 
+		new Cell(1, 43), new Cell(1, 44), new Cell(2, 43), new Cell(2, 44), new Cell(3, 43), new Cell(3, 44), new Cell(4, 43), new Cell(4, 44), new Cell(5, 43), new Cell(5, 44), 
+		new Cell(6, 43), new Cell(6, 44), new Cell(7, 43), new Cell(7, 44), new Cell(8, 43), new Cell(8, 44), new Cell(9, 43), new Cell(9, 44), new Cell(10, 43), new Cell(10, 44),
+		new Cell(11, 43), new Cell(11, 44), new Cell(12, 43), new Cell(12, 44), new Cell(13, 43), new Cell(13, 44), new Cell(14, 43), new Cell(14, 44), new Cell(15, 43),
+		new Cell(15, 44), new Cell(16, 43), new Cell(16, 44)
+	};
 	Int_t ncells = sizeof(cells)/sizeof(Cell *);
-	ExcludeCells(canvas, cells, ncells, 2);
+	ExcludeCells(canvas, cells, ncells, 3);
+
+
+	// Fourth, draw and save to a testbmap.png.
+	// This name is important!
+	canvas->Update();
+	canvas->SaveAs("testbmap.png");
 
 }
 
@@ -60,23 +76,32 @@ void ExcludeRegion(TCanvas * c1, Int_t startx, Int_t stopx, Int_t starty, Int_t 
 		}
 	}
 	cout << endl;
-	c1->Update();
-	c1->SaveAs("testbmap.png");
 }
 
+// Warning: RelPosToAbsId will not work here: It doesn't take into account misalignment.
+//  		Use for loop instead.
 void ExcludeCells(TCanvas * c1, Cell ** cells, Int_t ncells, Int_t inmodule)
 {
 	TH2 * hSM = c1->FindObject(Form("PHOS_BadMap_mod%i", inmodule));
 
 	cout << "Cell ids from your list of bad cells" << endl;
-	for(Int_t i = 0; i < ncells; ++i)
-	{
-		hSM->Fill(cells[i]->first, cells[i]->second);
 
-		Int_t k = 0;
-		RelPosToAbsId(inmodule, cells[i]->first, cells[i]->second, k);
+	for (int k = (3584 * (inmodule - 1) + 1); k <= (3584 * (inmodule)  ); ++k)
+	{
+		Int_t nModule, xCell, zCell;
+		AbsId2EtaPhi(k, nModule, xCell, zCell);
+		Cell kcell(xCell, zCell);
+		
+		Bool_t isBadCell = kFALSE;
+		for(Int_t i = 0; (i < ncells) && (!isBadCell); ++i)
+			isBadCell = (( *cells[i]) ==  kcell);
+
+		if (!isBadCell) 
+			continue;
+
+		hSM->Fill(cells[i]->first, cells[i]->second);
 		cout << k << ", ";
-	}
+	}	
 	cout << endl;
 }
 

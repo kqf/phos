@@ -136,13 +136,6 @@ void ReadPrintBadCells(char * cname = "LHC16g", Int_t * ref = 0, int nexc = 0, T
 
 }
 
-void RelPosToAbsId(Int_t sm, Int_t x, Int_t z, Int_t & id)
-{
-	// Converts cell absId --> (sm,eta,phi);
-	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
-	geomPHOS->RelPosToAbsId(sm, x, z, id);
-}
-
 void AbsId2EtaPhi(Int_t absId, Int_t & nModule, Int_t & eta, Int_t & phi)
 {
 	// Converts cell absId --> (sm,eta,phi);

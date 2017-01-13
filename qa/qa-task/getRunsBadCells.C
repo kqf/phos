@@ -149,7 +149,7 @@ void getRunsBadCells(TString period, Int_t *& good_runs, Int_t *& nruns, Int_t *
     	5093,5038,5262,4982,4981,5206,5150,  // 7 cells in module 2
     	873,1034,2365,3278,2966,  // 5 cells in module 1
 		13487,  // 1 cells in module 4
-		1845, 1902, 2056, 2072, 2112, 2127  // 6 cells in module 1
+		1845, 1902, 2056, 2072, 2112, 2127,  // 6 cells in module 1
 		13487,  // 1 cell in module 4
     	3891,6375,  // 2 cells in module 2
 		9196,9232,9931,10153,  // 4 cells in module 3
