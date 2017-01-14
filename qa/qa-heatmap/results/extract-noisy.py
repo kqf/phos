@@ -78,14 +78,14 @@ def main():
 
     print '// Low energy noise'
     extractor_low = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_0_SM%d', tolerance = 2)
-    extractor_low.inspect([1000, 3750, 3300, 2000])
+    extractor_low.inspect([3750, 6530, 8300, 8000])
 
     print 
     print '// Now high energy noise'
     print 
 
-    extractor_high = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_1_SM%d')
-    extractor_high.inspect([7000, 5750, 6300, 6000])
+    extractor_high = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_1_SM%d', tolerance = 0)
+    extractor_high.inspect([7000, 2500, 6300, 6000])
 
     # extractor.save('very-noisy-cells-LHC16k.root', 'PHOS_BadMap_mod%d')
 
