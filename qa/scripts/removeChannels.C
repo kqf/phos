@@ -23,32 +23,38 @@ void removeChannels()
 	TCanvas * canvas = DrawPHOSOBadMap("testmap", excells, nexc);
 
 	// Second (optional), Exclude suspicious FEE(s).
-	ExcludeRegion(canvas,  0, 16, 46, 48, 2);
-	ExcludeRegion(canvas, 48, 64, 28, 30, 3);
-	ExcludeRegion(canvas, 48, 64, 46, 48, 4);
+	// ExcludeRegion(canvas,  0, 16, 46, 48, 2);
+	// ExcludeRegion(canvas, 48, 64, 28, 30, 3);
+	// ExcludeRegion(canvas, 48, 64, 46, 48, 4);
+
 
 	// Third (optional), Exclude some cells.
+	// Here all bins start from 1 this means that:
+	// Put here x + 1, z + 1 where x, z are taken from grid.
 	Cells sm1;
 	{
-		sm1.push_back(Cell( 7, 20));
-		sm1.push_back(Cell(34, 14));
-		sm1.push_back(Cell(62,  3));
-		sm1.push_back(Cell(54, 31));
-		sm1.push_back(Cell(53, 31));
-		sm1.push_back(Cell(53, 33));
+		sm1.push_back(Cell(37, 13));
 		ExcludeCells(canvas, sm1, 1);
+	}
+
+	Cells sm2;
+	{
+		sm2.push_back(Cell(49, 38));
+		sm2.push_back(Cell(64, 47));
+		sm2.push_back(Cell(63, 47));
+		ExcludeCells(canvas, sm2, 2);
 	}
 
 	Cells sm3;
 	{
-		sm3.push_back(Cell(42,  4));
-		sm3.push_back(Cell(17,  2));
+		sm3.push_back(Cell(6, 54));
+		sm3.push_back(Cell(39, 2));
 		ExcludeCells(canvas, sm3, 3);
 	}
 
 	Cells sm4;
 	{
-		sm4.push_back(Cell(33,  1));
+		sm4.push_back(Cell(34,  2));
 		ExcludeCells(canvas, sm4, 4);
 	}
 
