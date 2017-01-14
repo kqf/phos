@@ -185,13 +185,28 @@ class Spectrum(object):
         draw_and_save([sigma], draw=True, suffix= self.analyzer.label)
 
         # canvas.Clear()
+
         mass.Draw()
-        fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
-        fitmass.SetParameter(0, 10.99)
-        fitmass.SetParameter(1, 0.037)
-        fitmass.SetParameter(2, 2.38)
-        fitmass.SetParameter(3, 0.0033)
+        fitmass = ROOT.TF1("fitmass", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        # fitmass = ROOT.TF1("fitmass", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        ofile = ROOT.TFile('fitmass.root', 'recreate')
+        mass.Write()
+        ofile.Close()
+
+        sigma.Draw()
+
+        fitmass.SetParameter(0, 0.11 * 0.11)
+        fitmass.SetParameter(1, 0.006)
+        fitmass.SetParameter(2, 0)
+        fitmass.SetParameter(3, 0)
         mass.Fit(fitmass, "qr")
+
+        # fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
+        # fitmass.SetParameter(0, 10.99)
+        # fitmass.SetParameter(1, 0.037)
+        # fitmass.SetParameter(2, 2.38)
+        # fitmass.SetParameter(3, 0.0033)
+        # mass.Fit(fitmass, "qr")
         draw_and_save([mass], draw=True, suffix= self.analyzer.label)
         if canvas: canvas.Update()
         mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
