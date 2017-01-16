@@ -1693,9 +1693,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetGridx();
   gPad->SetGridy();
   TLegend *leg = new TLegend(0.65,0.16,0.75,0.15+0.08*(SM2-SM1+1));
-  leg->SetBorderSize(0)
-  leg->SetFillStyle(0)
-  leg->SetTextSize(0.04)
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->SetTextSize(0.04);
 
   hAvECluster->SetAxisRange(hAvECluster->GetMinimum()*0.5, hAvECluster->GetMaximum()*1.2,"Y");
   hAvECluster->SetLineWidth(2);
@@ -1742,9 +1742,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   gPad->SetGridx();
   gPad->SetGridy();
   leg = new TLegend(0.65,0.16,0.75,0.15+0.08*(SM2-SM1+1));
-  leg->SetBorderSize(0)
-  leg->SetFillStyle(0)
-  leg->SetTextSize(0.04)
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->SetTextSize(0.04);
 
   hAvNCellsInCluster->SetAxisRange(0, hAvNCellsInCluster->GetMaximum()* 1.2,"Y");
   hAvNCellsInCluster->SetLineWidth(2);
