@@ -167,7 +167,7 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // ... and exclude runs with number of events < 1k.
 
   // ExcludeSmallRuns(nruns, runNumbers, 10000);
-  ExcludeSmallRuns(nruns, runNumbers, 10000);
+  ExcludeSmallRuns(nruns, runNumbers, 1000);
 
   // You may wish to exclude particular runs:
   // 260338, 260471, 260497,
