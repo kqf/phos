@@ -7,7 +7,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     TString pp_dir = "";
 
-    TString period = "LHC16i-muon-calo-pass1";
+    TString period = "LHC16j-muon-calo-pass1";
     Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
@@ -70,7 +70,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         if (useJDL)
             files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, NO Pileup Cuts, trying to eliminate noise ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, no timecut, trying to eliminate noise ## tender", "Tender", "", excells, nexc);
     }
 
 

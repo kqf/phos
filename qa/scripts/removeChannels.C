@@ -33,30 +33,29 @@ void removeChannels()
 	// Put here x + 1, z + 1 where x, z are taken from grid.
 	Cells sm1;
 	{
-		sm1.push_back(Cell(37, 13));
+		sm1.push_back(Cell(7, 20));
+		sm1.push_back(Cell(13, 27));
 		ExcludeCells(canvas, sm1, 1);
 	}
 
 	Cells sm2;
 	{
-		sm2.push_back(Cell(49, 38));
-		sm2.push_back(Cell(64, 47));
-		sm2.push_back(Cell(63, 47));
+		sm2.push_back(Cell(57, 35));
 		ExcludeCells(canvas, sm2, 2);
 	}
 
-	Cells sm3;
-	{
-		sm3.push_back(Cell(6, 54));
-		sm3.push_back(Cell(39, 2));
-		ExcludeCells(canvas, sm3, 3);
-	}
+	// Cells sm3;
+	// {
+	// 	sm3.push_back(Cell(6, 54));
+	// 	sm3.push_back(Cell(39, 2));
+	// 	ExcludeCells(canvas, sm3, 3);
+	// }
 
-	Cells sm4;
-	{
-		sm4.push_back(Cell(34,  2));
-		ExcludeCells(canvas, sm4, 4);
-	}
+	// Cells sm4;
+	// {
+	// 	sm4.push_back(Cell(34,  2));
+	// 	ExcludeCells(canvas, sm4, 4);
+	// }
 
 
 	// Forth, draw and save to a testbmap.png.
