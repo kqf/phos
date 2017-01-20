@@ -26,6 +26,7 @@ void removeChannels()
 	// ExcludeRegion(canvas,  0, 16, 46, 48, 2);
 	// ExcludeRegion(canvas, 48, 64, 28, 30, 3);
 	// ExcludeRegion(canvas, 48, 64, 46, 48, 4);
+	ExcludeRegion(canvas, 32, 48, 20, 22, 4);
 
 
 	// Third (optional), Exclude some cells.
@@ -33,16 +34,17 @@ void removeChannels()
 	// Put here x + 1, z + 1 where x, z are taken from grid.
 	Cells sm1;
 	{
-		sm1.push_back(Cell(7, 20));
-		sm1.push_back(Cell(13, 27));
+		// sm1.push_back(Cell(7, 20));
+		sm1.push_back(Cell(7, 19));
+		// sm1.push_back(Cell(13, 27));
 		ExcludeCells(canvas, sm1, 1);
 	}
 
-	Cells sm2;
-	{
-		sm2.push_back(Cell(57, 35));
-		ExcludeCells(canvas, sm2, 2);
-	}
+	// Cells sm2;
+	// {
+	// 	sm2.push_back(Cell(57, 35));
+	// 	ExcludeCells(canvas, sm2, 2);
+	// }
 
 	// Cells sm3;
 	// {

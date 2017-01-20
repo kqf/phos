@@ -70,7 +70,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         if (useJDL)
             files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, no timecut, trying to eliminate noise ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, 12.5ns timecut, trying to eliminate noise ## tender", "Tender", "", excells, nexc);
     }
 
 
