@@ -7,7 +7,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     TString pp_dir = "";
 
-    TString period = "LHC16j-muon-calo-pass1";
+    TString period = "LHC16k-pass1";
     Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
