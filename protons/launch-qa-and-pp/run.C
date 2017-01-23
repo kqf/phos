@@ -2,10 +2,7 @@
 void run(const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
-    TString qa_dir = "";
     gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
-
-    TString pp_dir = "";
 
     TString period = "LHC16k-pass1";
     Bool_t use_tender = kTRUE;
@@ -17,7 +14,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test", qa_dir, pp_dir, useJDL);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test", useJDL);
 
     if (!alienHandler) return;
 
@@ -44,18 +41,18 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    //gROOT->LoadMacro(qa_dir + "AnalysisTaskCellsQA.cxx+g");
-    gROOT->LoadMacro(qa_dir + "AliAnalysisTaskCaloCellsQAPt.h+g");
-    gROOT->LoadMacro(qa_dir + "AddTaskCaloCellsQAPt.C");
+    //gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
+    gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
+    gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
 
 
-    gROOT->LoadMacro(pp_dir + "PhotonSelection.cxx+");
-    gROOT->LoadMacro(pp_dir + "TestPhotonSelection.cxx+");
-    gROOT->LoadMacro(pp_dir + "PhysPhotonSelection.cxx+");
-    gROOT->LoadMacro(pp_dir + "PhotonTimecutSelection.cxx+");
-    gROOT->LoadMacro(pp_dir + "MixingSample.h+");
-    gROOT->LoadMacro(pp_dir + "AliAnalysisTaskPP.cxx+");
-    gROOT->LoadMacro(pp_dir + "AddAnalysisTaskPP.C");
+    gROOT->LoadMacro("PhotonSelection.cxx+");
+    gROOT->LoadMacro("TestPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhysPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
+    gROOT->LoadMacro("MixingSample.h+");
+    gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
 
     TString files = "";
 

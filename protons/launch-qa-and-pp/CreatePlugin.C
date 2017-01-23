@@ -1,4 +1,4 @@
-AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, TString qa_dir, TString pp_dir, Bool_t useJDL)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, Bool_t useJDL)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -60,29 +60,29 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 
 	// TODO: change  this 
 	plugin->SetAnalysisSource(
-	    qa_dir + "AliAnalysisTaskCaloCellsQAPt.h " +
-	    pp_dir + "PhotonSelection.cxx " +
-	    pp_dir + "TestPhotonSelection.cxx " +
-	    pp_dir + "PhysPhotonSelection.cxx " +
-	    pp_dir + "PhotonTimecutSelection.cxx " +
-	    pp_dir + "MixingSample.h " +
-	    pp_dir + "AliAnalysisTaskPP.cxx"
+	    TString("AliAnalysisTaskCaloCellsQAPt.h ") +
+	    "PhotonSelection.cxx " +
+	    "TestPhotonSelection.cxx " +
+	    "PhysPhotonSelection.cxx " +
+	    "PhotonTimecutSelection.cxx " +
+	    "MixingSample.h " +
+	    "AliAnalysisTaskPP.cxx"
 	);
 
 	plugin->SetAdditionalLibs(
-	    "libPWGGAPHOSTasks.so " +
-	    qa_dir + "AliAnalysisTaskCaloCellsQAPt.h " +
-	    pp_dir + "PhotonSelection.cxx " +
-	    pp_dir + "PhotonSelection.h " +
-	    pp_dir + "TestPhotonSelection.cxx " +
-	    pp_dir + "TestPhotonSelection.h " +
-	    pp_dir + "PhysPhotonSelection.cxx " +
-	    pp_dir + "PhysPhotonSelection.h " +
-	    pp_dir + "PhotonTimecutSelection.cxx " +
-	    pp_dir + "PhotonTimecutSelection.h " +
-	    pp_dir + "MixingSample.h " +
-	    pp_dir + "AliAnalysisTaskPP.cxx " +
-	    pp_dir + "AliAnalysisTaskPP.h" 
+	    TString("libPWGGAPHOSTasks.so ") +
+	    "AliAnalysisTaskCaloCellsQAPt.h " +
+	    "PhotonSelection.cxx " +
+	    "PhotonSelection.h " +
+	    "TestPhotonSelection.cxx " +
+	    "TestPhotonSelection.h " +
+	    "PhysPhotonSelection.cxx " +
+	    "PhysPhotonSelection.h " +
+	    "PhotonTimecutSelection.cxx " +
+	    "PhotonTimecutSelection.h " +
+	    "MixingSample.h " +
+	    "AliAnalysisTaskPP.cxx " +
+	    "AliAnalysisTaskPP.h" 
 	);
 
 	plugin->SetAnalysisMacro(TString("TaskQA") + period + ".C");
