@@ -39,7 +39,7 @@ initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 
 compare: | ../results/$(PERIOD)/goodruns.csv
 	$(ROOT_PYTHON) explore-treding-plots.py ../results/$(PERIOD) $(IM)
-
+	
 inspect-cells: $(CELLS_TO_INSPECT)
 	@# assuming that CELLS_TO_INSPECT is a bash varaible
 	@# CELLS_TO_INSPECT=../path/to/cells.json
