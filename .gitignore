@@ -44,3 +44,4 @@ result.out
 *.out
 analysis-task-test
 OCDBdrain/
+gphysi.dat
