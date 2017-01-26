@@ -16,7 +16,6 @@ void rec()//(const char *filename="raw.root")
 	AliReconstruction reco;
 
 	// Set reconstruction flags (skip detectors here if neded with -<detector name>
-
 	reco.SetRunReconstruction("PHOS, ITS, TPC");
 
 

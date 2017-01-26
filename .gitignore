@@ -45,3 +45,7 @@ result.out
 analysis-task-test
 OCDBdrain/
 gphysi.dat
+*.tar.gz
+*.gz
+*.tar
+*.zip

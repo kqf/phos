@@ -1,0 +1,27 @@
+Executable = "/alice/cern.ch/user/o/okovalen/efficiency/run.sh";
+Jobtag={"comment:PHOS, pions"} ;
+
+Packages = {"VO_ALICE@APISCONFIG::V1.1x", "VO_ALICE@AliPhysics::vAN-20161222-1"};
+
+#TTL = "720000";
+
+InputFile= {"LF:/alice/cern.ch/user/o/okovalen/efficiency/sim.C",
+            "LF:/alice/cern.ch/user/o/okovalen/efficiency/rec.C",
+            "LF:/alice/cern.ch/user/o/okovalen/efficiency/Config.C",
+            "LF:/alice/cern.ch/user/o/okovalen/efficiency/AliGenPHOSlib.h",
+            "LF:/alice/cern.ch/user/o/okovalen/efficiency/AliGenPHOSlibPlus.h",
+            "LF:/alice/cern.ch/user/o/okovalen/efficiency/pi0_Param_pp_7TeV.root",
+            "LF:/alice/cern.ch/user/o/okovalen/efficiency/OCDBdrain.tar.gz"
+            };
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"AliESDs.root"};
+
+splitarguments="#alien_counter#";
+split="production:1-300";
+
+OutputDir="/alice/cern.ch/user/o/okovalen/efficiency/output/$1/#alien_counter#";
+
+
+Workdirectorysize={"10000MB"};
+Email="oleksandr.kovalenko@cern.ch";
