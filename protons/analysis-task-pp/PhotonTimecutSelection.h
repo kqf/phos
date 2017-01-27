@@ -2,20 +2,20 @@
 #define PHOTONTIMECUTSELECTION_H
 
 // --- Custom header files ---
-#include "PhysPhotonSelection.h"
+#include "GeneralPhotonSelection.h"
 
 // --- ROOT header files ---
 #include "TH2F.h"
 
 
-class PhotonTimecutSelection : public PhysPhotonSelection
+class PhotonTimecutSelection : public GeneralPhotonSelection
 {
 public:
 
-	PhotonTimecutSelection(): PhysPhotonSelection() {}
-	PhotonTimecutSelection(const char * name, const char * title): PhysPhotonSelection(name, title) {}
+	PhotonTimecutSelection(): GeneralPhotonSelection() {}
+	PhotonTimecutSelection(const char * name, const char * title): GeneralPhotonSelection(name, title) {}
 
-	virtual void InitSummaryHistograms();
+	virtual void InitSelectionHistograms();
 	void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	

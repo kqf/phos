@@ -32,20 +32,8 @@ Bool_t PhotonTimecutSelection::IsMainBC(const AliVCluster * clus) const
 }
 
 //________________________________________________________________
-void PhotonTimecutSelection::InitSummaryHistograms()
+void PhotonTimecutSelection::InitSelectionHistograms()
 {
-	if (fListOfHistos)
-		AliFatal("Trying to reinitialize list of histograms");
-
-	fListOfHistos = new TList();
-	fListOfHistos->SetOwner(kTRUE);
-
-	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 3, 0, 3);
-	evntCounter->GetXaxis()->SetBinLabel(1, "all");
-	evntCounter->GetXaxis()->SetBinLabel(2, "|Z_{vtx}| < 10");
-	evntCounter->GetXaxis()->SetBinLabel(3, "N_{#gamma} > 2");
-	fListOfHistos->Add(evntCounter);
-
 
 	// pi0 mass spectrum
 	Int_t nM       = 750;

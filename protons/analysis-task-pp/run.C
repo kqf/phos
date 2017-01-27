@@ -43,9 +43,10 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
 
     gROOT->LoadMacro("PhotonSelection.cxx+");
+    gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
-    gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
+    gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
