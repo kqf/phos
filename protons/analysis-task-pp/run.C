@@ -44,6 +44,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
     gROOT->LoadMacro("PhotonSelection.cxx+");
     gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
+    gROOT->LoadMacro("QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");

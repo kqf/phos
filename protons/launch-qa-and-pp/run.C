@@ -14,7 +14,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "-2gev-test", useJDL);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "", useJDL);
 
     if (!alienHandler) return;
 
@@ -48,6 +48,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
     gROOT->LoadMacro("PhotonSelection.cxx+");
     gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
+    gROOT->LoadMacro("QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
@@ -62,13 +63,14 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("REFERENCE_BadMap_LHC16k.root");
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16.root");
 
         // There is no need to download QA when we use don't use JDL
         if (useJDL)
             files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## muon-calo-pass1, 12.5ns timecut, trying to eliminate noise ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## 12.5ns timecut, checking performance of the new map of bad channels ## tender", "Tender", "", excells, nexc);
+        AddAnalysisTaskPP(AliVEvent::kINT7, period + "## 12.5ns timecut, checking performance of the new map of bad channels ## only tender", "OnlyTender", "", 0, 0);
     }
 
 

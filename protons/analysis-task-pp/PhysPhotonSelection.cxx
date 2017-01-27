@@ -7,10 +7,7 @@
 #include <TH3F.h>
 
 // --- AliRoot header files ---
-#include <AliVCaloCells.h>
 #include <AliVCluster.h>
-#include <AliLog.h>
-#include <AliPHOSGeometry.h>
 
 #include <iostream>
 using namespace std;
@@ -31,16 +28,14 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	Double_t ptMax = 100;
 
 	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-
-
-
 	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtN4", "(M,p_{T})_{#gamma#gamma}, N_{cell}>3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtN5", "(M,p_{T})_{#gamma#gamma}, N_{cell}>4; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtN6", "(M,p_{T})_{#gamma#gamma}, N_{cell}>5; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+
+	fListOfHistos->Add(new TH3F("hMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+	fListOfHistos->Add(new TH3F("hMixMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+
+	fListOfHistos->Add(new TH2F("hAssymetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Assymetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+	fListOfHistos->Add(new TH2F("hMixAssymetry","(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Assymetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+
 
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
@@ -54,36 +49,6 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
 		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
 			fListOfHistos->Add(new TH2F(Form("hMixMassPtSM%dSM%d", sm, sm2), "(M,p_{T})_{#gamma#gamma}; m_{#gamma #gamma}, GeV/c^{2} ; p_{T}, GeV/c"  , nM, mMin, mMax, nPt, ptMin, ptMax));	
-
-	// Info about selected clusters
-	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
-
-	// Heatmap check for physics + check abs Id numbering
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-
-	// Heatmap check for physics 
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM_0_SM%d", i), mtitle("Cluster N(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM_0_SM%d", i), mtitle("Cluster E(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM_1_SM%d", i), mtitle("Cluster N(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM_1_SM%d", i), mtitle("Cluster E(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-
-	// Test physics selection in RUN2
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
 
 	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
@@ -118,10 +83,10 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	if (pt12 < 1) return;
 
 	const char * suff = eflags.isMixing ? "Mix" : "";
-	if (c1->GetNCells() >= 3 && c2->GetNCells() >= 3) FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12 );
-	if (c1->GetNCells() >= 4 && c2->GetNCells() >= 4) FillHistogram(Form("h%sMassPtN4", suff), ma12 , pt12 );
-	if (c1->GetNCells() >= 5 && c2->GetNCells() >= 5) FillHistogram(Form("h%sMassPtN5", suff), ma12 , pt12 );
-	if (c1->GetNCells() >= 6 && c2->GetNCells() >= 6) FillHistogram(Form("h%sMassPtN6", suff), ma12 , pt12 );
+	FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12);
+
+	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
+	FillHistogram(Form("h%sMassPtN3A", suff), ma12 , pt12, asym);
 
 	if (sm1 < sm2)
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm1, sm2), ma12, pt12);
@@ -146,55 +111,7 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		// Fill histograms only for real events
 		if (eflags.isMixing)
 			continue;
-		TLorentzVector p;
-		clus->GetMomentum(p, eflags.vtxBest);
-
-		FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
-		FillHistogram("hNcellsE", clus->GetNCells(), p.E());
-
-		FillHistogram(Form("hClusterEnergy_SM%d", 0), p.E());
-		FillHistogram(Form("hClusterEnergy_SM%d", sm), p.E());
-
-		Float_t energy = clus->E();
-		Int_t isHighECluster = Int_t(energy > 1.);
-
-		// Float_t timesigma = 12.5e-9; // 12.5 ns
-		// if (TMath::Abs(clus->GetTOF()) > timesigma)
-			// continue;
-
-		FillHistogram(Form("hMainClusterEnergy_SM%d", 0), p.E());
-		FillHistogram(Form("hMainClusterEnergy_SM%d", sm), p.E());
-
-
-		FillHistogram(Form("hCluNXZM_%d_SM%d", isHighECluster, sm), x, z, 1.);
-		FillHistogram(Form("hCluEXZM_%d_SM%d", isHighECluster, sm), x, z, energy);
-
-		FillHistogram(Form("hClusterIdN_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm));
-		FillHistogram(Form("hClusterIdE_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm), energy);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
-}
-
-// Default version defined in PHOSutils uses ideal geometry
-// use this instead
-Int_t PhysPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
-{
-	// Converts cell absId --> (sm,eta,phi);
-	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
-
-	if(!geomPHOS)
-		AliFatal("Geometry is not defined");
-
-	for (Int_t id = (3584 * (sm - 1) + 1); id <= (3584 * (sm)); ++id)
-	{
-		Int_t rel[4];
-		geomPHOS->AbsToRelNumbering(id, rel);
-
-		if(rel[2] == x && rel[3] == z)
-			return id;
-	}
-
-	// There is no such a cell
-	return -1;
 }

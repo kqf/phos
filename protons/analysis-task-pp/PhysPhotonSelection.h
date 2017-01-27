@@ -9,9 +9,7 @@
 #include <TList.h>
 
 // --- AliRoot header files ---
-#include <AliVCaloCells.h>
 #include <AliVCluster.h>
-#include <AliLog.h>
 
 class PhysPhotonSelection : public GeneralPhotonSelection
 {
@@ -29,7 +27,6 @@ protected:
 	PhysPhotonSelection & operator = (const PhysPhotonSelection &);
 
 private:
-	virtual Int_t AbsId(Int_t x, Int_t z, Int_t sm) const;
 	ClassDef(PhysPhotonSelection, 2)
 };
 #endif

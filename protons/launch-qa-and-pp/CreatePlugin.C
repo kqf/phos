@@ -45,8 +45,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();
-	plugin->SetGridWorkingDir("phosqa-" + period + comment);
-	// plugin->SetGridWorkingDir("phosqa-16h-muon-calo-pass1-good-tender");
+	plugin->SetGridWorkingDir("phos-" + period + comment);
+	// plugin->SetGridWorkingDir("phos-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
 	// plugin->SetDefaultOutputs();
 	// Now this should be added in your AddTaskMacro.C
@@ -63,6 +63,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	    TString("AliAnalysisTaskCaloCellsQAPt.h ") +
 	    "PhotonSelection.cxx " +
 	    "GeneralPhotonSelection.cxx " +
+	    "QualityPhotonSelection.cxx " +
 	    "TestPhotonSelection.cxx " +
 	    "PhysPhotonSelection.cxx " +
 	    "PhotonTimecutSelection.cxx " +
@@ -77,6 +78,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	    "PhotonSelection.h " +
 	    "GeneralPhotonSelection.cxx " +
 	    "GeneralPhotonSelection.h " +
+	    "QualityPhotonSelection.cxx " +
+	    "QualityPhotonSelection.h " +
 	    "TestPhotonSelection.cxx " +
 	    "TestPhotonSelection.h " +
 	    "PhysPhotonSelection.cxx " +
