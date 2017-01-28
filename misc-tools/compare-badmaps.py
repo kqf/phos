@@ -50,7 +50,7 @@ def compare_visually(hist1, hist2):
     hist.SetTitle(hist1.GetTitle())
     hist.Add(hist2, -1)
     hist.Draw('colz')
-    draw_and_save(hist1.GetName(), True, True)
+    # draw_and_save(hist1.GetName(), True, True)
     return hist
 
 

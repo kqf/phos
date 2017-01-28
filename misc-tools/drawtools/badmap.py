@@ -7,12 +7,12 @@ all_palettes  = [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
 
 def badmap(hists, cname = 'c1'):
     # ROOT.gStyle.SetPalette(i)
-    c1 = ROOT.TCanvas(cname, cname, 4 * 64 * 10, 4 * 56 * 10);
+    c1 = ROOT.TCanvas(cname, cname, 4 * 26 * 10, 4 * 56 * 10);
     c1.Divide(2, 2);
-    ROOT.gPad.SetLeftMargin(0.10);
-    ROOT.gPad.SetRightMargin(0.15);
-    ROOT.gPad.SetTopMargin(0.05);
-    ROOT.gPad.SetBottomMargin(0.10);
+    # ROOT.gPad.SetLeftMargin(0.10);
+    # ROOT.gPad.SetRightMargin(0.15);
+    # ROOT.gPad.SetTopMargin(0.05);
+    # ROOT.gPad.SetBottomMargin(0.10);
 
     for i, sm in enumerate(hists):
         pad = c1.cd(i + 1);
