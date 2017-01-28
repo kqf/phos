@@ -14,9 +14,10 @@
 
 struct EventFlags
 {
-	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFALSE, Bool_t p = kFALSE, Bool_t vtx = kFALSE/*, Bool_t v0 = kFalse*/):
+	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFALSE, Bool_t p = kFALSE, Bool_t vtx = kFALSE, UShort_t bc = 0. /*, Bool_t v0 = kFalse*/):
 		centr(c),
 		zvtx(z),
+		BC(bc),
 		isMixing(m),
 		eventPileup(p),
 		eventVtxExists(vtx)
@@ -26,6 +27,7 @@ struct EventFlags
 	Double_t vtxBest[3];   // Calculated vertex position
 	Int_t  centr;
 	Int_t  zvtx;
+	UShort_t BC;
 	Bool_t isMixing;
 	Bool_t eventPileup;
 	Bool_t eventVtxExists;

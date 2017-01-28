@@ -183,6 +183,7 @@ Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & ep
 	}
 
 	vertex->GetXYZ(eprops.vtxBest);
+	eprops.BC = event->GetBunchCrossNumber();
 	return kTRUE;
 }
 

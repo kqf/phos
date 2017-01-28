@@ -29,17 +29,7 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
 
-	// Heatmap check for physics + check abs Id numbering
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-
-	// Heatmap check for physics 
+	// Heatmap check for physics
 	for (Int_t i = 1; i < 5;  ++i)
 		fListOfHistos->Add(new TH2F(Form("hCluNXZM_0_SM%d", i), mtitle("Cluster N(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 	for (Int_t i = 1; i < 5;  ++i)
@@ -55,12 +45,26 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	for (Int_t i = 0; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
 
-	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
+	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
-		if(!hist) continue;
+		if (!hist) continue;
 		hist->Sumw2();
 	}
+
+	// Heatmap check for physics + check abs Id numbering
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
+
+	// create histograms for L1 phase substraction test
+	for (Int_t m = 5; m < 20; ++m)
+		fListOfHistos->Add(new TH2F(Form("timeDLL%d", m), "Time, HG", 4, 0., 4., 200, -5.e-7, 5.e-7));
 }
 
 //________________________________________________________________
@@ -105,6 +109,17 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 
 		FillHistogram(Form("hClusterIdN_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm));
 		FillHistogram(Form("hClusterIdE_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm), energy);
+
+
+		Int_t ddlID = WhichDDL(sm, x) ;
+		Double_t time = clus->GetTOF() ;
+
+		//
+		// There should be some amplitude;
+		//	   if (amplitude > 1.)
+
+		if (p.E() > 1.)
+			FillHistogram(Form("timeDLL%d", ddlID),  float(eflags.BC % 4), time);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
@@ -117,7 +132,7 @@ Int_t QualityPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
 	// Converts cell absId --> (sm,eta,phi);
 	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
 
-	if(!geomPHOS)
+	if (!geomPHOS)
 		AliFatal("Geometry is not defined");
 
 	for (Int_t id = (3584 * (sm - 1) + 1); id <= (3584 * (sm)); ++id)
@@ -125,10 +140,27 @@ Int_t QualityPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
 		Int_t rel[4];
 		geomPHOS->AbsToRelNumbering(id, rel);
 
-		if(rel[2] == x && rel[3] == z)
+		if (rel[2] == x && rel[3] == z)
 			return id;
 	}
 
 	// There is no such a cell
 	return -1;
+}
+
+
+//______________________________________________________
+Int_t QualityPhotonSelection::WhichDDL(Int_t module, Int_t cellx) const
+{
+	if (cellx < 1 || 64 < cellx) return -1;
+
+	if (module < 1 || 4 < module)
+	{
+		printf("AliPHOSCalibration::WhichDDL module is wrong! ddl=-1 will return.\n");
+		return -1;
+	}
+
+	const Int_t Nmod = 5; //totally, 5 PHOS modules are designed.
+	Int_t ddl = (Nmod - module) * 4 + (cellx - 1) / 16; //convert offline module numbering to online.
+	return ddl;
 }

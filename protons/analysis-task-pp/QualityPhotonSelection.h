@@ -27,6 +27,7 @@ protected:
 
 private:
 	virtual Int_t AbsId(Int_t x, Int_t z, Int_t sm) const;
+	Int_t WhichDDL(Int_t module, Int_t cellx) const;
 	ClassDef(QualityPhotonSelection, 2)
 };
 #endif
