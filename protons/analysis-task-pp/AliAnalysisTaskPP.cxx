@@ -48,6 +48,7 @@ AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name) :
 	fSelections->SetOwner(kTRUE);
 	// fSelections->Add(new TestPhotonSelection("Data", "SOMETITLE")) ;
 	fSelections->Add(new PhysPhotonSelection("Phys", "Physics Selection"));
+	fSelections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.7));
 	fSelections->Add(new PhotonTimecutSelection("Time", "Timing Selection"));
 	fSelections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection"));
 

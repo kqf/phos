@@ -33,9 +33,11 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	fListOfHistos->Add(new TH3F("hMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
 	fListOfHistos->Add(new TH3F("hMixMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
 
-	fListOfHistos->Add(new TH2F("hAssymetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Assymetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
-	fListOfHistos->Add(new TH2F("hMixAssymetry","(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Assymetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+	fListOfHistos->Add(new TH2F("hAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+	fListOfHistos->Add(new TH2F("hMixAsymmetry","(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
 
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterPt_SM%d", i), mtitle("Cluster p_{T} spectrum, %s; p_{T}, GeV/c", i), nPt, ptMin, ptMax));
 
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
@@ -73,6 +75,11 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	if (psum.M2() < 0)  return;
 	// if (psum.Pt() < 2.) return;
 
+	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
+
+	// Appply asymmetry cut for pair
+	if(asym > fAsymmetryCut) return;
+
 	Int_t sm1, sm2, x1, z1, x2, z2;
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
@@ -85,8 +92,9 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	const char * suff = eflags.isMixing ? "Mix" : "";
 	FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12);
 
-	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
 	FillHistogram(Form("h%sMassPtN3A", suff), ma12 , pt12, asym);
+	FillHistogram(Form("h%sAsymmetry", suff), pt12, asym);
+
 
 	if (sm1 < sm2)
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm1, sm2), ma12, pt12);
@@ -107,6 +115,11 @@ void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TO
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 		candidates->Add(clus);
 
+		TLorentzVector p;
+		clus->GetMomentum(p, eflags.vtxBest);
+
+		FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
+		FillHistogram(Form("hClusterPt_SM%d", sm), p.Pt());
 
 		// Fill histograms only for real events
 		if (eflags.isMixing)
