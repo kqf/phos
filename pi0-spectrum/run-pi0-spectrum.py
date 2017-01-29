@@ -11,10 +11,10 @@ def main():
     # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
-    infile = 'input-data/LHC16k-pass1.root'
+    infile = 'input-data/LHC16k-new.root'
     results = [
-               f(Input(infile, 'PhysTender').read(), 'my map', 'q'), 
-               f(ExampleInput('input-data/LHC16k-NoBadmap.root').read(), 'default', 'q')
+               f(Input(infile, 'PhysTender').read(), 'strict', 'q'), 
+               f(Input(infile, 'PhysOnlyTender').read(), 'standard', 'q')
               ]
 
     import spectrum.comparator as cmpr

@@ -10,8 +10,8 @@ class CheckPileup(check_default.CheckDefault):
         super(CheckPileup, self).setUp()
         f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
         self.results = [
-                        f(Input('input-data/LHC16l.root', 'PhysTender').read(), 'no timecut', self.mode),
-                        f(TimecutInput('input-data/LHC16l.root', 'TimeTender', 'MassPtMainMain').read(), '12.5 ns', self.mode), 
+                        f(Input('input-data/LHC16k-new.root', 'PhysOnlyTender').read(), 'no timecut', self.mode),
+                        f(TimecutInput('input-data/LHC16k-new.root', 'TimeOnlyTender', 'MassPtMainMain').read(), '12.5 ns', self.mode), 
                        ]
 
 

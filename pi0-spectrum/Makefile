@@ -10,6 +10,12 @@ pileup:
 	$(ROOT_PYTHON) -m unittest test.test_check_pileup_contribution
 	$(call save_images, no_timecut 12.5_ns, results/no_timecut)
 
+assymetry:
+	$(ROOT_PYTHON) -m unittest test.test_check_assymetry
+	$(call save_images, no_timecut 12.5_ns, results/no_timecut)
+
+
+# These are experimental targets. These tests should be used with care.
 timecut:
 	$(ROOT_PYTHON) -m unittest test.timecut_optimization
 
