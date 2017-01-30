@@ -16,7 +16,7 @@ class QualityPhotonSelection : public GeneralPhotonSelection
 {
 public:
 	QualityPhotonSelection(): GeneralPhotonSelection() {}
-	QualityPhotonSelection(const char * name, const char * title): GeneralPhotonSelection(name, title) {}
+	QualityPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3): GeneralPhotonSelection(name, title, ec, a, n) {}
 	virtual void InitSelectionHistograms();
 
 protected:

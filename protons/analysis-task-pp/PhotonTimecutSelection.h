@@ -13,7 +13,7 @@ class PhotonTimecutSelection : public GeneralPhotonSelection
 public:
 
 	PhotonTimecutSelection(): GeneralPhotonSelection() {}
-	PhotonTimecutSelection(const char * name, const char * title): GeneralPhotonSelection(name, title) {}
+	PhotonTimecutSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3): GeneralPhotonSelection(name, title, ec, a, n) {}
 
 	virtual void InitSelectionHistograms();
 	void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);

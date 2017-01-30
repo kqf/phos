@@ -26,8 +26,8 @@ class GeneralPhotonSelection : public PhotonSelection
 {
 public:
 
-	GeneralPhotonSelection(): PhotonSelection(), fListOfHistos(0) {}
-	GeneralPhotonSelection(const char * name, const char * title): PhotonSelection(name, title), fListOfHistos(0) {}
+	GeneralPhotonSelection(): PhotonSelection(), fListOfHistos(0), fClusterMinE(0.3), fAsymmetryCut(1.0),fNCellsCut(3) {}
+	GeneralPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3): PhotonSelection(name, title), fListOfHistos(0), fClusterMinE(ec), fAsymmetryCut(a), fNCellsCut(n) {}
 	virtual ~GeneralPhotonSelection();
 
 	virtual void InitSummaryHistograms();
@@ -42,6 +42,10 @@ protected:
 
 	void FillHistogram(const char * key, Double_t x, Double_t y = 1, Double_t z = 1); //Fill 3D histogram witn name key
 	TList  * fListOfHistos;  //! list of histograms
+
+	Float_t fClusterMinE;
+	Float_t fAsymmetryCut;
+	Int_t fNCellsCut;
 
 private:
 	ClassDef(GeneralPhotonSelection, 2)

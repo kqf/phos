@@ -1,5 +1,5 @@
 // --- Custom header files ---
-#include "PhysPhotonSelection.h"
+#include "GeneralPhotonSelection.h"
 // #include "AliAnalysisTaskPP.h"
 
 // --- ROOT system ---

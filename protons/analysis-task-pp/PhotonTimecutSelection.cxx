@@ -71,9 +71,6 @@ void PhotonTimecutSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 	c2->GetMomentum(p2, eflags.vtxBest);
 	psum = p1 + p2;
 
-	// Only physical clusters
-	if (c1->GetNCells() < 3 || c2->GetNCells() < 3) return;
-
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
 	// if (psum.Pt() < 2.) return;
@@ -107,13 +104,12 @@ void PhotonTimecutSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 void PhotonTimecutSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
 	// Don't return TObjArray: force user to handle candidates lifetime
-	Double_t pi0EClusMin = 0.3;
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-		if (clus->GetNCells() < 3) continue;
-		if (clus->E() < pi0EClusMin) continue;
+		if (clus->GetNCells() < fNCellsCut) continue;
+		if (clus->E() < fClusterMinE) continue;
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 		candidates->Add(clus);
 

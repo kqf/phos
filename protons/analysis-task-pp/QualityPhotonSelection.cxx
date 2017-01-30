@@ -71,12 +71,13 @@ void QualityPhotonSelection::InitSelectionHistograms()
 void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
 	// Don't return TObjArray: force user to handle candidates lifetime
-	Double_t pi0EClusMin = 0.3;
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-		if (clus->E() < pi0EClusMin) continue;
+
+		if (clus->GetNCells() < fNCellsCut) continue;
+		if (clus->E() < fClusterMinE) continue;
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 		candidates->Add(clus);
 
