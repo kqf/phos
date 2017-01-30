@@ -17,7 +17,7 @@ class AliAnalysisTaskPP : public AliAnalysisTaskSE
 public:
 	enum {kMinModule = 1, kMaxModule=4};
 	AliAnalysisTaskPP();
-	AliAnalysisTaskPP(const char * name);
+	AliAnalysisTaskPP(const char * name, TList * selections);
 	virtual ~AliAnalysisTaskPP();
 
 	void   UserCreateOutputObjects();

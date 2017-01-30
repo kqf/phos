@@ -1,9 +1,24 @@
 TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Int_t * excells = 0, Int_t nexc = 0)
 {
+
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
-	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons");
+	// Setup Selections
+	TList * selections = new TList();
+
+	selections->Add(new PhysPhotonSelection("Phys", "Physics Selection"));
+	selections->Add(new PhotonTimecutSelection("Time", "Timing Selection"));
+
+	selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7));
+	selections->Add(new PhotonTimecutSelection("EtaTime", "Timing Selection for eta meson", 0.3, 0.7));
+	
+	selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection"));
+	
+
+	// Setup task
+	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons", selections);
+
 	if ( !badmap.IsNull() ) 
 		task->SetBadMap(badmap);
 
@@ -16,6 +31,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	// task->GetSelections()->Add
 	task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
+
+
 
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;

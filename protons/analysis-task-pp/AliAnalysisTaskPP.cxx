@@ -37,24 +37,17 @@ AliAnalysisTaskPP::AliAnalysisTaskPP() : AliAnalysisTaskSE(),
 }
 
 //________________________________________________________________
-AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name) :
+AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name, TList * selections) :
 	AliAnalysisTaskSE(name),
 	fPreviousEvents(0),
-	fSelections(new TList()),
+	fSelections(selections),
 	fPHOSBadMap(),
 	fNBad(0),
 	fBadCells(0)
 {
 	fSelections->SetOwner(kTRUE);
 	// fSelections->Add(new TestPhotonSelection("Data", "SOMETITLE")) ;
-	fSelections->Add(new PhysPhotonSelection("Phys", "Physics Selection"));
-	fSelections->Add(new PhotonTimecutSelection("Time", "Timing Selection"));
-
-	fSelections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7));
-	fSelections->Add(new PhotonTimecutSelection("EtaTime", "Timing Selection for eta meson", 0.3, 0.7));
 	
-	fSelections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection"));
-
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 		DefineOutput(i + 1, TList::Class()); // Output starts from 1
 }
