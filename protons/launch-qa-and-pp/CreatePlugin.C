@@ -63,6 +63,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	    TString("AliAnalysisTaskCaloCellsQAPt.h ") +
 	    "PhotonSelection.cxx " +
 	    "GeneralPhotonSelection.cxx " +
+	    "PhotonSpectrumSelection.cxx " +
 	    "QualityPhotonSelection.cxx " +
 	    "TestPhotonSelection.cxx " +
 	    "PhysPhotonSelection.cxx " +
@@ -78,6 +79,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	    "PhotonSelection.h " +
 	    "GeneralPhotonSelection.cxx " +
 	    "GeneralPhotonSelection.h " +
+	    "PhotonSpectrumSelection.cxx " +
+	    "PhotonSpectrumSelection.h " +
 	    "QualityPhotonSelection.cxx " +
 	    "QualityPhotonSelection.h " +
 	    "TestPhotonSelection.cxx " +

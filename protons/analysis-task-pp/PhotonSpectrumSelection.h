@@ -16,10 +16,11 @@ class PhotonSpectrumSelection : public GeneralPhotonSelection
 {
 public:
     PhotonSpectrumSelection(): GeneralPhotonSelection() {}
-    PhotonSpectrumSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t cpv = 10., Float_t disp = 3.0):
+    PhotonSpectrumSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t cpv = 10., Float_t disp = 3.0, Float_t t = 999):
         GeneralPhotonSelection(name, title, ec, a, n),
         fDistanceCPV(cpv),
-        fDispersionCut(disp)
+        fDispersionCut(disp),
+        fTimingCut(t)
     {}
 
     virtual void InitSelectionHistograms();
@@ -32,6 +33,7 @@ protected:
 
     Float_t fDistanceCPV;
     Float_t fDispersionCut;
+    Float_t fTimingCut;
 private:
     ClassDef(PhotonSpectrumSelection, 2)
 };

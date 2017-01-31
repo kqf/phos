@@ -63,6 +63,7 @@ void PhotonSpectrumSelection::SelectPhotonCandidates(const TObjArray * clusArray
 		if (clus->GetNCells() < fNCellsCut) continue;
 		if (clus->E() < fClusterMinE) continue;
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
+		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
 		candidates->Add(clus);
 
 
