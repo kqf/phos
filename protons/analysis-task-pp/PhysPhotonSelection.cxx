@@ -90,6 +90,8 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12);
 
 	FillHistogram(Form("h%sMassPtN3A", suff), ma12 , pt12, asym);
+
+	// TODO: move asymmetry plots to Quality section
 	FillHistogram(Form("h%sAsymmetry", suff), pt12, asym);
 
 
@@ -100,28 +102,9 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 }
 
 //________________________________________________________________
-void PhysPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+void PhysPhotonSelection::FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags)
 {
-	// Don't return TObjArray: force user to handle candidates lifetime
-	Int_t sm, x, z;
-	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
-	{
-		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-		if (clus->GetNCells() < fNCellsCut) continue;
-		if (clus->E() < fClusterMinE) continue;
-		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
-		candidates->Add(clus);
-
-		TLorentzVector p;
-		clus->GetMomentum(p, eflags.vtxBest);
-
-		FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
-		FillHistogram(Form("hClusterPt_SM%d", sm), p.Pt());
-
-		// Fill histograms only for real events
-		if (eflags.isMixing)
-			continue;
-	}
-
-	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
+	TLorentzVector p;
+	clus->GetMomentum(p, eflags.vtxBest);	
+	FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
 }

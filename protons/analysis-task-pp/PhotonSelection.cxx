@@ -55,18 +55,18 @@ void PhotonSelection::MixPhotons(TObjArray & photonCandidates, TList * pool, con
 		SelectPhotonCandidates(previousClusters, &previousPhotons, mflags);
 	}
 
-	// Check all possible combinations
-	for (Int_t i = 0; i < photonCandidates.GetEntriesFast(); ++i)
+	// old cluster loop
+	for (Int_t j = 0; j < previousPhotons.GetEntriesFast(); ++j)
 	{
-		AliVCluster * clus1 = (AliVCluster *) photonCandidates.At(i);
+		AliVCluster * clus1 = (AliVCluster *) previousPhotons.At(j);
 
-		// old cluster loop
-		for (Int_t j = 0; j < previousPhotons.GetEntriesFast(); ++j)
+		// Check all possible combinations
+		for (Int_t i = 0; i < photonCandidates.GetEntriesFast(); ++i)
 		{
-			AliVCluster * clus2 = (AliVCluster *) previousPhotons.At(j);
+			AliVCluster * clus2 = (AliVCluster *) photonCandidates.At(i);
 			ConsiderPair(clus1, clus2, mflags);
-		} // old cluster loop
-	}
+		}
+	} // old cluster loop
 }
 
 //________________________________________________________________

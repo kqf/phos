@@ -19,8 +19,7 @@ public:
 	virtual void InitSelectionHistograms();
 
 protected:
-
-	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
+    virtual void FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags);
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
 	PhysPhotonSelection(const PhysPhotonSelection &);

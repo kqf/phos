@@ -86,3 +86,29 @@ void GeneralPhotonSelection::FillHistogram(const char * key, Double_t x, Double_
 
 	AliError(Form("Can't find histogram (instance of TH*) <%s> ", key));
 }
+
+//________________________________________________________________
+void GeneralPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+{
+	// Don't return TObjArray: force user to handle candidates lifetime
+	Int_t sm, x, z;
+	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
+	{
+		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
+		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
+		
+		if (clus->GetNCells() < fNCellsCut) continue;
+		if (clus->E() < fClusterMinE) continue;
+		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
+		candidates->Add(clus);
+
+		// Fill histograms only for real events
+		if (eflags.isMixing)
+			continue;
+
+		FillClusterHistograms(clus, eflags);
+	}
+
+	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
+		FillHistogram("EventCounter", 2.5);
+}

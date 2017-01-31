@@ -21,8 +21,8 @@ struct EventFlags
 		isMixing(m),
 		eventPileup(p),
 		eventVtxExists(vtx)
-		//, eventV0AND(v0) 
-		{}
+		//, eventV0AND(v0)
+	{}
 
 	Double_t vtxBest[3];   // Calculated vertex position
 	Int_t  centr;
@@ -46,18 +46,32 @@ public:
 	virtual void InitSummaryHistograms() = 0;
 	virtual TList * GetListOfHistos() = 0;
 
-	virtual Bool_t SelectEvent(const EventFlags & flgs) { if (flgs.zvtx > 0) return kTRUE; return kTRUE; }
+	virtual Bool_t SelectEvent(const EventFlags & flgs)
+	{
+		(void) flgs;
+		return kTRUE;
+	}
 
-	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells) { if (!clusArray && !cells) return;}
-	virtual	void FillCells(AliVCaloCells * cells) { if (!cells) return; }
+	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells)
+	{
+		(void) clusArray;
+		(void) cells;
+	}
+
+	virtual	void FillCells(AliVCaloCells * cells) { (void) cells; }
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
 	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags) = 0;
-	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags) { if (!c1 && !c2 && eflags.zvtx) return; }
-	// TODO: Fix values (0, 9) ==> (1, 5)
 	virtual Int_t CheckClusterGetSM(const AliVCluster * clus, Int_t & x, Int_t & z) const;
+
+	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
+	{
+		(void) c1;
+		(void) c2;
+		(void) eflags;
+	}
 
 	PhotonSelection(const PhotonSelection &);
 	PhotonSelection & operator = (const PhotonSelection &);

@@ -26,7 +26,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection"));
 
 	selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
-	selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 10., 3., 12.5e-9));
+	selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 12.5e-9, 10., 3.));
 	
 
 	// Setup task
