@@ -13,20 +13,19 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
 
-
-
     gROOT->LoadMacro("CreatePlugin.C");
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
-    AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
-
-    esdH->SetReadFriends( isMC );
-    // mgr->SetInputEventHandler( esdH );
     mgr->SetInputEventHandler( aodH );
-    esdH->SetNeedField();
+
+    // AliESDInputHandler * esdH = new AliESDInputHandler();
+    // esdH->SetReadFriends( isMC );
+    // esdH->SetNeedField();
+    // mgr->SetInputEventHandler( esdH );
+
 
     if ( isMC )
     {
@@ -42,19 +41,11 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
 
-    gROOT->LoadMacro("PhotonSelection.cxx+");
-    gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
-    gROOT->LoadMacro("QualityPhotonSelection.cxx+");
-    gROOT->LoadMacro("TestPhotonSelection.cxx+");
-    gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
-    gROOT->LoadMacro("PhysPhotonSelection.cxx+");
-    gROOT->LoadMacro("MixingSample.h+");
-    gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
-    // if (!useTender) 
+    // if (!useTender)
     TString files ; //= AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only my badmap ## no tender", "NoTender", "", excells, nexc);
 
     // Add tender

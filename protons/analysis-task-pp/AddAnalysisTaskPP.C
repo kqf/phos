@@ -4,6 +4,16 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
+    gROOT->LoadMacro("PhotonSelection.cxx+");
+    gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
+    gROOT->LoadMacro("QualityPhotonSelection.cxx+");
+    gROOT->LoadMacro("TestPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
+    gROOT->LoadMacro("PhysPhotonSelection.cxx+");
+    gROOT->LoadMacro("MixingSample.h+");
+    gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
+  
 	// Setup Selections
 	TList * selections = new TList();
 
@@ -14,6 +24,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	selections->Add(new PhotonTimecutSelection("EtaTime", "Timing Selection for eta meson", 0.3, 0.7));
 	
 	selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection"));
+	
+	selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
 	
 
 	// Setup task
