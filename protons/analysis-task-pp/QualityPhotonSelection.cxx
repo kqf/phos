@@ -116,6 +116,10 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
+		TLorentzVector p;
+		clus->GetMomentum(p, eflags.vtxBest);
+
+
 		if (clus->E() < fClusterMinE) continue;
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 
@@ -144,10 +148,7 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		// Fill histograms only for real events
 		if (eflags.isMixing)
 			continue;
-
-		TLorentzVector p;
-		clus->GetMomentum(p, eflags.vtxBest);
-
+		
 		Float_t energy = clus->E();
 		Int_t isHighECluster = Int_t(energy > 1.);
 
@@ -195,7 +196,6 @@ Int_t QualityPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
 	// There is no such a cell
 	return -1;
 }
-
 
 //______________________________________________________
 Int_t QualityPhotonSelection::WhichDDL(Int_t module, Int_t cellx) const

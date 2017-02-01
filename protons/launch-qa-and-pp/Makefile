@@ -4,6 +4,7 @@ grid: | *.cxx
 	@make unlink || echo "Directory is clean"
 	echo "Started grid analysis" >> .runhistory
 
+
 *.cxx:
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 
@@ -14,6 +15,7 @@ grid: | *.cxx
 	ln -s ../analysis-task-pp/*.cxx .
 	ln -s ../analysis-task-pp/*.h .
 	ln -s ../analysis-task-pp/AddAnalysisTaskPP.C .
+	ln -s ../../qa/qa-track-averages/*.h .
 
 unlink:
 	find -type l -delete

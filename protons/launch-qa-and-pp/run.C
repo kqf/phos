@@ -4,7 +4,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     SetupEnvironment();
     gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
 
-    TString period = "LHC16k-pass1";
+    TString period = "LHC16l-muon-calo-pass1";
     Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
@@ -45,6 +45,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
+    gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
 
@@ -61,6 +62,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
 
         files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## 12.5ns timecut, checking performance of the new map of bad channels ## tender", "Tender", "", excells, nexc);
         AddAnalysisTaskPP(AliVEvent::kINT7, period + "## 12.5ns timecut, checking performance of the new map of bad channels ## only tender", "OnlyTender", "", 0, 0);
+        AddAnalysisTaskTrackAverages(good_runs, nruns);
     }
 
 
