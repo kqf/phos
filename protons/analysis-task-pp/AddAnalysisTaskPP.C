@@ -17,11 +17,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	// Setup Selections
 	TList * selections = new TList();
 
-	selections->Add(new PhysPhotonSelection("Phys", "Physics Selection"));
-	selections->Add(new PhotonTimecutSelection("Time", "Timing Selection"));
+	selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, 12.5e-9));
+	selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, 12.5e-9));
 
-	selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7));
-	selections->Add(new PhotonTimecutSelection("EtaTime", "Timing Selection for eta meson", 0.3, 0.7));
+	selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7, 3, 12.5e-9));
+	selections->Add(new PhotonTimecutSelection("EtaTime", "Testing Timing Selection for eta meson", 0.3, 0.7, 3, 12.5e-9));
 	
 	selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection"));
 

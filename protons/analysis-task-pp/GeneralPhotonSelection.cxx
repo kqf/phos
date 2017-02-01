@@ -3,8 +3,7 @@
 // #include "AliAnalysisTaskPP.h"
 
 // --- ROOT system ---
-#include <TH2F.h>
-#include <TH3F.h>
+#include <TH1F.h>
 
 // --- AliRoot header files ---
 #include <AliLog.h>

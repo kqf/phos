@@ -30,15 +30,6 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 
-	fListOfHistos->Add(new TH3F("hMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
-	fListOfHistos->Add(new TH3F("hMixMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
-
-	fListOfHistos->Add(new TH2F("hAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
-	fListOfHistos->Add(new TH2F("hMixAsymmetry","(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterPt_SM%d", i), mtitle("Cluster p_{T} spectrum, %s; p_{T}, GeV/c", i), nPt, ptMin, ptMax));
-
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
 	Int_t kMaxModule = 4;
@@ -58,6 +49,12 @@ void PhysPhotonSelection::InitSelectionHistograms()
 		if(!hist) continue;
 		hist->Sumw2();
 	}
+
+	// These histograms are needed only to check the performance
+	// Don't do any analysis with these histograms.
+	//
+	for (Int_t i = 0; i < 1;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterPt_SM%d", i), mtitle("Cluster p_{T} spectrum with default cuts, %s; p_{T}, GeV/c", i), nPt, ptMin, ptMax));	
 }
 
 //________________________________________________________________
@@ -70,11 +67,9 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
-	// if (psum.Pt() < 2.) return;
-
-	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
 
 	// Appply asymmetry cut for pair
+	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
 	if(asym > fAsymmetryCut) return;
 
 	Int_t sm1, sm2, x1, z1, x2, z2;
@@ -84,16 +79,8 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	if (pt12 < 1) return;
-
 	const char * suff = eflags.isMixing ? "Mix" : "";
 	FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12);
-
-	FillHistogram(Form("h%sMassPtN3A", suff), ma12 , pt12, asym);
-
-	// TODO: move asymmetry plots to Quality section
-	FillHistogram(Form("h%sAsymmetry", suff), pt12, asym);
-
 
 	if (sm1 < sm2)
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm1, sm2), ma12, pt12);

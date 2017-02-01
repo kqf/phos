@@ -18,16 +18,19 @@ ClassImp(QualityPhotonSelection);
 //________________________________________________________________
 void QualityPhotonSelection::InitSelectionHistograms()
 {
-
 	// pi0 mass spectrum
+	Int_t nM       = 750;
+	Double_t mMin  = 0.0;
+	Double_t mMax  = 1.5;
 	Int_t nPt      = 500;
 	Double_t ptMin = 0;
 	Double_t ptMax = 100;
 
 
 	// Info about selected clusters
-	fListOfHistos->Add(new TH2F("hNcellsPt", "Cell multiplicity; N_{cell}; p_{T}, GeV/c" , 41, 0, 40, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; N_{cell}; E, GeV" , 41, 0, 40, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; E, GeV; N_{cell}", 41, 0, 40, 81, 0, 80));
+	fListOfHistos->Add(new TH2F("hShapeE", "Cluster shape; E, GeV; M20, cm", 41, 0, 40, 41, 0, 40));
+
 
 	// Heatmap check for physics
 	for (Int_t i = 1; i < 5;  ++i)
@@ -39,18 +42,7 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	for (Int_t i = 1; i < 5;  ++i)
 		fListOfHistos->Add(new TH2F(Form("hCluEXZM_1_SM%d", i), mtitle("Cluster E(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 
-	// Test physics selection in RUN2
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hMainClusterEnergy_SM%d", i), mtitle("Cluster energy, %s; cluster energy, GeV", i), 1000, 0., 100.));
 
-	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
-	{
-		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
-		if (!hist) continue;
-		hist->Sumw2();
-	}
 
 	// Heatmap check for physics + check abs Id numbering
 	for (Int_t i = 1; i < 5;  ++i)
@@ -65,7 +57,56 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	// create histograms for L1 phase substraction test
 	for (Int_t m = 5; m < 20; ++m)
 		fListOfHistos->Add(new TH2F(Form("timeDLL%d", m), "Time, HG", 4, 0., 4., 200, -5.e-7, 5.e-7));
+
+	// Test Assymetry cut
+	//
+	fListOfHistos->Add(new TH3F("hMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+	fListOfHistos->Add(new TH3F("hMixMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+
+	fListOfHistos->Add(new TH2F("hAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+	fListOfHistos->Add(new TH2F("hMixAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+
+
+	// Timing cut
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), mtitle("Cluster Time scaled by E, %s; t, s", i), 4800, -0.25 * 1e-6, 0.25 * 1e-6));
+
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), mtitle("Cluster energy vs time, %s; cluster energy, GeV; time, s", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
+
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hClusterTimeMap%d", i), mtitle("Cluster time map, %s; X; Z", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 }
+
+
+//________________________________________________________________
+void QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
+{
+	TLorentzVector p1, p2, psum;
+	c1->GetMomentum(p1, eflags.vtxBest);
+	c2->GetMomentum(p2, eflags.vtxBest);
+	psum = p1 + p2;
+
+	// Pair cuts can be applied here
+	if (psum.M2() < 0)  return;
+
+	// Appply asymmetry cut for pair
+	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
+	if (asym > fAsymmetryCut) return;
+
+
+	Int_t sm1, sm2, x1, z1, x2, z2;
+	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
+	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
+
+	Double_t ma12 = psum.M();
+	Double_t pt12 = psum.Pt();
+
+	const char * suff = eflags.isMixing ? "Mix" : "";
+	FillHistogram(Form("h%sMassPtN3A", suff), ma12 , pt12, asym);
+	FillHistogram(Form("h%sAsymmetry", suff), pt12, asym);
+}
+
 
 //________________________________________________________________
 void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
@@ -75,35 +116,40 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-
-		if (clus->GetNCells() < fNCellsCut) continue;
 		if (clus->E() < fClusterMinE) continue;
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
+
+		Float_t tof = clus->GetTOF();
+
+		if (!eflags.isMixing)
+		{
+			FillHistogram(Form("hClusterTime%d", sm), tof, clus->E());
+			FillHistogram(Form("hClusterEvsTM%d", sm), clus->E(), tof);
+			FillHistogram(Form("hClusterTimeMap%d", sm), x, z, tof);
+
+			FillHistogram(Form("hClusterTime%d", 0), tof, clus->E());
+			FillHistogram(Form("hClusterEvsTM%d", 0), clus->E(), tof);
+			FillHistogram(Form("hClusterTimeMap%d", 0), x, z, tof);
+
+		}
+		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
+
+		if (!eflags.isMixing) FillHistogram("hNcellsE", p.E(), clus->GetNCells());
+		if (!eflags.isMixing) FillHistogram("hShapeE", clus->GetM20(), clus->GetNCells());
+
+		if (clus->GetNCells() < fNCellsCut) continue;
 		candidates->Add(clus);
 
 
 		// Fill histograms only for real events
 		if (eflags.isMixing)
 			continue;
+
 		TLorentzVector p;
 		clus->GetMomentum(p, eflags.vtxBest);
 
-		FillHistogram("hNcellsPt", clus->GetNCells(), p.Pt());
-		FillHistogram("hNcellsE", clus->GetNCells(), p.E());
-
-		FillHistogram(Form("hClusterEnergy_SM%d", 0), p.E());
-		FillHistogram(Form("hClusterEnergy_SM%d", sm), p.E());
-
 		Float_t energy = clus->E();
 		Int_t isHighECluster = Int_t(energy > 1.);
-
-		Float_t timesigma = 12.5e-9; // 12.5 ns
-		if (TMath::Abs(clus->GetTOF()) > timesigma)
-			continue;
-
-		FillHistogram(Form("hMainClusterEnergy_SM%d", 0), p.E());
-		FillHistogram(Form("hMainClusterEnergy_SM%d", sm), p.E());
-
 
 		FillHistogram(Form("hCluNXZM_%d_SM%d", isHighECluster, sm), x, z, 1.);
 		FillHistogram(Form("hCluEXZM_%d_SM%d", isHighECluster, sm), x, z, energy);
@@ -123,7 +169,8 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 			FillHistogram(Form("timeDLL%d", ddlID),  float(eflags.BC % 4), time);
 	}
 
-	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing) FillHistogram("EventCounter", 2.5);
+	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
+		FillHistogram("EventCounter", 2.5);
 }
 
 // Default version defined in PHOSutils uses ideal geometry

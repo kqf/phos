@@ -15,7 +15,7 @@ class PhysPhotonSelection : public GeneralPhotonSelection
 {
 public:
 	PhysPhotonSelection(): GeneralPhotonSelection() {}
-	PhysPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3): GeneralPhotonSelection(name, title, ec, a, n) {}
+	PhysPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t) {}
 	virtual void InitSelectionHistograms();
 
 protected:
