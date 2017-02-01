@@ -35,6 +35,8 @@ void PhotonSpectrumSelection::InitSelectionHistograms()
 	Double_t ptMin = 0;
 	Double_t ptMax = 40;
 
+	this->SetTitle(Form("%s ## CPV = %.1f cm, Disp = %1.f cm", this->GetTitle(), fDistanceCPV, fDispersionCut));
+
 	for (Int_t i = 0; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hClusterPt_SM%d", i), mtitle("Cluster p_{T}, %s; cluster p_{T}, GeV/c; counts", i), nPt, ptMin, ptMax));
 
@@ -46,13 +48,18 @@ void PhotonSpectrumSelection::InitSelectionHistograms()
 
 	for (Int_t i = 0; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hClusterPt_cpv_disp_SM%d", i), mtitle(TString(Form("Cluster p_{T} with CPV %.1f cm and dispersion %.1f cm cuts", fDistanceCPV, fDispersionCut)) + ", %s; cluster p_{T}, GeV/c; counts", i), nPt, ptMin, ptMax));
+
+	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
+	{
+		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
+		if(!hist) continue;
+		hist->Sumw2();
+	}	
 }
 
 //________________________________________________________________
 void PhotonSpectrumSelection::FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags)
 {
-
-	cout << " REACHED HERE " << endl;
 	Int_t x, z;
 	Int_t sm = CheckClusterGetSM(clus, x, z);
 

@@ -24,21 +24,14 @@ public:
 
     virtual void InitSelectionHistograms();
 
-    // There is no need to fill invariant mass spectrum
-    // 
-    virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
-    {
-        (void) clusArray;
-        (void) pool;
-        (void) eflags;
-    }
-
+    // There is no need to mix events 
     virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags)
     {
         (void) photons;
         (void) pool;
         (void) eflags;
     }
+    
 protected:
     virtual void FillClusterHistograms(const AliVCluster * c, const EventFlags & eflags);
 

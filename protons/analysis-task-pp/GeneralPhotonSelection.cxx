@@ -22,16 +22,22 @@ void GeneralPhotonSelection::InitSummaryHistograms()
 	// Find better place to apply this
 	fListOfHistos = new TList();
 	fListOfHistos->SetOwner(kTRUE);
-	fListOfHistos->Add( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
+	InitSelectionHistograms();
 
+	TString cuts = Form(";\nCuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns", fClusterMinE, fAsymmetryCut, fNCellsCut, fTimingCut * 1e+9);
+	this->SetTitle(this->GetTitle() + cuts);
+
+	cout << "Adding " << this->GetName() << ": " << this->GetTitle() << endl;
+
+
+	fListOfHistos->AddFirst( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
 	// The true event counter
 	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 3, 0, 3);
 	evntCounter->GetXaxis()->SetBinLabel(1, "all");
 	evntCounter->GetXaxis()->SetBinLabel(2, "|Z_{vtx}| < 10");
 	evntCounter->GetXaxis()->SetBinLabel(3, "N_{#gamma} > 2");
-	fListOfHistos->Add(evntCounter);
+	fListOfHistos->AddFirst(evntCounter);
 
-	InitSelectionHistograms();
 }
 
 
