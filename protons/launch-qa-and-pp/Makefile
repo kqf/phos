@@ -1,33 +1,39 @@
+DATASET = LHC16m-muon-calo-pass1
 
-grid: | *.cxx
-	root -l -b -q 'run.C("grid", "full")' || make unlink 
+grid: | %.cxx
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
 	@make unlink || echo "Directory is clean"
 	echo "Started grid analysis" >> .runhistory
 
-
-*.cxx:
+%.cxx:
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 
+	@# TODO: write a function for it
+	@# Add QA task
 	ln -s ../../qa/qa-task/*.cxx .
 	ln -s ../../qa/qa-task/*.h .
 	ln -s ../../qa/qa-task/AddTaskCaloCellsQAPt.C .
 
+	@# Add my analysis task
 	ln -s ../analysis-task-pp/*.cxx .
 	ln -s ../analysis-task-pp/*.h .
 	ln -s ../analysis-task-pp/AddAnalysisTaskPP.C .
+
+	@# Add track task
 	ln -s ../../qa/qa-track-averages/*.h .
 
 unlink:
 	find -type l -delete
+	unlink *.cxx
 
 
-terminate: | *.cxx
-	root -l -q 'run.C("grid", "terminate")' || make unlink
+terminate: | %.cxx
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate")' || make unlink
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
-download: | *.cxx
-	root -l -q 'run.C("grid", "terminate", kFALSE, kFALSE)' || make unlink
+download: | %.cxx
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", kFALSE, kFALSE)' || make unlink
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
@@ -40,8 +46,8 @@ force-download:
 	rm -rf tmp 
 	echo -e "\x07
 
-test: | *.cxx
-	root -l -q 'run.C("local", "test")'
+test: | %.cxx
+	root -l -q 'run.C("$(DATASET)", "local", "test")'
 	echo "Local analysis" >> .runhistory
 	@make unlink || echo "Directory is clean"
 	# make compare

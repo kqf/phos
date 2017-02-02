@@ -62,5 +62,47 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		mgr->ConnectOutput(task, i + 1, coutput);
 	}
 
+	AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
+	TString sources = plugin->GetAnalysisSource();
+	TString libs   = plugin->GetAdditionalLibs();
+	TString output = plugin->GetOutputFiles();
+
+	plugin->SetAnalysisSource(
+		sources +
+	    "PhotonSelection.cxx " +
+	    "GeneralPhotonSelection.cxx " +
+	    "PhotonSpectrumSelection.cxx " +
+	    "QualityPhotonSelection.cxx " +
+	    "TestPhotonSelection.cxx " +
+	    "PhysPhotonSelection.cxx " +
+	    "PhotonTimecutSelection.cxx " +
+	    "MixingSample.h " +
+	    "AliAnalysisTaskPP.cxx "
+	);
+
+	plugin->SetAdditionalLibs(
+		libs +
+		"libPWGGAPHOSTasks.so "	+
+	    "PhotonSelection.cxx " +
+	    "PhotonSelection.h " +
+	    "GeneralPhotonSelection.cxx " +
+	    "GeneralPhotonSelection.h " +
+	    "PhotonSpectrumSelection.cxx " +
+	    "PhotonSpectrumSelection.h " +
+	    "QualityPhotonSelection.cxx " +
+	    "QualityPhotonSelection.h " +
+	    "TestPhotonSelection.cxx " +
+	    "TestPhotonSelection.h " +
+	    "PhysPhotonSelection.cxx " +
+	    "PhysPhotonSelection.h " +
+	    "PhotonTimecutSelection.cxx " +
+	    "PhotonTimecutSelection.h " +
+	    "MixingSample.h " +
+	    "AliAnalysisTaskPP.cxx " +
+	    "AliAnalysisTaskPP.h " 
+	);
+	plugin->SetOutputFiles(output + " AnalysisResults.root ");
+
+
 	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
 }

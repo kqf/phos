@@ -1,10 +1,10 @@
 #include "algorithm"
-void run(const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
     gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
 
-    TString period = "LHC16l-muon-calo-pass1";
+    // TString period = "LHC16l-muon-calo-pass1";
     Bool_t use_tender = kTRUE;
     Int_t * excells;
     Int_t * good_runs;
@@ -41,7 +41,6 @@ void run(const char * runmode = "local", const char * pluginmode = "test", Bool_
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    //gROOT->LoadMacro("AnalysisTaskCellsQA.cxx+g");
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");

@@ -59,41 +59,9 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 
 	period.ReplaceAll('-', '_');
 
-	// TODO: change  this 
-	plugin->SetAnalysisSource(
-	    TString("AliAnalysisTaskCaloCellsQAPt.h ") +
-	    "PhotonSelection.cxx " +
-	    "GeneralPhotonSelection.cxx " +
-	    "PhotonSpectrumSelection.cxx " +
-	    "QualityPhotonSelection.cxx " +
-	    "TestPhotonSelection.cxx " +
-	    "PhysPhotonSelection.cxx " +
-	    "PhotonTimecutSelection.cxx " +
-	    "MixingSample.h " +
-	    "AliAnalysisTaskPP.cxx"
-	);
-
-	plugin->SetAdditionalLibs(
-	    TString("libPWGGAPHOSTasks.so ") +
-	    "AliAnalysisTaskCaloCellsQAPt.h " +
-	    "PhotonSelection.cxx " +
-	    "PhotonSelection.h " +
-	    "GeneralPhotonSelection.cxx " +
-	    "GeneralPhotonSelection.h " +
-	    "PhotonSpectrumSelection.cxx " +
-	    "PhotonSpectrumSelection.h " +
-	    "QualityPhotonSelection.cxx " +
-	    "QualityPhotonSelection.h " +
-	    "TestPhotonSelection.cxx " +
-	    "TestPhotonSelection.h " +
-	    "PhysPhotonSelection.cxx " +
-	    "PhysPhotonSelection.h " +
-	    "PhotonTimecutSelection.cxx " +
-	    "PhotonTimecutSelection.h " +
-	    "MixingSample.h " +
-	    "AliAnalysisTaskPP.cxx " +
-	    "AliAnalysisTaskPP.h" 
-	);
+	// All files are set in the Add*Task.C macros
+	// plugin->SetAnalysisSource();
+	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
 	plugin->SetAnalysisMacro(TString("TaskQA") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
