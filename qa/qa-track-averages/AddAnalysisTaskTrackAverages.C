@@ -1,4 +1,4 @@
-void AddAnalysisTaskTrackAverages(Int_t runs[], Int_t nruns)
+TString AddAnalysisTaskTrackAverages(Int_t runs[], Int_t nruns)
 {
     gROOT->LoadMacro("AliAnalysisTaskTrackAverages.h+g");
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
@@ -26,7 +26,6 @@ void AddAnalysisTaskTrackAverages(Int_t runs[], Int_t nruns)
 
 	plugin->SetAnalysisSource(souces + " AliAnalysisTaskTrackAverages.h ");
 	plugin->SetAdditionalLibs(libs + " AliAnalysisTaskTrackAverages.h ");
-	plugin->SetOutputFiles(output + " TrackAverages.root ");
 
-	return task;	
+	return " TrackAverages.root ";
 }

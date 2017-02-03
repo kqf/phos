@@ -65,8 +65,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
 	TString sources = plugin->GetAnalysisSource();
 	TString libs   = plugin->GetAdditionalLibs();
-	TString output = plugin->GetOutputFiles();
-
 	plugin->SetAnalysisSource(
 		sources +
 	    "PhotonSelection.cxx " +
@@ -101,8 +99,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliAnalysisTaskPP.cxx " +
 	    "AliAnalysisTaskPP.h " 
 	);
-	plugin->SetOutputFiles(output + " AnalysisResults.root ");
-
 
 	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
 }

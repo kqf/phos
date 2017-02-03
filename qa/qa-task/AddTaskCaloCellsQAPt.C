@@ -3,7 +3,7 @@ TString  AddTaskCaloCellsQAPt(Int_t * excells, Int_t nexc, const char * name = "
     AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
     if (!mgr) return;
 
-    AliAnalysisGrid * plugin = (AliAnalysisGrid *) mgr->GetGridHandler();
+    AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
     if (!plugin) return;
 
     // for(int i = 0; i < nexc; ++i) cout << " " << excells[i] << endl;
@@ -25,6 +25,12 @@ TString  AddTaskCaloCellsQAPt(Int_t * excells, Int_t nexc, const char * name = "
     if (excells) taskPHOSCellQA->SetBadCells(excells, nexc);
     taskPHOSCellQA->SetPairPtCut(1); // 2 GeV cut
     taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
+
+    TString sources = plugin->GetAnalysisSource();
+    TString libs   = plugin->GetAdditionalLibs();
+    
+    plugin->SetAnalysisSource(sources + " AliAnalysisTaskCaloCellsQAPt.h ");
+    plugin->SetAdditionalLibs(libs + " AliAnalysisTaskCaloCellsQAPt.h ");
     return  + TString(name) + ".root "; // Note extra space
 }
 

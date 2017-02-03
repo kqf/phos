@@ -6,26 +6,16 @@ grid: | %.cxx
 	echo "Started grid analysis" >> .runhistory
 
 %.cxx:
+	make unlink
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
-
-	@# TODO: write a function for it
-	@# Add QA task
-	ln -s ../../qa/qa-task/*.cxx .
-	ln -s ../../qa/qa-task/*.h .
-	ln -s ../../qa/qa-task/AddTaskCaloCellsQAPt.C .
-
-	@# Add my analysis task
+	@# Add all necessary taks
+	$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C)
 	ln -s ../analysis-task-pp/*.cxx .
-	ln -s ../analysis-task-pp/*.h .
-	ln -s ../analysis-task-pp/AddAnalysisTaskPP.C .
-
-	@# Add track task
-	ln -s ../../qa/qa-track-averages/*.h .
+	$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C)
+	$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C)
 
 unlink:
 	find -type l -delete
-	unlink *.cxx
-
 
 terminate: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate")' || make unlink
@@ -34,6 +24,7 @@ terminate: | %.cxx
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", kFALSE, kFALSE)' || make unlink
+	mv AnalysisResults.root $(DATASET).root -alien_cp -n $(DATASET).root alien:$(ALIEN_HOME)
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
@@ -60,5 +51,11 @@ define save_runs
 	for run in $$(alien_ls $(1)/output | grep .[0-9]*); do \
 		alien_cp alien://$(1)/output/$$run/$(2) $(3)/$$run.root; \
 	done	
+endef
+
+
+define link_sources
+	ln -s $(1)/*.h .
+	ln -s $(1)/$(2) .
 endef
 
