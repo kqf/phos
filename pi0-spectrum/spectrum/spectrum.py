@@ -35,8 +35,12 @@ class PtAnalyzer(object):
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
         self.mass_range = (0.05, 0.3)
-        self.save_img = True
-        self.deadmode = 'dead' in mode
+
+        ptbins = self.divide_into_bins()
+        pt_intervals = zip(ptbins[:-1], ptbins[1:])
+
+        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x)
+        self.masses = map(f, pt_intervals)
 
 
     def divide_into_bins(self):
@@ -57,16 +61,14 @@ class PtAnalyzer(object):
         # Extract the data
         return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
 
-    def properties(self, mass):
+    def properties(self, mass, intgr_ranges):
         fitfun, background = mass.extract_data() 
-        # integral value under crystal ball with amplitude = 1, sigma = 1
-        # (will be sqrt(2pi) at alpha = infinity)
 
         # calculate pi0 values
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
 
         # TODO: compare this to analytic formula.
-        a, b = self.mass_range
+        a, b = intgr_ranges
         nraw = fitfun.Integral(a, b), fitfun.IntegralError(a, b)
 
         sbkg = background.Integral(a, b)
@@ -80,15 +82,10 @@ class PtAnalyzer(object):
         nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * pi), nraw)
         return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), (sb, esb)
 
-    def quantities(self):
+    def quantities(self, intgr_ranges = None):
+        if intgr_ranges == None: intgr_ranges = self.mass_range
         # Prepare Pt ranges and corresponding M_eff integration intervals
-        ptbins = self.divide_into_bins()
-        pt_intervals = zip(ptbins[:-1], ptbins[1:])
-
-        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x)
-        masses = map(f, pt_intervals)
-
-        values = map(self.properties, masses)
+        values = map(lambda x: self.properties(x, intgr_ranges), self.masses)
 
         # Create hitograms
         histos = self.histograms(values)
@@ -103,12 +100,10 @@ class Spectrum(object):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
         self.analyzer = PtAnalyzer(lst, label, mode)
-        self.analyzer.save_img = False
 
     def evaluate(self):
         quantities = self.analyzer.quantities()
         ranges = self.fit_ranges(quantities)
-        self.analyzer.save_img = True
         return self.analyzer.quantities(ranges)
 
     def fit_ranges(self, quantities):
