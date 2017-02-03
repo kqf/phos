@@ -5,6 +5,7 @@ import numpy as np
 from math import pi
 from CrystalBall import ExtractQuantities, Fit
 from sutils import draw_and_save, nicely_draw
+from InvariantMass import InvariantMass
 
 class PtDependent(object):
     def __init__(self, name, title, label):
@@ -18,8 +19,8 @@ class PtDependent(object):
         hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
         if not hist.GetSumw2N(): hist.Sumw2()
         hist.GetXaxis().SetTitle('P_{T}, GeV/c')
-        [hist.SetBinContent(i + 1, m) for i, m in enumerate(data[0])]
-        [hist.SetBinError(i + 1, m) for i, m in enumerate(data[1])]
+        [hist.SetBinContent(i + 1, m[0]) for i, m in enumerate(data)]
+        [hist.SetBinError(i + 1, m[1]) for i, m in enumerate(data)]
         hist.label = self.label
         return hist 
 
@@ -33,93 +34,16 @@ class PtAnalyzer(object):
 
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
-        self.default_range = (0.05, 0.3)
+        self.mass_range = (0.05, 0.3)
         self.save_img = True
         self.deadmode = 'dead' in mode
 
 
     def divide_into_bins(self):
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
-        return map(self.rawhist.GetYaxis().FindBin, bins)
+        return bins
 
-    def estimate_background(self, real, mixed, intgr_range):
-        if real.GetEntries() == 0: return mixed
-
-        canvas = ROOT.gROOT.FindObject('c1')
-
-        # Divide real/mixed
-        ratio = real.Clone()
-        ratio.Divide(mixed)
-        ratio.GetYaxis().SetTitle("Real/ Mixed")
-        
-        # This parameter changes the final values
-        # 
-        # ratio.SetAxisRange(0.04, 0.6, 'X')
-
-        # Fit the ratio
-        # Change here definition if integration range
-        if ratio.GetEntries() == 0: return mixed
-        fitf, bckgrnd = Fit(ratio)
-        if not self.deadmode: 
-            draw_and_save([ratio], name = 'ratio_real_to_mixed', draw= self.show_img, save= self.save_img, suffix = self.label)
-        # fitf, bckgrnd = Fit(ratio, intgr_range, name = 'ratio_real_to_mixed', show_img = self.show_img)
-
-        # Scale the mixed distribution
-        mixed.Multiply(bckgrnd)
-        mixed.SetLineColor(46)
-
-        # Draw the results
-        if not self.deadmode:
-            real.Draw()
-            mixed.Draw('same')
-            real.GetXaxis().SetRangeUser(1.01 * bckgrnd.GetXmin(),  0.99 * bckgrnd.GetXmax()); 
-            draw_and_save([real, mixed], 'real_and_scaled_background', self.show_img, self.save_img, suffix = self.label)
-
-        return mixed
-
-    def substract_background(self, real, mixed):
-        if real.GetEntries() == 0: return real, mixed
-        # Identify 0 bins. To get throw them out later
-        zero_bins = [i for i in range(1, real.GetNbinsX()) if real.GetBinContent(i) < 1]
-
-        # Substract 
-        real.Add(mixed, -1)
-
-        # Reset zero bins
-        [real.SetBinContent(i, 0) for i in zero_bins]
-
-        # Take into account the statistics
-        if len(zero_bins) > 410: real.Rebin(2)
-        if len(zero_bins) > 600: real.Rebin(2)
-
-        # Drawing range
-        start, stop = 0.05, 0.3
-        real.SetAxisRange(1.5 * start, 0.85 * stop)
-        return real, mixed
-
-    def extract_data(self, a, b, intgr_range):
-        canvas = ROOT.gROOT.FindObject('c1')
-
-        name = self.rawhist.GetName() + '_%d_%d' % (a, b)
-        real, mixed = self.rawhist.ProjectionX(name, a, b), self.rawmix.ProjectionX(name + 'mix', a, b)
-
-        lower, upper = self.rawhist.GetYaxis().GetBinCenter(a), self.rawhist.GetYaxis().GetBinCenter(b)
-        real.SetTitle('%.4g < P_{T} < %.4g #events = %d; M_{#gamma#gamma}, GeV/c^{2}' % (lower, upper, self.nevents)) 
-
-        mixed = self.estimate_background(real, mixed, intgr_range)
-        # if self.label == 'Mixing': 
-        real, mixed = self.substract_background(real, mixed)
-  
-        res = ExtractQuantities(real, intgr_range)
-
-        if not self.deadmode: 
-            draw_and_save([real], 'fit_', self.show_img, self.save_img, suffix = self.label)
-
-        return res
-
-    def histograms(self, data, ranges):
-        intervals = zip(ranges[:-1], ranges[1:])
-
+    def histograms(self, data):
         # Book histograms
         histgenerators = [PtDependent('mass', '#pi^{0} mass position;;m, GeV/c^{2}', self.label),
                           PtDependent('width', '#pi^{0} peak width ;;#sigma, GeV/c^{2}', self.label),
@@ -127,34 +51,50 @@ class PtAnalyzer(object):
                           PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label),
                           PtDependent('signalbkgrnd', ' S_{signal} / S_{bkgrnd} (p_{T});; signal / bkgr', self.label) ]
 
-        ptedges = map(self.rawhist.GetYaxis().GetBinCenter, ranges)
+        # Extract bins
+        ptedges = self.divide_into_bins()
 
         # Extract the data
-        m, em, s, es, n, en, chi, echi, sign, esign  = data
+        return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
 
-        # Calculate the yields
-        n = [n[i] / (b - a) / (2. * pi)   for i, (a, b) in enumerate(intervals)]
-        en = [en[i] / (b - a) / (2. * pi) for i, (a, b) in enumerate(intervals)]
+    def properties(self, mass):
+        fitfun, background = mass.extract_data() 
+        # integral value under crystal ball with amplitude = 1, sigma = 1
+        # (will be sqrt(2pi) at alpha = infinity)
 
-        # Group the data
-        data = [(m, em), (s, es), (n, en), (chi, echi), (sign, esign)]
+        # calculate pi0 values
+        area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
 
-        # Create the histograms
-        return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(data)]
+        # TODO: compare this to analytic formula.
+        a, b = self.mass_range
+        nraw = fitfun.Integral(a, b), fitfun.IntegralError(a, b)
 
-    def quantities(self, intgr_ranges = None):
+        sbkg = background.Integral(a, b)
+        # esbkg = background.IntegralError(a, b)
+        esbkg = abs(sbkg) ** 0.5 
+
+        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
+        sb = nraw[0] / sbkg if sbkg != 0 else 0
+        esb = sb * ((nraw[1] / nraw[0])**2 + (esbkg/ sbkg)** 2) ** 0.5 if sbkg != 0  and nraw[0] !=0 else 0
+
+        nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * pi), nraw)
+        return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), (sb, esb)
+
+    def quantities(self):
         # Prepare Pt ranges and corresponding M_eff integration intervals
-        ranges = self.divide_into_bins()
-        if not intgr_ranges: 
-            intgr_ranges = [self.default_range] * (len(ranges) - 1)
+        ptbins = self.divide_into_bins()
+        pt_intervals = zip(ptbins[:-1], ptbins[1:])
 
-        # Estimate quantities for every Pt bin
-        intervals = zip(ranges[:-1], ranges[1:], intgr_ranges)
-        data = np.array([self.extract_data(low_pt, up_pt, c) for low_pt, up_pt, c in intervals]).T
+        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x)
+        masses = map(f, pt_intervals)
+
+        values = map(self.properties, masses)
 
         # Create hitograms
-        histos = self.histograms(data, ranges)
+        histos = self.histograms(values)
         if self.show_img: map(nicely_draw, histos)
+
+        # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
 

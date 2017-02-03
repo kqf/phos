@@ -19,7 +19,10 @@ class Input(object):
         lst = self.infile.Get(self.listname)
         hist = lambda n: lst.FindObject('h' + n)
 
-        return self.events(lst), hist(hname), hist(self.mixprefix + hname)
+        n, raw, mix = self.events(lst), hist(hname), hist(self.mixprefix + hname)
+        raw.nevents = n
+        mix.nevents = n
+        return n, raw, mix
 
     def read_per_module(self, threshold = 0.135):
         names = ['SM%dSM%d' % (i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]

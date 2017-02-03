@@ -11,7 +11,7 @@ def main():
     # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
-    infile = 'input-data/LHC16k-new.root'
+    infile = 'input-data/LHC16l.root'
     results = [
                f(Input(infile, 'PhysTender').read(), 'strict', 'q'), 
                f(Input(infile, 'PhysOnlyTender').read(), 'standard', 'q')

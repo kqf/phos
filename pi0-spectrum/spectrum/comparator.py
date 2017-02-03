@@ -60,7 +60,7 @@ class Visualizer(object):
 
         legend = ROOT.TLegend(0.8, 0.4, 0.9, 0.6)
         legend.SetBorderSize(0)
-        # legend.SetFillStyle(0)
+        legend.SetFillStyle(0)
         legend.SetTextSize(0.04)
 
         mainpad.cd()
