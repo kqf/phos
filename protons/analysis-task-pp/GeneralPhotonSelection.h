@@ -49,6 +49,11 @@ public:
 		(void) eflags;
 	}
 
+	void SetClusterMinEnergy(Float_t e) { fClusterMinE = e; }
+	void SetAsymmetryCut(Float_t a) { fAsymmetryCut = a; }
+	void SetTimingCut(Float_t t) { fTimingCut = t; }
+	void SetMinCellsInCluster(Float_t n) { fNCellsCut = t; }
+
 
 protected:
 	GeneralPhotonSelection(const GeneralPhotonSelection &);
@@ -59,7 +64,7 @@ protected:
 
 	Float_t fClusterMinE;
 	Float_t fAsymmetryCut;
-    Float_t fTimingCut;
+	Float_t fTimingCut;
 	Int_t fNCellsCut;
 
 private:

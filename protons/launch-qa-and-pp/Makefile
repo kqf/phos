@@ -1,4 +1,4 @@
-DATASET = LHC16m-muon-calo-pass1
+DATASET = LHC16o-muon-calo-pass1
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
@@ -24,7 +24,9 @@ terminate: | %.cxx
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", kFALSE, kFALSE)' || make unlink
-	mv AnalysisResults.root $(DATASET).root -alien_cp -n $(DATASET).root alien:$(ALIEN_HOME)
+	mv AnalysisResults.root $(DATASET).root 
+	-alien_cp -n $(DATASET).root alien:$(ALIEN_HOME)
+	-alien_cp -n TrackAverages.root alien:$(ALIEN_HOME)
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
