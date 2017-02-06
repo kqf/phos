@@ -1,10 +1,8 @@
 #!/usr/bin/python
 
 import ROOT
-import numpy as np
-from math import pi
-from CrystalBall import ExtractQuantities, Fit
-from sutils import draw_and_save, nicely_draw, get_canvas, wait
+from CrystalBall import Fit
+from sutils import get_canvas
 
 class InvariantMass(object):
     def __init__(self, rawhist, mixhist, pt_range, mass_range = (0.05, 0.3)):
@@ -51,7 +49,8 @@ class InvariantMass(object):
 
         # Substract 
         signal = self.mass.Clone()
-        self.mass.Add(self.mass, self.mixed, 1., -1.)
+        signal.Add(self.mass, self.mixed, 1., -1.)
+        signal.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
         signal.GetYaxis().SetTitle("Real - Mixed")
 
         # Reset zero bins
@@ -75,9 +74,6 @@ class InvariantMass(object):
         canvas.SetTicky()  
         self.ratio.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
         self.ratio.Draw()
-        self.latex = ROOT.TLatex()
-        self.latex.SetTextAlign(11);
-        self.latex.DrawLatex(0.5, 0.5, self.pt_label)
         canvas.Update()
 
 

@@ -1,9 +1,6 @@
 #!/usr/bin/python
 
 import ROOT
-import numpy as np
-from math import pi
-from CrystalBall import ExtractQuantities, Fit
 from sutils import draw_and_save, nicely_draw, get_canvas, wait
 from InvariantMass import InvariantMass
 
@@ -79,7 +76,7 @@ class PtAnalyzer(object):
         sb = nraw[0] / sbkg if sbkg != 0 else 0
         esb = sb * ((nraw[1] / nraw[0])**2 + (esbkg/ sbkg)** 2) ** 0.5 if sbkg != 0  and nraw[0] !=0 else 0
 
-        nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * pi), nraw)
+        nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * ROOT.TMath.Pi()), nraw)
         return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), (sb, esb)
 
     def quantities(self, intgr_ranges = None):
