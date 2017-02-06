@@ -4,7 +4,7 @@ import ROOT
 import numpy as np
 from math import pi
 from CrystalBall import ExtractQuantities, Fit
-from sutils import draw_and_save, nicely_draw
+from sutils import draw_and_save, nicely_draw, get_canvas, wait
 from InvariantMass import InvariantMass
 
 class PtDependent(object):
@@ -93,6 +93,25 @@ class PtAnalyzer(object):
 
         # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
+
+    def draw_all_bins(self, m = 6, n = 6, f = lambda x, y: x.draw_ratio(y), name = ''):
+        canvas = get_canvas()
+        canvas.Clear()
+        canvas.Divide(m, n, 0, 0.01)
+        for i, m in enumerate(self.masses):
+            f(m, canvas.cd(i + 1))
+        wait(name, True, True)
+
+    def draw_ratio(self, m = 6, n = 6, name = ''):
+        self.draw_all_bins(m, n, lambda x, y: x.draw_ratio(y), name)
+
+    def draw_mass(self, m = 6, n = 6, name = ''):
+        self.draw_all_bins(m, n, lambda x, y: x.draw_mass(y), name)
+
+    def draw_signal(self, m = 6, n = 6, name = ''):
+        self.draw_all_bins(m, n, lambda x, y: x.draw_signal(y), name)
+
+
 
 
 class Spectrum(object):

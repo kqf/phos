@@ -11,6 +11,7 @@ class InvariantMass(object):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.mass_range = mass_range
+        self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
 
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
@@ -24,7 +25,7 @@ class InvariantMass(object):
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
         # suff = 'mixed' if 'mix' in hist.GetName().lower() else 'real'
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
-        mass.SetTitle('%.4g < P_{T} < %.4g #events = %d; M_{#gamma#gamma}, GeV/c^{2}' % (self.pt_range[0], self.pt_range[1], hist.nevents))         
+        mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         return mass
 
 
@@ -70,13 +71,21 @@ class InvariantMass(object):
 
     def draw_ratio(self, pad = 0):
         canvas = pad if pad else get_canvas()
+        canvas.SetTickx()
+        canvas.SetTicky()  
         self.ratio.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
         self.ratio.Draw()
-        wait('', True, True)
+        self.latex = ROOT.TLatex()
+        self.latex.SetTextAlign(11);
+        self.latex.DrawLatex(0.5, 0.5, self.pt_label)
+        canvas.Update()
 
 
     def draw_mass(self, pad = 0):
         canvas = pad if pad else get_canvas()
+        canvas.SetTickx()
+        canvas.SetTicky() 
+
         self.mass.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
         legend = ROOT.TLegend(0.6, 0.6, 0.8, 0.8)
         legend.SetBorderSize(0)
@@ -88,11 +97,14 @@ class InvariantMass(object):
         legend.AddEntry(self.mass, 'data')
         legend.AddEntry(self.mixed, 'background')
         legend.Draw('same')
-        wait('', True, True)
+        canvas.Update()
 
         
     def draw_signal(self, pad = 0):
         canvas = pad if pad else get_canvas()
+        canvas.SetTickx()
+        canvas.SetTicky() 
+
         self.signal.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
         self.signal.Draw()
-        wait('', True, True)
+        canvas.Update()
