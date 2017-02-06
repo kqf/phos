@@ -24,10 +24,8 @@ terminate: | %.cxx
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", kFALSE, kFALSE)' || make unlink
-	mv AnalysisResults.root $(DATASET).root 
-	-alien_cp -n $(DATASET).root alien:$(ALIEN_HOME)
-	mv TrackAverages.root TrackAverages.$(DATASET).root
-	-alien_cp -n TrackAverages.$(DATASET).root alien:$(ALIEN_HOME)
+	$(call upload_result,AnalysisResults,$(DATASET))
+	$(call upload_result,TrackAverages,TrackAverages.$(DATASET))
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
@@ -35,7 +33,7 @@ download: | %.cxx
 force-download:
 	mkdir -p tmp 
 	rm -rf LHC16o.root
-	$(call save_runs,/alice/cern.ch/user/o/okovalen/phosqa-lhc16o-muon-calo-pass1-2gev-test,AnalysisResults.root,tmp)
+	$(call save_runs,$(ALIEN_HOME)/pp-phos-$(DATASET),AnalysisResults.root,tmp)
 	hadd LHC16o.root tmp/*.root
 	rm -rf tmp 
 	echo -e "\x07
@@ -43,6 +41,8 @@ force-download:
 test: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "local", "test")'
 	echo "Local analysis" >> .runhistory
+	$(call upload_result,AnalysisResults,test-analysis-pp)
+	$(call upload_result,TrackAverages,test-averages-pp)
 	@make unlink || echo "Directory is clean"
 	# make compare
 
@@ -61,4 +61,11 @@ define link_sources
 	ln -s $(1)/*.h .
 	ln -s $(1)/$(2) .
 endef
+
+
+define upload_result
+	mv $(1).root $(2).root
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)
+endef
+
 

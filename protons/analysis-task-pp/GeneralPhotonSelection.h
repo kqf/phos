@@ -52,7 +52,7 @@ public:
 	void SetClusterMinEnergy(Float_t e) { fClusterMinE = e; }
 	void SetAsymmetryCut(Float_t a) { fAsymmetryCut = a; }
 	void SetTimingCut(Float_t t) { fTimingCut = t; }
-	void SetMinCellsInCluster(Float_t n) { fNCellsCut = t; }
+	void SetMinCellsInCluster(Float_t n) { fNCellsCut = n; }
 
 
 protected:
