@@ -12,11 +12,12 @@ import check_default
 class CheckParametrization(check_default.CheckDefault):
     def setUp(self):
         super(CheckParametrization, self).setUp()
-        g = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
+        # TODO: Fix this test later when Spectrum  class will be finished
+        g = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
         f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
         self.results = [
-                        f(TimecutInput('input-data/LHC16k-pass1.root', 'TimeTender', 'MassPtMainMain').read(), 'no param', self.mode),
-                        g(TimecutInput('input-data/LHC16k-pass1.root', 'TimeTender', 'MassPtMainMain').read(), 'param', self.mode)
+                        f(TimecutInput('input-data/LHC16.root', 'TimeTender', 'MassPtMainMain').read(), 'no param', self.mode),
+                        g(TimecutInput('input-data/LHC16.root', 'TimeTender', 'MassPtMainMain').read(), 'param', self.mode)
                        ]
 
 

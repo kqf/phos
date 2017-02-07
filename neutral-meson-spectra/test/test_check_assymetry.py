@@ -13,7 +13,7 @@ class TimecutOptimizer(unittest.TestCase):
         self.canvas = get_canvas()
 
     def testRanges(self):
-        inp = MetricInput('input-data/LHC16k-new.root', 'PhysTender', 'MassPtN3A')
+        inp = MetricInput('input-data/LHC16.root', 'QualTender', 'MassPtN3A')
 
         scale = lambda a : a.Scale(1. / a.Integral(a.FindBin(0.3), a.FindBin(0.7)))
 
