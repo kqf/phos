@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import ROOT
-from CrystalBall import Fit
+from parametrisation import CrystalBall
 from sutils import get_canvas
 
 class InvariantMass(object):
@@ -10,20 +10,18 @@ class InvariantMass(object):
         self.pt_range = pt_range 
         self.mass_range = mass_range
         self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
+        self.peak_function = CrystalBall(mass_range)
 
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
         self.mixed = self.extract_histogram(mixhist)
-
-        self.mass.Draw()
-        self.mixed.Draw('same')
-
 
     def extract_histogram(self, hist):
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
         # suff = 'mixed' if 'mix' in hist.GetName().lower() else 'real'
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
+        mass.SetLineColor(37)
         return mass
 
 
@@ -36,7 +34,7 @@ class InvariantMass(object):
         self.ratio.GetYaxis().SetTitle("Real/ Mixed")
         
         if self.ratio.GetEntries() == 0: return
-        fitf, bckgrnd = Fit(self.ratio)
+        fitf, bckgrnd = self.peak_function.fit(self.ratio)
 
         self.mixed.Multiply(bckgrnd)
         self.mixed.SetLineColor(46)
@@ -65,7 +63,7 @@ class InvariantMass(object):
     def extract_data(self):
         self.estimate_background()
         self.signal = self.substract_background()
-        return Fit(self.signal)
+        return self.peak_function.fit(self.signal)
 
 
     def draw_ratio(self, pad = 0):

@@ -60,6 +60,7 @@ class PtAnalyzer(object):
 
     def properties(self, mass, intgr_ranges):
         fitfun, background = mass.extract_data() 
+        if not (fitfun and background): return [[0, 0]] * 5
 
         # calculate pi0 values
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
