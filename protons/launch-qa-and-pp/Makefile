@@ -24,8 +24,7 @@ terminate: | %.cxx
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", kFALSE, kFALSE)' || make unlink
-	$(call upload_result,AnalysisResults,$(DATASET))
-	$(call upload_result,TrackAverages,TrackAverages.$(DATASET))
+	make upload
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
@@ -46,6 +45,10 @@ test: | %.cxx
 	@make unlink || echo "Directory is clean"
 	# make compare
 
+upload:
+	$(call upload_result,AnalysisResults,$(DATASET))
+	$(call upload_result,TrackAverages,TrackAverages.$(DATASET))
+
 clean:
 	rm *.so *.d *~ Task*
 
@@ -64,7 +67,7 @@ endef
 
 
 define upload_result
-	mv $(1).root $(2).root
+	# mv $(1).root $(2).root
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)
 endef
 

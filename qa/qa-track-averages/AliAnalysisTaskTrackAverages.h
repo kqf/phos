@@ -78,9 +78,9 @@ public:
 
 		Int_t run = event->GetRunNumber();
 
-		cout << "run: " << run << endl;
-		run = fRuns[5];
-
+		// Just to debug
+		// cout << "run: " << run << endl;
+		// run = fRuns[5];
 		Int_t bin = findRunBin(run);
 
 		// Primary vertex
