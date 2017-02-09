@@ -1,22 +1,21 @@
 imass:
 	$(ROOT_PYTHON) -m unittest test.test_invariant_mass
 
-
 images:
 	$(ROOT_PYTHON) run-pi0-spectrum.py
-	$(call save_images, my_map default, results/my-bmap-vs-tender.pdf)
+	# $(call save_images, my_map default, results/my-bmap-vs-tender.pdf)
 
 per-module:
 	$(ROOT_PYTHON) -m unittest test.test_check_different_modules
-	$(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, results/different-modules)
+	# $(call save_images, SM1SM1 SM1SM2 SM2SM2 SM2SM3 SM3SM3 SM3SM4 SM4SM4, results/different-modules)
 
 pileup:
 	$(ROOT_PYTHON) -m unittest test.test_check_pileup_contribution
-	$(call save_images, no_timecut 12.5_ns, results/no_timecut)
+	# $(call save_images, no_timecut 12.5_ns, results/no_timecut)
 
 assymetry:
 	$(ROOT_PYTHON) -m unittest test.test_check_assymetry
-	$(call save_images, no_timecut 12.5_ns, results/no_timecut)
+	# $(call save_images, no_timecut 12.5_ns, results/no_timecut)
 
 # These are experimental targets. These tests should be used with care.
 timecut:

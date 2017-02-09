@@ -2,7 +2,7 @@
 
 import ROOT
 from sutils import draw_and_save, nicely_draw, get_canvas, wait
-from InvariantMass import InvariantMass
+from invariantmass import InvariantMass
 
 class PtDependent(object):
     def __init__(self, name, title, label):
@@ -31,6 +31,7 @@ class PtAnalyzer(object):
 
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
+        self.dead_mode = ('dead' in mode)
         self.mass_range = (0.05, 0.3)
 
         ptbins = self.divide_into_bins()
@@ -89,6 +90,11 @@ class PtAnalyzer(object):
         histos = self.histograms(values)
         if self.show_img: map(nicely_draw, histos)
 
+        if not self.dead_mode:
+            self.draw_ratio()
+            self.draw_mass()
+            self.draw_signal()
+
         # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
@@ -98,16 +104,16 @@ class PtAnalyzer(object):
         canvas.Divide(m, n, 0, 0.01)
         for i, m in enumerate(self.masses):
             f(m, canvas.cd(i + 1))
-        wait(name, True, True)
+        wait(name + self.label, self.show_img)
 
     def draw_ratio(self, m = 6, n = 6, name = ''):
-        self.draw_all_bins(m, n, lambda x, y: x.draw_ratio(y), name)
+        self.draw_all_bins(m, n, lambda x, y: x.draw_ratio(y), 'ratio-')
 
     def draw_mass(self, m = 6, n = 6, name = ''):
-        self.draw_all_bins(m, n, lambda x, y: x.draw_mass(y), name)
+        self.draw_all_bins(m, n, lambda x, y: x.draw_mass(y), 'mass-')
 
     def draw_signal(self, m = 6, n = 6, name = ''):
-        self.draw_all_bins(m, n, lambda x, y: x.draw_signal(y), name)
+        self.draw_all_bins(m, n, lambda x, y: x.draw_signal(y), 'signal-')
 
 
 

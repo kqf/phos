@@ -5,7 +5,7 @@ def wait(name, draw, save = True, suffix = ''):
     canvas = get_canvas()
     canvas.Update()
     name = name.replace(' ', '_')
-    if save: canvas.SaveAs('results/' + name+ '.pdf')
+    if save: canvas.SaveAs('results/' + name + '.pdf')
 
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
     if draw: ROOT.gApplication.Run(True)

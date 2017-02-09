@@ -4,7 +4,7 @@ import ROOT
 
 from spectrum.spectrum import PtAnalyzer
 from spectrum.input import Input
-from spectrum.InvariantMass import InvariantMass
+from spectrum.invariantmass import InvariantMass
 from spectrum.sutils import wait
 
 class TestInvariantMassClass(unittest.TestCase):
@@ -17,13 +17,13 @@ class TestInvariantMassClass(unittest.TestCase):
         mass.extract_data()
 
         mass.draw_ratio()
-        wait('', True, True)
+        wait('inmass-test-ratio', True, True)
 
         mass.draw_mass()
-        wait('', True, True)
+        wait('inmass-test-mass', True, True)
         
         mass.draw_signal()
-        wait('', True, True)
+        wait('inmass-test-signal', True, True)
 
 
     def testMultiplePlots(self):
@@ -31,7 +31,3 @@ class TestInvariantMassClass(unittest.TestCase):
         infile = 'input-data/LHC16l.root'
         analyzer = f(Input(infile, 'PhysTender').read(), 'strict', 'q')
         analyzer.quantities()
-        analyzer.draw_ratio()
-        analyzer.draw_mass()
-        analyzer.draw_signal()
-   

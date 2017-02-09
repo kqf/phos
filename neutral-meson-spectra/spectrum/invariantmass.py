@@ -68,7 +68,7 @@ class InvariantMass(object):
 
     def draw_ratio(self, pad = 0):
         canvas = pad if pad else get_canvas()
-        canvas.SetTickx()
+        # canvas.SetTickx()
         canvas.SetTicky()  
         self.ratio.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
         self.ratio.Draw()
@@ -77,7 +77,7 @@ class InvariantMass(object):
 
     def draw_mass(self, pad = 0):
         canvas = pad if pad else get_canvas()
-        canvas.SetTickx()
+        # canvas.SetTickx()
         canvas.SetTicky() 
 
         self.mass.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
@@ -96,7 +96,7 @@ class InvariantMass(object):
         
     def draw_signal(self, pad = 0):
         canvas = pad if pad else get_canvas()
-        canvas.SetTickx()
+        # canvas.SetTickx()
         canvas.SetTicky() 
 
         self.signal.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
