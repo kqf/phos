@@ -22,7 +22,7 @@ class PtDependent(object):
         return hist 
 
 class PtAnalyzer(object):
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v'):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', particle = 'pi0'):
         super(PtAnalyzer, self).__init__()
 
         self.nevents, self.rawhist, self.rawmix = lst
@@ -32,12 +32,12 @@ class PtAnalyzer(object):
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
         self.dead_mode = ('dead' in mode)
-        self.mass_range = (0.05, 0.3)
+        self.ispi0 = 'pi0' in particle
 
         ptbins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
 
-        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x)
+        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x, self.ispi0)
         self.masses = map(f, pt_intervals)
 
 
@@ -67,7 +67,7 @@ class PtAnalyzer(object):
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
 
         # TODO: compare this to analytic formula.
-        a, b = intgr_ranges
+        a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
         nraw = fitfun.Integral(a, b), fitfun.IntegralError(a, b)
 
         sbkg = background.Integral(a, b)
@@ -82,7 +82,6 @@ class PtAnalyzer(object):
         return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), (sb, esb)
 
     def quantities(self, intgr_ranges = None):
-        if intgr_ranges == None: intgr_ranges = self.mass_range
         # Prepare Pt ranges and corresponding M_eff integration intervals
         values = map(lambda x: self.properties(x, intgr_ranges), self.masses)
 

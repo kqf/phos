@@ -1,9 +1,13 @@
+pi0:
+	$(ROOT_PYTHON) run-pi0-spectrum.py
+	# $(call save_images, my_map default, results/my-bmap-vs-tender.pdf)
+
+eta:
+	$(ROOT_PYTHON) run-eta-spectrum.py
+
 imass:
 	$(ROOT_PYTHON) -m unittest test.test_invariant_mass
 
-images:
-	$(ROOT_PYTHON) run-pi0-spectrum.py
-	# $(call save_images, my_map default, results/my-bmap-vs-tender.pdf)
 
 per-module:
 	$(ROOT_PYTHON) -m unittest test.test_check_different_modules

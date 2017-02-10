@@ -3,10 +3,25 @@
 import ROOT
 
 class PeakParametrization(object):
-    def __init__(self, fit_range):
+    def __init__(self, ispi0peak):
         super(PeakParametrization, self).__init__()
-        self.fit_range = fit_range
         ROOT.gStyle.SetOptFit()
+        self.ispi0peak = ispi0peak
+
+        # All "magic" numbers should be here 
+        # Constrains on pi0/eta spectrum
+        #
+        # TODO: Should I move these parameters to json/pickle file?
+
+        self.fit_range =         (0.05, 0.3)        if ispi0peak else (0.4, 6.8)
+
+        self.prel_mass_limits =  (0.1, 0.2)         if ispi0peak else (0.5, 0.6)
+        self.prel_width_limits = (0.004, 0.030)     if ispi0peak else (0.004, 0.030)
+        self.prel_range =        (0.105, 0.165)     if ispi0peak else (0.49, 0.6)
+        self.prel_paremeters =   (0.135, 0.010, 0.) if ispi0peak else (0.547, 0.010, 0.)
+
+        self.fit_mass_limits =   (0.12, 0.15)       if ispi0peak else (0.520, 0.570)
+        self.fit_width_limits =  (0.004, 0.030)     if ispi0peak else (0.004,0.050) 
 
     def fit(self):
         return None, None
@@ -15,10 +30,10 @@ class PeakParametrization(object):
         # make a preliminary fit to estimate parameters
         ff = ROOT.TF1("fastfit", "gaus(0) + [3]")
         ff.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
-        ff.SetParLimits(1, 0.1, 0.2)
-        ff.SetParLimits(2, 0.004,0.030)
-        ff.SetParameters(hist.GetMaximum()/3., 0.135, 0.010, 0.)
-        hist.Fit(ff, "0QL", "", 0.105, 0.165)
+        ff.SetParLimits(1, *self.prel_mass_limits)
+        ff.SetParLimits(2, *self.prel_width_limits)
+        ff.SetParameters(hist.GetMaximum()/3., *self.prel_paremeters)
+        hist.Fit(ff, "0QL", "", *self.prel_range)
         return [ff.GetParameter(i) for i in range(4)]
         
 
@@ -54,8 +69,8 @@ class CrystalBall(PeakParametrization):
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
         fitfun.SetParLimits(0, 0., hist.GetMaximum()*1.5)
-        fitfun.SetParLimits(1, 0.12, 0.15)
-        fitfun.SetParLimits(2, 0.004,0.030)
+        fitfun.SetParLimits(1, *self.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.fit_width_limits)
         fitfun.SetParameters(*self.preliminary_fit(hist))
         hist.Fit(fitfun,"QLR", "")
 

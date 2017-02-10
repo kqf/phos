@@ -5,12 +5,11 @@ from parametrisation import CrystalBall
 from sutils import get_canvas
 
 class InvariantMass(object):
-    def __init__(self, rawhist, mixhist, pt_range, mass_range = (0.05, 0.3)):
+    def __init__(self, rawhist, mixhist, pt_range, ispi0peak):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
-        self.mass_range = mass_range
         self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
-        self.peak_function = CrystalBall(mass_range)
+        self.peak_function = CrystalBall(ispi0peak)
 
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
@@ -48,7 +47,7 @@ class InvariantMass(object):
         # Substract 
         signal = self.mass.Clone()
         signal.Add(self.mass, self.mixed, 1., -1.)
-        signal.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
+        signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         signal.GetYaxis().SetTitle("Real - Mixed")
 
         # Reset zero bins
@@ -70,7 +69,7 @@ class InvariantMass(object):
         canvas = pad if pad else get_canvas()
         # canvas.SetTickx()
         canvas.SetTicky()  
-        self.ratio.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
+        self.ratio.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         self.ratio.Draw()
         canvas.Update()
 
@@ -80,7 +79,7 @@ class InvariantMass(object):
         # canvas.SetTickx()
         canvas.SetTicky() 
 
-        self.mass.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
+        self.mass.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         legend = ROOT.TLegend(0.6, 0.6, 0.8, 0.8)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
@@ -99,6 +98,6 @@ class InvariantMass(object):
         # canvas.SetTickx()
         canvas.SetTicky() 
 
-        self.signal.SetAxisRange(1.5 * self.mass_range[0], 0.85 * self.mass_range[1])
+        self.signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         self.signal.Draw()
         canvas.Update()
