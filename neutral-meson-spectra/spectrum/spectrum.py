@@ -43,6 +43,8 @@ class PtAnalyzer(object):
 
     def divide_into_bins(self):
         bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
+        # if not self.ispi0: bins = [1.0, 40]
+        if not self.ispi0: bins = [1.0, 2.0, 3., 4., 6, 8, 10, 15, 20]
         return bins
 
     def histograms(self, data):
@@ -105,14 +107,17 @@ class PtAnalyzer(object):
             f(m, canvas.cd(i + 1))
         wait(name + self.label, self.show_img)
 
-    def draw_ratio(self, m = 6, n = 6, name = ''):
-        self.draw_all_bins(m, n, lambda x, y: x.draw_ratio(y), 'ratio-')
+    def draw_ratio(self, name = ''):
+        m, n = (6, 6) if self.ispi0 else (3, 3)
+        self.draw_all_bins(m, n, lambda x, y: x.draw_ratio(y), 'multiple-ratio-')
 
-    def draw_mass(self, m = 6, n = 6, name = ''):
-        self.draw_all_bins(m, n, lambda x, y: x.draw_mass(y), 'mass-')
+    def draw_mass(self, name = ''):
+        m, n = (6, 6) if self.ispi0 else (3, 3)
+        self.draw_all_bins(m, n, lambda x, y: x.draw_mass(y), 'multiple-mass-')
 
-    def draw_signal(self, m = 6, n = 6, name = ''):
-        self.draw_all_bins(m, n, lambda x, y: x.draw_signal(y), 'signal-')
+    def draw_signal(self, name = ''):
+        m, n = (6, 6) if self.ispi0 else (3, 3)
+        self.draw_all_bins(m, n, lambda x, y: x.draw_signal(y), 'multiple-signal-')
 
 
 

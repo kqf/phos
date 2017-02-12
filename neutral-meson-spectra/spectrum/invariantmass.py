@@ -14,6 +14,9 @@ class InvariantMass(object):
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
         self.mixed = self.extract_histogram(mixhist)
+        # self.mass.Rebin(5)
+        # self.mixed.Rebin(5)
+
 
     def extract_histogram(self, hist):
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
