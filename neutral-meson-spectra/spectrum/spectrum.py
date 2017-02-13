@@ -85,7 +85,8 @@ class PtAnalyzer(object):
 
     def quantities(self, intgr_ranges = None):
         # Prepare Pt ranges and corresponding M_eff integration intervals
-        values = map(lambda x: self.properties(x, intgr_ranges), self.masses)
+        if not intgr_ranges: intgr_ranges = [None] * len(self.masses)
+        values = map(lambda x, i: self.properties(x, i), self.masses, intgr_ranges)
 
         # Create hitograms
         histos = self.histograms(values)
@@ -96,7 +97,7 @@ class PtAnalyzer(object):
             self.draw_mass()
             self.draw_signal()
 
-        # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
+        print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
     def draw_all_bins(self, m = 6, n = 6, f = lambda x, y: x.draw_ratio(y), name = ''):
@@ -136,14 +137,16 @@ class Spectrum(object):
     def fit_ranges(self, quantities):
         mass, sigma = quantities[0:2]
         canvas = ROOT.gROOT.FindObject('c1')
+        canvas.Clear()
         fitsigma = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
         # fitsigma = ROOT.TF1("fitsigma", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
         sigma.Draw()
-        fitsigma.SetParameter(0, 0.11 * 0.11)
-        fitsigma.SetParameter(1, 0.006)
-        fitsigma.SetParameter(2, 0)
-        fitsigma.SetParameter(3, 0)
-        sigma.Fit(fitsigma, "qr")
+        fitsigma.SetParameter(0, -4.13409)
+        fitsigma.SetParameter(1, -1.48850)
+        fitsigma.SetParameter(2, 6.26014)
+        fitsigma.SetParameter(3, 4.10645)
+
+        sigma.Fit(fitsigma, "r")
         draw_and_save([sigma], draw=True, suffix= self.analyzer.label)
 
         # canvas.Clear()
@@ -154,11 +157,11 @@ class Spectrum(object):
         # ofile = ROOT.TFile('fitmass.root', 'recreate')
         # mass.Write()
         # ofile.Close()
-        fitmass.SetParameter(0, 0.11 * 0.11)
-        fitmass.SetParameter(1, 0.006)
-        fitmass.SetParameter(2, 0)
-        fitmass.SetParameter(3, 0)
-        mass.Fit(fitmass, "qr")
+        fitmass.SetParameter(0, -4.87478)
+        fitmass.SetParameter(1, -2.59293)
+        fitmass.SetParameter(2, 1.63005)
+        fitmass.SetParameter(3, 0.137747)
+        mass.Fit(fitmass, "r")
 
         # fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
         # fitmass.SetParameter(0, 10.99)

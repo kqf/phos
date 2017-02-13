@@ -14,8 +14,8 @@ class InvariantMass(object):
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
         self.mixed = self.extract_histogram(mixhist)
-        # self.mass.Rebin(5)
-        # self.mixed.Rebin(5)
+        self.sigf, self.bgrf = None, None
+
 
 
     def extract_histogram(self, hist):
@@ -24,16 +24,20 @@ class InvariantMass(object):
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
+        # mass.Rebin(5)
+        # mass.Scale(1./ 5)
         return mass
 
 
     def estimate_background(self):
         if self.mass.GetEntries() == 0: return
+        zero_bins = [i for i in range(1, self.mass.GetNbinsX()) if self.mass.GetBinContent(i) < 0.00001]
 
         # Divide real/mixed
         self.ratio = self.mass.Clone()
         self.ratio.Divide(self.mixed)
         self.ratio.GetYaxis().SetTitle("Real/ Mixed")
+        [self.ratio.SetBinContent(i, 0) for i in zero_bins]
         
         if self.ratio.GetEntries() == 0: return
         fitf, bckgrnd = self.peak_function.fit(self.ratio)
@@ -55,17 +59,15 @@ class InvariantMass(object):
 
         # Reset zero bins
         [signal.SetBinContent(i, 0) for i in zero_bins]
-
-        # Take into account the statistics
-        if len(zero_bins) > 410: signal.Rebin(2)
-        if len(zero_bins) > 600: signal.Rebin(2)
         return signal
 
 
     def extract_data(self):
-        self.estimate_background()
-        self.signal = self.substract_background()
-        return self.peak_function.fit(self.signal)
+        if not (self.sigf and self.bgrf):
+            self.estimate_background()
+            self.signal = self.substract_background()
+            self.sigf, self.bgrf = self.peak_function.fit(self.signal)
+        return self.sigf, self.bgrf
 
 
     def draw_ratio(self, pad = 0):

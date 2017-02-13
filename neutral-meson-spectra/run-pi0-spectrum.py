@@ -8,13 +8,13 @@ from spectrum.sutils import get_canvas
 
 def main():
     c1 = get_canvas()
-    # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
+    g = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
     infile = 'input-data/LHC16.root'
     results = [
                f(Input(infile, 'PhysTender').read(), 'strict', 'q'), 
-               f(Input(infile, 'PhysOnlyTender').read(), 'standard', 'q')
+               g(Input(infile, 'PhysTender').read(), '5#sigma', 'q')
               ]
 
     import spectrum.comparator as cmpr
