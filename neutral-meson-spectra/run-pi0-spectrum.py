@@ -13,8 +13,8 @@ def main():
 
     infile = 'input-data/LHC16.root'
     results = [
-               f(Input(infile, 'PhysTender').read(), 'strict', 'q'), 
-               g(Input(infile, 'PhysTender').read(), '5#sigma', 'q')
+               g(Input(infile, 'PhysTender').read(), '5#sigma', 'q'), 
+               g(Input(infile, 'PhysTender').read(), 'strict', 'q')
               ]
 
     import spectrum.comparator as cmpr

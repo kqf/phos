@@ -52,19 +52,27 @@ class CrystalBall(PeakParametrization):
         b = n / alpha - alpha
         return alpha, n, a, b
 
-    def fit(self, hist):
-        if (not hist) or (hist.GetEntries() == 0): return None, None
-        alpha, n, a, b = self.cb_parameters()
 
+    def form_fitting_function(self, name = 'cball'):
         # signal (crystal ball)
+        alpha, n, a, b = self.cb_parameters()
         emin, emax = self.fit_range 
         signal = ROOT.TF1("cball", "(x-[1])/[2] > -%f ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%f*(%f-(x-[1])/[2])^(-%f)" % (alpha, a, b, n) )
 
+        return signal
+
+ 
+    def fit(self, hist):
+        if (not hist) or (hist.GetEntries() == 0): return None, None
+
+        # Initiate signal function
+        signal = self.form_fitting_function('cball')
+
         # background
-        background = ROOT.TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", emin, emax)
+        background = ROOT.TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", *self.fit_range)
 
         # signal + background
-        fitfun = ROOT.TF1("fitfun", "cball + mypol2", emin, emax)
+        fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.fit_range)
         fitfun.SetParNames("A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}")
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)

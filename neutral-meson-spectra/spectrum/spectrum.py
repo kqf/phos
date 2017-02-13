@@ -52,8 +52,7 @@ class PtAnalyzer(object):
         histgenerators = [PtDependent('mass', '#pi^{0} mass position;;m, GeV/c^{2}', self.label),
                           PtDependent('width', '#pi^{0} peak width ;;#sigma, GeV/c^{2}', self.label),
                           PtDependent('spectrum', 'raw #pi^{0} spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}', self.label),  
-                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label),
-                          PtDependent('signalbkgrnd', ' S_{signal} / S_{bkgrnd} (p_{T});; signal / bkgr', self.label) ]
+                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label)]
 
         # Extract bins
         ptedges = self.divide_into_bins()
@@ -61,27 +60,32 @@ class PtAnalyzer(object):
         # Extract the data
         return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
 
+    def number_of_mesons(self, mass, intgr_ranges):
+        fitfun, background = mass.extract_data() 
+        a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
+        if self.label == 'testsignal':
+            return fitfun.Integral(a, b), fitfun.IntegralError(a, b)
+
+        area, areae = ROOT.Double(), ROOT.Double()
+        bin = lambda x: mass.signal.FindBin(x)
+        area = mass.signal.IntegralAndError(bin(a), bin(b), areae)
+
+        if self.label == 'strict':
+            area = sum(mass.signal.GetBinContent(i) for i in range(mass.signal.GetNbinsX()) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)
+            return area, areae
+
+        return area, areae
+
+
     def properties(self, mass, intgr_ranges):
         fitfun, background = mass.extract_data() 
         if not (fitfun and background): return [[0, 0]] * 5
-
         # calculate pi0 values
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
-
-        # TODO: compare this to analytic formula.
-        a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
-        nraw = fitfun.Integral(a, b), fitfun.IntegralError(a, b)
-
-        sbkg = background.Integral(a, b)
-        # esbkg = background.IntegralError(a, b)
-        esbkg = abs(sbkg) ** 0.5 
-
-        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
-        sb = nraw[0] / sbkg if sbkg != 0 else 0
-        esb = sb * ((nraw[1] / nraw[0])**2 + (esbkg/ sbkg)** 2) ** 0.5 if sbkg != 0  and nraw[0] !=0 else 0
-
+        nraw = self.number_of_mesons(mass, intgr_ranges)
         nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * ROOT.TMath.Pi()), nraw)
-        return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), (sb, esb)
+        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
+        return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0)
 
     def quantities(self, intgr_ranges = None):
         # Prepare Pt ranges and corresponding M_eff integration intervals
@@ -124,7 +128,7 @@ class PtAnalyzer(object):
 
 
 class Spectrum(object):
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 3):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
         self.analyzer = PtAnalyzer(lst, label, mode)
