@@ -1,4 +1,4 @@
-DATASET = LHC16k-pass1
+DATASET = LHC16j-muon-calo-pass1
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
@@ -67,7 +67,7 @@ endef
 
 
 define upload_result
-	# mv $(1).root $(2).root
+	mv $(1).root $(2).root
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)
 endef
 

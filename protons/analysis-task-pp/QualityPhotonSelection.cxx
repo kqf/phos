@@ -162,9 +162,8 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		Int_t ddlID = WhichDDL(sm, x) ;
 		Double_t time = clus->GetTOF() ;
 
-		//
-		// There should be some amplitude;
-		//	   if (amplitude > 1.)
+		// timeDDL is worth checking only with timing cut
+		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
 
 		if (p.E() > 1.)
 			FillHistogram(Form("timeDLL%d", ddlID),  float(eflags.BC % 4), time);
