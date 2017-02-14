@@ -70,7 +70,7 @@ class PtAnalyzer(object):
         bin = lambda x: mass.signal.FindBin(x)
         area = mass.signal.IntegralAndError(bin(a), bin(b), areae)
 
-        if self.label == 'strict':
+        if self.label == 'manual':
             area = sum(mass.signal.GetBinContent(i) for i in range(mass.signal.GetNbinsX()) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)
             return area, areae
 
@@ -101,7 +101,7 @@ class PtAnalyzer(object):
             self.draw_mass()
             self.draw_signal()
 
-        print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
+        # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
     def draw_all_bins(self, m = 6, n = 6, f = lambda x, y: x.draw_ratio(y), name = ''):
@@ -139,9 +139,17 @@ class Spectrum(object):
         return self.analyzer.quantities(ranges)
 
     def fit_ranges(self, quantities):
+        ROOT.gStyle.SetOptStat('')
         mass, sigma = quantities[0:2]
         canvas = ROOT.gROOT.FindObject('c1')
         canvas.Clear()
+        canvas.Divide(1, 2)
+        pad = canvas.cd(1)
+        pad.SetTickx()
+        pad.SetTicky() 
+        pad.SetGridx()
+        pad.SetGridy()
+
         fitsigma = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
         # fitsigma = ROOT.TF1("fitsigma", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
         sigma.Draw()
@@ -149,12 +157,19 @@ class Spectrum(object):
         fitsigma.SetParameter(1, -1.48850)
         fitsigma.SetParameter(2, 6.26014)
         fitsigma.SetParameter(3, 4.10645)
+        fitsigma.SetLineColor(46)
 
         sigma.Fit(fitsigma, "r")
-        draw_and_save([sigma], draw=True, suffix= self.analyzer.label)
+        sigma.SetLineColor(38)
+        # draw_and_save([sigma], draw=True, suffix= self.analyzer.label)
 
         # canvas.Clear()
 
+        pad = canvas.cd(2)
+        pad.SetTickx()
+        pad.SetTicky() 
+        pad.SetGridx()
+        pad.SetGridy()
         mass.Draw()
         fitmass = ROOT.TF1("fitmass", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
         # fitmass = ROOT.TF1("fitmass", "TMath::Sqrt([0] * [0] + [1] * [1] / x * x  + [2] * [2] * x * x)", sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
@@ -165,18 +180,18 @@ class Spectrum(object):
         fitmass.SetParameter(1, -2.59293)
         fitmass.SetParameter(2, 1.63005)
         fitmass.SetParameter(3, 0.137747)
+        fitmass.SetLineColor(46)
         mass.Fit(fitmass, "r")
+        mass.SetLineColor(38)
 
-        # fitmass = ROOT.TF1("fitmass", "[0] + [1] * x  - expo(2)", 0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
-        # fitmass.SetParameter(0, 10.99)
-        # fitmass.SetParameter(1, 0.037)
-        # fitmass.SetParameter(2, 2.38)
-        # fitmass.SetParameter(3, 0.0033)
-        # mass.Fit(fitmass, "qr")
-        draw_and_save([mass], draw=True, suffix= self.analyzer.label)
+
+        # draw_and_save([mass], draw=True, suffix= self.analyzer.label)
         if canvas: canvas.Update()
         mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
-                                 fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt)) 
+                                 fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt))
+
+
+        wait("peak-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
