@@ -2,10 +2,14 @@
 
 import ROOT
 
-		# tpc.Draw()
-		# canvas = ROOT.gROOT.FindObject('c1')
-		# canvas.Update()
-		# raw_input('...')
+
+def draw_histogram(hist):
+    pad = ROOT.gPad
+    hist.Draw()
+    pad.SetTickx()
+    pad.SetTicky() 
+    pad.SetGridx()
+    pad.SetGridy()
 
 
 class TrackAverager(object):
@@ -33,22 +37,33 @@ class TrackAverager(object):
 		return average
 
 	def compare_to(self, filename):
+		ROOT.gStyle.SetOptStat('')
 		infile = ROOT.TFile(filename)
 		mhsit = infile.Get('hAvNCluster_NC1_Emin=0.30GeV_corr4accept')
-		canvas = ROOT.TCanvas('c1', 'test', 800, 500)
+		canvas = ROOT.TCanvas('c1', 'test', 128 * 6, 96 * 6)
+
 		canvas.Divide(1, 3)
 		canvas.cd(1)
-		mhsit.Draw()
+		draw_histogram(mhsit)
+		# mhsit.Draw()
 
 		tpc, emcal = self.read_data()
 		canvas.cd(2)
-		tpc.Draw()
 		tpc.GetXaxis().SetLabelSize(0.06)
+		tpc.GetYaxis().SetTitleSize(0.06)
+		tpc.GetYaxis().SetTitleOffset(0.3)
+		tpc.GetYaxis().SetTitle('Number of TPC tracks')
+		tpc.Draw()
+		draw_histogram(tpc)
 
 		canvas.cd(3)
-		emcal.Draw()
 		emcal.GetXaxis().SetLabelSize(0.06)
+		emcal.GetYaxis().SetTitleSize(0.06)
+		emcal.GetYaxis().SetTitleOffset(0.3)
+		emcal.GetYaxis().SetTitle('Number of EMCal clusters')
+		draw_histogram(emcal)
 		canvas.Update()
+		canvas.SaveAs('track-averages.pdf')
 		raw_input('Press enter to continue')
 
   

@@ -70,7 +70,7 @@ class PtAnalyzer(object):
         bin = lambda x: mass.signal.FindBin(x)
         area = mass.signal.IntegralAndError(bin(a), bin(b), areae)
 
-        if self.label == 'manual':
+        if self.label == 'naive':
             area = sum(mass.signal.GetBinContent(i) for i in range(mass.signal.GetNbinsX()) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)
             return area, areae
 
@@ -105,7 +105,7 @@ class PtAnalyzer(object):
         return histos
 
     def draw_all_bins(self, m = 6, n = 6, f = lambda x, y: x.draw_ratio(y), name = ''):
-        canvas = get_canvas()
+        canvas = get_canvas(1, 1, True)
         canvas.Clear()
         canvas.Divide(m, n, 0, 0.01)
         for i, m in enumerate(self.masses):
@@ -141,10 +141,10 @@ class Spectrum(object):
     def fit_ranges(self, quantities):
         ROOT.gStyle.SetOptStat('')
         mass, sigma = quantities[0:2]
-        canvas = ROOT.gROOT.FindObject('c1')
-        canvas.Clear()
-        canvas.Divide(1, 2)
-        pad = canvas.cd(1)
+        canvas = get_canvas(1./ 2., 1, True)
+        # canvas.Clear()
+        canvas.Divide(1, 1, 0.001, 0.001)
+        pad = canvas.cd()
         pad.SetTickx()
         pad.SetTicky() 
         pad.SetGridx()
@@ -158,14 +158,16 @@ class Spectrum(object):
         fitsigma.SetParameter(2, 6.26014)
         fitsigma.SetParameter(3, 4.10645)
         fitsigma.SetLineColor(46)
+        fitsigma.SetParNames("a", "b", "c", "d")
 
         sigma.Fit(fitsigma, "r")
         sigma.SetLineColor(38)
+        wait("width-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
         # draw_and_save([sigma], draw=True, suffix= self.analyzer.label)
 
         # canvas.Clear()
 
-        pad = canvas.cd(2)
+        pad = canvas.cd()
         pad.SetTickx()
         pad.SetTicky() 
         pad.SetGridx()
@@ -181,6 +183,7 @@ class Spectrum(object):
         fitmass.SetParameter(2, 1.63005)
         fitmass.SetParameter(3, 0.137747)
         fitmass.SetLineColor(46)
+        fitmass.SetParNames("a", "b", "c", "d")
         mass.Fit(fitmass, "r")
         mass.SetLineColor(38)
 
@@ -191,7 +194,7 @@ class Spectrum(object):
                                  fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt))
 
 
-        wait("peak-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
+        wait("mass-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 

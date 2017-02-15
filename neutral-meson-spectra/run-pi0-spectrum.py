@@ -7,7 +7,6 @@ from spectrum.input import Input, ExampleInput
 from spectrum.sutils import get_canvas
 
 def main():
-    c1 = get_canvas()
     g = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
@@ -17,6 +16,7 @@ def main():
                g(Input(infile, 'PhysOnlyTender').read(), 'tender', 'q')
               ]
 
+    c1 = get_canvas(1/2.)
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()
     diff.compare_set_of_histograms(results)
