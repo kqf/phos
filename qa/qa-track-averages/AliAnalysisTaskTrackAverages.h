@@ -20,6 +20,8 @@ public:
 	AliAnalysisTaskTrackAverages():
 		AliAnalysisTaskSE(),
 		fOutputContainer(0),
+		fHybridTPC(0),
+		fComplementaryTPC(0),
 		fTracksTPC(0),
 		fClustersEMCal(0),
 		fETracksTPC(0),
@@ -32,6 +34,8 @@ public:
 	AliAnalysisTaskTrackAverages(const char * name):
 		AliAnalysisTaskSE(name),
 		fOutputContainer(0),
+		fHybridTPC(0),
+		fComplementaryTPC(0),
 		fTracksTPC(0),
 		fClustersEMCal(0),
 		fETracksTPC(0),
@@ -50,14 +54,20 @@ public:
 
 		fEvents = new TH1F("hEvents", "Number of events per run index", fNRuns, -0.5, fNRuns - 0.5);
 
-		fTracksTPC = new TH1F("hTracksTPC", "Total number of TPC tracks", fNRuns, -0.5, fNRuns - 0.5);
+		fComplementaryTPC = new TH1F("hComplementaryTPC", "Total number of complementary TPC tracks", fNRuns, -0.5, fNRuns - 0.5);
+		fHybridTPC = new TH1F("hHybridTPC", "Total number of hybrid TPC tracks", fNRuns, -0.5, fNRuns - 0.5);
+		fTracksTPC = new TH1F("hTracksTPC", "Total number of global TPC tracks", fNRuns, -0.5, fNRuns - 0.5);
 		fClustersEMCal = new TH1F("hClustersEMCal", "Total number of EMCal clusters", fNRuns, -0.5, fNRuns - 0.5);
 
 		fETracksTPC = new TH1F("hETracksTPC", "Average energy of TPC tracks per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
 		fEClustersEMCal = new TH1F("hEClustersEMCal", "Average energy of EMCal clusters per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
 
+		fETracksTPC = new TH1F("hETracksTPC", "Average energy of TPC tracks per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
+
 
 		fOutputContainer->Add(DecorateHistogram(fEvents));
+		fOutputContainer->Add(DecorateHistogram(fComplementaryTPC));
+		fOutputContainer->Add(DecorateHistogram(fHybridTPC));
 		fOutputContainer->Add(DecorateHistogram(fTracksTPC));
 		fOutputContainer->Add(DecorateHistogram(fClustersEMCal));
 		fOutputContainer->Add(DecorateHistogram(fETracksTPC));
@@ -108,7 +118,7 @@ public:
 			if (!cluster->IsEMCAL())
 				continue;
 
-			if (cluster->GetNCells() < 1)
+			if (cluster->GetNCells() < 3)
 				continue;
 
 			if (cluster->E() < 0.3)
@@ -124,19 +134,41 @@ public:
 		AliAODEvent * aod = dynamic_cast < AliAODEvent *>(event);
 		if (!aod) return;
 
-		Int_t ntracks = 0;
-		Int_t energy_tpc = 0;
-		for ( Int_t i = 0; i < aod->GetNumberOfTracks(); ++i)
+		Int_t NHybrid = 0;
+		Int_t NGlobal = 0;
+		Int_t NComplementary = 0;
+		Int_t energyGlobal = 0;
+
+		for (Int_t i = 0; i < fEvent->GetNumberOfTracks(); i++)
 		{
-			AliAODTrack * track = static_cast < AliAODTrack * >(aod->GetTrack(i));
-			if (! track ) continue ;
-			++ntracks;
-			energy_tpc += track->E();
+			AliAODTrack *track = dynamic_cast<AliAODTrack*>(fEvent->GetTrack(i));
+
+			if (TMath::Abs(track->Eta()) > 0.8)
+				continue;
+
+			if (track->P() < 0.3)
+				continue;
+
+			if (track->IsHybridGlobalConstrainedGlobal()) //hybrid track
+				++NHybrid;
+
+			if (track->IsHybridGlobalConstrainedGlobal() && track->IsGlobalConstrained()) //hybrid track
+				++NComplementary;
+
+			if (track->IsHybridGlobalConstrainedGlobal() && !track->IsGlobalConstrained()) //hybrid track
+			{
+				++NGlobal;
+				energyGlobal += track->E();
+			}
 		}
 
-		fTracksTPC->Fill(bin, ntracks);
+		fComplementaryTPC->Fill(bin, NComplementary);
+		fHybridTPC->Fill(bin, NHybrid);
+		fTracksTPC->Fill(bin, NGlobal);
+		
 		if (ntracks)
-			fETracksTPC->Fill(bin, energy_tpc / ntracks);
+			fETracksTPC->Fill(bin, energyGlobal / NGlobal);
+
 		fEvents->Fill(bin);
 
 		PostData(1, fOutputContainer);
@@ -183,6 +215,8 @@ public:
 
 private:
 	TList * fOutputContainer; //!
+	TH1F * fComplementaryTPC; //!
+	TH1F * fHybridTPC; //!
 	TH1F * fTracksTPC; //!
 	TH1F * fETracksTPC; //!
 	TH1F * fEClustersEMCal; //!
