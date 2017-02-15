@@ -5,6 +5,11 @@
         "LHC16k-pass1.root/TimeTender/hClusterTime0": {"label": "clean x3", "color": 46, "normalize": 3, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"}
     },
 
+    "hitmap": 
+    {
+        "LHC16.root/QualTender/hCluNXZM_0_SM%d": {"label": "strict-map", "color": 46, "normalize": 0, "title": "Number of hits in module 1; x; z"},
+        "LHC16.root/QualOnlyTender/hCluNXZM_0_SM%d": {"label": "only-tender-map", "color": 46, "normalize": 0, "title": "Number of hits in module 1; x; z"}
+    },
     "canvas":
     {
         "size":  5,
