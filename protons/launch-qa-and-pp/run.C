@@ -53,14 +53,14 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16.root");
+        PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
         // There is no need to download QA when we use don't use JDL
         if (useJDL)
             files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## 12.5ns timecut, checking performance of the new map of bad channels ## tender", "Tender", "", excells, nexc);
-        AddAnalysisTaskPP(AliVEvent::kINT7, period + "## 12.5ns timecut, checking performance of the new map of bad channels ## only tender", "OnlyTender", "", 0, 0);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## Updated BMap, 12.5ns timecut, checking performance of the new map of bad channels ## tender", "Tender", "", excells, nexc);
+        AddAnalysisTaskPP(AliVEvent::kINT7, period + "## Updated BMap, 12.5ns timecut, checking performance of the new map of bad channels ## only tender", "OnlyTender", "", 0, 0);
         files += AddAnalysisTaskTrackAverages(good_runs, nruns);
     }
 

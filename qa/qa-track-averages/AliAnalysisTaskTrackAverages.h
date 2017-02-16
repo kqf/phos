@@ -139,9 +139,9 @@ public:
 		Int_t NComplementary = 0;
 		Int_t energyGlobal = 0;
 
-		for (Int_t i = 0; i < fEvent->GetNumberOfTracks(); i++)
+		for (Int_t i = 0; i < event->GetNumberOfTracks(); i++)
 		{
-			AliAODTrack *track = dynamic_cast<AliAODTrack*>(fEvent->GetTrack(i));
+			AliAODTrack *track = dynamic_cast<AliAODTrack*>(event->GetTrack(i));
 
 			if (TMath::Abs(track->Eta()) > 0.8)
 				continue;
@@ -166,7 +166,7 @@ public:
 		fHybridTPC->Fill(bin, NHybrid);
 		fTracksTPC->Fill(bin, NGlobal);
 		
-		if (ntracks)
+		if (NGlobal)
 			fETracksTPC->Fill(bin, energyGlobal / NGlobal);
 
 		fEvents->Fill(bin);
@@ -215,8 +215,8 @@ public:
 
 private:
 	TList * fOutputContainer; //!
-	TH1F * fComplementaryTPC; //!
 	TH1F * fHybridTPC; //!
+	TH1F * fComplementaryTPC; //!
 	TH1F * fTracksTPC; //!
 	TH1F * fETracksTPC; //!
 	TH1F * fEClustersEMCal; //!

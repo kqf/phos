@@ -1,4 +1,4 @@
-DATASET = LHC16j-muon-calo-pass1
+DATASET = LHC16k-pass1
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
@@ -9,10 +9,9 @@ grid: | %.cxx
 	make unlink
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 	@# Add all necessary taks
-	$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C)
-	ln -s ../analysis-task-pp/*.cxx .
-	$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C)
-	$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C)
+	$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
+	$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C "*.h" "*.cxx")
+	$(call link_sources,../../qa/qa-track-averages,"*.h" AddAnalysisTaskTrackAverages.C)
 
 unlink:
 	find -type l -delete
@@ -61,8 +60,9 @@ endef
 
 
 define link_sources
-	ln -s $(1)/*.h .
-	ln -s $(1)/$(2) .
+	for file in $(2); do \
+		ln -s $(1)/$$file .; \
+	done
 endef
 
 
