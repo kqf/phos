@@ -2,42 +2,56 @@
 
 import ROOT
 
-class ExctractNoisy(object):
+class XZExtractor(object):
     def __init__(self, filename, function, name):
-        super(ExctractNoisy, self).__init__()
+        super(XZExtractor, self).__init__()
         self.modules = self.read(filename, function, name)
         self.cells = [[]]
 
-    def noisy_cells(self, hists, threshold):
-        return [[[x, z, i + 1] for x in range(h.GetNbinsX()) for z in range(h.GetNbinsY()) if h.GetBinContent(x + 1, z + 1) > threshold] for i, h in enumerate(hists)]
+    def noisy_cells(self, hists, thresholds):
+        """
+                The output of function can be used directly to remove noisy cells.
+                There is no need to add + 1 to the coordinates
+        """
+        return [[[x + 1, z + 1, i + 1] for x in range(h.GetNbinsX()) for z in range(h.GetNbinsY()) if h.GetBinContent(x + 1, z + 1) > threshold] for i, (h, threshold) in enumerate(zip(hists, thresholds))]
 
-    def inspect(self, threshold = 2000):
-        self.cells = self.noisy_cells(self.modules, threshold)
-        for h, cells in zip(self.modules, self.cells):
-            for cell in cells: h.SetBinContent(cell[0] + 1, cell[1] + 1, 0)
-            # h.Draw('lego')
-            # ROOT.gROOT.FindObject('c1').Update()
-            # raw_input('')
+    def inspect(self, thresholds):
+        ROOT.gStyle.SetOptStat('')
+        self.cells = self.noisy_cells(self.modules, thresholds)
+        for i, (h, cells) in enumerate(zip(self.modules, self.cells)):
+            for cell in cells: h.SetBinContent(cell[0], cell[1], 0)
+            h.Draw('colz')
+            canvas = ROOT.gROOT.FindObject('c1')
+            canvas.Update()
+            canvas.SaveAs('mod%d' %i + '.png')
+            print ',\n'.join(map(str, cells)) + ',' ,' //',  len(cells),  'cells in the module %d' % i
+            raw_input('')
+
+        self.save('updated-hitmap.root', "HitMapCleaned%d", False)
 
     def read(self, filename, function, name):
         inlist = function(ROOT.TFile(filename))
         histograms = [inlist.FindObject(name % i) for i in range(1, 5)]
         return histograms
 
-    def save(self, ofilename, oname):
+    def save(self, ofilename, oname, noisy_only = True):
+        """
+                By default this function saves only noisy cells.
+                This can be canged usingoption noisy_only = False.
+        """
         ofile = ROOT.TFile(ofilename, 'recreate')
 
         outhists = [h.Clone(oname % (i + 1)) for i, h in enumerate(self.modules)]
         for h, cells in zip(outhists, self.cells):
-            h.Reset()
-            for cell in cells: h.SetBinContent(cell[0] + 1, cell[1] + 1, 1)
+            if noisy_only: h.Reset()
+            for cell in cells: h.SetBinContent(cell[0], cell[1], noisy_only * 1.)
             # h.Write()
 
         ofile.Write()
         ofile.Close()
 
 
-class AbsIdExtractor(ExctractNoisy):
+class AbsIdExtractor(XZExtractor):
     def __init__(self, filename, function, name, tolerance = 3):
         super(AbsIdExtractor, self).__init__(filename, function, name)
         # Number of cells that are neighboring
@@ -74,18 +88,18 @@ def are_close(a, b, tol):
 
 
 def main():
-    infile = 'LHC16o.root'
+    infile = 'LHC16.root'
 
     print '// Low energy noise'
-    extractor_low = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_0_SM%d', tolerance = 2)
-    extractor_low.inspect([3750, 6530, 8300, 8000])
+    extractor_low = XZExtractor(infile, lambda x: x.QualOnlyTender, 'hCluNXZM_0_SM%d')
+    extractor_low.inspect([35000] * 4)
 
     print 
     print '// Now high energy noise'
     print 
 
-    extractor_high = AbsIdExtractor(infile, lambda x: x.PhysTender, 'hClusterIdN_1_SM%d', tolerance = 0)
-    extractor_high.inspect([7000, 2500, 6300, 6000])
+    extractor_high = AbsIdExtractor(infile, lambda x: x.QualOnlyTender, 'hCluNXZM_1_SM%d')
+    extractor_high.inspect([10000] * 4)
 
     # extractor.save('very-noisy-cells-LHC16k.root', 'PHOS_BadMap_mod%d')
 

@@ -20,6 +20,7 @@ class PeakParametrization(object):
         self.prel_range =        (0.105, 0.165)     if ispi0peak else (0.49, 0.6)
         self.prel_paremeters =   (0.135, 0.010, 0.) if ispi0peak else (0.547, 0.010, 0.)
 
+        self.fit_mass = 0.135 if ispi0peak else 0.547
         self.fit_mass_limits =   (0.12, 0.15)       if ispi0peak else (0.520, 0.570)
         self.fit_width_limits =  (0.004, 0.030)     if ispi0peak else (0.004,0.050) 
 
@@ -56,9 +57,7 @@ class CrystalBall(PeakParametrization):
     def form_fitting_function(self, name = 'cball'):
         # signal (crystal ball)
         alpha, n, a, b = self.cb_parameters()
-        emin, emax = self.fit_range 
         signal = ROOT.TF1("cball", "(x-[1])/[2] > -%f ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%f*(%f-(x-[1])/[2])^(-%f)" % (alpha, a, b, n) )
-
         return signal
 
  
@@ -69,7 +68,7 @@ class CrystalBall(PeakParametrization):
         signal = self.form_fitting_function('cball')
 
         # background
-        background = ROOT.TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", *self.fit_range)
+        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.fit_mass, self.fit_mass), *self.fit_range)
 
         # signal + background
         fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.fit_range)
@@ -89,6 +88,19 @@ class CrystalBall(PeakParametrization):
 
         return fitfun, background
 
+class FlexibleCrystalBall(object):
+       def __init__(self, fit_range):
+        super(CrystalBall, self).__init__(fit_range)
+   
+
+        def form_fitting_function(self, name = 'cball'):
+            alpha = '[6]'   # alpha >= 0
+            n = '[7]'       # n > 1
+            a = 'ROOT.TMath.Exp(-[6] * [6] / 2.) * ([7] / [6]) ** [7]'
+            b = '[7] / [6] - [6]'
+            signal = ROOT.TF1("cball", "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%s*(%s-(x-[1])/[2])^(-%s)" % (alpha, a, b, n) )
+            return signal
+    
 
 if __name__ == '__main__':
     main()
