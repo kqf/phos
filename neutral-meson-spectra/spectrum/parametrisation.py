@@ -60,7 +60,16 @@ class CrystalBall(PeakParametrization):
         signal = ROOT.TF1("cball", "(x-[1])/[2] > -%f ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%f*(%f-(x-[1])/[2])^(-%f)" % (alpha, a, b, n) )
         return signal
 
- 
+
+    def setup_parameters(self, fitfun, hist):
+        fitfun.SetParNames("A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}")
+        fitfun.SetLineColor(46)
+        fitfun.SetLineWidth(2)
+        fitfun.SetParLimits(0, 0., hist.GetMaximum()*1.5)
+        fitfun.SetParLimits(1, *self.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.fit_width_limits)
+        fitfun.SetParameters(*self.preliminary_fit(hist))
+
     def fit(self, hist):
         if (not hist) or (hist.GetEntries() == 0): return None, None
 
@@ -72,35 +81,45 @@ class CrystalBall(PeakParametrization):
 
         # signal + background
         fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.fit_range)
-        fitfun.SetParNames("A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}")
+        self.setup_parameters(fitfun, hist)
+        hist.Fit(fitfun,"QLR", "")
+
+        # For background extraction
+        npar = fitfun.GetNpar()
+        background.SetParameter(0, fitfun.GetParameter(npar - 3))
+        background.SetParameter(1, fitfun.GetParameter(npar - 2))
+        background.SetParameter(2, fitfun.GetParameter(npar - 1))
+
+        return fitfun, background
+
+class FlexibleCrystalBall(CrystalBall):
+    def __init__(self, fit_range):
+        super(FlexibleCrystalBall, self).__init__(fit_range)
+
+
+    def form_fitting_function(self, name = 'cball'):
+        alpha, n = '[3]', '[4]' # alpha >= 0, n > 1
+        a = 'TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])'
+        b = '[4] / [3] - [3]'
+        signal = ROOT.TF1("cball", "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%s*(%s-(x-[1])/[2])^(-%s)" % (alpha, a, b, n) )
+        return signal
+
+    def setup_parameters(self, fitfun, hist):
+        fitfun.SetParNames("A", "M", "#sigma", "#alpha", "n", "a_{0}", "a_{1}", "a_{2}")
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
         fitfun.SetParLimits(0, 0., hist.GetMaximum()*1.5)
         fitfun.SetParLimits(1, *self.fit_mass_limits)
         fitfun.SetParLimits(2, *self.fit_width_limits)
-        fitfun.SetParameters(*self.preliminary_fit(hist))
-        hist.Fit(fitfun,"QLR", "")
+        fitfun.SetParLimits(3, 0, 2)
+        fitfun.SetParLimits(4, 1, 5)
+        # fitfun.FixParameter(3, 1.1)
+        # fitfun.FixParameter(4, 2) 
+        pars = self.preliminary_fit(hist) 
+        fitfun.SetParameters(*(pars[:3] + [1.1, 2] + pars[3:]))
 
-        # For background extraction
-        background.SetParameter(0, fitfun.GetParameter(3))
-        background.SetParameter(1, fitfun.GetParameter(4))
-        background.SetParameter(2, fitfun.GetParameter(5))
 
-        return fitfun, background
 
-class FlexibleCrystalBall(object):
-       def __init__(self, fit_range):
-        super(CrystalBall, self).__init__(fit_range)
-   
-
-        def form_fitting_function(self, name = 'cball'):
-            alpha = '[6]'   # alpha >= 0
-            n = '[7]'       # n > 1
-            a = 'ROOT.TMath.Exp(-[6] * [6] / 2.) * ([7] / [6]) ** [7]'
-            b = '[7] / [6] - [6]'
-            signal = ROOT.TF1("cball", "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%s*(%s-(x-[1])/[2])^(-%s)" % (alpha, a, b, n) )
-            return signal
-    
 
 if __name__ == '__main__':
     main()

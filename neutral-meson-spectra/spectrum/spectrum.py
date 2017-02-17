@@ -22,7 +22,7 @@ class PtDependent(object):
         return hist 
 
 class PtAnalyzer(object):
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', particle = 'pi0'):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False):
         super(PtAnalyzer, self).__init__()
 
         self.nevents, self.rawhist, self.rawmix = lst
@@ -37,7 +37,7 @@ class PtAnalyzer(object):
         ptbins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
 
-        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x, self.ispi0)
+        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x, self.ispi0, relaxedcb)
         self.masses = map(f, pt_intervals)
 
 
@@ -128,10 +128,10 @@ class PtAnalyzer(object):
 
 
 class Spectrum(object):
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, ispi0 = 'pi0', relaxedcb = False):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
-        self.analyzer = PtAnalyzer(lst, label, mode)
+        self.analyzer = PtAnalyzer(lst, label, mode, ispi0, relaxedcb)
 
     def evaluate(self):
         quantities = self.analyzer.quantities()

@@ -7,13 +7,13 @@ from spectrum.input import Input, ExampleInput
 from spectrum.sutils import get_canvas
 
 def main():
-    g = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
+    g = lambda x, y, z, w: Spectrum(x, label=y, mode=z, relaxedcb=w).evaluate()
     f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
     infile = 'input-data/LHC16.root'
     results = [
-               g(Input(infile, 'PhysTender').read(), 'strict', 'q'), 
-               g(Input(infile, 'PhysOnlyTender').read(), 'tender', 'q')
+               g(Input(infile, 'PhysTender').read(), 'fixed', 'q', True), 
+               g(Input(infile, 'PhysTender').read(), 'relaxed', 'q', False)
               ]
 
     c1 = get_canvas(1/2.)
