@@ -3,13 +3,12 @@
 import ROOT
 
 
-def draw_histogram(hist):
-    pad = ROOT.gPad
+def draw_histogram(hist, pad):
     hist.Draw()
     pad.SetTickx()
     pad.SetTicky() 
-    pad.SetGridx()
     pad.SetGridy()
+    pad.SetGridx()
 
 
 class TrackAverager(object):
@@ -20,9 +19,9 @@ class TrackAverager(object):
 	def read_data(self):
 		inlist = ROOT.TFile(self.filename).TrackAverages
 		hist = lambda n: inlist.FindObject(n)
-		nevents, tpc, emcal = map(hist, ['hEvents','hTracksTPC', 'hClustersEMCal'])
+		nevents, tpc, hybrid, compl, emcal = map(hist, ['hEvents', 'hTracksTPC', 'hHybridTPC', 'hComplementaryTPC', 'hClustersEMCal'])
 
-		return self.average(tpc, nevents), self.average(emcal, nevents)
+		return self.average(tpc, nevents), self.average(hybrid, nevents), self.average(compl, nevents), self.average(emcal, nevents), 
 
 	def average(self, hist, nevents):
 		# Average
@@ -43,25 +42,38 @@ class TrackAverager(object):
 		canvas = ROOT.TCanvas('c1', 'test', 128 * 6, 96 * 6)
 
 		canvas.Divide(1, 3)
-		canvas.cd(1)
-		draw_histogram(mhsit)
+		draw_histogram(mhsit, canvas.cd(1))
 		# mhsit.Draw()
 
-		tpc, emcal = self.read_data()
-		canvas.cd(2)
+		tpc, hybrid, compl, emcal = self.read_data()
 		tpc.GetXaxis().SetLabelSize(0.06)
 		tpc.GetYaxis().SetTitleSize(0.06)
 		tpc.GetYaxis().SetTitleOffset(0.3)
 		tpc.GetYaxis().SetTitle('Number of TPC tracks')
-		tpc.Draw()
-		draw_histogram(tpc)
 
-		canvas.cd(3)
+		tpc.SetLineColor(38)
+		hybrid.SetLineColor(42)
+		compl.SetLineColor(8)
+
+		draw_histogram(tpc, canvas.cd(2))
+		hybrid.Draw("same")
+		compl.Draw("same")
+
+		legend = ROOT.TLegend(0.6, 0.65, 0.85, 0.9)
+		legend.SetFillStyle(0)
+		legend.SetBorderSize(0)
+		legend.AddEntry(tpc, "all tracks")
+		legend.AddEntry(hybrid, "hybird tracks")
+		legend.AddEntry(compl, "complementary tracks")
+		legend.Draw("same")
+
+
+		
 		emcal.GetXaxis().SetLabelSize(0.06)
 		emcal.GetYaxis().SetTitleSize(0.06)
 		emcal.GetYaxis().SetTitleOffset(0.3)
 		emcal.GetYaxis().SetTitle('Number of EMCal clusters')
-		draw_histogram(emcal)
+		draw_histogram(emcal, canvas.cd(3))
 		canvas.Update()
 		canvas.SaveAs('track-averages.pdf')
 		raw_input('Press enter to continue')
@@ -73,8 +85,8 @@ class TrackAverager(object):
 
 
 def main():
-	c = TrackAverager('TrackAverages.LHC16j-muon-calo-pass1.root')
-	f = '../../results/LHC16j/iteration2/images/cluster-averages.move.root'
+	c = TrackAverager('TrackAverages.LHC16k-pass1.root')
+	f = '../../results/LHC16k/iteration11/images/cluster-averages.move.root'
 	c.compare_to(f)
 	
 if __name__ == '__main__':
