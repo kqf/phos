@@ -52,7 +52,10 @@ class PtAnalyzer(object):
         histgenerators = [PtDependent('mass', '#pi^{0} mass position;;m, GeV/c^{2}', self.label),
                           PtDependent('width', '#pi^{0} peak width ;;#sigma, GeV/c^{2}', self.label),
                           PtDependent('spectrum', 'raw #pi^{0} spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}', self.label),  
-                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label)]
+                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label),
+                          PtDependent('cball_alpha', 'crystall ball parameter   #alpha;; #alpha', self.label),
+                          PtDependent('cball_n', 'crystall ball parameter n;; n', self.label)
+                          ]
 
         # Extract bins
         ptedges = self.divide_into_bins()
@@ -84,8 +87,12 @@ class PtAnalyzer(object):
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
         nraw = self.number_of_mesons(mass, intgr_ranges)
         nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * ROOT.TMath.Pi()), nraw)
-        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
-        return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0)
+        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1\
+
+        alpha = (fitfun.GetParameter(3), fitfun.GetParError(3))
+        n = (fitfun.GetParameter(4), fitfun.GetParError(4))
+
+        return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), alpha, n
 
     def quantities(self, intgr_ranges = None):
         # Prepare Pt ranges and corresponding M_eff integration intervals
