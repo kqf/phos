@@ -1,15 +1,15 @@
 #!/usr/bin/python
 
 import ROOT
-from parametrisation import CrystalBall, FlexibleCrystalBall
+from parametrisation import CrystalBall
 from sutils import get_canvas
 
 class InvariantMass(object):
-    def __init__(self, rawhist, mixhist, pt_range, ispi0peak, relaxedcb):
+    def __init__(self, rawhist, mixhist, pt_range, ispi0, relaxedcb):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
-        self.peak_function = CrystalBall(ispi0peak) if not relaxedcb else FlexibleCrystalBall(ispi0peak)
+        self.peak_function = CrystalBall(ispi0, relaxedcb)
 
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)

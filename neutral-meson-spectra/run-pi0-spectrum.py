@@ -12,8 +12,8 @@ def main():
 
     infile = 'input-data/LHC16.root'
     results = [
-               g(Input(infile, 'PhysTender').read(), 'fixed', 'q', True), 
-               g(Input(infile, 'PhysTender').read(), 'relaxed', 'q', False)
+               g(Input(infile, 'PhysTender').read(), 'fixed cb parameters', 'q', False), 
+               g(Input(infile, 'PhysTender').read(), 'relaxed cb parameters', 'q', True)
               ]
 
     c1 = get_canvas(1/2.)

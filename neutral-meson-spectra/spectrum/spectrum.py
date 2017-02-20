@@ -4,6 +4,8 @@ import ROOT
 from sutils import draw_and_save, nicely_draw, get_canvas, wait
 from invariantmass import InvariantMass
 
+ROOT.TH1.AddDirectory(False)
+
 class PtDependent(object):
     def __init__(self, name, title, label):
         super(PtDependent, self).__init__()
@@ -25,6 +27,7 @@ class PtAnalyzer(object):
     def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False):
         super(PtAnalyzer, self).__init__()
 
+        # self.name = name + '_' + filter(str.isalnum, self.label)
         self.nevents, self.rawhist, self.rawmix = lst
         if not self.rawhist.GetSumw2N(): self.rawhist.Sumw2()
         if not self.rawmix.GetSumw2N(): self.rawmix.Sumw2()
@@ -74,7 +77,7 @@ class PtAnalyzer(object):
         area = mass.signal.IntegralAndError(bin(a), bin(b), areae)
 
         if self.label == 'naive':
-            area = sum(mass.signal.GetBinContent(i) for i in range(mass.signal.GetNbinsX()) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)
+            area = sum(mass.signal.GetBinContent(i) for i in range(1, mass.signal.GetNbinsX() + 1) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)
             return area, areae
 
         return area, areae
