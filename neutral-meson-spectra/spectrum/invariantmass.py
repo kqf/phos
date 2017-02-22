@@ -4,6 +4,16 @@ import ROOT
 from parametrisation import CrystalBall
 from sutils import get_canvas
 
+def remove_zeros(h, zeros, name = '_cleaned'):
+    bins = [(i, h.GetBinContent(i), h.GetBinError(i)) for i in range(1, h.GetNbinsX()) if i not in zeros]
+    clean = h.Clone(h.GetName() + '_ratio')
+    clean.Reset()
+    for i, b, e in bins:
+        clean.SetBinContent(i, b)
+        clean.SetBinError(i, e)
+    return clean
+
+
 class InvariantMass(object):
     def __init__(self, rawhist, mixhist, pt_range, ispi0, relaxedcb):
         super(InvariantMass, self).__init__()
@@ -11,11 +21,20 @@ class InvariantMass(object):
         self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
+        # TODO: move these lines to 
         # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
         self.mixed = self.extract_histogram(mixhist)
         self.sigf, self.bgrf = None, None
 
+
+    def zero_bins(self):
+        return [i for i in range(1, self.mass.GetNbinsX()) if self.mass.GetBinContent(i) < 0.00001]
+
+
+    def in_range(self, x):
+        a, b = self.pt_range
+        return x > a and x < b
 
 
     def extract_histogram(self, hist):
@@ -24,21 +43,20 @@ class InvariantMass(object):
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
-        # mass.Rebin(5)
-        # mass.Scale(1./ 5)
+        if any(map(self.in_range, [16])):
+            mass.Rebin(3)
         return mass
 
 
     def estimate_background(self):
-        if self.mass.GetEntries() == 0: return
-        zero_bins = [i for i in range(1, self.mass.GetNbinsX()) if self.mass.GetBinContent(i) < 0.00001]
+        if not self.mass.GetEntries(): return
 
         # Divide real/mixed
-        self.ratio = self.mass.Clone()
-        self.ratio.Divide(self.mixed)
-        self.ratio.GetYaxis().SetTitle("Real/ Mixed")
-        [self.ratio.SetBinContent(i, 0) for i in zero_bins]
-        
+        ratio = self.mass.Clone()
+        ratio.Divide(self.mixed)
+        ratio.GetYaxis().SetTitle("Real/ Mixed")
+        self.ratio = remove_zeros(ratio, self.zero_bins(), '_ratio')
+
         if self.ratio.GetEntries() == 0: return
         fitf, bckgrnd = self.peak_function.fit(self.ratio)
 
@@ -47,27 +65,26 @@ class InvariantMass(object):
 
 
     def substract_background(self):
-        if self.mass.GetEntries() == 0: return self.mass
-        # Identify 0 bins. To get throw them out later
-        zero_bins = [i for i in range(1, self.mass.GetNbinsX()) if self.mass.GetBinContent(i) < 1]
+        if not self.mass.GetEntries():
+            return self.mass
 
         # Substract 
         signal = self.mass.Clone()
         signal.Add(self.mass, self.mixed, 1., -1.)
         signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         signal.GetYaxis().SetTitle("Real - Mixed")
-
-        # Reset zero bins
-        [signal.SetBinContent(i, 0) for i in zero_bins]
+        signal = remove_zeros(signal, self.zero_bins(), '_signal')
         return signal
 
 
+        
     def extract_data(self):
         if not (self.sigf and self.bgrf):
             self.estimate_background()
             self.signal = self.substract_background()
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
+
 
 
     def draw_ratio(self, pad = 0):

@@ -93,10 +93,9 @@ class CrystalBall(PeakParametrization):
             fitfun.FixParameter(npar - 2, 0)
             fitfun.FixParameter(npar - 1, 0)
 
-        hist.Fit(fitfun,"QLR", "")
+        hist.Fit(fitfun,"QR", "")
 
         background.SetParameter(0, fitfun.GetParameter(npar - 3))
         background.SetParameter(1, fitfun.GetParameter(npar - 2))
         background.SetParameter(2, fitfun.GetParameter(npar - 1))
-
         return fitfun, background

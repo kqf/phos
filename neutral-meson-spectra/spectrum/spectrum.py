@@ -111,7 +111,7 @@ class PtAnalyzer(object):
             self.draw_mass()
             self.draw_signal()
 
-        # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
+        print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
     def draw_all_bins(self, m = 6, n = 6, f = lambda x, y: x.draw_ratio(y), name = ''):
