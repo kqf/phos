@@ -2,53 +2,69 @@
 
 import ROOT
 
+ROOT.TH1.AddDirectory(False)
+
 
 def draw_histogram(hist, pad):
-    hist.Draw()
-    pad.SetTickx()
-    pad.SetTicky() 
-    pad.SetGridy()
-    pad.SetGridx()
+	hist.Draw()
+	pad.SetLeftMargin(0.04);
+	pad.SetRightMargin(0.02);
+	pad.SetTopMargin(0.10);
+	pad.SetBottomMargin(0.14);
+	pad.SetTickx()
+	pad.SetTicky() 
+	pad.SetGridy()
+	pad.SetGridx()
 
 
 class TrackAverager(object):
-	def __init__(self, filename):
+	def __init__(self, filename_tracks, filename_clusters):
 		super (TrackAverager, self).__init__()
-		self.filename = filename
+		self.filename_tracks = filename_tracks
+		self.filename_clusters = filename_clusters
 
 	def read_data(self):
-		inlist = ROOT.TFile(self.filename).TrackAverages
+		# First extract PHOS average
+		phos = ROOT.TFile(self.filename_clusters).Get('hAvNCluster_NC1_Emin=0.30GeV_corr4accept')
+
+		# Then TPC/EMCal averages
+		inlist = ROOT.TFile(self.filename_tracks).TrackAverages
 		hist = lambda n: inlist.FindObject(n)
-		nevents, tpc, hybrid, compl, emcal = map(hist, ['hEvents', 'hTracksTPC', 'hHybridTPC', 'hComplementaryTPC', 'hClustersEMCal'])
 
-		return self.average(tpc, nevents), self.average(hybrid, nevents), self.average(compl, nevents), self.average(emcal, nevents), 
+		nevents = hist('hEvents')
+		hists = map(hist, ['hTracksTPC', 'hHybridTPC', 'hComplementaryTPC', 'hClustersEMCal'])
+		return [phos] + map(lambda x: self.average(x, nevents, phos), hists)
 
-	def average(self, hist, nevents):
+	def average(self, hist, nevents, canonical):
 		# Average
+		print hist.GetName()
 		hist.Divide(nevents)
-		# Sort
-		label_values = {int(hist.GetXaxis().GetBinLabel(i)): hist.GetBinContent(i) for i in range(1, hist.GetNbinsX())}
-		average = hist.Clone('hAverage' + hist.GetName())
+		label = lambda h, i: h.GetXaxis().GetBinLabel(i)
+
+		label_values = {label(hist, i): hist.GetBinContent(i) for i in range(1, hist.GetNbinsX())}
+		average = canonical.Clone(hist.GetName() + canonical.GetName())
+		average.Reset()
+
+		for i in range(1, canonical.GetNbinsX()):
+			labeli = label(canonical, i)
+			if labeli in label_values:
+				average.SetBinContent(i, label_values[labeli])
+
+		maximum = max(label_values.values())
+		average.SetAxisRange(maximum * 0.7, maximum * 1.1, "Y");
 		average.SetTitle(hist.GetTitle().replace('Total', 'Average'))
-		for i, k in enumerate(sorted(label_values)):
-			average.SetBinContent(i + 1, label_values[k])
-			average.GetXaxis().SetBinLabel(i + 1, str(k))
 		return average
 
-	def compare_to(self, filename):
+	def compare(self):
 		ROOT.gStyle.SetOptStat('')
-		infile = ROOT.TFile(filename)
-		mhsit = infile.Get('hAvNCluster_NC1_Emin=0.30GeV_corr4accept')
 		canvas = ROOT.TCanvas('c1', 'test', 128 * 6, 96 * 6)
 
+		phos, tpc, hybrid, compl, emcal = self.read_data()
+
 		canvas.Divide(1, 3)
-		draw_histogram(mhsit, canvas.cd(1))
+		draw_histogram(phos, canvas.cd(1))
 		# mhsit.Draw()
 
-		tpc, hybrid, compl, emcal = self.read_data()
-		tpc.GetXaxis().SetLabelSize(0.06)
-		tpc.GetYaxis().SetTitleSize(0.06)
-		tpc.GetYaxis().SetTitleOffset(0.3)
 		tpc.GetYaxis().SetTitle('Number of TPC tracks')
 
 		tpc.SetLineColor(38)
@@ -57,6 +73,7 @@ class TrackAverager(object):
 
 		draw_histogram(tpc, canvas.cd(2))
 		hybrid.Draw("same")
+		compl.Scale(20)
 		compl.Draw("same")
 
 		legend = ROOT.TLegend(0.6, 0.65, 0.85, 0.9)
@@ -64,30 +81,20 @@ class TrackAverager(object):
 		legend.SetBorderSize(0)
 		legend.AddEntry(tpc, "all tracks")
 		legend.AddEntry(hybrid, "hybird tracks")
-		legend.AddEntry(compl, "complementary tracks")
+		legend.AddEntry(compl, "complementary tracks x 20")
 		legend.Draw("same")
 
-
-		
-		emcal.GetXaxis().SetLabelSize(0.06)
-		emcal.GetYaxis().SetTitleSize(0.06)
-		emcal.GetYaxis().SetTitleOffset(0.3)
 		emcal.GetYaxis().SetTitle('Number of EMCal clusters')
 		draw_histogram(emcal, canvas.cd(3))
 		canvas.Update()
 		canvas.SaveAs('track-averages.pdf')
 		raw_input('Press enter to continue')
 
-  
-
-
-
-
 
 def main():
-	c = TrackAverager('TrackAverages.LHC16k-pass1.root')
 	f = '../../results/LHC16k/iteration11/images/cluster-averages.move.root'
-	c.compare_to(f)
+	c = TrackAverager('TrackAverages.LHC16k-pass1.root', f)
+	c.compare()
 	
 if __name__ == '__main__':
 	main()
