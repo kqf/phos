@@ -33,3 +33,20 @@ class Test(unittest.TestCase):
     def testCompareTwo(self):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+    def testCompareTwoWithFit(self):
+        diff = cmpr.Comparator(ratiofit=(0, 0))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff = cmpr.Comparator(ratiofit=(0, 10))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff = cmpr.Comparator(ratiofit=(5, 10))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff = cmpr.Comparator(ratiofit=(5, 0))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+
+
+

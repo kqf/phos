@@ -4,11 +4,12 @@ import ROOT
 from sutils import wait, get_canvas, Cc
 
 class Visualizer(object):
-    def __init__(self, size, rrange):
+    def __init__(self, size, rrange, ratiofit):
         super(Visualizer, self).__init__()
         self.size = size
         self.cache = []
         self.rrange = rrange
+        self.ratiofit = ratiofit
         
 
     def preare_ratio_plot(self, hists, canvas):
@@ -52,7 +53,25 @@ class Visualizer(object):
         ratio.GetXaxis().SetLabelSize(0.10)  
         if self.rrange: ratio.SetAxisRange(self.rrange[0], self.rrange[1] , 'Y')
         ROOT.gPad.SetGridy()
+
+        self.fit_ratio(ratio)
         return ratio 
+
+    def fit_ratio(self, ratio):
+        if not self.ratiofit:
+            return
+
+        ratio.SetStats(True)
+        ROOT.gStyle.SetStatFontSize(0.1)
+        ROOT.gStyle.SetOptStat('')
+        ROOT.gStyle.SetStatX(0.35)
+        ROOT.gStyle.SetStatW(0.1)
+        ROOT.gStyle.SetStatStyle(0)
+        ROOT.gStyle.SetStatBorderSize(0)
+        ROOT.gStyle.SetOptFit(1)
+        ratio.Fit("pol1", "q", "", *self.ratiofit)
+        func = ratio.GetFunction("pol1")
+        func.SetLineColor(38)
 
 
     def compare_visually(self, hists, ci, stop = True, canvas = None):
@@ -67,8 +86,10 @@ class Visualizer(object):
         mainpad.SetGridx()
         mainpad.SetGridy()
 
+        hists[0].SetStats(False)
         hists[0].DrawCopy()
         for i, h in enumerate(hists): 
+            h.SetStats(False)
             h.SetLineColor(ci + i)
             h.DrawCopy('same')
             h.SetFillColor(ci + i)
@@ -78,10 +99,10 @@ class Visualizer(object):
 
         legend.Draw('same')
 
-        if 'spectr' in hists[0].GetName() or 'chi' in hists[0].GetName()  or 'logy' in dir(hists[0]):
+        if 'spectr' in hists[0].GetName() or 'logy' in dir(hists[0]):
             ROOT.gPad.SetLogy()
 
-        ROOT.gStyle.SetOptStat(0)
+        # ROOT.gStyle.SetOptStat(0)
         mainpad.SetTickx()
         mainpad.SetTicky() 
 
@@ -120,9 +141,9 @@ def define_colors(ci = 1000):
 class Comparator(object):
     ci, colors = define_colors()
 
-    def __init__(self, size = (1, 1), rrange = None):
+    def __init__(self, size = (1, 1), rrange = None, ratiofit = False):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size, rrange)
+        self.vi = Visualizer(size, rrange, ratiofit)
 
 
     def compare_set_of_histograms(self, l, compare = None):
