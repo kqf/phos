@@ -14,6 +14,11 @@ def remove_zeros(h, zeros, name = '_cleaned'):
     return clean
 
 
+def zero_bins(hist):
+    return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < 0.00001]
+
+
+
 class InvariantMass(object):
     def __init__(self, rawhist, mixhist, pt_range, ispi0, relaxedcb):
         super(InvariantMass, self).__init__()
@@ -21,15 +26,9 @@ class InvariantMass(object):
         self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
-        # TODO: move these lines to 
-        # Extract mass in the pt_bin
         self.mass = self.extract_histogram(rawhist)
         self.mixed = self.extract_histogram(mixhist)
         self.sigf, self.bgrf = None, None
-
-
-    def zero_bins(self):
-        return [i for i in range(1, self.mass.GetNbinsX()) if self.mass.GetBinContent(i) < 0.00001]
 
 
     def in_range(self, x):
@@ -39,7 +38,6 @@ class InvariantMass(object):
 
     def extract_histogram(self, hist):
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
-        # suff = 'mixed' if 'mix' in hist.GetName().lower() else 'real'
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
@@ -55,7 +53,7 @@ class InvariantMass(object):
         ratio = self.mass.Clone()
         ratio.Divide(self.mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
-        self.ratio = remove_zeros(ratio, self.zero_bins(), '_ratio')
+        self.ratio = remove_zeros(ratio, zero_bins(self.mass), '_ratio')
 
         if self.ratio.GetEntries() == 0: return
         fitf, bckgrnd = self.peak_function.fit(self.ratio)
@@ -67,13 +65,12 @@ class InvariantMass(object):
     def substract_background(self):
         if not self.mass.GetEntries():
             return self.mass
-
         # Substract 
         signal = self.mass.Clone()
         signal.Add(self.mass, self.mixed, 1., -1.)
         signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         signal.GetYaxis().SetTitle("Real - Mixed")
-        signal = remove_zeros(signal, self.zero_bins(), '_signal')
+        signal = remove_zeros(signal, zero_bins(self.mass), '_signal')
         return signal
 
 
