@@ -5,6 +5,7 @@ import ROOT
 import json
 
 from badmap import badmap
+ROOT.TH1.AddDirectory(False)
 
 class Styler(object):
     def __init__(self, filename):
@@ -25,11 +26,21 @@ class Styler(object):
 
         assert obj, 'Specify right path to histogram. Current path: ' + path
 
-        obj.label = properties['label']
-        obj.SetLineColor(properties['color'])
-        obj.SetMarkerColor(properties['color'])
-        obj.SetTitle(properties['title'])
-        if properties['normalize']: obj.Scale( properties['normalize'] / obj.Integral() )
+        if 'projecty' in properties: 
+            obj = obj.ProjectionY(obj.GetName() + '_y', obj.GetXaxis().FindBin(properties['projecty']), -1)
+
+        print obj.GetName(), obj.GetEntries()
+
+        if 'label' in properties: obj.label = properties['label']
+        if 'color' in properties: obj.SetLineColor(properties['color'])
+        if 'color' in properties: obj.SetMarkerColor(properties['color'])
+        if 'title' in properties: obj.SetTitle(properties['title'])
+        if 'rebin' in properties: obj.Rebin(properties['rebin'])
+        if 'option' in properties: 
+            obj.SetOption(properties['option'])
+            obj.option = properties['option']
+        if 'normalize' in properties: 
+            obj.Scale( properties['normalize'] / obj.Integral() )
         return obj
 
     def draw(self):
@@ -81,8 +92,26 @@ class Styler(object):
         raw_input()
 
     def drawmap(self, name):
+        c1 = ROOT.TCanvas(name, name, 128 * 5, 96 * 5); 
+        c1.Divide(2, 2)
         for maps in self.hitmap:
-            badmap(maps, maps[0].label)
+            print maps
+            badmap(maps, c1)
+
+        props = self.data['canvas']
+        legend = ROOT.TLegend(*props['legend'])
+        map(lambda x: legend.AddEntry(x, x.label), zip(*self.hitmap)[0])
+        c1.cd(1)
+        legend.Draw()
+        for i in range(4): 
+            pad = c1.cd(i + 1)
+            pad.SetLogy()
+            pad.SetGridx()
+            pad.SetGridy()
+            
+        c1.Update()
+        c1.SaveAs('multiple.pdf')
+
         raw_input()
 
 

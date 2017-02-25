@@ -1,21 +1,31 @@
 {
     "histograms": 
     {
-        "with-noisy-cells.root/TimeTender/hClusterTime0": {"label": "noisy cells", "color": 37, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"},
-        "LHC16k-pass1.root/TimeTender/hClusterTime0": {"label": "clean x3", "color": 46, "normalize": 3, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"}
+        "LHC16.root/QualTender/hClusterTime0": {"label": "noisy cells", "color": 37, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}", "option": ""},
+        "LHC16.root/QualOnlyTender/hClusterTime0": {"label": "clean x3", "color": 46, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}", "option": ""}
     },
-
     "hitmap": 
     {
-        "LHC16.root/QualTender/hCluNXZM_0_SM%d": {"label": "strict-map", "color": 46, "normalize": 0, "title": "Number of hits in module 1; x; z"},
-        "LHC16.root/QualOnlyTender/hCluNXZM_0_SM%d": {"label": "only-tender-map", "color": 46, "normalize": 0, "title": "Number of hits in module 1; x; z"}
+        "LHC16g-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16g", "color": 1, "option": "hist same", "projecty": 1.5},
+        "LHC16h-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16h", "color": 37, "option": "hist same", "projecty": 1.5},
+        "LHC16i-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16i", "color": 46, "option": "hist same", "projecty": 1.5},
+        "LHC16j-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16j", "color": 8, "option": "hist same", "projecty": 1.5},
+        "LHC16k-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16k", "color": 2, "option": "hist same", "projecty": 1.5},
+        "LHC16m-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16m", "color": 3, "option": "hist same", "projecty": 1.5},
+        "LHC16o-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16o", "color": 4, "option": "hist same", "projecty": 1.5}
+    },
+
+    "hitmapk": 
+    {
+        "LHC16.root/QualTender/hCluNXZM_0_SM%d": {"label": "strict-map", "color": 46, "normalize": 0, "title": "Number of hits in module 1; x; z", "option": "colz"},
+        "LHC16.root/QualOnlyTender/hCluNXZM_0_SM%d": {"label": "only-tender-map", "color": 46, "normalize": 0, "title": "Number of hits in module 1; x; z", "option": "colz"}
     },
     "canvas":
     {
         "size":  5,
         "logy":  1,
         "gridx": 1,
-        "legend": [0.75, 0.75, 0.89, 0.88],
+        "legend": [0.7, 0.7, 0.89, 0.88],
         "output": "timecut.pdf"
     }
 }
