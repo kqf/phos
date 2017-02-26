@@ -10,17 +10,13 @@ def badmap(hists, c1 = None):
     if not c1:
         c1 = ROOT.TCanvas('c1', 'c1', 128 * 5, 96 * 5);
         c1.Divide(2, 2);
-    # ROOT.gPad.SetLeftMargin(0.10);
-    # ROOT.gPad.SetRightMargin(0.15);
-    # ROOT.gPad.SetTopMargin(0.05);
-    # ROOT.gPad.SetBottomMargin(0.10);
 
     for i, sm in enumerate(hists):
         pad = c1.cd(i + 1);
-        print sm.label, sm.option
+        # print sm.label, sm.GetEntries()
         sm.Draw(sm.option)
 
-    # raw_input()
+    c1.Update()
     c1.SaveAs(hists[0].GetName() + '.pdf')
 
 def main():
