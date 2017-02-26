@@ -8,10 +8,12 @@ import check_default
 class CheckPileup(check_default.CheckDefault):
     def setUp(self):
         super(CheckPileup, self).setUp()
-        f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
+        f = lambda x, y, z: Spectrum(x, label=y, mode=z, relaxedcb=True).evaluate()
+        # TODO: figure out what is wrong with this histogram
+        # MassPtMainMain 
         self.results = [
-                        f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'no timecut', self.mode),
-                        f(TimecutInput('input-data/LHC16.root', 'TimeOnlyTender', 'MassPtMainMain').read(), '12.5 ns', self.mode), 
+                        f(TimecutInput('input-data/LHC16.root', 'TimeTender', 'MassPtN3').read(), 'no timecut', self.mode), 
+                        f(Input('input-data/LHC16.root', 'PhysTender').read(), '12.5 ns', self.mode)
                        ]
 
 

@@ -90,8 +90,7 @@ class PtAnalyzer(object):
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
         nraw = self.number_of_mesons(mass, intgr_ranges)
         nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * ROOT.TMath.Pi()), nraw)
-        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1\
-
+        ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
         alpha = (fitfun.GetParameter(3), fitfun.GetParError(3))
         n = (fitfun.GetParameter(4), fitfun.GetParError(4))
 
