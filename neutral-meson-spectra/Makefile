@@ -8,6 +8,9 @@ eta:
 imass:
 	$(ROOT_PYTHON) -m unittest test.test_invariant_mass
 
+algorithm:
+	$(ROOT_PYTHON) -m unittest test.test_check_algorithm
+
 
 per-module:
 	$(ROOT_PYTHON) -m unittest test.test_check_different_modules
