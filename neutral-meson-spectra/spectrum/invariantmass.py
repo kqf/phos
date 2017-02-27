@@ -23,7 +23,7 @@ class InvariantMass(object):
     def __init__(self, rawhist, mixhist, pt_range, ispi0, relaxedcb):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
-        self.pt_label = '%.4g < P_{T} < %.4g' % self.pt_range
+        self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
         self.mass = self.extract_histogram(rawhist)
@@ -82,6 +82,17 @@ class InvariantMass(object):
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
 
+    def draw_pt_bin(self, hist):
+        # Estimate coordinate
+        y = (hist.GetMaximum() - hist.GetMinimum()) / 3.5
+        a, b = self.peak_function.fit_range
+        x = 1.9 * (b - a) / 3
+        # Draw the lable
+        tl = ROOT.TLatex()
+        tl.SetTextAlign(12);
+        tl.SetTextSize(0.08);
+        tl.DrawLatex(x, y, '#color[46]{' + self.pt_label + ', GeV/c}');
+
 
 
     def draw_ratio(self, pad = 0):
@@ -90,6 +101,7 @@ class InvariantMass(object):
         canvas.SetTicky()  
         self.ratio.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         self.ratio.Draw()
+        self.draw_pt_bin(self.ratio)
         canvas.Update()
 
 
@@ -109,6 +121,7 @@ class InvariantMass(object):
         legend.AddEntry(self.mass, 'data')
         legend.AddEntry(self.mixed, 'background')
         legend.Draw('same')
+        self.draw_pt_bin(self.mass)
         canvas.Update()
 
         
@@ -116,7 +129,7 @@ class InvariantMass(object):
         canvas = pad if pad else get_canvas()
         # canvas.SetTickx()
         canvas.SetTicky() 
-
         self.signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
         self.signal.Draw()
+        self.draw_pt_bin(self.signal)
         canvas.Update()
