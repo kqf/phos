@@ -10,6 +10,7 @@ class Visualizer(object):
         self.cache = []
         self.rrange = rrange
         self.ratiofit = ratiofit
+        self.output_prefix = 'compared-'
         
 
     def preare_ratio_plot(self, hists, canvas):
@@ -111,7 +112,7 @@ class Visualizer(object):
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-        if stop: wait(hists[0].GetName(), True)
+        if stop: wait(self.output_prefix + hists[0].GetName(), True)
         self.cache.append(ratio)
         self.cache.append(legend)
 
@@ -130,7 +131,7 @@ class Visualizer(object):
             self.compare_visually(h, ci, False, canvas.cd(i + 1))
 
         canvas.cd()
-        wait(hists[0][0].GetName(), True)
+        wait(self.output_prefix + hists[0][0].GetName(), True)
 
 def define_colors(ci = 1000):
     colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)][::-1]
