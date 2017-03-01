@@ -1,0 +1,25 @@
+{
+    "description": "this file contains style for a bunch of histos to investigate timing distribution in PHOS",
+    
+    "hitmap": 
+    {
+        "input/LHC16g-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16g", "color": 1, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16h-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16h", "color": 37, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16i-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16i", "color": 46, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16j-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16j", "color": 1005, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16k-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16k", "color": 2, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16l-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16l", "color": 1003, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16m-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16m", "color": 3, "option": "hist same", "projecty": 1.5, "normalize": 1},
+        "input/LHC16o-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16o", "color": 4, "option": "hist same", "projecty": 1.5, "normalize": 1}
+    },
+    "canvas_per_module":
+    {
+        "size":  5,
+        "logy":  1,
+        "gridx": 1,
+        "gridy": 1,
+        "legend": [0.7, 0.6, 0.89, 0.88],
+        "output": "results/tof-different-periods.pdf"
+    }
+
+}

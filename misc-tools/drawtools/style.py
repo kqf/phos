@@ -22,24 +22,28 @@ class Styler(object):
             self.data = json.load(f)
         self.hists, self.hitmap = self.read_data()
 
-
     def read_data(self):
         hists, hitmap = None, None
 
         if 'histograms' in self.data:
             hists = self.data['histograms']
-            self.histograms = [self.read_histogram(h.split('/'), hists[h]) for h in hists] 
+            self.histograms = [self.read_histogram(h, hists[h]) for h in hists] 
 
         if 'hitmap' in self.data:
-            hitmap = [[self.read_histogram((h % i).split('/'), self.data["hitmap"][h]) for i in range(1, 5)] for h in sorted(self.data['hitmap'])] 
-
+            hitmap = [[self.read_histogram(h % i, self.data["hitmap"][h]) for i in range(1, 5)] for h in sorted(self.data['hitmap'])] 
         return hists, hitmap
 
 
     def read_histogram(self, path, properties):
-        filename, lst, path = path[0], path[1], path[2:]
-        infile = ROOT.TFile(filename)
+        # Extract root file
+        filename, path = path.split('.root/')
+        path = path.split('/')
 
+        # Extract list name 
+        lst, path = path[0], path[1:]
+        infile = ROOT.TFile(filename + '.root')
+
+        # Handle situation when we have nested lists
         obj = infile.Get(lst)
         for n in path:
             obj = obj.FindObject(n)
@@ -49,7 +53,12 @@ class Styler(object):
         if 'projecty' in properties: 
             obj = obj.ProjectionY(obj.GetName() + '_y', obj.GetXaxis().FindBin(properties['projecty']), -1)
 
+        if 'projectx' in properties: 
+            obj = obj.ProjectionX(obj.GetName() + '_x', obj.GetYaxis().FindBin(properties['projectx']), -1)
+
         obj.SetStats(False)
+        obj.oname = properties['oname'] if 'oname' in properties else ''
+        
         if 'label' in properties: obj.label = properties['label']
         if 'color' in properties: obj.SetLineColor(properties['color'])
         if 'color' in properties: obj.SetMarkerColor(properties['color'])
@@ -103,21 +112,24 @@ class Styler(object):
             return
 
         props = self.data['canvas_per_module']
-        legend = ROOT.TLegend(*props['legend'])
-        legend.SetFillStyle(0)
-        legend.SetBorderSize(0)
-        map(lambda x: legend.AddEntry(x, x.label), zip(*self.hitmap)[0])
-        canvas.cd(1)
-        legend.Draw()
+
+        if 'legend' in props:
+            legend = ROOT.TLegend(*props['legend'])
+            legend.SetFillStyle(0)
+            legend.SetBorderSize(0)
+            map(lambda x: legend.AddEntry(x, x.label), zip(*self.hitmap)[0])
+            canvas.cd(1)
+            legend.Draw()
+
         for i in range(4): 
             pad = canvas.cd(i + 1)
-            pad.SetLogy()
-            pad.SetGridx()
-            pad.SetGridy()
-            
-        canvas.Update()
-        canvas.SaveAs('multiple.pdf')
+            if 'logy' in props: pad.SetLogy()
+            if 'logx' in props: pad.SetLogx()
+            if 'gridx' in props: pad.SetGridx()
+            if 'gridy' in props: pad.SetGridy()
 
+        canvas.Update()
+        canvas.SaveAs(props['output'])
         raw_input()
 
 

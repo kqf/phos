@@ -17,7 +17,9 @@ def badmap(hists, c1 = None):
         sm.Draw(sm.option)
 
     c1.Update()
-    c1.SaveAs(hists[0].GetName() + '.pdf')
+
+    if hists[0].oname: 
+        c1.SaveAs(hists[0].oname)
 
 def main():
     assert len(sys.argv) == 2, "Usage ./badmap.py file.root"
