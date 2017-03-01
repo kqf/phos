@@ -24,19 +24,6 @@ pileup:
 assymetry:
 	$(ROOT_PYTHON) -m unittest test.test_check_assymetry
 
-# These are experimental targets. These tests should be used with care.
-timecut:
-	$(ROOT_PYTHON) -m unittest test.timecut_optimization
-
-check-cut:
-	$(ROOT_PYTHON) -m unittest test.timecut_evaluation
-
-selection:
-	$(ROOT_PYTHON) -m unittest test.check_physics_selection
-
 
 clean:
 	rm -f results/*.pdf
-
-
-

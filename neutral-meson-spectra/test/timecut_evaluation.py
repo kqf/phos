@@ -6,6 +6,10 @@ import ROOT
 
 import numpy as np
 
+
+# This is code shouldn't be used for real analysis
+# This can be used as a template for Asymmetry cut analysis.
+
 class Evaluator(object):
     def __init__(self, original, withcut):
         super(Evaluator, self).__init__()

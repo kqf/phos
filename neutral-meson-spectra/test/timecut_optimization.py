@@ -5,6 +5,8 @@ from optimizer.optimizer import Optimizer
 from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
 
+#TOOD: Fix metric inputs
+
 class TimecutOptimizer(unittest.TestCase):
 
     def setUp(self):
