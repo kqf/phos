@@ -32,6 +32,9 @@ protected:
 	TH1* DecorateHistogram(TH1 *histo) const;
 	Int_t findRunBin(Int_t run) const;
 
+	void AnalysePHOSClusters(const AliVEvent * event, Int_t bin);
+	void AnalyseEMCalClusters(const AliVEvent * event, Int_t bin);
+	void AnalyseChargedTracks(const AliVEvent * event, Int_t bin);
 
 protected:
 	TList * fOutputContainer; //!
@@ -39,9 +42,11 @@ protected:
 	TH1F * fComplementaryTPC; //!
 	TH1F * fTracksTPC; //!
 	TH1F * fETracksTPC; //!
-	TH1F * fEClustersEMCal; //!
 	TH1F * fClustersEMCal; //!
-
+	TH1F * fEClustersEMCal; //!
+	TH1F * fClustersPHOS; //!
+	TH1F * fEClustersPHOS; //!	
+	TH1F * fEventClustersPHOS; //!	
 	TH1F * fEvents; //!
 
 	Int_t            fNRuns;    // number of entries in fRuns

@@ -24,9 +24,12 @@ AliAnalysisTaskTrackAverages::AliAnalysisTaskTrackAverages():
 	fHybridTPC(0),
 	fComplementaryTPC(0),
 	fTracksTPC(0),
-	fClustersEMCal(0),
 	fETracksTPC(0),
+	fClustersEMCal(0),
 	fEClustersEMCal(0),
+	fClustersPHOS(0),
+	fEClustersPHOS(0),
+	fEventClustersPHOS(0),
 	fEvents(0),
 	fNRuns(0),
 	fRuns(0)
@@ -39,9 +42,12 @@ AliAnalysisTaskTrackAverages::AliAnalysisTaskTrackAverages(const char * name):
 	fHybridTPC(0),
 	fComplementaryTPC(0),
 	fTracksTPC(0),
-	fClustersEMCal(0),
 	fETracksTPC(0),
+	fClustersEMCal(0),
 	fEClustersEMCal(0),
+	fClustersPHOS(0),
+	fEClustersPHOS(0),
+	fEventClustersPHOS(0),
 	fEvents(0),
 	fNRuns(0),
 	fRuns(0)
@@ -61,9 +67,11 @@ void AliAnalysisTaskTrackAverages::UserCreateOutputObjects()
 	fHybridTPC = new TH1F("hHybridTPC", "Total number of hybrid TPC tracks", fNRuns, -0.5, fNRuns - 0.5);
 	fTracksTPC = new TH1F("hTracksTPC", "Total number of global TPC tracks", fNRuns, -0.5, fNRuns - 0.5);
 	fClustersEMCal = new TH1F("hClustersEMCal", "Total number of EMCal clusters", fNRuns, -0.5, fNRuns - 0.5);
+	fClustersPHOS = new TH1F("hClustersPHOS", "Total number of EMCal clusters", fNRuns, -0.5, fNRuns - 0.5);
 
 	fETracksTPC = new TH1F("hETracksTPC", "Average energy of TPC tracks per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
 	fEClustersEMCal = new TH1F("hEClustersEMCal", "Average energy of EMCal clusters per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
+	fEClustersPHOS = new TH1F("hEClustersPHOS", "Average energy of EMCal clusters per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
 
 	fETracksTPC = new TH1F("hETracksTPC", "Average energy of TPC tracks per event;; E, GeV", fNRuns, -0.5, fNRuns - 0.5);
 
@@ -75,41 +83,54 @@ void AliAnalysisTaskTrackAverages::UserCreateOutputObjects()
 	fOutputContainer->Add(DecorateHistogram(fClustersEMCal));
 	fOutputContainer->Add(DecorateHistogram(fETracksTPC));
 	fOutputContainer->Add(DecorateHistogram(fEClustersEMCal));
+	for (Int_t i = 0; i < fNRuns; ++i)
+		fOutputContainer->Add(new TH1F(Form("hEventClustersPHOS_%d", fRuns[i]), Form("Number of tracks per event index run %d;; event index", fRuns[i]), 2e3, 0, 2e6));
+
 
 
 	PostData(1, fOutputContainer);
 }
 
 //________________________________________________________________
-void AliAnalysisTaskTrackAverages::UserExec(Option_t * option)
+void AliAnalysisTaskTrackAverages::AnalysePHOSClusters(const AliVEvent * event, Int_t bin)
 {
-
-	// Ignore unused warning
-	(void) option;
-	AliVEvent * event = InputEvent();
-
-	// Check event
-	if (!event) return;
-
-
-	Int_t run = event->GetRunNumber();
-
-	// Just to debug
-	// cout << "run: " << run << endl;
-	// run = fRuns[5];
-	Int_t bin = findRunBin(run);
-
-	// Primary vertex
-	AliVVertex * vertex = (AliVVertex *) event->GetPrimaryVertex();
-	if (!vertex)
+	Int_t nclusters = 0;
+	Int_t energy_emc = 0;
+	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
 	{
-		AliWarning("Could not get primary vertex");
-		return;
+		AliVCluster * cluster = event->GetCaloCluster(i);
+		if (!cluster)
+		{
+			AliWarning("Could not get cluster");
+			return;
+		}
+
+		if (!cluster->IsPHOS())
+			continue;
+
+		if (!cluster->GetType() != AliVCluster::kPHOSNeutral)
+			continue;
+
+		if (cluster->GetNCells() < 3)
+			continue;
+
+		if (cluster->E() < 0.3)
+			continue;
+
+		++nclusters;
+		energy_emc += cluster->E();
 	}
+	fClustersPHOS->Fill(bin, nclusters);
+	if (nclusters)
+		fEClustersPHOS->Fill(bin, energy_emc / nclusters);	
+	// Obviouisly this is not the best option
+	// TODO: try to find a better solution to find number of events in a file
+	fEventClustersPHOS->Fill(event->GetEventNumberInFile(), nclusters);
+}
 
-	if (TMath::Abs(vertex->GetZ()) > 10)
-		return;
-
+//________________________________________________________________
+void AliAnalysisTaskTrackAverages::AnalyseEMCalClusters(const AliVEvent * event, Int_t bin)
+{
 	Int_t nclusters = 0;
 	Int_t energy_emc = 0;
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
@@ -135,10 +156,12 @@ void AliAnalysisTaskTrackAverages::UserExec(Option_t * option)
 	}
 	fClustersEMCal->Fill(bin, nclusters);
 	if (nclusters)
-		fEClustersEMCal->Fill(bin, energy_emc / nclusters);
+		fEClustersEMCal->Fill(bin, energy_emc / nclusters);	
+}
 
-	AliAODEvent * aod = dynamic_cast < AliAODEvent *>(event);
-	if (!aod) return;
+//________________________________________________________________
+void AliAnalysisTaskTrackAverages::AnalyseChargedTracks(const AliVEvent * event, Int_t bin)
+{
 
 	Int_t NHybrid = 0;
 	Int_t NGlobal = 0;
@@ -174,9 +197,42 @@ void AliAnalysisTaskTrackAverages::UserExec(Option_t * option)
 
 	if (NGlobal)
 		fETracksTPC->Fill(bin, energyGlobal / NGlobal);
+}
+
+//________________________________________________________________
+void AliAnalysisTaskTrackAverages::UserExec(Option_t * option)
+{
+
+	// Ignore unused warning
+	(void) option;
+	AliVEvent * event = InputEvent();
+
+	// Check event
+	if (!event) return;
+
+
+	// Primary vertex
+	AliVVertex * vertex = (AliVVertex *) event->GetPrimaryVertex();
+	if (!vertex)
+	{
+		AliWarning("Could not get primary vertex");
+		return;
+	}
+
+	if (TMath::Abs(vertex->GetZ()) > 10)
+		return;
+
+	Int_t run = event->GetRunNumber();
+	// Just to debug
+	// cout << "run: " << run << endl;
+	// run = fRuns[5];
+	Int_t bin = findRunBin(run);
+
+
+	AnalyseEMCalClusters(event, bin);
+	AnalyseChargedTracks(event, bin);
 
 	fEvents->Fill(bin);
-
 	PostData(1, fOutputContainer);
 }
 
