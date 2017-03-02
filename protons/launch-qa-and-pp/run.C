@@ -1,4 +1,5 @@
 #include "algorithm"
+
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();

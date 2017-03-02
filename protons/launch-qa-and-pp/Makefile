@@ -1,4 +1,4 @@
-DATASET = LHC16k-pass1
+DATASET = LHC16j-muon-calo-pass1
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
@@ -11,7 +11,7 @@ grid: | %.cxx
 	@# Add all necessary taks
 	$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
 	$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C "*.h" "*.cxx")
-	$(call link_sources,../../qa/qa-track-averages,"*.h" AddAnalysisTaskTrackAverages.C)
+	$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C "*.h" "*.cxx")
 
 unlink:
 	find -type l -delete
