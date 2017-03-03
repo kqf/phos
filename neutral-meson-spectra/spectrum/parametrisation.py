@@ -65,11 +65,11 @@ class CrystalBall(PeakParametrization):
         fitfun.SetParLimits(3, 0, 2)
         fitfun.SetParLimits(4, 1., 3.5)
         pars = self.preliminary_fit(hist) 
-        fitfun.SetParameters(*(pars[:3] + [1.1, 2] + pars[3:]))
+        fitfun.SetParameters(*(pars[:3] + [1.493, 1.596] + pars[3:]))
 
         if not self.relaxed:
-            fitfun.FixParameter(3, 1.1)
-            fitfun.FixParameter(4, 2) 
+            fitfun.FixParameter(3, 1.493)
+            fitfun.FixParameter(4, 1.596) 
 
     def fit(self, hist, skipbgrnd = False):
         if (not hist) or (hist.GetEntries() == 0): return None, None

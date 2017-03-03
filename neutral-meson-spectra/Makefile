@@ -24,6 +24,9 @@ pileup:
 assymetry:
 	$(ROOT_PYTHON) -m unittest test.test_check_assymetry
 
+cball:
+	$(ROOT_PYTHON) -m unittest test.estimate_cb_parameters
+
 
 clean:
 	rm -f results/*.pdf

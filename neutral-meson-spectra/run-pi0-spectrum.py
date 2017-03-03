@@ -2,13 +2,12 @@
 
 import ROOT
 
-from spectrum.spectrum import PtAnalyzer, Spectrum
-from spectrum.input import Input, ExampleInput
+from spectrum.spectrum import Spectrum
+from spectrum.input import Input
 from spectrum.sutils import get_canvas
 
 def main():
     g = lambda x, y, z, w: Spectrum(x, label=y, mode=z, relaxedcb=w).evaluate()
-    f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z).quantities()
 
     infile = 'input-data/LHC16.root'
     results = [
