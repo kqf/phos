@@ -1,28 +1,28 @@
 #!/usr/bin/python
 
 import ROOT
+import json
 
-class PeakParametrization(object):
+class PeakParametrisation(object):
+    with open('config/peak-parameters.json') as f:
+        configuration = json.load(f)
+
     def __init__(self, ispi0peak):
-        super(PeakParametrization, self).__init__()
+        super(PeakParametrisation, self).__init__()
         ROOT.gStyle.SetOptFit()
         self.ispi0peak = ispi0peak
 
-        # All "magic" numbers should be here 
-        # Constrains on pi0/eta spectrum
-        #
-        # TODO: Should I move these parameters to json/pickle file?
+        name = 'pi0' if self.ispi0peak else 'eta'
+        self.d = self.configuration[name]
 
-        self.fit_range =         (0.05, 0.3)        if ispi0peak else (0.4, 6.8)
-
-        self.prel_mass_limits =  (0.1, 0.2)         if ispi0peak else (0.5, 0.6)
-        self.prel_width_limits = (0.004, 0.030)     if ispi0peak else (0.004, 0.030)
-        self.prel_range =        (0.105, 0.165)     if ispi0peak else (0.49, 0.6)
-        self.prel_paremeters =   (0.135, 0.010, 0.) if ispi0peak else (0.547, 0.010, 0.)
-
-        self.fit_mass = 0.135 if ispi0peak else 0.547
-        self.fit_mass_limits =   (0.12, 0.15)       if ispi0peak else (0.520, 0.570)
-        self.fit_width_limits =  (0.004, 0.030)     if ispi0peak else (0.004,0.050) 
+        self.fit_range         = self.d["fit_range"]
+        self.prel_mass_limits  = self.d["prel_mass_limits"]
+        self.prel_width_limits = self.d["prel_width_limits"]
+        self.prel_range        = self.d["prel_range"]
+        self.prel_paremeters   = self.d["prel_paremeters"]
+        self.fit_mass          = self.d["fit_mass"]
+        self.fit_mass_limits   = self.d["fit_mass_limits"]
+        self.fit_width_limits  = self.d["fit_width_limits"]
 
 
     def fit(self):
@@ -40,11 +40,15 @@ class PeakParametrization(object):
         return [ff.GetParameter(i) for i in range(4)]
         
 
-class CrystalBall(PeakParametrization):
-    """docstring for CrystalBall"""
+class CrystalBall(PeakParametrisation):
     def __init__(self, fit_range, relaxed):
         super(CrystalBall, self).__init__(fit_range)
         self.relaxed = relaxed
+
+        self.cb_n = self.d["cb_n"]
+        self.cb_alpha = self.d["cb_alpha"]
+        self.cb_n_limits = self.d["cb_n_limits"]
+        self.cb_alpha_limits = self.d["cb_alpha_limits"]
         
 
     def form_fitting_function(self, name = 'cball'):
@@ -59,17 +63,17 @@ class CrystalBall(PeakParametrization):
         fitfun.SetParNames("A", "M", "#sigma", "#alpha", "n", "a_{0}", "a_{1}", "a_{2}")
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
-        fitfun.SetParLimits(0, 0., hist.GetMaximum()*1.5)
+        fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
         fitfun.SetParLimits(1, *self.fit_mass_limits)
         fitfun.SetParLimits(2, *self.fit_width_limits)
-        fitfun.SetParLimits(3, 0, 2)
-        fitfun.SetParLimits(4, 1., 3.5)
+        fitfun.SetParLimits(3, *self.cb_alpha_limits)
+        fitfun.SetParLimits(4, *self.cb_n_limits)
         pars = self.preliminary_fit(hist) 
-        fitfun.SetParameters(*(pars[:3] + [1.493, 1.596] + pars[3:]))
+        fitfun.SetParameters(*(pars[:3] + [self.cb_alpha, self.cb_n] + pars[3:]))
 
         if not self.relaxed:
-            fitfun.FixParameter(3, 1.493)
-            fitfun.FixParameter(4, 1.596) 
+            fitfun.FixParameter(3, self.cb_alpha)
+            fitfun.FixParameter(4, self.cb_n) 
 
     def fit(self, hist, skipbgrnd = False):
         if (not hist) or (hist.GetEntries() == 0): return None, None
