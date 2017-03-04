@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import ROOT
+import json
 from parametrisation import CrystalBall
 from sutils import get_canvas
 
@@ -13,22 +14,32 @@ def remove_zeros(h, zeros, name = '_cleaned'):
         clean.SetBinError(i, e)
     return clean
 
-
-def zero_bins(hist):
-    return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < 0.00001]
-
-
-
 class InvariantMass(object):
+    with open('config/invariant-mass.json') as f:
+        conf = json.load(f)
+   
     def __init__(self, rawhist, mixhist, pt_range, ispi0, relaxedcb):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
+        # Setup parameters
+        self.zero_threshold = self.conf['zero_threshold']
+        self.need_rebin     = self.conf['needs_rebin']
+        self.nrebin         = self.conf['nrebin']
+        self.xaxis_range    = [i * j for i, j in zip(self.peak_function.fit_range, self.conf['xaxis_offsets'])]
+        self.legend_pos     = self.conf['legend_pos']
+        self.pt_label_pos   = self.conf['pt_label_pos']
+
+        # Extract the data
         self.mass = self.extract_histogram(rawhist)
         self.mixed = self.extract_histogram(mixhist)
         self.sigf, self.bgrf = None, None
+
+
+    def zero_bins(self, hist):
+        return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < self.zero_threshold]
 
 
     def in_range(self, x):
@@ -41,8 +52,8 @@ class InvariantMass(object):
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
-        if any(map(self.in_range, [16])):
-            mass.Rebin(3)
+        if any(map(self.in_range, self.need_rebin)):
+            mass.Rebin(self.nrebin)
         return mass
 
 
@@ -53,7 +64,7 @@ class InvariantMass(object):
         ratio = self.mass.Clone()
         ratio.Divide(self.mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
-        self.ratio = remove_zeros(ratio, zero_bins(self.mass), '_ratio')
+        self.ratio = remove_zeros(ratio, self.zero_bins(self.mass), '_ratio')
 
         if self.ratio.GetEntries() == 0: return
         fitf, bckgrnd = self.peak_function.fit(self.ratio)
@@ -65,12 +76,13 @@ class InvariantMass(object):
     def substract_background(self):
         if not self.mass.GetEntries():
             return self.mass
+
         # Substract 
         signal = self.mass.Clone()
         signal.Add(self.mass, self.mixed, 1., -1.)
-        signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
+        signal.SetAxisRange(*self.xaxis_range)
         signal.GetYaxis().SetTitle("Real - Mixed")
-        signal = remove_zeros(signal, zero_bins(self.mass), '_signal')
+        signal = remove_zeros(signal, self.zero_bins(self.mass), '_signal')
         return signal
 
 
@@ -84,9 +96,9 @@ class InvariantMass(object):
 
     def draw_pt_bin(self, hist):
         # Estimate coordinate
-        y = (hist.GetMaximum() - hist.GetMinimum()) / 3.5
+        y = (hist.GetMaximum() - hist.GetMinimum()) / self.pt_label_pos[0]
         a, b = self.peak_function.fit_range
-        x = 1.9 * (b - a) / 3
+        x = self.pt_label_pos[1] * (b - a) / 3
         # Draw the lable
         tl = ROOT.TLatex()
         tl.SetTextAlign(12);
@@ -99,7 +111,7 @@ class InvariantMass(object):
         canvas = pad if pad else get_canvas()
         # canvas.SetTickx()
         canvas.SetTicky()  
-        self.ratio.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
+        self.ratio.SetAxisRange(*self.xaxis_range)
         self.ratio.Draw()
         self.draw_pt_bin(self.ratio)
         canvas.Update()
@@ -110,8 +122,8 @@ class InvariantMass(object):
         # canvas.SetTickx()
         canvas.SetTicky() 
 
-        self.mass.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
-        legend = ROOT.TLegend(0.6, 0.6, 0.8, 0.8)
+        self.mass.SetAxisRange(*self.xaxis_range)
+        legend = ROOT.TLegend(*self.legend_pos)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
 
@@ -129,7 +141,7 @@ class InvariantMass(object):
         canvas = pad if pad else get_canvas()
         # canvas.SetTickx()
         canvas.SetTicky() 
-        self.signal.SetAxisRange(1.5 * self.peak_function.fit_range[0], 0.85 * self.peak_function.fit_range[1])
+        self.signal.SetAxisRange(*self.xaxis_range)
         self.signal.Draw()
         self.draw_pt_bin(self.signal)
         canvas.Update()

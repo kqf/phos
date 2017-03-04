@@ -1,0 +1,9 @@
+{
+        "comment": "These are list of parameters to maintain plots/rebining for invariant mass class",
+        "zero_threshold": 0.00001,
+        "needs_rebin": [16],
+        "nrebin": 3,
+        "xaxis_offsets": [1.5, 0.85],
+        "legend_pos": [0.6, 0.6, 0.8, 0.8],
+        "pt_label_pos": [3.5, 1.9]
+}
