@@ -1,0 +1,9 @@
+{
+	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
+	"canvas": [0.001, 0.001],
+	"width_pars": [-4.13409, -1.48850, 6.26014, 4.10645],
+	"width_names": ["a", "b", "c", "d"],
+	"mass_pars": [-4.13409, -1.48850, 6.26014, 4.10645],
+	"mass_names": ["a", "b", "c", "d"]
+              
+}
