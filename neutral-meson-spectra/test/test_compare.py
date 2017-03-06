@@ -22,7 +22,7 @@ def get_spectrum(name, a, b, par):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        with open('test/particles.json') as f: 
+        with open('config/test_particles.json') as f: 
             particles = json.load(f)
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
@@ -46,6 +46,10 @@ class Test(unittest.TestCase):
 
         diff = cmpr.Comparator(ratiofit=(5, 0))
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+    def testCompareSingle(self):
+        diff = cmpr.Comparator()
+        diff.compare_set_of_histograms( [[self.data[1], self.data[2]]] )
 
 
 

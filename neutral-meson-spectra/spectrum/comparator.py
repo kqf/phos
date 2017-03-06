@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 
 import ROOT
-from sutils import wait, get_canvas, Cc
+from sutils import wait, get_canvas, Cc, adjust_canvas
 
 class Visualizer(object):
     def __init__(self, size, rrange, ratiofit):
@@ -21,8 +21,9 @@ class Visualizer(object):
         pad1.SetBottomMargin(0);
         pad1.Draw()
         c1.cd()
-        pad2 = ROOT.TPad("pad2","ratio", 0, 0.05, 1, 0.3);
+        pad2 = ROOT.TPad("pad2","ratio", 0, 0, 1, 0.3);
         pad2.SetTopMargin(0);
+        pad2.SetBottomMargin(0.2);
         pad2.Draw();
         pad2.SetTickx()
         pad2.SetTicky()
@@ -46,10 +47,10 @@ class Visualizer(object):
         ratio.GetYaxis().SetTitleOffset(0.10)
         ratio.GetYaxis().SetTitleSize(0.10)
         ratio.GetYaxis().SetTitleOffset(0.5)
-        ratio.GetYaxis().SetLabelSize(0.10) 
+        ratio.GetYaxis().SetLabelSize(0.08) 
         ratio.GetYaxis().CenterTitle(True)
 
-        ratio.GetXaxis().SetTitleSize(0.06)
+        ratio.GetXaxis().SetTitleSize(0.1)
         ratio.GetXaxis().SetTitleOffset(0.9) 
         ratio.GetXaxis().SetLabelSize(0.10)  
         if self.rrange: ratio.SetAxisRange(self.rrange[0], self.rrange[1] , 'Y')
@@ -77,6 +78,9 @@ class Visualizer(object):
 
     def compare_visually(self, hists, ci, stop = True, canvas = None):
         canvas, mainpad, ratio = self.preare_ratio_plot(hists, canvas)
+
+        if len(hists) == 1:
+            adjust_canvas(canvas)
 
         legend = ROOT.TLegend(0.8, 0.4, 0.9, 0.6)
         legend.SetBorderSize(0)

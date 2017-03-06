@@ -48,6 +48,16 @@ def get_canvas(x = 1 / 2., y = 1, resize = False):
 
     return ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
 
+def adjust_canvas(canvas):
+    height = canvas.GetWindowHeight()
+    canvas.SetBottomMargin(0.02 * height)
+    canvas.SetTopMargin(0.02 * height)
+
+    width = canvas.GetWindowWidth()
+    canvas.SetRightMargin(0.01 * width)
+    canvas.SetLeftMargin(0.01 * width)
+
+
 class Cc:
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'

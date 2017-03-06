@@ -19,27 +19,27 @@ class CrystalBallParameters(unittest.TestCase):
         self.mass, self.width, self.spectrum, self.chi2, self.alpha, self.n = spectrum.evaluate()
 
 
-    def testLinear(self):
-        # TODO: save the images
-        
-        canvas = get_canvas()
-        canvas.Clear()
-        canvas.Divide(2, 1)
+    def fitConstant(self, hist, ofile):
+        canvas = ROOT.TCanvas('cbfit', 'cbfit', 128 * 6 / 2, 96 * 6)
+        canvas.SetTickx()
+        canvas.SetTicky()
+        canvas.SetGridy()
+        canvas.SetGridx()
 
-        canvas.cd(1)
-        self.alpha.Fit('pol0')
-        self.alpha.SetLineColor(37)
-        function = self.alpha.GetFunction('pol0')
+        hist.Fit('pol0', 'q')
+        hist.SetLineColor(37)
+        function = hist.GetFunction('pol0')
         function.SetLineColor(46)
-
-        canvas.cd(2)
-        self.n.Draw()
-        self.n.SetLineColor(37)
-        self.n.Fit('pol0')
-        function = self.n.GetFunction('pol0')
-        function.SetLineColor(46)
-
+        function.Draw('same')
         canvas.Update()
+        canvas.SaveAs(ofile)
         raw_input()
+
+
+    def testConstant(self):
+        self.fitConstant(self.alpha, 'results/cb-alpha-fit.pdf')
+        self.fitConstant(self.n, 'results/cb-n-fit.pdf')
+
+
 
 
