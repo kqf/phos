@@ -58,6 +58,8 @@ class Styler(object):
 
         obj.SetStats(False)
         obj.oname = properties['oname'] if 'oname' in properties else ''
+        obj.label = properties['label'] if 'label' in properties else ''
+        obj.option = properties['option'] if 'option' in properties else ''
         
         if 'label' in properties: obj.label = properties['label']
         if 'color' in properties: obj.SetLineColor(properties['color'])
@@ -65,9 +67,7 @@ class Styler(object):
         if 'title' in properties: obj.SetTitle(properties['title'])
         if 'rebin' in properties: obj.Rebin(properties['rebin'])
         if 'stats' in properties: obj.SetStats(True)
-        if 'option' in properties: 
-            obj.SetOption(properties['option'])
-            obj.option = properties['option']
+        if 'option' in properties: obj.SetOption(properties['option'])
         if 'normalize' in properties: 
             obj.Scale( properties['normalize'] / obj.Integral() )
         return obj
