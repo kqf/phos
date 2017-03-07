@@ -22,6 +22,7 @@ class Styler(object):
             self.data = json.load(f)
         self.hists, self.hitmap = self.read_data()
 
+        
     def read_data(self):
         hists, hitmap = None, None
 
@@ -48,7 +49,7 @@ class Styler(object):
         for n in path:
             obj = obj.FindObject(n)
 
-        assert obj, 'Specify right path to histogram. Current path: ' + path
+        assert obj, 'Specify right path to histogram. ' + lst + ' Current path: ' + path + '. Or check your .root file.'
 
         if 'projecty' in properties: 
             obj = obj.ProjectionY(obj.GetName() + '_y', obj.GetXaxis().FindBin(properties['projecty']), -1)
@@ -123,8 +124,8 @@ class Styler(object):
 
         for i in range(4): 
             pad = canvas.cd(i + 1)
-            if 'logy' in props: pad.SetLogy()
-            if 'logx' in props: pad.SetLogx()
+            if 'logy' in props: pad.SetLogy(props['logy'])
+            if 'logx' in props: pad.SetLogx(props['logx'])
             if 'gridx' in props: pad.SetGridx()
             if 'gridy' in props: pad.SetGridy()
 
