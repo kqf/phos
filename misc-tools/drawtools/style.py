@@ -87,17 +87,21 @@ class Styler(object):
         ROOT.gPad.SetTickx()
         ROOT.gPad.SetTicky() 
 
-        legend = ROOT.TLegend(*props['legend'])
-        map(lambda x: legend.AddEntry(x, x.label), self.histograms)
-        legend.Draw('same')
-        legend.SetBorderSize(0)
-        legend.SetFillStyle(0)
-        # legend.SetTextSize(0.04)
+        if 'legend' in props:
+            legend = ROOT.TLegend(*props['legend'])
+            map(lambda x: legend.AddEntry(x, x.label), self.histograms)
+            legend.Draw('same')
+            legend.SetBorderSize(0)
+            legend.SetFillStyle(0)
+            # legend.SetTextSize(0.04)
 
-        canvas.SetLogy(props['logy'])
-        canvas.SetGridx(props['gridx'])
+        if 'logy' in props: canvas.SetLogy(props['logy'])
+        if 'logx' in props: canvas.SetLogx(props['logx'])
+        if 'gridx' in props: canvas.SetGridx()
+        if 'gridy' in props: canvas.SetGridy()
+
         canvas.Draw()
-        canvas.SaveAs(props['output'])
+        if 'output' in props: canvas.SaveAs(props['output'])
         raw_input()
 
     def drawmap(self, name):
