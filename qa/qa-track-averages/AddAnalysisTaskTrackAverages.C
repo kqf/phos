@@ -24,8 +24,8 @@ TString AddAnalysisTaskTrackAverages(Int_t runs[], Int_t nruns)
 	TString libs   = plugin->GetAdditionalLibs();
 	TString output = plugin->GetOutputFiles();
 
-	plugin->SetAnalysisSource(souces + " AliAnalysisTaskTrackAverages.h AliAnalysisTaskTrackAverages.cxx ");
-	plugin->SetAdditionalLibs(libs + " AliAnalysisTaskTrackAverages.h ");
+	plugin->SetAnalysisSource(souces + " AliAnalysisTaskTrackAverages.cxx ");
+	plugin->SetAdditionalLibs(libs + " AliAnalysisTaskTrackAverages.cxx AliAnalysisTaskTrackAverages.h ");
 
 	return " TrackAverages.root ";
 }

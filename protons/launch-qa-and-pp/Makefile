@@ -1,4 +1,4 @@
-DATASET = LHC16j-muon-calo-pass1
+DATASET = LHC16h-muon-calo-pass1
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
