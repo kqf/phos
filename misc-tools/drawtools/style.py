@@ -82,24 +82,9 @@ class Styler(object):
         canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
 
         map(lambda x: x.Draw('same'), self.histograms)
-
-        ROOT.gStyle.SetOptStat(0)
-        ROOT.gPad.SetTickx()
-        ROOT.gPad.SetTicky() 
-
-        if 'legend' in props:
-            legend = ROOT.TLegend(*props['legend'])
-            map(lambda x: legend.AddEntry(x, x.label), self.histograms)
-            legend.Draw('same')
-            legend.SetBorderSize(0)
-            legend.SetFillStyle(0)
-            # legend.SetTextSize(0.04)
-
-        if 'logy' in props: canvas.SetLogy(props['logy'])
-        if 'logx' in props: canvas.SetLogx(props['logx'])
-        if 'gridx' in props: canvas.SetGridx()
-        if 'gridy' in props: canvas.SetGridy()
-
+        legend = self.decorate_legend(self.histograms, props)
+        
+        self.decorate_pad(canvas, props)
         canvas.Draw()
         if 'output' in props: canvas.SaveAs(props['output'])
         raw_input()
@@ -118,25 +103,35 @@ class Styler(object):
 
         props = self.data['canvas_per_module']
 
-        if 'legend' in props:
-            legend = ROOT.TLegend(*props['legend'])
-            legend.SetFillStyle(0)
-            legend.SetBorderSize(0)
-            map(lambda x: legend.AddEntry(x, x.label), zip(*self.hitmap)[0])
-            canvas.cd(1)
-            legend.Draw()
+        canvas.cd(1)
+        legend = self.decorate_legend(zip(*self.hitmap)[0], props)
 
-        for i in range(4): 
-            pad = canvas.cd(i + 1)
-            if 'logy' in props: pad.SetLogy(props['logy'])
-            if 'logx' in props: pad.SetLogx(props['logx'])
-            if 'gridx' in props: pad.SetGridx()
-            if 'gridy' in props: pad.SetGridy()
+        for i in range(4): self.decorate_pad(canvas.cd(i + 1), props)
 
         canvas.Update()
         canvas.SaveAs(props['output'])
         raw_input()
 
+    def decorate_pad(self, pad, props):
+        ROOT.gStyle.SetOptStat(0)
+        ROOT.gPad.SetTickx()
+        ROOT.gPad.SetTicky() 
+
+        if 'logy' in props: pad.SetLogy(props['logy'])
+        if 'logx' in props: pad.SetLogx(props['logx'])
+        if 'gridx' in props: pad.SetGridx()
+        if 'gridy' in props: pad.SetGridy()
+
+    def decorate_legend(self, hists, props):
+        if not 'legend' in props:
+            return 
+
+        legend = ROOT.TLegend(*props['legend'])
+        legend.SetFillStyle(0)
+        legend.SetBorderSize(0)
+        map(lambda x: legend.AddEntry(x, x.label), hists)
+        legend.Draw()
+        return legend
 
 
 

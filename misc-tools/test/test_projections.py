@@ -30,8 +30,8 @@ class TestProjections(TestImages):
     def save_histogram(self, filename, histname):
         ofile = ROOT.TFile(filename, "update")
         histogram = ROOT.TH2F(histname, "Testing projections ...", 200, 0, 100, 200, 0, 100)
-        for i in range(1, histogram.GetXaxis().GetNbins()):
-            for j in range(1, histogram.GetXaxis().GetNbins()):
+        for i in range(1, histogram.GetXaxis().GetNbins() + 1):
+            for j in range(1, histogram.GetXaxis().GetNbins() + 1):
                 histogram.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
         histogram.Write()

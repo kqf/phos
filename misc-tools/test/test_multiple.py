@@ -31,8 +31,8 @@ class TestMultipleImages(TestImages):
 		ofile = ROOT.TFile(filename, "update")
 		for i in range(1, 5):
 			histogram = ROOT.TH2F(histname % i, "Testing ...", 20 * i, 0, 100, 20 * i, 0, 100)
-			for i in range(1, histogram.GetXaxis().GetNbins()):
-				for j in range(1, histogram.GetXaxis().GetNbins()):
+			for i in range(1, histogram.GetXaxis().GetNbins() + 1):
+				for j in range(1, histogram.GetXaxis().GetNbins() + 1):
 					histogram.SetBinContent(i, j, random.randint(1, 5))
 			histogram.Write()
 		ofile.Close()
