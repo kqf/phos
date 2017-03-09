@@ -3,7 +3,7 @@
 from spectrum.spectrum import PtAnalyzer, Spectrum
 from spectrum.input import Input
 
-import check_default
+import test.check_default
 import numpy as np
 
 
@@ -16,7 +16,7 @@ class ModuleAnalyzer(PtAnalyzer):
         return map(self.rawhist.GetYaxis().FindBin, bins)
 
 
-class CheckModules(check_default.CheckDefault):
+class CheckModules(test.check_default.CheckDefault):
 
     def setUp(self):
         super(CheckModules, self).setUp()

@@ -4,9 +4,9 @@ from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
 from spectrum.sutils import get_canvas
 
-import check_default
+import test.check_default
 
-class CheckPileup(check_default.CheckDefault):
+class CheckPileup(test.check_default.CheckDefault):
 
     def setUp(self):
         super(CheckPileup, self).setUp()

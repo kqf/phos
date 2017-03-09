@@ -3,12 +3,12 @@
 from spectrum.spectrum import PtAnalyzer, Spectrum
 from spectrum.input import Input, TimecutInput
 
-from test.phspace import InclusiveGenerator
+from phspace import InclusiveGenerator
 
-import check_default
+import test.check_default
 import os
 
-class CheckPileup(check_default.CheckDefault):
+class CheckPileup(test.check_default.CheckDefault):
     def setUp(self):
         super(CheckPileup, self).setUp()
 
