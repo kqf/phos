@@ -52,6 +52,7 @@ class InvariantMass(object):
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
+        # TODO: check ranges for rebinning!
         if any(map(self.in_range, self.need_rebin)):
             mass.Rebin(self.nrebin)
         return mass
@@ -71,6 +72,18 @@ class InvariantMass(object):
 
         self.mixed.Multiply(bckgrnd)
         self.mixed.SetLineColor(46)
+
+
+    def noisy_peak_parameters(self):
+        """
+            This methods estimates peak and background parameters using only 
+            effective mass distribution and without background substraction.
+
+            It's needed for tag and probe analysis.
+        """
+        peak_and_bkrnd = self.peak_function.fit(self.mass)
+        pars = lambda x: [x.GetParameter(i) for i in range(x.GetNpar())] 
+        return map(pars, peak_and_bkrnd)
 
 
     def substract_background(self):

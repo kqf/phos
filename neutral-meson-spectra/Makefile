@@ -1,3 +1,7 @@
+tag:
+	$(ROOT_PYTHON) -m unittest test.cuts.tag_and_probe_tof_efficiency
+
+
 pi0:
 	$(ROOT_PYTHON) run-pi0-spectrum.py
 
