@@ -1,6 +1,7 @@
 import ROOT
 from collections import Iterable
 
+
 def equals(a, b, tol = 1e-7):
     if isinstance(a,Iterable):
         return all(map(lambda x, y: equals(x, y, tol), zip(a, b)))
@@ -9,6 +10,10 @@ def equals(a, b, tol = 1e-7):
 def wait(name, draw, save = True, suffix = ''):
     canvas = get_canvas()
     canvas.Update()
+    canvas.SetTickx()
+    canvas.SetTicky() 
+    canvas.SetGridx()
+    canvas.SetGridy()
     name = name.replace(' ', '_')
     if save: canvas.SaveAs('results/' + name + '.pdf')
 
@@ -45,13 +50,16 @@ def nicely_draw(hist, option = '', legend = None):
     legend.Draw('same')
     wait('xlin_' + hist.GetName(), draw = True, save = True)
 
-def get_canvas(x = 1 / 2., y = 1, resize = False):
+def get_canvas(x = 1., y = 1, resize = False):
     canvas = ROOT.gROOT.FindObject('c1')
     if canvas: 
         # if resize: canvas.SetWindowSize(int(128 * x * 6) , int(96 * y * 6))
         return canvas 
 
-    return ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
+    canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
+    return canvas
+
+
 
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()

@@ -52,11 +52,8 @@ class InvariantMass(object):
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
-        # TODO: check ranges for rebinning!
-        # if any(map(self.in_range, self.need_rebin)):
         if self.nrebin:
             mass.Rebin(self.nrebin)
-
         return mass
 
 
