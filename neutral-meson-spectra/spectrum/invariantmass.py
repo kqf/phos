@@ -14,20 +14,20 @@ def remove_zeros(h, zeros, name = '_cleaned'):
         clean.SetBinError(i, e)
     return clean
 
+
 class InvariantMass(object):
     with open('config/invariant-mass.json') as f:
         conf = json.load(f)
    
-    def __init__(self, rawhist, mixhist, pt_range, ispi0, relaxedcb):
+    def __init__(self, rawhist, mixhist, pt_range, nrebin, ispi0, relaxedcb, tol = 0.00001):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
+        self.nrebin   = nrebin
+        self.tol      = tol
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
         # Setup parameters
-        self.zero_threshold = self.conf['zero_threshold']
-        self.need_rebin     = self.conf['needs_rebin']
-        self.nrebin         = self.conf['nrebin']
         self.xaxis_range    = [i * j for i, j in zip(self.peak_function.fit_range, self.conf['xaxis_offsets'])]
         self.legend_pos     = self.conf['legend_pos']
         self.pt_label_pos   = self.conf['pt_label_pos']
@@ -39,7 +39,7 @@ class InvariantMass(object):
 
 
     def zero_bins(self, hist):
-        return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < self.zero_threshold]
+        return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < self.tol]
 
 
     def in_range(self, x):
@@ -53,8 +53,10 @@ class InvariantMass(object):
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
         # TODO: check ranges for rebinning!
-        if any(map(self.in_range, self.need_rebin)):
+        # if any(map(self.in_range, self.need_rebin)):
+        if self.nrebin:
             mass.Rebin(self.nrebin)
+
         return mass
 
 

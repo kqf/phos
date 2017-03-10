@@ -3,6 +3,7 @@
 import ROOT
 from sutils import nicely_draw, get_canvas, wait
 from invariantmass import InvariantMass
+import json
 
 ROOT.TH1.AddDirectory(False)
 
@@ -27,12 +28,14 @@ class PtDependent(object):
 
 
 class PtAnalyzer(object):
-		
+    with open('config/pt-analysis.json') as f:
+        conf = json.load(f)
+        
     def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False):
         super(PtAnalyzer, self).__init__()
-
-        # self.name = name + '_' + filter(str.isalnum, self.label)
         self.nevents, self.rawhist, self.rawmix = lst
+        
+        # TODO: move this ugly code to invariant mass?
         if not self.rawhist.GetSumw2N(): self.rawhist.Sumw2()
         if not self.rawmix.GetSumw2N(): self.rawmix.Sumw2()
 
@@ -41,18 +44,27 @@ class PtAnalyzer(object):
         self.dead_mode = ('dead' in mode)
         self.ispi0 = 'pi0' in particle
 
-        ptbins = self.divide_into_bins()
+        # Configure analysis
+        props = self.conf[particle]
+        self.bins       = props['ptedges']
+        self.need_rebin = props['need_rebin']
+
+        ptbins, rebins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
 
-        f = lambda x: InvariantMass(self.rawhist, self.rawmix, x, self.ispi0, relaxedcb)
-        self.masses = map(f, pt_intervals)
+        assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
+
+
+        f = lambda x, y: InvariantMass(self.rawhist, self.rawmix, x, y, self.ispi0, relaxedcb)
+        self.masses = map(f, pt_intervals, self.need_rebin)
 
 
     def divide_into_bins(self):
-        bins = [0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10., 11., 12., 13., 15., 20.]
-        # if not self.ispi0: bins = [1.0, 40]
-        if not self.ispi0: bins = [1.0, 2.0, 3., 4., 6, 8, 10, 15, 20]
-        return bins
+        """
+            This method is needed because then we can redefine it
+            for dynamical binning instead of static one.
+        """
+        return self.bins, self.need_rebin
 
     def histograms(self, data):
         # Book histograms
@@ -65,7 +77,7 @@ class PtAnalyzer(object):
                           ]
 
         # Extract bins
-        ptedges = self.divide_into_bins()
+        ptedges, dummy = self.divide_into_bins()
 
         # Extract the data
         return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]

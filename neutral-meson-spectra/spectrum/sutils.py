@@ -1,5 +1,10 @@
 import ROOT
+from collections import Iterable
 
+def equals(a, b, tol = 1e-7):
+    if isinstance(a,Iterable):
+        return all(map(lambda x, y: equals(x, y, tol), zip(a, b)))
+    return abs(a - b) < tol 
 
 def wait(name, draw, save = True, suffix = ''):
     canvas = get_canvas()
