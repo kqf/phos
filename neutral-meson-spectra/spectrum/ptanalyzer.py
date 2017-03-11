@@ -31,14 +31,10 @@ class PtAnalyzer(object):
     with open('config/pt-analysis.json') as f:
         conf = json.load(f)
         
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False):
+    def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False):
         super(PtAnalyzer, self).__init__()
-        self.nevents, self.rawhist, self.rawmix = lst
-        
-        # TODO: move this ugly code to invariant mass?
-        if not self.rawhist.GetSumw2N(): self.rawhist.Sumw2()
-        if not self.rawmix.GetSumw2N(): self.rawmix.Sumw2()
-
+        # These hists are needed for dynamic binning
+        self.hists = hists
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
         self.dead_mode = ('dead' in mode)
@@ -48,13 +44,14 @@ class PtAnalyzer(object):
         props = self.conf[particle]
         self.bins       = props['ptedges']
         self.need_rebin = props['need_rebin']
+        self.multcanvas = props['multcanvas']
 
         ptbins, rebins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(self.rawhist, self.rawmix, x, y, self.ispi0, relaxedcb)
+        f = lambda x, y: InvariantMass(hists, x, y, self.ispi0, relaxedcb)
         self.masses = map(f, pt_intervals, rebins)
 
 
@@ -128,23 +125,27 @@ class PtAnalyzer(object):
         # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
-    def draw_all_bins(self, m = 6, n = 6, f = lambda x, y: x.draw_ratio(y), name = ''):
+
+    def draw_all_bins(self, f, name = ''):
+        # TODO: Try to understand if there is any possibility to 
+        # Cnange canvas size without recreating it.
+        #
         canvas = get_canvas(1, 1, True)
         canvas.Clear()
-        canvas.Divide(m, n, 0, 0.01)
+        canvas.Divide(*self.multcanvas)
         for i, m in enumerate(self.masses):
             f(m, canvas.cd(i + 1))
         wait(name + self.label, self.show_img)
 
     def draw_ratio(self, name = ''):
-        m, n = (6, 6) if self.ispi0 else (3, 3)
-        self.draw_all_bins(m, n, lambda x, y: x.draw_ratio(y), 'multiple-ratio-')
+        f = lambda x, y: x.draw_ratio(y)
+        self.draw_all_bins(f, 'multiple-ratio-' + name)
 
     def draw_mass(self, name = ''):
-        m, n = (6, 6) if self.ispi0 else (3, 3)
-        self.draw_all_bins(m, n, lambda x, y: x.draw_mass(y), 'multiple-mass-')
+        f = lambda x, y: x.draw_mass(y)
+        self.draw_all_bins(f, 'multiple-mass-' + name)
 
     def draw_signal(self, name = ''):
-        m, n = (6, 6) if self.ispi0 else (3, 3)
-        self.draw_all_bins(m, n, lambda x, y: x.draw_signal(y), 'multiple-signal-')
+        f = lambda x, y: x.draw_signal(y) 
+        self.draw_all_bins(f, 'multiple-signal-' + name)
 

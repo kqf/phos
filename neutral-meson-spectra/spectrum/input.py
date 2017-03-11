@@ -22,7 +22,7 @@ class Input(object):
         n, raw, mix = self.events(lst), hist(hname), hist(self.mixprefix + hname)
         raw.nevents = n
         mix.nevents = n
-        return n, raw, mix
+        return raw, mix
 
     def read_per_module(self, threshold = 0.135):
         names = ['SM%dSM%d' % (i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]

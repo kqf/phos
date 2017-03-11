@@ -14,7 +14,7 @@ class ModuleAnalyzer(PtAnalyzer):
     def divide_into_bins(self):
         nedges = 20
         edges = np.e ** np.linspace(np.log(1.1), np.log(15) , nedges)
-        return map(self.rawhist.GetYaxis().FindBin, edges), np.zeros(nedges - 1)
+        return map(self.hists[0].GetYaxis().FindBin, edges), np.zeros(nedges - 1)
 
 
 class CheckModules(test.check_default.CheckDefault):

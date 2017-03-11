@@ -11,7 +11,7 @@ ROOT.TH1.AddDirectory(False)
 class MetricInput(TimecutInput):
     def __init__(self, filename, listname, histname, mixprefix = 'Mix'):
         super(MetricInput, self).__init__(filename, listname, histname, mixprefix)
-        self.nevents, self.data, self.mixing = self.read()
+        self.data, self.mixing = self.read()
 
     def project(self, cut, draw = False):
         self.data.SetAxisRange(0, cut, 'Z')
@@ -26,7 +26,7 @@ class MetricInput(TimecutInput):
         
     def extract(self, cut):
         data, mixing = self.project(cut)
-        return [[self.nevents, data, mixing], 'cut %0.2f' % cut, 'dead']
+        return [[data, mixing], 'cut %0.2f' % cut, 'dead']
 
 
 # Abstract class just to check minimizer interface.

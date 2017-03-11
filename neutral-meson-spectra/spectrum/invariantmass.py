@@ -19,7 +19,7 @@ class InvariantMass(object):
     with open('config/invariant-mass.json') as f:
         conf = json.load(f)
    
-    def __init__(self, rawhist, mixhist, pt_range, nrebin, ispi0, relaxedcb, tol = 0.00001):
+    def __init__(self, inhists, pt_range, nrebin, ispi0, relaxedcb, tol = 0.00001):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.nrebin   = nrebin
@@ -33,8 +33,7 @@ class InvariantMass(object):
         self.pt_label_pos = self.conf['pt_label_pos']
 
         # Extract the data
-        self.mass = self.extract_histogram(rawhist)
-        self.mixed = self.extract_histogram(mixhist)
+        self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
 
 
@@ -52,6 +51,10 @@ class InvariantMass(object):
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
         mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
+
+        if not mass.GetSumw2N():
+            mass.Sumw2()
+
         if self.nrebin:
             mass.Rebin(self.nrebin)
         return mass
