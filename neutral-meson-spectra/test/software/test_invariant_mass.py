@@ -12,7 +12,7 @@ class TestInvariantMassClass(unittest.TestCase):
     def testDrawOption(self):
         nevents, real, mix = Input('input-data/LHC16.root', 'PhysTender').read()
 
-        mass = InvariantMass(real, mix, (8., 9.), True, False)
+        mass = InvariantMass(real, mix, (8., 9.), 0, True, 0, False)
         mass.extract_data()
 
         mass.draw_ratio()

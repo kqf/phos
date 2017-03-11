@@ -19,7 +19,7 @@ class PtDependent(object):
         from array import array
         hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
         if not hist.GetSumw2N(): hist.Sumw2()
-        hist.GetXaxis().SetTitle('P_{T}, GeV/c')
+        hist.GetXaxis().SetTitle('p_{T}, GeV/c')
         [hist.SetBinContent(i + 1, m[0]) for i, m in enumerate(data)]
         [hist.SetBinError(i + 1, m[1]) for i, m in enumerate(data)]
         hist.label = self.label
@@ -54,9 +54,8 @@ class PtAnalyzer(object):
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-
         f = lambda x, y: InvariantMass(self.rawhist, self.rawmix, x, y, self.ispi0, relaxedcb)
-        self.masses = map(f, pt_intervals, self.need_rebin)
+        self.masses = map(f, pt_intervals, rebins)
 
 
     def divide_into_bins(self):

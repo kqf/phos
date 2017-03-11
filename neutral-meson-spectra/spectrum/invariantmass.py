@@ -28,9 +28,9 @@ class InvariantMass(object):
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
         # Setup parameters
-        self.xaxis_range    = [i * j for i, j in zip(self.peak_function.fit_range, self.conf['xaxis_offsets'])]
-        self.legend_pos     = self.conf['legend_pos']
-        self.pt_label_pos   = self.conf['pt_label_pos']
+        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, self.conf['xaxis_offsets'])]
+        self.legend_pos   = self.conf['legend_pos']
+        self.pt_label_pos = self.conf['pt_label_pos']
 
         # Extract the data
         self.mass = self.extract_histogram(rawhist)
@@ -57,20 +57,21 @@ class InvariantMass(object):
         return mass
 
 
-    def estimate_background(self):
-        if not self.mass.GetEntries(): return
+    def estimate_background(self, mass, mixed):
+        if not mass.GetEntries(): return None
 
         # Divide real/mixed
-        ratio = self.mass.Clone()
-        ratio.Divide(self.mixed)
+        ratio = mass.Clone()
+        ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
-        self.ratio = remove_zeros(ratio, self.zero_bins(self.mass), '_ratio')
+        ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
 
-        if self.ratio.GetEntries() == 0: return
-        fitf, bckgrnd = self.peak_function.fit(self.ratio)
+        if ratio.GetEntries() == 0: return ratio
+        fitf, bckgrnd = self.peak_function.fit(ratio)
 
-        self.mixed.Multiply(bckgrnd)
-        self.mixed.SetLineColor(46)
+        mixed.Multiply(bckgrnd)
+        mixed.SetLineColor(46)
+        return ratio
 
 
     def noisy_peak_parameters(self):
@@ -85,26 +86,26 @@ class InvariantMass(object):
         return map(pars, peak_and_bkrnd)
 
 
-    def substract_background(self):
-        if not self.mass.GetEntries():
-            return self.mass
+    def substract_background(self, mass, mixed):
+        if not mass.GetEntries():
+            return mass
 
         # Substract 
-        signal = self.mass.Clone()
-        signal.Add(self.mass, self.mixed, 1., -1.)
+        signal = mass.Clone()
+        signal.Add(mass, mixed, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
         signal.GetYaxis().SetTitle("Real - Mixed")
-        signal = remove_zeros(signal, self.zero_bins(self.mass), '_signal')
+        signal = remove_zeros(signal, self.zero_bins(mass), '_signal')
         return signal
 
 
-        
     def extract_data(self):
         if not (self.sigf and self.bgrf):
-            self.estimate_background()
-            self.signal = self.substract_background()
+            self.ratio = self.estimate_background(self.mass, self.mixed)
+            self.signal = self.substract_background(self.mass, self.mixed)
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
+
 
     def draw_pt_bin(self, hist):
         # Estimate coordinate
@@ -120,6 +121,9 @@ class InvariantMass(object):
 
 
     def draw_ratio(self, pad = 0):
+        if not self.ratio:
+            return
+
         canvas = pad if pad else get_canvas()
         # canvas.SetTickx()
         canvas.SetTicky()  

@@ -12,8 +12,9 @@ class ModuleAnalyzer(PtAnalyzer):
         super(ModuleAnalyzer, self).__init__(lst, label, mode)
 
     def divide_into_bins(self):
-        bins = np.e ** np.linspace(np.log(1.1), np.log(15) , 20)
-        return map(self.rawhist.GetYaxis().FindBin, bins)
+        nedges = 20
+        edges = np.e ** np.linspace(np.log(1.1), np.log(15) , nedges)
+        return map(self.rawhist.GetYaxis().FindBin, edges), np.zeros(nedges - 1)
 
 
 class CheckModules(test.check_default.CheckDefault):
@@ -22,7 +23,7 @@ class CheckModules(test.check_default.CheckDefault):
         super(CheckModules, self).setUp()
         # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
         f = lambda x, y: ModuleAnalyzer(x, label=y, mode=self.mode).quantities()
-        self.results = map(f, *Input('input-data/LHC16k-pass1.root', 'PhysTender', 'MassPt').read_per_module())
+        self.results = map(f, *Input('input-data/LHC16.root', 'PhysTender', 'MassPt').read_per_module())
 
 
 
