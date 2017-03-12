@@ -43,8 +43,9 @@ void TagAndProbeSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, cons
 			ConsiderPair(tag, proble, flags);
 		} // second cluster loop
 	} // cluster loop
-}
 
+	MixPhotons(photonCandidates, pool, flags);
+}
 
 //________________________________________________________________
 void TagAndProbeSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
@@ -61,19 +62,20 @@ void TagAndProbeSelection::ConsiderPair(const AliVCluster * c1, const AliVCluste
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
 
+	const char * suff = eflags.isMixing ? "Mix" : "";
 
-	FillHistogram(Form("hMassEnergyAll_SM%d", 0), m12 , energy);
+	FillHistogram(Form("h%sMassEnergyAll_SM%d", suff, 0), m12 , energy);
 
 	if(sm1 == sm2)
-		FillHistogram(Form("hMassEnergyAll_SM%d", sm1), m12 , energy);
+		FillHistogram(Form("h%sMassEnergyAll_SM%d", suff, sm1), m12 , energy);
 
 	if (TMath::Abs(c2->GetTOF()) > fTimingCut)
 		return;
 
-	FillHistogram(Form("hMassEnergyTOF_SM%d", 0), m12 , energy);
+	FillHistogram(Form("h%sMassEnergyTOF_SM%d", suff, 0), m12 , energy);
 
 	if(sm1 == sm2)
-		FillHistogram(Form("hMassEnergyTOF_SM%d", sm1), m12 , energy);
+		FillHistogram(Form("h%sMassEnergyTOF_SM%d", suff, sm1), m12 , energy);
 }
 
 
@@ -95,6 +97,13 @@ void TagAndProbeSelection::InitSelectionHistograms()
 
 	for (Int_t i = 0; i < 5;  ++i)
 		fListOfHistos->Add(new TH2F(Form("hMassEnergyTOF_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
+
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hMixMassEnergyAll_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
+
+	for (Int_t i = 0; i < 5;  ++i)
+		fListOfHistos->Add(new TH2F(Form("hMixMassEnergyTOF_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
+
 
 	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
