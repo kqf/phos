@@ -1,11 +1,13 @@
 import unittest
 import ROOT
 import sys
+import json
 
 from spectrum.sutils import get_canvas, wait
 from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
+from spectrum.spectrum import Spectrum
 
 
 import numpy as np
@@ -27,13 +29,13 @@ class ProbeSpectrum(object):
 
     def read(self, filename, histname, ending):
         reader = Input(filename, self.selection, histname % ending)
-        nevents, hist, dummy = reader.read()
+        hist, dummy = reader.read()
         return hist
 
 
     def calculate_range(self, hist):
         canvas = get_canvas()
-        mass = InvariantMass(hist, hist, self.erange, 1, self.ispi0, self.relaxedcb)
+        mass = InvariantMass((hist, hist), self.erange, 1, self.ispi0, self.relaxedcb)
         peak, bgrnd = mass.noisy_peak_parameters()
         wait('single-tag-tof-mass-fit-' + self.pref, True, True)
 
@@ -50,29 +52,57 @@ class ProbeSpectrum(object):
         return mass        
 
 
-    def spectrum(self):
+    def spectrum(self, edges):
         fullrange = self.calculate_range(self.hist)
         spectr = self.probe_spectrum(self.hist, fullrange)
 
-        edges = arr.array('d', np.logspace(np.log10(1), np.log10(20), 20))
+        edges = arr.array('d', edges)
         spectr = spectr.Rebin(len(edges) - 1, spectr.GetName() + "_rebinned", edges)
         spectr.label = self.pref
         spectr.logy = True
         return spectr
 
 
+# TODO: write config for this analysis (TagAndProbe)
 class TagAndProbe(object):
     def __init__(self, filename, selname, histname, cut, full):
         super(TagAndProbe, self).__init__()
         self.erange = (0, 20)
         self.ispi0 = 'pi0'
         self.nsigma = 3
+        self.cut_and_full = self.get_estimators(filename, selname, histname, cut, full)
 
+    def get_estimators(self, filename, selname, histname, cut, full):
         f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, self.ispi0, self.nsigma)
-        self.cut_and_full = map(f, [cut, full])
+        return map(f, [cut, full])
+  
 
     def estimate(self):
-        f = lambda x: x.spectrum()
+        edges, rebins = self.get_bins_rebins()
+        f = lambda x: x.spectrum(edges)
+        return map(f, self.cut_and_full)
+
+    def get_bins_rebins(self):
+        """
+            get_bins_rebins -- returns array of edges and 
+            array of bins that should be rebinned
+        """
+        with open('config/pt-analysis.json') as f:
+            conf = json.load(f)
+        props = conf[self.ispi0]
+        return props['ptedges'], props['need_rebin']
+
+
+class TagAndProbeRigorous(TagAndProbe):
+    def __init__(self, filename, selname, histname, cut, full):
+        super(TagAndProbeRigorous, self).__init__(filename, selname, histname, cut, full)
+
+    def get_estimators(self, filename, selname, histname, cut, full):
+        f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, self.ispi0, relaxedcb = True)
+        return map(f, [cut, full])
+
+    def estimate(self):
+        f = lambda x: x.evaluate()[2]
         return map(f, self.cut_and_full)
 
 
@@ -81,7 +111,8 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def setUp(self):
         self.canvas = get_canvas()
-        self.eff_calculator = TagAndProbe('input-data/LHC16h-muon-calo-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
+        self.eff_calculator = TagAndProbeRigorous('input-data/LHC16k-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
+        self.eff_calculator_relaxed = TagAndProbe('input-data/LHC16k-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
 
     def testCompareResults(self):
         cut, full = self.eff_calculator.estimate()
@@ -89,8 +120,10 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         diff = Comparator()
         diff.compare_set_of_histograms([[cut], [full]])
 
-
-
+        cut, full = self.eff_calculator_relaxed.estimate()
+        
+        diff = Comparator()
+        diff.compare_set_of_histograms([[cut], [full]])
 
 
 
