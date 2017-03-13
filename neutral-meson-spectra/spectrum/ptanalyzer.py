@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import ROOT
-from sutils import nicely_draw, get_canvas, wait
+from sutils import nicely_draw, get_canvas, wait, area_and_error
 from invariantmass import InvariantMass
 import json
 
@@ -15,13 +15,15 @@ class PtDependent(object):
         self.label = label
         self.name = name + '_' + filter(str.isalnum, self.label)
 
-    def get_hist(self, bins, data):
+    def get_hist(self, bins, data, widths = False):
         from array import array
         hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
         if not hist.GetSumw2N(): hist.Sumw2()
         hist.GetXaxis().SetTitle('p_{T}, GeV/c')
-        [hist.SetBinContent(i + 1, m[0]) for i, m in enumerate(data)]
-        [hist.SetBinError(i + 1, m[1]) for i, m in enumerate(data)]
+
+        widths = [j - i if widths else 1 for i, j in zip(bins[:-1], bins[1:])]
+        [hist.SetBinContent(i + 1, m[0] / w) for i, (m, w) in enumerate(zip(data, widths))]
+        [hist.SetBinError(i + 1, m[1] / w) for i, (m, w) in enumerate(zip(data, widths))]
         hist.label = self.label
         return hist 
 
@@ -84,9 +86,7 @@ class PtAnalyzer(object):
         if self.label == 'testsignal':
             return fitfun.Integral(a, b), fitfun.IntegralError(a, b)
 
-        area, areae = ROOT.Double(), ROOT.Double()
-        bin = lambda x: mass.signal.FindBin(x)
-        area = mass.signal.IntegralAndError(bin(a), bin(b), areae)
+        area, areae = area_and_error(mass.signal, a, b)
 
         if self.label == 'naive':
             area = sum(mass.signal.GetBinContent(i) for i in range(1, mass.signal.GetNbinsX() + 1) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)

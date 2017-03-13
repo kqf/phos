@@ -1,6 +1,6 @@
 import unittest
 
-from spectrum.sutils import get_canvas, wait
+from spectrum.sutils import get_canvas, wait, ratio
 from spectrum.spectrum import PtAnalyzer, Spectrum
 from spectrum.input import Input, TimecutInput
 from test.test_check_different_modules import ModuleAnalyzer
@@ -8,14 +8,6 @@ import ROOT
 ROOT.TH1.AddDirectory(False)
 
 import numpy as np
-
-def ratio(hist1, hist2, title, label = ''):
-    ratio = hist1.Clone(hist1.GetName() + '_ratio')
-    ratio.SetTitle(title)
-    ratio.label = label
-
-    ratio.Divide(hist1, hist2, 1, 1, "B")
-    return ratio
 
 def decorate_hist(h, label, logy = False, norm = 1, rebin = 1):
     h.label = label

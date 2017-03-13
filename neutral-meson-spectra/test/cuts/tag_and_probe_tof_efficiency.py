@@ -2,12 +2,12 @@ import unittest
 import ROOT
 import sys
 import json
-
-from spectrum.sutils import get_canvas, wait
+from spectrum.sutils import get_canvas, wait, area_and_error, ratio
 from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
 from spectrum.spectrum import Spectrum
+from spectrum.ptanalyzer import PtDependent
 
 
 import numpy as np
@@ -76,7 +76,6 @@ class TagAndProbe(object):
         f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, self.ispi0, self.nsigma)
         return map(f, [cut, full])
   
-
     def estimate(self):
         edges, rebins = self.get_bins_rebins()
         f = lambda x: x.spectrum(edges)
@@ -93,6 +92,7 @@ class TagAndProbe(object):
         return props['ptedges'], props['need_rebin']
 
 
+
 class TagAndProbeRigorous(TagAndProbe):
     def __init__(self, filename, selname, histname, cut, full):
         super(TagAndProbeRigorous, self).__init__(filename, selname, histname, cut, full)
@@ -101,9 +101,14 @@ class TagAndProbeRigorous(TagAndProbe):
         f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, self.ispi0, relaxedcb = True)
         return map(f, [cut, full])
 
+    def probe_spectrum(self, estimator):
+        mranges = estimator.mass_ranges()
+        results = map(lambda x, y: area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
+        ehist = PtDependent('spectrum', 'probe distribution; E, GeV', estimator.analyzer.label)
+        return ehist.get_hist(estimator.analyzer.divide_into_bins()[0], results, True)
+
     def estimate(self):
-        f = lambda x: x.evaluate()[2]
-        return map(f, self.cut_and_full)
+        return map(self.probe_spectrum, self.cut_and_full)
 
 
 
@@ -114,16 +119,21 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         self.eff_calculator = TagAndProbeRigorous('input-data/LHC16k-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
         self.eff_calculator_relaxed = TagAndProbe('input-data/LHC16k-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
 
-    def testCompareResults(self):
+    def testEstimateEfficiency(self):
         cut, full = self.eff_calculator.estimate()
         
         diff = Comparator()
         diff.compare_set_of_histograms([[cut], [full]])
 
+    def testCompareEfficienciesDifferentMethods(self):
+        cut, full = self.eff_calculator.estimate()
+        eff1 = ratio(cut, full, 'TOF efficiency; E, GeV', 'rigorous')
+
         cut, full = self.eff_calculator_relaxed.estimate()
+        eff2 = ratio(cut, full, 'TOF efficiency; E, GeV', 'simple')
         
         diff = Comparator()
-        diff.compare_set_of_histograms([[cut], [full]])
+        diff.compare_set_of_histograms([[eff1], [eff2]])
 
 
 

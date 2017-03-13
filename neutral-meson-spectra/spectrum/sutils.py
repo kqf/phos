@@ -2,6 +2,22 @@ import ROOT
 from collections import Iterable
 
 
+def area_and_error(hist, a, b):
+    area, areae = ROOT.Double(), ROOT.Double()
+    bin = lambda x: hist.FindBin(x)
+    area = hist.IntegralAndError(bin(a), bin(b), areae)
+    return area, areae
+
+    
+def ratio(hist1, hist2, title, label = ''):
+    ratio = hist1.Clone(hist1.GetName() + '_ratio')
+    ratio.SetTitle(title)
+    ratio.label = label
+
+    ratio.Divide(hist1, hist2, 1, 1, "B")
+    return ratio
+
+
 def equals(a, b, tol = 1e-7):
     if isinstance(a,Iterable):
         return all(map(lambda x, y: equals(x, y, tol), zip(a, b)))
