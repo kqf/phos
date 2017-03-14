@@ -12,7 +12,7 @@ class CheckDefault(unittest.TestCase):
         self.mode = 'dead' if self.discover else 'q'
         self.canvas = get_canvas() 
 
-    def testCompareResults(self):
+    def tearDown(self):
         if self.discover:
             return
 
