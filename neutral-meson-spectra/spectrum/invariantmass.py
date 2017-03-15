@@ -36,6 +36,14 @@ class InvariantMass(object):
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
 
+    def remove_zeros(self, h, zeros, name = '_cleaned'):
+        fitf, bckgrnd = self.peak_function.fit(h)
+        for i in zeros:
+            c = h.GetBinCenter(i)
+            h.SetBinError(i, abs(bckgrnd.Eval(c) + fitf.Eval(c)) ** 0.5)
+            # h.SetBinError(i, 10000)
+        return h
+
 
     def zero_bins(self, hist):
         return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < self.tol]
@@ -65,9 +73,11 @@ class InvariantMass(object):
 
         # Divide real/mixed
         ratio = mass.Clone()
+        ratio = self.remove_zeros(ratio, self.zero_bins(ratio), '_ratio')
+        # print [ratio.GetBinError(i) for i in range(1, ratio.GetNbinsX())]
         ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
-        ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
+        # ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
 
         if ratio.GetEntries() == 0: return ratio
         fitf, bckgrnd = self.peak_function.fit(ratio)
@@ -95,10 +105,11 @@ class InvariantMass(object):
 
         # Substract 
         signal = mass.Clone()
+        signal = self.remove_zeros(signal, self.zero_bins(signal), '_signal')
         signal.Add(mass, mixed, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
         signal.GetYaxis().SetTitle("Real - Mixed")
-        signal = remove_zeros(signal, self.zero_bins(mass), '_signal')
+        # signal = remove_zeros(signal, self.zero_bins(mass), '_signal')
         return signal
 
 
