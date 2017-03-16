@@ -27,7 +27,6 @@ class CheckProbability(test.check_default.CheckDefault):
         reco.label = label  
 
         for i in range(1, hist.GetNbinsX() + 1):
-            print i, reco.GetBinCenter(i)
             photons = np.random.randint(0, 2, (hist.GetBinContent(i), 2))
             for pair in photons:
                 if pair[0] and pair[1]:

@@ -14,7 +14,15 @@ class SingleImage(TestImages):
 		rfile    = 'input/testfile.root'
 		histname = 'hHistogram'
 		pfile    = 'results/test.pdf'
-		data = {"histograms": { rfile + '/' + histname: {"label": "test 1", "color": 37, "title": "Test;x;y"} }, "canvas": {"size":  5, "logy":  1, "gridx": 1, "legend": [0.7, 0.7, 0.89, 0.88], "output": pfile} }
+		data = { 
+					"histograms": 
+						{ rfile + '/' + histname: 
+							{"label": "test 1", "color": 37, "title": "Test;x;y", "yprecision": "/ %.2f MeV"}
+						},
+					"canvas": 
+						{"size":  5, "logy":  1, "gridx": 1, "legend": [0.7, 0.7, 0.89, 0.88], "output": pfile} 
+				}
+
 		with open(conffile, 'w') as outfile:
 			json.dump(data, outfile)
 		return conffile, rfile, histname

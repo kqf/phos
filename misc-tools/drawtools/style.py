@@ -71,6 +71,12 @@ class Styler(object):
         if 'option' in properties: obj.SetOption(properties['option'])
         if 'normalize' in properties: 
             obj.Scale( properties['normalize'] / obj.Integral() )
+        if 'yprecision' in properties:
+            obj.GetYaxis().SetTitle(obj.GetYaxis().GetTitle() + properties['yprecision'] % obj.GetBinWidth(1))
+            
+        # TODO: Add markers, fillcolors, width, etc.
+
+
         return obj
 
     def draw(self):
