@@ -17,6 +17,7 @@
 
 ClassImp(AliAnalysisTaskTrackAverages);
 
+
 //________________________________________________________________
 AliAnalysisTaskTrackAverages::AliAnalysisTaskTrackAverages():
 	AliAnalysisTaskSE(),
@@ -125,6 +126,7 @@ void AliAnalysisTaskTrackAverages::AnalysePHOSClusters(const AliVEvent * event, 
 		fEClustersPHOS->Fill(bin, energy_emc / nclusters);	
 	// Obviouisly this is not the best option
 	// TODO: try to find a better solution to find number of events in a file
+	// Don't check the value of this pointer. Let the code crash if something is goig wrong.
 	fEventClustersPHOS->Fill(event->GetEventNumberInFile(), nclusters);
 }
 
@@ -223,14 +225,18 @@ void AliAnalysisTaskTrackAverages::UserExec(Option_t * option)
 		return;
 
 	Int_t run = event->GetRunNumber();
+	// run = fRuns[5];
 	// Just to debug
 	// cout << "run: " << run << endl;
-	// run = fRuns[5];
+
+	TString histname = Form("hEventClustersPHOS_%d",run);
+	fEventClustersPHOS = dynamic_cast<TH1F *>(fOutputContainer->FindObject(histname));
 	Int_t bin = findRunBin(run);
 
 
 	AnalyseEMCalClusters(event, bin);
 	AnalyseChargedTracks(event, bin);
+	AnalysePHOSClusters(event, bin);
 
 	fEvents->Fill(bin);
 	PostData(1, fOutputContainer);
