@@ -1,9 +1,12 @@
-tag:
-	$(ROOT_PYTHON) -m unittest test.cuts.tag_and_probe_tof_efficiency
-
+emtpy:
+	$(ROOT_PYTHON) -m unittest test.playground.test_check_emptybins
 
 pi0:
 	$(ROOT_PYTHON) run-pi0-spectrum.py
+
+
+tag:
+	$(ROOT_PYTHON) -m unittest test.cuts.tag_and_probe_tof_efficiency
 
 
 eta:
