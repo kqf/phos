@@ -5,10 +5,10 @@ import json
 
 
 from math import sqrt
+from spectrum.sutils import tsallis
 import spectrum.comparator as cmpr
 
-def tsallis(x, p, a, b):
-    return x[0]*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt(x[0]*x[0]+a*a)-b)/(p[2]*p[1])) ** (-p[2])
+
 
 def get_spectrum(name, a, b, par):
     function = ROOT.TF1('f' + name, lambda x, p: tsallis(x, p, a, a), 0.3, 15, 3)

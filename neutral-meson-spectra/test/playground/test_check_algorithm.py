@@ -13,18 +13,21 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         super(CheckAlgorithm, self).setUp()
 
         self.genfilename = 'LHC16-fake.root'
-        self.generator = InclusiveGenerator('input-data/LHC16.root')
-        self.original_distributions = self.generator.save_fake(self.genfilename)
+        self.generator = InclusiveGenerator('input-data/LHC16.root', 'config/test_algorithm.json')
 
     
     def test(self):
         f = lambda x, y, z: Spectrum(x, label=y, mode=z, relaxedcb=True).evaluate()
+        self.original_distributions = self.generator.generate(100000)
+        self.generator.save_fake(self.genfilename)
         self.results = [
-                        f(Input(self.genfilename, self.generator.selname).read(), '', self.mode),
-                        self.original_distributions
+                        [f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[2]],
+                        [self.original_distributions]
                        ]
-  
+
+
     def tearDown(self):
+        super(CheckAlgorithm, self).tearDown()
         os.remove(self.genfilename)
 
 
