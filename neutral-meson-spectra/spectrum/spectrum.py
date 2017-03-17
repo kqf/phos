@@ -12,10 +12,10 @@ class Spectrum(object):
     with open('config/spectrum.json') as f:
         conf = json.load(f)
 
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, ispi0 = 'pi0', relaxedcb = False):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, ispi0 = 'pi0', relaxedcb = False, options = {}):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
-        self.analyzer = PtAnalyzer(lst, label, mode, ispi0, relaxedcb)
+        self.analyzer = PtAnalyzer(lst, label, mode, ispi0, relaxedcb, options)
 
         self.canvas      = self.conf['canvas']
         self.width_pars  = self.conf['width_pars']
@@ -35,6 +35,7 @@ class Spectrum(object):
 
     def fit_ranges(self, quantities):
         ROOT.gStyle.SetOptStat('')
+        # TODO: split this method in two smaller ones
         mass, sigma = quantities[0:2]
         canvas = get_canvas(1./ 2., 1, True)
 
@@ -52,7 +53,7 @@ class Spectrum(object):
         fitsigma.SetParameters(*self.width_pars)
         fitsigma.SetParNames(*self.width_names)
 
-        sigma.Fit(fitsigma, "r")
+        sigma.Fit(fitsigma, "rq")
         sigma.SetLineColor(38)
         wait("width-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
 
@@ -68,7 +69,7 @@ class Spectrum(object):
         fitmass.SetParameters(*self.mass_pars)
         fitmass.SetParNames(*self.mass_names)
         fitmass.SetLineColor(46)
-        mass.Fit(fitmass, "r")
+        mass.Fit(fitmass, "rq")
         mass.SetLineColor(38)
 
 

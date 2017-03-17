@@ -33,7 +33,7 @@ class PtAnalyzer(object):
     with open('config/pt-analysis.json') as f:
         conf = json.load(f)
         
-    def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False):
+    def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False, options = {}):
         super(PtAnalyzer, self).__init__()
         # These hists are needed for dynamic binning
         self.hists = hists
@@ -53,7 +53,7 @@ class PtAnalyzer(object):
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(hists, x, y, self.ispi0, relaxedcb)
+        f = lambda x, y: InvariantMass(hists, x, y, self.ispi0, relaxedcb, options)
         self.masses = map(f, pt_intervals, rebins)
 
 

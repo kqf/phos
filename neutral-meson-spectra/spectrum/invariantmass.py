@@ -6,7 +6,7 @@ from parametrisation import CrystalBall
 from sutils import get_canvas
 
 def remove_zeros(h, zeros, name = '_cleaned'):
-    bins = [(i, h.GetBinContent(i), h.GetBinError(i)) for i in range(1, h.GetNbinsX()) if i not in zeros]
+    bins = [(i, h.GetBinContent(i), h.GetBinError(i)) for i in range(1, h.GetNbinsX() + 1) if i not in zeros]
     clean = h.Clone(h.GetName() + '_ratio')
     clean.Reset()
     for i, b, e in bins:
@@ -15,16 +15,37 @@ def remove_zeros(h, zeros, name = '_cleaned'):
     return clean
 
 
+def estimate_error(k, hist, nonzeros):
+    lower = [i for i in nonzeros if i] + [k]
+    left = max(lower)
+    
+    upper = [i for i in nonzeros if i] + [k]
+    right = max(upper)
+
+    # Handle onesided case
+    if right == k: 
+        right = left
+
+    if left == k:
+        left = right
+
+    err = sum(map(hist.GetBinError, [left, right]))
+
+    # TODO: try different scheme
+    hist.SetBinError(i, err / 2.)
+
+
 class InvariantMass(object):
     with open('config/invariant-mass.json') as f:
         conf = json.load(f)
    
-    def __init__(self, inhists, pt_range, nrebin, ispi0, relaxedcb, tol = 0.00001):
+    def __init__(self, inhists, pt_range, nrebin, ispi0, relaxedcb, options, tol = 0.00001):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.nrebin   = nrebin
         self.tol      = tol
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
+        self.options = options
         self.peak_function = CrystalBall(ispi0, relaxedcb)
 
         # Setup parameters
@@ -37,16 +58,20 @@ class InvariantMass(object):
         self.sigf, self.bgrf = None, None
 
     def remove_zeros(self, h, zeros, name = '_cleaned'):
-        fitf, bckgrnd = self.peak_function.fit(h)
-        for i in zeros:
-            c = h.GetBinCenter(i)
-            h.SetBinError(i, abs(bckgrnd.Eval(c) + fitf.Eval(c)) ** 0.5)
-            # h.SetBinError(i, 10000)
-        return h
+        # fitf, bckgrnd = self.peak_function.fit(h)
+        # TODO: try some more possibilities
+
+        if 'average' in self.options:
+            nonzeros = [i for i in range(1, h.GetNbinsX() + 1) if not i in zeros]
+            for i in zeros: estimate_error(i, h, nonzeros)
+            return h
+
+        # Default method
+        return remove_zeros(h, zeros, name)
 
 
     def zero_bins(self, hist):
-        return [i for i in range(1, hist.GetNbinsX()) if hist.GetBinContent(i) < self.tol]
+        return [i for i in range(1, hist.GetNbinsX() + 1) if hist.GetBinContent(i) < self.tol]
 
 
     def in_range(self, x):
@@ -63,8 +88,7 @@ class InvariantMass(object):
         if not mass.GetSumw2N():
             mass.Sumw2()
 
-        if self.nrebin:
-            mass.Rebin(self.nrebin)
+        if self.nrebin: mass.Rebin(self.nrebin)
         return mass
 
 
@@ -74,7 +98,7 @@ class InvariantMass(object):
         # Divide real/mixed
         ratio = mass.Clone()
         ratio = self.remove_zeros(ratio, self.zero_bins(ratio), '_ratio')
-        # print [ratio.GetBinError(i) for i in range(1, ratio.GetNbinsX())]
+
         ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
         # ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
@@ -106,10 +130,15 @@ class InvariantMass(object):
         # Substract 
         signal = mass.Clone()
         signal = self.remove_zeros(signal, self.zero_bins(signal), '_signal')
+        mixed  = self.remove_zeros(mixed, self.zero_bins(mixed), '_mixed')
         signal.Add(mass, mixed, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
         signal.GetYaxis().SetTitle("Real - Mixed")
-        # signal = remove_zeros(signal, self.zero_bins(mass), '_signal')
+
+        # for i, v in range(1, signal.GetNbinsX() + 1):
+            # if signal.GetBinContent(i): continue
+            # print i, signal.GetBinContent(i), signal.GetBinError(i), v
+
         return signal
 
 
