@@ -31,5 +31,3 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         os.remove(self.genfilename)
 
 
-if __name__ == '__main__':
-    main()

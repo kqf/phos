@@ -2,7 +2,7 @@ import ROOT
 from math import sqrt
 from collections import Iterable
 
-def tsallis(x, p, a, b):
+def tsallis(x, p, a = 0.135, b = 0.135):
     return x[0]*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt(x[0]*x[0]+a*a)-b)/(p[2]*p[1])) ** (-p[2])
 
 def area_and_error(hist, a, b):

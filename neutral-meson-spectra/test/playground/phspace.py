@@ -6,6 +6,7 @@ import progressbar
 import json
 from itertools import combinations, product
 from spectrum.sutils import tsallis
+from spectrum.ptanalyzer import PtDependent
 from array import array
 
 def particle(pt, mass = 0):
@@ -31,12 +32,11 @@ class SignalGenerator(object):
         self.true_width = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.3, 20)
 
         # TODO: move mass to the config file
-        self.true_spectrum = ROOT.TF1('fTsallis', lambda x, p: tsallis(x, p, 0.135, 0.135), 0.3, 20, 3)
-        self.configure(config)
+        self.true_spectrum = ROOT.TF1('fTsallis', lambda x, p: tsallis(x, p), 0.3, 20, 3)
+        ptbins = self.configure(config)
 
         # TODO: use PtDependent here
-        self.generated = ROOT.TH1F('hGenerated', "generated spectrum", 1000, 0, 20)
-        self.generated.label = 'generated'
+        self.generated = PtDependent("hGenerated", "Generated spectrum", "generated").get_hist(ptbins, [])
 
     def configure(self, conffile):
         with open(conffile) as f: 
@@ -45,6 +45,7 @@ class SignalGenerator(object):
         self.true_mass.SetParameters(*conf['true_mass'])
         self.true_width.SetParameters(*conf['true_width'])
         self.true_spectrum.SetParameters(*conf['true_spectrum'])
+        return conf['pt_edges']
 
     def generate(self):
         # TODO: add multiple mesons here? 
