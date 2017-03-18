@@ -31,11 +31,9 @@ class SignalGenerator(object):
         self.true_mass  = ROOT.TF1("fitmass" , "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.3, 20)
         self.true_width = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.3, 20)
 
-        # TODO: move mass to the config file
         self.true_spectrum = ROOT.TF1('fTsallis', lambda x, p: tsallis(x, p), 0.3, 20, 3)
         ptbins = self.configure(config)
-
-        # TODO: use PtDependent here
+        
         self.generated = PtDependent("hGenerated", "Generated spectrum", "generated").get_hist(ptbins, [])
 
     def configure(self, conffile):

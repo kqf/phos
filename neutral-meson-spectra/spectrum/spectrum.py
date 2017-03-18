@@ -4,6 +4,8 @@ import ROOT
 import json
 from sutils import get_canvas, wait
 from ptanalyzer import PtAnalyzer
+from options import Options
+
 
 ROOT.TH1.AddDirectory(False)
 
@@ -12,11 +14,11 @@ class Spectrum(object):
     with open('config/spectrum.json') as f:
         conf = json.load(f)
 
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, ispi0 = 'pi0', relaxedcb = False, options = {}):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, options = Options()):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
-        self.analyzer = PtAnalyzer(lst, label, mode, ispi0, relaxedcb, options)
-
+        self.analyzer = PtAnalyzer(lst, label, mode, options)
+        
         self.canvas      = self.conf['canvas']
         self.width_pars  = self.conf['width_pars']
         self.width_names = self.conf['width_names']

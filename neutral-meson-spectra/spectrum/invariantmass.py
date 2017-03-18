@@ -39,14 +39,15 @@ class InvariantMass(object):
     with open('config/invariant-mass.json') as f:
         conf = json.load(f)
    
-    def __init__(self, inhists, pt_range, nrebin, ispi0, relaxedcb, options, tol = 0.00001):
+    def __init__(self, inhists, pt_range, nrebin, options, tol = 0.00001):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.nrebin   = nrebin
         self.tol      = tol
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
         self.options = options
-        self.peak_function = CrystalBall(ispi0, relaxedcb)
+
+        self.peak_function = CrystalBall(options.ispi0, options.relaxedcb)
 
         # Setup parameters
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, self.conf['xaxis_offsets'])]
@@ -61,7 +62,7 @@ class InvariantMass(object):
         # fitf, bckgrnd = self.peak_function.fit(h)
         # TODO: try some more possibilities
 
-        if 'average' in self.options:
+        if self.options:
             nonzeros = [i for i in range(1, h.GetNbinsX() + 1) if not i in zeros]
             for i in zeros: estimate_error(i, h, nonzeros)
             return h

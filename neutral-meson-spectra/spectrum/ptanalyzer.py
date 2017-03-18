@@ -4,6 +4,7 @@ import ROOT
 from sutils import nicely_draw, get_canvas, wait, area_and_error
 from invariantmass import InvariantMass
 import json
+from options import Options
 
 ROOT.TH1.AddDirectory(False)
 
@@ -33,17 +34,16 @@ class PtAnalyzer(object):
     with open('config/pt-analysis.json') as f:
         conf = json.load(f)
         
-    def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', particle = 'pi0', relaxedcb = False, options = {}):
+    def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', options = Options()):
         super(PtAnalyzer, self).__init__()
         # These hists are needed for dynamic binning
         self.hists = hists
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
         self.dead_mode = ('dead' in mode)
-        self.ispi0 = 'pi0' in particle
 
         # Configure analysis
-        props = self.conf[particle]
+        props = self.conf[options.particle]
         self.bins       = props['ptedges']
         self.need_rebin = props['need_rebin']
         self.multcanvas = props['multcanvas']
@@ -53,7 +53,7 @@ class PtAnalyzer(object):
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(hists, x, y, self.ispi0, relaxedcb, options)
+        f = lambda x, y: InvariantMass(hists, x, y, options)
         self.masses = map(f, pt_intervals, rebins)
 
 

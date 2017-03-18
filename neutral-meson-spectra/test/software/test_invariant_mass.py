@@ -6,13 +6,14 @@ from spectrum.spectrum import PtAnalyzer
 from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.sutils import wait
+from spectrum.options import Options
 
 class TestInvariantMassClass(unittest.TestCase):
 
     def testDrawOption(self):
         real_and_mix = Input('input-data/LHC16.root', 'PhysTender').read()
 
-        mass = InvariantMass(real_and_mix, (8., 9.), 0, True, 0, False)
+        mass = InvariantMass(real_and_mix, (8., 9.), 0, Options())
         mass.extract_data()
 
         mass.draw_ratio()
