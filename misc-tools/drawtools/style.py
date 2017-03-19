@@ -73,11 +73,22 @@ class Styler(object):
             obj.Scale( properties['normalize'] / obj.Integral() )
         if 'yprecision' in properties:
             obj.GetYaxis().SetTitle(obj.GetYaxis().GetTitle() + properties['yprecision'] % obj.GetBinWidth(1))
-            
-        # TODO: Add markers, fillcolors, width, etc.
+        if 'markerstyle' in properties: obj.SetMarkerStyle(properties['markerstyle'])
+        if 'fillcolor' in properties: obj.SetFillColor(properties['fillcolor'])
+        if 'fillstyle' in properties: obj.SetFillStyle(properties['fillstyle'])
+        if 'linewidth' in properties: obj.SEtLineWidth(properties['linewidth'])
 
-
+        if 'fitrange' in properties:
+            self.fit_simple(obj, properties)
         return obj
+
+    def fit_simple(self, obj, properties):
+        fitrange = properties['fitrange']
+        fitfunc = properties['fitfunc']
+        fitpars = properties['fitpars']
+        function = ROOT.TF1('hTest', fitfunc, *fitrange)
+        function.SetParameters(*fitpars)
+        obj.Fit('hTest')
 
     def draw(self):
         if not self.hists:
