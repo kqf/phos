@@ -151,6 +151,19 @@ class Comparator(object):
         self.vi = Visualizer(size, rrange, ratiofit)
 
 
+    def compare_ratios(self, hists, baseline, compare = None):
+        if not compare:
+            compare = self.vi.compare_visually
+
+        def ratio(a):
+            h = a.Clone(a.GetName() + '_ratio')
+            h.label = a.label + '/' + baseline.label
+            h.Divide(baseline)
+            return h
+
+        compare(map(ratio, hists), self.ci)
+
+
     def compare_set_of_histograms(self, l, compare = None):
         if not compare:
             compare = self.vi.compare_visually

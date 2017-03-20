@@ -67,7 +67,9 @@ class Styler(object):
         if 'color' in properties: obj.SetMarkerColor(properties['color'])
         if 'title' in properties: obj.SetTitle(properties['title'])
         if 'rebin' in properties: obj.Rebin(properties['rebin'])
-        if 'stats' in properties: obj.SetStats(True)
+        if 'stats' in properties: 
+            obj.SetStats(True)
+            ROOT.gStyle.SetOptStat(properties['stats'])
         if 'option' in properties: obj.SetOption(properties['option'])
         if 'normalize' in properties: 
             obj.Scale( properties['normalize'] / obj.Integral() )
@@ -87,7 +89,9 @@ class Styler(object):
         fitfunc = properties['fitfunc']
         fitpars = properties['fitpars']
         function = ROOT.TF1('hTest', fitfunc, *fitrange)
+        function.SetLineColor(46)
         function.SetParameters(*fitpars)
+        ROOT.gStyle.SetOptFit()
         obj.Fit('hTest')
 
     def draw(self):
@@ -130,7 +134,6 @@ class Styler(object):
         raw_input()
 
     def decorate_pad(self, pad, props):
-        ROOT.gStyle.SetOptStat(0)
         ROOT.gPad.SetTickx()
         ROOT.gPad.SetTicky() 
 

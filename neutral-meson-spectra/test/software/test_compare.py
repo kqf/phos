@@ -51,6 +51,12 @@ class Test(unittest.TestCase):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms( [[self.data[1], self.data[2]]] )
 
+    def testCompareRations(self):
+        diff = cmpr.Comparator()
+        diff.compare_ratios(self.data, self.data[2])
+
+
+
 
 
 

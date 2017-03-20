@@ -20,11 +20,11 @@ class SimpleFit(TestImages):
 		data = { 
 					"histograms": 
 						{ rfile + '/' + histname: 
-							{"label": "test fit", "color": 37, "title": "Test fitting; x;y",
+							{"label": "test data", "color": 37, "title": "Test fitting; x;y", "stats": "e", "yprecision": " counts per %s GeV",
 							 "fitrange": self.range, "fitfunc": self.func, "fitpars": self.pars}
 						},
 					"canvas": 
-						{"size":  5, "logy":  1, "gridx": 1, "legend": [0.7, 0.7, 0.89, 0.88], "output": pfile} 
+						{"size":  5, "logy":  1, "gridx": 1, "legend": [0.14, 0.7, 0.34, 0.88], "output": pfile} 
 				}
 
 		with open(conffile, 'w') as outfile:
