@@ -6,6 +6,7 @@ from parametrisation import CrystalBall
 from sutils import get_canvas
 
 def remove_zeros(h, zeros, name = '_cleaned'):
+    return h
     bins = [(i, h.GetBinContent(i), h.GetBinError(i)) for i in range(1, h.GetNbinsX() + 1) if i not in zeros]
     clean = h.Clone(h.GetName() + '_ratio')
     clean.Reset()
@@ -13,6 +14,21 @@ def remove_zeros(h, zeros, name = '_cleaned'):
         clean.SetBinContent(i, b)
         clean.SetBinError(i, e)
     return clean
+
+def dump_histograms(mass, mixed, signal, tol, ranges = [0.075, 0.255]):
+    for i in range(1, signal.GetNbinsX() + 1):
+
+        if mass.GetBinCenter(i) < ranges[0] or mass.GetBinCenter(i) > ranges[1]:
+            continue
+
+        # if mass.GetBinContent(i) < tol and  mixed.GetBinContent(i) < tol:
+            # continue
+
+        if signal.GetBinError(i) < tol:
+            continue
+
+        print mass.GetBinCenter(i), '  ', mass.GetBinContent(i), mixed.GetBinContent(i), ' err ', mass.GetBinError(i), mixed.GetBinError(i), signal.GetBinError(i)
+
 
 
 def estimate_error(k, hist, nonzeros):
@@ -31,8 +47,7 @@ def estimate_error(k, hist, nonzeros):
 
     err = sum(map(hist.GetBinError, [left, right]))
 
-    # TODO: try different scheme
-    hist.SetBinError(i, err / 2.)
+    hist.SetBinError(k, err / 2.)
 
 
 class InvariantMass(object):
@@ -58,11 +73,21 @@ class InvariantMass(object):
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
 
-    def remove_zeros(self, h, zeros, name = '_cleaned'):
-        # fitf, bckgrnd = self.peak_function.fit(h)
-        # TODO: try some more possibilities
+    def remove_zeros(self, h, zeros, name = '_cleaned', h2 = None):
+        if 'double' in self.options.average:
+            if not h2: return h
+            for i in zeros:
+                h.SetBinError(i, h.GetBinError())
+            return h
 
-        if self.options:
+
+        if 'func' in self.options.average:
+            fitf, bckgrnd = self.peak_function.fit(h)
+            for i in zeros:
+                h.SetBinError(i, abs(fitf.Eval(h.GetBinCenter(i)) + bckgrnd.Eval(h.GetBinCenter(i))) ** 0.5)
+            return h
+
+        if 'average' in self.options.average:
             nonzeros = [i for i in range(1, h.GetNbinsX() + 1) if not i in zeros]
             for i in zeros: estimate_error(i, h, nonzeros)
             return h
@@ -102,7 +127,7 @@ class InvariantMass(object):
 
         ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
-        # ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
+        ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
 
         if ratio.GetEntries() == 0: return ratio
         fitf, bckgrnd = self.peak_function.fit(ratio)
@@ -130,15 +155,20 @@ class InvariantMass(object):
 
         # Substract 
         signal = mass.Clone()
-        signal = self.remove_zeros(signal, self.zero_bins(signal), '_signal')
-        mixed  = self.remove_zeros(mixed, self.zero_bins(mixed), '_mixed')
-        signal.Add(mass, mixed, 1., -1.)
+
+        szeros = self.zero_bins(signal)
+        mzeros = self.zero_bins(mixed)
+
+        signal = self.remove_zeros(signal, szeros, '_signal', mixed)
+        mixed  = self.remove_zeros(mixed, mzeros, '_mixed', signal)
+        signal.Add(signal, mixed, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
         signal.GetYaxis().SetTitle("Real - Mixed")
+        # signal = self.remove_zeros(signal, self.zero_bins(signal), '_signal')
 
-        # for i, v in range(1, signal.GetNbinsX() + 1):
-            # if signal.GetBinContent(i): continue
-            # print i, signal.GetBinContent(i), signal.GetBinError(i), v
+        if abs(self.pt_range[0] - 15) < self.tol:
+            dump_histograms(mass, mixed, signal, self.tol)
+            # dump_histograms(mass, mixed, signal, self.tol, [0.1929, 0.2071])
 
         return signal
 
@@ -205,3 +235,9 @@ class InvariantMass(object):
         self.signal.Draw()
         self.draw_pt_bin(self.signal)
         canvas.Update()
+
+        ofile = ROOT.TFile('signals.root', 'update')
+        self.signal.Write()
+        # ofile.Write()
+        ofile.Close()
+
