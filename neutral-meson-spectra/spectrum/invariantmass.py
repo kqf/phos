@@ -29,6 +29,16 @@ def dump_histograms(mass, mixed, signal, tol, ranges = [0.075, 0.255]):
 
         print mass.GetBinCenter(i), '  ', mass.GetBinContent(i), mixed.GetBinContent(i), ' err ', mass.GetBinError(i), mixed.GetBinError(i), signal.GetBinError(i)
 
+def dump_negatives(res, center, label, mranges = [0.075, 0.255]):
+        if res > 0: 
+            return
+
+        a, b = mranges
+        if a > center or center > b:
+            return 
+
+        print center, res, label
+
 
 
 def estimate_error(k, hist, nonzeros):
@@ -84,7 +94,10 @@ class InvariantMass(object):
         if 'func' in self.options.average:
             fitf, bckgrnd = self.peak_function.fit(h)
             for i in zeros:
-                h.SetBinError(i, abs(fitf.Eval(h.GetBinCenter(i)) + bckgrnd.Eval(h.GetBinCenter(i))) ** 0.5)
+                center = h.GetBinCenter(i)
+                res = fitf.Eval(center) + bckgrnd.Eval(center)
+                dump_negatives(res, center, self.pt_label)
+                h.SetBinError(i, abs(res) ** 0.5 )
             return h
 
         if 'average' in self.options.average:
