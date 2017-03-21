@@ -8,6 +8,7 @@ from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
 from spectrum.spectrum import Spectrum
 from spectrum.ptanalyzer import PtDependent
+from spectrum.options import Options
 
 
 import numpy as np
@@ -73,7 +74,7 @@ class TagAndProbe(object):
         self.cut_and_full = self.get_estimators(filename, selname, histname, cut, full)
 
     def get_estimators(self, filename, selname, histname, cut, full):
-        f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, self.ispi0, self.nsigma)
+        f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, Options(relaxedcb = True), self.nsigma)
         return map(f, [cut, full])
   
     def estimate(self):
@@ -98,7 +99,7 @@ class TagAndProbeRigorous(TagAndProbe):
         super(TagAndProbeRigorous, self).__init__(filename, selname, histname, cut, full)
 
     def get_estimators(self, filename, selname, histname, cut, full):
-        f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, self.ispi0, relaxedcb = True)
+        f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, Options(relaxedcb = True))
         return map(f, [cut, full])
 
     def probe_spectrum(self, estimator):
@@ -116,15 +117,22 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def setUp(self):
         self.canvas = get_canvas()
-        self.eff_calculator = TagAndProbeRigorous('input-data/LHC16k-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
-        self.eff_calculator_relaxed = TagAndProbe('input-data/LHC16k-pass1.root', 'TOFStudyTender', 'MassEnergy%s_SM0', cut='TOF', full='All')
+        self.infile = 'input-data/LHC16-new.root'
+        self.sel = 'TOFStudyTender'
+        self.eff_calculator = TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
+        self.eff_calculator_relaxed = TagAndProbe(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
 
     def testEstimateEfficiency(self):
-        cut, full = self.eff_calculator.estimate()
-        
-        diff = Comparator()
-        diff.compare_set_of_histograms([[cut], [full]])
+        res = self.eff_calculator.estimate()
 
+        # Decorate
+        f = lambda x: x.SetTitle('Energy spectrum of probe photons; E_{#gamma}, GeV')
+        map(f, res)
+
+        diff = Comparator()
+        diff.compare_set_of_histograms([[i] for i in res])
+
+    @unittest.skip('Debug')
     def testCompareEfficienciesDifferentMethods(self):
         cut, full = self.eff_calculator.estimate()
         eff1 = ratio(cut, full, 'TOF efficiency; E, GeV', 'rigorous')
@@ -134,6 +142,19 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         
         diff = Comparator()
         diff.compare_set_of_histograms([[eff1], [eff2]])
+
+    @unittest.skip('Debug')
+    def testDifferentModules(self):
+        estimators = [TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s' + '_SM%d' % i, cut='TOF', full='All') for i in range(1, 3)]
+        f = lambda i, x, y: ratio(x, y, 'TOF efficiency in different modules; E, GeV', 'SM%d' % i)
+        multiple = [[f(i + 1, *(e.estimate()))] for i, e in enumerate(estimators)]
+
+        # TODO: add tag and probe method for different modules
+        #       fix the problem with axis.
+        #       investigate the problem with module1
+        c1 = get_canvas()
+        diff = Comparator()
+        diff.compare_set_of_histograms(multiple)
 
 
 
