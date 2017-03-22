@@ -12,8 +12,8 @@ class CheckEmptyBins(test.check_default.CheckDefault):
 
         # TODO: add option handler for such cases
         self.results = [
-                        f(Input('input-data/LHC16.root', 'PhysTender').read(), 'average', self.mode, Options(average = True)),
-                        f(Input('input-data/LHC16.root', 'PhysTender').read(), 'noempty', self.mode, Options(average = False))
+                        f(Input('input-data/LHC16.root', 'PhysTender').read(), 'func', self.mode, Options(average = {})),
+                        f(Input('input-data/LHC16.root', 'PhysTender').read(), 'empty', self.mode, Options(average = {"empty"}))
                        ]
 
 

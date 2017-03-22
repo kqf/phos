@@ -5,36 +5,6 @@ import json
 from parametrisation import CrystalBall
 from sutils import get_canvas
 
-def remove_zeros(h, zeros, name = '_cleaned'):
-    bins = [(i, h.GetBinContent(i), h.GetBinError(i)) for i in range(1, h.GetNbinsX() + 1) if i not in zeros]
-    clean = h.Clone(h.GetName() + '_ratio')
-    clean.Reset()
-    for i, b, e in bins:
-        clean.SetBinContent(i, b)
-        clean.SetBinError(i, e)
-    return clean
-
-
-def estimate_error(k, hist, nonzeros):
-    lower = [i for i in nonzeros if i] + [k]
-    left = max(lower)
-    
-    upper = [i for i in nonzeros if i] + [k]
-    right = max(upper)
-
-    # Handle onesided case
-    if right == k: 
-        right = left
-
-    if left == k:
-        left = right
-
-    err = sum(map(hist.GetBinError, [left, right]))
-
-    # TODO: try different scheme
-    hist.SetBinError(i, err / 2.)
-
-
 class InvariantMass(object):
     with open('config/invariant-mass.json') as f:
         conf = json.load(f)
@@ -58,26 +28,34 @@ class InvariantMass(object):
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
 
-    def remove_zeros(self, h, zeros, name = '_cleaned'):
-        # fitf, bckgrnd = self.peak_function.fit(h)
-        # TODO: try some more possibilities
-
-        if self.options:
-            nonzeros = [i for i in range(1, h.GetNbinsX() + 1) if not i in zeros]
-            for i in zeros: estimate_error(i, h, nonzeros)
+    def remove_zeros(self, h, zeros):
+        if 'empty' in self.options.average:
             return h
 
-        # Default method
-        return remove_zeros(h, zeros, name)
+        fitf, bckgrnd = self.peak_function.fit(h)
+        # TODO: add in range for these bins 
+        for i, c in zeros.iteritems():
+            res = fitf.Eval(c) + bckgrnd.Eval(c)
+            # if res < 0: print i, c, res, h.GetXaxis().GetFirst()
+            h.SetBinError(i, abs(res) ** 0.5 )
+        return h
 
 
-    def zero_bins(self, hist):
-        return [i for i in range(1, hist.GetNbinsX() + 1) if hist.GetBinContent(i) < self.tol]
+    def zero_bins(self, hist, exclude = {}):
+        bins = {i: hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)}
+        # All bins that are less then certain value
+        zeros = {i: v for i, v in bins.iteritems() if v < self.tol}
+
+        # TODO: take into account excluded bins
+        # All bins that are not already excluded
+        # unique_zeros = {i: v for i, v in bins.iteritems() if not i in exclude}
+        # return unique_zeros
+        return zeros
 
 
     def in_range(self, x):
         a, b = self.pt_range
-        return x > a and x < b
+        return a < x and x < b
 
 
     def extract_histogram(self, hist):
@@ -98,11 +76,8 @@ class InvariantMass(object):
 
         # Divide real/mixed
         ratio = mass.Clone()
-        ratio = self.remove_zeros(ratio, self.zero_bins(ratio), '_ratio')
-
         ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
-        # ratio = remove_zeros(ratio, self.zero_bins(mass), '_ratio')
 
         if ratio.GetEntries() == 0: return ratio
         fitf, bckgrnd = self.peak_function.fit(ratio)
@@ -130,16 +105,15 @@ class InvariantMass(object):
 
         # Substract 
         signal = mass.Clone()
-        signal = self.remove_zeros(signal, self.zero_bins(signal), '_signal')
-        mixed  = self.remove_zeros(mixed, self.zero_bins(mixed), '_mixed')
-        signal.Add(mass, mixed, 1., -1.)
+
+        # Remove zeros
+        f = lambda x, y: (x, self.zero_bins(x, self.zero_bins(y)))
+        signal = self.remove_zeros(*f(signal, mixed))
+        mixed  = self.remove_zeros(*f(mixed, signal))
+
+        signal.Add(signal, mixed, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
         signal.GetYaxis().SetTitle("Real - Mixed")
-
-        # for i, v in range(1, signal.GetNbinsX() + 1):
-            # if signal.GetBinContent(i): continue
-            # print i, signal.GetBinContent(i), signal.GetBinError(i), v
-
         return signal
 
 
@@ -205,3 +179,8 @@ class InvariantMass(object):
         self.signal.Draw()
         self.draw_pt_bin(self.signal)
         canvas.Update()
+
+        ofile = ROOT.TFile('signals.root', 'update')
+        self.signal.Write()
+        # ofile.Write()
+        ofile.Close()
