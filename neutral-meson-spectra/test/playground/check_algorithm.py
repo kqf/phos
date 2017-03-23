@@ -2,6 +2,7 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
+from spectrum.options import Options
 
 from phspace import InclusiveGenerator
 
@@ -17,8 +18,8 @@ class CheckAlgorithm(test.check_default.CheckDefault):
 
     
     def test(self):
-        f = lambda x, y, z: Spectrum(x, label=y, mode=z, relaxedcb=True).evaluate()
-        self.original_distributions = self.generator.generate(100000)
+        f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=True)).evaluate()
+        self.original_distributions = self.generator.generate(10000)
         self.generator.save_fake(self.genfilename)
         self.results = [
                         [f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[2]],

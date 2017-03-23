@@ -33,24 +33,30 @@ class InvariantMass(object):
             return h
 
         fitf, bckgrnd = self.peak_function.fit(h)
-        # TODO: add in range for these bins 
+
+        # If we failed to fit: do nothing
+        if not (fitf and bckgrnd):
+            return 
+
+        zeros = {i: c for i, c in zeros.iteritems() if self.xaxis_range[0] < c and c < self.xaxis_range[1]}
         for i, c in zeros.iteritems():
             res = fitf.Eval(c) + bckgrnd.Eval(c)
-            # if res < 0: print i, c, res, h.GetXaxis().GetFirst()
-            h.SetBinError(i, abs(res) ** 0.5 )
+            if res < 0:
+                print 'Warning zero bin found at ', self.pt_label, ' ,mass: ', c
+                res = 0
+            h.SetBinError(i, res ** 0.5 )
         return h
 
 
     def zero_bins(self, hist, exclude = {}):
         bins = {i: hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)}
-        # All bins that are less then certain value
-        zeros = {i: v for i, v in bins.iteritems() if v < self.tol}
 
-        # TODO: take into account excluded bins
-        # All bins that are not already excluded
-        # unique_zeros = {i: v for i, v in bins.iteritems() if not i in exclude}
-        # return unique_zeros
-        return zeros
+        # All bins that are less then certain value
+        zeros = {i: hist.GetBinCenter(i) for i, v in bins.iteritems() if v < self.tol}
+
+        # Don't take into account thos bins that are empty in both histograms
+        unique_zeros = {i: v for i, v in zeros.iteritems() if not i in exclude}
+        return unique_zeros
 
 
     def in_range(self, x):
@@ -103,10 +109,11 @@ class InvariantMass(object):
         if not mass.GetEntries():
             return mass
 
-        # Substract 
+        # Substraction
         signal = mass.Clone()
 
-        # Remove zeros
+        # Remove zeros, first one should find zeros! 
+        # In this procedure we don't touch bins that are zeros in both cases.
         f = lambda x, y: (x, self.zero_bins(x, self.zero_bins(y)))
         signal = self.remove_zeros(*f(signal, mixed))
         mixed  = self.remove_zeros(*f(mixed, signal))
