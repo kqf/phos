@@ -40,6 +40,8 @@ public:
 
 	virtual void InitSummaryHistograms();
 	virtual void InitSelectionHistograms() = 0;
+	virtual void CountMBEvent();
+	
 	virtual Bool_t SelectEvent(const EventFlags & flgs);
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);

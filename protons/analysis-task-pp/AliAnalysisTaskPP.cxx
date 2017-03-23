@@ -66,11 +66,12 @@ void AliAnalysisTaskPP::UserCreateOutputObjects()
 	// Initialization of all outputs
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 	{
-		PhotonSelection * fCellsQA = dynamic_cast<PhotonSelection *> (fSelections->At(i));
-		fCellsQA->InitSummaryHistograms();
-		PostData(i + 1, fCellsQA->GetListOfHistos()); // Output starts from 1
+		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
+		selection->InitSummaryHistograms();
+		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
 
+	// TODO: remove this "magic number" and try to increase it
 	fPreviousEvents = new MixingSample(100);
 }
 
@@ -86,6 +87,13 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		AliWarning("Can't get event");
 		return;
 	}
+
+	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
+	{
+		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
+		selection->CountMBEvent();
+	}
+
 
 	// check geometry
 	if (!AliPHOSGeometry::GetInstance())
@@ -124,16 +132,16 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	TList * pool = fPreviousEvents->GetPool(evtProperties);
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
 	{
-		PhotonSelection * fCellsQA = dynamic_cast<PhotonSelection *> (fSelections->At(i));
+		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
 
-		if (!fCellsQA->SelectEvent(evtProperties))
+		if (!selection->SelectEvent(evtProperties))
 			continue;
 
-		fCellsQA->FillCellsInCluster(&clusArray, cells);
-		fCellsQA->FillCells(cells);
-		fCellsQA->FillPi0Mass(&clusArray, pool, evtProperties);
+		selection->FillCellsInCluster(&clusArray, cells);
+		selection->FillCells(cells);
+		selection->FillPi0Mass(&clusArray, pool, evtProperties);
 
-		PostData(i + 1, fCellsQA->GetListOfHistos()); // Output starts from 1
+		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
 	fPreviousEvents->UpdatePool(clusArray, evtProperties);
 }
@@ -181,6 +189,9 @@ Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & ep
 
 	vertex->GetXYZ(eprops.vtxBest);
 	eprops.BC = event->GetBunchCrossNumber();
+
+	eprops.ncontributors = vertex->GetNContributors();
+
 	return kTRUE;
 }
 

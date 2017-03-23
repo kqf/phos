@@ -14,13 +14,16 @@
 
 struct EventFlags
 {
+	// TODO: check if EventFlags are set properly in all places.
+	// Do we need initialization for ncontributors?
 	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFALSE, Bool_t p = kFALSE, Bool_t vtx = kFALSE, UShort_t bc = 0. /*, Bool_t v0 = kFalse*/):
 		centr(c),
 		zvtx(z),
 		BC(bc),
 		isMixing(m),
 		eventPileup(p),
-		eventVtxExists(vtx)
+		eventVtxExists(vtx),
+		ncontributors(0)
 		//, eventV0AND(v0)
 	{}
 
@@ -31,6 +34,7 @@ struct EventFlags
 	Bool_t isMixing;
 	Bool_t eventPileup;
 	Bool_t eventVtxExists;
+	Int_t ncontributors;
 	// Bool_t eventV0AND;
 };
 
@@ -51,6 +55,10 @@ public:
 		(void) flgs;
 		return kTRUE;
 	}
+
+	// This is a dummy method to count number of Triggered Events.
+	virtual void CountMBEvent() {}
+
 
 	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells)
 	{

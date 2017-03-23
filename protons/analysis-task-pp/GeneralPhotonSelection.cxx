@@ -31,14 +31,22 @@ void GeneralPhotonSelection::InitSummaryHistograms()
 
 	fListOfHistos->AddFirst( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
 	// The true event counter
-	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 3, 0, 3);
-	evntCounter->GetXaxis()->SetBinLabel(1, "all");
-	evntCounter->GetXaxis()->SetBinLabel(2, "|Z_{vtx}| < 10");
-	evntCounter->GetXaxis()->SetBinLabel(3, "N_{#gamma} > 2");
+	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 5, 0, 5);
+	evntCounter->GetXaxis()->SetBinLabel(1, "MB");
+	evntCounter->GetXaxis()->SetBinLabel(2, "all good");
+	evntCounter->GetXaxis()->SetBinLabel(3, "|Z_{vtx}| < 10");
+	evntCounter->GetXaxis()->SetBinLabel(4, "N_{vtx contrib} > 0");
+	evntCounter->GetXaxis()->SetBinLabel(5, "N_{#gamma} > 2");
 	fListOfHistos->AddFirst(evntCounter);
 
 }
 
+//________________________________________________________________
+void GeneralPhotonSelection::CountMBEvent()
+{
+	FillHistogram("EventCounter", 0.5);
+}
+	
 
 //________________________________________________________________
 GeneralPhotonSelection::~GeneralPhotonSelection()
@@ -51,13 +59,19 @@ GeneralPhotonSelection::~GeneralPhotonSelection()
 Bool_t GeneralPhotonSelection::SelectEvent(const EventFlags & flgs)
 {
 	// All events
-	FillHistogram("EventCounter", 0.5);
+	FillHistogram("EventCounter", 1.5);
 
 
 	if (TMath::Abs(flgs.vtxBest[2]) > 10) return kFALSE;
 
 	// Physical Events
-	FillHistogram("EventCounter", 1.5);
+	FillHistogram("EventCounter", 2.5);
+
+
+	// Number of contributors > 0
+	if(flgs.ncontributors < 1) return kFALSE;
+	FillHistogram("EventCounter", 3.5);
+
 	return kTRUE;
 }
 
@@ -115,5 +129,5 @@ void GeneralPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-		FillHistogram("EventCounter", 2.5);
+		FillHistogram("EventCounter", 4.5);
 }
