@@ -40,7 +40,7 @@ class InvariantMass(object):
 
         zeros = {i: c for i, c in zeros.iteritems() if self.xaxis_range[0] < c and c < self.xaxis_range[1]}
         for i, c in zeros.iteritems():
-            res = fitf.Eval(c) + bckgrnd.Eval(c)
+            res = fitf.Eval(c)
             if res < 0:
                 print 'Warning zero bin found at ', self.pt_label, ' ,mass: ', c
                 res = 0

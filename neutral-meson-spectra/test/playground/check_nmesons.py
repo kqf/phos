@@ -14,7 +14,7 @@ import os
 def analytic_integral(mass, intgr_ranges):
     fitfun, background = mass.extract_data() 
     a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
-    return fitfun.Integral(a, b) + background.Integral(a, b), fitfun.IntegralError(a, b)
+    return fitfun.Integral(a, b), fitfun.IntegralError(a, b)
 
 def manual_counting(mass, intgr_ranges):
     a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range

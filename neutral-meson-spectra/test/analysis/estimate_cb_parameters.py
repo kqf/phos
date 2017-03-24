@@ -50,6 +50,10 @@ class CrystalBallParameters(unittest.TestCase):
             Use values of CB parameters estimated by testConstant method
             to run the comparison.
         """
+        self.comparePi0()
+        self.compareEta()
+
+    def comparePi0(self):
         g = lambda x, y, z, w: Spectrum(x, label=y, mode=z, options=w).evaluate()
 
         infile = 'input-data/LHC16.root'
@@ -64,6 +68,24 @@ class CrystalBallParameters(unittest.TestCase):
         import spectrum.comparator as cmpr
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms(results)
+
+    def compareEta(self):
+        g = lambda x, y, z, w: Spectrum(x, label=y, mode=z, options=w).evaluate()
+
+        infile = 'input-data/LHC16.root'
+
+        c1 = get_canvas(1./2)
+
+        results = [
+                   g(Input(infile, 'EtaTender').read(), 'fixed cb parameters', 'q', Options(relaxedcb = False, particle = 'eta')), 
+                   g(Input(infile, 'EtaTender').read(), 'relaxed cb parameters', 'q', Options(relaxedcb = True, particle = 'eta'))
+                  ]
+
+        import spectrum.comparator as cmpr
+        diff = cmpr.Comparator()
+        diff.compare_set_of_histograms(results)
+
+
 
 
 
