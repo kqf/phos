@@ -80,18 +80,10 @@ class PtAnalyzer(object):
         # Extract the data
         return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
 
+        
     def number_of_mesons(self, mass, intgr_ranges):
-        fitfun, background = mass.extract_data() 
         a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
-        if self.label == 'testsignal':
-            return fitfun.Integral(a, b), fitfun.IntegralError(a, b)
-
         area, areae = area_and_error(mass.signal, a, b)
-
-        if self.label == 'naive':
-            area = sum(mass.signal.GetBinContent(i) for i in range(1, mass.signal.GetNbinsX() + 1) if mass.signal.GetBinCenter(i) > a and mass.signal.GetBinCenter(i) < b)
-            return area, areae
-
         return area, areae
 
 

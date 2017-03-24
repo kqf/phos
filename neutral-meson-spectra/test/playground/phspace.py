@@ -15,13 +15,14 @@ def particle(pt, mass = 0):
     return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
 
 class BackgroundGenerator(object):
-    def __init__(self, raw_gamma_pectrum):
+    def __init__(self, raw_gamma_pectrum, meanphotons = 2.):
         super(BackgroundGenerator, self).__init__()
         self.spectrum = raw_gamma_pectrum
+        self.meanphotons = meanphotons
 
     def generate(self):
         p = self.spectrum.GetRandom()
-        return [particle(p) for i in range(int(ROOT.gRandom.Exp(4))) ]
+        return [particle(p) for i in range(int(ROOT.gRandom.Exp(1. / self.meanphotons))) ]
 
 
 
@@ -59,10 +60,11 @@ class SignalGenerator(object):
         self.generated.Fill(pi0.Pt())
 
         event = ROOT.TGenPhaseSpace()
-        event.SetDecay(pi0, 2,  array('d', [0, 0]))
+        nphot, masses = 2, array('d', [0, 0])
+        event.SetDecay(pi0, nphot, masses)
         event.Generate()
 
-        return [event.GetDecay(i) for i in range(2)]
+        return [event.GetDecay(i) for i in range(nphot)]
 
 
 class InclusiveGenerator(object):
