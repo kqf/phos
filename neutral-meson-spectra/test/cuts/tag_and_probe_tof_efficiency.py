@@ -66,12 +66,16 @@ class ProbeSpectrum(object):
 
 # TODO: write config for this analysis (TagAndProbe)
 class TagAndProbe(object):
+    with open('config/spectrum.json') as f:
+        conf = json.load(f)
+
     def __init__(self, filename, selname, histname, cut, full):
         super(TagAndProbe, self).__init__()
-        self.erange = (0, 20)
-        self.ispi0 = 'pi0'
-        self.nsigma = 3
         self.cut_and_full = self.get_estimators(filename, selname, histname, cut, full)
+        self.ispi0 = 'pi0'
+        self.erange = conf["erange"]
+        self.nsigma = conf["nsigma"]
+
 
     def get_estimators(self, filename, selname, histname, cut, full):
         f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, Options(relaxedcb = True), self.nsigma)
