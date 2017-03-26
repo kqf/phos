@@ -20,8 +20,11 @@ class Spectrum(object):
         self.analyzer = PtAnalyzer(lst, label, mode, options)
         
         self.canvas      = self.conf['canvas']
+        self.width_func  = self.conf['width_func']
         self.width_pars  = self.conf['width_pars']
         self.width_names = self.conf['width_names']
+
+        self.mass_func   = self.conf['mass_func']
         self.mass_pars   = self.conf['mass_pars']
         self.mass_names  = self.conf['mass_names']
 
@@ -35,10 +38,8 @@ class Spectrum(object):
         ranges = self.mass_ranges()
         return self.analyzer.quantities(ranges)
 
-    def fit_ranges(self, quantities):
-        ROOT.gStyle.SetOptStat('')
-        # TODO: split this method in two smaller ones
-        mass, sigma = quantities[0:2]
+
+    def fit_quantity(self, quant, func, par, names, pref):
         canvas = get_canvas(1./ 2., 1, True)
 
         canvas.Divide(1, 1, *self.canvas)
@@ -48,39 +49,27 @@ class Spectrum(object):
         pad.SetGridx()
         pad.SetGridy()
 
-        fitsigma = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 
-            0.999* sigma.GetBinCenter(0), sigma.GetBinCenter(sigma.GetNbinsX()))
+        fitquant = ROOT.TF1("fitquant" + pref, func, quant.GetBinCenter(1), quant.GetBinCenter(quant.GetNbinsX()))
 
-        sigma.Draw()
-        fitsigma.SetParameters(*self.width_pars)
-        fitsigma.SetParNames(*self.width_names)
+        quant.Draw()
+        fitquant.SetParameters(*par)
+        fitquant.SetParNames(*names)
 
-        sigma.Fit(fitsigma, "rq")
-        sigma.SetLineColor(38)
-        wait("width-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
+        quant.Fit(fitquant, "rq")
+        quant.SetLineColor(38)
+        wait(pref + "-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
+        return fitquant
 
-        pad = canvas.cd()
-        pad.SetTickx()
-        pad.SetTicky() 
-        pad.SetGridx()
-        pad.SetGridy()
-        mass.Draw()
-        fitmass = ROOT.TF1("fitmass", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 
-            0.999* mass.GetBinCenter(0), mass.GetBinCenter(mass.GetNbinsX()))
+        
+    def fit_ranges(self, quantities):
+        ROOT.gStyle.SetOptStat('')
+        mass, sigma = quantities[0:2]
 
-        fitmass.SetParameters(*self.mass_pars)
-        fitmass.SetParNames(*self.mass_names)
-        fitmass.SetLineColor(46)
-        mass.Fit(fitmass, "rq")
-        mass.SetLineColor(38)
+        fitsigma = self.fit_quantity(sigma, self.width_func, self.width_pars, self.width_names, 'width')
+        fitmass = self.fit_quantity(mass, self.mass_func, self.mass_pars, self.mass_names, 'mass')
 
-
-        if canvas: canvas.Update()
         mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
                                  fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt))
-
-
-        wait("mass-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 

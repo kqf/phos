@@ -64,37 +64,30 @@ class ProbeSpectrum(object):
         return spectr
 
 
-# TODO: write config for this analysis (TagAndProbe)
 class TagAndProbe(object):
-    with open('config/spectrum.json') as f:
+    with open('config/test_tagandprobe.json') as f:
         conf = json.load(f)
 
     def __init__(self, filename, selname, histname, cut, full):
         super(TagAndProbe, self).__init__()
+        self.ispi0  = self.conf["particle"]
+        self.erange = self.conf["erange"]
+        self.nsigma = self.conf["nsigma"]
+        self.ptedges = self.conf["ptedges"]
+        self.need_rebin = self.conf["need_rebin"]
         self.cut_and_full = self.get_estimators(filename, selname, histname, cut, full)
-        self.ispi0 = 'pi0'
-        self.erange = conf["erange"]
-        self.nsigma = conf["nsigma"]
 
 
     def get_estimators(self, filename, selname, histname, cut, full):
         f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, Options(relaxedcb = True), self.nsigma)
         return map(f, [cut, full])
   
+
     def estimate(self):
-        edges, rebins = self.get_bins_rebins()
-        f = lambda x: x.spectrum(edges)
+        f = lambda x: x.spectrum(self.ptedges)
         return map(f, self.cut_and_full)
 
-    def get_bins_rebins(self):
-        """
-            get_bins_rebins -- returns array of edges and 
-            array of bins that should be rebinned
-        """
-        with open('config/pt-analysis.json') as f:
-            conf = json.load(f)
-        props = conf[self.ispi0]
-        return props['ptedges'], props['need_rebin']
+
 
 
 
@@ -104,7 +97,13 @@ class TagAndProbeRigorous(TagAndProbe):
 
     def get_estimators(self, filename, selname, histname, cut, full):
         f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, Options(relaxedcb = True))
-        return map(f, [cut, full])
+        estimators = map(f, [cut, full])
+
+        for e in estimators:
+            e.bins = self.ptedges
+            e.need_rebin = self.need_rebin
+
+        return estimators
 
     def probe_spectrum(self, estimator):
         mranges = estimator.mass_ranges()
@@ -123,8 +122,8 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         self.canvas = get_canvas()
         self.infile = 'input-data/LHC16-new.root'
         self.sel = 'TOFStudyTender'
-        self.eff_calculator = TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
         self.eff_calculator_relaxed = TagAndProbe(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
+        self.eff_calculator = TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
 
     def testEstimateEfficiency(self):
         res = self.eff_calculator.estimate()
