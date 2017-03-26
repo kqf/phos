@@ -113,8 +113,6 @@ class PtAnalyzer(object):
             self.draw_ratio()
             self.draw_mass()
             self.draw_signal()
-
-        # print [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histos] 
         return histos
 
 

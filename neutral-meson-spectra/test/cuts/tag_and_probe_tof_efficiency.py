@@ -99,6 +99,7 @@ class TagAndProbeRigorous(TagAndProbe):
         f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, Options(relaxedcb = True))
         estimators = map(f, [cut, full])
 
+        # TODO: these values should go into the ptanalyzer.get_bins function 
         for e in estimators:
             e.bins = self.ptedges
             e.need_rebin = self.need_rebin
