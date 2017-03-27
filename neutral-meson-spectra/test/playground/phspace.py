@@ -15,14 +15,14 @@ def particle(pt, mass = 0):
     return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
 
 class BackgroundGenerator(object):
-    def __init__(self, raw_gamma_pectrum, meanphotons = 2.):
+    def __init__(self, raw_gamma_pectrum, meanphotons = 20.):
         super(BackgroundGenerator, self).__init__()
         self.spectrum = raw_gamma_pectrum
         self.meanphotons = meanphotons
 
     def generate(self):
-        p = self.spectrum.GetRandom()
-        return [particle(p) for i in range(int(ROOT.gRandom.Exp(1. / self.meanphotons))) ]
+        nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
+        return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
 
 
 
@@ -44,11 +44,13 @@ class SignalGenerator(object):
         self.true_mass.SetParameters(*conf['true_mass'])
         self.true_width.SetParameters(*conf['true_width'])
         self.true_spectrum.SetParameters(*conf['true_spectrum'])
+        self.average_nmesons = conf['average_nmesons']
         return conf['pt_edges']
 
     def generate(self):
-        # TODO: add multiple mesons here? 
-        return  self.generate_meson()
+        nmesons = int(ROOT.gRandom.Exp(1. / self.average_nmesons))
+        mesons = [self.generate_meson() for i in range(nmesons)]
+        return sum(mesons, [])
 
 
     def generate_meson(self):
@@ -72,8 +74,6 @@ class InclusiveGenerator(object):
                  hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0'):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
-        # TODO: we have to have Nevents here 
-        # as we wil luse it later for reading and retreiving the data
         self.signal = SignalGenerator(signalconf)
         self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr))
         self.data, self.mixed, self.nevents = map(lambda y: self.read(fname, y, True), hnames)
