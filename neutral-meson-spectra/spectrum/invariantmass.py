@@ -134,9 +134,9 @@ class InvariantMass(object):
 
     def draw_pt_bin(self, hist):
         # Estimate coordinate
-        y = (hist.GetMaximum() - hist.GetMinimum()) / self.pt_label_pos[0]
+        y = (hist.GetMaximum() - hist.GetMinimum()) / self.pt_label_pos[1]
         a, b = self.peak_function.fit_range
-        x = self.pt_label_pos[1] * (b - a) / 3
+        x = self.peak_function.fit_mass * self.pt_label_pos[0]
         # Draw the lable
         tl = ROOT.TLatex()
         tl.SetTextAlign(12);
@@ -167,6 +167,9 @@ class InvariantMass(object):
         legend = ROOT.TLegend(*self.legend_pos)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
+
+        # self.mass.GetFunction().SetBit(ROOT.TF1.kNotDraw)
+
 
         self.mass.Draw()
         self.mixed.Draw('same')
