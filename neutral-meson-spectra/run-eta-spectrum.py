@@ -9,8 +9,7 @@ from spectrum.options import Options
 
 def main():
     c1 = get_canvas()
-    # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
-    f = lambda x, y, z: PtAnalyzer(x, label=y, mode=z, options=Options(particle='eta')).quantities()
+    f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(particle='eta')).evaluate()
 
     infile = 'input-data/LHC16-new.root'
     results = [
