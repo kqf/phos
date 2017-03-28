@@ -75,8 +75,9 @@ def nicely_draw(hist, option = '', legend = None):
 def get_canvas(x = 1., y = 1, resize = False):
     canvas = ROOT.gROOT.FindObject('c1')
     if canvas: 
-        # if resize: canvas.SetWindowSize(int(128 * x * 6) , int(96 * y * 6))
+        if resize: canvas.Clear()
         ticks(canvas)
+        adjust_canvas(canvas)
         return canvas 
 
     canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))

@@ -29,11 +29,11 @@ class TestMass(unittest.TestCase):
         self.canvas = get_canvas(1. / 2)
         self.canvas.Clear()
 
-        function = ROOT.TF1('f', func, self.target.GetMinimum(), self.target.GetMaximum())
+        function = ROOT.TF1('f', func)
         function.SetParameters(*pars)
         function.SetLineColor(46)
         self.target.SetLineColor(37)
-        
+
         self.target.Fit(function)
 
         pars = [function.GetParameter(i) for i in range(function.GetNpar())]

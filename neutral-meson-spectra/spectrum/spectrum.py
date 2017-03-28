@@ -20,13 +20,17 @@ class Spectrum(object):
         self.analyzer = PtAnalyzer(lst, label, mode, options)
         
         self.canvas      = self.conf['canvas']
-        self.width_func  = self.conf['width_func']
-        self.width_pars  = self.conf['width_pars']
-        self.width_names = self.conf['width_names']
 
-        self.mass_func   = self.conf['mass_func']
-        self.mass_pars   = self.conf['mass_pars']
-        self.mass_names  = self.conf['mass_names']
+        config = self.conf[options.particle]
+        # Width parametrizatin
+        self.width_func  = config['width_func']
+        self.width_pars  = config['width_pars']
+        self.width_names = config['width_names']
+
+        # Mass parametrizatin
+        self.mass_func   = config['mass_func']
+        self.mass_pars   = config['mass_pars']
+        self.mass_names  = config['mass_names']
 
 
     def mass_ranges(self):
@@ -42,22 +46,16 @@ class Spectrum(object):
     def fit_quantity(self, quant, func, par, names, pref):
         canvas = get_canvas(1./ 2., 1, True)
 
-        canvas.Divide(1, 1, *self.canvas)
-        pad = canvas.cd()
-        pad.SetTickx()
-        pad.SetTicky() 
-        pad.SetGridx()
-        pad.SetGridy()
-
-        fitquant = ROOT.TF1("fitquant" + pref, func, quant.GetBinCenter(1), quant.GetBinCenter(quant.GetNbinsX()))
+        fitquant = ROOT.TF1("fitquant" + pref, func)
+        fitquant.SetLineColor(46)
 
         quant.Draw()
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
-        quant.Fit(fitquant, "rq")
-        quant.SetLineColor(38)
-        wait(pref + "-paramerisation-" + self.analyzer.label, self.analyzer.show_img)
+        quant.Fit(fitquant, "q")
+        quant.SetLineColor(37)
+        wait(pref + "-paramerisation-" + self.analyzer.label, self.analyzer.show_img, True)
         return fitquant
 
         
