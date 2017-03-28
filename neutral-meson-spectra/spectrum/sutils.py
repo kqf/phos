@@ -55,6 +55,7 @@ def ticks(pad):
     pad.SetTicky() 
     pad.SetGridx()
     pad.SetGridy()
+    return pad
        
 def nicely_draw(hist, option = '', legend = None):
     hist.Draw(option)
@@ -77,7 +78,6 @@ def get_canvas(x = 1., y = 1, resize = False):
     if canvas: 
         if resize: canvas.Clear()
         ticks(canvas)
-        adjust_canvas(canvas)
         return canvas 
 
     canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))

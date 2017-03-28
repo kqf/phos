@@ -97,8 +97,10 @@ class CrystalBall(PeakParametrisation):
             fitfun.FixParameter(npar - 2, 0)
             fitfun.FixParameter(npar - 1, 0)
 
-        if 'mix' is hist.GetName().lower():
-            fitfun.SetParameter(0, 0)
+        if 'mix' in hist.GetName().lower():
+            print 'reached'
+            fitfun.FixParameter(0, 0)
+            # fitfun.SetParameter(2, 999999)
 
         hist.Fit(fitfun,"QR", "")
 

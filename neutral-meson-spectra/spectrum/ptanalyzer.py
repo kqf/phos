@@ -125,7 +125,7 @@ class PtAnalyzer(object):
         canvas.Divide(*self.multcanvas)
         for i, m in enumerate(self.masses):
             f(m, canvas.cd(i + 1))
-        wait(name + self.label, self.show_img)
+        wait(name + self.label, self.show_img, save=True)
 
     def draw_ratio(self, name = ''):
         f = lambda x, y: x.draw_ratio(y)

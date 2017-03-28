@@ -67,7 +67,7 @@ class InvariantMass(object):
     def extract_histogram(self, hist):
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
         mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
-        mass.SetTitle(self.pt_label + '#events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
+        mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
 
         if not mass.GetSumw2N():
