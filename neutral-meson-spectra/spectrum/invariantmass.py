@@ -134,13 +134,18 @@ class InvariantMass(object):
 
     def draw_pt_bin(self, hist):
         # Estimate coordinate
-        y = (hist.GetMaximum() - hist.GetMinimum()) / self.pt_label_pos[1]
-        a, b = self.peak_function.fit_range
-        x = self.peak_function.fit_mass * self.pt_label_pos[0]
+        mass = self.peak_function.fit_mass
+        x = mass * self.pt_label_pos[0]
+
+        bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
+        bmax, bmin = map(hist.GetBinContent, bins)
+        zero = bmax - bmin 
+
+        y = zero * self.pt_label_pos[1]
         # Draw the lable
         tl = ROOT.TLatex()
         tl.SetTextAlign(12);
-        tl.SetTextSize(0.08);
+        tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
         tl.DrawLatex(x, y, '#color[46]{' + self.pt_label + ', GeV/c}');
 
 
