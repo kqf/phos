@@ -3,7 +3,7 @@
 import ROOT
 import json
 from parametrisation import CrystalBall
-from sutils import get_canvas
+from sutils import get_canvas, ticks
 
 class InvariantMass(object):
     with open('config/invariant-mass.json') as f:
@@ -140,11 +140,12 @@ class InvariantMass(object):
         bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
         bmax, bmin = map(hist.GetBinContent, bins)
         zero = bmax - bmin 
+        # print zero
 
-        y = zero * self.pt_label_pos[1]
+        y = bmin + zero * self.pt_label_pos[1]
         # Draw the lable
         tl = ROOT.TLatex()
-        tl.SetTextAlign(12);
+        tl.SetTextAlign(12)
         tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
         tl.DrawLatex(x, y, '#color[46]{' + self.pt_label + ', GeV/c}');
 
@@ -155,8 +156,9 @@ class InvariantMass(object):
             return
 
         canvas = pad if pad else get_canvas()
-        # canvas.SetTickx()
-        canvas.SetTicky()  
+        ticks(canvas)
+        canvas.SetTicky(False)
+
         self.ratio.SetAxisRange(*self.xaxis_range)
         self.ratio.Draw()
         self.draw_pt_bin(self.ratio)
@@ -165,17 +167,14 @@ class InvariantMass(object):
 
     def draw_mass(self, pad = 0):
         canvas = pad if pad else get_canvas()
-        # canvas.SetTickx()
-        canvas.SetTicky() 
+        ticks(canvas)
+        canvas.SetTicky(False) 
 
         self.mass.SetAxisRange(*self.xaxis_range)
         legend = ROOT.TLegend(*self.legend_pos)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
-
-        # self.mass.GetFunction().SetBit(ROOT.TF1.kNotDraw)
-
-
+        
         self.mass.Draw()
         self.mixed.Draw('same')
 
@@ -188,8 +187,10 @@ class InvariantMass(object):
         
     def draw_signal(self, pad = 0):
         canvas = pad if pad else get_canvas()
-        # canvas.SetTickx()
-        canvas.SetTicky() 
+
+        ticks(canvas)
+        canvas.SetTicky(False)  
+
         self.signal.SetAxisRange(*self.xaxis_range)
         self.signal.Draw()
         self.draw_pt_bin(self.signal)

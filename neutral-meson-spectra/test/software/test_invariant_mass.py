@@ -54,7 +54,6 @@ class TestInvariantMassClass(unittest.TestCase):
         pt.draw_mass()
         pt.draw_signal()
 
-    # @unittest.skip('test')
     def testMultiplePlots(self):
         for p in self.particles: 
             self.draw_multiple(p)

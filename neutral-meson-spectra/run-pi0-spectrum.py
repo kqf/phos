@@ -15,7 +15,7 @@ def main():
     c1 = get_canvas(1./2)
     results = [
                g(Input(infile1, 'PhysTender').read(), 'old', 'q'), 
-               g(Input(infile2, 'PhysTender').read(), 'new', 'q')
+               g(Input(infile1, 'PhysOnlyTender').read(), 'new', 'q')
               ]
     import spectrum.comparator as cmpr
     diff = cmpr.Comparator()

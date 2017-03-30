@@ -3,5 +3,5 @@
         "needs_rebin": [[15.0, 20.0, 3]],
         "xaxis_offsets": [1.01, 0.99],
         "legend_pos": [0.6, 0.6, 0.8, 0.8],
-        "pt_label_pos": [1.16, 0.2]
+        "pt_label_pos": [1.2, 0.3]
 }
