@@ -1,7 +1,8 @@
-DATASET = LHC16o-muon-calo-pass1
+DATASET = LHC16k-pass1
+MC = kTRUE
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || make unlink 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", $(MC))' || make unlink 
 	@make unlink || echo "Directory is clean"
 	echo "Started grid analysis" >> .runhistory
 
@@ -17,12 +18,12 @@ unlink:
 	find -type l -delete
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate")' || make unlink
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", $(MC))' || make unlink
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", kFALSE, kFALSE)' || make unlink
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", $(MC), kFALSE)' || make unlink
 	make upload
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
@@ -37,7 +38,7 @@ force-download:
 	echo -e "\x07
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test")'
+	root -l -q 'run.C("$(DATASET)", "local", "test", $(MC))'
 	echo "Local analysis" >> .runhistory
 	$(call upload_result,AnalysisResults,test-analysis-pp)
 	$(call upload_result,TrackAverages,test-averages-pp)

@@ -1,29 +1,31 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
 RESULTS = LHC16k-MyTask
+MC = kTRUE
+
 
 caf:
 	root -l RunPoD.C
 	# root -l -q RunPoD.C
 	
 grid:
-	aliroot -l -b -q 'run.C("grid", "full")'
+	aliroot -l -b -q 'run.C("grid", "full", $(MC), kTRUE)'
 	echo "Started grid analysis" >> .runhistory
 	@echo -e "\x07"
 
 merge:
-	root -l -q 'run.C("grid", "terminate", kTRUE)'
+	root -l -q 'run.C("grid", "terminate", $(MC),  kTRUE)'
 	mv AnalysisResults.root $(RESULTS).root
 	echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\x07"
 
 download:
-	root -l -q 'run.C("grid", "terminate", kFALSE)'
+	root -l -q 'run.C("grid", "terminate", $(MC), kFALSE)'
 	mv AnalysisResults.root $(RESULTS).root
 	echo "Downloaded files analysis" >> .runhistory
 	@echo -e "\x07"
 
 test:
-	root -l -q 'run.C("local", "test")'
+	root -l -q 'run.C("local", "test", $(MC))'
 	echo "Local analysis" >> .runhistory
 	-./dumpres.py 2> /dev/null
 

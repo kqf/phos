@@ -1,8 +1,8 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16k
+PERIOD=LHC16p
 # NAME=iteration2
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-pass1-2gev-test
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
 FILE_NAME=CaloCellsQA2.root
@@ -23,7 +23,7 @@ $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
-	./download.sh phosqa-$(NAME) $(FILE_NAME) $(DIRECTORY)
+	./download.sh pp-phos-$(NAME) $(FILE_NAME) $(DIRECTORY)
 	@echo -e "\x07"
 
 trigger: | $(DIRECTORY)

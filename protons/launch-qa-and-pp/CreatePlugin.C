@@ -80,7 +80,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 
 	plugin->SetAliRootMode ( "default" );
 	plugin->SetClearPackages ( kFALSE );
-	plugin->SetFileForTestMode ( "files.txt" );
+	plugin->SetFileForTestMode ( "filesmc.txt" );
 	plugin->SetProofConnectGrid ( kFALSE );
 	plugin->SetDropToShell(kFALSE);
 	if (!plugin)

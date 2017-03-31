@@ -1,4 +1,4 @@
-void run(const char * runmode = "local", const char * pluginmode = "test", bool mergeJDL = kTRUE, bool isMC = kFALSE)
+void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = kFALSE, bool mergeJDL = kTRUE)
 {
     SetupEnvironment();
 
