@@ -82,7 +82,7 @@ class Visualizer(object):
         if len(hists) == 1:
             adjust_canvas(canvas)
 
-        legend = ROOT.TLegend(0.8, 0.4, 0.9, 0.6)
+        legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         legend.SetTextSize(0.04)
@@ -116,7 +116,7 @@ class Visualizer(object):
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-        if stop: wait(self.output_prefix + hists[0].GetName(), True)
+        if stop: wait(self.output_prefix + hists[0].GetName(), save=True)
         self.cache.append(ratio)
         self.cache.append(legend)
 
@@ -138,7 +138,7 @@ class Visualizer(object):
         wait(self.output_prefix + hists[0][0].GetName(), True)
 
 def define_colors(ci = 1000):
-    colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 111 , 219), (86  , 211 , 219), (86  , 219 , 127),  (219 , 194 , 86), (219 , 94 , 86)][::-1]
+    colors = [ (219 , 86  , 178), (160 , 86  , 219), (86  , 211 , 219),  (219 , 194 , 86), (86  , 219 , 127), (86  , 111 , 219), (219 , 94 , 86)][::-1]
     rcolors = [[b / 255. for b in c] for c in colors]
     rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
     return ci, rcolors

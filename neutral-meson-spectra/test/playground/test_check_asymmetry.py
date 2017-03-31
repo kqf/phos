@@ -5,6 +5,17 @@ from optimizer.optimizer import Optimizer
 from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
 
+def process(data, pref):
+    c1 = get_canvas()
+    c1.Divide(2, 1)
+    for i, h in enumerate(data):
+        c1.cd(i + 1)
+        c1.SetLogz()
+        h.SetTitle(h.GetTitle() + pref[i])
+        h.GetYaxis().SetTitle('Asymmetry')
+        h.Draw('colz')
+    wait('name', True, False)
+
 class TimecutOptimizer(unittest.TestCase):
 
     def setUp(self):
@@ -12,6 +23,7 @@ class TimecutOptimizer(unittest.TestCase):
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
         self.canvas = get_canvas()
 
+    @unittest.skip('Temporary skiping the test')
     def testRanges(self):
         inp = MetricInput('input-data/LHC16.root', 'QualTender', 'MassPtN3A')
 
@@ -30,8 +42,16 @@ class TimecutOptimizer(unittest.TestCase):
         	a.Draw((i > 0) * 'same')
         wait('name', True, False)
 
-        # TODO: increase statistics to improve the performance
-        # 		figure out if additional optimization is needed.
+    def testAsymmetryDependence(self):
+        ROOT.gStyle.SetOptStat('e')
+        inp = MetricInput('input-data/LHC16-new.root', 'QualTender', 'MassPtN3A')
+
+        data_m = map(lambda x: x.Project3D("zx"), [inp.data, inp.mixing])
+        process(data_m, ['', 'mixing'])
+
+        data_pt = map(lambda x: x.Project3D("zy"), [inp.data, inp.mixing])
+        process(data_, ['', 'mixing'])
+
 
     # def testCutMaxSignal(self):
     #     inp = MetricInput('input-data/LHC16k-pass1.root', 'TimeTender', 'MassPtTOF')

@@ -26,13 +26,9 @@ def equals(a, b, tol = 1e-7):
         return all(map(lambda x, y: equals(x, y, tol), zip(a, b)))
     return abs(a - b) < tol 
 
-def wait(name, draw, save = True, suffix = ''):
+def wait(name, draw=True, save = False, suffix = ''):
     canvas = get_canvas()
     canvas.Update()
-    canvas.SetTickx()
-    canvas.SetTicky() 
-    canvas.SetGridx()
-    canvas.SetGridy()
     name = name.replace(' ', '_')
     if save: canvas.SaveAs('results/' + name + '.pdf')
 
@@ -47,11 +43,19 @@ def draw_and_save(histograms, name = '', draw = True, save = True, suffix = ''):
         for h in histograms: h.SetTitle(name.replace('_', ' ') + ' ' + suffix + ' ' + h.GetTitle())
 
     histograms[0].Draw()
-    ROOT.gPad.SetTickx()
-    ROOT.gPad.SetTicky() 
     for h in histograms: h.Draw('same')
     wait(name + histograms[0].GetName() +  '_' + suffix , draw, save)
 
+def ticks(pad):
+    ROOT.gPad.SetGridx()
+    ROOT.gPad.SetGridy() 
+    ROOT.gPad.SetTickx()
+    ROOT.gPad.SetTicky() 
+    pad.SetTickx()
+    pad.SetTicky() 
+    pad.SetGridx()
+    pad.SetGridy()
+    return pad
        
 def nicely_draw(hist, option = '', legend = None):
     hist.Draw(option)
@@ -72,10 +76,12 @@ def nicely_draw(hist, option = '', legend = None):
 def get_canvas(x = 1., y = 1, resize = False):
     canvas = ROOT.gROOT.FindObject('c1')
     if canvas: 
-        # if resize: canvas.SetWindowSize(int(128 * x * 6) , int(96 * y * 6))
+        if resize: canvas.Clear()
+        ticks(canvas)
         return canvas 
 
     canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
+    ticks(canvas)
     return canvas
 
 
