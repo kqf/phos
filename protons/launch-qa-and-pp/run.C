@@ -22,10 +22,18 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_QA");
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
-    // esdH->SetReadFriends( isMC );
-    mgr->SetInputEventHandler(aodH);
-    // mgr->SetInputEventHandler( esdH );
-    // esdH->SetNeedField();
+
+
+    // TODO:  Remove this from here, analyze only ESD
+    if (isMC)
+    {
+        esdH->SetReadFriends( isMC );
+        esdH->SetNeedField();
+        mgr->SetInputEventHandler( esdH );
+
+    }
+    else
+        mgr->SetInputEventHandler(aodH);
 
     if ( isMC )
     {

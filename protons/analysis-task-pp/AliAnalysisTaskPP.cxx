@@ -15,10 +15,16 @@
 #include <AliPHOSGeometry.h>
 #include <AliLog.h>
 
+// --- AliRoot MC headers --- 
+#include <AliMCEventHandler.h>
+#include <AliMCEvent.h>
+#include <AliStack.h>
+
 // --- Custom libraries ---
 #include "TestPhotonSelection.h"
 #include "PhysPhotonSelection.h"
 #include "PhotonTimecutSelection.h"
+#include "MCPhotonSelection.h"
 #include "QualityPhotonSelection.h"
 
 
@@ -47,7 +53,7 @@ AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name, TList * selections) :
 {
 	fSelections->SetOwner(kTRUE);
 	// fSelections->Add(new TestPhotonSelection("Data", "SOMETITLE")) ;
-	
+
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 		DefineOutput(i + 1, TList::Class()); // Output starts from 1
 }
@@ -126,6 +132,12 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		clusArray.Add(clus);
 	}
 
+	AliMCEvent * mcevent = MCEvent();
+	AliStack * stack = (mcevent ? mcevent->Stack() : 0);
+
+	if (!stack)
+		return;
+
 	// No need to check. We have already done it in SelectEvent
 	AliVCaloCells * cells = event->GetPHOSCells();
 
@@ -140,6 +152,17 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		selection->FillCellsInCluster(&clusArray, cells);
 		selection->FillCells(cells);
 		selection->FillPi0Mass(&clusArray, pool, evtProperties);
+
+		// Now invoke this code if we have mc event and mc selection
+		// 
+		if (stack)
+		{
+			MCPhotonSelection * mcselection = dynamic_cast<MCPhotonSelection * >(selection);
+			if(mcselection)
+			{
+				mcselection->ConsiderGeneratedParticles(stack);
+			}
+		}
 
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
