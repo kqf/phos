@@ -50,7 +50,7 @@ class TimecutOptimizer(unittest.TestCase):
         process(data_m, ['', 'mixing'])
 
         data_pt = map(lambda x: x.Project3D("zy"), [inp.data, inp.mixing])
-        process(data_, ['', 'mixing'])
+        process(data_m, ['', 'mixing'])
 
 
     # def testCutMaxSignal(self):

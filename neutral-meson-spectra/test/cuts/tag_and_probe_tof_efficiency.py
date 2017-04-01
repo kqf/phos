@@ -17,14 +17,13 @@ import array as arr
 ROOT.TH1.AddDirectory(False)
 
 class ProbeSpectrum(object):
-    def __init__(self, filename, selname, histname, pref, erange, ispi0, nsigma):
+    def __init__(self, filename, selname, histname, pref, erange, nsigma, options):
         super(ProbeSpectrum, self).__init__()
         self.selection = selname
         self.erange = erange
-        self.ispi0 = ispi0
-        self.relaxedcb = True
         self.nsigma = nsigma
         self.pref = pref
+        self.options = options
         self.hist = self.read(filename, histname, pref)
 
 
@@ -36,7 +35,7 @@ class ProbeSpectrum(object):
 
     def calculate_range(self, hist):
         canvas = get_canvas()
-        mass = InvariantMass((hist, hist), self.erange, 1, self.ispi0, self.relaxedcb)
+        mass = InvariantMass((hist, hist), tuple(self.erange), 1, self.options)
         peak, bgrnd = mass.noisy_peak_parameters()
         wait('single-tag-tof-mass-fit-' + self.pref, True, True)
 
@@ -84,7 +83,7 @@ class TagAndProbe(object):
 
 
     def get_estimators(self, filename, selname, histname, cut, full):
-        f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, Options(relaxedcb = True), self.nsigma)
+        f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, self.nsigma, Options(relaxedcb = True))
         return map(f, [cut, full])
   
 
@@ -124,6 +123,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         self.eff_calculator_relaxed = TagAndProbe(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
         self.eff_calculator = TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
 
+    # @unittest.skip('Debug')
     def testEstimateEfficiency(self):
         res = self.eff_calculator.estimate()
 
@@ -134,7 +134,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         diff = Comparator()
         diff.compare_set_of_histograms([[i] for i in res])
 
-    @unittest.skip('Debug')
+    # @unittest.skip('Debug')
     def testCompareEfficienciesDifferentMethods(self):
         cut, full = self.eff_calculator.estimate()
         eff1 = ratio(cut, full, 'TOF efficiency; E, GeV', 'rigorous')
