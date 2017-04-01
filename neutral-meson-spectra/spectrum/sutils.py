@@ -94,6 +94,7 @@ def adjust_canvas(canvas):
     width = canvas.GetWindowWidth()
     canvas.SetRightMargin(0.01 * width)
     canvas.SetLeftMargin(0.01 * width)
+    return canvas
 
 
 class Cc:

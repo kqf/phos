@@ -31,8 +31,6 @@ class PtDependent(object):
 
 
 class PtAnalyzer(object):
-    with open('config/pt-analysis.json') as f:
-        conf = json.load(f)
         
     def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', options = Options()):
         super(PtAnalyzer, self).__init__()
@@ -43,7 +41,10 @@ class PtAnalyzer(object):
         self.dead_mode = ('dead' in mode)
 
         # Configure analysis
-        props = self.conf[options.particle]
+        with open(options.ptconfig) as f:
+            conf = json.load(f)
+
+        props           = conf[options.particle]
         self.bins       = props['ptedges']
         self.need_rebin = props['need_rebin']
         self.multcanvas = props['multcanvas']
