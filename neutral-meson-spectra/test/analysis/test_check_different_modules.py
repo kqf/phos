@@ -1,29 +1,29 @@
 #!/usr/bin/python
 
-from spectrum.spectrum import PtAnalyzer, Spectrum
+from spectrum.spectrum import Spectrum
 from spectrum.input import Input
+from spectrum.options import Options
+from spectrum.sutils import get_canvas, adjust_canvas
 
 import test.check_default
-import numpy as np
-
-
-class ModuleAnalyzer(PtAnalyzer):
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v'):
-        super(ModuleAnalyzer, self).__init__(lst, label, mode)
-
-    def divide_into_bins(self):
-        nedges = 20
-        edges = np.e ** np.linspace(np.log(1.1), np.log(15) , nedges)
-        return map(self.hists[0].GetYaxis().FindBin, edges), np.zeros(nedges - 1)
+import unittest
 
 
 class CheckModules(test.check_default.CheckDefault):
 
-    def setUp(self):
-        super(CheckModules, self).setUp()
-        # f = lambda x, y, z: Spectrum(x, label=y, mode=z).evaluate()
-        f = lambda x, y: ModuleAnalyzer(x, label=y, mode=self.mode).quantities()
+    def run_analysis(self, opt, selection):
+        f = lambda x, y: Spectrum(x, label=y, mode=self.mode, options=opt).evaluate()
         self.results = map(f, *Input('input-data/LHC16.root', 'PhysTender', 'MassPt').read_per_module())
+        self.c1 = adjust_canvas(get_canvas())
+
+    def testPi0(self):
+        opt = Options(ptconfig='config/test_different_modules.json')
+        self.run_analysis(opt, 'PhysTender')
+
+    # @unittest.skip('test')
+    def testEta(self):
+        opt = Options(particle='eta', ptconfig='config/test_different_modules.json')
+        self.run_analysis(opt, 'EtaTender')
 
 
 
