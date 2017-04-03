@@ -7,6 +7,7 @@
 
 // --- AliRoot header files ---
 #include <AliVCluster.h>
+#include <AliAODMCParticle.h>
 
 #include <iostream>
 using namespace std;
@@ -68,48 +69,51 @@ void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObj
 }
 
 
-void MCPhotonSelection::ConsiderGeneratedParticles(AliStack * stack)
+void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
 {
 
-	if (! stack)
+	if (! particles)
 		return;
-	
-	Int_t NPrimaryTracks =  stack->GetNprimary();
 
 	// TODO: Add enumeration
 	// TODO: Add zvertex histogram for real data
-	for (Int_t i = 0; i <  stack->GetNtrack(); i++)
+	for (Int_t i = 0; i <  particles->GetEntriesFast(); i++)
 	{
-		TParticle * particle = stack->Particle(i);
+		 AliAODMCParticle* particle = ( AliAODMCParticle*) particles->At(i);
 		const char * name = particle->GetName();
 		Int_t code = particle->GetPdgCode();
+		cout << "i " << code << endl;
 
+		cout << name << endl;
 		if (code != 111 && code != 221 && code != 22)
 			continue;
 
+
+		// TODO: Fill this class
 		//Primary particle
-		Double_t r = particle->R() ;
+		// Double_t r = particle->R() ;
 		Double_t pt = particle->Pt();
-		Double_t zvtx = particle->Vz();
+		// Double_t zvtx = particle->Vz();
 
-		FillHistogram("hZvertexGen", zvtx);
+		// FillHistogram("hZvertexGen", zvtx);
 
-		if (TMath::Abs(particle->Vz()) > 10.) continue;
-		FillHistogram("hZvertexGenCut", zvtx);
+		// TODO: how to know which particle is primary
+		// if (TMath::Abs(particle->Vz()) > 10.) continue;
+		// FillHistogram("hZvertexGenCut", zvtx);
 
 
 		FillHistogram(Form("hPtGeneratedMC_%s_total", name), pt) ;
-		FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
+		// FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
 
-		if (i < NPrimaryTracks)
-		{
-			FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
-			FillHistogram(Form("hPtGeneratedMC_%s_primary_Radius", name), r, pt) ;
-		}
-		else
-		{
-			FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
-			FillHistogram(Form("hPtGeneratedMC_%s_secondary_Radius", name), r, pt) ;
-		}
+		// if (i < NPrimaryTracks)
+		// {
+		// 	FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
+		// 	FillHistogram(Form("hPtGeneratedMC_%s_primary_Radius", name), r, pt) ;
+		// }
+		// else
+		// {
+		// 	FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
+		// 	FillHistogram(Form("hPtGeneratedMC_%s_secondary_Radius", name), r, pt) ;
+		// }
 	}
 }

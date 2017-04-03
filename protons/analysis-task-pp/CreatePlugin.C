@@ -64,7 +64,7 @@ AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kT
 
 	plugin->SetAliRootMode ( "default" );
 	plugin->SetClearPackages ( kFALSE );
-	plugin->SetFileForTestMode ( "files.txt" );
+	plugin->SetFileForTestMode ( "filesmc.txt" );
 	plugin->SetProofConnectGrid ( kFALSE );
 	plugin->SetDropToShell(kFALSE);
 	if (!plugin)

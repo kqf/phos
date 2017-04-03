@@ -1,2 +1,2 @@
-/afs/cern.ch/work/o/okovalen/private/mc/AOD2016k/AliESDs.root
+/afs/cern.ch/work/o/okovalen/private/mc/AOD2016k/AliAOD.root
 #/afs/cern.ch/work/o/okovalen/private/mc/AOD2016k/AliAOD.root

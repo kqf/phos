@@ -3,6 +3,7 @@
 
 // --- ROOT system ---
 #include <TString.h>
+#include <TClonesArray.h>
 
 // --- AliRoot header files ---
 #include <AliAnalysisTaskSE.h>
@@ -28,6 +29,7 @@ public:
 	void SetBadMap(const char * filename);
 	TList * GetSelections() { return fSelections; }
 protected:
+	TClonesArray * GetMCParticles(const AliVEvent * event) const;
 	Bool_t EventSelected(const AliVEvent * event, EventFlags & eprops) const;
 	Bool_t IsClusterBad(AliVCluster * clus) const;
 	Bool_t CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, Int_t & iz) const;

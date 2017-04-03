@@ -23,17 +23,15 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-
-    // TODO:  Remove this from here, analyze only ESD
     if (isMC)
     {
         esdH->SetReadFriends( isMC );
         esdH->SetNeedField();
-        mgr->SetInputEventHandler( esdH );
+        // mgr->SetInputEventHandler( esdH );
 
     }
-    else
-        mgr->SetInputEventHandler(aodH);
+    // mgr->SetInputEventHandler( esdH );
+    mgr->SetInputEventHandler(aodH);
 
     if ( isMC )
     {

@@ -30,7 +30,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     if ( isMC )
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Not reading track references
+        // mchandler->SetReadTR ( kFALSE ); // Not reading track references
         mgr->SetMCtruthEventHandler ( mchandler );
     }
 
@@ -39,7 +39,8 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     // mgr->SetDebugLevel(999999);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, true for MC
+    Bool_t enablePileupCuts = kTRUE;
+    AddTaskPhysicsSelection (isMC, enablePileupCuts); 
 
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
 

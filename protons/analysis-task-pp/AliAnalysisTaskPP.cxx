@@ -14,11 +14,13 @@
 #include <AliVVertex.h>
 #include <AliPHOSGeometry.h>
 #include <AliLog.h>
+#include <AliAODMCParticle.h>
+#include <AliAODEvent.h>
 
-// --- AliRoot MC headers --- 
+
+// --- AliRoot MC headers ---
 #include <AliMCEventHandler.h>
 #include <AliMCEvent.h>
-#include <AliStack.h>
 
 // --- Custom libraries ---
 #include "TestPhotonSelection.h"
@@ -132,11 +134,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		clusArray.Add(clus);
 	}
 
-	AliMCEvent * mcevent = MCEvent();
-	AliStack * stack = (mcevent ? mcevent->Stack() : 0);
-
-	if (!stack)
-		return;
+	TClonesArray * mcparaticles = GetMCParticles(event);
 
 	// No need to check. We have already done it in SelectEvent
 	AliVCaloCells * cells = event->GetPHOSCells();
@@ -154,13 +152,13 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		selection->FillPi0Mass(&clusArray, pool, evtProperties);
 
 		// Now invoke this code if we have mc event and mc selection
-		// 
-		if (stack)
+		//
+		if (mcparaticles)
 		{
 			MCPhotonSelection * mcselection = dynamic_cast<MCPhotonSelection * >(selection);
-			if(mcselection)
+			if (mcselection)
 			{
-				mcselection->ConsiderGeneratedParticles(stack);
+				mcselection->ConsiderGeneratedParticles(mcparaticles);
 			}
 		}
 
@@ -168,12 +166,25 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	}
 	fPreviousEvents->UpdatePool(clusArray, evtProperties);
 }
+//________________________________________________________________
+TClonesArray * AliAnalysisTaskPP::GetMCParticles(const AliVEvent * event) const
+{
+	// TODO: Handle the ESD case here
+	const AliAODEvent * aodevent = dynamic_cast<const AliAODEvent*>(event);
+
+	if (!aodevent)
+		return 0;
+
+	TClonesArray * mc = (TClonesArray*)aodevent->FindListObject(AliAODMCParticle::StdBranchName());
+	return mc;
+}
 
 //________________________________________________________________
 void AliAnalysisTaskPP::Terminate(Option_t *)
 {
 }
 
+//________________________________________________________________
 Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & eprops) const
 {
 	// Do not apply this criteria yet.
