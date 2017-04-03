@@ -78,11 +78,13 @@ class Styler(object):
         if 'markerstyle' in properties: obj.SetMarkerStyle(properties['markerstyle'])
         if 'fillcolor' in properties: obj.SetFillColor(properties['fillcolor'])
         if 'fillstyle' in properties: obj.SetFillStyle(properties['fillstyle'])
-        if 'linewidth' in properties: obj.SEtLineWidth(properties['linewidth'])
+        if 'linewidth' in properties: obj.SetLineWidth(properties['linewidth'])
+        if 'ratio' in properties: obj.ratio = properties['ratio']
 
         if 'fitrange' in properties:
             self.fit_simple(obj, properties)
         return obj
+
 
     def fit_simple(self, obj, properties):
         fitrange = properties['fitrange']
@@ -93,6 +95,27 @@ class Styler(object):
         function.SetParameters(*fitpars)
         ROOT.gStyle.SetOptFit()
         obj.Fit('hTest')
+
+
+    def ratioplot(self, canvas):
+        if not len(self.histograms) == 2:
+            return
+
+        attributes = sum(map(dir, self.histograms), [])
+
+        if not 'ratio' in sum(map(dir, self.histograms), []):
+            return
+
+        num, denom = sorted(self.histograms, key=lambda x: x.ratio)
+        ratio = num.Clone(num.GetName() + '_ratio')
+        ratio.Divide(denom)
+        ratio.SetTitle('Ratio plot for ' + num.label + '/' + denom.label)
+        canvas.cd()
+        ratio.Draw()
+        canvas.Update()
+        raw_input('Press enter...')
+
+
 
     def draw(self):
         if not self.hists:
@@ -109,6 +132,10 @@ class Styler(object):
         canvas.Draw()
         if 'output' in props: canvas.SaveAs(props['output'])
         raw_input()
+        # TODO: Add bottom plane for this plot
+        # TODO: Add difference as well
+        self.ratioplot(canvas)
+
 
     def drawmap(self, name):
         c1 = ROOT.TCanvas(name, name, 128 * 5, 96 * 5); 
