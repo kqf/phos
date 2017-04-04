@@ -109,12 +109,27 @@ class Styler(object):
         num, denom = sorted(self.histograms, key=lambda x: x.ratio)
         ratio = num.Clone(num.GetName() + '_ratio')
         ratio.Divide(denom)
-        ratio.SetTitle('Ratio plot for ' + num.label + '/' + denom.label)
+        ratio.SetTitle('')
         canvas.cd()
         ratio.Draw()
         canvas.Update()
-        raw_input('Press enter...')
+        return ratio
 
+    def form_ratio_plot(self, hists, canvas, props):
+
+        if len(hists) != 2: 
+            return canvas, canvas, canvas 
+
+        pad1 = ROOT.TPad("pad1", "main plot", 0, 0.3, 1, 1);
+        pad1.SetBottomMargin(0);
+        pad1.Draw()
+        canvas.cd()
+        pad2 = ROOT.TPad("pad2", "ratio", 0, 0, 1, 0.3);
+        pad2.SetTopMargin(0);
+        pad2.SetBottomMargin(0.2);
+        pad2.Draw();
+        self.decorate_pad(pad2, props)
+        return canvas, pad1, pad2
 
 
     def draw(self):
@@ -124,17 +139,21 @@ class Styler(object):
         props = self.data['canvas']
         size = props['size']
         canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
+        canvas, mainpad, ratio = self.form_ratio_plot(self.histograms, canvas, props)
 
+        mainpad.cd()
         map(lambda x: x.Draw('same'), self.histograms)
         legend = self.decorate_legend(self.histograms, props)
         
-        self.decorate_pad(canvas, props)
-        canvas.Draw()
-        if 'output' in props: canvas.SaveAs(props['output'])
-        raw_input()
+        self.decorate_pad(mainpad, props)
+        if 'output' in props:
+            mainpad.SaveAs(props['output'])
+
+        mainpad.Update()
         # TODO: Add bottom plane for this plot
         # TODO: Add difference as well
-        self.ratioplot(canvas)
+        ratio = self.ratioplot(ratio)
+        raw_input()
 
 
     def drawmap(self, name):
