@@ -1,3 +1,6 @@
+
+// #include "iterator"
+
 // --- Custom header files ---
 #include "MCPhotonSelection.h"
 
@@ -39,15 +42,15 @@ void MCPhotonSelection::InitSelectionHistograms()
 	fListOfHistos->Add(new TH1F("hZvertexGen", "Z vertex generated; z_{vtx}, cm", 200, -50., +50.));
 	fListOfHistos->Add(new TH1F("hZvertexGenCut", "Z vertex generated, |z|<10; z_{vtx}, cm", 200, -50., +50.));
 
-	const char * names[3] = {"pi0", "gamma", "eta"};
-	for (Int_t i = 0; i < 3; ++i)
+	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
 	{
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", names[i]), Form("Generated p_{T} total %s; p_{T}, GeV/c", names[i]), 250, 0., 25.) );
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", names[i]), Form("Generated p_{T} primary %s; p_{T}, GeV/c", names[i]), 250, 0., 25.)) ;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", names[i]), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", names[i]), 250, 0., 25.));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_total_Radius", names[i]), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", names[i]), 1000, 0., 500., 250, 0., 25.));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_primary_Radius", names[i]), Form("Generated radius, p_{T} primary %s; r, cm; p_{T}, GeV/c", names[i]), 1000, 0., 500., 250, 0., 25.));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_secondary_Radius", names[i]), Form("Generated radius, p_{T} secondary %s; r, cm; p_{T}, GeV/c", names[i]), 1000, 0., 500., 250, 0., 25.));
+		const char * n = i->second;
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), 250, 0., 25.) );
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), 250, 0., 25.)) ;
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), 250, 0., 25.));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_total_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_primary_Radius", n), Form("Generated radius, p_{T} primary %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_secondary_Radius", n), Form("Generated radius, p_{T} secondary %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
 	}
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
@@ -79,18 +82,15 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
 	// TODO: Add zvertex histogram for real data
 	for (Int_t i = 0; i <  particles->GetEntriesFast(); i++)
 	{
-		 AliAODMCParticle* particle = ( AliAODMCParticle*) particles->At(i);
-		const char * name = particle->GetName();
+		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
 		Int_t code = particle->GetPdgCode();
-		cout << "i " << code << endl;
+		const char * name = fPartNames[code];
 
-		cout << name << endl;
-		if (code != 111 && code != 221 && code != 22)
+		if (code != kGamma && code != kPi0 && code != kEta)
 			continue;
 
-
 		// TODO: Fill this class
-		//Primary particle
+		// Primary particle
 		// Double_t r = particle->R() ;
 		Double_t pt = particle->Pt();
 		// Double_t zvtx = particle->Vz();

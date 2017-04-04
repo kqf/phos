@@ -1,6 +1,9 @@
 #ifndef MCPHOTONSELECTION_H
 #define MCPHOTONSELECTION_H
 
+
+#include <map>
+
 // --- Custom header files ---
 #include "GeneralPhotonSelection.h"
 
@@ -17,8 +20,15 @@
 class MCPhotonSelection: public GeneralPhotonSelection
 {
 public:
+	enum particles{kGamma = 22, kPi0 = 111, kEta = 221};
 	MCPhotonSelection(): GeneralPhotonSelection() {}
-	MCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t) {}
+	MCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
+	{
+		// Don't use c++11 here, as it might fail at some nodes
+		fPartNames[kGamma] = "gamma";
+		fPartNames[kPi0] = "pi0";
+		fPartNames[kEta] = "eta";
+	}
 	virtual void InitSelectionHistograms();
 
 protected:
@@ -29,6 +39,10 @@ protected:
 
 	MCPhotonSelection(const MCPhotonSelection &);
 	MCPhotonSelection & operator = (const MCPhotonSelection &);
+
+	typedef std::map<Int_t, const char *> EnumNames;
+	EnumNames fPartNames; 
+
 	ClassDef(MCPhotonSelection, 2)
 };
 #endif
