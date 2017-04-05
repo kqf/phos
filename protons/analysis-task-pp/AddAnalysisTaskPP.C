@@ -1,4 +1,4 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Int_t * excells = 0, Int_t nexc = 0)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Int_t * excells = 0, Int_t nexc = 0, Bool_t isMC = kFALSE)
 {
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
@@ -12,6 +12,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("TagAndProbeSelection.cxx+");
+    gROOT->LoadMacro("MCPhotonSelection.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
   
@@ -31,6 +32,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
 	selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 12.5e-9, 10., 3.));
 	selections->Add(new TagAndProbeSelection("TOFStudy", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 12.5e-9));
+	
+	if (isMC)
+		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, 12.5e-9));
 
 	// Setup task
 	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons", selections);
@@ -78,6 +82,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhysPhotonSelection.cxx " +
 	    "PhotonTimecutSelection.cxx " +
 	    "TagAndProbeSelection.cxx " +
+	    "MCPhotonSelection.cxx " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx "
 	);
@@ -101,6 +106,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonTimecutSelection.h " +
 	    "TagAndProbeSelection.cxx " +
 	    "TagAndProbeSelection.h " +
+	    "MCPhotonSelection.cxx " +
+	    "MCPhotonSelection.h " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx " +
 	    "AliAnalysisTaskPP.h " 

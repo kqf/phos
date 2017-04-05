@@ -15,17 +15,23 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "", useJDL);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "", useJDL, isMC);
 
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_QA");
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
-    // esdH->SetReadFriends( isMC );
-    mgr->SetInputEventHandler(aodH);
+
+    if (isMC)
+    {
+        esdH->SetReadFriends( isMC );
+        esdH->SetNeedField();
+        // mgr->SetInputEventHandler( esdH );
+
+    }
     // mgr->SetInputEventHandler( esdH );
-    // esdH->SetNeedField();
+    mgr->SetInputEventHandler(aodH);
 
     if ( isMC )
     {
@@ -48,6 +54,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
+    TString pref =  isMC ? "MC": "";
 
     if (use_tender)
     {
@@ -60,8 +67,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         if (useJDL)
             files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "##Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", excells, nexc);
-        AddAnalysisTaskPP(AliVEvent::kINT7, period + "##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", 0, 0);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", excells, nexc, isMC);
+        AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", 0, 0, isMC);
         //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
     }
 
