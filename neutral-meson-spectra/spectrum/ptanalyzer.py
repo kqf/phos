@@ -28,6 +28,15 @@ class PtDependent(object):
         hist.label = self.label
         return hist 
 
+    @staticmethod
+    def divide_bin_width(hist):
+        nbins = hist.GetNbinsX()
+        for i in range(1, nbins + 1): 
+            c, e, w = hist.GetBinContent(i), hist.GetBinError(i), hist.GetBinWidth(i)
+            hist.SetBinContent(i, c / w)
+            hist.SetBinError(i, e / w)
+
+
 
 
 class PtAnalyzer(object):

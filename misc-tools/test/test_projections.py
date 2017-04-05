@@ -38,7 +38,6 @@ class TestProjections(TestImages):
         histogram.Write()
         ofile.Close()
 
-    @unittest.skip('Strange')
     def testDrawing(self):
         style = Styler(self.conffile)
         style.draw()

@@ -18,7 +18,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
 
     
     def test(self):
-        f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=True)).evaluate()
+        f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=False)).evaluate()
         self.original_distributions = self.generator.generate(100000)
         self.generator.save_fake(self.genfilename)
         self.results = [

@@ -23,7 +23,7 @@ class TimecutOptimizer(unittest.TestCase):
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
         self.canvas = get_canvas()
 
-    @unittest.skip('Temporary skiping the test')
+    # @unittest.skip('Temporary skiping the test')
     def testRanges(self):
         inp = MetricInput('input-data/LHC16.root', 'QualTender', 'MassPtN3A')
 

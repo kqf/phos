@@ -150,8 +150,6 @@ class Styler(object):
             mainpad.SaveAs(props['output'])
 
         mainpad.Update()
-        # TODO: Add bottom plane for this plot
-        # TODO: Add difference as well
         ratio = self.ratioplot(ratio)
         raw_input()
 

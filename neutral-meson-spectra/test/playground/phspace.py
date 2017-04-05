@@ -15,7 +15,7 @@ def particle(pt, mass = 0):
     return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
 
 class BackgroundGenerator(object):
-    def __init__(self, raw_gamma_pectrum, meanphotons = 20.):
+    def __init__(self, raw_gamma_pectrum, meanphotons = 10.):
         super(BackgroundGenerator, self).__init__()
         self.spectrum = raw_gamma_pectrum
         self.meanphotons = meanphotons
@@ -29,23 +29,26 @@ class BackgroundGenerator(object):
 class SignalGenerator(object):
     def __init__(self, config):
         super(SignalGenerator, self).__init__()
-        self.true_mass  = ROOT.TF1("fitmass" , "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.3, 20)
-        self.true_width = ROOT.TF1("fitsigma", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]", 0.3, 20)
-
-        self.true_spectrum = ROOT.TF1('fTsallis', lambda x, p: tsallis(x, p), 0.3, 20, 3)
         ptbins = self.configure(config)
-        
-        self.generated = PtDependent("hGenerated", "Generated spectrum", "generated").get_hist(ptbins, [])
+        self.generated = PtDependent("hGenerated", "Generated spectrum", "Generated").get_hist(ptbins, [])
+
 
     def configure(self, conffile):
         with open(conffile) as f: 
             conf = json.load(f)
 
+        self.true_mass  = ROOT.TF1(*conf['fmass'])
         self.true_mass.SetParameters(*conf['true_mass'])
+
+        self.true_width = ROOT.TF1(*conf['fwidth'])
         self.true_width.SetParameters(*conf['true_width'])
+
+        emin, emax = conf['erange']
+        self.true_spectrum = ROOT.TF1('fTsallis', lambda x, p: tsallis(x, p), emin, emax, 3)
         self.true_spectrum.SetParameters(*conf['true_spectrum'])
         self.average_nmesons = conf['average_nmesons']
         return conf['pt_edges']
+
 
     def generate(self):
         nmesons = int(ROOT.gRandom.Exp(1. / self.average_nmesons))
@@ -108,6 +111,7 @@ class InclusiveGenerator(object):
 
         # Just fill event counter
         self.nevents.Fill(1, nevents)
+        PtDependent.divide_bin_width(self.signal.generated)
         return self.signal.generated
 
 
@@ -123,6 +127,3 @@ class InclusiveGenerator(object):
 
         # just return untouched to update mixed events
         return photons  
-
-
-
