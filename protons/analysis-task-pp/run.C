@@ -14,7 +14,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
 
 
     gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period, isMC);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");
@@ -57,7 +57,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
         // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc);
+        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", "Tender", "", excells, nexc, isMC);
         // files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## only tender no badmap, testing badmap ## tender", "OnlyTender", "", 0, 0);
     }
 

@@ -1,4 +1,4 @@
-DATASET = LHC16l-muon-calo-pass1
+DATASET = LHC16j2a1
 MC = kTRUE
 
 grid: | %.cxx

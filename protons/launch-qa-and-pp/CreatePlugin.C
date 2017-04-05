@@ -1,4 +1,4 @@
-AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, Bool_t useJDL)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -22,19 +22,23 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	plugin->SetCheckCopy(kFALSE);
 
 	// Extract period and reconstruction pass
-	TString dir(period, 6); // fancy slicing
+	TString dir(period, isMC ? 9 : 6); // fancy slicing
 	TString reconstruction(period);
 	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
 	reconstruction.ReplaceAll("-", "_");
 
-	plugin->SetGridDataDir("/alice/data/2016/" + dir);
+	TString globaldir = isMC ? "/alice/sim/2016/" : "/alice/data/2016/";
+	plugin->SetGridDataDir(globaldir + dir);
 	cout << "/alice/data/2016/" + dir << endl;
-	plugin->SetDataPattern("/" + reconstruction + "/*.*/AliAOD.root");
+
+	TString datasuffix = isMC ? "AOD/" : "/*.";
+	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
+	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
+
 	// plugin->SetDataPattern("/" + reconstruction + "/AOD/*/AliAOD.root");
 	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
-	plugin->SetRunPrefix("000");
-
-
+	if(!isMC)
+		plugin->SetRunPrefix("000");
 
 	cout << "We are trying to analyse " << nruns << " runs" << endl;
 

@@ -9,6 +9,7 @@
 #include <TH2F.h>
 
 // --- AliRoot header files ---
+#include <AliLog.h>
 #include <AliVCluster.h>
 #include <AliAODMCParticle.h>
 
@@ -44,7 +45,8 @@ void MCPhotonSelection::InitSelectionHistograms()
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
 	{
-		const char * n = i->second;
+		const char * n = (const char *) i->second.Data();
+		cout << n << endl;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), 250, 0., 25.) );
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), 250, 0., 25.)) ;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), 250, 0., 25.));
@@ -84,7 +86,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
 		Int_t code = particle->GetPdgCode();
-		const char * name = fPartNames[code];
+		const char * name = fPartNames[code].Data();
 
 		if (code != kGamma && code != kPi0 && code != kEta)
 			continue;
