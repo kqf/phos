@@ -11,7 +11,7 @@ class TestRatio(TestImages):
 
 	def save_config(self):
 		conffile = 'config/test_ratio.json'
-		rfile    = 'input/testfile_singlemultiple.root'
+		rfile    = 'input/testfile_ratio.root'
 		histnames = ['data', 'mixing']
 		pfile    = 'results/test.pdf'
 		data = { 
@@ -40,4 +40,4 @@ class TestRatio(TestImages):
 
 	def testDrawing(self):
 		style = Styler(self.conffile)
-		style.draw()
+		style.draw()		

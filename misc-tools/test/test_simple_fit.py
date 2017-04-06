@@ -24,7 +24,7 @@ class SimpleFit(TestImages):
 							 "fitrange": self.range, "fitfunc": self.func, "fitpars": self.pars}
 						},
 					"canvas": 
-						{"size":  5, "logy":  1, "gridx": 1, "legend": [0.14, 0.7, 0.34, 0.88], "output": pfile} 
+						{"size":  5, "logy":  1,  "gridx": 1 ,"gridy": 1, "legend": [0.14, 0.7, 0.34, 0.88], "output": pfile} 
 				}
 
 		with open(conffile, 'w') as outfile:

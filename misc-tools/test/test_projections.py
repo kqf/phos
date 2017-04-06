@@ -21,7 +21,7 @@ class TestProjections(TestImages):
                             rfile + '/' + histname: {"option": "colz", "title": "Trying projections; #alpha; #beta", "projectx": 50}
                         }, 
                     "canvas": 
-                        {"size":  5, "logy":  0, "gridx": 0, "output": pfile} 
+                        {"size":  5, "logy":  0, "gridx": 0, "gridy": 0, "output": pfile} 
                }
 
         with open(conffile, 'w') as outfile:
@@ -38,6 +38,7 @@ class TestProjections(TestImages):
         histogram.Write()
         ofile.Close()
 
+    # @unittest.skip('')
     def testDrawing(self):
         style = Styler(self.conffile)
         style.draw()

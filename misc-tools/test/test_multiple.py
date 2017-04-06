@@ -19,7 +19,7 @@ class TestMultipleImages(TestImages):
 						{ 
 							rfile + '/' + histname: {"option": "colz", "title": "Random distribution; #alpha; #beta"}
 						}, 
-					"canvas_per_module": 
+					"canvas": 
 						{"size":  5, "logy":  0, "gridx": 0, "output": pfile} 
 			   }
 
@@ -39,4 +39,4 @@ class TestMultipleImages(TestImages):
 
 	def testDrawing(self):
 		style = Styler(self.conffile)
-		style.drawmap('test')
+		style.drawmap()

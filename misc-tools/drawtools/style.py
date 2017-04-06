@@ -154,8 +154,10 @@ class Styler(object):
         raw_input()
 
 
-    def drawmap(self, name):
-        c1 = ROOT.TCanvas(name, name, 128 * 5, 96 * 5); 
+    def drawmap(self):
+        size = self.data['canvas']['size']
+        canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
+        c1 = ROOT.TCanvas('c1', 'c1', 128 * 5, 96 * 5); 
         c1.Divide(2, 2)
         for maps in self.hitmap:
             badmap(maps, c1)
@@ -163,10 +165,10 @@ class Styler(object):
         raw_input()
 
     def decorate_map(self, canvas):
-        if not 'canvas_per_module' in self.data:
+        if not 'canvas' in self.data:
             return
 
-        props = self.data['canvas_per_module']
+        props = self.data['canvas']
 
         canvas.cd(1)
         legend = self.decorate_legend(zip(*self.hitmap)[0], props)
@@ -175,7 +177,6 @@ class Styler(object):
 
         canvas.Update()
         canvas.SaveAs(props['output'])
-        raw_input()
 
     def decorate_pad(self, pad, props):
         ROOT.gPad.SetTickx()
@@ -203,7 +204,7 @@ def main():
     assert len(sys.argv) == 2, "Usage: style.py rules.json"
     s = Styler(sys.argv[1])
     s.draw()
-    s.drawmap('hitmap')
+    s.drawmap()
 
 if __name__ == '__main__':
     main()
