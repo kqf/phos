@@ -13,26 +13,46 @@ def define_colors(ci = 1000):
     rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
     return ci, rcolors
 
-class Styler(object):
-    ci, colors = define_colors()
 
+class Styler(object):
     def __init__(self, filename):
         super(Styler, self).__init__()
+        self.filename = filename
+
         with open(filename) as f:
-            self.data = json.load(f)
-        self.hists, self.hitmap = self.read_data()
+            data = json.load(f)
+
+        self.stylers = self.get_stylers(data)
+
+
+    def get_stylers(self, data):
+        known_stylers = [SingleStyler, MultipleStyler]
+        return [k(data) for k in known_stylers if k.keyname in data]
+
+
+    def draw(self):
+        for s in self.stylers:
+            s.draw()
+
+
+class SingleStyler(object):
+    ci, colors = define_colors()
+    keyname = 'histograms'
+
+    def __init__(self, data):
+        super(SingleStyler, self).__init__()
+        self.data = data
+        self.hists = self.read_data()
 
         
     def read_data(self):
-        hists, hitmap = None, None
+        hists = None 
 
-        if 'histograms' in self.data:
-            hists = self.data['histograms']
-            self.histograms = [self.read_histogram(h, hists[h]) for h in hists] 
+        if self.keyname in self.data:
+            hists = self.data[self.keyname]
+            hists = [self.read_histogram(h, hists[h]) for h in hists] 
 
-        if 'hitmap' in self.data:
-            hitmap = [[self.read_histogram(h % i, self.data["hitmap"][h]) for i in range(1, 5)] for h in sorted(self.data['hitmap'])] 
-        return hists, hitmap
+        return hists
 
 
     def read_histogram(self, path, properties):
@@ -98,15 +118,15 @@ class Styler(object):
 
 
     def ratioplot(self, canvas):
-        if not len(self.histograms) == 2:
+        if not len(self.hists) == 2:
             return
 
-        attributes = sum(map(dir, self.histograms), [])
+        attributes = sum(map(dir, self.hists), [])
 
-        if not 'ratio' in sum(map(dir, self.histograms), []):
+        if not 'ratio' in sum(map(dir, self.hists), []):
             return
 
-        num, denom = sorted(self.histograms, key=lambda x: x.ratio)
+        num, denom = sorted(self.hists, key=lambda x: x.ratio)
         ratio = num.Clone(num.GetName() + '_ratio')
         ratio.Divide(denom)
         ratio.SetTitle('')
@@ -139,11 +159,11 @@ class Styler(object):
         props = self.data['canvas']
         size = props['size']
         canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
-        canvas, mainpad, ratio = self.form_ratio_plot(self.histograms, canvas, props)
+        canvas, mainpad, ratio = self.form_ratio_plot(self.hists, canvas, props)
 
         mainpad.cd()
-        map(lambda x: x.Draw('same'), self.histograms)
-        legend = self.decorate_legend(self.histograms, props)
+        map(lambda x: x.Draw('same'), self.hists)
+        legend = self.decorate_legend(self.hists, props)
         
         self.decorate_pad(mainpad, props)
         if 'output' in props:
@@ -152,31 +172,6 @@ class Styler(object):
         mainpad.Update()
         ratio = self.ratioplot(ratio)
         raw_input()
-
-
-    def drawmap(self):
-        size = self.data['canvas']['size']
-        canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
-        c1 = ROOT.TCanvas('c1', 'c1', 128 * 5, 96 * 5); 
-        c1.Divide(2, 2)
-        for maps in self.hitmap:
-            badmap(maps, c1)
-        self.decorate_map(c1)
-        raw_input()
-
-    def decorate_map(self, canvas):
-        if not 'canvas' in self.data:
-            return
-
-        props = self.data['canvas']
-
-        canvas.cd(1)
-        legend = self.decorate_legend(zip(*self.hitmap)[0], props)
-
-        for i in range(4): self.decorate_pad(canvas.cd(i + 1), props)
-
-        canvas.Update()
-        canvas.SaveAs(props['output'])
 
     def decorate_pad(self, pad, props):
         ROOT.gPad.SetTickx()
@@ -199,12 +194,53 @@ class Styler(object):
         return legend
 
 
+class MultipleStyler(SingleStyler):
+    # TODO: Invent better keyword for this class
+    keyname = 'hitmap'
+    def __init__(self, data):
+        super(MultipleStyler, self).__init__(data)
+        
+    def read_data(self):
+        hists = None 
+
+        hitmaps = sorted(self.data[self.keyname])
+
+        if self.keyname in self.data:
+            hists = [[self.read_histogram(h % i, self.data[self.keyname][h]) for i in range(1, 5)] for h in hitmaps] 
+        return hists
+
+    def draw(self):
+        size = self.data['canvas']['size']
+        canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
+        c1 = ROOT.TCanvas('c1', 'c1', 128 * 5, 96 * 5); 
+        c1.Divide(2, 2)
+        for maps in self.hists:
+            badmap(maps, c1)
+        self.decorate_map(c1)
+        raw_input()
+
+    def decorate_map(self, canvas):
+        if not 'canvas' in self.data:
+            return
+
+        props = self.data['canvas']
+
+        canvas.cd(1)
+        legend = self.decorate_legend(zip(*self.hists)[0], props)
+
+        for i in range(4): self.decorate_pad(canvas.cd(i + 1), props)
+
+        canvas.Update()
+        canvas.SaveAs(props['output'])
+
+
+
+
 
 def main():
     assert len(sys.argv) == 2, "Usage: style.py rules.json"
     s = Styler(sys.argv[1])
     s.draw()
-    s.drawmap()
 
 if __name__ == '__main__':
     main()
