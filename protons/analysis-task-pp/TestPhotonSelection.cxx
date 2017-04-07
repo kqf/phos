@@ -24,7 +24,6 @@ void TestPhotonSelection::InitSummaryHistograms()
 {
 	fEvents = new TH1F("TotalEvents", "Total number of analysed events", 1, 0, 1);
 	fListOfHistos = new TList();
-	// fListOfHistos->SetName("Data");
 	fListOfHistos->SetOwner(kTRUE);
 	fListOfHistos->Add(fEvents);
 	// pi0 mass spectrum

@@ -1,6 +1,6 @@
 /afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/1.root
 /afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/2.root
-#/afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/3.root
+/afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/3.root
 #/afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/4.root
 #/afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/5.root
 #/afs/cern.ch/work/o/okovalen/private/data/LHC16k257011/muon_calo_pass1/AOD/6.root

@@ -1,4 +1,4 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Int_t * excells = 0, Int_t nexc = 0, Bool_t isMC = kFALSE)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Int_t * excells = 0, Int_t nexc = 0, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
@@ -19,20 +19,28 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	// Setup Selections
 	TList * selections = new TList();
 
-	selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, 12.5e-9));
-	selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, 12.5e-9));
 
-	selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7, 3, 12.5e-9));
-	selections->Add(new PhotonTimecutSelection("EtaTime", "Testing Timing Selection for eta meson", 0.3, 0.7, 3, 12.5e-9));
-	
-	GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
-	sel->SetTimingCut(12.5e-9);
-	selections->Add(sel);
+	if (! isTest)
+	{
+		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, 12.5e-9));
+		selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, 12.5e-9));
 
-	selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
-	selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 12.5e-9, 10., 3.));
-	selections->Add(new TagAndProbeSelection("TOFStudy", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 12.5e-9));
-	
+		selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7, 3, 12.5e-9));
+		selections->Add(new PhotonTimecutSelection("EtaTime", "Testing Timing Selection for eta meson", 0.3, 0.7, 3, 12.5e-9));
+		
+		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
+		sel->SetTimingCut(12.5e-9);
+		selections->Add(sel);
+
+		selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
+		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, 12.5e-9, 10., 3.));
+	}	
+	else
+	{
+		selections->Add(new TestPhotonSelection("Test", "Cluster P_{t} Selection"));
+	}
+
+
 	if (isMC)
 		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, 12.5e-9));
 

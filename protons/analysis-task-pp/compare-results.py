@@ -37,10 +37,10 @@ def draw_and_save(name, draw=False, save=True):
         # ROOT.gApplication.Run(True)
 
 
-def get_my_list(filename = 'AnalysisResults.root'):
+def get_my_list(filename):
     print 'Processing %s file:' % filename
     mfile = ROOT.TFile(filename)
-    mlist = mfile.Data
+    mlist = mfile.TestTender
     return mlist
     
 def hist_cut(h, namecut = lambda x: True): 
@@ -81,7 +81,8 @@ def compare_histograms():
     my_hists = (h for h in mlist1 if hist_cut(h) )
     hists1 = list(my_hists)
 
-    mlist2 = get_my_list()
+    import sys
+    mlist2 = get_my_list(sys.argv[1])
     my_hists = (h for h in mlist2 if hist_cut(h) )
     hists2 = list(my_hists)
 

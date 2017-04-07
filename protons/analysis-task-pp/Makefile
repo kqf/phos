@@ -1,6 +1,6 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
 RESULTS = LHC16k-MyTask
-MC = kTRUE
+MC = kFALSE
 
 
 caf:
@@ -31,6 +31,7 @@ test:
 
 	@# Rename and move the results
 	@mv AnalysisResults.root test-pp-task.root
+	-./compare-results.py test-pp-task.root
 	alien_cp -n test-pp-task.root alien:$(ALIEN_HOME)
 	@echo -e "\x07"
 
