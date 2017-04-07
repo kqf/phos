@@ -8,6 +8,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("QualityPhotonSelection.cxx+");
+    gROOT->LoadMacro("DetectorHistogram.cxx+");
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");

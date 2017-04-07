@@ -27,13 +27,12 @@ void TestPhotonSelection::InitSummaryHistograms()
 	fListOfHistos->SetOwner(kTRUE);
 	fListOfHistos->Add(fEvents);
 	// pi0 mass spectrum
-	for (Int_t sm = 1; sm <  5; sm++)
-	{
-		fhPi0Mass[sm][sm] = new TH1F(Form("hPi0MassSM%iSM%i", sm, sm), "#pi^{0} mass spectrum", 250, 0, 0.5);
-		fhPi0Mass[sm][sm]->SetXTitle("M_{#gamma#gamma}, GeV");
-		fhPi0Mass[sm][sm]->SetYTitle("Counts");
-		fListOfHistos->Add(fhPi0Mass[sm][sm]);
-	}
+
+	TH1F * hist = new TH1F("hPi0Mass", "Invariant mass sectrum for #pi^{0} extraction, %s", 250, 0, 0.5);
+	hist->SetXTitle("M_{#gamma#gamma}, GeV");
+	hist->SetYTitle("Counts");
+
+	fhPi0Mass = DetectorHistogram(hist, fListOfHistos);
 }
 
 //________________________________________________________________
@@ -55,8 +54,8 @@ void TestPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Int_t s1 = (sm1 <= sm2) ? sm1 : sm2;
 	Int_t s2 = (sm1 <= sm2) ? sm2 : sm1;
 
-	if (fhPi0Mass[s1][s2])
-		fhPi0Mass[s1][s2]->Fill(psum.M());
+	if (sm1 == sm2)
+		fhPi0Mass.FillAll(sm1, psum.M());
 }
 
 //________________________________________________________________

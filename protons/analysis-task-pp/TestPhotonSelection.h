@@ -2,6 +2,7 @@
 #define TESTPHOTONSELECTION_H
 // --- Custom header files ---
 #include "PhotonSelection.h"
+#include "DetectorHistogram.h"
 
 // --- ROOT system ---
 #include <TObjArray.h>
@@ -38,7 +39,7 @@ protected:
 private:
 	TH1F * fEvents;//!
 	TList  * fListOfHistos;  //! list of histograms
-	TH1F * fhPi0Mass[10][10];//!
+	DetectorHistogram fhPi0Mass;
 	ClassDef(TestPhotonSelection, 2)
 };
 #endif
