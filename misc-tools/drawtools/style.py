@@ -4,7 +4,6 @@ import sys
 import ROOT
 import json
 
-from badmap import badmap
 ROOT.TH1.AddDirectory(False)
 
 def define_colors(ci = 1000):
@@ -42,6 +41,7 @@ class SingleStyler(object):
     def __init__(self, data):
         super(SingleStyler, self).__init__()
         self.data = data
+        self.canvas = None
         self.hists = self.read_data()
 
         
@@ -107,6 +107,9 @@ class SingleStyler(object):
 
 
     def fit_simple(self, obj, properties):
+        canvas = self.get_canvas()
+        canvas.cd()
+
         fitrange = properties['fitrange']
         fitfunc = properties['fitfunc']
         fitpars = properties['fitpars']
@@ -135,6 +138,7 @@ class SingleStyler(object):
         canvas.Update()
         return ratio
 
+
     def form_ratio_plot(self, hists, canvas, props):
 
         if len(hists) != 2: 
@@ -152,13 +156,23 @@ class SingleStyler(object):
         return canvas, pad1, pad2
 
 
+    def get_canvas(self):
+        if self.canvas:
+            return self.canvas
+
+        props = self.data['canvas']
+        size = props['size']
+        canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
+        self.canvas = canvas
+        return self.canvas
+
+
     def draw(self):
         if not self.hists:
             return
 
         props = self.data['canvas']
-        size = props['size']
-        canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
+        canvas = self.get_canvas()
         canvas, mainpad, ratio = self.form_ratio_plot(self.hists, canvas, props)
 
         mainpad.cd()
@@ -173,6 +187,7 @@ class SingleStyler(object):
         ratio = self.ratioplot(ratio)
         raw_input()
 
+
     def decorate_pad(self, pad, props):
         ROOT.gPad.SetTickx()
         ROOT.gPad.SetTicky() 
@@ -181,6 +196,7 @@ class SingleStyler(object):
         if 'logx' in props: pad.SetLogx(props['logx'])
         if 'gridx' in props: pad.SetGridx()
         if 'gridy' in props: pad.SetGridy()
+
 
     def decorate_legend(self, hists, props):
         if not 'legend' in props:
@@ -196,27 +212,25 @@ class SingleStyler(object):
 
 class MultipleStyler(SingleStyler):
     # TODO: Invent better keyword for this class
-    keyname = 'hitmap'
+    keyname = 'multiplot'
     def __init__(self, data):
         super(MultipleStyler, self).__init__(data)
         
     def read_data(self):
         hists = None 
 
-        hitmaps = sorted(self.data[self.keyname])
+        multiplots = sorted(self.data[self.keyname])
 
         if self.keyname in self.data:
-            hists = [[self.read_histogram(h % i, self.data[self.keyname][h]) for i in range(1, 5)] for h in hitmaps] 
+            hists = [[self.read_histogram(h % i, self.data[self.keyname][h]) for i in range(1, 5)] for h in multiplots] 
         return hists
 
     def draw(self):
-        size = self.data['canvas']['size']
-        canvas = ROOT.TCanvas('c1', 'c1', 128 * size, 96 * size)
-        c1 = ROOT.TCanvas('c1', 'c1', 128 * 5, 96 * 5); 
-        c1.Divide(2, 2)
+        canvas = self.get_canvas()
+        canvas.Divide(2, 2)
         for maps in self.hists:
-            badmap(maps, c1)
-        self.decorate_map(c1)
+            self.draw_multiple(maps, canvas)
+        self.decorate_map(canvas)
         raw_input()
 
     def decorate_map(self, canvas):
@@ -233,7 +247,10 @@ class MultipleStyler(SingleStyler):
         canvas.Update()
         canvas.SaveAs(props['output'])
 
-
+    def draw_multiple(self, hists, canvas):
+        for i, sm in enumerate(hists):
+            pad = canvas.cd(i + 1);
+            sm.Draw(sm.option)
 
 
 

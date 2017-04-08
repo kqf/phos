@@ -1,7 +1,7 @@
 {
     "description": "this file contains style for a bunch of histos to investigate timing distribution in PHOS",
     
-    "hitmap": 
+    "multiplot": 
     {
         "input/LHC16g-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16g", "color": 1, "option": "hist same", "projecty": 5, "normalize": 1},
         "input/LHC16h-muon-calo-pass1.root/QualTender/hClusterEvsTM%d": {"rebin": 4,"label": "LHC16h", "color": 37, "option": "hist same", "projecty": 5, "normalize": 1},

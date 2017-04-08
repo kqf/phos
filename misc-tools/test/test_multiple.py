@@ -15,7 +15,7 @@ class TestMultipleImages(TestImages):
 		pfile    = 'results/test_multiple_hists.pdf'
 
 		data = {
-					"hitmap": 
+					"multiplot": 
 						{ 
 							rfile + '/' + histname: {"option": "colz", "title": "Random distribution; #alpha; #beta"}
 						}, 

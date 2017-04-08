@@ -4,7 +4,7 @@
         "input/LHC16.root/QualTender/hClusterTime0": {"label": "noisy cells", "color": 37, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}", "option": ""},
         "input/LHC16.root/QualOnlyTender/hClusterTime0": {"label": "clean x3", "color": 46, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}", "option": ""}
     },
-    "hitmap": 
+    "multiplot": 
     {
         "input/LHC16.root/QualTender/hCluNXZM_0_SM%d": {"label": "strict-map", "color": 46, "normalize": 1, "title": "Number of hits in module 1; x; z", "option": "colz", "oname": "results/test.pdf"},
         "input/LHC16.root/QualOnlyTender/hCluNXZM_0_SM%d": {"label": "only-tender-map", "color": 46, "normalize": 1, "title": "Number of hits in module 1; x; z", "option": "colz", "oname": "results/test.pdf"}
@@ -20,6 +20,6 @@
     "canvas_per_module":
     {
         "size":  5,
-        "output": "results/hitmap.pdf"
+        "output": "results/multiplot.pdf"
     } 
 }
