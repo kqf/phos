@@ -2,7 +2,7 @@
 
 import ROOT
 import json
-from sutils import get_canvas, wait
+from sutils import get_canvas, wait, adjust_canvas, ticks
 from ptanalyzer import PtAnalyzer
 from options import Options
 
@@ -45,6 +45,8 @@ class Spectrum(object):
 
     def fit_quantity(self, quant, func, par, names, pref):
         canvas = get_canvas(1./ 2., 1, True)
+        adjust_canvas(canvas)
+        ticks(canvas)
 
         fitquant = ROOT.TF1("fitquant" + pref, func)
         fitquant.SetLineColor(46)

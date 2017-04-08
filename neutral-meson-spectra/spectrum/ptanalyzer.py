@@ -130,9 +130,6 @@ class PtAnalyzer(object):
 
 
     def draw_all_bins(self, f, name = ''):
-        # TODO: Try to understand if there is any possibility to 
-        # Cnange canvas size without recreating it.
-        #
         canvas = get_canvas(1, 1, True)
         canvas.Clear()
         canvas.Divide(*self.multcanvas)

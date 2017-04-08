@@ -73,14 +73,21 @@ def nicely_draw(hist, option = '', legend = None):
     legend.Draw('same')
     wait('xlin_' + hist.GetName(), draw = True, save = True)
 
-def get_canvas(x = 1., y = 1, resize = False):
+def get_canvas(x = 1., y = 1, resize = False, scale = 6):
     canvas = ROOT.gROOT.FindObject('c1')
-    if canvas: 
-        if resize: canvas.Clear()
-        ticks(canvas)
-        return canvas 
 
-    canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * 6) , int(96 * y * 6))
+    if canvas: 
+        if not resize:
+            canvas.cd()
+            return canvas 
+
+        cx, cy = map(int, [128 * x * scale, 96 * y * scale])
+        canvas.SetWindowSize(cx, cy)
+        canvas.SetCanvasSize(cx, cy)
+        return canvas
+
+
+    canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
     ticks(canvas)
     return canvas
 
