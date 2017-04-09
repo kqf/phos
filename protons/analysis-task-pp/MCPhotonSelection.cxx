@@ -40,8 +40,8 @@ void MCPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster *
 //________________________________________________________________
 void MCPhotonSelection::InitSelectionHistograms()
 {
-	fListOfHistos->Add(new TH1F("hZvertexGen", "Z vertex generated; z_{vtx}, cm", 200, -50., +50.));
-	fListOfHistos->Add(new TH1F("hZvertexGenCut", "Z vertex generated, |z|<10; z_{vtx}, cm", 200, -50., +50.));
+	// fListOfHistos->Add(new TH1F("hZvertexGen", "Z vertex generated; z_{vtx}, cm", 200, -50., +50.));
+	// fListOfHistos->Add(new TH1F("hZvertexGenCut", "Z vertex generated, |z|<10; z_{vtx}, cm", 200, -50., +50.));
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
 	{
@@ -95,6 +95,10 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
 		// Primary particle
 		// Double_t r = particle->R() ;
 		Double_t pt = particle->Pt();
+		//Primary particle
+		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
+		// if (r > rcut)
+
 		// Double_t zvtx = particle->Vz();
 
 		// FillHistogram("hZvertexGen", zvtx);
@@ -105,17 +109,17 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
 
 
 		FillHistogram(Form("hPtGeneratedMC_%s_total", name), pt) ;
-		// FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
+		FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
 
-		// if (i < NPrimaryTracks)
-		// {
-		// 	FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
-		// 	FillHistogram(Form("hPtGeneratedMC_%s_primary_Radius", name), r, pt) ;
-		// }
-		// else
-		// {
-		// 	FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
-		// 	FillHistogram(Form("hPtGeneratedMC_%s_secondary_Radius", name), r, pt) ;
-		// }
+		if (r < 1)
+		{
+			FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
+			FillHistogram(Form("hPtGeneratedMC_%s_primary_Radius", name), r, pt) ;
+		}
+		else
+		{
+			FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
+			FillHistogram(Form("hPtGeneratedMC_%s_secondary_Radius", name), r, pt) ;
+		}
 	}
 }

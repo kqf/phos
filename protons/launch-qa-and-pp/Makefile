@@ -1,5 +1,5 @@
-DATASET = LHC16j2a1
-MC = kTRUE
+DATASET = LHC16k-pass1
+MC = kFALSE
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", $(MC))' || make unlink 
