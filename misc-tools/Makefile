@@ -1,8 +1,5 @@
 inpconf = config/rules.json
 
-# TODO: add pair operations
-# TODO: rewrite for uniformity
-
 .PHONY: clean style test
 
 test:
