@@ -23,5 +23,3 @@ class TestImages(unittest.TestCase):
 	def tearDown(self):
 		os.remove(self.conffile)
 		os.remove(self.infile)
-
-

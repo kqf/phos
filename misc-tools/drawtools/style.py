@@ -49,15 +49,15 @@ class SingleStyler(object):
         hists = None 
 
         if self.keyname in self.data:
-            hists = self.data[self.keyname]
-            hists = [self.read_histogram(h, hists[h]) for h in hists] 
+            self.hist_props = self.data[self.keyname]
+            hists = [self.read_histogram(h, self.hist_props[h]) for h in self.hist_props] 
 
         return hists
 
 
-    def read_histogram(self, path, properties):
+    def read_histogram(self, rpath, properties):
         # Extract root file
-        filename, path = path.split('.root/')
+        filename, path = rpath.split('.root/')
         path = path.split('/')
 
         # Extract list name 
@@ -78,10 +78,12 @@ class SingleStyler(object):
             obj = obj.ProjectionX(obj.GetName() + '_x', obj.GetYaxis().FindBin(properties['projectx']), -1)
 
         obj.SetStats(False)
+        obj.rpath = rpath
         obj.oname = properties['oname'] if 'oname' in properties else ''
         obj.label = properties['label'] if 'label' in properties else ''
         obj.option = properties['option'] if 'option' in properties else ''
-        
+        obj.ratiofit = 'ratiofit' in properties 
+
         if 'label' in properties: obj.label = properties['label']
         if 'color' in properties: obj.SetLineColor(properties['color'])
         if 'color' in properties: obj.SetMarkerColor(properties['color'])
@@ -101,15 +103,13 @@ class SingleStyler(object):
         if 'linewidth' in properties: obj.SetLineWidth(properties['linewidth'])
         if 'ratio' in properties: obj.ratio = properties['ratio']
 
-        if 'fitrange' in properties:
-            self.fit_simple(obj, properties)
+        if 'fit' in properties:
+            self.fit_simple(obj)
         return obj
 
 
-    def fit_simple(self, obj, properties):
-        canvas = self.get_canvas()
-        canvas.cd()
-
+    def fit_simple(self, obj):
+        properties = self.hist_props[obj.rpath]
         fitrange = properties['fitrange']
         fitfunc = properties['fitfunc']
         fitpars = properties['fitpars']
@@ -131,11 +131,16 @@ class SingleStyler(object):
 
         num, denom = sorted(self.hists, key=lambda x: x.ratio)
         ratio = num.Clone(num.GetName() + '_ratio')
+        ratio.rpath = num.rpath
         ratio.Divide(denom)
         ratio.SetTitle('')
         canvas.cd()
         ratio.Draw()
         canvas.Update()
+
+        if num.ratiofit:
+            self.fit_simple(ratio)
+
         return ratio
 
 
@@ -211,7 +216,6 @@ class SingleStyler(object):
 
 
 class MultipleStyler(SingleStyler):
-    # TODO: Invent better keyword for this class
     keyname = 'multiplot'
     def __init__(self, data):
         super(MultipleStyler, self).__init__(data)

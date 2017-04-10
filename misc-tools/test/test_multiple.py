@@ -37,7 +37,6 @@ class TestMultipleImages(TestImages):
 			histogram.Write()
 		ofile.Close()
 
-# TODO: factor out similar chunks of code
 	def testDrawing(self):
 		style = Styler(self.conffile)
 		style.draw()
