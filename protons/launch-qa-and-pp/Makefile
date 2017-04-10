@@ -1,4 +1,4 @@
-DATASET = LHC16k-pass1
+DATASET = LHC16h-muon-calo-pass1
 MC = kFALSE
 
 grid: | %.cxx
@@ -46,7 +46,7 @@ test: | %.cxx
 	# make compare
 
 upload:
-	$(call upload_result,AnalysisResults,$(DATASET))
+	#$(call upload_result,AnalysisResults,$(DATASET))
 	$(call upload_result,TrackAverages,TrackAverages.$(DATASET))
 
 clean:
