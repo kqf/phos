@@ -3,11 +3,10 @@
 
 import ROOT
 import json
-from drawtools.style import Styler
-from test.general_test import TestImages
+from test.general_test import TestImages, GeneralTest
 
 
-class TestRatio(TestImages):
+class TestRatio(TestImages, GeneralTest):
 
 	def save_config(self):
 		conffile = 'config/test_ratio.json'
@@ -38,6 +37,5 @@ class TestRatio(TestImages):
 			histogram.Write()
 		ofile.Close()
 
-	def testDrawing(self):
-		style = Styler(self.conffile)
-		style.draw()		
+	# def testDrawing(self):
+		# pass

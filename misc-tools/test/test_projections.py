@@ -3,11 +3,10 @@
 import ROOT
 import json
 import random
-from test.general_test import TestImages
-from drawtools.style import Styler
+from test.general_test import TestImages, GeneralTest
 import unittest
 
-class TestProjections(TestImages):
+class TestProjections(TestImages, GeneralTest):
 
     def save_config(self):
         conffile = 'config/test_projection.json'
@@ -37,8 +36,3 @@ class TestProjections(TestImages):
 
         histogram.Write()
         ofile.Close()
-
-    # @unittest.skip('')
-    def testDrawing(self):
-        style = Styler(self.conffile)
-        style.draw()

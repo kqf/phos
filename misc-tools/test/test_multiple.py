@@ -3,10 +3,9 @@
 import ROOT
 import json
 import random
-from test.general_test import TestImages
-from drawtools.style import Styler
+from test.general_test import TestImages, GeneralTest
 
-class TestMultipleImages(TestImages):
+class TestMultipleImages(TestImages, GeneralTest):
 
 	def save_config(self):
 		conffile = 'config/test_single.json'
@@ -36,7 +35,3 @@ class TestMultipleImages(TestImages):
 					histogram.SetBinContent(i, j, random.randint(1, 5))
 			histogram.Write()
 		ofile.Close()
-
-	def testDrawing(self):
-		style = Styler(self.conffile)
-		style.draw()

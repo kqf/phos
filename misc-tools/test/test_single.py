@@ -3,11 +3,10 @@
 
 import ROOT
 import json
-from drawtools.style import Styler
-from test.general_test import TestImages
+from test.general_test import TestImages, GeneralTest
 
 
-class SingleImage(TestImages):
+class SingleImage(TestImages, GeneralTest):
 
 	def save_config(self):
 		conffile = 'config/test_single.json'
@@ -33,7 +32,3 @@ class SingleImage(TestImages):
 		histogram.FillRandom('gaus', 100000)
 		histogram.Write()
 		ofile.Close()
-
-	def testDrawing(self):
-		style = Styler(self.conffile)
-		style.draw()

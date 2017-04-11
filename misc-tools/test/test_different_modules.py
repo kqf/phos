@@ -3,10 +3,9 @@
 import ROOT
 import json
 import random
-from test.general_test import TestImages
-from drawtools.style import Styler
+from test.general_test import TestImages, GeneralTest
 
-class TestDifferentModules(TestImages):
+class TestDifferentModules(TestImages, GeneralTest):
 	"""
 		Test multiple onedimensional histogramsi in different modules
 	"""
@@ -33,7 +32,7 @@ class TestDifferentModules(TestImages):
 							for i in range(nruns)
 						}, 
 					"canvas": 
-						{"size":  5, "logy":  0, "gridx": 0, "output": pfile} 
+						{"size":  5, "logy":  0, "gridy": 1, "gridx": 1, "output": pfile} 
 			   }
 
 		with open(conffile, 'w') as outfile:
@@ -54,8 +53,3 @@ class TestDifferentModules(TestImages):
 				histogram.FillRandom('mfunc', 10000)
 				histogram.Write()
 		ofile.Close()
-
-# TODO: factor out similar chunks of code
-	def testDrawing(self):
-		style = Styler(self.conffile)
-		style.draw()
