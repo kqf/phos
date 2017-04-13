@@ -1,5 +1,9 @@
-DATASET = LHC16h-muon-calo-pass1
-MC = kFALSE
+#DATASET = LHC16l-muon-calo-pass1
+#MC = kFALSE
+
+
+DATASET = LHC16j2a1
+MC = kTRUE
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", $(MC))' || make unlink 
@@ -46,8 +50,7 @@ test: | %.cxx
 	# make compare
 
 upload:
-	#$(call upload_result,AnalysisResults,$(DATASET))
-	$(call upload_result,TrackAverages,TrackAverages.$(DATASET))
+	$(call upload_result,AnalysisResults,$(DATASET))
 
 clean:
 	rm *.so *.d *~ Task*

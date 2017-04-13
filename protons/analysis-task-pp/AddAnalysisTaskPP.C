@@ -87,6 +87,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "GeneralPhotonSelection.cxx " +
 	    "PhotonSpectrumSelection.cxx " +
 	    "QualityPhotonSelection.cxx " +
+	    "DetectorHistogram.cxx " +
 	    "TestPhotonSelection.cxx " +
 	    "PhysPhotonSelection.cxx " +
 	    "PhotonTimecutSelection.cxx " +
@@ -107,6 +108,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonSpectrumSelection.h " +
 	    "QualityPhotonSelection.cxx " +
 	    "QualityPhotonSelection.h " +
+	    "DetectorHistogram.cxx " +
+	    "DetectorHistogram.h " +
 	    "TestPhotonSelection.cxx " +
 	    "TestPhotonSelection.h " +
 	    "PhysPhotonSelection.cxx " +
