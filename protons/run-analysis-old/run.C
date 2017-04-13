@@ -4,13 +4,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 {
     SetupEnvironment();
 
-    // TODO: Don't use getRunsBadCells function anymore
-    // getRunsBadCells(period, good_runs, nruns, excells, nexc);
-
-
-    gROOT->LoadMacro("CreatePlugin.C");
-
-    // TODO: Don't don't keep runnumbers inside the runmacro
+    gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, "", useJDL, isMC);
 
     if (!alienHandler) return;
@@ -23,10 +17,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     {
         esdH->SetReadFriends( isMC );
         esdH->SetNeedField();
-        // mgr->SetInputEventHandler( esdH );
-
     }
-    // mgr->SetInputEventHandler( esdH );
+
     mgr->SetInputEventHandler(aodH);
 
     if ( isMC )
@@ -50,22 +42,23 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
-    TString pref =  isMC ? "MC": "";
+    TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     // TODO: Use old tender parameters
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", "", 4, kFALSE);
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
 
-    // TODO: Check old map of bad channels
     PHOSSupply->ForceUsingBadMap("BadMap_LHC10.root");
 
     // There is no need to download QA when we use don't use JDL
+    // TODO: Set collision candidates here as well
     if (useJDL)
-        files += AddTaskCaloCellsQAPt(excells, nexc);
+        files += AddTaskCaloCellsQAPt(0, 0);
 
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", 0, 0, isMC);
+    // NB: Collision Candidates here are kMB and NOT(!) kINT7 events.
+    AddAnalysisTaskPP(AliVEvent::kMB, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", 0, 0, isMC);
 
 
     if ( !mgr->InitAnalysis( ) ) return;

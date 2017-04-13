@@ -1,4 +1,4 @@
-DATASET = LHC16h-muon-calo-pass1
+DATASET = LHC10b-pass4
 MC = kFALSE
 
 grid: | %.cxx

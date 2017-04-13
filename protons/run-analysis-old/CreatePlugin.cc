@@ -1,4 +1,12 @@
-AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
+#include "TROOT.h"
+#include "AliAnalysisAlien.h"
+#include "iostream"
+#include "../datasets/runs_from_dataset.h"	
+
+using std::cout;
+using std::endl;
+
+AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -31,7 +39,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	plugin->SetGridDataDir(globaldir + dir);
 	cout << "/alice/data/2010/" + dir << endl;
 
-	TString datasuffix = isMC ? "AOD/" : "/*.";
+	TString datasuffix = isMC ? "AOD172/" : "/*.";
 	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
@@ -40,33 +48,20 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	if(!isMC)
 		plugin->SetRunPrefix("000");
 
-	// TODO: Read runs here
-	cout << "We are trying to analyse " << nruns << " runs" << endl;
-
-	for (Int_t i = 0; i < nruns; ++i)
-		plugin->AddRunNumber(runs[i]);
+    std::vector<int> v; // 
+	runs_from_dataset(v, dir);
+	for (Int_t i = 0; i < v.size(); ++i)
+		plugin->AddRunNumber(v[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
-	// plugin->SetOutputFiles("CaloCellsQA2.root TriggerQA.root");
-	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();
 	plugin->SetGridWorkingDir("pp-phos-" + period + comment);
-	// plugin->SetGridWorkingDir("phos-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
-	// plugin->SetDefaultOutputs();
-	// Now this should be added in your AddTaskMacro.C
 
 
 	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
-	// plugin->SetAnalysisSource("AliAnalysisTaskPi0QA.cxx");
-	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so");// AliAnalysisTaskPi0QA.cxx AliAnalysisTaskPi0QA.h");
-
 	period.ReplaceAll('-', '_');
-
-	// All files are set in the Add*Task.C macros
-	// plugin->SetAnalysisSource();
-	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
 	plugin->SetAnalysisMacro(TString("TaskQA") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
