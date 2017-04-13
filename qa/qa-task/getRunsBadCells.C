@@ -312,7 +312,7 @@ void getRunsBadCells(TString period, Int_t *& good_runs, Int_t *& nruns, Int_t *
             // 260482, 
             260487, 260490, 260495, 260496, //260497,
 			260537, 260539, 260540, 260541, 260542, 260564, 260565, 260586, 260611, 260613,  
-		260614, 260615, 260616, 260647
+			260614, 260615, 260616, 260647
 
 			// There is only one "red run" because of FMD: 260472	
 			// There is only one very short run: 260565
