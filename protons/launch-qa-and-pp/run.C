@@ -6,16 +6,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
 
     // TString period = "LHC16l-muon-calo-pass1";
-    Bool_t use_tender = kTRUE;
-    Int_t * excells;
-    Int_t * good_runs;
-    Int_t nexc;
-    Int_t nruns;
-    getRunsBadCells(period, good_runs, nruns, excells, nexc);
+    // getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
-
-    gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "", useJDL, isMC);
+    gROOT->LoadMacro("CreatePlugin.cc+");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, "", useJDL, isMC);
 
     if (!alienHandler) return;
 
@@ -56,21 +50,22 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString files = "";
     TString pref =  isMC ? "MC": "";
 
-    if (use_tender)
-    {
-        gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
-        AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
-        AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-        PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
+    AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+    PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
-        // There is no need to download QA when we use don't use JDL
-        if (useJDL)
-            files += AddTaskCaloCellsQAPt(excells, nexc);
 
-        files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", excells, nexc, isMC);
-        AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", 0, 0, isMC);
-        //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
-    }
+    gROOT->LoadMacro("../datasets/runs_from_dataset.h+");
+    std::vector<int> cells;
+    runs_from_dataset(cells, "LHC16p-muon-calo-pass1");
+    // There is no need to download QA when we use don't use JDL
+    if (useJDL)
+        files += AddTaskCaloCellsQAPt(cells);
+
+    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", cells, isMC);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<int>(), isMC);
+    //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 
     if ( !mgr->InitAnalysis( ) ) return;

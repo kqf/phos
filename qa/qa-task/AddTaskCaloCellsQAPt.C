@@ -1,4 +1,4 @@
-TString  AddTaskCaloCellsQAPt(Int_t * excells, Int_t nexc, const char * name = "CaloCellsQA2" )
+TString  AddTaskCaloCellsQAPt(std::vector<int> cells, const char * name = "CaloCellsQA2" )
 {
     AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
     if (!mgr) return;
@@ -6,23 +6,23 @@ TString  AddTaskCaloCellsQAPt(Int_t * excells, Int_t nexc, const char * name = "
     AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
     if (!plugin) return;
 
-    // for(int i = 0; i < nexc; ++i) cout << " " << excells[i] << endl;
-    cout << " There are nexc " <<  nexc  << endl;
+    cout << "There are  " <<  cells.size()  << " excluded cells."<< endl;
 
-    if (!excells) cout << "ERRROR\nERRROR\nERRROR\nERRROR\nCells are not set" << endl;
 
-    // AliAnalysisTaskCaloCellsQAPt * taskPHOSCellQA = TuneCaloCellsQAPt(5, 1, "CaloCellsQA1.root", "PHOSCellsQA1");
-    // taskPHOSCellQA->GetCaloCellsQA()->SetClusterEnergyCuts(0.3, 0.3, 1.0)[];
+    const Int_t nexc = cells.size();
+    Int_t excel[nexc];
 
-    // if(excells) taskPHOSCellQA->SetBadCells(excells, nexc);
-    // taskPHOSCellQA->SetPairPtCut(1); // 1 GeV cut
-    // taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
+    // NB: Don't use copy. As it works bad with root
+    // TODO: Move this function to the class method
+    for(Int_t i = 0; i < cells.size(); ++i)
+        excel[i] = cells[i];
 
     // Second Task
     AliAnalysisTaskCaloCellsQAPt * taskPHOSCellQA = TuneCaloCellsQAPt(5, 1, TString(name) + ".root", name);
     taskPHOSCellQA->GetCaloCellsQA()->SetClusterEnergyCuts(0.3, 0.3, 1.0);
 
-    if (excells) taskPHOSCellQA->SetBadCells(excells, nexc);
+    if (cells.size()) 
+        taskPHOSCellQA->SetBadCells(excel, cells.size());
     taskPHOSCellQA->SetPairPtCut(1); // 2 GeV cut
     taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
 

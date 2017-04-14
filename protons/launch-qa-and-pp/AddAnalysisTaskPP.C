@@ -1,6 +1,5 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<int>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<int> & cells, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
-	cout << "Setting cells " <<  v.size() << endl;
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
@@ -49,13 +48,23 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	// Setup task
 	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons", selections);
 
-	if ( !badmap.IsNull() ) 
+	if (!badmap.IsNull()) 
 		task->SetBadMap(badmap);
 
-	if ( nexc > 0 ) 
-		task->SetBadCells(excells, nexc);
+	if (cells.size() > 0) 
+	{
+		Int_t excells[cells.size()];
 
-	if ( (nexc > 0) && (!badmap.IsNull())) 
+		// NB: Don't use copy. As it works bad with root
+		// TODO: Move this function to the class method
+		for(Int_t i = 0; i < cells.size(); ++i)
+			excells[i] = cells[i];
+
+		task->SetBadCells(excells, cells.size());
+	}
+	cout << "Setting  " <<  cells.size()  << " cells for pp-analysis."<< endl;
+
+	if ( (cells.size() > 0) && (!badmap.IsNull())) 
 		cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;
 
 	// task->GetSelections()->Add
