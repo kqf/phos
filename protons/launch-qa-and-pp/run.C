@@ -56,7 +56,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("../datasets/values_for_dataset.h+");
     std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16.txt");
+    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
     if (useJDL)
         files += AddTaskCaloCellsQAPt(cells);
@@ -70,6 +70,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     mgr->PrintStatus();
 
 
+    return;
     alienHandler->SetOutputFiles(files);
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
