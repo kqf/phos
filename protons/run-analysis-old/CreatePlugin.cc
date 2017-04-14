@@ -1,7 +1,7 @@
 #include "TROOT.h"
 #include "AliAnalysisAlien.h"
 #include "iostream"
-#include "../datasets/runs_from_dataset.h"	
+#include "../datasets/values_for_dataset.h"	
 
 using std::cout;
 using std::endl;
@@ -48,8 +48,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	if(!isMC)
 		plugin->SetRunPrefix("000");
 
-    std::vector<int> v; // 
-	runs_from_dataset(v, dir);
+    std::vector<Int_t> v; // 
+	values_for_dataset(v, dir);
 	for (Int_t i = 0; i < v.size(); ++i)
 		plugin->AddRunNumber(v[i]);
 

@@ -1,5 +1,3 @@
-#include "algorithm"
-
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
@@ -56,15 +54,15 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
 
-    gROOT->LoadMacro("../datasets/runs_from_dataset.h+");
-    std::vector<int> cells;
-    runs_from_dataset(cells, "LHC16p-muon-calo-pass1");
+    gROOT->LoadMacro("../datasets/values_for_dataset.h+");
+    std::vector<Int_t> cells;
+    values_for_dataset(cells, "BadCells_LHC16.txt");
     // There is no need to download QA when we use don't use JDL
     if (useJDL)
         files += AddTaskCaloCellsQAPt(cells);
 
     files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", cells, isMC);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<int>(), isMC);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC);
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 

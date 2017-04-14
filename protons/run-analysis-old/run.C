@@ -1,5 +1,3 @@
-#include "algorithm"
-
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
@@ -55,10 +53,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // There is no need to download QA when we use don't use JDL
     // TODO: Set collision candidates here as well
     if (useJDL)
-        files += AddTaskCaloCellsQAPt(0, 0);
+        files += AddTaskCaloCellsQAPt(std::vector<Int_t>());
 
     // NB: Collision Candidates here are kMB and NOT(!) kINT7 events.
-    AddAnalysisTaskPP(AliVEvent::kMB, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", 0, 0, isMC);
+    AddAnalysisTaskPP(AliVEvent::kMB, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC);
 
 
     if ( !mgr->InitAnalysis( ) ) return;

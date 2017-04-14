@@ -1,4 +1,4 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<int> & cells, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t> & cells, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
@@ -75,7 +75,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;
-	for (int i = 0; i < task->GetSelections()->GetEntries(); ++ i)
+	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
 	{
 		PhotonSelection * fSel = dynamic_cast<PhotonSelection *> (task->GetSelections()->At(i));
 		fSel->SetTitle(description);
