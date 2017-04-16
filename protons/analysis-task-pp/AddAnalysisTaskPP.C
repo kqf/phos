@@ -1,4 +1,4 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<int>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	cout << "Setting cells " <<  v.size() << endl;
 
@@ -52,10 +52,17 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	if ( !badmap.IsNull() ) 
 		task->SetBadMap(badmap);
 
-	if ( nexc > 0 ) 
-		task->SetBadCells(excells, nexc);
+	if (v.size() > 0) 
+	{
+		Int_t nexc = v.size();
+		Int_t excells[nexc];
+		for (int i = 0; i < v.size(); ++i)
+			excells[i] = v[i];
 
-	if ( (nexc > 0) && (!badmap.IsNull())) 
+		task->SetBadCells(excells, nexc);
+	}
+
+	if (v.size() > 0 && !badmap.IsNull()) 
 		cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;
 
 	// task->GetSelections()->Add
@@ -66,7 +73,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;
-	for (int i = 0; i < task->GetSelections()->GetEntries(); ++ i)
+	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
 	{
 		PhotonSelection * fSel = dynamic_cast<PhotonSelection *> (task->GetSelections()->At(i));
 		fSel->SetTitle(description);

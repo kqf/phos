@@ -107,7 +107,8 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	if (!AliPHOSGeometry::GetInstance())
 	{
 		AliInfo("PHOS geometry not initialized, initializing it for you");
-		AliPHOSGeometry::GetInstance("Run2");
+		AliPHOSGeometry::GetInstance("IHEP");
+		// AliPHOSGeometry::GetInstance("Run2");
 	}
 
 	// Select Event
@@ -255,7 +256,7 @@ void AliAnalysisTaskPP::SetBadCells(Int_t badcells[], Int_t nbad)
 Bool_t AliAnalysisTaskPP::CellInPhos(Int_t absId, Int_t & sm, Int_t & ix, Int_t & iz) const
 {
 	// Converts cell absId --> (sm,ix,iz);
-	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
+	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("IHEP");
 	if (!geomPHOS)
 	{
 		AliWarning("Something is wrong with PHOS Geometry. Check if you initialize it in UserExec!");
