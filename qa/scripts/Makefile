@@ -1,8 +1,8 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16p
+PERIOD=LHC16j2b2
 # NAME=iteration2
-NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1
+NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
 FILE_NAME=CaloCellsQA2.root
@@ -30,7 +30,7 @@ trigger: | $(DIRECTORY)
 	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
 
 
-badmap: | ../qa-task/getRunsBadCells.C
+badmap:
 	root -l -b -q  'saveBadMap.C("$(PERIOD)")'
 	@if [ -f BadMap_$(PERIOD).root ]; then mv BadMap_$(PERIOD).root ../results/$(PERIOD); fi
 	

@@ -72,9 +72,16 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   gROOT->SetBatch(kTRUE);
 
   // this sets excluded cells
-  gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
   TString period(TString(infile)(11, 6));
-  getRunsBadCells(period, 0, 0, excells, nexc);
+  gROOT->LoadMacro("../../protons/datasets/values_for_dataset.h+");
+
+  std::vector<Int_t> v;
+  values_for_dataset(v, period.Contains("16") ? "BadCells_LHC16" : "", "../../protons/datasets/");
+
+  nexc = v.size();
+  excells = new Int_t[nexc];
+  for (Int_t i = 0; i < nexc; ++i)
+    excells[i] = v[i];
 
   gRandom->SetSeed(0);
   gStyle->SetOptStat(0);

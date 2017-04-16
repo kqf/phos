@@ -7,10 +7,18 @@ void saveBadMap(const char * period = "", TString filename = "")
 
 	gROOT->SetBatch();
 	// gStyle->SetOptStat(0);
-	gROOT->LoadMacro("../qa-task/getRunsBadCells.C");
 
-	Int_t * excells;
-	Int_t nexc;
+	gROOT->LoadMacro("../../protons/datasets/values_for_dataset.h+");
+
+	std::vector<Int_t> v;
+	values_for_dataset(v, TString(period).Contains("16") ? "BadCells_LHC16" : "", "../../protons/datasets/");
+
+	Int_t nexc = v.size();
+	Int_t * excells = new Int_t[nexc];
+
+	for (Int_t i = 0; i < nexc; ++i)
+		excells[i] = v[i];
+
 
 	if (filename.Length())
 	{
@@ -21,9 +29,6 @@ void saveBadMap(const char * period = "", TString filename = "")
 		return;
 	}
 
-
-	// Export map of bad channels to root file
-	getRunsBadCells(period, 0, 0, excells, nexc);
 	DrawPHOSOBadMap(period, excells, nexc);
 
 
@@ -54,11 +59,11 @@ TCanvas * DrawPHOSOBadMap(char * cname = "LHC16g", Int_t * excells = 0, Int_t ne
 		TH2 * hSM = InitiateHistogramForSM(sm, excells, nexc);
 		hSM->Write();
 		hSM->DrawCopy("colz");
-	} 
+	}
 
 	fBadMap->Close();
 	c1->Update();
-	c1->SaveAs(TString("BadMap_") + TString(c1->GetName()) + ".pdf");	
+	c1->SaveAs(TString("BadMap_") + TString(c1->GetName()) + ".pdf");
 	return c1;
 }
 
@@ -144,7 +149,7 @@ void AbsId2EtaPhi(Int_t absId, Int_t & nModule, Int_t & phi, Int_t & eta)
 	Int_t relid[4];
 	geomPHOS->AbsToRelNumbering(absId, relid);
 	//sm = relid[0];
-	
+
 	phi = relid[2];
 	eta = relid[3];
 }
@@ -155,13 +160,13 @@ void SetupGeometry()
 	AliPHOSGeometry * geo = AliPHOSGeometry::GetInstance("Run2");
 
 	AliOADBContainer geomContainer("phosGeo");
-	geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root","PHOSRotationMatrixes");
-	TObjArray *matrixes = (TObjArray*)geomContainer.GetObject(258391, "PHOSRotationMatrixes");
+	geomContainer.InitFromFile("$ALICE_PHYSICS/OADB/PHOS/PHOSGeometry.root", "PHOSRotationMatrixes");
+	TObjArray * matrixes = (TObjArray *)geomContainer.GetObject(258391, "PHOSRotationMatrixes");
 
 	for (Int_t mod = 0; mod < 5; mod++)
 	{
 		if (!matrixes->At(mod)) continue;
-		geo->SetMisalMatrix(((TGeoHMatrix*)matrixes->At(mod)), mod) ;
+		geo->SetMisalMatrix(((TGeoHMatrix *)matrixes->At(mod)), mod) ;
 		cout << (Form("Adding PHOS Matrix for mod:%d, geo=%p\n", mod, geo)) << endl;
 	}
 }

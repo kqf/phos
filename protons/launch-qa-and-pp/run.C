@@ -70,7 +70,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     mgr->PrintStatus();
 
 
-    return;
     alienHandler->SetOutputFiles(files);
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
