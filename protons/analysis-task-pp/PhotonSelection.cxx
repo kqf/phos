@@ -84,7 +84,8 @@ Int_t PhotonSelection::CheckClusterGetSM(const AliVCluster * clus, Int_t & x, In
 	TVector3 global(position);
 
 	Int_t relId[4];
-	AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance("IHEP");
+	AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance();
+	// AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance("IHEP");
 	// AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance("Run2") ;
 	phosGeometry->GlobalPos2RelId(global, relId) ;
 

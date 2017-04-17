@@ -52,8 +52,12 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     // PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
 
+    gROOT->LoadMacro("../datasets/values_for_dataset.h+");
+    std::vector<Int_t> cells;
+    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
+  
     files += AddAnalysisTaskPP(AliVEvent::kINT7, period + "## my badmap and tender, added more histograms ## tender", 
-                              "Tender", "", excells, nexc, isMC, TString(pluginmode).Contains("test"));
+                              "Tender", "", cells, isMC, 12.5e-9, TString(pluginmode).Contains("test"));
 
     if ( !mgr->InitAnalysis( ) ) return;
     // mgr->PrintStatus();
@@ -99,3 +103,4 @@ void SetupEnvironment()
     gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
 }
 
+s

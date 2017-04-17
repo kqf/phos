@@ -49,7 +49,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref =  isMC ? "MC": "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", "", 1, isMC);
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 

@@ -165,7 +165,8 @@ Int_t QualityPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
 {
 	// Converts cell absId --> (sm,eta,phi);
 	// AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("Run2");
-	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("IHEP");
+	// AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance("IHEP");
+	AliPHOSGeometry * geomPHOS = AliPHOSGeometry::GetInstance();
 
 	if (!geomPHOS)
 		AliFatal("Geometry is not defined");

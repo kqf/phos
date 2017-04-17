@@ -45,7 +45,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     // TODO: Use old tender parameters
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", "", 4, kFALSE);
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", "", 4, isMC);
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
 
     PHOSSupply->ForceUsingBadMap("BadMap_LHC10.root");
@@ -56,7 +56,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         files += AddTaskCaloCellsQAPt(std::vector<Int_t>());
 
     // NB: Collision Candidates here are kMB and NOT(!) kINT7 events.
-    AddAnalysisTaskPP(AliVEvent::kMB, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC);
+    // NB: 999. is a timing cut in seconds (don't use timing cut for old data);
+    files += AddAnalysisTaskPP(AliVEvent::kMB, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC, 999.);
 
 
     if ( !mgr->InitAnalysis( ) ) return;

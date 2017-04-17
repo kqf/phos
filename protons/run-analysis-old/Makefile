@@ -46,8 +46,8 @@ test: | %.cxx
 	# make compare
 
 upload:
-	#$(call upload_result,AnalysisResults,$(DATASET))
-	$(call upload_result,TrackAverages,TrackAverages.$(DATASET))
+	$(call upload_result,AnalysisResults,$(DATASET))
+	# $(call upload_result,TrackAverages,TrackAverages.$(DATASET))
 
 clean:
 	rm *.so *.d *~ Task*

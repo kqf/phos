@@ -1,4 +1,4 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Float_t timecut = 12.5e-9, Bool_t isTest = kFALSE)
 {
 	cout << "Setting cells " <<  v.size() << endl;
 
