@@ -4,23 +4,37 @@ from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
 from spectrum.sutils import get_canvas
 
-import test.check_default
+import unittest
 
-class CheckMC(test.check_default.CheckDefault):
+class CheckMC(unittest.TestCase):
 
     def setUp(self):
-        super(CheckPileup, self).setUp()
-        f = lambda x, y, z: Spectrum(x, label=y, mode=z, relaxedcb=True).evaluate()
+        super(CheckMC, self).setUp()
+        f = lambda x, y: Spectrum(x, label=y, mode = 'q').evaluate()
 
         # TODO: Investigate the problem with the time distribution in MC.
         #
 
-        self.results = [
-                        f(Input('input-data/LHC16.root', 'PhysTender').read(), '12.5 ns', self.mode),
-                        f(TimecutInput('input-data/LHC16-MC-pythia.root', 'QualTender', 'MassPtN3').read(), 'no timecut', self.mode)
-                       ]
+        # TODO: Fix colors for pythia-epos case.
+        #
+
+        data =  f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data')
+        pythia = f(TimecutInput('input-data/Pythia-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'Pythia')
+        epos =   f(TimecutInput('input-data/EPOS-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'EPOS') 
+
+        # self.results = [[data, data], [data, data], [data, data]]
+        self.results = [[data, pythia], [data, epos], [pythia, epos]]
                        
-        canvas = get_canvas(1. / 2.)
+
+    def testResultMC(self):
+        c1 = get_canvas(1./2, resize=True)
+
+        import spectrum.comparator as cmpr
+        for r in self.results:
+            diff = cmpr.Comparator()
+            diff.compare_set_of_histograms(r)
+
+
 
 
 if __name__ == '__main__':
