@@ -23,7 +23,7 @@ class CheckMC(unittest.TestCase):
         epos =   f(TimecutInput('input-data/EPOS-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'EPOS') 
 
         # self.results = [[data, data], [data, data], [data, data]]
-        self.results = [[data, pythia], [data, epos], [pythia, epos]]
+        self.results = [[pythia, data], [epos, data]]#, [pythia, epos]]
                        
 
     def testResultMC(self):

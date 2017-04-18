@@ -260,6 +260,7 @@ class MultipleStyler(SingleStyler):
 
 def main():
     assert len(sys.argv) == 2, "Usage: style.py rules.json"
+    # TODO: Add possibility to switch between multiple plots per module and multipe separate plots per module
     s = Styler(sys.argv[1])
     s.draw()
 

@@ -1,0 +1,13 @@
+{
+    "multiplot": 
+    {
+        "input/EPOS-LHC16.root/QualTender/hClusterEvsTM%d": {"label": "strict-map", "normalize": 1, "option": "colz", "oname": "results/Epos.pdf"}
+    },
+    "canvas":
+    {
+        "size":  6,
+        "gridx": 1,
+        "gridy": 1,
+        "output": "results/Epos.pdf"
+    }
+}

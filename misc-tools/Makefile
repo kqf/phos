@@ -1,4 +1,4 @@
-inpconf = config/rules.json
+inpconf = config/timing.json
 
 .PHONY: clean style test
 
