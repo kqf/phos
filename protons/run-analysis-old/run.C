@@ -37,23 +37,20 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
-    gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
     TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    // TODO: Use old tender parameters
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", "", 4, isMC);
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
 
     PHOSSupply->ForceUsingBadMap("BadMap_LHC10.root");
 
     // There is no need to download QA when we use don't use JDL
-    // TODO: Set collision candidates here as well
     if (useJDL)
-        files += AddTaskCaloCellsQAPt(std::vector<Int_t>());
+        files += AddTaskCaloCellsQAPt(AliVEvent::kMB, std::vector<Int_t>());
 
     // NB: Collision Candidates here are kMB and NOT(!) kINT7 events.
     // NB: 999. is a timing cut in seconds (don't use timing cut for old data);

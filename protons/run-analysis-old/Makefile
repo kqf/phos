@@ -1,4 +1,4 @@
-DATASET = LHC10b-pass4
+DATASET = LHC10e-pass4
 MC = kFALSE
 
 grid: | %.cxx

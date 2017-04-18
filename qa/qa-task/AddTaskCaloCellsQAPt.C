@@ -1,4 +1,4 @@
-TString  AddTaskCaloCellsQAPt(std::vector<int> cells, const char * name = "CaloCellsQA2" )
+TString  AddTaskCaloCellsQAPt(UInt_t offlineTriggerMask, std::vector<int> cells, const char * name = "CaloCellsQA2" )
 {
     AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
     if (!mgr) return;
@@ -24,7 +24,7 @@ TString  AddTaskCaloCellsQAPt(std::vector<int> cells, const char * name = "CaloC
     if (cells.size()) 
         taskPHOSCellQA->SetBadCells(excel, cells.size());
     taskPHOSCellQA->SetPairPtCut(1); // 2 GeV cut
-    taskPHOSCellQA->SelectCollisionCandidates(AliVEvent::kINT7);
+    taskPHOSCellQA->SelectCollisionCandidates(offlineTriggerMask);
 
     TString sources = plugin->GetAnalysisSource();
     TString libs   = plugin->GetAdditionalLibs();
