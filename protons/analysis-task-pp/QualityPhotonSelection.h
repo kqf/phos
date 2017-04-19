@@ -18,6 +18,7 @@ public:
 	QualityPhotonSelection(): GeneralPhotonSelection() {}
 	QualityPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3): GeneralPhotonSelection(name, title, ec, a, n) {}
 	virtual void InitSelectionHistograms();
+    virtual Bool_t SelectEvent(const EventFlags & flgs);
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);

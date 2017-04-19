@@ -3,6 +3,7 @@
 // #include "AliAnalysisTaskPP.h"
 
 // --- ROOT system ---
+#include <TH1F.h>
 #include <TH2F.h>
 #include <TH3F.h>
 
@@ -26,6 +27,9 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	Double_t ptMin = 0;
 	Double_t ptMax = 100;
 
+
+	// Z-vertex 
+	fListOfHistos->Add(new TH1F("hZvertex", "Reconstructed vertex Z-coordinate; z_{vtx}, cm; counts", 200, -12, 12));
 
 	// Info about selected clusters
 	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; E, GeV; N_{cell}", 41, 0, 40, 81, 0, 80));
@@ -53,7 +57,7 @@ void QualityPhotonSelection::InitSelectionHistograms()
 		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
 	for (Int_t i = 1; i < 5;  ++i)
 		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	
+
 	// Test Assymetry cut
 	//
 	fListOfHistos->Add(new TH3F("hMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
@@ -144,7 +148,7 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		// Fill histograms only for real events
 		if (eflags.isMixing)
 			continue;
-		
+
 		Float_t energy = clus->E();
 		Int_t isHighECluster = Int_t(energy > 1.);
 
@@ -182,4 +186,16 @@ Int_t QualityPhotonSelection::AbsId(Int_t x, Int_t z, Int_t sm) const
 
 	// There is no such a cell
 	return -1;
+}
+
+//________________________________________________________________
+Bool_t QualityPhotonSelection::SelectEvent(const EventFlags & flgs)
+{
+	// Keep it this way if you decide to switch Bool_t -> Some_Other_type
+
+	Bool_t accepted = GeneralPhotonSelection::SelectEvent(flgs);
+	if (accepted)
+		FillHistogram("hZvertex", flgs.vtxBest[2]);
+
+	return accepted;
 }

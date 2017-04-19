@@ -16,7 +16,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 
 	plugin->SetMergeViaJDL(useJDL);
 	plugin->SetOutputToRunNo(kTRUE);
-
+	plugin->SetKeepLogs(kTRUE);
+ 
 
 	plugin->SetRunMode(pluginmode);
 
