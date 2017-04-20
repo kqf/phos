@@ -24,7 +24,10 @@ TString  AddTaskCaloCellsQAPt(UInt_t offlineTriggerMask, std::vector<int> cells,
     if (cells.size()) 
         taskPHOSCellQA->SetBadCells(excel, cells.size());
     taskPHOSCellQA->SetPairPtCut(1); // 2 GeV cut
-    taskPHOSCellQA->SelectCollisionCandidates(offlineTriggerMask);
+    // taskPHOSCellQA->SelectCollisionCandidates(offlineTriggerMask);
+    // NB: This is user defined function. 
+    // Now we consider also events that weren't accouted by PS to estimate trig eff.
+    taskPHOSCellQA->CollisionCandidate(offlineTriggerMask);
 
     TString sources = plugin->GetAnalysisSource();
     TString libs   = plugin->GetAdditionalLibs();
