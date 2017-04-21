@@ -30,10 +30,12 @@ class Test(unittest.TestCase):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms(zip(*[self.data, self.data]))
 
+    @unittest.skip('test')
     def testCompareTwo(self):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
+    @unittest.skip('test')
     def testCompareTwoWithFit(self):
         diff = cmpr.Comparator(ratiofit=(0, 0))
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
@@ -47,13 +49,31 @@ class Test(unittest.TestCase):
         diff = cmpr.Comparator(ratiofit=(5, 0))
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
+    @unittest.skip('test')
     def testCompareSingle(self):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms( [[self.data[1], self.data[2]]] )
 
+    @unittest.skip('test')
     def testCompareRations(self):
         diff = cmpr.Comparator()
         diff.compare_ratios(self.data, self.data[2])
+
+    @unittest.skip('test')
+    def testSuccesive(self):
+        """
+            Explanation:
+                This is needed to check if behaviour changes after double usage of a comparator.
+                Also this test assures that comparison "A" and "B" and "B" and "A" work as needed.
+        """
+
+        diff = cmpr.Comparator()
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff.compare_set_of_histograms([[self.data[1]], [self.data[2]]])
+
 
 
 

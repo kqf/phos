@@ -96,10 +96,10 @@ class Visualizer(object):
         for i, h in enumerate(hists): 
             h.SetStats(False)
             h.SetLineColor(ci + i)
-            h.DrawCopy('same')
             h.SetFillColor(ci + i)
-            h.SetMarkerStyle(21)
+            h.SetMarkerStyle(20)
             h.SetMarkerColor(ci + i)
+            h.DrawCopy('same')
             legend.AddEntry(h, h.label)
 
         legend.Draw('same')
@@ -116,7 +116,11 @@ class Visualizer(object):
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-        if stop: wait(self.output_prefix + hists[0].GetName(), save=True)
+
+        if stop:
+            fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
+            wait(self.output_prefix + fname.lower(), save=True)
+
         self.cache.append(ratio)
         self.cache.append(legend)
 

@@ -29,9 +29,8 @@ def equals(a, b, tol = 1e-7):
 def wait(name, draw=True, save = False, suffix = ''):
     canvas = get_canvas()
     canvas.Update()
-    name = name.replace(' ', '_')
+    name = name.replace(' ', '-').replace('_', '-')
     if save: canvas.SaveAs('results/' + name + '.pdf')
-
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
     if draw: ROOT.gApplication.Run(True)
 

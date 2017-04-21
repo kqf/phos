@@ -90,6 +90,7 @@ class InclusiveGenerator(object):
 
 
     def save_fake(self, fname):
+        # TODO: Perhaps we can try to open existing file and update the hists?
         ofile = ROOT.TFile(fname, 'recreate')
         olist = ROOT.TList()
         olist.Add(self.data)
