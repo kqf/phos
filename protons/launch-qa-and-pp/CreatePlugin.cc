@@ -6,7 +6,7 @@
 using std::cout;
 using std::endl;
 
-AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -51,7 +51,21 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 
     std::vector<Int_t> v; // 
 	values_for_dataset(v, period);
-	for (Int_t i = 0; i < v.size(); ++i)
+
+	// This is to avoid limitation on grid jobs
+	// 
+
+	Int_t start = (dpart.Contains("first") || v.size() < 50) ? 0 : v.size()/2;
+	Int_t stop =  (dpart.Contains("first") && !(v.size() < 50)) ? v.size()/2 : v.size();
+
+	// Terminate all datasets simultaneously
+	if (TString(pluginmode).Contains("terminate"))
+	{
+		start = 0;
+		stop = v.size();
+	}
+
+	for (Int_t i = start; i < stop; ++i)
 		plugin->AddRunNumber(v[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
@@ -59,7 +73,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();
-	plugin->SetGridWorkingDir("pp-phos-" + period + comment);
+	plugin->SetGridWorkingDir("pp-phos-" + period);
 	// plugin->SetGridWorkingDir("phos-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
 	// plugin->SetDefaultOutputs();

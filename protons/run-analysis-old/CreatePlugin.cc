@@ -6,6 +6,8 @@
 using std::cout;
 using std::endl;
 
+// TODO: Factor out common parts in different macros
+
 AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
 {
 	if (period.Length() < 6)
@@ -50,6 +52,21 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 
     std::vector<Int_t> v; // 
 	values_for_dataset(v, dir);
+
+	// This is to avoid limitation on grid jobs
+	// 
+
+	Int_t start = (dpart.Contains("first") || v.size() < 50) ? 0 : v.size()/2;
+	Int_t stop =  (dpart.Contains("first") && !(v.size() < 50)) ? v.size()/2 : v.size();
+
+	// Terminate all datasets simultaneously
+	if (TString(pluginmode).Contains("terminate"))
+	{
+		start = 0;
+		stop = v.size();
+	}
+
+
 	for (Int_t i = 0; i < v.size(); ++i)
 		plugin->AddRunNumber(v[i]);
 

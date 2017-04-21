@@ -1,4 +1,4 @@
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
     gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
@@ -7,7 +7,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
     gROOT->LoadMacro("CreatePlugin.cc+");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, "", useJDL, isMC);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
 
     if (!alienHandler) return;
 

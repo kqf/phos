@@ -1,8 +1,9 @@
 DATASET = LHC10e-pass4
+DPART = first
 MC = kFALSE
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", $(MC))' || make unlink 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || make unlink 
 	@make unlink || echo "Directory is clean"
 	echo "Started grid analysis" >> .runhistory
 
@@ -18,12 +19,12 @@ unlink:
 	find -type l -delete
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", $(MC))' || make unlink
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || make unlink
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", $(MC), kFALSE)' || make unlink
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || make unlink
 	make upload
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
@@ -38,7 +39,7 @@ force-download:
 	echo -e "\x07
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test", $(MC))'
+	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
 	echo "Local analysis" >> .runhistory
 	$(call upload_result,AnalysisResults,test-analysis-pp)
 	$(call upload_result,TrackAverages,test-averages-pp)

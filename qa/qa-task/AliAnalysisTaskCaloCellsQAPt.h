@@ -14,14 +14,13 @@ public:
 		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) {}
 	virtual void FillPi0Mass(TObjArray * clusArray, Double_t vertexXYZ[3]);
 	void SetPairPtCut(Double_t c) { mPairPtCut = c; }
-	virtual void InitSummaryHistograms(Int_t nbins = 400, Double_t emax = 4.,
-	                                   Int_t nbinsh = 100, Double_t emaxh = 300.,
-	                                   Int_t nbinst = 250, Double_t tmin = -0.1e-6, Double_t tmax = 0.15e-6)
+	virtual void Init(Int_t nmods, Int_t det, Int_t startRunNumber, Int_t endRunNumber)
 	{
-		AliCaloCellsQA::InitSummaryHistograms(nbins, emax, nbinsh, emaxh, nbinst, tmin, tmax);
+		AliCaloCellsQA::Init(nmods, det, startRunNumber, endRunNumber);
 		fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("hNEventsProcessedPerRun"));
 		fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
-	}
+		fListOfHistos->Add(fhNAllEventsProcessedPerRun);	
+	} 
 
 
 protected:
@@ -83,7 +82,7 @@ public:
 
 		AliCaloCellsQAPt * qaPt = dynamic_cast<AliCaloCellsQAPt *>(fCellsQA);
 
-		if (qaPt)
+		if (qaPt && qaPt->fhNAllEventsProcessedPerRun)
 			qaPt->fhNAllEventsProcessedPerRun->Fill(event->GetRunNumber());
 
 		if (!isSelected)
