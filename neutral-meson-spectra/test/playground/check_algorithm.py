@@ -15,6 +15,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
 
         self.genfilename = 'LHC16-fake.root'
         self.generator = InclusiveGenerator('input-data/LHC16.root', 'config/test_algorithm.json')
+        self.clean = False
 
     
     def test(self):
@@ -29,6 +30,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
 
     def tearDown(self):
         super(CheckAlgorithm, self).tearDown()
-        os.remove(self.genfilename)
+        if self.clean:
+            os.remove(self.genfilename)
 
 

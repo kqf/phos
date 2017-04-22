@@ -89,13 +89,25 @@ class InclusiveGenerator(object):
         return obj
 
 
+    def update_hists(self, olist):
+        out = [self.data, self.mixed, self.nevents]
+        
+        if not olist:
+            return out
+
+        print 'WARNING: You are trying to update the old histograms.'
+        def process(hist):
+            ohist = olist.FindObject(hist.GetName()) 
+            ohist.Add(hist)
+            return ohist
+
+        return map(process, out)
+
     def save_fake(self, fname):
-        # TODO: Perhaps we can try to open existing file and update the hists?
-        ofile = ROOT.TFile(fname, 'recreate')
+        ofile = ROOT.TFile(fname, 'update')
+        out = self.update_hists(ofile.Get(self.selname))
         olist = ROOT.TList()
-        olist.Add(self.data)
-        olist.Add(self.mixed)
-        olist.Add(self.nevents)
+        map(olist.Add, out)
         olist.Write(self.selname, 1)
         ofile.Close()
 

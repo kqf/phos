@@ -12,11 +12,8 @@ class CheckMC(unittest.TestCase):
         super(CheckMC, self).setUp()
         f = lambda x, y: Spectrum(x, label=y, mode = 'q').evaluate()
 
-        # TODO: Investigate the problem with the time distribution in MC.
-        #
-
-        # TODO: Fix colors for pythia-epos case.
-        #
+        # The problem with the time distribution in MC:
+        #  The right flag in AddTender should be used for MC case.
 
         data =  f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data')
         pythia = f(TimecutInput('input-data/Pythia-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'Pythia')
