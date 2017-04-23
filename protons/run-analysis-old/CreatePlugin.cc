@@ -8,7 +8,7 @@ using std::endl;
 
 // TODO: Factor out common parts in different macros
 
-AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -18,6 +18,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 
 	plugin->SetMergeViaJDL(useJDL);
 	plugin->SetOutputToRunNo(kTRUE);
+	plugin->SetKeepLogs(kTRUE);
 
 
 	plugin->SetRunMode(pluginmode);
@@ -67,13 +68,13 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	}
 
 
-	for (Int_t i = 0; i < v.size(); ++i)
+	for (Int_t i = start; i < stop; ++i)
 		plugin->AddRunNumber(v[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
 
 	period.ToLower();
-	plugin->SetGridWorkingDir("pp-phos-" + period + comment);
+	plugin->SetGridWorkingDir("pp-phos-" + period);
 	plugin->SetGridOutputDir("output");
 
 

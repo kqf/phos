@@ -1,4 +1,11 @@
-AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, Int_t nruns, TString period, TString comment, Bool_t useJDL, Bool_t isMC)
+#include "AliAnalysisAlien.h"
+#include "iostream"
+#include "../datasets/values_for_dataset.h"
+
+using std::cout;
+using std::endl;
+
+AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -8,6 +15,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 
 	plugin->SetMergeViaJDL(useJDL);
 	plugin->SetOutputToRunNo(kTRUE);
+	plugin->SetKeepLogs(kTRUE);
 
 
 	plugin->SetRunMode(pluginmode);
@@ -21,36 +29,16 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 
 	plugin->SetCheckCopy(kFALSE);
 
-	// Extract period and reconstruction pass
-	TString dir(period, isMC ? 9 : 6); // fancy slicing
-	TString reconstruction(period);
-	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
-	reconstruction.ReplaceAll("-", "_");
 
-	TString globaldir = isMC ? "/alice/sim/2016/" : "/alice/data/2016/";
-	plugin->SetGridDataDir(globaldir + dir);
-	cout << "/alice/data/2016/" + dir << endl;
-
-	TString datasuffix = isMC ? "AOD/" : "/*.";
-	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
-	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
-
-	// plugin->SetDataPattern("/" + reconstruction + "/AOD/*/AliAOD.root");
-	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
-	if(!isMC)
-		plugin->SetRunPrefix("000");
-
-	cout << "We are trying to analyse " << nruns << " runs" << endl;
-
-	for (Int_t i = 0; i < nruns; ++i)
-		plugin->AddRunNumber(runs[i]);
+	for (Int_t i = start; i < stop; ++i)
+		plugin->AddRunNumber(v[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
 	// plugin->SetOutputFiles("CaloCellsQA2.root TriggerQA.root");
 	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();
-	plugin->SetGridWorkingDir("pp-phos-" + period + comment);
+	plugin->SetGridWorkingDir("pp-phos-" + period);
 	// plugin->SetGridWorkingDir("phos-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
 	// plugin->SetDefaultOutputs();
@@ -67,13 +55,13 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 	// plugin->SetAnalysisSource();
 	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
-	plugin->SetAnalysisMacro(TString("TaskQA") + period + ".C");
+	plugin->SetAnalysisMacro(TString("Task") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
-	plugin->SetExecutable(TString("TaskQA") + period + ".sh");
+	plugin->SetExecutable(TString("Task") + period + ".sh");
 
 	plugin->SetTTL(30000);
 	plugin->SetInputFormat("xml-single");
-	plugin->SetJDLName(TString("TaskQA") + period + ".jdl");
+	plugin->SetJDLName(TString("Task") + period + ".jdl");
 	plugin->SetPrice(1);
 	plugin->SetSplitMode("se");
 	plugin->SetProofCluster ( "alice-caf.cern.ch" );
@@ -84,10 +72,9 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode = "test", Int_t * runs, I
 
 	plugin->SetAliRootMode ( "default" );
 	plugin->SetClearPackages ( kFALSE );
-	plugin->SetFileForTestMode ( "files.txt" );
+	// TODO: Move this to particular file
+	// plugin->SetFileForTestMode ( "filesmc.txt" );
 	plugin->SetProofConnectGrid ( kFALSE );
 	plugin->SetDropToShell(kFALSE);
-	if (!plugin)
-		cout << "Warning \n";
 	return plugin;
 }

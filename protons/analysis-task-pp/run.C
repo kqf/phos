@@ -9,6 +9,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     Int_t nexc;
     Int_t nruns;
     gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
+    // TODO: rewrite this file
     getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
 
