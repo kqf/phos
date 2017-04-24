@@ -2,10 +2,9 @@
 
 import ROOT
 import json
-import random
-from test.general_test import TestImages, GeneralTest
+from test.test_multiple import TestMultipleImages
 
-class TestMultipleSequential(TestImages, GeneralTest):
+class TestMultipleSequential(TestMultipleImages):
 
 	def save_config(self):
 		conffile = 'config/test_multiple_sequential.json'
@@ -16,15 +15,14 @@ class TestMultipleSequential(TestImages, GeneralTest):
 		data = {
 					"multiplot": 
 					{ 
-						rfile + '/' + histname: {"option": "colz", "title": "Random distribution; #alpha; #beta"}
+						rfile + '/' + histname: {"option": "colz", "title": "Random distribution; #alpha; #beta", "separate":"", "oname": 'results/' + histname.replace('%d', '.pdf')}
 						for histname in histnames
 					}, 
 					"canvas": 
 					{
 						"size":  5, 
 						"logy":  0, 
-						"gridx": 0, 
-						"output": pfile
+						"gridx": 0
 					} 
 		   }
 
@@ -34,11 +32,9 @@ class TestMultipleSequential(TestImages, GeneralTest):
 
 	def save_histogram(self, filename, histnames):
 		ofile = ROOT.TFile(filename, "update")
-		for histname in histnames:
-			for i in range(1, 5):
-				histogram = ROOT.TH2F(histname % i, "Testing ...", 20 * i, 0, 100, 20 * i, 0, 100)
-				for i in range(1, histogram.GetXaxis().GetNbins() + 1):
-					for j in range(1, histogram.GetXaxis().GetNbins() + 1):
-						histogram.SetBinContent(i, j, random.randint(1, 5))
+		for s, histname in enumerate(histnames):
+			for sm in range(1, 5):
+				histogram = ROOT.TH2F(histname % sm, "Testing ...", 20 * (s + 1), 0, 100, 20 * (s + 1), 0, 100)
+				self.fill_random(histogram)
 				histogram.Write()
 		ofile.Close()

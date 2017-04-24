@@ -49,3 +49,4 @@ gphysi.dat
 *.gz
 *.tar
 *.zip
+*.sublime*

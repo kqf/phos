@@ -24,8 +24,10 @@ class Styler(object):
         self.stylers = self.get_stylers(data)
 
 
+
     def get_stylers(self, data):
         known_stylers = [SingleStyler, MultipleStyler]
+
         return [k(data) for k in known_stylers if k.keyname in data]
 
 
@@ -83,6 +85,7 @@ class SingleStyler(object):
         obj.label = properties['label'] if 'label' in properties else ''
         obj.option = properties['option'] if 'option' in properties else ''
         obj.ratiofit = 'ratiofit' in properties 
+        obj.separate = True if 'separate' in properties else False
 
         if 'label' in properties: obj.label = properties['label']
         if 'color' in properties: obj.SetLineColor(properties['color'])
@@ -91,7 +94,8 @@ class SingleStyler(object):
         if 'rebin' in properties: obj.Rebin(properties['rebin'])
         if 'stats' in properties: 
             obj.SetStats(True)
-            ROOT.gStyle.SetOptStat(properties['stats'])
+            # This line should be commented out as it causes error when running in batch mode:
+            # ROOT.gStyle.SetOptStat(properties['stats'])
         if 'option' in properties: obj.SetOption(properties['option'])
         if 'normalize' in properties: 
             obj.Scale( properties['normalize'] / obj.Integral() )
@@ -110,6 +114,7 @@ class SingleStyler(object):
 
     def fit_simple(self, obj):
         properties = self.hist_props[obj.rpath]
+        print 'Reached here'
         fitrange = properties['fitrange']
         fitfunc = properties['fitfunc']
         fitpars = properties['fitpars']
@@ -232,12 +237,18 @@ class MultipleStyler(SingleStyler):
     def draw(self):
         canvas = self.get_canvas()
         canvas.Divide(2, 2)
+
+        def separate(lst):
+            vals = map(lambda x: x.separate, lst)
+            return any(vals)
+
         for maps in self.hists:
             self.draw_multiple(maps, canvas)
+            if separate(maps):
+                self.decorate_map(canvas, maps[0].oname)
         self.decorate_map(canvas)
-        raw_input()
 
-    def decorate_map(self, canvas):
+    def decorate_map(self, canvas, oname = None):
         if not 'canvas' in self.data:
             return
 
@@ -249,7 +260,15 @@ class MultipleStyler(SingleStyler):
         for i in range(4): self.decorate_pad(canvas.cd(i + 1), props)
 
         canvas.Update()
-        canvas.SaveAs(props['output'])
+
+        # If there is no neither global output nor local one
+        if not oname:
+            oname = props['output'] if 'output' in props else None
+
+        if oname:
+            canvas.SaveAs(oname)
+            
+        raw_input()
 
     def draw_multiple(self, hists, canvas):
         for i, sm in enumerate(hists):

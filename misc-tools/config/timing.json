@@ -1,13 +1,13 @@
 {
     "multiplot": 
     {
-        "input/EPOS-LHC16.root/QualTender/hClusterEvsTM%d": {"label": "strict-map", "normalize": 1, "option": "colz", "oname": "results/Epos.pdf"}
+        "input/EPOS-LHC16.root/QualTender/hClusterEvsTM%d": {"normalize": 1, "option": "colz", "oname": "results/epos-timing.pdf", "separate":"" },
+        "input/Pythia-LHC16.root/QualTender/hClusterEvsTM%d": {"normalize": 1, "option": "colz", "oname": "results/pythia-timing.pdf", "separate":"" }
     },
     "canvas":
     {
         "size":  6,
         "gridx": 1,
-        "gridy": 1,
-        "output": "results/Epos.pdf"
+        "gridy": 1
     }
 }
