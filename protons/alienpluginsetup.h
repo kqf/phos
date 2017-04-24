@@ -1,6 +1,6 @@
 #include "AliAnalysisAlien.h"
 #include "iostream"
-#include "../datasets/values_for_dataset.h"
+#include "datasets/values_for_dataset.h"
 
 using std::cout;
 using std::endl;
@@ -28,6 +28,26 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 	plugin->SetExecutableArgs("-b -q -x");
 
 	plugin->SetCheckCopy(kFALSE);
+
+
+	if (!isMC)
+		plugin->SetRunPrefix("000");
+	
+	std::vector<Int_t> v; //
+	values_for_dataset(v, period);
+
+	// This is to avoid limitation on grid jobs
+	//
+
+	Int_t start = (dpart.Contains("first") || v.size() < 50) ? 0 : v.size() / 2;
+	Int_t stop =  (dpart.Contains("first") && !(v.size() < 50)) ? v.size() / 2 : v.size();
+
+	// Terminate all datasets simultaneously
+	if (TString(pluginmode).Contains("terminate"))
+	{
+		start = 0;
+		stop = v.size();
+	}
 
 
 	for (Int_t i = start; i < stop; ++i)

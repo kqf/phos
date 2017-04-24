@@ -4,7 +4,7 @@
 
 
 DATASET = LHC16j2b1
-DPART = first
+DPART = second
 MC = kTRUE
 
 grid: | %.cxx

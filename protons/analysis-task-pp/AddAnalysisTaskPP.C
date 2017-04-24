@@ -54,7 +54,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	if (v.size() > 0) 
 	{
-		Int_t nexc = v.size();
+		const Int_t nexc = v.size();
 		Int_t excells[nexc];
 		for (int i = 0; i < v.size(); ++i)
 			excells[i] = v[i];
@@ -133,5 +133,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliAnalysisTaskPP.h " 
 	);
 
+	cout << "REACHED HERE" << endl;
 	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
 }

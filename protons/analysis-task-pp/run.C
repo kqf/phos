@@ -1,20 +1,12 @@
-void run(const char * runmode = "local", const char * pluginmode = "test", bool isMC = kFALSE, bool mergeJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
-    // TString period = "LHC16h";
-    TString period = "LHC16k-pass1";
-    Int_t * excells;
-    Int_t * good_runs;
-    Int_t nexc;
-    Int_t nruns;
-    gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
-    // TODO: rewrite this file
-    getRunsBadCells(period, good_runs, nruns, excells, nexc);
+    gROOT->LoadMacro("CreatePlugin.cc+");
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
 
-
-    gROOT->LoadMacro("CreatePlugin.C");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, good_runs, nruns, period, "", mergeJDL, isMC);
+  
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");

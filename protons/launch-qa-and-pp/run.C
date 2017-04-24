@@ -1,10 +1,6 @@
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
-    gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
-
-    // TString period = "LHC16l-muon-calo-pass1";
-    // getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
     gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
@@ -70,6 +66,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     mgr->PrintStatus();
 
 
+    cout << "Downloading files " << files << endl;
     alienHandler->SetOutputFiles(files);
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
