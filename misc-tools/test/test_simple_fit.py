@@ -19,12 +19,29 @@ class SimpleFit(TestImages, GeneralTest):
 		self.pars = [1., 3.14, 1.]
 		data = { 
 					"histograms": 
-						{ rfile + '/' + histname: 
-							{"label": "test data", "color": 37, "title": "Test fitting; x;y", "stats": "e", "yprecision": " counts per %s GeV",
-							 "fitrange": self.range, "fitfunc": self.func, "fitpars": self.pars}
-						},
+					{
+						rfile + '/' + histname: 
+						{
+							"title": "Test fitting; x, GeV; y",
+							"label": "test data",
+							"yprecision": " counts per %s GeV",
+							"stats": "e",
+							"color": 37,
+							"fit": "",
+							"fitrange": self.range,
+							"fitfunc": self.func,
+							"fitpars": self.pars
+						}
+					},
 					"canvas": 
-						{"size":  5, "logy":  1,  "gridx": 1 ,"gridy": 1, "legend": [0.14, 0.7, 0.34, 0.88], "output": pfile} 
+					{
+						"size":  5,
+						"logy":  1,
+						"gridx": 1 ,
+						"gridy": 1,
+						"legend": [0.14, 0.7, 0.34, 0.88],
+						"output": pfile
+					} 
 				}
 
 		with open(conffile, 'w') as outfile:

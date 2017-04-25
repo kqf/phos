@@ -113,8 +113,8 @@ class SingleStyler(object):
 
 
     def fit_simple(self, obj):
+        canvas = self.get_canvas()
         properties = self.hist_props[obj.rpath]
-        print 'Reached here'
         fitrange = properties['fitrange']
         fitfunc = properties['fitfunc']
         fitpars = properties['fitpars']
