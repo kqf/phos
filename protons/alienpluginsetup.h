@@ -42,6 +42,8 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 	Int_t start = (dpart.Contains("first") || v.size() < 50) ? 0 : v.size() / 2;
 	Int_t stop =  (dpart.Contains("first") && !(v.size() < 50)) ? v.size() / 2 : v.size();
 
+
+
 	// Terminate all datasets simultaneously
 	if (TString(pluginmode).Contains("terminate"))
 	{
@@ -75,13 +77,16 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 	// plugin->SetAnalysisSource();
 	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
-	plugin->SetAnalysisMacro(TString("Task") + period + ".C");
+	plugin->SetAnalysisMacro(TString("TaskPP-") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
-	plugin->SetExecutable(TString("Task") + period + ".sh");
+
+	// To distinguish between different parts of the dataset use ending
+	TString ending = dpart.Contains("first") && !TString(pluginmode).Contains("terminate") ? "-first" :  "";
+	plugin->SetExecutable(TString("TaskPP-") + period +  + ending + ".sh");
 
 	plugin->SetTTL(30000);
 	plugin->SetInputFormat("xml-single");
-	plugin->SetJDLName(TString("Task") + period + ".jdl");
+	plugin->SetJDLName(TString("TaskPP-") + period + ".jdl");
 	plugin->SetPrice(1);
 	plugin->SetSplitMode("se");
 	plugin->SetProofCluster ( "alice-caf.cern.ch" );

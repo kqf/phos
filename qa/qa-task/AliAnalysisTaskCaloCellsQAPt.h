@@ -17,7 +17,7 @@ public:
 	virtual void Init(Int_t nmods, Int_t det, Int_t startRunNumber, Int_t endRunNumber)
 	{
 		AliCaloCellsQA::Init(nmods, det, startRunNumber, endRunNumber);
-		fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("hNEventsProcessedPerRun"));
+		fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("fhNAllEventsProcessedPerRun"));
 		fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
 		fListOfHistos->Add(fhNAllEventsProcessedPerRun);	
 	} 
