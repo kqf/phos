@@ -15,21 +15,29 @@ class TestFitRatio(TestImages, GeneralTest):
 		pfile    = 'results/test.pdf'
 		data = { 
 					"histograms": 
-						{ rfile + '/' + histname: 
-							{
-								"label": histname, 
-								"color": 1001 + i,
-								"title": "Testing ratio plots ;x - quantity; y - observable", 
-								'ratio': i,
-								"ratiofit": 1,
-								"fitrange": [1, 14], 
-								"fitfunc": '[0] * x + [1]', 
-								"fitpars": [0, 0]						}
-
-							for i, histname in enumerate(histnames)
-						},
+					{
+						rfile + '/' + histname: 
+						{
+							"label": histname, 
+							"color": 1001 + i,
+							"title": "Testing ratio plots ;x - quantity; y - observable", 
+							'ratio': i,
+							"ratiofit": 1,
+							"fitrange": [1, 14], 
+							"fitfunc": '[0] * x + [1]', 
+							"fitpars": [0, 0]						
+						}
+						for i, histname in enumerate(histnames)
+					},
 					"canvas": 
-						{"size":  5, "logy":  0, "gridx": 1, "gridy": 1, "legend": [0.78, 0.7, 0.89, 0.88], "output": pfile} 
+					{
+						"size":  5,
+						"logy":  0,
+						"gridx": 1,
+						"gridy": 1,
+						"legend": [0.78, 0.7, 0.89, 0.88],
+						"output": pfile
+					} 
 				}
 
 		with open(conffile, 'w') as outfile:
