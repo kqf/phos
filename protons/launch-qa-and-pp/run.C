@@ -45,7 +45,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref =  isMC ? "MC": "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", isMC ? "LHC16all" : "", 1, isMC);
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", isMC ? "Run2Default" : "", 1, isMC);
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
@@ -57,8 +57,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     if (useJDL)
         files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", cells, isMC);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC);
+    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##No tender applied here! Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", cells, isMC);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##No tender applied here! Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC);
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 

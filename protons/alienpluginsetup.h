@@ -77,16 +77,21 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 	// plugin->SetAnalysisSource();
 	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
-	plugin->SetAnalysisMacro(TString("TaskPP-") + period + ".C");
+	plugin->SetAnalysisMacro(TString("TaskPP_") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
 
 	// To distinguish between different parts of the dataset use ending
-	TString ending = dpart.Contains("first") && !TString(pluginmode).Contains("terminate") ? "-first" :  "";
-	plugin->SetExecutable(TString("TaskPP-") + period +  + ending + ".sh");
+	TString ending = dpart.Contains("first") ? "_first" :  "_second";
+
+	// Don't add any endings if we have only one 
+	if(TString(pluginmode).Contains("terminate"))
+		ending = "";
+	
+	plugin->SetExecutable(TString("TaskPP_") + period +  + ending + ".sh");
 
 	plugin->SetTTL(30000);
 	plugin->SetInputFormat("xml-single");
-	plugin->SetJDLName(TString("TaskPP-") + period + ".jdl");
+	plugin->SetJDLName(TString("TaskPP_") + period + ".jdl");
 	plugin->SetPrice(1);
 	plugin->SetSplitMode("se");
 	plugin->SetProofCluster ( "alice-caf.cern.ch" );
