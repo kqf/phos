@@ -2,6 +2,7 @@
 
 import ROOT
 from sutils import wait, get_canvas, Cc, adjust_canvas
+import numpy as np
 
 class Visualizer(object):
     def __init__(self, size, rrange, ratiofit):
@@ -53,12 +54,32 @@ class Visualizer(object):
         ratio.GetXaxis().SetTitleSize(0.1)
         ratio.GetXaxis().SetTitleOffset(0.9) 
         ratio.GetXaxis().SetLabelSize(0.10)  
-        if self.rrange: ratio.SetAxisRange(self.rrange[0], self.rrange[1] , 'Y')
+        self.set_ratio_yaxis(ratio)
+
         ROOT.gPad.SetGridy()
 
         self.fit_ratio(ratio)
+        # pp goes here
+        # print
         return ratio 
 
+    def set_ratio_yaxis(self, ratio, n = 3):
+        if self.rrange: 
+            ratio.SetAxisRange(self.rrange[0], self.rrange[1] , 'Y')
+            return
+
+        bins = np.array([ratio.GetBinContent(i) for i in range(1, ratio.GetXaxis().GetNbins())])
+        # TODO: avoid numpy?
+        mean, std = np.mean(bins), np.std(bins)
+        withoutoutliers = [b for b in bins if abs(b - mean) < n * std]
+
+        if not withoutoutliers:
+            return
+
+        a, b = map(lambda x: x(withoutoutliers), (min, max))
+        ratio.SetAxisRange(a, b , 'Y')
+
+  
     def fit_ratio(self, ratio):
         if not self.ratiofit:
             return
