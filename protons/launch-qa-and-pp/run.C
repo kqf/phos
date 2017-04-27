@@ -57,8 +57,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     if (useJDL)
         files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##No tender applied here! Updated event counters, ncontributors cut, 12.5ns timecut## tender", "Tender", "", cells, isMC);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + " ##No tender applied here! Updated event counters, ncontributors cut## only tender", "OnlyTender", "", std::vector<Int_t>(), isMC);
+    TString msg = "## MC + tender with Run2Default option";
+    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC);
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 

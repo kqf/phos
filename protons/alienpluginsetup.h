@@ -43,7 +43,17 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 	Int_t stop =  (dpart.Contains("first") && !(v.size() < 50)) ? v.size() / 2 : v.size();
 
 
+	TString info = dpart.Contains("first") ? "first" :  "second";
 
+	// Don't add any endings if we have only one 
+	if(!TString(pluginmode).Contains("terminate"))
+	{
+		// Repeat the message othervise it's not visible in the logs.
+		for (int i = 0; i < 5; ++i)
+			cout << "Important: you are running only on " << info << " part of the dataset. " << endl;
+	}
+
+	
 	// Terminate all datasets simultaneously
 	if (TString(pluginmode).Contains("terminate"))
 	{
@@ -80,14 +90,9 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 	plugin->SetAnalysisMacro(TString("TaskPP_") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
 
-	// To distinguish between different parts of the dataset use ending
-	TString ending = dpart.Contains("first") ? "_first" :  "_second";
 
-	// Don't add any endings if we have only one 
-	if(TString(pluginmode).Contains("terminate"))
-		ending = "";
-	
-	plugin->SetExecutable(TString("TaskPP_") + period +  + ending + ".sh");
+	// Do not use ending: it will fail your jobs on grid at terminate stage.
+	plugin->SetExecutable(TString("TaskPP_") + period + ".sh");
 
 	plugin->SetTTL(30000);
 	plugin->SetInputFormat("xml-single");
