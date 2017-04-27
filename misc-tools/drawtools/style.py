@@ -85,7 +85,7 @@ class SingleStyler(object):
         obj.label = properties['label'] if 'label' in properties else ''
         obj.option = properties['option'] if 'option' in properties else ''
         obj.ratiofit = 'ratiofit' in properties 
-        obj.separate = True if 'separate' in properties else False
+        obj.separate = properties['separate'] if 'separate' in properties else False
 
         if 'label' in properties: obj.label = properties['label']
         if 'color' in properties: obj.SetLineColor(properties['color'])
@@ -123,6 +123,8 @@ class SingleStyler(object):
         function.SetParameters(*fitpars)
         ROOT.gStyle.SetOptFit()
         obj.Fit('hTest')
+        canvas.Update()
+
 
 
     def ratioplot(self, canvas):
@@ -238,6 +240,7 @@ class MultipleStyler(SingleStyler):
         canvas = self.get_canvas()
         canvas.Divide(2, 2)
 
+        # TODO: correct this 
         def separate(lst):
             vals = map(lambda x: x.separate, lst)
             return any(vals)

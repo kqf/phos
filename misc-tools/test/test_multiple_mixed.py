@@ -4,15 +4,15 @@ import ROOT
 import json
 from test.test_multiple import TestMultipleImages
 
-# TODO: Use double inheritance to avoid double running
-class TestMultipleSequential(TestMultipleImages):
+class TestMultipleMixed(TestMultipleImages):
 
 	def save_config(self):
-		conffile = 'config/test_multiple_sequential.json'
-		rfile    = 'input/testfile_multiple_hists.root'
+		conffile = 'config/test_multiple_mixed.json'
+		rfile    = 'input/testfile_multiple_hists_mixed.root'
 		histnames = ['hSomeHistInModule_%d', 'hAnotherHistInTheModule_%d', 'hYetAnotherHistInTheModule_%d']
-		pfile    = 'results/test_multiple_hists.pdf'
+		pfile    = 'results/test_multiple_hists_mixed.pdf'
 
+		# Draw two first histograms on the last one separate
 		data = {
 					"multiplot": 
 					{ 
@@ -20,10 +20,11 @@ class TestMultipleSequential(TestMultipleImages):
 						{
 							"option": "colz",
 							"title": "Random distribution; #alpha; #beta",
-							"separate": 1,
+							"separate": int(i == 0),
+							"color": 37 + 10 * i,
 							"oname": 'results/' + histname.replace('%d', '.pdf')
 						}
-						for histname in histnames
+						for i, histname in enumerate(histnames)
 					},
 
 					"canvas": 
@@ -40,9 +41,12 @@ class TestMultipleSequential(TestMultipleImages):
 
 	def save_histogram(self, filename, histnames):
 		ofile = ROOT.TFile(filename, "update")
+		h1 = lambda sm : ROOT.TH1F(histname % sm, "Testing ...", 200, 0, 10)
+		h2 = lambda sm : ROOT.TH2F(histname % sm, "Testing ...", 20, 0, 100, 20, 0, 100)
+
 		for s, histname in enumerate(histnames):
 			for sm in range(1, 5):
-				histogram = ROOT.TH2F(histname % sm, "Testing ...", 20 * (s + 1), 0, 100, 20 * (s + 1), 0, 100)
-				self.fill_random(histogram, None)
+				histogram = h1(sm) if s != 0 else h2(sm)
+				self.fill_random(histogram, [s, sm])
 				histogram.Write()
 		ofile.Close()
