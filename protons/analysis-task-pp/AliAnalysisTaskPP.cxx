@@ -161,7 +161,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 			MCPhotonSelection * mcselection = dynamic_cast<MCPhotonSelection * >(selection);
 			if (mcselection)
 			{
-				mcselection->ConsiderGeneratedParticles(mcparaticles);
+				mcselection->ConsiderGeneratedParticles(mcparaticles, &clusArray, evtProperties);
 			}
 		}
 

@@ -40,7 +40,8 @@ protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
-    virtual void ConsiderGeneratedParticles(TClonesArray * particles);
+    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
+	virtual void FillClusterMC(const AliVCluster * cluster, TClonesArray * particles);
 
 	MCPhotonSelection(const MCPhotonSelection &);
 	MCPhotonSelection & operator = (const MCPhotonSelection &);

@@ -62,19 +62,11 @@ void MCPhotonSelection::InitSelectionHistograms()
 		hist->Sumw2();
 	}
 
+	fListOfHistos->Add(new TH1F("hLatePrimaryParticles", "Particles with E > 5 GeV and tof > 0.15 ns; PDG code", 6000, 0.5, 6000.5));
 }
 
 
-//________________________________________________________________
-void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
-{
-	(void) clusArray;
-	(void) candidates;
-	(void) eflags;
-}
-
-
-void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
+void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
 {
 
 	if (! particles)
@@ -122,4 +114,69 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles)
 			FillHistogram(Form("hPtGeneratedMC_%s_secondary_Radius", name), r, pt) ;
 		}
 	}
+
+	// Try to extract all needed data
+
+	TObjArray photonCandidates;
+	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
+	for(Int_t i = 0; i < photonCandidates.GetEntries(); ++i)
+		FillClusterMC(dynamic_cast<AliVCluster *>(photonCandidates.At(i)), particles);
+
+}
+
+//________________________________________________________________
+void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
+{
+	// Particle # reached PHOS front surface	
+	Int_t primLabel = cluster->GetLabelAt(0) ; 
+	Double_t rcut = 1;
+	AliAODMCParticle * parent = 0;
+
+
+	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
+	if (primLabel > -1)
+	{
+		AliAODMCParticle * prim = (AliAODMCParticle*)particles->At(primLabel) ;
+		Int_t iparent = primLabel;
+		parent = prim;
+		Double_t r2 = prim->Xv() * prim->Xv() + prim->Yv() * prim->Yv() ;
+		while ((r2 > rcut * rcut) && (iparent > -1))
+		{
+			iparent = parent->GetMother();
+			parent = (AliAODMCParticle*)particles->At(iparent);
+			r2 = parent->Xv() * parent->Xv() + parent->Yv() * parent->Yv() ;
+		}
+	}
+
+	if(cluster->GetTOF() > 0.15e-6 && cluster->E() > 5)
+		FillHistogram("hLatePrimaryParticles", parent->GetPdgCode());
+
+}
+
+//________________________________________________________________
+void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+{
+	// Don't return TObjArray: force user to handle candidates lifetime
+	Int_t sm, x, z;
+	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
+	{
+		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
+		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
+		
+		if (clus->GetNCells() < fNCellsCut) continue;
+		if (clus->E() < fClusterMinE) continue;
+
+		// IMPORTANT: Don't apply timing cuts for MC 
+		// if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
+		candidates->Add(clus);
+
+		// Fill histograms only for real events
+		if (eflags.isMixing)
+			continue;
+		// There is no cluster histograms here
+		// FillClusterHistograms(clus, eflags);
+	}
+
+	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
+		FillHistogram("EventCounter", 4.5);
 }
