@@ -2,7 +2,6 @@
 
 import ROOT
 import json
-import random
 from test.general_test import TestImages, GeneralTest
 
 class TestMultipleImages(TestImages, GeneralTest):
@@ -16,15 +15,20 @@ class TestMultipleImages(TestImages, GeneralTest):
 
 		data = {
 					"multiplot": 
-						{ 
-							rfile + '/' + histname:
-							{
-								"option": "colz", 
-								"title": "Random distribution; #alpha; #beta"
-							}
-						}, 
+					{ 
+						rfile + '/' + histname:
+						{
+							"option": "colz", 
+							"title": "Random distribution; #alpha; #beta"
+						}
+					}, 
 					"canvas": 
-						{"size":  5, "logy":  0, "gridx": 0, "output": pfile} 
+					{
+						"size":  5,
+						"logy":  0,
+						"gridx": 0,
+						"output": pfile
+					} 
 			   }
 
 		with open(conffile, 'w') as outfile:
@@ -40,24 +44,5 @@ class TestMultipleImages(TestImages, GeneralTest):
 			histogram.Write()
 		ofile.Close()
 
-	def fill_random(self, histogram, pars):
-		if type(histogram) is ROOT.TH1F:
-			return self.fill_random1d(histogram, pars)
 
-		self.fill_random2d(histogram, pars)
-
-	def fill_random1d(self, histogram, pars):
-		f1 = ROOT.TF1('mfunc', "TMath::Exp( -1 * (x - [0]) * (x - [0]) / [1] / [1] )")
-		f1.SetParameter(0, 3 - pars[1])
-		f1.SetParameter(1, 3 - pars[0])
-		histogram.FillRandom('mfunc', 10000)
-
-
-	def fill_random2d(self, histogram, pars):
-		xaxis, yaxis = histogram.GetXaxis(), histogram.GetYaxis()
-		iterate = lambda x: range(1, x.GetNbins() + 1)
-
-		for i in iterate(xaxis):
-			for j in iterate(yaxis):
-				histogram.SetBinContent(i, j, random.randint(1, 5))
 

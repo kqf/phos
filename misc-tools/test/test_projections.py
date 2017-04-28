@@ -16,11 +16,22 @@ class TestProjections(TestImages, GeneralTest):
 
         data = {
                     "histograms": 
-                        { 
-                            rfile + '/' + histname: {"option": "colz", "title": "Trying projections; #alpha; #beta", "projectx": 50}
-                        }, 
+                    { 
+                        rfile + '/' + histname:
+                        {
+                            "title": "Trying projections; #alpha; #beta",
+                            "option": "colz",
+                            "projectx": 50
+                        }
+                    }, 
                     "canvas": 
-                        {"size":  5, "logy":  0, "gridx": 0, "gridy": 0, "output": pfile} 
+                    {
+                        "size":  5,
+                        "logy":  0,
+                        "gridx": 0,
+                        "gridy": 0,
+                        "output": pfile
+                    } 
                }
 
         with open(conffile, 'w') as outfile:

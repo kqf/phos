@@ -2,15 +2,16 @@
 
 import ROOT
 import json
-from test.test_multiple import TestMultipleImages
+from test.general_test import TestImages, GeneralTest
 
-class TestMultipleMixed(TestMultipleImages):
+class TestMultipleMixed(TestImages, GeneralTest):
 
 	def save_config(self):
 		conffile = 'config/test_multiple_mixed.json'
 		rfile    = 'input/testfile_multiple_hists_mixed.root'
 		histnames = ['hSomeHistInModule_%d', 'hAnotherHistInTheModule_%d', 'hYetAnotherHistInTheModule_%d']
 		pfile    = 'results/test_multiple_hists_mixed.pdf'
+		drawoptions = ['colz', '', 'same']
 
 		# Draw two first histograms on the last one separate
 		data = {
@@ -18,10 +19,11 @@ class TestMultipleMixed(TestMultipleImages):
 					{ 
 						rfile + '/' + histname:
 						{
-							"option": "colz",
+							"option": drawoptions[i],
+							"priority": len(histnames) - i,
 							"title": "Random distribution; #alpha; #beta",
 							"separate": int(i == 0),
-							"color": 37 + 10 * i,
+							"color": 1000 + i,
 							"oname": 'results/' + histname.replace('%d', '.pdf')
 						}
 						for i, histname in enumerate(histnames)

@@ -2,10 +2,10 @@
 
 import ROOT
 import json
-from test.test_multiple import TestMultipleImages
+from test.test_multiple import TestImages, GeneralTest
 
 # TODO: Use double inheritance to avoid double running
-class TestMultipleSequential(TestMultipleImages):
+class TestMultipleSequential(TestImages, GeneralTest):
 
 	def save_config(self):
 		conffile = 'config/test_multiple_sequential.json'

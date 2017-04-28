@@ -74,9 +74,11 @@ class SingleStyler(object):
         assert obj, 'Specify right path to histogram. ' + lst + ' Current path: ' + path + '. Or check your .root file.'
 
         if 'projecty' in properties: 
+            canvas = self.get_canvas()
             obj = obj.ProjectionY(obj.GetName() + '_y', obj.GetXaxis().FindBin(properties['projecty']), -1)
 
         if 'projectx' in properties: 
+            canvas = self.get_canvas()
             obj = obj.ProjectionX(obj.GetName() + '_x', obj.GetYaxis().FindBin(properties['projectx']), -1)
 
         obj.SetStats(False)
@@ -85,7 +87,11 @@ class SingleStyler(object):
         obj.label = properties['label'] if 'label' in properties else ''
         obj.option = properties['option'] if 'option' in properties else ''
         obj.ratiofit = 'ratiofit' in properties 
-        obj.separate = properties['separate'] if 'separate' in properties else False
+
+        obj.separate = properties['separate'] if 'separate' in properties else 0
+        obj.priority = properties['priority'] if 'priority' in properties else 0
+        # Always draw separate histograms first
+        if obj.separate: obj.priority = float('inf')
 
         if 'label' in properties: obj.label = properties['label']
         if 'color' in properties: obj.SetLineColor(properties['color'])
@@ -240,7 +246,8 @@ class MultipleStyler(SingleStyler):
         canvas = self.get_canvas()
         canvas.Divide(2, 2)
 
-        # TODO: correct this 
+        self.hists.sort(key=lambda x: x[0].priority, reverse=True)
+
         def separate(lst):
             vals = map(lambda x: x.separate, lst)
             return any(vals)
@@ -249,7 +256,7 @@ class MultipleStyler(SingleStyler):
             self.draw_multiple(maps, canvas)
             if separate(maps):
                 self.decorate_map(canvas, maps[0].oname)
-        self.decorate_map(canvas)
+        self.decorate_map(canvas, maps[0].oname)
 
     def decorate_map(self, canvas, oname = None):
         if not 'canvas' in self.data:
@@ -282,7 +289,6 @@ class MultipleStyler(SingleStyler):
 
 def main():
     assert len(sys.argv) == 2, "Usage: style.py rules.json"
-    # TODO: Add possibility to switch between multiple plots per module and multipe separate plots per module
     s = Styler(sys.argv[1])
     s.draw()
 
