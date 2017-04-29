@@ -107,8 +107,6 @@ AliAnalysisGrid * GetPlugin(const char * pluginmode, TString period, TString dpa
 
 	plugin->SetAliRootMode ( "default" );
 	plugin->SetClearPackages ( kFALSE );
-	// TODO: Move this to particular file
-	// plugin->SetFileForTestMode ( "filesmc.txt" );
 	plugin->SetProofConnectGrid ( kFALSE );
 	plugin->SetDropToShell(kFALSE);
 	return plugin;

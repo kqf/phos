@@ -38,6 +38,7 @@ AliAnalysisTaskPP::AliAnalysisTaskPP() : AliAnalysisTaskSE(),
 	fPreviousEvents(0),
 	fSelections(0),
 	fPHOSBadMap(),
+	fNMixedEvents(0),
 	fNBad(0),
 	fBadCells(0)
 {
@@ -45,16 +46,16 @@ AliAnalysisTaskPP::AliAnalysisTaskPP() : AliAnalysisTaskSE(),
 }
 
 //________________________________________________________________
-AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name, TList * selections) :
+AliAnalysisTaskPP::AliAnalysisTaskPP(const char * name, TList * selections, Int_t nmix):
 	AliAnalysisTaskSE(name),
 	fPreviousEvents(0),
 	fSelections(selections),
 	fPHOSBadMap(),
+	fNMixedEvents(nmix),
 	fNBad(0),
 	fBadCells(0)
 {
 	fSelections->SetOwner(kTRUE);
-	// fSelections->Add(new TestPhotonSelection("Data", "SOMETITLE")) ;
 
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 		DefineOutput(i + 1, TList::Class()); // Output starts from 1
@@ -79,8 +80,7 @@ void AliAnalysisTaskPP::UserCreateOutputObjects()
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
 
-	// TODO: remove this "magic number" and try to increase it
-	fPreviousEvents = new MixingSample(100);
+	fPreviousEvents = new MixingSample(fNMixedEvents);
 }
 
 //________________________________________________________________
@@ -96,7 +96,8 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		return;
 	}
 
-	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
+	// Count MB event before event cuts for every selection 
+	for (int i = 0; i < fSelections->GetEntries(); ++i) 
 	{
 		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
 		selection->CountMBEvent();
@@ -109,8 +110,6 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		AliInfo("PHOS geometry not initialized, initializing it for you");
 		// Don't instantinate geometry: Use tender
 		AliPHOSGeometry::GetInstance();
-		// AliPHOSGeometry::GetInstance("IHEP");
-		// AliPHOSGeometry::GetInstance("Run2");
 	}
 
 	// Select Event
@@ -160,15 +159,14 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		{
 			MCPhotonSelection * mcselection = dynamic_cast<MCPhotonSelection * >(selection);
 			if (mcselection)
-			{
 				mcselection->ConsiderGeneratedParticles(mcparaticles, &clusArray, evtProperties);
-			}
 		}
 
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
 	fPreviousEvents->UpdatePool(clusArray, evtProperties);
 }
+
 //________________________________________________________________
 TClonesArray * AliAnalysisTaskPP::GetMCParticles(const AliVEvent * event) const
 {
@@ -190,19 +188,6 @@ void AliAnalysisTaskPP::Terminate(Option_t *)
 //________________________________________________________________
 Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & eprops) const
 {
-	// Do not apply this criteria yet.
-	// TODO: Do we need all these flags.
-	// If yes then this method should be completely changed
-	// PhotonSelection * phys = dynamic_cast<PhotonSelection *> (fSelections - FindObject("Phys"));
-	// TH1 * hSelected = phys ? dynamic_cast<TH1 *> (phys->GetListOfHistos()->FindObject("EventCounter")) : 0;
-	// hSelected->Fill(1) ;
-	// if (eventVtxExist) hSelected->Fill(2) ;
-	// if (eventVtxExist && eventVtxZ10cm) hSelected->Fill(3) ;
-	// if (eventVtxExist && eventVtxZ10cm && eventV0AND) hSelected->Fill(4) ;
-	// if (eventVtxExist && eventVtxZ10cm && eventV0AND && eventPileup) hSelected->Fill(5) ;
-	// if (eventPileup) hSelected->Fill(6) ;
-	// if (eventV0AND) hSelected->Fill(7) ;
-
 	// pileup
 	if (event->IsPileupFromSPD(3, 0.8, 3., 2., 5.))
 		return kFALSE;
@@ -311,7 +296,7 @@ void AliAnalysisTaskPP::SetBadMap(const char * filename)
 	if (!fBadMap->IsOpen())
 		AliFatal(Form("Cannot set BadMap %s doesn't exist", filename));
 
-	cout << "\n\n...Adding PHOS bad channel map \n"  << endl;
+	std::cout << "\n\n...Adding PHOS bad channel map \n"  << std::endl;
 	gROOT->cd();
 
 	for (Int_t module = kMinModule; module <= kMaxModule; ++module)
@@ -320,8 +305,8 @@ void AliAnalysisTaskPP::SetBadMap(const char * filename)
 		if (!h) AliFatal( Form("PHOS_BadMap_mod%d doesn't exist", module));
 
 		fPHOSBadMap[module - kMinModule] = new TH2I(*h);
-		cout << "Set " <<  fPHOSBadMap[module - kMinModule]->GetName() << endl;
+		std::cout << "Set " <<  fPHOSBadMap[module - kMinModule]->GetName() << std::endl;
 	}
 	fBadMap->Close();
-	cout << "\n\n...PHOS BadMap is set now." << endl;
+	std::cout << "\n\n...PHOS BadMap is set now." << std::endl;
 }

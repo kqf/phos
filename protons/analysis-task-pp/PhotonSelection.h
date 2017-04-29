@@ -14,8 +14,6 @@
 
 struct EventFlags
 {
-	// TODO: check if EventFlags are set properly in all places.
-	// Do we need initialization for ncontributors?
 	EventFlags(Int_t c = 0, Int_t z = 0, Bool_t m = kFALSE, Bool_t p = kFALSE, Bool_t vtx = kFALSE, UShort_t bc = 0. /*, Bool_t v0 = kFalse*/):
 		centr(c),
 		zvtx(z),

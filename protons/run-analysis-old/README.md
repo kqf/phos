@@ -18,7 +18,7 @@ alienv enter VO_ALICE@AliPhysics::<RECENT VERSION OF ALIROOT>
 # Obrain token and update the environment
 alien-token-init
 
-source /tmp/gclient_env_`id -u okovalen`
+source /tmp/gclient_env_`id -u $USER`
 
 # Runs full analysis
 make grid

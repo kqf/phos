@@ -18,7 +18,7 @@ class AliAnalysisTaskPP : public AliAnalysisTaskSE
 public:
 	enum {kMinModule = 1, kMaxModule=4};
 	AliAnalysisTaskPP();
-	AliAnalysisTaskPP(const char * name, TList * selections);
+	AliAnalysisTaskPP(const char * name, TList * selections, Int_t nmix = 100);
 	virtual ~AliAnalysisTaskPP();
 
 	void   UserCreateOutputObjects();
@@ -41,6 +41,7 @@ private:
 	MixingSample * fPreviousEvents;
 	TList * fSelections;     // analysis instance
 	TH2I  * fPHOSBadMap[kMaxModule - kMinModule + 1];  // bad channel maps
+	Int_t fNMixedEvents;     // number of events used for mixing
 	Int_t fNBad;             // number of entries in fBadCells
 	Int_t * fBadCells;       //[fNBad] bad cells array
 
