@@ -15,12 +15,23 @@ class SingleImageMultiplePlots(TestImages, GeneralTest):
 		pfile    = 'results/test.pdf'
 		data = { 
 					"histograms": 
-						{ rfile + '/' + histname: 
-							{"label": "plot %d" % i, "color": 1000 + i, "title": "Testing same plots ;x - quantity; y - observable"}
-							for i, histname in enumerate(histnames)
-						},
+					{
+						rfile + '/' + histname: 
+						{
+							"label": "plot %d" % i,
+							"color": 1000 + i,
+							"title": "Testing same plots ;x - quantity; y - observable"
+						}
+						for i, histname in enumerate(histnames)
+					},
 					"canvas": 
-						{"size":  5, "logy":  1, "gridx": 1, "gridy": 1, "legend": [0.78, 0.7, 0.89, 0.88], "output": pfile} 
+					{
+						"size":  5,
+						"logy":  1,
+						"gridx": 1,
+						"gridy": 1, "legend": [0.78, 0.7, 0.89, 0.88],
+						"output": pfile
+					} 
 				}
 
 		with open(conffile, 'w') as outfile:

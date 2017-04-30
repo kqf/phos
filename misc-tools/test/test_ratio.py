@@ -15,12 +15,25 @@ class TestRatio(TestImages, GeneralTest):
 		pfile    = 'results/test.pdf'
 		data = { 
 					"histograms": 
-						{ rfile + '/' + histname: 
-							{"label": histname, "color": 1001 + i, "title": "Testing ratio plots ;x - quantity; y - observable", 'ratio': i}
-							for i, histname in enumerate(histnames)
-						},
+					{
+						rfile + '/' + histname: 
+						{
+							"label": histname,
+							"color": 1001 + i,
+							"title": "Testing ratio plots ;x - quantity; y - observable",
+							'ratio': i
+						}
+						for i, histname in enumerate(histnames)
+					},
 					"canvas": 
-						{"size":  5, "logy":  1, "gridx": 1, "gridy": 1, "legend": [0.78, 0.7, 0.89, 0.88], "output": pfile} 
+					{
+						"size":  5,
+						"logy":  1,
+						"gridx": 1,
+						"gridy": 1,
+						"legend": [0.78, 0.7, 0.89, 0.88],
+						"output": pfile
+					} 
 				}
 
 		with open(conffile, 'w') as outfile:
@@ -36,6 +49,4 @@ class TestRatio(TestImages, GeneralTest):
 			histogram.FillRandom('f%d' % i, 100000)
 			histogram.Write()
 		ofile.Close()
-
-	# def testDrawing(self):
-		# pass
+		

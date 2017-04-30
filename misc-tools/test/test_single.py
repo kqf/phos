@@ -15,11 +15,24 @@ class SingleImage(TestImages, GeneralTest):
 		pfile    = 'results/test.pdf'
 		data = { 
 					"histograms": 
-						{ rfile + '/' + histname: 
-							{"label": "test 1", "color": 37, "title": "Test;x;y", "yprecision": "/ %.2f MeV"}
-						},
+					{
+						rfile + '/' + histname: 
+						{
+							"label": "test 1",
+							"color": 37,
+							"title": "Test;x;y",
+							"yprecision": "/ %.2f MeV"
+						}
+					},
 					"canvas": 
-						{"size":  5, "logy":  1,"gridy": 1, "gridx": 1, "legend": [0.7, 0.7, 0.89, 0.88], "output": pfile} 
+					{
+						"size":  5,
+						"logy":  1,
+						"gridy": 1,
+						"gridx": 1,
+						"legend": [0.7, 0.7, 0.89, 0.88],
+						"output": pfile
+					} 
 				}
 
 		with open(conffile, 'w') as outfile:
