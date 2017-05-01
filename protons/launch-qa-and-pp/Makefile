@@ -3,7 +3,7 @@
 # MC = kFALSE
 
 
-DATASET = LHC16j2b1
+DATASET = LHC16j2b2
 DPART = second
 MC = kTRUE
 

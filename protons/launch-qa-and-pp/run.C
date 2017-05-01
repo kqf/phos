@@ -7,7 +7,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     if (!alienHandler) return;
 
-    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_QA");
+    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
@@ -45,7 +45,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref =  isMC ? "MC": "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", isMC ? "Run2Default" : "", 1, isMC);
+
+    TString tenderOption = isMC ? "Run2Default" : "";
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
+
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
@@ -57,7 +60,14 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     if (useJDL)
         files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## MC + tender with Run2Default option";
+    TString msg = "## ";
+
+    if (tenderOption)
+    {
+        msg += " with tender option ";
+        msg += tenderOption;
+    }
+
     files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC);
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC);
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
