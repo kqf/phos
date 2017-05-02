@@ -7,17 +7,8 @@ import json
 from math import sqrt
 from spectrum.sutils import tsallis
 import spectrum.comparator as cmpr
+from test.software.test_compare import get_spectrum
 
-
-
-def get_spectrum(name, a, b, par):
-    function = ROOT.TF1('f' + name, lambda x, p: tsallis(x, p, a, a), 0.3, 15, 3)
-    function.SetParameters(*par)
-    histogram = ROOT.TH1F(name + '_spectrum', '%s p_{T} spectrum; p_{T}, GeV/c' % name, 100, 0.3, 15)
-    histogram.FillRandom('f' + name, 1000000)
-    histogram.label = name
-    histogram.Sumw2()
-    return histogram
 
 class Test(unittest.TestCase):
 
@@ -34,3 +25,34 @@ class Test(unittest.TestCase):
         distorted.SetBinContent(80, distorted.GetBinContent(80) * 100)
         distorted.label = 'distorted'
         diff.compare_set_of_histograms([[main], [distorted]])
+
+    # @unittest.skip('test')
+    def testCompareTwoWithFit(self):
+        """
+            Checks multiple fitting ranges. 
+        """
+   
+        diff = cmpr.Comparator(ratiofit=(0, 0))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff = cmpr.Comparator(ratiofit=(0, 10))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff = cmpr.Comparator(ratiofit=(5, 10))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        diff = cmpr.Comparator(ratiofit=(5, 0))
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+    # @unittest.skip('test')
+    def testCompareRations(self):
+        """
+            This one is needed to compare "double ratio" plots.
+        """
+        diff = cmpr.Comparator()
+        diff.compare_ratios(self.data, self.data[2])
+
+   # @unittest.skip('test')
+    def testCompareRations(self):
+        diff = cmpr.Comparator()
+        diff.compare_ratios(self.data, self.data[2]) 
