@@ -11,17 +11,15 @@ class AliCaloCellsQAPt: public AliCaloCellsQA
 public:
 	AliCaloCellsQAPt(): AliCaloCellsQA(), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) {} // Required for reading
 	AliCaloCellsQAPt(Int_t nmods, Int_t det = kPHOS, Int_t startRunNumber = 100000, Int_t endRunNumber = 300000):
-		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) {}
+		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) 
+		{
+			// NB: Use it here as 
+			fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("fhNAllEventsProcessedPerRun"));
+			fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
+			fListOfHistos->Add(fhNAllEventsProcessedPerRun);				
+		}
 	virtual void FillPi0Mass(TObjArray * clusArray, Double_t vertexXYZ[3]);
 	void SetPairPtCut(Double_t c) { mPairPtCut = c; }
-	virtual void Init(Int_t nmods, Int_t det, Int_t startRunNumber, Int_t endRunNumber)
-	{
-		AliCaloCellsQA::Init(nmods, det, startRunNumber, endRunNumber);
-		fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("fhNAllEventsProcessedPerRun"));
-		fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
-		fListOfHistos->Add(fhNAllEventsProcessedPerRun);	
-	} 
-
 
 protected:
 	Int_t CheckClusterGetSM(AliVCluster * clus)
@@ -33,7 +31,6 @@ protected:
 
 		// Float_t timesigma = 12.5e-9;
 		// if (TMath::Abs(clus->GetTOF()) > timesigma) return -1;
-
 		return AliCaloCellsQA::CheckClusterGetSM(clus);
 	}
 
