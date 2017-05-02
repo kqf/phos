@@ -26,6 +26,7 @@ class Test(unittest.TestCase):
             particles = json.load(f)
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
+    # @unittest.skip('test')
     def testCompareMultiple(self):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms(zip(*[self.data, self.data]))
@@ -35,6 +36,24 @@ class Test(unittest.TestCase):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
+    def testPriority(self):
+        diff = cmpr.Comparator()
+
+        data = self.data[0].Clone()
+        data.label = 'distorted'
+
+        # Distort the data intentionally
+        data.SetBinContent(2, data.GetBinContent(2) * 100)
+        data.SetBinContent(55, -1 * data.GetBinContent(55))
+
+        # Without priority
+        diff.compare_set_of_histograms([[self.data[0]], [data]])        
+
+        data.priority = 0
+        self.data[0].priority = 999
+
+        # With priority
+        diff.compare_set_of_histograms([[self.data[0]], [data]])        
 
     # @unittest.skip('test')
     def testCompareSingle(self):

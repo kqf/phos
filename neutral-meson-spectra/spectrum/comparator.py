@@ -96,8 +96,14 @@ class Visualizer(object):
         func = ratio.GetFunction("pol1")
         func.SetLineColor(38)
 
+    def prepare_hists(self, hists):
+        for h in hists:
+            if not 'priority' in dir(h):
+                h.priority = 999
+
 
     def compare_visually(self, hists, ci, stop = True, canvas = None):
+        self.prepare_hists(hists)
         canvas, mainpad, ratio = self.preare_ratio_plot(hists, canvas)
 
         if len(hists) == 1:
@@ -112,8 +118,9 @@ class Visualizer(object):
         mainpad.SetGridx()
         mainpad.SetGridy()
 
-        hists[0].SetStats(False)
-        hists[0].DrawCopy()
+        first_hist = sorted(hists, key=lambda x: x.priority)[0]
+        first_hist.SetStats(False)
+        first_hist.DrawCopy()
         for i, h in enumerate(hists): 
             h.SetStats(False)
             h.SetLineColor(ci + i)
@@ -125,7 +132,7 @@ class Visualizer(object):
 
         legend.Draw('same')
 
-        if 'spectr' in hists[0].GetName() or 'logy' in dir(hists[0]):
+        if 'spectr' in first_hist.GetName() or 'logy' in dir(first_hist):
             ROOT.gPad.SetLogy()
 
         # ROOT.gStyle.SetOptStat(0)

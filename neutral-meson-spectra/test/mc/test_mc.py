@@ -3,6 +3,7 @@
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
 from spectrum.sutils import get_canvas
+from spectrum.options import Options
 
 import unittest
 
@@ -10,14 +11,14 @@ class CheckMC(unittest.TestCase):
 
     def setUp(self):
         super(CheckMC, self).setUp()
-        f = lambda x, y: Spectrum(x, label=y, mode = 'q').evaluate()
+        f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
 
         # The problem with the time distribution in MC:
         #  The right flag in AddTender should be used for MC case.
 
-        data =  f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data')
-        pythia = f(TimecutInput('input-data/Pythia-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'Pythia')
-        epos =   f(TimecutInput('input-data/EPOS-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'EPOS') 
+        data =  f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data', Options())
+        pythia = f(TimecutInput('input-data/Pythia-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'Pythia', Options(priority = 0))
+        epos =   f(TimecutInput('input-data/EPOS-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'EPOS', Options(priority = 0)) 
 
         # self.results = [[data, data], [data, data], [data, data]]
         self.results = [[data, pythia], [data, epos], [epos, pythia]]

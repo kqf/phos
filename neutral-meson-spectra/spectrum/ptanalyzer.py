@@ -10,11 +10,12 @@ ROOT.TH1.AddDirectory(False)
 
 
 class PtDependent(object):
-    def __init__(self, name, title, label):
+    def __init__(self, name, title, label, priority):
         super(PtDependent, self).__init__()
         self.title = title
         self.label = label
         self.name = name + '_' + filter(str.isalnum, self.label)
+        self.priority = priority
 
     def get_hist(self, bins, data, widths = False):
         from array import array
@@ -26,6 +27,7 @@ class PtDependent(object):
         [hist.SetBinContent(i + 1, m[0] / w) for i, (m, w) in enumerate(zip(data, widths))]
         [hist.SetBinError(i + 1, m[1] / w) for i, (m, w) in enumerate(zip(data, widths))]
         hist.label = self.label
+        hist.priority = self.priority
         return hist 
 
     @staticmethod
@@ -48,6 +50,7 @@ class PtAnalyzer(object):
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
         self.dead_mode = ('dead' in mode)
+        self.options = options
 
         # Configure analysis
         with open(options.ptconfig) as f:
@@ -77,13 +80,13 @@ class PtAnalyzer(object):
 
     def histograms(self, data):
         # Book histograms
-        histgenerators = [PtDependent('mass', '%s mass position;;m, GeV/c^{2}' % self.partlabel, self.label),
-                          PtDependent('width', '%s peak width ;;#sigma, GeV/c^{2}' % self.partlabel, self.label),
-                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label),  
-                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label),
-                          PtDependent('npi0', 'Number of %ss in each p_{T} bin;; #frac{dN}{dp_{T}}' % self.partlabel, self.label),  
-                          PtDependent('cball_alpha', 'Crystal ball parameter #alpha;; #alpha', self.label),
-                          PtDependent('cball_n', 'Crystal ball parameter n;; n', self.label)
+        histgenerators = [PtDependent('mass', '%s mass position;;m, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
+                          PtDependent('width', '%s peak width ;;#sigma, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
+                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
+                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label, self.options.priority),
+                          PtDependent('npi0', 'Number of %ss in each p_{T} bin;; #frac{dN}{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
+                          PtDependent('cball_alpha', 'Crystal ball parameter #alpha;; #alpha', self.label, self.options.priority),
+                          PtDependent('cball_n', 'Crystal ball parameter n;; n', self.label, self.options.priority)
                           ]
 
         # Extract bins
