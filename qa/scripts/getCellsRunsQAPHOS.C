@@ -146,11 +146,6 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // First, fill run numbers ...
   GetRunNumbers(nruns, runNumbers);
   Printf("Total number of runs: %i", nruns);
-  DrawPi0Total(nruns, runNumbers,  1);
-  DrawPi0Total(nruns, runNumbers,  2);
-  DrawPi0Total(nruns, runNumbers,  3);
-  DrawPi0Total(nruns, runNumbers,  4);
-
 
 
   // int tttest[] = {236850, 236813, 236563, 236137};
@@ -170,6 +165,12 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // ... draw events distribution ...
   // (the last argument is number of bins in this distribution)
   DrawRunsDistribution(nruns, runNumbers, 100);
+
+  DrawPi0Total(nruns, runNumbers,  1);
+  DrawPi0Total(nruns, runNumbers,  2);
+  DrawPi0Total(nruns, runNumbers,  3);
+  DrawPi0Total(nruns, runNumbers,  4);
+
 
   // ... and exclude runs with number of events < 1k.
 
@@ -2475,26 +2476,28 @@ void GetRunNumbers(Int_t &nruns, Int_t runNumbers[])
 }
 
 //_________________________________________________________________________
-Int_t GetNumberOfEvents(Int_t run)
+Int_t GetNumberOfEvents(Int_t run, const char * trigger = "hNEventsProcessedPerRun")
 {
   // Return number of events in run;
   // run -- run number.
 
-  TH1* hNEventsProcessedPerRun = (TH1*) gInputFile->Get("hNEventsProcessedPerRun");
+  TH1* hNEventsProcessedPerRun = (TH1*) gInputFile->Get(trigger);
+  if(! hNEventsProcessedPerRun)
+    return 0;
 
   // round the number of events to avoid precision surprizes
   return TMath::Nint( hNEventsProcessedPerRun->GetBinContent(hNEventsProcessedPerRun->FindBin(run)) );
 }
 
 //_________________________________________________________________________
-Long64_t GetTotalNumberOfEvents(Int_t nruns, Int_t runNumbers[])
+Long64_t GetTotalNumberOfEvents(Int_t nruns, Int_t runNumbers[], const char * trigger = "hNEventsProcessedPerRun")
 {
   // Return total number of events in all runs
 
   Long64_t ntotal = 0;
 
   for (Int_t i = 0; i < nruns; i++)
-    ntotal += GetNumberOfEvents(runNumbers[i]);
+    ntotal += GetNumberOfEvents(runNumbers[i], trigger);
 
   return ntotal;
 }
@@ -2552,6 +2555,67 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   c1->Update();
   c1->SaveAs(TString(c1->GetName()) + ".pdf");
   c1->SaveAs(TString(c1->GetName()) + ".png");
+
+  TH1* hNAllEventsPerRunIndex = new TH1F("hNAllEventsPerRunIndex", "Number of processed events per run index", nruns,0,nruns);
+  if(!hNAllEventsPerRunIndex)
+
+  SetRunLabel(hNAllEventsPerRunIndex, nruns, runNumbers, 1);
+  // ... and fill it
+  for (Int_t i = 0; i < nruns; i++)
+    hNAllEventsPerRunIndex->SetBinContent(i+1, GetNumberOfEvents(runNumbers[i], "hNAllEventsProcessedPerRun"));
+  SetRunLabel(hNAllEventsPerRunIndex, nruns, runNumbers, 1);
+  hNAllEventsPerRunIndex->SetYTitle("Number of events");
+
+  TCanvas *c2 = new TCanvas("hNAllEventsPerRunIndex","hNAllEventsPerRunIndex", 1000, 707);
+  c2->Divide(1, 2);
+
+  c2->cd(1);
+  gPad->SetLeftMargin(0.06);
+  gPad->SetRightMargin(0.04);
+  gPad->SetTopMargin(0.10);
+  gPad->SetBottomMargin(0.14);
+  gPad->SetGridx();
+  gPad->SetGridy(); 
+  hNAllEventsPerRunIndex->SetTitleOffset(0.6,"Y");
+  hNAllEventsPerRunIndex->SetTickLength(0.01,"Y");
+  hNAllEventsPerRunIndex->SetLabelSize(0.06,"X");
+  hNAllEventsPerRunIndex->SetLineColor(46);
+
+
+  // Create eff histogram
+  TH1 * hEff = (TH1F * ) hNEventsPerRunIndex->Clone("hTrigEffPerRunIndex");
+  SetRunLabel(hEff, nruns, runNumbers, 1);
+
+  hEff->SetTitle("Trigger efficiency, MB/all events");
+  hEff->SetTitleOffset(0.6,"Y");
+  hEff->SetTickLength(0.01,"Y");
+  hEff->SetLabelSize(0.06,"X");
+  hEff->SetLineColor(38);
+
+
+  // Draw both
+  hNAllEventsPerRunIndex->Draw();
+  hEff->DrawCopy("same");
+
+  TLegend *leg = new TLegend(0.25,0.75,0.35,0.85);
+  leg->AddEntry(hNAllEventsPerRunIndex, "all", "l");
+  leg->AddEntry(hEff, "MB", "l");
+  leg->Draw("same");
+
+
+  c2->cd(2);
+  gPad->SetLeftMargin(0.06);
+  gPad->SetRightMargin(0.04);
+  gPad->SetTopMargin(0.10);
+  gPad->SetBottomMargin(0.14);
+  gPad->SetGridx();
+  gPad->SetGridy(); 
+
+  hEff->Divide(hNAllEventsPerRunIndex);
+  hEff->Draw();
+
+  c2->SaveAs(TString(c2->GetName()) + ".pdf");
+  c2->SaveAs(TString(c2->GetName()) + ".png");
 }
 //x1->SaveAs(TString(c1->GetName()) + ".pdf");
 

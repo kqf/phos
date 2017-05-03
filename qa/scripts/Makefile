@@ -1,6 +1,6 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC16j2b2
+PERIOD=LHC16j2b1
 # NAME=iteration2
 NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
