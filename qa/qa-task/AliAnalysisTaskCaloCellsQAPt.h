@@ -14,7 +14,8 @@ public:
 		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) 
 		{
 			// NB: Use it here as 
-			fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("fhNAllEventsProcessedPerRun"));
+			fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("hNAllEventsProcessedPerRun"));
+			fhNAllEventsProcessedPerRun->SetDirectory(0);
 			fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
 			fListOfHistos->Add(fhNAllEventsProcessedPerRun);				
 		}

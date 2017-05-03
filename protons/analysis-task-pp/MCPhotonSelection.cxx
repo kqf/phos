@@ -62,7 +62,9 @@ void MCPhotonSelection::InitSelectionHistograms()
 		hist->Sumw2();
 	}
 
-	fListOfHistos->Add(new TH1F("hLatePrimaryParticles", "Particles with E > 5 GeV and tof > 0.15 ns; PDG code", 6000, 0.5, 6000.5));
+	fListOfHistos->Add(new TH1F("hPrimaryParticles", "Primary Particles; PDG code", 6000, 0.5, 6000.5));
+	fListOfHistos->Add(new TH1F("hEnergeticParticles", "Primary Particles with E > 1 GeV, and tof > 0.05 ns; PDG code", 6000, 0.5, 6000.5));
+	fListOfHistos->Add(new TH1F("hLatePrimaryParticles", "Primalry Particles with E > 5 GeV and tof > 0.15 ns; PDG code", 6000, 0.5, 6000.5));
 }
 
 
@@ -147,6 +149,11 @@ void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray 
 			r2 = parent->Xv() * parent->Xv() + parent->Yv() * parent->Yv() ;
 		}
 	}
+
+	FillHistogram("hPrimaryParticles", parent->GetPdgCode());
+
+	if(cluster->GetTOF() > 0.05e-6 && cluster->E() > 1)
+		FillHistogram("hEnergeticParticles", parent->GetPdgCode());
 
 	if(cluster->GetTOF() > 0.15e-6 && cluster->E() > 5)
 		FillHistogram("hLatePrimaryParticles", parent->GetPdgCode());
