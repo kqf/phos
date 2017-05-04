@@ -11,18 +11,29 @@ class AliCaloCellsQAPt: public AliCaloCellsQA
 public:
 	AliCaloCellsQAPt(): AliCaloCellsQA(), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) {} // Required for reading
 	AliCaloCellsQAPt(Int_t nmods, Int_t det = kPHOS, Int_t startRunNumber = 100000, Int_t endRunNumber = 300000):
-		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1), fhNAllEventsProcessedPerRun(0) 
-		{
-			// NB: Use it here as 
-			fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("hNAllEventsProcessedPerRun"));
-			fhNAllEventsProcessedPerRun->SetDirectory(0);
-			fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
-			fListOfHistos->Add(fhNAllEventsProcessedPerRun);				
-		}
+		AliCaloCellsQA(nmods, det, startRunNumber, endRunNumber), mPairPtCut(1), fhNAllEventsProcessedPerRun(0)
+	{
+		// NB: Use it here as
+		fhNAllEventsProcessedPerRun = dynamic_cast<TH1D *>(fhNEventsProcessedPerRun->Clone("hNAllEventsProcessedPerRun"));
+		fhNAllEventsProcessedPerRun->SetDirectory(0);
+		fhNAllEventsProcessedPerRun->SetTitle("Number of all events vs run number");
+		fListOfHistos->Add(fhNAllEventsProcessedPerRun);
+	}
 	virtual void FillPi0Mass(TObjArray * clusArray, Double_t vertexXYZ[3]);
 	void SetPairPtCut(Double_t c) { mPairPtCut = c; }
 
 protected:
+	virtual void InitTransientMembers(Int_t run)
+	{
+		AliCaloCellsQA::InitTransientMembers(run);
+		// Initializes transient data members -- references to histograms
+		// (e.g. in case the class was restored from a file);
+		// run -- current run number.
+
+		fhNAllEventsProcessedPerRun = (TH1D *) fListOfHistos->FindObject("hNAllEventsProcessedPerRun");
+	}
+
+
 	Int_t CheckClusterGetSM(AliVCluster * clus)
 	{
 		// Reject CPV clusters (new in luster
@@ -38,7 +49,7 @@ protected:
 	Double_t mPairPtCut;
 
 public:
-	TH1D *fhNAllEventsProcessedPerRun; //! This counts all events processed in the run
+	TH1D * fhNAllEventsProcessedPerRun; //! This counts all events processed in the run
 
 private:
 	ClassDef(AliCaloCellsQAPt, 2);
@@ -71,7 +82,7 @@ public:
 	void UserExec(Option_t * opt)
 	{
 		// This is needed to check total number of events
-		Bool_t isSelected = (((AliInputEventHandler*)(AliAnalysisManager::GetAnalysisManager()->GetInputEventHandler()))->IsEventSelected() & AliVEvent::kMB);
+		Bool_t isSelected = (((AliInputEventHandler *)(AliAnalysisManager::GetAnalysisManager()->GetInputEventHandler()))->IsEventSelected() & AliVEvent::kMB);
 
 
 		AliVEvent * event = InputEvent();
