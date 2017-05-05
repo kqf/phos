@@ -42,6 +42,7 @@ protected:
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
 	virtual void FillClusterMC(const AliVCluster * cluster, TClonesArray * particles);
+	virtual void PythiaInfo();
 
 	MCPhotonSelection(const MCPhotonSelection &);
 	MCPhotonSelection & operator = (const MCPhotonSelection &);

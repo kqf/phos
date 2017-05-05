@@ -6,6 +6,9 @@
 
 // --- ROOT system ---
 #include <TParticle.h>
+#include <TProfile.h>
+#include <TFile.h>
+#include <TKey.h>
 #include <TH2F.h>
 
 // --- AliRoot header files ---
@@ -55,6 +58,16 @@ void MCPhotonSelection::InitSelectionHistograms()
 		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_secondary_Radius", n), Form("Generated radius, p_{T} secondary %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
 	}
 
+	// TODO: move these files to separate selection
+
+	TH1F * hist = new TH1F("hXsec", "xsec from pyxsec.root", 1, 0, 1);
+	hist->GetXaxis()->SetBinLabel(1, "<#sigma>");
+	fListOfHistos->Add(hist);
+
+	hist = new TH1F("hTrials", "trials root file", 1, 0, 1);
+	hist->GetXaxis()->SetBinLabel(1, "#sum{ntrials}");
+	fListOfHistos->Add(hist);
+
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
@@ -70,6 +83,7 @@ void MCPhotonSelection::InitSelectionHistograms()
 
 void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
 {
+	PythiaInfo();
 
 	if (! particles)
 		return;
@@ -121,7 +135,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 
 	TObjArray photonCandidates;
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
-	for(Int_t i = 0; i < photonCandidates.GetEntries(); ++i)
+	for (Int_t i = 0; i < photonCandidates.GetEntries(); ++i)
 		FillClusterMC(dynamic_cast<AliVCluster *>(photonCandidates.At(i)), particles);
 
 }
@@ -129,8 +143,8 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 //________________________________________________________________
 void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
 {
-	// Particle # reached PHOS front surface	
-	Int_t primLabel = cluster->GetLabelAt(0) ; 
+	// Particle # reached PHOS front surface
+	Int_t primLabel = cluster->GetLabelAt(0) ;
 	Double_t rcut = 1;
 	AliAODMCParticle * parent = 0;
 
@@ -152,10 +166,10 @@ void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray 
 
 	FillHistogram("hPrimaryParticles", parent->GetPdgCode());
 
-	if(cluster->GetTOF() > 0.05e-6 && cluster->E() > 1)
+	if (cluster->GetTOF() > 0.05e-6 && cluster->E() > 1)
 		FillHistogram("hEnergeticParticles", parent->GetPdgCode());
 
-	if(cluster->GetTOF() > 0.15e-6 && cluster->E() > 5)
+	if (cluster->GetTOF() > 0.15e-6 && cluster->E() > 5)
 		FillHistogram("hLatePrimaryParticles", parent->GetPdgCode());
 
 }
@@ -169,11 +183,11 @@ void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObj
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
-		
+
 		if (clus->GetNCells() < fNCellsCut) continue;
 		if (clus->E() < fClusterMinE) continue;
 
-		// IMPORTANT: Don't apply timing cuts for MC 
+		// IMPORTANT: Don't apply timing cuts for MC
 		// if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
 		candidates->Add(clus);
 
@@ -186,4 +200,35 @@ void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObj
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
 		FillHistogram("EventCounter", 4.5);
+}
+
+
+void MCPhotonSelection::PythiaInfo()
+{
+	// TODO: Move it to separate selection?
+	// Fetch the histgram file
+	TFile * fxsec = TFile::Open("pyxsec_hists.root");
+
+	if(!fxsec)
+	{
+		AliError(Form("There is no pyxsec_hists.root in this directory."));
+		return;
+	}
+
+	// find the tlist we want to be independtent of the name so use the Tkey
+	TKey* key = (TKey*)fxsec->GetListOfKeys()->At(0);
+	if (!key)
+		return;
+
+	TList *list = dynamic_cast<TList*>(key->ReadObj());
+	if (!list)
+		return;
+
+	Float_t xsec    = ((TProfile*)list->FindObject("h1Xsec"))  ->GetBinContent(1);
+	Float_t trials  = ((TH1F*)    list->FindObject("h1Trials"))->GetBinContent(1);
+	fxsec->Close();
+
+	FillHistogram("hXsec", 0.5, xsec);
+	FillHistogram("hTrials", 0.5, trials);
+	AliInfo(Form("xs %f, trial %f.\n", xsec, trials));
 }
