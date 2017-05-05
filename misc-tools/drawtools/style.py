@@ -144,6 +144,16 @@ class SingleStyler(object):
 
         num, denom = sorted(self.hists, key=lambda x: x.ratio)
         ratio = num.Clone(num.GetName() + '_ratio')
+
+        # TODO: Set dynamic scale factor
+        scale = 7./3
+        ratio.SetTitleOffset(num.GetTitleOffset('X')        , 'X')
+        ratio.SetTitleOffset(num.GetTitleOffset('Y') / scale, 'Y')
+        ratio.SetTitleSize(num.GetTitleSize('X') * scale, 'X')
+        ratio.SetTitleSize(num.GetTitleSize('Y') * scale, 'Y')
+        ratio.SetLabelSize(num.GetLabelSize('X') * scale, 'X')
+        ratio.SetLabelSize(num.GetLabelSize('Y') * scale, 'Y')
+
         ratio.rpath = num.rpath
         ratio.Divide(denom)
         ratio.SetTitle('')

@@ -3,11 +3,14 @@
 from drawtools.style import SingleStyler
 
 import ROOT
+import json
 
 ROOT.TH1.AddDirectory(False)
 
 class Offset(SingleStyler):
-    def __init__(self, data):
+    def __init__(self, filename):
+        with open(filename) as f:
+            data = json.load(f) 
         super(Offset, self).__init__(data)
 
 
@@ -20,3 +23,5 @@ class Offset(SingleStyler):
 
         if 'yoffset' in properties:
             obj.SetTitleOffset(properties['yoffset'], "Y")
+
+        return obj
