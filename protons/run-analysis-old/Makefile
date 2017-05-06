@@ -1,11 +1,18 @@
-DATASET = LHC15g6b_3
+DATASET = LHC15g6b
 DPART = first
 MC = kTRUE
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || make unlink 
+	$(call gridstart,$(DATASET)) || make unlink
 	@make unlink || echo "Directory is clean"
-	echo "Started grid analysis" >> .runhistory
+
+terminate: | %.cxx
+	$(call terminatestart,$(DATASET))
+	@make unlink || echo "Directory is clean"
+
+download: | %.cxx
+	$(call downloadstart,$(DATASET))
+	@make unlink || echo "Directory is clean"
 
 %.cxx:
 	make unlink
@@ -17,17 +24,6 @@ grid: | %.cxx
 
 unlink:
 	find -type l -delete
-
-terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || make unlink
-	@make unlink || echo "Directory is clean"
-	echo "Terminated grid analysis" >> .runhistory
-
-download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || make unlink
-	make upload
-	@make unlink || echo "Directory is clean"
-	echo "Terminated grid analysis" >> .runhistory
 
 # Ignore problems with ALICE::RRC-KI::SE
 force-download:
@@ -52,6 +48,43 @@ upload:
 
 clean:
 	rm *.so *.d *~ Task*
+
+
+gridjetjet: | %.cxx
+	$(call jetjet,gridstart,$(DATASET)) || make unlink
+	@make unlink || echo "Directory is clean"
+
+terminatejetjet: | %.cxx
+	$(call jetjet,terminatestart,$(DATASET)) || make unlink
+	@make unlink || echo "Directory is clean"
+
+downloadjetjet: | %.cxx
+	$(call jetjet,downloadstart,$(DATASET)) || make unlink
+	@make unlink || echo "Directory is clean"
+
+
+
+PtBins = 20
+define jetjet
+	$(foreach var,$(PtBins),$(call $(1),$(2)_$(var));)
+endef
+
+define gridstart
+	root -l -b -q 'run.C("$(1)", "grid", "full", "$(DPART)", $(MC))' 
+	echo "Started grid analysis on" "$(1)" >> .runhistory
+endef
+
+
+define terminatestart
+	root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC))'
+	echo "Terminated grid analysis" >> .runhistory	
+endef
+
+define downloadstart
+	root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
+	$(call upload_result,AnalysisResults,$(1))
+	echo "Terminated grid analysis" >> .runhistory
+endef 
 
 # output direcotry, filename.root, where to save
 define save_runs

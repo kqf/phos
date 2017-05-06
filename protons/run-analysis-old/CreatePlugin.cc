@@ -35,5 +35,6 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 
 	plugin->SetExecutable(TString(plugin->GetExecutable()).ReplaceAll(".sh", ptbin + ".sh"));
 	plugin->SetGridOutputDir(TString(plugin->GetGridOutputDir()) + ptbin);
+	// plugin->SetOverwriteMode(kFALSE);
 	return plugin;
 }
