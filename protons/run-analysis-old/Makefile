@@ -64,13 +64,14 @@ downloadjetjet: | %.cxx
 
 
 
-PtBins = 20
+PtBins = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 define jetjet
 	$(foreach var,$(PtBins),$(call $(1),$(2)_$(var));)
 endef
 
 define gridstart
 	root -l -b -q 'run.C("$(1)", "grid", "full", "$(DPART)", $(MC))' 
+	rm -f *.xml .*xml
 	echo "Started grid analysis on" "$(1)" >> .runhistory
 endef
 

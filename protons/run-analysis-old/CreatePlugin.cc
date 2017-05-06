@@ -34,7 +34,8 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
 	plugin->SetExecutable(TString(plugin->GetExecutable()).ReplaceAll(".sh", ptbin + ".sh"));
-	plugin->SetGridOutputDir(TString(plugin->GetGridOutputDir()) + ptbin);
-	// plugin->SetOverwriteMode(kFALSE);
+	// plugin->SetGridOutputDir(TString(plugin->GetGridOutputDir()) + ptbin);
+	plugin->SetGridWorkingDir(TString(plugin->GetGridWorkingDir()) + "/" + ptbin);
+	plugin->SetOverwriteMode(kTRUE);
 	return plugin;
 }
