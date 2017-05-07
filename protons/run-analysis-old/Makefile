@@ -1,4 +1,4 @@
-DATASET = LHC15g6b
+DATASET = LHC15g6c
 DPART = first
 MC = kTRUE
 
@@ -64,9 +64,18 @@ downloadjetjet: | %.cxx
 
 
 
-PtBins = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+PtBins1 = 1 2 3 4 5 
+PtBins2 = 6 7 8 9 10 
+PtBins3 = 11 12 13 14 15 
+PtBins4 = 16 17 18 19 20
 define jetjet
-	$(foreach var,$(PtBins),$(call $(1),$(2)_$(var));)
+	$(foreach var,$(PtBins1),$(call $(1),$(2)_$(var));)
+	sleep 600
+	$(foreach var,$(PtBins2),$(call $(1),$(2)_$(var));)
+	sleep 600
+	$(foreach var,$(PtBins3),$(call $(1),$(2)_$(var));)
+	sleep 600
+	$(foreach var,$(PtBins4),$(call $(1),$(2)_$(var));)
 endef
 
 define gridstart
