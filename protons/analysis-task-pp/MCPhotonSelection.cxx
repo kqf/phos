@@ -7,7 +7,9 @@
 // --- ROOT system ---
 #include <TParticle.h>
 #include <TProfile.h>
+#include <TSystem.h>
 #include <TFile.h>
+#include <TTree.h>
 #include <TKey.h>
 #include <TH2F.h>
 
@@ -15,6 +17,7 @@
 #include <AliLog.h>
 #include <AliVCluster.h>
 #include <AliAODMCParticle.h>
+#include <AliAnalysisManager.h>
 
 #include <iostream>
 using namespace std;
@@ -152,14 +155,14 @@ void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray 
 	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
 	if (primLabel > -1)
 	{
-		AliAODMCParticle * prim = (AliAODMCParticle*)particles->At(primLabel) ;
+		AliAODMCParticle * prim = (AliAODMCParticle *)particles->At(primLabel) ;
 		Int_t iparent = primLabel;
 		parent = prim;
 		Double_t r2 = prim->Xv() * prim->Xv() + prim->Yv() * prim->Yv() ;
 		while ((r2 > rcut * rcut) && (iparent > -1))
 		{
 			iparent = parent->GetMother();
-			parent = (AliAODMCParticle*)particles->At(iparent);
+			parent = (AliAODMCParticle *)particles->At(iparent);
 			r2 = parent->Xv() * parent->Xv() + parent->Yv() * parent->Yv() ;
 		}
 	}
@@ -207,25 +210,43 @@ void MCPhotonSelection::PythiaInfo()
 {
 	// TODO: Move it to separate selection?
 	// Fetch the histgram file
-	TFile * fxsec = TFile::Open("pyxsec_hists.root");
+	TTree * tree = AliAnalysisManager::GetAnalysisManager()->GetTree();
 
-	if(!fxsec)
+	if (!tree)
+	{
+		AliError(Form("%s - UserNotify: No current tree!", GetName()));
+		return;
+	}
+
+	TFile * curfile = tree->GetCurrentFile();
+	if (!curfile)
+	{
+		AliError(Form("%s - UserNotify: No current file!", GetName()));
+		return;
+	}
+
+	TString file(curfile->GetName());
+	file.ReplaceAll(gSystem->BaseName(file.Data()), "");
+
+	TFile * fxsec = TFile::Open(Form("%s%s", file.Data(), "pyxsec_hists.root"));
+
+	if (!fxsec)
 	{
 		AliError(Form("There is no pyxsec_hists.root in this directory."));
 		return;
 	}
 
 	// find the tlist we want to be independtent of the name so use the Tkey
-	TKey* key = (TKey*)fxsec->GetListOfKeys()->At(0);
+	TKey * key = (TKey *)fxsec->GetListOfKeys()->At(0);
 	if (!key)
 		return;
 
-	TList *list = dynamic_cast<TList*>(key->ReadObj());
+	TList * list = dynamic_cast<TList *>(key->ReadObj());
 	if (!list)
 		return;
 
-	Float_t xsec    = ((TProfile*)list->FindObject("h1Xsec"))  ->GetBinContent(1);
-	Float_t trials  = ((TH1F*)    list->FindObject("h1Trials"))->GetBinContent(1);
+	Float_t xsec    = ((TProfile *)list->FindObject("h1Xsec"))  ->GetBinContent(1);
+	Float_t trials  = ((TH1F *)    list->FindObject("h1Trials"))->GetBinContent(1);
 	fxsec->Close();
 
 	FillHistogram("hXsec", 0.5, xsec);
