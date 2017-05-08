@@ -39,7 +39,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	// This is to avoid limitation on grid jobs
 	//
 
-	Int_t msize = 40;
+	Int_t msize = 200;
 	Int_t start = (dpart.Contains("first") || v.size() <  msize) ? 0 : v.size() / 2;
 	Int_t stop =  (dpart.Contains("first") && !(v.size() <  msize)) ? v.size() / 2 : v.size();
 
