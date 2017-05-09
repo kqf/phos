@@ -1,4 +1,4 @@
-DATASET = LHC15g6f
+DATASET = LHC15g6e
 DPART = first
 MC = kTRUE
 

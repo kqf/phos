@@ -10,11 +10,12 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 {
 
 	Int_t pivot = inperiod.Index("_");
-	TString ptbin = inperiod(pivot + 1, inperiod.Length());
-	TString period = inperiod(0, pivot);
 
-	// Extract period and reconstruction pass
-	TString dir = isMC ? inperiod.ReplaceAll("_", "/") : TString(period, isMC ? 9 : 6); // fancy slicing
+	TString ptbin = (pivot == -1) ? TString() : inperiod(pivot + 1, inperiod.Length());
+	TString period = (pivot == -1) ? inperiod : inperiod(0, pivot);
+
+
+	TString fperiod = isMC ? inperiod.ReplaceAll("_", "/") : period; // fancy slicing
 
 	// Maximal size of the dataset that shouldn't be slitted on two halves
 	Int_t msize = 200;	
@@ -22,23 +23,34 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 	// Use default setup for the plugin
 	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
-
-	TString reconstruction = isMC ? "": period;
-	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
-	reconstruction.ReplaceAll("-", "_");
-
+	// Setup data path
 	TString globaldir = isMC ? "/alice/sim/2015/" : "/alice/data/2010/";
-	plugin->SetGridDataDir(globaldir + dir);
+	plugin->SetGridDataDir(globaldir + fperiod);
 
-	cout << globaldir + dir << endl;
+	TString reconstruction = isMC ? "AOD/" : "pass4/AOD172/";
+	plugin->SetDataPattern("/" + reconstruction + "*/AliAOD.root");
 
-	TString datasuffix = isMC ? "AOD/" : "/*.";
-	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
-	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
+	if(ptbin.Length())
+	{
+		cout << ptbin << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		cout << "* * * * * * * * * * *" << endl;
+		plugin->SetExecutable(TString(plugin->GetExecutable()).ReplaceAll(".sh", ptbin + ".sh"));
+		plugin->SetGridWorkingDir(TString(plugin->GetGridWorkingDir()) + "/" + ptbin);
+		plugin->SetOverwriteMode(kTRUE);
+	}
 
-	plugin->SetExecutable(TString(plugin->GetExecutable()).ReplaceAll(".sh", ptbin + ".sh"));
-	// plugin->SetGridOutputDir(TString(plugin->GetGridOutputDir()) + ptbin);
-	plugin->SetGridWorkingDir(TString(plugin->GetGridWorkingDir()) + "/" + ptbin);
-	plugin->SetOverwriteMode(kTRUE);
 	return plugin;
 }
