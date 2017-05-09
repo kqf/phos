@@ -5,7 +5,7 @@
 using std::cout;
 using std::endl;
 
-AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
+AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC, Int_t msize = 200)
 {
 	if (period.Length() < 6)
 		cerr << "Error: Wrong run period (too short)" << period << endl;
@@ -39,7 +39,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	// This is to avoid limitation on grid jobs
 	//
 
-	Int_t msize = 200;
+	// Int_t msize = 200;
 	Int_t start = (dpart.Contains("first") || v.size() <  msize) ? 0 : v.size() / 2;
 	Int_t stop =  (dpart.Contains("first") && !(v.size() <  msize)) ? v.size() / 2 : v.size();
 

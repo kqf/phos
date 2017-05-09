@@ -6,8 +6,11 @@ using std::endl;
 
 AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
 {
+	// Maximal size of the dataset that shouldn't be slitted on two halves
+	Int_t msize = 50;	
+
 	// Use default setup for the plugin
-	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC);
+	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
 	// Extract period and reconstruction pass
 	TString dir(period, isMC ? 9 : 6); // fancy slicing

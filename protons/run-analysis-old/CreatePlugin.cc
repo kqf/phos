@@ -16,8 +16,11 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 	// Extract period and reconstruction pass
 	TString dir = isMC ? inperiod.ReplaceAll("_", "/") : TString(period, isMC ? 9 : 6); // fancy slicing
 
+	// Maximal size of the dataset that shouldn't be slitted on two halves
+	Int_t msize = 200;	
+
 	// Use default setup for the plugin
-	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC);
+	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
 
 	TString reconstruction = isMC ? "": period;

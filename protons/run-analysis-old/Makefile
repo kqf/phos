@@ -65,8 +65,8 @@ downloadjetjet: | %.cxx
 
 
 # PtBins = 20 19 18 17 16 
-PtBins = 15 14 13 12 11 
-# PtBins = 10 9 8 7 6 
+# PtBins = 15 14 13 12 11 
+PtBins = 11 10 9 8 7 6 
 # PtBins = 5 4 3 2 1
 
 define jetjet
