@@ -83,12 +83,12 @@ def get_canvas(x = 1., y = 1, resize = False, scale = 6):
         cx, cy = map(int, [128 * x * scale, 96 * y * scale])
         canvas.SetWindowSize(cx, cy)
         canvas.SetCanvasSize(cx, cy)
-        return canvas
+        return adjust_canvas(canvas)
 
 
     canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
     ticks(canvas)
-    return canvas
+    return adjust_canvas(canvas)
 
 
 

@@ -44,16 +44,19 @@ class Visualizer(object):
         ratio.SetTitle('')
         ratio.GetYaxis().SetTitle(label)
         ratio.Draw()
+        scale = 7./3
 
-        ratio.GetYaxis().SetTitleOffset(0.10)
-        ratio.GetYaxis().SetTitleSize(0.10)
-        ratio.GetYaxis().SetTitleOffset(0.5)
-        ratio.GetYaxis().SetLabelSize(0.08) 
+        ratio.SetTitleOffset(a.GetTitleOffset('X')        , 'X')
+        ratio.SetTitleOffset(a.GetTitleOffset('Y') / scale, 'Y')
+        ratio.SetTitleSize(a.GetTitleSize('X') * scale, 'X')
+        ratio.SetTitleSize(a.GetTitleSize('Y') * scale, 'Y')
+        ratio.SetLabelSize(a.GetLabelSize('X') * scale, 'X')
+        ratio.SetLabelSize(a.GetLabelSize('Y') * scale, 'Y')
         ratio.GetYaxis().CenterTitle(True)
 
-        ratio.GetXaxis().SetTitleSize(0.1)
-        ratio.GetXaxis().SetTitleOffset(0.9) 
-        ratio.GetXaxis().SetLabelSize(0.10)  
+        # ratio.GetXaxis().SetTitleSize(0.1)
+        # ratio.GetXaxis().SetTitleOffset(0.9) 
+        # ratio.GetXaxis().SetLabelSize(0.10)  
         self.set_ratio_yaxis(ratio)
 
         ROOT.gPad.SetGridy()

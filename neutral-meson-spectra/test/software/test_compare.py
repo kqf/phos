@@ -13,7 +13,7 @@ import spectrum.comparator as cmpr
 def get_spectrum(name, a, b, par):
     function = ROOT.TF1('f' + name, lambda x, p: tsallis(x, p, a, a), 0.3, 15, 3)
     function.SetParameters(*par)
-    histogram = ROOT.TH1F(name + '_spectrum', '%s p_{T} spectrum; p_{T}, GeV/c' % name, 100, 0.3, 15)
+    histogram = ROOT.TH1F(name + '_spectrum', '%s p_{T} spectrum; p_{T}, GeV/c; #frac{dN}{dp_{T}}' % name, 100, 0.3, 15)
     histogram.FillRandom('f' + name, 1000000)
     histogram.label = name
     histogram.Sumw2()
