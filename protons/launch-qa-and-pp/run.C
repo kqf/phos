@@ -52,6 +52,14 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
+    if(isMC)
+    {
+        // Important: Keep track of this variable
+        // ZS threshold in unit of GeV  
+        Double_t zs_threshold = 0.020;
+        supply->ApplyZeroSuppression(); 
+    }
+
 
     gROOT->LoadMacro("../datasets/values_for_dataset.h+");
     std::vector<Int_t> cells;
@@ -60,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     if (useJDL)
         files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## ";
+    TString msg = "## Zero Supression 20 MeV ";
 
     if (tenderOption)
     {
