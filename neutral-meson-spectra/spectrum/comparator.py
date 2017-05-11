@@ -31,12 +31,11 @@ class Visualizer(object):
         pad2.SetGridy()
         return c1, pad1, pad2
 
-
-    def draw_ratio(self, hists):
+    @staticmethod
+    def ratio(hists):
         if len(hists) != 2: return
         a, b = hists
         ratio = a.Clone('ratio' + a.GetName())
-
 
         # Enable binomail errors
         ratio.Divide(a, b, 1, 1, "B")
@@ -53,10 +52,10 @@ class Visualizer(object):
         ratio.SetLabelSize(a.GetLabelSize('X') * scale, 'X')
         ratio.SetLabelSize(a.GetLabelSize('Y') * scale, 'Y')
         ratio.GetYaxis().CenterTitle(True)
+        return ratio
 
-        # ratio.GetXaxis().SetTitleSize(0.1)
-        # ratio.GetXaxis().SetTitleOffset(0.9) 
-        # ratio.GetXaxis().SetLabelSize(0.10)  
+    def draw_ratio(self, hists):
+        ratio = self.ratio(hists)
         self.set_ratio_yaxis(ratio)
 
         ROOT.gPad.SetGridy()
