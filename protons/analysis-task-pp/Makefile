@@ -1,6 +1,6 @@
 PROFILING_TARGET = root -l -q 'run.C("local", "test")'
 RESULTS = LHC16k-MyTask
-DPART = first
+DPART = second
 MC = kFALSE
 
 

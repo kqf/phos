@@ -57,7 +57,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         // Important: Keep track of this variable
         // ZS threshold in unit of GeV  
         Double_t zs_threshold = 0.020;
-        supply->ApplyZeroSuppression(); 
+        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
     }
 
 

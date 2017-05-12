@@ -86,7 +86,7 @@ void MCPhotonSelection::InitSelectionHistograms()
 
 void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
 {
-	PythiaInfo();
+	// PythiaInfo();
 
 	if (! particles)
 		return;
