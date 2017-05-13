@@ -15,6 +15,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("MCPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhysMCPhotonSelection.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
   
@@ -22,7 +23,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	TList * selections = new TList();
 
 
-	if (! isTest)
+	if (!isTest && !isMC)
 	{
 		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, timecut));
 		selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
@@ -37,14 +38,23 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, timecut, 10., 3.));
 	}	
-	else
+
+	
+	if(isTest)
 	{
 		selections->Add(new TestPhotonSelection("Test", "Cluster P_{t} Selection"));
 	}
 
 
 	if (isMC)
-		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, timecut));
+	{
+		Float_t fake_timecut = 9999.0;
+		selections->Add(new PhysMCPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, fake_timecut, 0, 1));
+		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
+		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
+		sel->SetTimingCut(fake_timecut);
+		selections->Add(sel);
+	}
 
 	// Setup task
 	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons", selections);
@@ -101,6 +111,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonTimecutSelection.cxx " +
 	    "TagAndProbeSelection.cxx " +
 	    "MCPhotonSelection.cxx " +
+	    "PhysMCPhotonSelection.cxx " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx "
 	);
@@ -128,6 +139,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "TagAndProbeSelection.h " +
 	    "MCPhotonSelection.cxx " +
 	    "MCPhotonSelection.h " +
+	    "PhysMCPhotonSelection.cxx " +
+	    "PhysMCPhotonSelection.h " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx " +
 	    "AliAnalysisTaskPP.h " 

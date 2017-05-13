@@ -60,10 +60,9 @@ void PhysPhotonSelection::InitSelectionHistograms()
 //________________________________________________________________
 void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
-	TLorentzVector p1, p2, psum;
-	c1->GetMomentum(p1, eflags.vtxBest);
-	c2->GetMomentum(p2, eflags.vtxBest);
-	psum = p1 + p2;
+	TLorentzVector p1 = ClusterMomentum(c1, eflags);
+	TLorentzVector p2 = ClusterMomentum(c2, eflags);
+	TLorentzVector psum = p1 + p2;
 
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
@@ -91,7 +90,14 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 //________________________________________________________________
 void PhysPhotonSelection::FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags)
 {
-	TLorentzVector p;
-	clus->GetMomentum(p, eflags.vtxBest);	
+	TLorentzVector p = ClusterMomentum(clus, eflags);
 	FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
+}
+
+//________________________________________________________________
+TLorentzVector PhysPhotonSelection::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
+{
+	TLorentzVector p;
+	c1->GetMomentum(p, eflags.vtxBest);		
+	return p;
 }
