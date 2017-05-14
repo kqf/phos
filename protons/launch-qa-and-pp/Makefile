@@ -12,6 +12,7 @@ grid: | %.cxx
 	echo $(DATASET) $(DPART) >> started_jobs.log
 	@make unlink || echo "Directory is clean"
 	echo "Started grid analysis" >> .runhistory
+	echo -e "\a"
 
 %.cxx:
 	make unlink
@@ -28,12 +29,14 @@ terminate: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || make unlink
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
+	echo -e "\a"
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || make unlink
 	make upload
 	@make unlink || echo "Directory is clean"
 	echo "Terminated grid analysis" >> .runhistory
+	echo -e "\a"
 
 # Ignore problems with ALICE::RRC-KI::SE
 force-download:

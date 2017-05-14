@@ -56,7 +56,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     {
         // Important: Keep track of this variable
         // ZS threshold in unit of GeV  
-        Double_t zs_threshold = 0.020;
+        Double_t zs_threshold = 0.010;
         PHOSSupply->ApplyZeroSuppression(zs_threshold); 
     }
 
@@ -65,10 +65,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
-    if (useJDL)
-        files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
+    // if (useJDL)
+        // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## Zero Supression 20 MeV ";
+    TString msg = "## Zero Supression 10 MeV ";
 
     if (tenderOption)
     {
