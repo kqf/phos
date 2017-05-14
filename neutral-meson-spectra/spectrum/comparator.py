@@ -42,27 +42,23 @@ class Visualizer(object):
         label = a.label + ' / ' + b.label
         ratio.SetTitle('')
         ratio.GetYaxis().SetTitle(label)
-        ratio.Draw()
-        scale = 7./3
-
-        ratio.SetTitleOffset(a.GetTitleOffset('X')        , 'X')
-        ratio.SetTitleOffset(a.GetTitleOffset('Y') / scale, 'Y')
-        ratio.SetTitleSize(a.GetTitleSize('X') * scale, 'X')
-        ratio.SetTitleSize(a.GetTitleSize('Y') * scale, 'Y')
-        ratio.SetLabelSize(a.GetLabelSize('X') * scale, 'X')
-        ratio.SetLabelSize(a.GetLabelSize('Y') * scale, 'Y')
-        ratio.GetYaxis().CenterTitle(True)
         return ratio
 
     def draw_ratio(self, hists):
         ratio = self.ratio(hists)
-        self.set_ratio_yaxis(ratio)
-
+        if not ratio:
+            return
+        scale = 7./3
+        ratio.SetTitleOffset(hists[0].GetTitleOffset('X')        , 'X')
+        ratio.SetTitleOffset(hists[0].GetTitleOffset('Y') / scale, 'Y')
+        ratio.SetTitleSize(hists[0].GetTitleSize('X') * scale, 'X')
+        ratio.SetTitleSize(hists[0].GetTitleSize('Y') * scale, 'Y')
+        ratio.SetLabelSize(hists[0].GetLabelSize('X') * scale, 'X')
+        ratio.SetLabelSize(hists[0].GetLabelSize('Y') * scale, 'Y')
+        ratio.GetYaxis().CenterTitle(True)
         ROOT.gPad.SetGridy()
-
         self.fit_ratio(ratio)
-        # pp goes here
-        # print
+        self.set_ratio_yaxis(ratio)
         return ratio 
 
     def set_ratio_yaxis(self, ratio, n = 3):
