@@ -49,7 +49,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	if (isMC)
 	{
 		Float_t fake_timecut = 9999.0;
-		selections->Add(new PhysMCPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, fake_timecut, 0, 1));
+		Float_t nonlin_a = -1.84679e-02;
+		Float_t nonlin_b = -4.70911e-01;
+		selections->Add(new PhysMCPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, fake_timecut, nonlin_a, nonlin_b));
 		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
 		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(fake_timecut);

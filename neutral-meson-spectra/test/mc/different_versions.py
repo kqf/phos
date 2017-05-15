@@ -17,19 +17,18 @@ class CheckMCDifferentVersions(unittest.TestCase):
         # The problem with the time distribution in MC:
         #  The right flag in AddTender should be used for MC case.
 
-        data = f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'Data', Options())
-        new = f(TimecutInput('input-data/Pythia-LHC16.root', 'TimeOnlyTender', 'MassPtN3').read(), 'zs 20', Options(priority = 1))
-        old = f(TimecutInput('input-data/Pythia-LHC16-iteration3.root', 'TimeOnlyTender', 'MassPtN3').read(), 'zs 12', Options(priority = 0)) 
+        self.results = [
+                             f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'Data', Options())
+                            ,f(TimecutInput('input-data/Pythia-LHC16-iteration2.root', 'TimeTender', 'MassPtN3').read(), 'LHC16all', Options(priority = 0)) 
+                            ,f(TimecutInput('input-data/Pythia-LHC16-iteration3.root', 'TimeTender', 'MassPtN3').read(), 'Run2Default', Options(priority = 0)) 
+                            ,f(TimecutInput('input-data/Pythia-LHC16-iteration4.root', 'TimeTender', 'MassPtN3').read(), 'R2D zs 20 MeV', Options(priority = 1))
+                            ,f(TimecutInput('input-data/Pythia-LHC16-iteration5.root', 'PhysTender', 'MassPtN3').read(), 'R2D zs 10 MeV', Options(priority = 1))
+                        ]
 
-        print "old", old
-        print "new", new
-        print "data", data
-
-        self.results = [new, data, old]
 
   
     def testResultMC(self):
-        c1 = adjust_canvas(get_canvas(1./2, resize = True))
+        c1 = adjust_canvas(get_canvas(1., resize = True))
 
         import spectrum.comparator as cmpr
         diff = cmpr.Comparator()
