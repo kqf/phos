@@ -36,6 +36,8 @@ class Visualizer(object):
         if len(hists) != 2: return
         a, b = hists
         ratio = a.Clone('ratio' + a.GetName())
+        if 'fitfunc' in dir(a):
+            ratio.fitfunc = a.fitfunc
 
         # Enable binomail errors
         ratio.Divide(a, b, 1, 1, "B")
@@ -77,9 +79,26 @@ class Visualizer(object):
         a, b = map(lambda x: x(withoutoutliers), (min, max))
         ratio.SetAxisRange(a, b , 'Y')
 
-  
-    def fit_ratio(self, ratio):
+
+    def linear_fit(self, ratio):
         if not self.ratiofit:
+            return False
+
+        ratio.Fit("pol1", "q", "", *self.ratiofit)
+        func = ratio.GetFunction("pol1")
+        func.SetLineColor(38)
+        return True
+
+    def nonlinear_fit(self, ratio):
+        if not 'fitfunc' in dir(ratio):
+            return False
+
+        ratio.Fit(ratio.fitfunc, "r")
+        ratio.fitfunc.SetLineColor(38)
+        return True
+    
+    def fit_ratio(self, ratio):
+        if not (self.linear_fit(ratio) or self.nonlinear_fit(ratio)):
             return
 
         ratio.SetStats(True)
@@ -90,9 +109,7 @@ class Visualizer(object):
         ROOT.gStyle.SetStatStyle(0)
         ROOT.gStyle.SetStatBorderSize(0)
         ROOT.gStyle.SetOptFit(1)
-        ratio.Fit("pol1", "q", "", *self.ratiofit)
-        func = ratio.GetFunction("pol1")
-        func.SetLineColor(38)
+
 
     def prepare_hists(self, hists):
         for h in hists:
@@ -102,7 +119,7 @@ class Visualizer(object):
 
     def compare_visually(self, hists, ci, stop = True, canvas = None):
         self.prepare_hists(hists)
-        canvas, mainpad, ratio = self.preare_ratio_plot(hists, canvas)
+        canvas, mainpad, ratiopad = self.preare_ratio_plot(hists, canvas)
 
         if len(hists) == 1:
             adjust_canvas(canvas)
@@ -137,8 +154,11 @@ class Visualizer(object):
         mainpad.SetTickx()
         mainpad.SetTicky() 
 
-        ratio.cd()
+        ratiopad.cd()
         ratio = self.draw_ratio(hists)
+        ratio.Draw()
+        ratiopad.Update()
+        print ratio, ratiopad
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
@@ -147,6 +167,7 @@ class Visualizer(object):
             fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
             wait(self.output_prefix + fname.lower(), save=True)
 
+        self.cache.append(ratiopad)
         self.cache.append(ratio)
         self.cache.append(legend)
 
