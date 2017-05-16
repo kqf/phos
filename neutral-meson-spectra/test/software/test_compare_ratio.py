@@ -4,8 +4,6 @@ import ROOT
 import json
 
 
-from math import sqrt
-from spectrum.sutils import tsallis
 import spectrum.comparator as cmpr
 from test.software.test_compare import get_spectrum
 
@@ -57,18 +55,6 @@ class Test(unittest.TestCase):
         diff = cmpr.Comparator(ratiofit=(5, 0))
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
-    @unittest.skip('test')
-    def testCompareRations(self):
-        """
-            This one is needed to compare "double ratio" plots.
-        """
-        diff = cmpr.Comparator()
-        diff.compare_ratios(self.data, self.data[2])
-
-    @unittest.skip('test')
-    def testCompareRations(self):
-        diff = cmpr.Comparator()
-        diff.compare_ratios(self.data, self.data[2]) 
 
     def testCompareNonlinear(self):
         diff = cmpr.Comparator()

@@ -61,6 +61,7 @@ class Visualizer(object):
         ROOT.gPad.SetGridy()
         self.fit_ratio(ratio)
         self.set_ratio_yaxis(ratio)
+        ratio.Draw()
         return ratio 
 
     def set_ratio_yaxis(self, ratio, n = 3):
@@ -156,9 +157,6 @@ class Visualizer(object):
 
         ratiopad.cd()
         ratio = self.draw_ratio(hists)
-        ratio.Draw()
-        ratiopad.Update()
-        print ratio, ratiopad
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
@@ -167,7 +165,6 @@ class Visualizer(object):
             fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
             wait(self.output_prefix + fname.lower(), save=True)
 
-        self.cache.append(ratiopad)
         self.cache.append(ratio)
         self.cache.append(legend)
 
@@ -200,6 +197,24 @@ class Comparator(object):
     def __init__(self, size = (1, 1), rrange = None, ratiofit = False):
         super(Comparator, self).__init__()
         self.vi = Visualizer(size, rrange, ratiofit)
+
+
+    def compare_multiple_ratios(self, hists, baselines, compare = None):
+        if not compare:
+            compare = self.vi.compare_visually
+
+        def ratio(a, b):
+            h = a.Clone(a.GetName() + '_ratio')
+            # Here we assume that a, b have the same lables
+            h.label = a.label
+            h.Divide(b)
+            ytitle = lambda x: x.GetYaxis().GetTitle()
+            h.SetTitle(a.GetTitle() + ' / ' + b.GetTitle())
+            h.GetYaxis().SetTitle(ytitle(a) +  ' / ' + ytitle(b))
+            return h
+
+        compare(map(ratio, hists, baselines), self.ci)
+
 
 
     def compare_ratios(self, hists, baseline, compare = None):
