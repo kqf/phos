@@ -3,7 +3,6 @@ import unittest
 import ROOT
 import json
 
-
 import spectrum.comparator as cmpr
 from test.software.test_compare import get_spectrum
 
@@ -28,7 +27,11 @@ class Test(unittest.TestCase):
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
 
-    @unittest.skip('test')
+    def testCompareTwo(self):
+        diff = cmpr.Comparator()
+        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+
     def testCompareRatio(self):
         diff = cmpr.Comparator()
         main = self.data[1]
@@ -37,7 +40,7 @@ class Test(unittest.TestCase):
         distorted.label = 'distorted'
         diff.compare_set_of_histograms([[main], [distorted]])
 
-    @unittest.skip('test')
+
     def testCompareTwoWithFit(self):
         """
             Checks multiple fitting ranges. 

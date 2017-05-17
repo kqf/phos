@@ -28,7 +28,7 @@ class Nonlinearity(unittest.TestCase):
         fname = 'datamcratio.root'
         ratio = self.readRatio(fname) if os.path.isfile(fname) else self.getRatio(fname)
         function = self.getNonlinearityFunction()
-        ratio.SetAxisRange(0.98, 1.04, 'Y')
+        # ratio.SetAxisRange(0.98, 1.04, 'Y')
         ratio.Fit(function)
         ratio.Draw()
         wait(ratio.GetName())

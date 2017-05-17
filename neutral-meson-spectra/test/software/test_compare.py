@@ -4,13 +4,10 @@ import ROOT
 import json
 
 
-from math import sqrt
-from spectrum.sutils import tsallis
 import spectrum.comparator as cmpr
 
-
-
 def get_spectrum(name, a, b, par):
+    from spectrum.sutils import tsallis
     function = ROOT.TF1('f' + name, lambda x, p: tsallis(x, p, a, a), 0.3, 15, 3)
     function.SetParameters(*par)
     histogram = ROOT.TH1F(name + '_spectrum', '%s p_{T} spectrum; p_{T}, GeV/c; #frac{dN}{dp_{T}}' % name, 100, 0.3, 15)
@@ -30,11 +27,6 @@ class Test(unittest.TestCase):
     def testCompareMultiple(self):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms(zip(*[self.data, self.data]))
-
-    # @unittest.skip('test')
-    def testCompareTwo(self):
-        diff = cmpr.Comparator()
-        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
     def testPriority(self):
         diff = cmpr.Comparator()
@@ -56,16 +48,6 @@ class Test(unittest.TestCase):
         diff.compare_set_of_histograms([[self.data[0]], [data]])        
 
     # @unittest.skip('test')
-    def testCompareSingle(self):
-        diff = cmpr.Comparator()
-        diff.compare_set_of_histograms([[self.data[1], self.data[2]]])
-
-    # @unittest.skip('test')
-    def testCompareRations(self):
-        diff = cmpr.Comparator()
-        diff.compare_ratios(self.data, self.data[2])
-
-    # @unittest.skip('test')
     def testSuccesive(self):
         """
             Explanation:
@@ -79,10 +61,4 @@ class Test(unittest.TestCase):
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
         diff.compare_set_of_histograms([[self.data[1]], [self.data[2]]])
-
-
-
-
-
-
 

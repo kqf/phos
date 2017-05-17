@@ -4,7 +4,6 @@ import ROOT
 import json
 
 
-from spectrum.sutils import tsallis
 import spectrum.comparator as cmpr
 from test.software.test_compare import get_spectrum
 
@@ -17,7 +16,6 @@ class Test(unittest.TestCase):
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
 
-    @unittest.skip('test')
     def testCompareRations(self):
         """
             This one is needed to compare "double ratio" plots.
