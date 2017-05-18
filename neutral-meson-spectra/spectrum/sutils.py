@@ -72,6 +72,7 @@ def nicely_draw(hist, option = '', legend = None):
     legend.Draw('same')
     wait('xlin_' + hist.GetName(), draw = True, save = True)
 
+    
 def get_canvas(x = 1., y = 1, resize = False, scale = 6):
     canvas = ROOT.gROOT.FindObject('c1')
 
@@ -89,6 +90,13 @@ def get_canvas(x = 1., y = 1, resize = False, scale = 6):
     canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
     ticks(canvas)
     return adjust_canvas(canvas)
+
+
+def save_tobject(obj, fname, option = 'recreate'):
+    ofile = ROOT.TFile(fname, option)
+    obj.Write()
+    ofile.Close()
+
 
 
 
