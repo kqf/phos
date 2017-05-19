@@ -46,19 +46,19 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString tenderOption = isMC ? "Run2Default" : "";
+    TString tenderOption = isMC ? "LHC16all" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
-    // if(isMC)
-    // {
-    //     // Important: Keep track of this variable
-    //     // ZS threshold in unit of GeV  
-    //     Double_t zs_threshold = 0.020;
-    //     PHOSSupply->ApplyZeroSuppression(zs_threshold); 
-    // }
+    if(isMC)
+    {
+        // Important: Keep track of this variable
+        // ZS threshold in unit of GeV  
+        Double_t zs_threshold = 0.025;
+        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+    }
 
 
     gROOT->LoadMacro("../datasets/values_for_dataset.h+");
@@ -68,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
         // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## standard Zero Supression ";
+    TString msg = "## 25 MeV Zero Supression ";
 
     if (tenderOption)
     {

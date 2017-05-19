@@ -24,7 +24,6 @@ TLorentzVector PhysMCPhotonSelection::ClusterMomentum(const AliVCluster * c1, co
     TLorentzVector p;
     c1->GetMomentum(p, eflags.vtxBest);
     p *= Nonlinearity(energy);
-    // cout << " " << p.X() << " " << p.Y() << " " << p.Z() << " " << p.E() << " "  << energy * Nonlinearity(energy) << endl;
 	return p;
 }
 
