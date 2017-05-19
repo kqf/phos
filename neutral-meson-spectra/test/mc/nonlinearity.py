@@ -5,7 +5,7 @@ from spectrum.input import Input, TimecutInput
 from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
-from spectrum.comparator import Visualizer
+from spectrum.comparator import Visualizer, Comparator
 from spectrum.sutils import save_tobject
 
 import ROOT
@@ -29,7 +29,7 @@ class Nonlinearity(unittest.TestCase):
         fname = 'datamcratio.root'
         ratio = self.readRatio(fname) if os.path.isfile(fname) else self.getRatio(fname)
         function = self.getNonlinearityFunction()
-        ratio.SetAxisRange(0.98, 1.04, 'Y')
+        ratio.SetAxisRange(0.90, 1.04, 'Y')
         ratio.Fit(function)
         ratio.Draw()
         wait(ratio.GetName())
@@ -44,12 +44,15 @@ class Nonlinearity(unittest.TestCase):
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
 
         self.data = f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data', Options())
-        self.mc = f(TimecutInput('input-data/Pythia-LHC16-iteration3.root', 'TimeTender', 'MassPtN3').read(), 'Run2Default', Options(priority = 1))
-        c1 = adjust_canvas(get_canvas(1./2, resize = True))
+        self.mc = f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPtN3').read(), 'LHC16all 20MeV', Options(priority = 1))
 
         # TODO: comparator should return compared ratios? or canvases
         data, mc = self.data[0], self.mc[0]
         data.fifunc = self.getNonlinearityFunction()
+
+        diff = Comparator()
+        diff.compare_set_of_histograms([[data], [mc]])
+        c1 = adjust_canvas(get_canvas(1./2, resize = True))
         ratio = Visualizer.ratio([data, mc]) 
 
         save_tobject(ratio, fname)
