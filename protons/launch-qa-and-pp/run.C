@@ -68,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
         // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## 25 MeV Zero Supression ";
+    TString msg = "##  added nonlinearity parametrization, 25 MeV Zero Supression ";
 
     if (tenderOption)
     {
