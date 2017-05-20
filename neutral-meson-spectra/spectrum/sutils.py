@@ -35,6 +35,19 @@ def wait(name, draw=True, save = False, suffix = ''):
     if draw: ROOT.gApplication.Run(True)
 
 
+def adjust_labels(hist1, hist2, scale = 1):
+    if not hist1 or not hist2:
+        return None
+
+    hist1.SetTitleOffset(hist2.GetTitleOffset('X')        , 'X')
+    hist1.SetTitleOffset(hist2.GetTitleOffset('Y') / scale, 'Y')
+    hist1.SetTitleSize(hist2.GetTitleSize('X') * scale, 'X')
+    hist1.SetTitleSize(hist2.GetTitleSize('Y') * scale, 'Y')
+    hist1.SetLabelSize(hist2.GetLabelSize('X') * scale, 'X')
+    hist1.SetLabelSize(hist2.GetLabelSize('Y') * scale, 'Y')
+    return hist1
+
+
 def draw_and_save(histograms, name = '', draw = True, save = True, suffix = ''):
     ROOT.gStyle.SetOptStat('erm')
     histograms = [h.Clone(h.GetName() + str(id(h))) for h in histograms]

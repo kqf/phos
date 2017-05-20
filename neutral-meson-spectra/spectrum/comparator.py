@@ -2,7 +2,7 @@
 
 import ROOT
 import json
-from sutils import wait, get_canvas, Cc, adjust_canvas
+from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
 import numpy as np
 
 class Visualizer(object):
@@ -51,17 +51,13 @@ class Visualizer(object):
         ratio = self.ratio(hists)
         if not ratio:
             return
-        scale = 7./3
-        ratio.SetTitleOffset(hists[0].GetTitleOffset('X')        , 'X')
-        ratio.SetTitleOffset(hists[0].GetTitleOffset('Y') / scale, 'Y')
-        ratio.SetTitleSize(hists[0].GetTitleSize('X') * scale, 'X')
-        ratio.SetTitleSize(hists[0].GetTitleSize('Y') * scale, 'Y')
-        ratio.SetLabelSize(hists[0].GetLabelSize('X') * scale, 'X')
-        ratio.SetLabelSize(hists[0].GetLabelSize('Y') * scale, 'Y')
+
+        adjust_labels(ratio, hists[0], scale = 7./3)
         ratio.GetYaxis().CenterTitle(True)
-        ROOT.gPad.SetGridy()
         self.fit_ratio(ratio)
         self.set_ratio_yaxis(ratio)
+
+        ROOT.gPad.SetGridy()
         ratio.Draw()
         return ratio 
 
@@ -168,6 +164,7 @@ class Visualizer(object):
 
         self.cache.append(ratio)
         self.cache.append(legend)
+        return adjust_labels(ratio, hists[0])
 
         
     def compare_multiple(self, hists, ci):
@@ -239,7 +236,7 @@ class Comparator(object):
             compare = self.vi.compare_visually
 
         for hists in zip(*l):
-            compare(hists, self.ci)
+            return compare(hists, self.ci)
 
 
     def compare_lists_of_histograms(self, l1, l2, ignore = [], compare = None):
