@@ -31,6 +31,9 @@ class Test(unittest.TestCase):
     def testPriority(self):
         diff = cmpr.Comparator()
 
+        for h in sel.data:
+            h.SetTitle('Checking priority of the histograms')
+
         data = self.data[0].Clone()
         data.label = 'distorted'
 
@@ -56,6 +59,10 @@ class Test(unittest.TestCase):
         """
 
         diff = cmpr.Comparator()
+
+        self.data[2].SetTitle('Checking if compare is able to redraw same images properly')
+        self.data[1].SetTitle('Checking if compare is able to redraw same images properly')
+
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])

@@ -29,12 +29,14 @@ class Test(unittest.TestCase):
 
     def testCompareTwo(self):
         diff = cmpr.Comparator()
+        self.data[2].SetTitle('Comparing double plots')
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
 
     def testCompareRatio(self):
         diff = cmpr.Comparator()
         main = self.data[1]
+        main.SetTitle('Testing yaxis maximal range for off scale points')
         distorted = main.Clone(main.GetName() + '_clone')
         distorted.SetBinContent(80, distorted.GetBinContent(80) * 100)
         distorted.label = 'distorted'
@@ -46,6 +48,7 @@ class Test(unittest.TestCase):
             Checks multiple fitting ranges. 
         """
    
+        self.data[2].SetTitle('Comparing different ratiofit ranges')
         diff = cmpr.Comparator(ratiofit=(0, 0))
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
@@ -63,5 +66,6 @@ class Test(unittest.TestCase):
         diff = cmpr.Comparator()
         # diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
+        self.data[0].SetTitle('Comparing nonlinear fit function')
         self.data[0].fitfunc = get_fit_function()
         diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
