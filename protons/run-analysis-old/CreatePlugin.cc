@@ -24,7 +24,7 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
 	// Setup data path
-	TString globaldir = isMC ? "/alice/sim/2015/" : "/alice/data/2010/";
+	TString globaldir = isMC ? "/alice/sim/2014/" : "/alice/data/2010/";
 	plugin->SetGridDataDir(globaldir + fperiod);
 
 	TString reconstruction = isMC ? "AOD/" : "pass4/AOD172/";
