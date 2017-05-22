@@ -24,7 +24,9 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
 	// Setup data path
-	TString globaldir = isMC ? "/alice/sim/2014/" : "/alice/data/2010/";
+	TString year = inperiod.Contains('LHC15') ? "2015" : "2014";
+
+	TString globaldir = isMC ? TString("/alice/sim/") + year + "/" : TString("/alice/data/2010/");
 	plugin->SetGridDataDir(globaldir + fperiod);
 
 	TString reconstruction = isMC ? "AOD/" : "pass4/AOD172/";
@@ -32,20 +34,8 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 
 	if(ptbin.Length())
 	{
+		cout << "* * * * * * * * * * *" << endl;
 		cout << ptbin << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
-		cout << "* * * * * * * * * * *" << endl;
 		cout << "* * * * * * * * * * *" << endl;
 		plugin->SetExecutable(TString(plugin->GetExecutable()).ReplaceAll(".sh", ptbin + ".sh"));
 		plugin->SetGridWorkingDir(TString(plugin->GetGridWorkingDir()) + "/" + ptbin);
