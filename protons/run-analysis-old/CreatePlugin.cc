@@ -18,7 +18,7 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString inperiod, TStri
 	TString fperiod = isMC ? inperiod.ReplaceAll("_", "/") : period; // fancy slicing
 
 	// Maximal size of the dataset that shouldn't be slitted on two halves
-	Int_t msize = 200;	
+	Int_t msize = 100;	
 
 	// Use default setup for the plugin
 	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
