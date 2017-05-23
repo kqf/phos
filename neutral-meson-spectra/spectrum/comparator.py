@@ -235,8 +235,8 @@ class Comparator(object):
         if not compare:
             compare = self.vi.compare_visually
 
-        for hists in zip(*l):
-            return compare(hists, self.ci)
+        result = [compare(hists, self.ci) for hists in zip(*l)]
+        return result
 
 
     def compare_lists_of_histograms(self, l1, l2, ignore = [], compare = None):
