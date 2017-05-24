@@ -41,7 +41,7 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
         c1 = adjust_canvas(get_canvas(1., resize = True))
         masses, widths = zip(*self.results)[0:2]
-        diff.compare_multiple_ratios(masses, widths)
+        diff.compare_multiple_ratios(widths, masses)
 
 
 

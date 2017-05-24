@@ -56,10 +56,19 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 		// Nonlinearity for zs 25 LHC16all
 		//
-		//
 		
-		Float_t nonlin_a = -6.90763e-03;
-		Float_t nonlin_b = -1.74981e+00;
+		// Float_t nonlin_a = -6.90763e-03;
+		// Float_t nonlin_b = -1.74981e+00;
+
+
+		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
+		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00
+		// 
+		// 
+
+		Float_t nonlin_a = -1.84843e-02;
+		Float_t nonlin_b = -7.21037e-01;
+
 
 		selections->Add(new PhysMCPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, fake_timecut, nonlin_a, nonlin_b));
 		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));

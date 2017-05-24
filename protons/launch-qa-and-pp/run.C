@@ -46,7 +46,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString tenderOption = isMC ? "LHC16all" : "";
+    TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
@@ -56,7 +56,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     {
         // Important: Keep track of this variable
         // ZS threshold in unit of GeV  
-        Double_t zs_threshold = 0.025;
+        Double_t zs_threshold = 0.020;
         PHOSSupply->ApplyZeroSuppression(zs_threshold); 
     }
 
@@ -68,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
         // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "##  added nonlinearity parametrization, 25 MeV Zero Supression ";
+    TString msg = "##  added nonlinearity parametrization, 20 MeV Zero Supression ";
 
     if (tenderOption)
     {
