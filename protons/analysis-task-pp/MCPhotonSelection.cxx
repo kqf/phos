@@ -46,8 +46,6 @@ void MCPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster *
 //________________________________________________________________
 void MCPhotonSelection::InitSelectionHistograms()
 {
-	// fListOfHistos->Add(new TH1F("hZvertexGen", "Z vertex generated; z_{vtx}, cm", 200, -50., +50.));
-	// fListOfHistos->Add(new TH1F("hZvertexGenCut", "Z vertex generated, |z|<10; z_{vtx}, cm", 200, -50., +50.));
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
 	{
@@ -86,12 +84,12 @@ void MCPhotonSelection::InitSelectionHistograms()
 
 void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
 {
+	// TODO: Fix this method
 	// PythiaInfo();
 
 	if (! particles)
 		return;
 
-	// TODO: Add enumeration
 	// TODO: Add zvertex histogram for real data
 	for (Int_t i = 0; i <  particles->GetEntriesFast(); i++)
 	{
@@ -102,22 +100,8 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 		if (code != kGamma && code != kPi0 && code != kEta)
 			continue;
 
-		// TODO: Fill this class
-		// Primary particle
-		// Double_t r = particle->R() ;
 		Double_t pt = particle->Pt();
-		//Primary particle
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
-		// if (r > rcut)
-
-		// Double_t zvtx = particle->Vz();
-
-		// FillHistogram("hZvertexGen", zvtx);
-
-		// TODO: how to know which particle is primary
-		// if (TMath::Abs(particle->Vz()) > 10.) continue;
-		// FillHistogram("hZvertexGenCut", zvtx);
-
 
 		FillHistogram(Form("hPtGeneratedMC_%s_total", name), pt) ;
 		FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
@@ -135,12 +119,10 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 	}
 
 	// Try to extract all needed data
-
 	TObjArray photonCandidates;
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
 	for (Int_t i = 0; i < photonCandidates.GetEntries(); ++i)
 		FillClusterMC(dynamic_cast<AliVCluster *>(photonCandidates.At(i)), particles);
-
 }
 
 //________________________________________________________________
@@ -251,5 +233,5 @@ void MCPhotonSelection::PythiaInfo()
 
 	FillHistogram("hXsec", 0.5, xsec);
 	FillHistogram("hTrials", 0.5, trials);
-	AliInfo(Form("xs %f, trial %f.\n", xsec, trials));
+	// AliInfo(Form("xs %f, trial %f.\n", xsec, trials));
 }
