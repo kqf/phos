@@ -1,6 +1,23 @@
 #!/usr/bin/python
 
 import ROOT
+
+
+def read_histogram(filename, listname, histname, label = None, priority = 999):
+    infile = ROOT.TFile(filename)
+    lst = infile.Get(listname)
+    hist =  lst.FindObject(histname)
+
+    if not hist: 
+        return None
+
+
+    hist.label    = label if label else '' 
+    hist.priority = priority
+
+    return hist
+
+
 class Input(object):
     def __init__(self, filename, listname, histname = 'MassPtN3', mixprefix = 'Mix'):
         super(Input, self).__init__()
