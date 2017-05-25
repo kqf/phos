@@ -30,7 +30,9 @@ TLorentzVector PhysMCPhotonSelection::ClusterMomentum(const AliVCluster * c1, co
 //________________________________________________________________
 Float_t PhysMCPhotonSelection::Nonlinearity(Float_t x) const
 {
-	return 1.00 * (1. + fNonA * TMath::Exp(-x / 2. * x / 2. / 2. / fNonSigma / fNonSigma));
+    // TODO: Find out what to do with global energy scale
+    Float_t gloabl_energy_scale = 1.04;
+	return gloabl_energy_scale * (1. + fNonA * TMath::Exp(-x / 2. * x / fNonSigma / fNonSigma));
 }
 
 

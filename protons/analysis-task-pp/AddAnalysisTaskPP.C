@@ -62,12 +62,21 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 
 		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
-		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00
+		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
 		// 
 		// 
 
-		Float_t nonlin_a = -1.84843e-02;
-		Float_t nonlin_b = -7.21037e-01;
+		// Float_t nonlin_a = -1.84843e-02;
+		// Float_t nonlin_b = -7.21037e-01;
+
+		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
+		// Now using Daiki's parameters, and no extra x/2, x/2 factors
+		// Global energy scale: A * 1.04
+		// 
+		// 
+
+		Float_t nonlin_a = -0.05;
+		Float_t nonlin_b = 0.6;
 
 
 		selections->Add(new PhysMCPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, fake_timecut, nonlin_a, nonlin_b));
