@@ -19,8 +19,8 @@ class Nonlinearity(unittest.TestCase):
 
     def getNonlinearityFunction(self):
         func_nonlin = ROOT.TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
-        func_nonlin.FixParameter(0, -0.05)
-        func_nonlin.FixParameter(1, 0.6)
+        func_nonlin.SetParameter(0, -0.05)
+        func_nonlin.SetParameter(1, 0.6)
         func_nonlin.SetParameter(2, 1.04)
         return func_nonlin
 
