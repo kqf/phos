@@ -27,12 +27,14 @@ class Test(unittest.TestCase):
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
 
+    @unittest.skip('')
     def testCompareTwo(self):
         diff = cmpr.Comparator()
         self.data[2].SetTitle('Comparing double plots')
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
 
+    @unittest.skip('')
     def testCompareRatio(self):
         diff = cmpr.Comparator()
         main = self.data[1]
@@ -43,6 +45,7 @@ class Test(unittest.TestCase):
         diff.compare_set_of_histograms([[main], [distorted]])
 
 
+    @unittest.skip('')
     def testCompareTwoWithFit(self):
         """
             Checks multiple fitting ranges. 
@@ -62,6 +65,7 @@ class Test(unittest.TestCase):
         diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
 
 
+    @unittest.skip('')
     def testCompareNonlinear(self):
         diff = cmpr.Comparator()
         # diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
@@ -69,3 +73,16 @@ class Test(unittest.TestCase):
         self.data[0].SetTitle('Comparing nonlinear fit function')
         self.data[0].fitfunc = get_fit_function()
         diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
+
+    def testRebin(self):
+        diff = cmpr.Comparator()
+        # diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+
+        self.data[0].SetTitle('Test Rebin Function second')
+        self.data[0].Rebin(2)
+        diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
+
+        self.data[0].SetTitle('Test Rebin Function first')
+        self.data[1].Rebin(2)
+        diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
+

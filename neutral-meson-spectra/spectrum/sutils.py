@@ -1,6 +1,7 @@
 import ROOT
 from math import sqrt
 from collections import Iterable
+import array
 
 def tsallis(x, p, a = 0.135, b = 0.135):
     return x[0]*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt(x[0]*x[0]+a*a)-b)/(p[2]*p[1])) ** (-p[2])
@@ -122,6 +123,22 @@ def adjust_canvas(canvas):
     canvas.SetRightMargin(0.01 * width)
     canvas.SetLeftMargin(0.01 * width)
     return canvas
+
+def rebin_as(hist1, hist2):
+    greater = lambda x, y: x.GetNbinsX() > y.GetNbinsX()
+    lbins = lambda x: (x.GetBinLowEdge(i) for i in range(0, x.GetNbinsX() + 1))
+
+    a, b = (hist1, hist2) if greater(hist1, hist2) else (hist2, hist1)
+    xbin = array.array('d', lbins(b))
+    res = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
+
+    if 'logy'     in dir(a): res.logy = a.logy
+    if 'label'    in dir(a): res.label = a.label
+    if 'fitfunc'  in dir(a): res.fitfunc = a.fitfunc
+    if 'priority' in dir(a): res.priority = a.priority
+
+    return (res, b) if a == hist1 else (b, res)
+
 
 
 class Cc:

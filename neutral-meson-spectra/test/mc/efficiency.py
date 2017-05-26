@@ -41,11 +41,11 @@ class Efficiency(unittest.TestCase):
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
 
 
+        ## TODO: Add raw histogram to the data with the same binning
         ## Calculate yield for mc 
-        ## TODO:
-        ## Fix the normalization
         true = read_histogram(iname, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0_total', label = 'Generated', priority = 0)
         reco = f(Input(iname, 'PhysTender').read(), 'Reconstructed', Options())[2]
+        reco.logy = True
 
         # data.fifunc = self.getNonlinearityFunction()
 

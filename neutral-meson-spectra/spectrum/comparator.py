@@ -3,6 +3,7 @@
 import ROOT
 import json
 from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
+from sutils import rebin_as
 import numpy as np
 
 class Visualizer(object):
@@ -39,6 +40,9 @@ class Visualizer(object):
         ratio = a.Clone('ratio' + a.GetName())
         if 'fitfunc' in dir(a):
             ratio.fitfunc = a.fitfunc
+
+        if ratio.GetNbinsX() != b.GetNbinsX():
+            ratio, b = rebin_as(ratio, b)
 
         # Enable binomail errors
         ratio.Divide(a, b, 1, 1, "B")
