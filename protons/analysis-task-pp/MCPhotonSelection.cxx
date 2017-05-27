@@ -46,12 +46,15 @@ void MCPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster *
 //________________________________________________________________
 void MCPhotonSelection::InitSelectionHistograms()
 {
+	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
+	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
 	{
 		const char * n = (const char *) i->second.Data();
 		cout << n << endl;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), 250, 0., 25.) );
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), 250, 0., 25.));
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), 250, 0., 25.)) ;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), 250, 0., 25.));
 		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_total_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
