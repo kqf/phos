@@ -68,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
         // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## Daiki's nonlinearity parametrization + my global energy scale, 20 MeV Zero Supression ";
+    TString msg = "## Added pt bins and Daiki's nonlinearity parametrization + my global energy scale, 20 MeV Zero Supression ";
 
     if (tenderOption)
     {

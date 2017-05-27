@@ -93,7 +93,8 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 	if (! particles)
 		return;
 
-	// TODO: Add zvertex histogram for real data
+	// TODO: 
+	//	 RERUN real data to get zvertex histogram
 	for (Int_t i = 0; i <  particles->GetEntriesFast(); i++)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
@@ -106,6 +107,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 		Double_t pt = particle->Pt();
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
 
+		FillHistogram(Form("hPtGeneratedMC_%s", name), pt) ;
 		FillHistogram(Form("hPtGeneratedMC_%s_total", name), pt) ;
 		FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
 
