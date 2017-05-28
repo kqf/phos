@@ -87,11 +87,11 @@ void MCPhotonSelection::InitSelectionHistograms()
 
 void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
 {
-	// TODO: Fix this method
-	// PythiaInfo();
-
 	if (! particles)
 		return;
+	
+	// TODO: Fix this method
+	// PythiaInfo();
 
 	// TODO: 
 	//	 RERUN real data to get zvertex histogram

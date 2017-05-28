@@ -149,18 +149,8 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		if (!selection->SelectEvent(evtProperties))
 			continue;
 
-		selection->FillCellsInCluster(&clusArray, cells);
-		selection->FillCells(cells);
 		selection->FillPi0Mass(&clusArray, pool, evtProperties);
-
-		// Now invoke this code if we have mc event and mc selection
-		//
-		if (mcparaticles)
-		{
-			MCPhotonSelection * mcselection = dynamic_cast<MCPhotonSelection * >(selection);
-			if (mcselection)
-				mcselection->ConsiderGeneratedParticles(mcparaticles, &clusArray, evtProperties);
-		}
+		selection->ConsiderGeneratedParticles(mcparaticles, &clusArray, evtProperties);
 
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}

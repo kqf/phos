@@ -56,16 +56,14 @@ public:
 
 	// This is a dummy method to count number of Triggered Events.
 	virtual void CountMBEvent() {}
-
-
-	virtual void FillCellsInCluster(TObjArray * clusArray, AliVCaloCells * cells)
-	{
-		(void) clusArray;
-		(void) cells;
-	}
-
-	virtual	void FillCells(AliVCaloCells * cells) { (void) cells; }
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
+    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags)
+    {
+    	(void) particles;
+    	(void) clusArray;
+    	(void) eflags;
+    }
+
 	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
 
 protected:
