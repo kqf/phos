@@ -16,10 +16,11 @@ class PhysMCPhotonSelection : public PhysPhotonSelection
 public:
 	PhysMCPhotonSelection(): PhysPhotonSelection() {}
 	PhysMCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, 
-						 Int_t n = 3, Float_t t = 999, Float_t nona = 0., Float_t nonsigma = 1.): 
+						 Int_t n = 3, Float_t t = 999, Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.): 
 		PhysPhotonSelection(name, title, ec, a, n, t),
 		fNonA(nona),
-		fNonSigma(nonsigma) 
+		fNonSigma(nonsigma),
+		fGlobalEnergyScale(genergy)
 	{}
 
 protected:
@@ -32,6 +33,7 @@ protected:
 	// Parameters of nonlinearity parametrization
 	Float_t fNonA;
 	Float_t fNonSigma;
+	Float_t fGlobalEnergyScale;
 
 private:
 	ClassDef(PhysMCPhotonSelection, 2)
