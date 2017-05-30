@@ -45,8 +45,8 @@ class Efficiency(unittest.TestCase):
         ## TODO: Add raw histogram to the data with the same binning
         ## Calculate yield for mc 
         true = read_histogram(iname, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
-        PtDependent.divide_bin_width(true)
-        reco = f(Input(iname, 'PhysOnlyTender').read(), 'Reconstructed', Options())[2]
+        # PtDependent.divide_bin_width(true)
+        reco = f(Input(iname, 'PhysOnlyTender').read(), 'Reconstructed', Options())[4]
         reco.logy = True
 
         # data.fifunc = self.getNonlinearityFunction()

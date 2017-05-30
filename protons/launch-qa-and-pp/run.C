@@ -68,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
         // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## Uncorrected value and Daiki's parameters, my global energy scale, 20 MeV Zero Supression ";
+    TString msg = "## Updated parameters for nonlinearity, 20 MeV Zero Supression ";
 
     if (tenderOption)
     {

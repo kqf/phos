@@ -66,18 +66,17 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		// 
 		// 
 
-	    // Float_t ge_scale = 1.03274;
-		// Float_t nonlin_a = -1.84843e-02;
-		// Float_t nonlin_b =  7.21062e-01;
+	    Float_t ge_scale = 1.04408e+00;
+		Float_t nonlin_a = -2.00071e-02;
+		Float_t nonlin_b = 1.24818e+00;
 
 		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 		// Now using Daiki's parameters, and no extra x/2, x/2 factors
 		// Global energy scale: A * 1.04
 		// 
-
-		Float_t nonlin_a = -0.05;
-		Float_t nonlin_b = 0.6;
-	    Float_t ge_scale = 1.04;
+		// Float_t nonlin_a = -0.05;
+		// Float_t nonlin_b = 0.6;
+	    // Float_t ge_scale = 1.04;
 
 		selections->Add(new PhysMCPhotonSelection("PhysNonlin", "Corrected for nonlinearity Physics Selection", 0.3, 1.0, 3,
 			fake_timecut, nonlin_a, nonlin_b, ge_scale));
