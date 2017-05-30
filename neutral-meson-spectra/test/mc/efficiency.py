@@ -46,7 +46,7 @@ class Efficiency(unittest.TestCase):
         ## Calculate yield for mc 
         true = read_histogram(iname, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
         # PtDependent.divide_bin_width(true)
-        reco = f(Input(iname, 'PhysOnlyTender').read(), 'Reconstructed', Options())[4]
+        reco = f(Input(iname, 'PhysNonlinTender').read(), 'Reconstructed', Options())[4]
         reco.logy = True
 
         # data.fifunc = self.getNonlinearityFunction()
@@ -58,5 +58,5 @@ class Efficiency(unittest.TestCase):
         return ratio
 
     def testOutput(self):
-        eff = self.efficiency('input-data/Pythia-LHC16-iteration14.root')
+        eff = self.efficiency('input-data/Pythia-LHC16-iteration15.root')
 

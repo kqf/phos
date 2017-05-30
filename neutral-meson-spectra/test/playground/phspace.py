@@ -124,7 +124,7 @@ class InclusiveGenerator(object):
 
         # Just fill event counter
         self.nevents.Fill(1, nevents)
-        PtDependent.divide_bin_width(self.signal.generated)
+        # PtDependent.divide_bin_width(self.signal.generated)
         return self.signal.generated
 
 

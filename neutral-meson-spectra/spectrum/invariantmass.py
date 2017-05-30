@@ -73,7 +73,9 @@ class InvariantMass(object):
         if not mass.GetSumw2N():
             mass.Sumw2()
 
-        if self.nrebin: mass.Rebin(self.nrebin)
+        if self.nrebin: 
+            mass.Rebin(self.nrebin)
+            
         return mass
 
 

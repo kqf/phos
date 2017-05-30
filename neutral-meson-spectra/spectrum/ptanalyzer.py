@@ -10,24 +10,32 @@ ROOT.TH1.AddDirectory(False)
 
 
 class PtDependent(object):
-    def __init__(self, name, title, label, priority):
+    def __init__(self, name, title, label, priority = 999, nwidth = False):
         super(PtDependent, self).__init__()
         self.title = title
         self.label = label
         self.name = name + '_' + filter(str.isalnum, self.label)
+        self.nwidth = nwidth
         self.priority = priority
 
-    def get_hist(self, bins, data, widths = False):
+    def get_hist(self, bins, data):
         from array import array
         hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
-        if not hist.GetSumw2N(): hist.Sumw2()
-        hist.GetXaxis().SetTitle('p_{T}, GeV/c')
 
-        widths = [j - i if widths else 1 for i, j in zip(bins[:-1], bins[1:])]
-        [hist.SetBinContent(i + 1, m[0] / w) for i, (m, w) in enumerate(zip(data, widths))]
-        [hist.SetBinError(i + 1, m[1] / w) for i, (m, w) in enumerate(zip(data, widths))]
+        if not hist.GetSumw2N(): 
+            hist.Sumw2()
+
+        hist.GetXaxis().SetTitle('p_{T}, GeV/c')
         hist.label = self.label
         hist.priority = self.priority
+
+        for i, (d, e) in enumerate(data):
+            hist.SetBinContent(i + 1, d)
+            hist.SetBinError(i + 1, e)
+
+        if self.nwidth:
+            PtDependent.divide_bin_width(hist)
+
         return hist 
 
     @staticmethod
@@ -82,7 +90,7 @@ class PtAnalyzer(object):
         # Book histograms
         histgenerators = [PtDependent('mass', '%s mass position;;m, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
                           PtDependent('width', '%s peak width ;;#sigma, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
-                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
+                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority, True),  
                           PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label, self.options.priority),
                           PtDependent('npi0', 'Number of %ss in each p_{T} bin;; #frac{dN}{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
                           PtDependent('cball_alpha', 'Crystal ball parameter #alpha;; #alpha', self.label, self.options.priority),
@@ -108,7 +116,7 @@ class PtAnalyzer(object):
         # calculate pi0 values
         area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
         npi0 = self.number_of_mesons(mass, intgr_ranges)
-        nraw = map(lambda x: x / (mass.pt_range[1] - mass.pt_range[0]) / (2. * ROOT.TMath.Pi()), npi0)
+        nraw = map(lambda x: x / (2. * ROOT.TMath.Pi()), npi0)
 
         ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
         alpha = (fitfun.GetParameter(3), fitfun.GetParError(3))
@@ -125,10 +133,16 @@ class PtAnalyzer(object):
         histos = self.histograms(values)
         if self.show_img: map(nicely_draw, histos)
 
-        if not self.dead_mode:
-            self.draw_ratio()
-            self.draw_mass()
-            self.draw_signal()
+        if self.dead_mode: 
+            return
+
+        if not intgr_ranges:
+            return
+            
+        self.draw_ratio()
+        self.draw_mass()
+        self.draw_signal()
+
         return histos
 
 
