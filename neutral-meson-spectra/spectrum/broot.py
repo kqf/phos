@@ -13,8 +13,11 @@ class Property(object):
         self.priority = priority
         self.fitfunc = fitfunc
 
+    def set_properties(self, hist2):
+        Property.copy_properties(self, hist2)
+
     @staticmethod
-    def copy_properties(self, hist1, hist2):
+    def copy_properties(hist1, hist2):
         if 'label'    in dir(hist1): hist1.label = hist2.label
         if 'logy'     in dir(hist1): hist1.logy = hist2.logy
         if 'priority' in dir(hist1): hist1.priority = hist2.priority
@@ -22,11 +25,14 @@ class Property(object):
         return hist1
 
 
-
 # better histogram
 class BH1(ROOT.TH1F, Property):
     def __init__(self, *args, **kwargs):
         ROOT.TH1F.__init__(self, *args)
         Property.__init__(self, **kwargs)
+
+    def Clone():
+        pass
+
 
 
