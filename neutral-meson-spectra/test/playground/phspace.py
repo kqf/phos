@@ -14,6 +14,7 @@ def particle(pt, mass = 0):
     ROOT.gRandom.Sphere(x, y, z, pt)
     return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
 
+    
 class BackgroundGenerator(object):
     def __init__(self, raw_gamma_pectrum, meanphotons = 10.):
         super(BackgroundGenerator, self).__init__()
@@ -22,7 +23,8 @@ class BackgroundGenerator(object):
 
     def generate(self):
         nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
-        return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
+        # return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
+        return []
 
 
 
@@ -74,12 +76,15 @@ class SignalGenerator(object):
 
 class InclusiveGenerator(object):
     def __init__(self, fname, signalconf, selname = 'PhysTender', 
-                 hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0'):
+                 hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root'):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
+        self.genfilename = genfilename
         self.signal = SignalGenerator(signalconf)
         self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr))
         self.data, self.mixed, self.nevents = map(lambda y: self.read(fname, y, True), hnames)
+        self.out = [self.data, self.mixed, self.nevents, self.signal.generated]
+        self.update_hists()
 
 
     def read(self, fname, name, reset = False):
@@ -89,32 +94,28 @@ class InclusiveGenerator(object):
         return obj
 
 
-    def update_hists(self, olist):
-        out = [self.data, self.mixed, self.nevents, self.signal.generated]
-        
+    def update_hists(self):
+        ofile = ROOT.TFile(self.genfilename)
+        olist = ofile.Get(self.selname)
+
         if not olist:
-            olist = ROOT.TList()
-            olist.SetName(self.selname)
-            map(olist.Add, out)
-            return olist
-            
+            return
 
         print 'WARNING: You are trying to update the old histograms.'
         def process(hist):
             ohist = olist.FindObject(hist.GetName()) 
-            ohist.Add(hist)
-            hist = ohist
+            hist.Add(ohist)
 
-        map(process, out)
-        return olist
-
-    def save_fake(self, fname):
-        ofile = ROOT.TFile(fname, 'update')
-        olist = self.update_hists(ofile.Get(self.selname))
+        map(process, self.out)
         ofile.Close()
 
-        ofile = ROOT.TFile(fname, 'recreate')
-        olist.Write("", 1)
+
+    def save_fake(self):
+        ofile = ROOT.TFile(self.genfilename, 'recreate')
+        olist = ROOT.TList()
+        olist.SetName(self.selname)
+        map(olist.Add, self.out)
+        olist.Write(self.selname, 1)
         ofile.Close()
 
 
@@ -130,6 +131,7 @@ class InclusiveGenerator(object):
 
         # Just fill event counter
         self.nevents.Fill(1, nevents)
+        self.save_fake()
         return self.signal.generated
 
 

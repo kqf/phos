@@ -90,7 +90,7 @@ class PtAnalyzer(object):
         # Book histograms
         histgenerators = [PtDependent('mass', '%s mass position;;m, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
                           PtDependent('width', '%s peak width ;;#sigma, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
-                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority, True),  
+                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
                           PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label, self.options.priority),
                           PtDependent('npi0', 'Number of %ss in each p_{T} bin;; #frac{dN}{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
                           PtDependent('cball_alpha', 'Crystal ball parameter #alpha;; #alpha', self.label, self.options.priority),
@@ -107,6 +107,10 @@ class PtAnalyzer(object):
     def number_of_mesons(self, mass, intgr_ranges):
         a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
         area, areae = area_and_error(mass.signal, a, b)
+
+        # TODO: why do we use  sqrt of range in the normalization
+        binw = (mass.pt_range[1] - mass.pt_range[0]) ** 0.5 
+        area, areae = area * binw, areae * binw 
         return area, areae
 
 
@@ -123,6 +127,7 @@ class PtAnalyzer(object):
         n = (fitfun.GetParameter(4), fitfun.GetParError(4))
 
         return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), npi0, alpha, n
+        
 
     def quantities(self, draw = True, intgr_ranges = None):
         # Prepare Pt ranges and corresponding M_eff integration intervals
