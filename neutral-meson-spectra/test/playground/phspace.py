@@ -90,25 +90,31 @@ class InclusiveGenerator(object):
 
 
     def update_hists(self, olist):
-        out = [self.data, self.mixed, self.nevents]
+        out = [self.data, self.mixed, self.nevents, self.signal.generated]
         
         if not olist:
-            return out
+            olist = ROOT.TList()
+            olist.SetName(self.selname)
+            map(olist.Add, out)
+            return olist
+            
 
         print 'WARNING: You are trying to update the old histograms.'
         def process(hist):
             ohist = olist.FindObject(hist.GetName()) 
             ohist.Add(hist)
-            return ohist
+            hist = ohist
 
-        return map(process, out)
+        map(process, out)
+        return olist
 
     def save_fake(self, fname):
         ofile = ROOT.TFile(fname, 'update')
-        out = self.update_hists(ofile.Get(self.selname))
-        olist = ROOT.TList()
-        map(olist.Add, out)
-        olist.Write(self.selname, 1)
+        olist = self.update_hists(ofile.Get(self.selname))
+        ofile.Close()
+
+        ofile = ROOT.TFile(fname, 'recreate')
+        olist.Write("", 1)
         ofile.Close()
 
 
@@ -124,7 +130,6 @@ class InclusiveGenerator(object):
 
         # Just fill event counter
         self.nevents.Fill(1, nevents)
-        # PtDependent.divide_bin_width(self.signal.generated)
         return self.signal.generated
 
 

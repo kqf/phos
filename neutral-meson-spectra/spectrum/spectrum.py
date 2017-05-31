@@ -34,13 +34,13 @@ class Spectrum(object):
 
 
     def mass_ranges(self):
-        quantities = self.analyzer.quantities()
+        quantities = self.analyzer.quantities(False)
         ranges = self.fit_ranges(quantities)
         return ranges
 
     def evaluate(self):
         ranges = self.mass_ranges()
-        return self.analyzer.quantities(ranges)
+        return self.analyzer.quantities(True, ranges)
 
 
     def fit_quantity(self, quant, func, par, names, pref):

@@ -124,7 +124,7 @@ class PtAnalyzer(object):
 
         return mmass, sigma, nraw, (fitfun.GetChisquare() / ndf, 0), npi0, alpha, n
 
-    def quantities(self, intgr_ranges = None):
+    def quantities(self, draw = True, intgr_ranges = None):
         # Prepare Pt ranges and corresponding M_eff integration intervals
         if not intgr_ranges: intgr_ranges = [None] * len(self.masses)
         values = map(lambda x, i: self.properties(x, i), self.masses, intgr_ranges)
@@ -134,10 +134,10 @@ class PtAnalyzer(object):
         if self.show_img: map(nicely_draw, histos)
 
         if self.dead_mode: 
-            return
+            return histos
 
-        if not intgr_ranges:
-            return
+        if not draw:
+            return histos
             
         self.draw_ratio()
         self.draw_mass()
