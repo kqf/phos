@@ -52,6 +52,8 @@ class Efficiency(unittest.TestCase):
 
         # data.fifunc = self.getNonlinearityFunction()
 
+        true.Scale(reco.Integral() / true.Integral())
+
         diff = Comparator()
         ratio = diff.compare_set_of_histograms([[reco], [true]])[0]
 
@@ -59,5 +61,5 @@ class Efficiency(unittest.TestCase):
         return ratio
 
     def testOutput(self):
-        eff = self.efficiency('input-data/Pythia-LHC16-iteration15.root')
+        eff = self.efficiency('input-data/Pythia-LHC16-iteration16.root')
 

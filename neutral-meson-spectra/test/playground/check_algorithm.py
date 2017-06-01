@@ -21,14 +21,17 @@ class CheckAlgorithm(test.check_default.CheckDefault):
     
     def test(self):
         f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=False)).evaluate()
-        self.original_distributions = self.generator.generate(1000)
+        self.original_distributions = self.generator.generate(10000)
         
         PtDependent.divide_bin_width(self.original_distributions)
         self.original_distributions.priority = 1
         self.original_distributions.logy = 1
 
+        reconstructed = f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[4]
+        PtDependent.divide_bin_width(reconstructed)
+
         self.results = [
-                        [f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[2]],
+                        [reconstructed],
                         [self.original_distributions]
                        ]
 

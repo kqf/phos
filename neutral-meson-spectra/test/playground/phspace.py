@@ -14,7 +14,7 @@ def particle(pt, mass = 0):
     ROOT.gRandom.Sphere(x, y, z, pt)
     return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
 
-    
+
 class BackgroundGenerator(object):
     def __init__(self, raw_gamma_pectrum, meanphotons = 10.):
         super(BackgroundGenerator, self).__init__()
@@ -23,8 +23,7 @@ class BackgroundGenerator(object):
 
     def generate(self):
         nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
-        # return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
-        return []
+        return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
 
 
 

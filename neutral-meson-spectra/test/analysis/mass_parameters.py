@@ -28,21 +28,22 @@ class TestMassParameters(unittest.TestCase):
         return [i.ReadObj() for i in infile.GetListOfKeys()]
 
 
-    def data(self, iname, oname):
+    def data(self, f, oname):
         infile = ROOT.TFile(oname)
         if infile.IsOpen():
             return self.read_histograms(infile)
 
-
-        f = self.get_analysis(iname)
         mass, sigma = f.analyzer.quantities(False)[0:2]
         save_tobject(mass, oname, 'recreate')
         save_tobject(sigma, oname, 'update')
-        # TODO: Finish this code, add fitters
-
-
         return mass, sigma
 
     def testMass(self):
-        mass, sigmma = self.data('input-data/Pythia-LHC16-iteration16.root', 'mass-Pythia-LHC16-iteration16.root')
+        iname = 'input-data/Pythia-LHC16-iteration16.root'
+        fs = self.get_analysis(iname)
+        mass, sigmma = self.data(fs, 'mass-Pythia-LHC16-iteration16.root')
+
+        pars = [-4.13409, -1.4885, 6.26014, 0.1378]
+        fitmass = fs.fit_quantity(mass, fs.mass_func, pars, fs.mass_names, 'mass')
+        print fs.mass_pars
 
