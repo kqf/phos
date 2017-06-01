@@ -144,30 +144,42 @@ class PtAnalyzer(object):
         if not draw:
             return histos
             
-        self.draw_ratio()
-        self.draw_mass()
-        self.draw_signal()
+        self.draw_ratio(intgr_ranges)
+        self.draw_mass(intgr_ranges)
+        self.draw_signal(intgr_ranges)
 
         return histos
 
 
-    def draw_all_bins(self, f, name = ''):
+    def draw_all_bins(self, f, intgr_ranges, name = ''):
         canvas = get_canvas(1, 1, True)
         canvas.Clear()
         canvas.Divide(*self.multcanvas)
-        for i, m in enumerate(self.masses):
-            f(m, canvas.cd(i + 1))
+        for i, (m, r) in enumerate(zip(self.masses, intgr_ranges)):
+            distr = f(m, canvas.cd(i + 1))
+
+            # Draw integration region, when specified
+            if not r: continue
+            m.line_low = self.draw_line(distr, r[0])
+            m.line_up = self.draw_line(distr, r[1])
+
         wait(name + self.label, self.show_img, save=True)
 
-    def draw_ratio(self, name = ''):
+    def draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)
-        self.draw_all_bins(f, 'multiple-ratio-' + name)
+        self.draw_all_bins(f, intgr_ranges,'multiple-ratio-' + name)
 
-    def draw_mass(self, name = ''):
+    def draw_mass(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_mass(y)
-        self.draw_all_bins(f, 'multiple-mass-' + name)
+        self.draw_all_bins(f, intgr_ranges,'multiple-mass-' + name)
 
-    def draw_signal(self, name = ''):
+    def draw_signal(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_signal(y) 
-        self.draw_all_bins(f, 'multiple-signal-' + name)
+        self.draw_all_bins(f, intgr_ranges,'multiple-signal-' + name)
 
+    def draw_line(self, distr, position):
+        line = ROOT.TLine(position, distr.GetMinimum(), position, distr.GetMaximum())
+        line.SetLineColor(1)
+        line.SetLineStyle(7)
+        line.Draw()
+        return line

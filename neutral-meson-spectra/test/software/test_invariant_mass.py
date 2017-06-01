@@ -26,18 +26,21 @@ class TestInvariantMassClass(unittest.TestCase):
         func(mass)
         wait('test-inmass-%s-' % particle + title , True, True)
 
+    # @unittest.skip('')
     def testDrawSignal(self):
         f = lambda x: x.draw_signal()
 
         for p in self.particles: 
             self.draw(p, f, 'signal')
 
+    # @unittest.skip('')
     def testDrawRatio(self):
         f = lambda x: x.draw_ratio()
 
         for p in self.particles: 
             self.draw(p, f, 'ratio')
 
+    # @unittest.skip('')
     def testDrawMass(self):
         f = lambda x: x.draw_mass()
 
@@ -50,9 +53,10 @@ class TestInvariantMassClass(unittest.TestCase):
         analysis.evaluate()
         pt = analysis.analyzer
         pt.show_img = True
-        pt.draw_ratio()
-        pt.draw_mass()
-        pt.draw_signal()
+        intgr_ranges = [None] * len(pt.masses)
+        pt.draw_ratio(intgr_ranges)
+        pt.draw_mass(intgr_ranges)
+        pt.draw_signal(intgr_ranges)
 
     def testMultiplePlots(self):
         for p in self.particles: 

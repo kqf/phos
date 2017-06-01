@@ -165,6 +165,7 @@ class InvariantMass(object):
         self.ratio.Draw()
         self.draw_pt_bin(self.ratio)
         canvas.Update()
+        return self.ratio
 
 
     def draw_mass(self, pad = 0):
@@ -185,6 +186,7 @@ class InvariantMass(object):
         legend.Draw('same')
         self.draw_pt_bin(self.mass)
         canvas.Update()
+        return self.mass
 
         
     def draw_signal(self, pad = 0):
@@ -202,3 +204,4 @@ class InvariantMass(object):
         self.signal.Write()
         # ofile.Write()
         ofile.Close()
+        return self.signal
