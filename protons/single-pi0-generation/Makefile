@@ -1,12 +1,15 @@
 SEED=1123444
 
 MHOME=/alice/cern.ch/user/o/okovalen
-REPO=FastGen_pp
+REPO=single-pi0-production
 OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
-FILES = readKine.C fastGen_pp.C fastsim_pp.sh gen.jdl 
+FILES = AliGenPHOSlibPlus.h  Config.C  CreateAOD.C  gen.jdl merge.jdl  merge.sh  pi0_Param_pp_7TeV.root.inp  pions.sh  rec.C  sim.C
+
+test:
+	./pions.sh
 
 upload:
-	alien_rmdir $(MHOME)/$(REPO)
+	-alien_rmdir $(MHOME)/$(REPO)
 	alien_mkdir $(MHOME)/$(REPO)/
 	$(foreach file, $(FILES), alien_cp -n $(file) alien:$(MHOME)/$(REPO)/;)
 
@@ -18,6 +21,8 @@ download:
 	rm -rf results
 	echo -e "\x07
 
+
+
 clean:
 	rm -rf tmp_results
-	rm -f *.root *~ 
+	rm -rf *.root *~  *.log *.so *.d *.ps GRP *.dat

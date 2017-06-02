@@ -235,7 +235,7 @@ void Config()
 	gROOT->LoadMacro("AliGenPHOSlibPlus.h++") ;
 
 
-	TString mesonParamFile = "pi0_Param_pp_7TeV.root";
+	TString mesonParamFile = "pi0_Param_pp_7TeV.root.inp";
 
 
 	TFile* fpp = TFile::Open(mesonParamFile);
