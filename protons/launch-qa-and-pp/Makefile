@@ -3,8 +3,8 @@
 # MC = kFALSE
 
 
-DATASET = LHC16j2a1
-DPART = first
+DATASET = LHC16j2b2
+DPART = second
 MC = kTRUE
 
 grid: | %.cxx
