@@ -1,0 +1,33 @@
+Executable = "/alice/cern.ch/user/o/okovalen/single-pi0-production/single-pion.sh";
+Jobtag={"comment:PHOS, pion"} ;
+
+Packages={"VO_ALICE@AliPhysics::vAN-20170516-1",
+         "VO_ALICE@APISCONFIG::V1.1x"};
+
+
+#TTL = "6 h";
+
+InputFile= {
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/AliGenPHOSlibPlus.h",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/Config.C",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/CreateAOD.C",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/generate.jdl",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/merge.jdl",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/merge.sh",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/pi0_Param_pp_7TeV.root.inp",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/single-pion.sh",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/rec.C",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/sim.C "
+            };
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"generated.root@disk2"};
+
+splitarguments="#alien_counter#";
+split="production:1-2";
+
+OutputDir="/alice/cern.ch/user/o/okovalen/single-pi0-production/output/$1/#alien_counter#";
+
+
+Workdirectorysize={"4000MB"};
+Email="oleksandr.kovalenko@cern.ch";

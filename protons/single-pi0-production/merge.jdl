@@ -1,0 +1,18 @@
+Executable = "/alice/cern.ch/user/o/okovalen/single-pi0-production/merge.sh";
+Jobtag={"comment:PHOS, pions"} ;
+
+Packages={"VO_ALICE@AliPhysics::vAN-20170516-1",
+         "VO_ALICE@APISCONFIG::V1.1x"};
+
+
+
+#TTL = "6 h";
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"generated.root@disk2"};
+OutputDir="/alice/cern.ch/user/o/okovalen/single-pi0-production/output/$1";
+
+
+Workdirectorysize={"4000MB"};
+Email="oleksandr.kovalenko@cern.ch";
+

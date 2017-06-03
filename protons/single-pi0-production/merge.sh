@@ -1,6 +1,8 @@
 #!/bin/bash
 
-MYPATH=/alice/cern.ch/user/o/okovalen/FastGen_pp
+# NB: Use this script in extreme cases only
+
+MYPATH=/alice/cern.ch/user/o/okovalen/single-pi0-production/
 
 echo $PWD
 echo ls
