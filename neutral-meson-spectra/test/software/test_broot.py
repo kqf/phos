@@ -36,6 +36,7 @@ class TestTH(unittest.TestCase):
         wait('')
 
 
+    @unittest.skip('')
     def testSetProperties(self):
         hist = BH1("refhist", "Testing set_property method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
@@ -53,4 +54,23 @@ class TestTH(unittest.TestCase):
         hist2.set_properties(hist)
         print 'label', hist2.label
         self.assertTrue(hist2.label == hist.label)
+
+
+    def testClone(self):
+        hist = BH1("refhist", "Testing updated Clone method", 100, -10, 10,
+            label = "test prop", logy=True, logx=False, priority = 3)
+
+        self.hist.FillRandom("gaus")
+
+        ## NB: There is no need to manually set properties
+        hist2 = hist.Clone()
+
+
+        ## Copy differs from copy constructor
+        self.assertTrue(hist.GetEntries() == hist2.GetEntries())
+
+
+        ## Now copy the properties
+        self.assertTrue(hist2.label == hist.label)
+
 

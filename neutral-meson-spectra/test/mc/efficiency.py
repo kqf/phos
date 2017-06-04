@@ -61,5 +61,6 @@ class Efficiency(unittest.TestCase):
         return ratio
 
     def testOutput(self):
-        eff = self.efficiency('input-data/Pythia-LHC16-iteration16.root')
+        # eff = self.efficiency('input-data/Pythia-LHC16-iteration16.root')
+        eff = self.efficiency('input-data/EPOS-LHC16-iteration1.root')
 

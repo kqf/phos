@@ -31,8 +31,11 @@ class BH1(ROOT.TH1F, Property):
         ROOT.TH1F.__init__(self, *args)
         Property.__init__(self, **kwargs)
 
-    def Clone():
-        pass
+    def Clone(self, name = "1"):
+        hist = BH1(self)
+        hist.SetName(self.GetName() + name)
+        Property.copy_properties(hist, self)
+        return  hist
 
 
 
