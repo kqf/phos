@@ -11,15 +11,17 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 		return 0;
 
 	// Use default setup for the plugin
-	AliAnalysisGrid * plugin = GetPlugin("single-pi0, period", dpart, useJDL, isMC);
+	AliAnalysisGrid * plugin = GetPlugin(pluginmode, "single-pi0", dpart, useJDL, isMC, 0);
 
 	// Extract period and reconstruction pass
 
 	// TODO: Use cl environment instead
-	TString path("/alice/cern.ch/user/x/xxxxxxxx/single-pi0-production/output/");
+	TString path("/alice/cern.ch/user/o/okovalen/single-pi0-production/output/");
+
+	cout << "RUn number " << period << endl;
+	plugin->AddRunNumber(period.Atoi());
 	plugin->SetGridDataDir(path);
 	plugin->SetDataPattern(path + period + "/" + "*/AliAOD.root");
-	plugin->SetRunNumber(period.Atoi());
 	plugin->SetFileForTestMode ("filesmc.txt");
 	return plugin;
 }

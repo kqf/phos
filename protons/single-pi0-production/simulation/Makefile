@@ -6,7 +6,7 @@ OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
 FILES = AliGenPHOSlibPlus.h Config.C CreateAOD.C generate.jdl merge.jdl merge.sh pi0_Param_pp_7TeV.root.inp single-pion.sh rec.C sim.C
 
 test:
-	./pions.sh
+	./single-pion.sh
 
 upload:
 	# -alien_rmdir $(MHOME)/$(REPO)

@@ -1,4 +1,4 @@
-void sim(Int_t nev = 1, Int_t drain = 1)
+void sim(Int_t nev = 100, Int_t drain = 1)
 {
 
 

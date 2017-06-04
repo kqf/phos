@@ -21,10 +21,10 @@ InputFile= {
             };
 
 OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
-OutputFile= {"generated.root@disk2"};
+OutputFile= {"AliAOD.root@disk2"};
 
 splitarguments="#alien_counter#";
-split="production:1-2";
+split="production:1-2000";
 
 OutputDir="/alice/cern.ch/user/o/okovalen/single-pi0-production/output/$1/#alien_counter#";
 
