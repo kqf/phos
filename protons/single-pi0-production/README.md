@@ -1,8 +1,8 @@
-Steering macro single #pi^0$ analysis
+Steering macro single $#pi^0$ analysis
 =============================
 
 All codes needed for single pion generation are available in the folder `simulation`. 
-Everything else remains the same as usual. 
+CL interface remains the same. 
 
 
 ## Run

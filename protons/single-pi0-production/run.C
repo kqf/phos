@@ -1,4 +1,4 @@
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
@@ -42,23 +42,20 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
-    TString pref =  isMC ? "MC": "";
+    TString pref =  "MC";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString tenderOption = isMC ? "Run2Default" : "";
+    TString tenderOption = "Run2Default";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
 
-    if(isMC)
-    {
-        // Important: Keep track of this variable
-        // ZS threshold in unit of GeV  
-        Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
-    }
+    // Important: Keep track of this variable
+    // ZS threshold in unit of GeV  
+    Double_t zs_threshold = 0.020;
+    PHOSSupply->ApplyZeroSuppression(zs_threshold); 
 
 
     gROOT->LoadMacro("../datasets/values_for_dataset.h+");

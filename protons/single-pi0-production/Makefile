@@ -1,4 +1,4 @@
-PRODUCTION = 2
+PRODUCTION = 1
 # TODO: Estimate the statistics, is DPART parameter is redundant here?
 DPART = second
 
