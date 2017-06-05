@@ -15,6 +15,13 @@ import os.path
 import unittest
 
 
+def cache(function):
+    def cached(self, infile, label):
+        res = function(self, infile, label)
+        res.label = label
+        return res
+    return cached
+
 class Efficiency(unittest.TestCase):
 
 
@@ -35,13 +42,19 @@ class Efficiency(unittest.TestCase):
 
     def readEfficiency(self, fname):
         infile = ROOT.TFile(fname)
+        if not infile.IsOpen():
+            return None
         return infile.GetListOfKeys().At(0).ReadObj()
 
 
-    def efficiency(self, iname, oname = None):
+    @cache
+    def efficiency(self, iname, label):
+        oname = iname + '.eff'
+        ratio = self.readEfficiency(oname)
+        if ratio: 
+            return ratio
+
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
-
-
         ## Calculate yield for mc 
         true = read_histogram(iname, 'MCStudyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
@@ -62,5 +75,13 @@ class Efficiency(unittest.TestCase):
 
     def testOutput(self):
         # eff = self.efficiency('input-data/Pythia-LHC16-iteration16.root')
-        eff = self.efficiency('input-data/EPOS-LHC16-iteration1.root')
+        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration1.root', 'epos')
+        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration16.root', 'pythia')
+
+        
+        # TODO: Fix normalization! for efficiency
+        diff = Comparator()
+        # TODO: Introduce normal interface for 2 histograms
+        diff.compare_set_of_histograms([[eff1], [eff2]])
+
 

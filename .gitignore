@@ -51,3 +51,4 @@ gphysi.dat
 *.zip
 *.sublime*
 *.root.inp
+*.root.*
