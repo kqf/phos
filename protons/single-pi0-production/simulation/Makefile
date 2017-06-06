@@ -3,7 +3,7 @@ SEED=1123444
 MHOME=/alice/cern.ch/user/o/okovalen
 REPO=single-pi0-production
 OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
-FILES = Config.C CreateAOD.C generate.jdl merge.jdl merge.sh pi0_Param_pp_7TeV.root.inp single-pion.sh rec.C sim.C
+FILES = Config.C CreateAOD.C generate.jdl merge.jdl merge.sh single-pion.sh rec.C sim.C tag.C
 
 test:
 	./single-pion.sh
