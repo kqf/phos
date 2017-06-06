@@ -8,4 +8,5 @@ fi
 
 aliroot -b -q sim.C 
 aliroot -b -q rec.C 
+aliroot -b -q tag.C 
 aliroot -b -q CreateAOD.C 

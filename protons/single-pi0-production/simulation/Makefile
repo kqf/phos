@@ -3,7 +3,7 @@ SEED=1123444
 MHOME=/alice/cern.ch/user/o/okovalen
 REPO=single-pi0-production
 OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
-FILES = AliGenPHOSlibPlus.h Config.C CreateAOD.C generate.jdl merge.jdl merge.sh pi0_Param_pp_7TeV.root.inp single-pion.sh rec.C sim.C
+FILES = Config.C CreateAOD.C generate.jdl merge.jdl merge.sh pi0_Param_pp_7TeV.root.inp single-pion.sh rec.C sim.C
 
 test:
 	./single-pion.sh
@@ -25,4 +25,4 @@ download:
 
 clean:
 	rm -rf tmp_results
-	rm -rf *.root *~ *.log *.so *.d *.ps GRP *.dat
+	rm -rf *.root *~ *.log *.so *.d *.ps GRP *.dat *.txt *.inp

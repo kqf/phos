@@ -8,14 +8,13 @@ Packages={"VO_ALICE@AliPhysics::vAN-20170516-1",
 #TTL = "6 h";
 
 InputFile= {
-		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/AliGenPHOSlibPlus.h",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/Config.C",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/CreateAOD.C",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/generate.jdl",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/merge.jdl",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/merge.sh",
-		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/pi0_Param_pp_7TeV.root.inp",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/single-pion.sh",
+		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/tag.C",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/rec.C",
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/sim.C "
             };
