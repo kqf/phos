@@ -5,9 +5,6 @@ Packages={"VO_ALICE@AliPhysics::vAN-20170516-1",
          "VO_ALICE@APISCONFIG::V1.1x"};
 
 
-#TTL = "6 h";
-Price="10";
-Validationcommand ="/alice/validation/validation.sh";
 
 InputFile= {
 		        "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/Config.C",
@@ -24,7 +21,7 @@ InputFile= {
 OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
 OutputFile= {"AliAOD.root@disk2"};
 
-0plitarguments = "--run $1 --event #alien_counter# --process kPHOSPi0 --energy 13000.";
+splitarguments = "#alien_counter#";
 split="production:$2-$3";
 
 OutputDir="/alice/cern.ch/user/o/okovalen/single-pi0-production/output/$1/#alien_counter#";

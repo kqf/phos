@@ -1,4 +1,4 @@
-void sim(Int_t nev = 1)
+void sim(Int_t nev = 10000)
 {
 	AliSimulation simulator;
 

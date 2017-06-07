@@ -30,6 +30,10 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 
+	fListOfHistos->Add(new TH2F("hMassPtM123", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2 in modules 1,2,3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtM123", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2 in modules 1,2,3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+
+
 	// TODO: fix this for CAF
 	Int_t kMinModule = 1;
 	Int_t kMaxModule = 4;
@@ -85,6 +89,9 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm1, sm2), ma12, pt12);
 	else
 		FillHistogram(Form("h%sMassPtSM%dSM%d", suff, sm2, sm1), ma12, pt12);
+
+	if(sm1 != 4 && sm2 != 4)
+		FillHistogram(Form("h%sMassPtM123", suff), ma12 , pt12);
 }
 
 //________________________________________________________________
