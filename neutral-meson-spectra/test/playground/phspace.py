@@ -8,11 +8,15 @@ from itertools import combinations, product
 from spectrum.sutils import tsallis
 from spectrum.ptanalyzer import PtDependent
 from array import array
+from random import random
 
 def particle(pt, mass = 0):
     x, y, z = ROOT.Double(0), ROOT.Double(0), ROOT.Double(0)
-    ROOT.gRandom.Sphere(x, y, z, pt)
-    return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
+    # pt / cos theta = p
+    # p = pt / random()
+    # ROOT.gRandom.Sphere(x, y, z, p)
+    # return ROOT.TLorentzVector(x, y, z, (p ** 2 + mass ** 2) ** 0.5)
+    return ROOT.TLorentzVector(pt, 0, 0, (pt ** 2 + mass ** 2) ** 0.5)
 
 
 class BackgroundGenerator(object):
@@ -22,8 +26,9 @@ class BackgroundGenerator(object):
         self.meanphotons = meanphotons
 
     def generate(self):
-        nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
-        return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
+        # nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
+        # return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
+        return []
 
 
 
@@ -52,15 +57,17 @@ class SignalGenerator(object):
 
 
     def generate(self):
-        nmesons = int(ROOT.gRandom.Exp(1. / self.average_nmesons))
+        nmesons = 4 #int(ROOT.gRandom.Exp(1. / self.average_nmesons))
         mesons = [self.generate_meson() for i in range(nmesons)]
         return sum(mesons, [])
 
 
     def generate_meson(self):
-        pt = self.true_spectrum.GetRandom(ROOT.Double(0.8), ROOT.Double(20))
+        pt = self.random_momentum()
         mass, width = self.true_mass.Eval(pt), self.true_width.Eval(pt)
-        gen_mass = ROOT.gRandom.Gaus(mass, width)
+        # gen_mass = ROOT.gRandom.Gaus(mass, width)
+        gen_mass = ROOT.gRandom.Gaus(0.135, 0.005)
+
 
         pi0 = particle(pt, gen_mass)
         self.generated.Fill(pi0.Pt())
@@ -71,6 +78,11 @@ class SignalGenerator(object):
         event.Generate()
 
         return [event.GetDecay(i) for i in range(nphot)]
+
+    def random_momentum(self):
+        # pt = self.true_spectrum.GetRandom(ROOT.Double(0.8), ROOT.Double(20))
+        pt = ROOT.gRandom.Uniform(ROOT.Double(0.8), ROOT.Double(20))
+        return pt
 
 
 class InclusiveGenerator(object):
