@@ -37,7 +37,7 @@ class PeakParametrisation(object):
         ff.SetParLimits(2, *self.prel_width_limits)
         ff.SetParameters(hist.GetMaximum()/3., *self.prel_paremeters)
         hist.Fit(ff, "0QL", "", *self.prel_range)
-        return [ff.GetParameter(i) for i in range(4)]
+        return [ff.GetParameter(i) if i != 1 else self.fit_mass for i in range(4)]
         
 
 class CrystalBall(PeakParametrisation):
