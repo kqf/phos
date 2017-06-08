@@ -15,7 +15,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         super(CheckAlgorithm, self).setUp()
 
         self.genfilename = 'LHC16-fake.root'
-        self.generator = InclusiveGenerator('input-data/LHC16.root', 'config/test_algorithm.json', genfilename =self.genfilename)
+        self.generator = InclusiveGenerator('input-data/test-analysis-pp.root', 'config/test_algorithm.json', genfilename =self.genfilename)
         self.clean = False
 
     

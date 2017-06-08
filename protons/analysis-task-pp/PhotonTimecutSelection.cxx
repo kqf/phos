@@ -31,9 +31,9 @@ void PhotonTimecutSelection::InitSelectionHistograms()
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
 	Double_t mMax  = 1.5;
-	Int_t nPt      = 500;
+	Int_t nPt      = 400;
 	Double_t ptMin = 0;
-	Double_t ptMax = 100;
+	Double_t ptMax = 20;
 
 	for (Int_t i = 0; i < 2; i++)
 	{

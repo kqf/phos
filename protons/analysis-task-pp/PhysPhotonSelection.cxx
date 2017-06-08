@@ -23,9 +23,9 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
 	Double_t mMax  = 1.5;
-	Int_t nPt      = 500;
+	Int_t nPt      = 400;
 	Double_t ptMin = 0;
-	Double_t ptMax = 100;
+	Double_t ptMax = 20;
 
 	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 	fListOfHistos->Add(new TH2F("hMixMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
