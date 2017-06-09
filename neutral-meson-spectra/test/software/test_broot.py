@@ -56,6 +56,20 @@ class TestTH(unittest.TestCase):
         self.assertTrue(hist2.label == hist.label)
 
 
+    def testCloneFromROOT(self):
+        hist = ROOT.TH1F("refhist", "Testing set_property method", 100, -10, 10)
+
+        hist2 = BH1(hist)
+
+        # Properties should not copy when using copy constructor
+        #
+        self.assertTrue('label' in dir(hist2))
+        self.assertTrue('logy' in dir(hist2))
+        self.assertTrue('priority' in dir(hist2))
+        self.assertTrue('fitfunc' in dir(hist2))
+
+
+    @unittest.skip('')
     def testClone(self):
         hist = BH1("refhist", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
@@ -72,5 +86,4 @@ class TestTH(unittest.TestCase):
 
         ## Now copy the properties
         self.assertTrue(hist2.label == hist.label)
-
 
