@@ -2,7 +2,8 @@
 
 import ROOT
 import unittest
-from spectrum.broot import BH1
+import random
+from spectrum.broot import BH1, BH2
 from spectrum.sutils import wait
 
 class TestTH(unittest.TestCase):
@@ -56,6 +57,7 @@ class TestTH(unittest.TestCase):
         self.assertTrue(hist2.label == hist.label)
 
 
+    @unittest.skip('')
     def testCloneFromROOT(self):
         hist = ROOT.TH1F("refhist", "Testing set_property method", 100, -10, 10)
 
@@ -86,4 +88,28 @@ class TestTH(unittest.TestCase):
 
         ## Now copy the properties
         self.assertTrue(hist2.label == hist.label)
+
+
+    def testBH2Projection(self):
+        hist = BH2("refhist", "Testing updated ProjectX method", 100, -10, 10, 100, -10, 10,
+            label = "test prop", logy=True, logx=False, priority = 3)
+
+        for i in range(1, hist.GetXaxis().GetNbins() + 1):
+            for j in range(1, hist.GetYaxis().GetNbins() + 1):
+                hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
+
+ 
+        hist.Draw('colz')
+        raw_input()
+
+        ## NB: There is no need to manually set properties
+        hist2 = hist.ProjectionX('newname', 1, 50)
+
+
+        ## Copy differs from copy constructor
+        # self.assertTrue(hist.GetEntries() == hist2.GetEntries())
+
+
+        ## Now copy the properties
+        self.assertTrue('label' in dir(hist2))
 

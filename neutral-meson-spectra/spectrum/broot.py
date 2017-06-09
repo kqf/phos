@@ -40,5 +40,32 @@ class BH1(ROOT.TH1F, Property):
         Property.copy_properties(hist, self)
         return  hist
 
+class BH1D(ROOT.TH1D, Property):
+    def __init__(self, *args, **kwargs):
+        ROOT.TH1D.__init__(self, *args)
+        Property.__init__(self, **kwargs)
+
+    def Clone(self, name = "1"):
+        hist = BH1D(self)
+        hist.SetName(self.GetName() + name)
+        Property.copy_properties(hist, self)
+        return  hist
+
+
+
+class BH2(ROOT.TH2F, Property):
+    def __init__(self, *args, **kwargs):
+        ROOT.TH2F.__init__(self, *args)
+        Property.__init__(self, **kwargs)
+
+    def Clone(self, name = "1"):
+        hist = BH2(self)
+        hist.SetName(self.GetName() + name)
+        Property.copy_properties(hist, self)
+        return  hist
+
+    def ProjectionX(self, name, a, b):
+        hist = ROOT.TH2F.ProjectionX(self, name, a, b)
+        return BH1D(hist)
 
 
