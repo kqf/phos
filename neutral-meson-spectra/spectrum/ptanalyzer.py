@@ -107,10 +107,6 @@ class PtAnalyzer(object):
     def number_of_mesons(self, mass, intgr_ranges):
         a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
         area, areae = area_and_error(mass.signal, a, b)
-
-        # TODO: why do we use  sqrt of range in the normalization
-        binw = (mass.pt_range[1] - mass.pt_range[0]) ** 0.5 
-        area, areae = area * binw, areae * binw 
         return area, areae
 
 

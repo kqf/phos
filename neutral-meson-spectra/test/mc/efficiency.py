@@ -65,7 +65,7 @@ class Efficiency(unittest.TestCase):
 
         # data.fifunc = self.getNonlinearityFunction()
 
-        true.Scale(reco.Integral() / true.Integral())
+        # true.Scale(reco.Integral() / true.Integral())
 
         diff = Comparator()
         ratio = diff.compare_set_of_histograms([[reco], [true]])[0]
@@ -74,9 +74,8 @@ class Efficiency(unittest.TestCase):
         return ratio
 
     def testOutput(self):
-        # eff = self.efficiency('input-data/Pythia-LHC16-iteration16.root')
-        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration1.root', 'epos')
-        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration16.root', 'pythia')
+        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'epos')
+        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration17.root', 'pythia')
 
         
         # TODO: Fix normalization! for efficiency
