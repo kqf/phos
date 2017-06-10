@@ -27,7 +27,7 @@ def equals(a, b, tol = 1e-7):
         return all(map(lambda x, y: equals(x, y, tol), zip(a, b)))
     return abs(a - b) < tol 
 
-def wait(name, draw=True, save = False, suffix = ''):
+def wait(name = '', draw=True, save = False, suffix = ''):
     canvas = get_canvas()
     canvas.Update()
     name = name.replace(' ', '-').replace('_', '-')
