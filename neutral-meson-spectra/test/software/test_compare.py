@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     def testPriority(self):
         diff = cmpr.Comparator()
 
-        for h in sel.data:
+        for h in self.data:
             h.SetTitle('Checking priority of the histograms')
 
         data = self.data[0].Clone()

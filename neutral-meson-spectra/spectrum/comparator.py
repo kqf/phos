@@ -204,9 +204,36 @@ class Comparator(object):
         self.vi = Visualizer(size, rrange, ratiofit)
 
 
-    def compare_multiple_ratios(self, hists, baselines, compare = None):
-        if not compare:
-            compare = self.vi.compare_visually
+    def compare(self, *args):
+        contains_objs = lambda x: all(not '__iter__' in dir(i) for i in x)
+
+        # Halndle coma separated histograms 
+        #
+        if contains_objs(args):
+            return self.vi.compare_visually(args, self.ci)
+
+        # Halndle single list of histograms 
+        #
+        if len(args) == 1 and contains_objs(args[0]):
+            return self.vi.compare_visually(args[0], self.ci)
+
+
+        # Halndle two lists of histograms 
+        # 
+        if len(args) == 2 and  all(map(contains_objs, args)):
+            return self.compare_set_of_histograms(args)
+
+        # Handle sets of histograms
+        #
+        if len(args) == 1 and all(map(contains_objs, args[0])):
+            return self.compare_set_of_histograms(args[0])
+
+        assert False, "Can't deduce what are you trying to with these arguments:\n {}".format(args)
+
+
+    def compare_multiple_ratios(self, hists, baselines, comparef = None):
+        if not comparef:
+            comparef = self.vi.compare_visually
 
         def ratio(a, b):
             h = a.Clone(a.GetName() + '_ratio')
@@ -218,13 +245,13 @@ class Comparator(object):
             h.GetYaxis().SetTitle(ytitle(a) +  ' / ' + ytitle(b))
             return h
 
-        compare(map(ratio, hists, baselines), self.ci)
+        comparef(map(ratio, hists, baselines), self.ci)
 
 
 
-    def compare_ratios(self, hists, baseline, compare = None):
-        if not compare:
-            compare = self.vi.compare_visually
+    def compare_ratios(self, hists, baseline, comparef = None):
+        if not comparef:
+            comparef = self.vi.compare_visually
 
         def ratio(a):
             h = a.Clone(a.GetName() + '_ratio')
@@ -232,28 +259,28 @@ class Comparator(object):
             h.Divide(baseline)
             return h
 
-        compare(map(ratio, hists), self.ci)
+        comparef(map(ratio, hists), self.ci)
 
 
-    def compare_set_of_histograms(self, l, compare = None):
-        if not compare:
-            compare = self.vi.compare_visually
+    def compare_set_of_histograms(self, l, comparef = None):
+        if not comparef:
+            comparef = self.vi.compare_visually
 
-        result = [compare(hists, self.ci) for hists in zip(*l)]
+        result = [comparef(hists, self.ci) for hists in zip(*l)]
         return result
 
 
-    def compare_lists_of_histograms(self, l1, l2, ignore = [], compare = None):
+    def compare_lists_of_histograms(self, l1, l2, ignore = [], comparef = None):
         if len(l1) != len(l2): 
             print Cc.fail('Warning files have different size')
 
-        if not compare:
-            compare = self.vi.compare_visually
+        if not comparef:
+            comparef = self.vi.compare_visually
 
         for h in l1: 
             candidate = self.find_similar_in(l2, h)
             if not candidate or candidate.GetName() in ignore: continue
-            compare(h, candidate, self.ci)
+            comparef(h, candidate, self.ci)
 
         print "That's it!! Your computation is done"
 
@@ -272,7 +299,7 @@ class Comparator(object):
         return candidates[0]
         
 def main():
-    print "Use:\n\t... \n\tcmp = Comparator((0.5, 2))\n\t...\n\nto compare lists of histograms."
+    print "Use:\n\t... \n\tcmp = Comparator((0.5, 2))\n\t...\n\nto comparef lists of histograms."
 
 if __name__ == '__main__':
     main()

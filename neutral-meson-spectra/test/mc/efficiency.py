@@ -56,9 +56,9 @@ class Efficiency(unittest.TestCase):
 
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
         ## Calculate yield for mc 
-        true = read_histogram(iname, 'MCStudyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
+        true = read_histogram(iname, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
-        reco = f(Input(iname, 'PhysNonlinTender').read(), 'Reconstructed', Options())[4]
+        reco = f(Input(iname, 'PhysNonlinOnlyTender').read(), 'Reconstructed', Options())[4]
         PtDependent.divide_bin_width(reco)
         reco.logy = True
         true.logy = True
