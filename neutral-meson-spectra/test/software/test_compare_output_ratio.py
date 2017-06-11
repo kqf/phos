@@ -30,7 +30,7 @@ class TestOutputRatio(unittest.TestCase):
         diff = cmpr.Comparator()
 
         self.data[2].SetTitle('Checking output ratio comparator')
-        ratio = diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        ratio = diff.compare(self.data[2], self.data[1])
 
         c1 = get_canvas()
         c1.SetLogy(0)
@@ -44,7 +44,7 @@ class TestOutputRatio(unittest.TestCase):
         diff = cmpr.Comparator()
 
         self.data[0].SetTitle('Checking output ratio comparator')
-        ratio = diff.compare_set_of_histograms(zip(*[self.data, self.data]))
+        ratio = diff.compare(zip(*[self.data, self.data]))
         self.assertIsNone(ratio)
 
 

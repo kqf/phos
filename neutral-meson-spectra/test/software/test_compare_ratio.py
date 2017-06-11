@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     def testCompareTwo(self):
         diff = cmpr.Comparator()
         self.data[2].SetTitle('Comparing double plots')
-        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        diff.compare(self.data[2], self.data[1])
 
 
     @unittest.skip('')
@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
         distorted = main.Clone(main.GetName() + '_clone')
         distorted.SetBinContent(80, distorted.GetBinContent(80) * 100)
         distorted.label = 'distorted'
-        diff.compare_set_of_histograms([[main], [distorted]])
+        diff.compare(main, distorted)
 
 
     @unittest.skip('')
@@ -53,36 +53,36 @@ class Test(unittest.TestCase):
    
         self.data[2].SetTitle('Comparing different ratiofit ranges')
         diff = cmpr.Comparator(ratiofit=(0, 0))
-        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        diff.compare(self.data[2], self.data[1])
 
         diff = cmpr.Comparator(ratiofit=(0, 10))
-        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        diff.compare(self.data[2], self.data[1])
 
         diff = cmpr.Comparator(ratiofit=(5, 10))
-        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        diff.compare(self.data[2], self.data[1])
 
         diff = cmpr.Comparator(ratiofit=(5, 0))
-        diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        diff.compare(self.data[2], self.data[1])
 
 
     @unittest.skip('')
     def testCompareNonlinear(self):
         diff = cmpr.Comparator()
-        # diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        # diff.compare(self.data[2], self.data[1])
 
         self.data[0].SetTitle('Comparing nonlinear fit function')
         self.data[0].fitfunc = get_fit_function()
-        diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
+        diff.compare(self.data[0], self.data[1])
 
     def testRebin(self):
         diff = cmpr.Comparator()
-        # diff.compare_set_of_histograms([[self.data[2]], [self.data[1]]])
+        # diff.compare(self.data[2], self.data[1])
 
         self.data[0].SetTitle('Test Rebin Function second')
         self.data[0].Rebin(2)
-        diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
+        diff.compare(self.data[0], self.data[1])
 
         self.data[0].SetTitle('Test Rebin Function first')
         self.data[1].Rebin(2)
-        diff.compare_set_of_histograms([[self.data[0]], [self.data[1]]])
+        diff.compare(self.data[0], self.data[1])
 

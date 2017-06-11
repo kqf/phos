@@ -65,10 +65,10 @@ class Efficiency(unittest.TestCase):
 
         # data.fifunc = self.getNonlinearityFunction()
 
-        # true.Scale(reco.Integral() / true.Integral())
+        true.Scale(reco.Integral() / true.Integral())
 
         diff = Comparator()
-        ratio = diff.compare_set_of_histograms([[reco], [true]])[0]
+        ratio = diff.compare(reco, true)
 
         if oname: save_tobject(ratio, oname)
         return ratio
@@ -78,9 +78,7 @@ class Efficiency(unittest.TestCase):
         eff2 = self.efficiency('input-data/Pythia-LHC16-iteration17.root', 'pythia')
 
         
-        # TODO: Fix normalization! for efficiency
         diff = Comparator()
-        # TODO: Introduce normal interface for 2 histograms
-        diff.compare_set_of_histograms([[eff1], [eff2]])
+        diff.compare(eff1, eff2)
 
 
