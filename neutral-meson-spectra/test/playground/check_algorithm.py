@@ -15,13 +15,13 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         super(CheckAlgorithm, self).setUp()
 
         self.genfilename = 'LHC16-fake.root'
-        self.generator = InclusiveGenerator('input-data/EPOS-LHC16-iteration3.root', 'config/test_algorithm.json', genfilename =self.genfilename)
+        self.generator = InclusiveGenerator('input-data/EPOS-LHC16-iteration3.root', 'config/test_algorithm.json', genfilename = self.genfilename, flat = False)
         self.clean = False
 
     
     def test(self):
         f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=False)).evaluate()
-        self.original_distributions = self.generator.generate(10000)
+        self.original_distributions = self.generator.generate(1000)
         
         PtDependent.divide_bin_width(self.original_distributions)
         self.original_distributions.priority = 1

@@ -26,12 +26,15 @@ class BackgroundGenerator(object):
         self.meanphotons = meanphotons
 
     def generate(self):
-        # nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
-        # return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
-        return []
+        if self.meanphotons == 0:
+            return []
+            
+        nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
+        return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
 
 
 
+# TODO: Swap definitions of the classes SignalGenerator, FlatGenerator
 class SignalGenerator(object):
     def __init__(self, config):
         super(SignalGenerator, self).__init__()
@@ -64,12 +67,9 @@ class SignalGenerator(object):
 
     def generate_meson(self):
         pt = self.random_momentum()
-        mass, width = self.true_mass.Eval(pt), self.true_width.Eval(pt)
-        # gen_mass = ROOT.gRandom.Gaus(mass, width)
-        gen_mass = ROOT.gRandom.Gaus(0.135, 0.005)
+        mass = self.random_mass(pt)
 
-
-        pi0 = particle(pt, gen_mass)
+        pi0 = particle(pt, mass)
         self.generated.Fill(pi0.Pt())
 
         event = ROOT.TGenPhaseSpace()
@@ -79,20 +79,41 @@ class SignalGenerator(object):
 
         return [event.GetDecay(i) for i in range(nphot)]
 
+
+    def random_mass(self, pt):
+        mass, width = self.true_mass.Eval(pt), self.true_width.Eval(pt)
+        gen_mass = ROOT.gRandom.Gaus(mass, width)
+        return gen_mass
+
     def random_momentum(self):
-        # pt = self.true_spectrum.GetRandom(ROOT.Double(0.8), ROOT.Double(20))
+        pt = self.true_spectrum.GetRandom(ROOT.Double(0.8), ROOT.Double(20))
+        return pt
+
+
+
+class FlatGenerator(SignalGenerator):
+    def __init__(self, config):
+        super(FlatGenerator, self).__init__(config)
+
+
+    def random_mass(self, pt):
+        gen_mass = ROOT.gRandom.Gaus(0.135, 0.005)
+        return gen_mass
+
+    def random_momentum(self):
         pt = ROOT.gRandom.Uniform(ROOT.Double(0.8), ROOT.Double(20))
         return pt
 
 
+
 class InclusiveGenerator(object):
     def __init__(self, fname, signalconf, selname = 'PhysNonlinTender', 
-                 hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root'):
+                 hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root', meanphotons = 0, flat = False):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
         self.genfilename = genfilename
-        self.signal = SignalGenerator(signalconf)
-        self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr))
+        self.signal = SignalGenerator(signalconf) if not flat else FlatGenerator(signalconf)
+        self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr), meanphotons = meanphotons)
         self.data, self.mixed, self.nevents = map(lambda y: self.read(fname, y, True), hnames)
         self.out = [self.data, self.mixed, self.nevents, self.signal.generated]
         self.update_hists()
