@@ -3,12 +3,12 @@
 # MC = kFALSE
 
 
-DATASET = LHC16j2b2
+DATASET = LHC16h-muon-calo-pass1
 DPART = second
-MC = kTRUE
+MC = kFALSE
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || make unlink 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' |& tee /dev/stderr | grep mWarning >> started_jobs.log || make unlink 
 	echo $(DATASET) $(DPART) >> started_jobs.log
 	@make unlink || echo "Directory is clean"
 	echo "Started grid analysis" >> .runhistory

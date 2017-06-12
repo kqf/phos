@@ -7,6 +7,9 @@ then
 fi
 
 aliroot -b -q sim.C 
-aliroot -b -q rec.C 
-aliroot -b -q tag.C 
-aliroot -b -q CreateAOD.C 
+echo -e "\a"
+# aliroot -b -q rec.C 
+# echo -e "\a"
+# aliroot -b -q tag.C 
+# echo -e "\a"
+# aliroot -b -q CreateAOD.C 

@@ -1,13 +1,13 @@
-void sim(Int_t nev = 10000)
+void sim(Int_t nev = 1)
 {
 	AliSimulation simulator;
 
-	// simulator.SetMakeSDigits("PHOS");
-	// simulator.SetMakeDigits("PHOS");
+	simulator.SetMakeSDigits("PHOS");
+	simulator.SetMakeDigits("PHOS");
 
-	simulator.SetMakeSDigits("PHOS ITS TPC");
-	simulator.SetMakeDigits("PHOS ITS TPC");
-	simulator.SetMakeDigitsFromHits("ITS TPC");
+	// simulator.SetMakeSDigits("PHOS ITS TPC");
+	// simulator.SetMakeDigits("PHOS ITS TPC");
+	// simulator.SetMakeDigitsFromHits("ITS TPC");
 
 
 	simulator.SetDefaultStorage("alien://Folder=/alice/data/2016/OCDB");

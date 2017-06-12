@@ -2,6 +2,7 @@
 #include "iostream"
 #include "datasets/values_for_dataset.h"
 
+using std::cerr;
 using std::cout;
 using std::endl;
 
@@ -32,7 +33,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 
 	if (!isMC)
 		plugin->SetRunPrefix("000");
-	
+
 	std::vector<Int_t> v; //
 	values_for_dataset(v, period);
 
@@ -44,17 +45,23 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	Int_t stop =  (dpart.Contains("first") && !(v.size() <  msize)) ? v.size() / 2 : v.size();
 
 
+
+
 	TString info = dpart.Contains("first") ? "first" :  "second";
 
-	// Don't add any endings if we have only one 
-	if(!TString(pluginmode).Contains("terminate"))
+	// Don't add any endings if we have only one
+	if (v.size() > msize && TString(pluginmode).Contains("full"))
 	{
 		// Repeat the message othervise it's not visible in the logs.
 		for (int i = 0; i < 5; ++i)
+		{
+			cout << "mWarning: remember to analyse the second part of the dataset " << period << endl;
+			cerr << "mWarning: remember to analyse the second part of the dataset " << period << endl;
 			cout << "Important: you are running only on " << info << " part of the dataset. " << endl;
+		}
 	}
 
-	
+
 	// Terminate all datasets simultaneously
 	if (TString(pluginmode).Contains("terminate"))
 	{
