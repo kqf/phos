@@ -28,8 +28,8 @@ class CheckMCDifferentVersions(unittest.TestCase):
                             # ,f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPtN3').read(), 'LHC16 20 MeV', Options(priority = 1))
                             # ,f(TimecutInput('input-data/Pythia-LHC16-iteration9.root', 'PhysTender', 'MassPtN3').read(), 'LHC16 25 MeV', Options(priority = 1))
                             # ,f(TimecutInput('input-data/Pythia-LHC16-iteration10.root', 'PhysTender', 'MassPtN3').read(), 'nonlin LHC16 25 MeV', Options(priority = 1))
-                            ,f(Input('input-data/Pythia-LHC16-iteration16.root', 'PhysNonlinTender', 'MassPtN3').read(), 'Pythia', Options(priority = 1))
-                            ,f(Input('input-data/EPOS-LHC16-iteration1.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 1))
+                            ,f(Input('input-data/Pythia-LHC16-iteration17.root', 'PhysNonlinTender', 'MassPtN3').read(), 'Pythia', Options(priority = 1))
+                            ,f(Input('input-data/EPOS-LHC16-iteration3.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 1))
                         ]
 
 

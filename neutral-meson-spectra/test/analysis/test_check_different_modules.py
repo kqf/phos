@@ -8,22 +8,23 @@ from spectrum.sutils import get_canvas, adjust_canvas
 import test.check_default
 import unittest
 
+def run_analysis(opt, infile, selection):
+    f = lambda x, y: Spectrum(x, label=y, mode='d', options=opt).evaluate()
+    results = map(f, *Input(infile, selection, 'MassPt').read_per_module())
+    return results
 
 class CheckModules(test.check_default.CheckDefault):
 
-    def run_analysis(self, opt, selection):
-        f = lambda x, y: Spectrum(x, label=y, mode=self.mode, options=opt).evaluate()
-        self.results = map(f, *Input('input-data/LHC16.root', 'PhysTender', 'MassPt').read_per_module())
-        self.c1 = adjust_canvas(get_canvas())
-
     def testPi0(self):
         opt = Options(ptconfig='config/test_different_modules.json')
-        self.run_analysis(opt, 'PhysTender')
+        self.results = run_analysis(opt, 'input-data/LHC16.root', 'PhysTender')
+        self.c1 = adjust_canvas(get_canvas())
 
     # @unittest.skip('test')
     def testEta(self):
         opt = Options(particle='eta', ptconfig='config/test_different_modules.json')
-        self.run_analysis(opt, 'EtaTender')
+        self.results = run_analysis(opt, 'input-data/LHC16.root', 'EtaTender')
+        self.c1 = adjust_canvas(get_canvas())
 
 
 

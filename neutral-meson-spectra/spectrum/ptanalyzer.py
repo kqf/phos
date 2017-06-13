@@ -39,12 +39,12 @@ class PtDependent(object):
         return hist 
 
     @staticmethod
-    def divide_bin_width(hist):
+    def divide_bin_width(hist, power = 1):
         nbins = hist.GetNbinsX()
         for i in range(1, nbins + 1): 
             c, e, w = hist.GetBinContent(i), hist.GetBinError(i), hist.GetBinWidth(i)
-            hist.SetBinContent(i, c / w)
-            hist.SetBinError(i, e / w)
+            hist.SetBinContent(i, c / w ** power)
+            hist.SetBinError(i, e / w ** power)
 
 
 
@@ -56,8 +56,8 @@ class PtAnalyzer(object):
         # These hists are needed for dynamic binning
         self.hists = hists
         self.label = label
-        self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False}.get(mode, True)
-        self.dead_mode = ('dead' in mode)
+        self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}.get(mode, True)
+        self.dead_mode = ('dead' in mode) or ('d' in mode)
         self.options = options
 
         # Configure analysis
