@@ -37,6 +37,7 @@ class Property(object):
         return all(self.__dict__[prop] == b.__dict__[prop] for prop in Property.properties) 
 
 
+# TODO: Add rebin_as function
 # better histogram
 class BH1F(ROOT.TH1F, Property):
     def __init__(self, *args, **kwargs):
