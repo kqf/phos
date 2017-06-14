@@ -1,0 +1,48 @@
+Executable = "/alice/cern.ch/user/o/okovalen/single-pi0-production-d/run-simulation.sh";
+
+Jobtag={"comment: single pi0 simulation for PHOS with high ZS threshold 3 ADC"};
+
+Packages =
+{
+    "VO_ALICE@AliPhysics::v5-07-15-01-2",
+    "VO_ALICE@GEANT3::v2-0-19",
+    "VO_ALICE@APISCONFIG::V1.1x",
+    "VO_ALICE@jemalloc::v3.6.0"
+};
+
+TTL = "36000";
+Price="10";
+
+Validationcommand ="/alice/validation/validation.sh";
+
+InputFile= {
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/CheckESD.C",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/Config.C",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/rec.C",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/sim.C",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/tag.C",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/simrun.sh",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/AODtrainsim.C",
+            "LF:/alice/cern.ch/user/o/okovalen/single-pi0-production-d/QAtrainsim.C"
+};
+
+Output = 
+{
+        "log_archive:stderr.log,stdout.log,tag.log,sim.log,rec.log,qa.log,aod.log,check.log@disk=1",
+        "QA_archive.zip:QAresults*.root,event_stat*.root,trending*.root,fileinfo*.log,EventStat_temp*.root,*.stat.qa*@disk=2",
+        "root_archive.zip:pyxsec.root,galice.root,Kinematics.root,TrackRefs.root,Trigger.root,AliESDs.root,AliESDfriends.root,geometry.root,ITS.RecPoints.root,Run*.root@disk=2",
+        "aod_archive.zip:pyxsec_hists.root,AODQA.root,AliAOD*.root,PtResHistograms.root,*.stat.aod@disk=2",
+        "FilterEvents_Trees.root@disk=2"
+};
+
+
+OutputDir="/alice/cern.ch/user/o/okovalen/single-pi0-production-d/output/$1/#alien_counter_03i#";
+
+JDLVariables={"Packages", "OutputDir"};
+GUIDFILE="guid.txt";
+
+splitarguments = "--run $1 --event #alien_counter# --process kPHOSPi0 --energy 5020.";
+
+split="production:$2-$3";
+
+Workdirectorysize={"5000MB"};
