@@ -107,6 +107,7 @@ class PtAnalyzer(object):
     def number_of_mesons(self, mass, intgr_ranges):
         a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
         area, areae = area_and_error(mass.signal, a, b)
+        # area = mass.mass.Integral()
         return area, areae
 
 

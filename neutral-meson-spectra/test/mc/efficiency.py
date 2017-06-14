@@ -96,6 +96,8 @@ class Efficiency(unittest.TestCase):
         PtDependent.divide_bin_width(true)
 
         spectrums = zip(*modules)[2]
+        map(lambda x: x.SetTitle('Efficiency per module'), spectrums)
+        map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
         map(PtDependent.divide_bin_width, spectrums)
         diff.compare_ratios(spectrums, true)
 

@@ -178,7 +178,7 @@ class InvariantMass(object):
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         
-        self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.GetEntries()))
+        self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
         self.mass.Draw()
         self.mixed.Draw('same')
 

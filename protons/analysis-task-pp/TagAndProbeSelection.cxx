@@ -87,7 +87,7 @@ void TagAndProbeSelection::InitSelectionHistograms()
 	Double_t mMin  = 0.0;
 	Double_t mMax  = 0.3;
 
-	Int_t nE      = 400;
+	Int_t nE      = 2000;
 	Double_t eMin = 0;
 	Double_t eMax = 20;
 
