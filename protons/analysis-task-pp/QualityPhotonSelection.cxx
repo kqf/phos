@@ -23,7 +23,7 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
 	Double_t mMax  = 1.5;
-	Int_t nPt      = 2000;
+	Int_t nPt      = 400;
 	Double_t ptMin = 0;
 	Double_t ptMax = 20;
 

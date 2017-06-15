@@ -53,13 +53,15 @@ void MCPhotonSelection::InitSelectionHistograms()
 	{
 		const char * n = (const char *) i->second.Data();
 		// cout << n << endl;
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_AllRange_%s", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), 250, 0., 25.));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), 250, 0., 25.)) ;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), 250, 0., 25.));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_total_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_primary_Radius", n), Form("Generated radius, p_{T} primary %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_secondary_Radius", n), Form("Generated radius, p_{T} secondary %s; r, cm; p_{T}, GeV/c", n), 1000, 0., 500., 250, 0., 25.));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_total_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_primary_Radius", n), Form("Generated radius, p_{T} primary %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_secondary_Radius", n), Form("Generated radius, p_{T} secondary %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
 	}
 
 	// TODO: move these files to separate selection
@@ -89,13 +91,13 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 {
 	if (! particles)
 		return;
-	
+
 	// TODO: Fix this method
 	// PythiaInfo();
 
-	// TODO: 
+	// TODO:
 	//	 RERUN real data to get zvertex histogram
-	for (Int_t i = 0; i <  particles->GetEntriesFast(); i++)
+	for (Int_t i = 0; i < particles->GetEntriesFast(); i++)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
 		Int_t code = particle->GetPdgCode();
@@ -105,9 +107,16 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 			continue;
 
 		Double_t pt = particle->Pt();
-		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
+
+		FillHistogram(Form("hPtGeneratedMC_AllRange_%s", name), pt) ;
+
+		// Use this to remove forward photons that can modify our true efficiency
+		if (TMath::Abs(particle->Eta()) > 0.5)
+			continue;
 
 		FillHistogram(Form("hPtGeneratedMC_%s", name), pt) ;
+
+		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
 		FillHistogram(Form("hPtGeneratedMC_%s_total", name), pt) ;
 		FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
 
