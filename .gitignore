@@ -52,3 +52,4 @@ gphysi.dat
 *.sublime*
 *.root.inp
 *.root.*
+*/.ipynb_checkpoints

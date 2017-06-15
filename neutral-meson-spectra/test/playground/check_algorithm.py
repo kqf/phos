@@ -15,7 +15,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         super(CheckAlgorithm, self).setUp()
 
         self.genfilename = 'LHC16-fake.root'
-        self.generator = InclusiveGenerator('input-data/test-analysis-pp.root', 'config/test_algorithm.json', genfilename = self.genfilename, flat = True)
+        self.generator = InclusiveGenerator('input-data/Pythia-LHC16-iteration18.root', 'config/test_algorithm.json', genfilename = self.genfilename, flat = True)
         self.clean = False
 
     
@@ -28,7 +28,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         self.original_distributions.logy = 1
 
         reconstructed = f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[4]
-        # PtDependent.divide_bin_width(reconstructed)
+        PtDependent.divide_bin_width(reconstructed)
 
         self.results = [
                         [reconstructed],

@@ -66,7 +66,12 @@ class InvariantMass(object):
 
     def extract_histogram(self, hist):
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
-        mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b)
+
+        # NB:  By default ProjectionX takes the last bin as well. 
+        #      We don't want to take last bin as it contains the beginning of the next bin. Therefore use "b - 1" here!
+        #
+        
+        mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b - 1)
         mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
 

@@ -62,7 +62,6 @@ class Efficiency(unittest.TestCase):
         PtDependent.divide_bin_width(true)
         reco = f(Input(iname, 'PhysNonlinOnlyTender').read(), 'Reconstructed', Options())[4]
         PtDependent.divide_bin_width(reco)
-        # PtDependent.divide_bin_width(reco, 0.8)
         reco.logy = True
         true.logy = True
 
@@ -76,15 +75,16 @@ class Efficiency(unittest.TestCase):
         if oname: save_tobject(ratio, oname)
         return ratio
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testOutput(self):
         eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'epos')
-        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration17.root', 'pythia')
+        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration18.root', 'pythia')
 
         diff = Comparator()
         diff.compare(eff1, eff2)
 
 
+    @unittest.skip('')
     def testEffDifferentModules(self):
         iname = 'input-data/Pythia-LHC16-iteration17.root'
         modules = run_analysis(Options(), iname, 'PhysNonlinOnlyTender')

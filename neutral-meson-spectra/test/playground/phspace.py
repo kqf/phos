@@ -107,7 +107,7 @@ class FlatGenerator(SignalGenerator):
 
 
 class InclusiveGenerator(object):
-    def __init__(self, fname, signalconf, selname = 'PhysTender', 
+    def __init__(self, fname, signalconf, selname = 'PhysNonlinTender', 
                  hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root', meanphotons = 0, flat = False):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
