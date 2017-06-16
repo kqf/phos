@@ -77,8 +77,8 @@ class Efficiency(unittest.TestCase):
 
     # @unittest.skip('')
     def testOutput(self):
+        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration19.root', 'pythia')
         eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'epos')
-        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration18.root', 'pythia')
 
         diff = Comparator()
         diff.compare(eff1, eff2)

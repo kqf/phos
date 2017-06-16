@@ -16,7 +16,6 @@
 // --- AliRoot header files ---
 #include <AliLog.h>
 #include <AliVCluster.h>
-#include <AliAODMCParticle.h>
 #include <AliAnalysisManager.h>
 
 #include <iostream>
@@ -59,9 +58,7 @@ void MCPhotonSelection::InitSelectionHistograms()
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_total_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_primary_Radius", n), Form("Generated radius, p_{T} primary %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_secondary_Radius", n), Form("Generated radius, p_{T} secondary %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
 	}
 
 	// TODO: move these files to separate selection
@@ -117,19 +114,29 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 		FillHistogram(Form("hPtGeneratedMC_%s", name), pt) ;
 
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
-		FillHistogram(Form("hPtGeneratedMC_%s_total", name), pt) ;
-		FillHistogram(Form("hPtGeneratedMC_%s_total_Radius", name), r, pt) ;
+		FillHistogram(Form("hPtGeneratedMC_%s_Radius", name), r, pt) ;
 
-		if (r < 1)
-		{
+		if (IsPrimary(particle))
 			FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
-			FillHistogram(Form("hPtGeneratedMC_%s_primary_Radius", name), r, pt) ;
-		}
 		else
-		{
 			FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
-			FillHistogram(Form("hPtGeneratedMC_%s_secondary_Radius", name), r, pt) ;
-		}
+
+
+		// Now estimate Pi0 sources
+		if(code != kPi0)
+			continue;
+
+		AliAODMCParticle * parent = GetParent(i, particles);
+
+		if(!parent)
+			continue;
+
+		Int_t pcode = parent->GetPdgCode();
+		if (code != kLambda && code != kK0s)
+			continue;
+
+		const char * pname = fPartNames[pcode].Data();
+		FillHistogram(Form("hPtGeneratedMC_%s_%s", name, pname), pt) ;
 	}
 
 	// Try to extract all needed data
@@ -143,25 +150,18 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
 {
 	// Particle # reached PHOS front surface
-	Int_t primLabel = cluster->GetLabelAt(0) ;
-	Double_t rcut = 1;
-	AliAODMCParticle * parent = 0;
+	Int_t label = cluster->GetLabelAt(0) ;
 
+	if (label <= -1)
+		return;
 
-	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
-	if (primLabel > -1)
-	{
-		AliAODMCParticle * prim = (AliAODMCParticle *)particles->At(primLabel) ;
-		Int_t iparent = primLabel;
-		parent = prim;
-		Double_t r2 = prim->Xv() * prim->Xv() + prim->Yv() * prim->Yv() ;
-		while ((r2 > rcut * rcut) && (iparent > -1))
-		{
-			iparent = parent->GetMother();
-			parent = (AliAODMCParticle *)particles->At(iparent);
-			r2 = parent->Xv() * parent->Xv() + parent->Yv() * parent->Yv() ;
-		}
-	}
+	AliAODMCParticle * parent = dynamic_cast<AliAODMCParticle *> (particles->At(label));
+
+	while ((!IsPrimary(parent)) && (label > -1))
+		parent = GetParent(label, label, particles);
+
+	if(!parent)
+		return;
 
 	FillHistogram("hPrimaryParticles", parent->GetPdgCode());
 
@@ -172,6 +172,31 @@ void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray 
 		FillHistogram("hLatePrimaryParticles", parent->GetPdgCode());
 
 }
+
+//________________________________________________________________
+AliAODMCParticle * MCPhotonSelection::GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const
+{
+	if (label <= -1)
+		return 0;
+
+	// Int_t primLabel = cluster->GetLabelAt(0) ;
+	// Particle # reached PHOS front surface
+	AliAODMCParticle * particle = dynamic_cast<AliAODMCParticle * >(particles->At(label));
+
+	plabel = particle->GetMother();
+	AliAODMCParticle * parent = dynamic_cast<AliAODMCParticle * >(particles->At(plabel));
+	return parent;
+}
+
+//________________________________________________________________
+Bool_t MCPhotonSelection::IsPrimary(const AliAODMCParticle * particle) const
+{
+	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
+	Double_t rcut = 1.;
+	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
+	return r2 < rcut * rcut;
+}
+
 
 //________________________________________________________________
 void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
@@ -202,6 +227,7 @@ void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObj
 }
 
 
+//________________________________________________________________
 void MCPhotonSelection::PythiaInfo()
 {
 	// TODO: Move it to separate selection?
