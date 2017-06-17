@@ -6,7 +6,7 @@ import ROOT
 def read_histogram(filename, listname, histname, label = None, priority = 999):
     infile = ROOT.TFile(filename)
     lst = infile.Get(listname)
-    hist =  lst.FindObject(histname)
+    hist = lst.FindObject(histname)
 
     if not hist: 
         return None

@@ -18,13 +18,19 @@ import unittest
 
 
 def cache(function):
-    def cached(self, infile, label):
-        res = function(self, infile, label)
+    def cached(self, infile, genfile, label):
+        res = function(self, infile, genfile, label)
         res.label = label
         return res
     return cached
 
 class Efficiency(unittest.TestCase):
+
+
+    def setUp(self):
+        self.mc_selection = 'MCStudyOnlyTender'
+        self.selection = 'PhysNonlinOnlyTender'
+        self.file = 'input-data/Pythia-LHC16-iteration17.root'
 
 
     def getEffitiencyFunction(self):
@@ -50,7 +56,7 @@ class Efficiency(unittest.TestCase):
 
 
     @cache
-    def efficiency(self, iname, label):
+    def efficiency(self, iname, genname, label):
         oname = iname + '.eff'
         ratio = self.readEfficiency(oname)
         if ratio: 
@@ -58,10 +64,13 @@ class Efficiency(unittest.TestCase):
 
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
         ## Calculate yield for mc 
-        true = read_histogram(iname, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
+
+        true = read_histogram(iname, self.mc_selection, genname, label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
-        reco = f(Input(iname, 'PhysNonlinOnlyTender').read(), 'Reconstructed', Options())[4]
+
+        reco = f(Input(iname, self.selection).read(), 'Reconstructed', Options())[4]
         PtDependent.divide_bin_width(reco)
+
         reco.logy = True
         true.logy = True
 
@@ -75,10 +84,10 @@ class Efficiency(unittest.TestCase):
         if oname: save_tobject(ratio, oname)
         return ratio
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def testOutput(self):
-        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration19.root', 'pythia')
-        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'epos')
+        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration20.root', 'hPtGeneratedMC_pi0', 'pythia')
+        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'hPtGeneratedMC_pi0', 'epos')
 
         diff = Comparator()
         diff.compare(eff1, eff2)
@@ -86,13 +95,12 @@ class Efficiency(unittest.TestCase):
 
     @unittest.skip('')
     def testEffDifferentModules(self):
-        iname = 'input-data/Pythia-LHC16-iteration17.root'
-        modules = run_analysis(Options(), iname, 'PhysNonlinOnlyTender')
+        modules = run_analysis(Options(), self.file, 'PhysNonlinOnlyTender')
         c1 = get_canvas(1./2, 1.)
         diff = Comparator()
         diff.compare(modules)
 
-        true = read_histogram(iname, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
+        true = read_histogram(self.file, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
 
         spectrums = zip(*modules)[2]
@@ -100,5 +108,25 @@ class Efficiency(unittest.TestCase):
         map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
         map(PtDependent.divide_bin_width, spectrums)
         diff.compare_ratios(spectrums, true)
+
+
+    def testDifferentContributions(self):
+        read = lambda x, y, p = 1: read_histogram(self.file, self.mc_selection, x, label = y, priority = p)
+
+        pall = read('hPtGeneratedMC_pi0', 'all', -1)
+        pall.logy = True
+        primary = read('hPtGeneratedMC_pi0_primary', 'primary')
+
+        # plambda = read('hPtGeneratedMC_pi0_lambda', '#lambda')
+        # pk0s = read('hPtGeneratedMC_pi0_k0s', 'K_0^s')
+
+        data = [pall, primary]
+        map(PtDependent.divide_bin_width, data)
+
+        diff = Comparator()
+        diff.compare(data)
+
+
+
 
 
