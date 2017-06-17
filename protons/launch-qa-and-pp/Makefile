@@ -3,9 +3,9 @@
 # MC = kFALSE
 
 
-DATASET = LHC16h-muon-calo-pass1
-DPART = second
-MC = kFALSE
+DATASET = LHC16j2a1
+DPART = first
+MC = kTRUE
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' |& tee /dev/stderr | grep mWarning >> started_jobs.log || make unlink 

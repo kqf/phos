@@ -51,14 +51,23 @@ void MCPhotonSelection::InitSelectionHistograms()
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
 	{
 		const char * n = (const char *) i->second.Data();
-		// cout << n << endl;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_AllRange_%s", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_total", n), Form("Generated p_{T} total %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} primary %s; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} secondary %s; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} total %s; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+		// Don't draw Lambdas and K0s
+		if(i->first == kLambda || i->first == kK0s)
+			continue;
+
+		// cout << n << endl;
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_AllRange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+
+		if(i->first != kPi0)
+			continue;
+
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, fPartNames[kLambda].Data()), Form("Distribution of #pi^0s coming from  %s decays; p_{T}, GeV/c", fPartNames[kLambda].Data()), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, fPartNames[kK0s].Data()), Form("Distribution of #pi^0s coming from  %s decays; p_{T}, GeV/c", fPartNames[kK0s].Data()), ptsize - 1, ptbins));
 	}
 
 	// TODO: move these files to separate selection
