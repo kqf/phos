@@ -141,7 +141,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 			continue;
 
 		Int_t pcode = parent->GetPdgCode();
-		if (code != kLambda && code != kK0s)
+		if (code == kLambda || code == kK0s)
 			continue;
 
 		const char * pname = fPartNames[pcode].Data();
