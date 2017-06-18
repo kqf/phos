@@ -45,7 +45,7 @@ class TestOutputRatio(unittest.TestCase):
 
         self.data[0].SetTitle('Checking output ratio comparator')
         ratio = diff.compare(zip(*[self.data, self.data]))
-        self.assertIsNone(ratio)
+        self.assertFalse(all(ratio))
 
 
 

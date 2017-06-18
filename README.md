@@ -3,31 +3,23 @@
 Main repository consists of several scripts, analysis tasks and various utilities. The outputs from some scripts serve as an input (explicitly or not) to other scripts. Therefore all these tasks should be maintained simultaneously.
 
 
-[QA tasks of PHOS DATA](qa/)
-----------------------------
+## Roadmap
 
-This repo depends on official `PHOS_TriggerQA`  and `CaloCellQA` in  `$ALICE_PHYSICS/PWGGA/PHOSTasks/`.
-It contains all scripts necessary to obtain map of dead/noisy channels of PHOS.
-It also includes QA of PHOS trigger.
+- [x] Quality assurance ([QA](qa/)) of the reconstructed PHOS data.
+  1.  Map of bad channels.  
+  2.  Physical quantities  
+ 
+- [x] Neutral pion and $\eta$ [meson production](neutral-meson-spectra)
+  - [x] Grid [analysis task](protons)
+  - [x] Timing cut efficiency study
+  - [x] Raw uncorrected yield extraction
+  - [ ] Acceptance and neutral pion reconstruction efficiency evaluation
+  - [ ] Corrected yield extraction
+  - [ ] Systematic uncertainties estimation
 
-
-[Analysis of pp data](protons)
-----------------------------------------------
-
-Analysis of the `AOD`/`ESD` data. 
-It requires map of bad channels.
-The analysis tasks produce histograms and distributions that should be processed further.
-
-
-[Neutral meson spectra at 13 TeV](pi0-spectrum)
---------------------------------
-
-This subfolder contains all the macros needed to calculate and plot physical results.
-It contains some scripts that extract $\pi^{0}$ raw $p_T$ spectrum.
-
-
-[Direct photons](direct-photons)
---------------------------------
-
-This is a set of scripts that are needed to extract direct photons spectrum.
-
+- [ ] Measurement of the [direct photon](direct-photons) spectrum 
+  - [ ] Photon raw yield extraction
+  - [ ] Photon registration efficiency
+  - [ ] Decay photon spectrum estimation 
+  - [ ] $\gamma/\pi^0$ ratio evaluation
+  - [ ] Systematic error estimation 
