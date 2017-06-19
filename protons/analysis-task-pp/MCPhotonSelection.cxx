@@ -48,6 +48,14 @@ void MCPhotonSelection::InitSelectionHistograms()
 	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
+	// Sources of neutral pions, as a histogram
+	// 
+	Float_t sbins[] = {-3322.5, -3222.5, -3214.5, -3122.5, -2214.5, -2114.5, -511.5, -423.5, -421.5, -411.5, -323.5, -313.5, -213.5, 0.5, 1.5, 2.5, 3.5, 4.5, 20.5, 212.5, 220.5, 222.5, 309.5, 312.5, 322.5, 330.5, 332.5, 410.5, 420.5, 422.5, 444.5, 1102.5, 2100.5, 2102.5, 2111.5, 2113.5, 2202.5, 2213.5, 3121.5, 3213.5, 3221.5, 3321.5, 3322.5};
+	Int_t ssize = sizeof(sbins) / sizeof(Float_t);
+
+	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), ssize - 1, sbins));
+	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), ssize - 1, sbins));
+
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
 		const char * n = (const char *) i->second.Data();
@@ -65,7 +73,7 @@ void MCPhotonSelection::InitSelectionHistograms()
 		for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
 		{
 			const char * ns = (const char *) s->second.Data();
-			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, ns), Form("Distribution of #pi^0s coming from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, ns), Form("Distribution of #pi^{0}s coming from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
 		}
 	}
 
@@ -135,7 +143,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 
 
 		// Now estimate Pi0 sources of secondary particles
-		if (code != kPi0 || primary)
+		if (code != kPi0)
 			continue;
 
 		AliAODMCParticle * parent = GetParent(i, particles);
@@ -144,8 +152,17 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 			continue;
 
 		Int_t pcode = parent->GetPdgCode();
-		EnumNames::iterator s = fPi0SourcesNames.find(pcode);
 
+
+		if(primary)
+		{
+			FillHistogram(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), pcode);
+			continue;
+		}
+
+		FillHistogram(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), pcode);
+
+		EnumNames::iterator s = fPi0SourcesNames.find(pcode);
 		if (s == fPi0SourcesNames.end())
 			continue;
 

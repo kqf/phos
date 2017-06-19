@@ -25,7 +25,7 @@ public:
 	MCPhotonSelection(): GeneralPhotonSelection() 
 	{
 		fPartNames[kGamma] = "#gamma";
-		fPartNames[kPi0] = "#pi^0";
+		fPartNames[kPi0] = "#pi^{0}";
 		fPartNames[kEta] = "#eta";
 
 		// Define sources of pi0s
@@ -37,12 +37,12 @@ public:
 		fPi0SourcesNames[kOmega] = "#omega";
 
 	}
-	
+
 	MCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
 	{
 		// Don't use c++11 here, as it might fail at some nodes
 		fPartNames[kGamma] = "#gamma";
-		fPartNames[kPi0] = "#pi^0";
+		fPartNames[kPi0] = "#pi^{0}";
 		fPartNames[kEta] = "#eta";
 
 		// Define sources of pi0s
