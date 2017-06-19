@@ -21,23 +21,37 @@
 class MCPhotonSelection: public GeneralPhotonSelection
 {
 public:
-	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kLambda = 3122};
+	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211};
 	MCPhotonSelection(): GeneralPhotonSelection() 
 	{
-		fPartNames[kGamma] = "gamma";
-		fPartNames[kPi0] = "pi0";
-		fPartNames[kEta] = "eta";
-		fPartNames[kK0s] = "k0s";
-		fPartNames[kLambda] = "lambda";
+		fPartNames[kGamma] = "#gamma";
+		fPartNames[kPi0] = "#pi^0";
+		fPartNames[kEta] = "#eta";
+
+		// Define sources of pi0s
+		fPi0SourcesNames[kK0s] = "K_0^s";
+		fPi0SourcesNames[kLambda] = "#Lambda";
+		fPi0SourcesNames[kPPion] = "#pi^{+}";
+		fPi0SourcesNames[kNPion] = "#pi^{-}";	
+		fPi0SourcesNames[kEta] = "#eta";
+		fPi0SourcesNames[kOmega] = "#omega";
+
 	}
+	
 	MCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
 	{
 		// Don't use c++11 here, as it might fail at some nodes
-		fPartNames[kGamma] = "gamma";
-		fPartNames[kPi0] = "pi0";
-		fPartNames[kEta] = "eta";
-		fPartNames[kK0s] = "k0s";
-		fPartNames[kLambda] = "lambda";
+		fPartNames[kGamma] = "#gamma";
+		fPartNames[kPi0] = "#pi^0";
+		fPartNames[kEta] = "#eta";
+
+		// Define sources of pi0s
+		fPi0SourcesNames[kK0s] = "K_0^s";
+		fPi0SourcesNames[kLambda] = "#Lambda";
+		fPi0SourcesNames[kPPion] = "#pi^{+}";
+		fPi0SourcesNames[kNPion] = "#pi^{-}";	
+		fPi0SourcesNames[kEta] = "#eta";
+		fPi0SourcesNames[kOmega] = "#omega";
 	}
 	virtual void InitSelectionHistograms();
     virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
@@ -63,6 +77,7 @@ protected:
 
 	typedef std::map<Int_t, TString> EnumNames;
 	EnumNames fPartNames; 
+	EnumNames fPi0SourcesNames; 
 
 	ClassDef(MCPhotonSelection, 2)
 };

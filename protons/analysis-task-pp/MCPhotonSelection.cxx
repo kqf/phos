@@ -48,13 +48,9 @@ void MCPhotonSelection::InitSelectionHistograms()
 	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
-	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); i++)
+	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
 		const char * n = (const char *) i->second.Data();
-
-		// Don't draw Lambdas and K0s
-		if(i->first == kLambda || i->first == kK0s)
-			continue;
 
 		// cout << n << endl;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_AllRange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
@@ -63,11 +59,14 @@ void MCPhotonSelection::InitSelectionHistograms()
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
 
-		if(i->first != kPi0)
+		if (i->first != kPi0)
 			continue;
 
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, fPartNames[kLambda].Data()), Form("Distribution of #pi^0s coming from  %s decays; p_{T}, GeV/c", fPartNames[kLambda].Data()), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, fPartNames[kK0s].Data()), Form("Distribution of #pi^0s coming from  %s decays; p_{T}, GeV/c", fPartNames[kK0s].Data()), ptsize - 1, ptbins));
+		for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
+		{
+			const char * ns = (const char *) s->second.Data();
+			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, ns), Form("Distribution of #pi^0s coming from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+		}
 	}
 
 	// TODO: move these files to separate selection
@@ -106,7 +105,9 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 	for (Int_t i = 0; i < particles->GetEntriesFast(); i++)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
-		Int_t code = particle->GetPdgCode();
+
+		// TODO: What does it mean negative PDG Code
+		Int_t code = TMath::Abs(particle->GetPdgCode());
 		const char * name = fPartNames[code].Data();
 
 		if (code != kGamma && code != kPi0 && code != kEta)
@@ -125,26 +126,30 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
 		FillHistogram(Form("hPtGeneratedMC_%s_Radius", name), r, pt) ;
 
-		if (IsPrimary(particle))
+		Bool_t primary = IsPrimary(particle);
+
+		if (primary)
 			FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
 		else
 			FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
 
 
-		// Now estimate Pi0 sources
-		if(code != kPi0)
+		// Now estimate Pi0 sources of secondary particles
+		if (code != kPi0 || primary)
 			continue;
 
 		AliAODMCParticle * parent = GetParent(i, particles);
 
-		if(!parent)
+		if (!parent)
 			continue;
 
 		Int_t pcode = parent->GetPdgCode();
-		if (code == kLambda || code == kK0s)
+		EnumNames::iterator s = fPi0SourcesNames.find(pcode);
+
+		if (s == fPi0SourcesNames.end())
 			continue;
 
-		const char * pname = fPartNames[pcode].Data();
+		const char * pname = s->second.Data();
 		FillHistogram(Form("hPtGeneratedMC_%s_%s", name, pname), pt) ;
 	}
 
@@ -169,7 +174,7 @@ void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray 
 	while ((!IsPrimary(parent)) && (label > -1))
 		parent = GetParent(label, label, particles);
 
-	if(!parent)
+	if (!parent)
 		return;
 
 	FillHistogram("hPrimaryParticles", parent->GetPdgCode());
