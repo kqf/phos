@@ -30,7 +30,9 @@ class Efficiency(unittest.TestCase):
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.file = 'input-data/Pythia-LHC16-iteration21.root'
+        self.pythiaf = 'input-data/Pythia-LHC16-iteration21.root'
+        self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
+        self.true_pt_mc = 'hPtGeneratedMC_#pi^{0}'
 
 
     def getEffitiencyFunction(self):
@@ -57,9 +59,11 @@ class Efficiency(unittest.TestCase):
 
     @cache
     def efficiency(self, iname, genname, label):
-        oname = iname + '.eff'
+        oname = '{0}.{1}.eff'.format(iname, label)
+        print oname
         ratio = self.readEfficiency(oname)
         if ratio: 
+            print 'here'
             return ratio
 
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
@@ -86,8 +90,8 @@ class Efficiency(unittest.TestCase):
 
     # @unittest.skip('')
     def testOutput(self):
-        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration21.root', 'hPtGeneratedMC_#pi^{0}', 'pythia')
-        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'hPtGeneratedMC_#pi^{0}', 'epos')
+        eff2 = self.efficiency(self.pythiaf, self.true_pt_mc, 'pythia')
+        eff1 = self.efficiency(self.eposf, self.true_pt_mc, 'epos')
 
         diff = Comparator()
         diff.compare(eff1, eff2)
@@ -95,12 +99,12 @@ class Efficiency(unittest.TestCase):
 
     # @unittest.skip('')
     def testEffDifferentModules(self):
-        modules = run_analysis(Options(), self.file, 'PhysNonlinOnlyTender')
+        modules = run_analysis(Options(), self.pythiaf, self.selection)
         c1 = get_canvas(1./2, 1.)
         diff = Comparator()
         diff.compare(modules)
 
-        true = read_histogram(self.file, 'MCStudyOnlyTender', 'hPtGeneratedMC_#pi^{0}', label = 'Generated', priority = 0)
+        true = read_histogram(self.pythiaf, self.mc_selection, self.true_pt_mc, label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
 
         spectrums = zip(*modules)[2]
@@ -110,34 +114,10 @@ class Efficiency(unittest.TestCase):
         diff.compare_ratios(spectrums, true)
 
 
-    def testDifferentContributions(self):
-        read = lambda x, y, p = 1: read_histogram(self.file, self.mc_selection, x, label = y, priority = p)
-
-
-        filename = 'hPtGeneratedMC_#pi^{0}'
-        labels = 'secondary', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K_0^s', '#Lambda'
-
-        hists = map(lambda x: read(filename + '_' + x,  x, 999), labels)
-        hists[0].logy = True
-
-        map(PtDependent.divide_bin_width, hists)
+    def testPrimaryEfficiency(self):
+        primary = self.efficiency(self.pythiaf, self.true_pt_mc + '_primary', 'primaries')
+        total = self.efficiency(self.pythiaf, self.true_pt_mc, 'total')
 
         diff = Comparator()
-        diff.compare(hists)
-
-        pall = read(filename, 'all', -1)
-        pall.logy = True
-
-        pprimary = read(filename + '_primary', 'primary', 999)
-        pprimary.logy = True
-
-        map(PtDependent.divide_bin_width, (primary, pall))
-        diff.compare(pall, primary)
-
-
-
-
-
-
-
+        diff.compare(primary, total)
 
