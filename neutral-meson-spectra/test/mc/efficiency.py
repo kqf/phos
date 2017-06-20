@@ -30,7 +30,7 @@ class Efficiency(unittest.TestCase):
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.file = 'input-data/Pythia-LHC16-iteration17.root'
+        self.file = 'input-data/Pythia-LHC16-iteration21.root'
 
 
     def getEffitiencyFunction(self):
@@ -84,23 +84,23 @@ class Efficiency(unittest.TestCase):
         if oname: save_tobject(ratio, oname)
         return ratio
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testOutput(self):
-        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration20.root', 'hPtGeneratedMC_pi0', 'pythia')
-        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'hPtGeneratedMC_pi0', 'epos')
+        eff2 = self.efficiency('input-data/Pythia-LHC16-iteration21.root', 'hPtGeneratedMC_#pi^{0}', 'pythia')
+        eff1 = self.efficiency('input-data/EPOS-LHC16-iteration3.root', 'hPtGeneratedMC_#pi^{0}', 'epos')
 
         diff = Comparator()
         diff.compare(eff1, eff2)
 
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testEffDifferentModules(self):
         modules = run_analysis(Options(), self.file, 'PhysNonlinOnlyTender')
         c1 = get_canvas(1./2, 1.)
         diff = Comparator()
         diff.compare(modules)
 
-        true = read_histogram(self.file, 'MCStudyOnlyTender', 'hPtGeneratedMC_pi0', label = 'Generated', priority = 0)
+        true = read_histogram(self.file, 'MCStudyOnlyTender', 'hPtGeneratedMC_#pi^{0}', label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
 
         spectrums = zip(*modules)[2]
@@ -113,18 +113,29 @@ class Efficiency(unittest.TestCase):
     def testDifferentContributions(self):
         read = lambda x, y, p = 1: read_histogram(self.file, self.mc_selection, x, label = y, priority = p)
 
-        pall = read('hPtGeneratedMC_pi0', 'all', -1)
-        pall.logy = True
-        primary = read('hPtGeneratedMC_pi0_primary', 'primary')
 
-        # plambda = read('hPtGeneratedMC_pi0_lambda', '#lambda')
-        # pk0s = read('hPtGeneratedMC_pi0_k0s', 'K_0^s')
+        filename = 'hPtGeneratedMC_#pi^{0}'
+        labels = 'secondary', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K_0^s', '#Lambda'
 
-        data = [pall, primary]
-        map(PtDependent.divide_bin_width, data)
+        hists = map(lambda x: read(filename + '_' + x,  x, 999), labels)
+        hists[0].logy = True
+
+        map(PtDependent.divide_bin_width, hists)
 
         diff = Comparator()
-        diff.compare(data)
+        diff.compare(hists)
+
+        pall = read(filename, 'all', -1)
+        pall.logy = True
+
+        pprimary = read(filename + '_primary', 'primary', 999)
+        pprimary.logy = True
+
+        map(PtDependent.divide_bin_width, (primary, pall))
+        diff.compare(pall, primary)
+
+
+
 
 
 

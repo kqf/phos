@@ -29,7 +29,7 @@ public:
 		fPartNames[kEta] = "#eta";
 
 		// Define sources of pi0s
-		fPi0SourcesNames[kK0s] = "K_0^s";
+		fPi0SourcesNames[kK0s] = "K_{0}^s";
 		fPi0SourcesNames[kLambda] = "#Lambda";
 		fPi0SourcesNames[kPPion] = "#pi^{+}";
 		fPi0SourcesNames[kNPion] = "#pi^{-}";	
@@ -46,7 +46,7 @@ public:
 		fPartNames[kEta] = "#eta";
 
 		// Define sources of pi0s
-		fPi0SourcesNames[kK0s] = "K_0^s";
+		fPi0SourcesNames[kK0s] = "K_{0}^s";
 		fPi0SourcesNames[kLambda] = "#Lambda";
 		fPi0SourcesNames[kPPion] = "#pi^{+}";
 		fPi0SourcesNames[kNPion] = "#pi^{-}";	
