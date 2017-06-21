@@ -49,8 +49,8 @@ void MCPhotonSelection::InitSelectionHistograms()
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
 	// Sources of neutral pions, as a histogram
-	// 
-	Float_t sbins[] = {-3322.5, -3222.5, -3214.5, -3122.5, -2214.5, -2114.5, -511.5, -423.5, -421.5, -411.5, -323.5, -313.5, -213.5, 0.5, 1.5, 2.5, 3.5, 4.5, 20.5, 212.5, 220.5, 222.5, 309.5, 312.5, 322.5, 330.5, 332.5, 410.5, 420.5, 422.5, 444.5, 1102.5, 2100.5, 2102.5, 2111.5, 2113.5, 2202.5, 2213.5, 3121.5, 3213.5, 3221.5, 3321.5, 3322.5};
+	//
+	Float_t sbins[] = { -3322.5, -3222.5, -3214.5, -3122.5, -2214.5, -2114.5, -511.5, -423.5, -421.5, -411.5, -323.5, -313.5, -213.5, 0.5, 1.5, 2.5, 3.5, 4.5, 20.5, 212.5, 220.5, 222.5, 309.5, 312.5, 322.5, 330.5, 332.5, 410.5, 420.5, 422.5, 444.5, 1102.5, 2100.5, 2102.5, 2111.5, 2113.5, 2202.5, 2213.5, 3121.5, 3213.5, 3221.5, 3321.5, 3322.5};
 	Int_t ssize = sizeof(sbins) / sizeof(Float_t);
 
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), ssize - 1, sbins));
@@ -73,7 +73,8 @@ void MCPhotonSelection::InitSelectionHistograms()
 		for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
 		{
 			const char * ns = (const char *) s->second.Data();
-			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_%s", n, ns), Form("Distribution of #pi^{0}s coming from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_%s", n, ns), Form("Distribution to primary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%s", n, ns), Form("Distribution to secondary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
 		}
 	}
 
@@ -153,21 +154,22 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 
 		Int_t pcode = parent->GetPdgCode();
 
-
-		if(primary)
-		{
-			FillHistogram(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), pcode);
-			continue;
-		}
-
-		FillHistogram(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), pcode);
-
 		EnumNames::iterator s = fPi0SourcesNames.find(pcode);
 		if (s == fPi0SourcesNames.end())
 			continue;
 
 		const char * pname = s->second.Data();
-		FillHistogram(Form("hPtGeneratedMC_%s_%s", name, pname), pt) ;
+
+
+		if (!primary)
+		{
+			FillHistogram(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), pcode);
+			FillHistogram(Form("hPtGeneratedMC_%s_secondary_%s", name, pname), pt) ;
+			continue;
+		}
+
+		FillHistogram(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), pcode);
+		FillHistogram(Form("hPtGeneratedMC_%s_primary_%s", name, pname), pt) ;
 	}
 
 	// Try to extract all needed data
