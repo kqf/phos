@@ -49,12 +49,15 @@ void MCPhotonSelection::InitSelectionHistograms()
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
 	// Sources of neutral pions, as a histogram
-	//
-	Float_t sbins[] = { -3322.5, -3222.5, -3214.5, -3122.5, -2214.5, -2114.5, -511.5, -423.5, -421.5, -411.5, -323.5, -313.5, -213.5, 0.5, 1.5, 2.5, 3.5, 4.5, 20.5, 212.5, 220.5, 222.5, 309.5, 312.5, 322.5, 330.5, 332.5, 410.5, 420.5, 422.5, 444.5, 1102.5, 2100.5, 2102.5, 2111.5, 2113.5, 2202.5, 2213.5, 3121.5, 3213.5, 3221.5, 3321.5, 3322.5};
-	Int_t ssize = sizeof(sbins) / sizeof(Float_t);
+	Int_t sbins = 3222 + 3322 + 1;
+	Int_t sstart = -3222;
+	Int_t sstop = 3322 + 1;
 
-	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), ssize - 1, sbins));
-	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), ssize - 1, sbins));
+	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
+	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
+
+	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_nocut_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
+	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_nocut_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
@@ -138,9 +141,9 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 		Bool_t primary = IsPrimary(particle);
 
 		if (primary)
-			FillHistogram(Form("hPtGeneratedMC_%s_primary", name), pt) ;
+			FillHistogram(Form("hPtGeneratedMC_%s_primary_", name), pt) ;
 		else
-			FillHistogram(Form("hPtGeneratedMC_%s_secondary", name), pt) ;
+			FillHistogram(Form("hPtGeneratedMC_%s_secondary_", name), pt) ;
 
 
 		// Now estimate Pi0 sources of secondary particles
@@ -160,9 +163,14 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 
 		const char * pname = s->second.Data();
 
+		if (!primary)
+			FillHistogram(Form("hMC_%s_sources_nocut_secondary", fPartNames[kPi0].Data()), pcode);
+		else
+			FillHistogram(Form("hMC_%s_sources_nocut_primary", fPartNames[kPi0].Data()), pcode);
+
 
 		// Reject MIPS and count again
-		if(pt < 0.3)
+		if (pt < 0.3)
 			continue;
 
 		if (!primary)

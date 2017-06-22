@@ -17,7 +17,7 @@ class Efficiency(unittest.TestCase):
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.file = 'input-data/Pythia-LHC16-iteration21.root'
+        self.file = 'input-data/Pythia-LHC16-iteration22.root'
         self.labels = ['#bar#Xi^{0}', '#bar#Sigma^{+}', '#bar#Sigma^{*}^{0}', '#bar#Lambda^{0}', '#bar#Delta^{+}', '#bar#Delta^{0}', '#barB^{0}', '#barD^{*}^{0}', '#barD^{0}', 'D^{-}', 'K^{*}^{-}', '#barK^{*}^{0}', '#rho^{-}', 'd', 'u', 's', 'c', 'b', 'g', '#rho^{+}', '#eta', '#omega', 'K_{S^{0}}', 'K^{*}^{0}', 'K^{*}^{+}', "#eta^{'}", '#phi', 'D^{+}', 'D^{0}', 'D^{*}^{0}', 'chi_{^{2}c}', 'dd_{^{1}}', 'ud_{^{0}}', 'ud_{^{1}}', 'neutron', '#Delta^{0}', 'uu_{^{1}}', '#Delta^{+}', '#Lambda^{0}', '#Sigma^{*}^{0}', '#Sigma^{+}', '#Xi^{0}']
 
 
@@ -25,6 +25,7 @@ class Efficiency(unittest.TestCase):
         return read_histogram(self.file, self.mc_selection, x, label = y, priority = p)
 
 
+    @unittest.skip('')
     def testDifferentContributions(self):
         filename = 'hPtGeneratedMC_#pi^{0}'
         labels = 'secondary', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K_0^s', '#Lambda'

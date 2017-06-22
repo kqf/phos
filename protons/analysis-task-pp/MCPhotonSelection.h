@@ -21,7 +21,7 @@
 class MCPhotonSelection: public GeneralPhotonSelection
 {
 public:
-	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211};
+	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211, kPRho = 213, kNRho = -213};
 	MCPhotonSelection(): GeneralPhotonSelection() 
 	{
 		fPartNames[kGamma] = "#gamma";
@@ -29,6 +29,8 @@ public:
 		fPartNames[kEta] = "#eta";
 
 		// Define sources of pi0s
+		fPi0SourcesNames[kPRho] = "#rho^{+}";
+		fPi0SourcesNames[kNRho] = "#rho^{-}";
 		fPi0SourcesNames[kK0s] = "K^{s}_{0}";
 		fPi0SourcesNames[kLambda] = "#Lambda";
 		fPi0SourcesNames[kPPion] = "#pi^{+}";
@@ -46,6 +48,8 @@ public:
 		fPartNames[kEta] = "#eta";
 
 		// Define sources of pi0s
+		fPi0SourcesNames[kPRho] = "#rho^{+}";
+		fPi0SourcesNames[kNRho] = "#rho^{-}";
 		fPi0SourcesNames[kK0s] = "K^{s}_{0}";
 		fPi0SourcesNames[kLambda] = "#Lambda";
 		fPi0SourcesNames[kPPion] = "#pi^{+}";
@@ -53,6 +57,7 @@ public:
 		fPi0SourcesNames[kEta] = "#eta";
 		fPi0SourcesNames[kOmega] = "#omega";
 	}
+	
 	virtual void InitSelectionHistograms();
     virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
 
