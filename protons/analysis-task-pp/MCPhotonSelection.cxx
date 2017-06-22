@@ -110,7 +110,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 		return;
 
 	// TODO: Fix this method
-	// PythiaInfo();
+	PythiaInfo();
 
 	// TODO:
 	//	 RERUN real data to get zvertex histogram
