@@ -19,6 +19,10 @@ terminate: | %.cxx
 
 download: | %.cxx
 	$(call jetjet,downloadstart,$(DATASET)) || make unlink
+	hadd $(DATASET).root scaled-$(DATASET)*.root
+	$(call upload_result, $(DATASET), scaled-$(DATASET))
+
+	echo "Terminated grid analysis" >> .runhistory
 	@make unlink || echo "Directory is clean"
 
 %.cxx:
@@ -50,9 +54,6 @@ test: | %.cxx
 	@make unlink || echo "Directory is clean"
 	# make compare
 
-upload:
-	$(call upload_result,AnalysisResults,$(DATASET))
-	# $(call upload_result,TrackAverages,TrackAverages.$(DATASET))
 
 clean:
 	rm *.so *.d *~ Task*
@@ -76,9 +77,10 @@ define terminatestart
 endef
 
 define downloadstart
-	root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
-	$(call upload_result,AnalysisResults,$(1))
-	echo "Terminated grid analysis" >> .runhistory
+	# root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
+	# mv AnalysisResults.root $(1).root
+	root -l -q 'scaleBins.C("$(1).root", "$(1).root/MCStudyOnlyTender/")'
+	@echo $(1) " Done."
 endef 
 
 # output direcotry, filename.root, where to save
@@ -97,7 +99,7 @@ endef
 
 
 define upload_result
-	mv $(1).root $(2).root
+	-mv $(1).root $(2).root
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)
 endef
 

@@ -29,6 +29,7 @@ Float_t ScaleFactor(TString paths)
 
 	TFile * file = new TFile(path[0], "read");
 	TList * list = file->Get(path[1]);
+	// list->ls();
 
 	TH1F * hXsec = dynamic_cast<TH1F *>(list->FindObject("hXsec"));
 	TH1F * hTrials = dynamic_cast<TH1F *>(list->FindObject("hTrials"));
