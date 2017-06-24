@@ -5,6 +5,12 @@ void scaleBins(TString fileToScale = "LHC17f8a_10.root", TString paths = "LHC17f
 	TFile * file = new TFile(fileToScale, "open");
 	TList * keys = file->GetListOfKeys();
 
+	if(scaleFactor < 1)
+	{
+		cout << "Fatal error!!! Can't read scaled factor " << scaleFactor << endl;
+		return;
+	}
+
 	for (int i = 0; i < keys->GetEntries(); ++i)
 	{
 		TKey * key = dynamic_cast<TKey * >(keys->At(i));

@@ -12,18 +12,22 @@ PtBins = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 grid: | %.cxx
 	$(call jetjet,gridstart,$(DATASET)) || make unlink
 	@make unlink || echo "Directory is clean"
+	echo -e "\a"
 
 terminate: | %.cxx
 	$(call jetjet,terminatestart,$(DATASET)) || make unlink
 	@make unlink || echo "Directory is clean"
+	echo -e "\a"
 
 download: | %.cxx
-	$(call jetjet,downloadstart,$(DATASET)) || make unlink
+	$(call jetjet,downloadstart,$(DATASET))
+	make unlink
 	hadd $(DATASET).root scaled-$(DATASET)*.root
 	$(call upload_result, $(DATASET), scaled-$(DATASET))
 
 	echo "Terminated grid analysis" >> .runhistory
 	@make unlink || echo "Directory is clean"
+	echo -e "\a"
 
 %.cxx:
 	make unlink
@@ -56,13 +60,14 @@ test: | %.cxx
 
 
 clean:
-	rm *.so *.d *~ Task*
+	rm *.so *.d *~ Task*  *$(DATASET)*.root
 
 
 
 define jetjet
 	$(foreach var,$(PtBins),$(call $(1),$(2)_$(var));)
 endef
+
 
 define gridstart
 	root -l -b -q 'run.C("$(1)", "grid", "full", "$(DPART)", $(MC))' 
@@ -79,8 +84,8 @@ endef
 define downloadstart
 	# root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
 	# mv AnalysisResults.root $(1).root
-	root -l -q 'scaleBins.C("$(1).root", "$(1).root/MCStudyOnlyTender/")'
-	@echo $(1) " Done."
+	root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
+	@echo $(1) " Done."  
 endef 
 
 # output direcotry, filename.root, where to save
