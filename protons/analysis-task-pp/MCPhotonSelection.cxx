@@ -65,10 +65,10 @@ void MCPhotonSelection::InitSelectionHistograms()
 
 		// cout << n << endl;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_AllRange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
 
 		if (i->first != kPi0)
 			continue;
@@ -81,16 +81,6 @@ void MCPhotonSelection::InitSelectionHistograms()
 		}
 
 	}
-	// TODO: move these files to separate selection
-
-	TH1F * hist = new TH1F("hXsec", "xsec from pyxsec.root", 1, 0, 1);
-	hist->GetXaxis()->SetBinLabel(1, "<#sigma>");
-	fListOfHistos->Add(hist);
-
-	hist = new TH1F("hTrials", "trials root file", 1, 0, 1);
-	hist->GetXaxis()->SetBinLabel(1, "#sum{ntrials}");
-	fListOfHistos->Add(hist);
-
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
@@ -109,16 +99,12 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 	if (! particles)
 		return;
 
-	// TODO: Fix this method
-	PythiaInfo();
-
 	// TODO:
 	//	 RERUN real data to get zvertex histogram
 	for (Int_t i = 0; i < particles->GetEntriesFast(); i++)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
 
-		// TODO: What does it mean negative PDG Code
 		Int_t code = TMath::Abs(particle->GetPdgCode());
 		const char * name = fPartNames[code].Data();
 
@@ -271,52 +257,3 @@ void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObj
 		FillHistogram("EventCounter", 4.5);
 }
 
-
-//________________________________________________________________
-void MCPhotonSelection::PythiaInfo()
-{
-	// TODO: Move it to separate selection?
-	// Fetch the histgram file
-	TTree * tree = AliAnalysisManager::GetAnalysisManager()->GetTree();
-
-	if (!tree)
-	{
-		AliError(Form("%s - UserNotify: No current tree!", GetName()));
-		return;
-	}
-
-	TFile * curfile = tree->GetCurrentFile();
-	if (!curfile)
-	{
-		AliError(Form("%s - UserNotify: No current file!", GetName()));
-		return;
-	}
-
-	TString file(curfile->GetName());
-	file.ReplaceAll(gSystem->BaseName(file.Data()), "");
-
-	TFile * fxsec = TFile::Open(Form("%s%s", file.Data(), "pyxsec_hists.root"));
-
-	if (!fxsec)
-	{
-		AliError(Form("There is no pyxsec_hists.root in this directory."));
-		return;
-	}
-
-	// find the tlist we want to be independtent of the name so use the Tkey
-	TKey * key = (TKey *)fxsec->GetListOfKeys()->At(0);
-	if (!key)
-		return;
-
-	TList * list = dynamic_cast<TList *>(key->ReadObj());
-	if (!list)
-		return;
-
-	Float_t xsec    = ((TProfile *)list->FindObject("h1Xsec"))  ->GetBinContent(1);
-	Float_t trials  = ((TH1F *)    list->FindObject("h1Trials"))->GetBinContent(1);
-	fxsec->Close();
-
-	FillHistogram("hXsec", 0.5, xsec);
-	FillHistogram("hTrials", 0.5, trials);
-	// AliInfo(Form("xs %f, trial %f.\n", xsec, trials));
-}

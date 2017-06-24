@@ -118,6 +118,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		return;
 
 
+	// TODO: Use always TClonesArray? 
 	// collect clusters (photon candidates)
 	TObjArray clusArray;
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
@@ -137,9 +138,6 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	}
 
 	TClonesArray * mcparaticles = GetMCParticles(event);
-
-	// No need to check. We have already done it in SelectEvent
-	AliVCaloCells * cells = event->GetPHOSCells();
 
 	TList * pool = fPreviousEvents->GetPool(evtProperties);
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
@@ -182,6 +180,7 @@ Bool_t AliAnalysisTaskPP::EventSelected(const AliVEvent * event, EventFlags & ep
 	if (event->IsPileupFromSPD(3, 0.8, 3., 2., 5.))
 		return kFALSE;
 
+	// TODO: DO we need this check?
 	// cells
 	AliVCaloCells * cells = event->GetPHOSCells();
 

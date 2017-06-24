@@ -18,6 +18,10 @@
 #include <AliStack.h>
 #include <AliLog.h>
 
+// TODO: Rename this class to MesonSelectionMC
+//
+//
+
 class MCPhotonSelection: public GeneralPhotonSelection
 {
 public:
@@ -73,9 +77,7 @@ protected:
 		Int_t plabel;
 		return GetParent(label, plabel, particles);
 	}
-
 	virtual void FillClusterMC(const AliVCluster * cluster, TClonesArray * particles);
-	virtual void PythiaInfo();
 
 	MCPhotonSelection(const MCPhotonSelection &);
 	MCPhotonSelection & operator = (const MCPhotonSelection &);

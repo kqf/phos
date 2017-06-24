@@ -15,6 +15,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("MCPhotonSelection.cxx+");
+    gROOT->LoadMacro("PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("PhysMCPhotonSelection.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
@@ -86,6 +87,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(fake_timecut);
 		selections->Add(sel);
+
+		if(suff.Contains("Only"))
+			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
 	}
 
 	// Setup task
@@ -143,6 +147,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonTimecutSelection.cxx " +
 	    "TagAndProbeSelection.cxx " +
 	    "MCPhotonSelection.cxx " +
+	    "PythiaInfoSelection.cxx " +
 	    "PhysMCPhotonSelection.cxx " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx "
@@ -173,6 +178,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "MCPhotonSelection.h " +
 	    "PhysMCPhotonSelection.cxx " +
 	    "PhysMCPhotonSelection.h " +
+	    "PythiaInfoSelection.cxx " +
+	    "PythiaInfoSelection.h " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx " +
 	    "AliAnalysisTaskPP.h " 
