@@ -1,7 +1,7 @@
 Datasets, description
 ---------------------
 
-## Old data (pp 7 TeV)
+## Old data ($pp$ 7 TeV)
 
 Data
 
@@ -23,9 +23,9 @@ LHC15g6f.txt
 ```
 
 
-## LHC16 data (pp 13 TeV)
+## LHC16 data ($pp$ 13 TeV)
 
-Data
+### Data
 ```
 LHC16g-muon-calo-pass1.txt
 LHC16i-muon-calo-pass1.txt
@@ -37,7 +37,7 @@ LHC16m-muon-calo-pass1.txt
 LHC16p-muon-calo-pass1.txt
 ```
 
-General-purpose MC
+## General-purpose MC ($pp$ 13 TeV)
 
 Pythia
 
@@ -52,3 +52,15 @@ EPOS
 LHC16j2b1.txt
 LHC16j2b2.txt
 ```
+
+Jet-Jet MC
+
+```
+LHC17f8a.txt 
+LHC17f8c.txt 
+LHC17f8d.txt 
+LHC17f8e.txt
+```
+
+
+
