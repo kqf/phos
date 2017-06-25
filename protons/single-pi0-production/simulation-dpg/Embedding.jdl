@@ -26,18 +26,18 @@ InputDataList="$1.xml";
 InputDataListFormat="xml-single";
 
 # this is our collection file containing the files to be analyzed
-InputDataCollection="LF:/alice/cern.ch/user/d/dsekihat/EmbeddingRun2/collections/collection_$1.xml,nodownload";
+InputDataCollection="LF:/alice/cern.ch/user/o/okovalen/EmbeddingRun2/collections/collection_$1.xml,nodownload";
 
-InputFile= {"LF:/alice/cern.ch/user/d/dsekihat/EmbeddingRun2/v16/EmbRun2.tgz"} ;
+InputFile= {"LF:/alice/cern.ch/user/o/okovalen/EmbeddingRun2/v16/EmbRun2.tgz"} ;
 
 # Output archive	    
 OutputArchive={"log_archive.zip:stdout,stderr,*.log@disk=1","root_archive.zip:AliAODout.root,AliAODPi0.root,AliAODEta.root,AliAODGamma.root,AnalysisResults.root@disk=2"};
 
 # Output directory
-OutputDir="/alice/cern.ch/user/d/dsekihat/EmbeddingRun2/v16/output/$1/#alien_counter#";
+OutputDir="/alice/cern.ch/user/o/okovalen/EmbeddingRun2/v16/output/$1/#alien_counter#";
 
 # Validation
-Validationcommand ="/alice/cern.ch/user/d/dsekihat/EmbeddingRun2/Macros/validation.sh";
+Validationcommand ="/alice/cern.ch/user/o/okovalen/EmbeddingRun2/Macros/validation.sh";
 
 
 

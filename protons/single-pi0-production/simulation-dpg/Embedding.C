@@ -169,7 +169,7 @@ void Embedding(const char* dataset="collection.xml")
  	task1->SetEmbeddedFlag(embpi0,embeta,embgamma);
 
   task1->SelectCollisionCandidates(trigger);
-  const TString path = "alien:///alice/cern.ch/user/d/dsekihat/EmbeddingRun2/PrivateOADB/PHOSCalibrations_vAN20161220.root";
+  const TString path = "alien:///alice/cern.ch/user/o/okovalen/PrivateOADB/PHOSCalibrations_vAN20161220.root";
   cout << "path = " << path << endl; 
 
   task1->SetPrivateOADBPath(path);
