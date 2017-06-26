@@ -11,6 +11,7 @@
 #include <TClonesArray.h>
 #include <TObjArray.h>
 #include <TList.h>
+#include <TF1.h>
 
 // --- AliRoot header files ---
 #include <AliAODMCParticle.h>
@@ -18,9 +19,6 @@
 #include <AliStack.h>
 #include <AliLog.h>
 
-// TODO: Rename this class to MesonSelectionMC
-//
-//
 
 class MesonSelectionMC: public GeneralPhotonSelection
 {
@@ -66,6 +64,7 @@ public:
     virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
 
 protected:
+	virtual void SecondaryPi0Contribution(AliAODMCParticle * particle);
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
@@ -85,6 +84,10 @@ protected:
 	typedef std::map<Int_t, TString> EnumNames;
 	EnumNames fPartNames; 
 	EnumNames fPi0SourcesNames; 
+
+	// Pt-parametrizations for mass and width
+	TF1 fMassPt;
+	TF1 fWidthPt;
 
 	ClassDef(MesonSelectionMC, 2)
 };
