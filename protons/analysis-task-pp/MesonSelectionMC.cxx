@@ -2,7 +2,7 @@
 // #include "iterator"
 
 // --- Custom header files ---
-#include "MCPhotonSelection.h"
+#include "MesonSelectionMC.h"
 
 // --- ROOT system ---
 #include <TParticle.h>
@@ -22,11 +22,11 @@
 using namespace std;
 
 
-ClassImp(MCPhotonSelection);
+ClassImp(MesonSelectionMC);
 
 
 //________________________________________________________________
-void MCPhotonSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void MesonSelectionMC::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	(void) clusArray;
 	(void) pool;
@@ -34,7 +34,7 @@ void MCPhotonSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const E
 }
 
 //________________________________________________________________
-void MCPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
+void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
 	(void) c1;
 	(void) c2;
@@ -43,7 +43,7 @@ void MCPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster *
 
 
 //________________________________________________________________
-void MCPhotonSelection::InitSelectionHistograms()
+void MesonSelectionMC::InitSelectionHistograms()
 {
 	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
@@ -94,7 +94,7 @@ void MCPhotonSelection::InitSelectionHistograms()
 }
 
 
-void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
+void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
 {
 	if (! particles)
 		return;
@@ -178,7 +178,7 @@ void MCPhotonSelection::ConsiderGeneratedParticles(TClonesArray * particles, TOb
 }
 
 //________________________________________________________________
-void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
+void MesonSelectionMC::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
 {
 	// Particle # reached PHOS front surface
 	Int_t label = cluster->GetLabelAt(0) ;
@@ -205,7 +205,7 @@ void MCPhotonSelection::FillClusterMC(const AliVCluster * cluster, TClonesArray 
 }
 
 //________________________________________________________________
-AliAODMCParticle * MCPhotonSelection::GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const
+AliAODMCParticle * MesonSelectionMC::GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const
 {
 	if (label <= -1)
 		return 0;
@@ -220,7 +220,7 @@ AliAODMCParticle * MCPhotonSelection::GetParent(Int_t label, Int_t & plabel, TCl
 }
 
 //________________________________________________________________
-Bool_t MCPhotonSelection::IsPrimary(const AliAODMCParticle * particle) const
+Bool_t MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
 {
 	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
 	Double_t rcut = 1.;
@@ -230,7 +230,7 @@ Bool_t MCPhotonSelection::IsPrimary(const AliAODMCParticle * particle) const
 
 
 //________________________________________________________________
-void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
 	// Don't return TObjArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
@@ -256,4 +256,3 @@ void MCPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObj
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
 		FillHistogram("EventCounter", 4.5);
 }
-

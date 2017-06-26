@@ -1,5 +1,5 @@
 // --- Custom header files ---
-#include "PhysMCPhotonSelection.h"
+#include "PhysPhotonSelectionMC.h"
 // #include "AliAnalysisTaskPP.h"
 
 // --- ROOT system ---
@@ -12,11 +12,11 @@
 using namespace std;
 
 
-ClassImp(PhysMCPhotonSelection);
+ClassImp(PhysPhotonSelectionMC);
 
 
 //________________________________________________________________
-TLorentzVector PhysMCPhotonSelection::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
+TLorentzVector PhysPhotonSelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
 {
     Float_t energy = c1->E();
 
@@ -27,7 +27,7 @@ TLorentzVector PhysMCPhotonSelection::ClusterMomentum(const AliVCluster * c1, co
 }
 
 //________________________________________________________________
-Float_t PhysMCPhotonSelection::Nonlinearity(Float_t x) const
+Float_t PhysPhotonSelectionMC::Nonlinearity(Float_t x) const
 {
 	return fGlobalEnergyScale * (1. + fNonA * TMath::Exp(-x / 2. * x / fNonSigma / fNonSigma));
 }

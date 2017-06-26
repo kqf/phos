@@ -14,9 +14,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("TagAndProbeSelection.cxx+");
-    gROOT->LoadMacro("MCPhotonSelection.cxx+");
+    gROOT->LoadMacro("MesonSelectionMC.cxx+");
     gROOT->LoadMacro("PythiaInfoSelection.cxx+");
-    gROOT->LoadMacro("PhysMCPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhysPhotonSelectionMC.cxx+");
     gROOT->LoadMacro("MixingSample.h+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
   
@@ -79,11 +79,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		// Float_t nonlin_b = 0.6;
 	    // Float_t ge_scale = 1.04;
 
-		selections->Add(new PhysMCPhotonSelection("PhysNonlin", "Corrected for nonlinearity Physics Selection", 0.3, 1.0, 3,
+		selections->Add(new PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection", 0.3, 1.0, 3,
 			fake_timecut, nonlin_a, nonlin_b, ge_scale));
 
-		selections->Add(new PhysMCPhotonSelection("PhysRaw", "Raw Physics Selection", 0.3, 1.0, 3, fake_timecut));
-		selections->Add(new MCPhotonSelection("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
+		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", 0.3, 1.0, 3, fake_timecut));
+		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
 		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(fake_timecut);
 		selections->Add(sel);
@@ -146,9 +146,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhysPhotonSelection.cxx " +
 	    "PhotonTimecutSelection.cxx " +
 	    "TagAndProbeSelection.cxx " +
-	    "MCPhotonSelection.cxx " +
+	    "MesonSelectionMC.cxx " +
 	    "PythiaInfoSelection.cxx " +
-	    "PhysMCPhotonSelection.cxx " +
+	    "PhysPhotonSelectionMC.cxx " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx "
 	);
@@ -174,10 +174,10 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonTimecutSelection.h " +
 	    "TagAndProbeSelection.cxx " +
 	    "TagAndProbeSelection.h " +
-	    "MCPhotonSelection.cxx " +
-	    "MCPhotonSelection.h " +
-	    "PhysMCPhotonSelection.cxx " +
-	    "PhysMCPhotonSelection.h " +
+	    "MesonSelectionMC.cxx " +
+	    "MesonSelectionMC.h " +
+	    "PhysPhotonSelectionMC.cxx " +
+	    "PhysPhotonSelectionMC.h " +
 	    "PythiaInfoSelection.cxx " +
 	    "PythiaInfoSelection.h " +
 	    "MixingSample.h " +

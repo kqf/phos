@@ -1,5 +1,5 @@
-#ifndef PHYSMCPHOTONSELECTION_H
-#define PHYSMCPHOTONSELECTION_H
+#ifndef PHYSPHOTONSELECTIONMC_H
+#define PHYSPHOTONSELECTIONMC_H
 
 // --- Custom header files ---
 #include "PhysPhotonSelection.h"
@@ -11,12 +11,12 @@
 // --- AliRoot header files ---
 #include <AliVCluster.h>
 
-class PhysMCPhotonSelection : public PhysPhotonSelection
+class PhysPhotonSelectionMC : public PhysPhotonSelection
 {
 public:
-	PhysMCPhotonSelection(): PhysPhotonSelection() {}
-	PhysMCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, 
-						 Int_t n = 3, Float_t t = 999, Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.): 
+	PhysPhotonSelectionMC(): PhysPhotonSelection() {}
+	PhysPhotonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0,
+	                      Int_t n = 3, Float_t t = 999, Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.):
 		PhysPhotonSelection(name, title, ec, a, n, t),
 		fNonA(nona),
 		fNonSigma(nonsigma),
@@ -27,8 +27,8 @@ protected:
 	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
 	virtual Float_t Nonlinearity(Float_t x) const;
 
-	PhysMCPhotonSelection(const PhysMCPhotonSelection &);
-	PhysMCPhotonSelection & operator = (const PhysMCPhotonSelection &);
+	PhysPhotonSelectionMC(const PhysPhotonSelectionMC &);
+	PhysPhotonSelectionMC & operator = (const PhysPhotonSelectionMC &);
 
 	// Parameters of nonlinearity parametrization
 	Float_t fNonA;
@@ -36,6 +36,6 @@ protected:
 	Float_t fGlobalEnergyScale;
 
 private:
-	ClassDef(PhysMCPhotonSelection, 2)
+	ClassDef(PhysPhotonSelectionMC, 2)
 };
 #endif

@@ -29,14 +29,14 @@ void PythiaInfoSelection::CountMBEvent()
 
 	if (!tree)
 	{
-		AliError(Form("%s - UserNotify: No current tree!", GetName()));
+		// AliError(Form("%s - UserNotify: No current tree!", GetName()));
 		return;
 	}
 
 	TFile * curfile = tree->GetCurrentFile();
 	if (!curfile)
 	{
-		AliError(Form("%s - UserNotify: No current file!", GetName()));
+		// AliError(Form("%s - UserNotify: No current file!", GetName()));
 		return;
 	}
 
@@ -47,7 +47,7 @@ void PythiaInfoSelection::CountMBEvent()
 
 	if (!fxsec)
 	{
-		AliError(Form("There is no pyxsec_hists.root in this directory."));
+		// AliError(Form("There is no pyxsec_hists.root in this directory."));
 		return;
 	}
 

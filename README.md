@@ -7,7 +7,7 @@ Main repository consists of several scripts, analysis tasks and various utilitie
 
 - [x] Quality assurance ([QA](qa/)) of the reconstructed PHOS data.
   1.  Map of bad channels.  
-  2.  Physical quantities  
+  2.  Check stability of the observables in time.
  
 - [x] Neutral pion and $\eta$ [meson production](neutral-meson-spectra)
   - [x] Grid [analysis task](protons)

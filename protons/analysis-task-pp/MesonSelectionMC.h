@@ -1,5 +1,5 @@
-#ifndef MCPHOTONSELECTION_H
-#define MCPHOTONSELECTION_H
+#ifndef MESONSELECTIONMC_H 
+#define MESONSELECTIONMC_H 
 
 
 #include <map>
@@ -22,11 +22,11 @@
 //
 //
 
-class MCPhotonSelection: public GeneralPhotonSelection
+class MesonSelectionMC: public GeneralPhotonSelection
 {
 public:
 	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211, kPRho = 213, kNRho = -213};
-	MCPhotonSelection(): GeneralPhotonSelection() 
+	MesonSelectionMC(): GeneralPhotonSelection() 
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -44,7 +44,7 @@ public:
 
 	}
 
-	MCPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
+	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
 	{
 		// Don't use c++11 here, as it might fail at some nodes
 		fPartNames[kGamma] = "#gamma";
@@ -79,13 +79,13 @@ protected:
 	}
 	virtual void FillClusterMC(const AliVCluster * cluster, TClonesArray * particles);
 
-	MCPhotonSelection(const MCPhotonSelection &);
-	MCPhotonSelection & operator = (const MCPhotonSelection &);
+	MesonSelectionMC(const MesonSelectionMC &);
+	MesonSelectionMC & operator = (const MesonSelectionMC &);
 
 	typedef std::map<Int_t, TString> EnumNames;
 	EnumNames fPartNames; 
 	EnumNames fPi0SourcesNames; 
 
-	ClassDef(MCPhotonSelection, 2)
+	ClassDef(MesonSelectionMC, 2)
 };
 #endif
