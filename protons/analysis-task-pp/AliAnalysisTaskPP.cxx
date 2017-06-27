@@ -26,7 +26,7 @@
 #include "TestPhotonSelection.h"
 #include "PhysPhotonSelection.h"
 #include "PhotonTimecutSelection.h"
-#include "MCPhotonSelection.h"
+#include "MesonSelectionMC.h"
 #include "QualityPhotonSelection.h"
 
 

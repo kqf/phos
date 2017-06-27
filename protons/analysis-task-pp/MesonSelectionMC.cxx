@@ -53,14 +53,14 @@ void MesonSelectionMC::InitSelectionHistograms()
 	Double_t mass_pars[]  = { -4.387541839053645, -2.4257847611851093, 1.3167775301852713, 0.13730104925556225};
 
 	Int_t npars = sizeof(mass_pars) / sizeof(Double_t);
-	fMassPt = TF1("fMassPt", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]");
-	fWidthPt = TF1("fWidthPt", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]");
+	fMassPt = new TF1("fMassPt", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]");
+	fWidthPt = new TF1("fWidthPt", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]");
 
 	// Set the parameters
 	for (Int_t i = 0; i < npars; ++i)
 	{
-		fMassPt.SetParameter(i, mass_pars[i]);
-		fWidthPt.SetParameter(i, width_pars[i]);
+		fMassPt->SetParameter(i, mass_pars[i]);
+		fWidthPt->SetParameter(i, width_pars[i]);
 	}
 
 
@@ -293,8 +293,8 @@ void MesonSelectionMC::SecondaryPi0Contribution(AliAODMCParticle * particle)
 	Double_t mass = particle->GetCalcMass();
 
 	// Calculate 
-	Double_t psigma = fWidthPt.Eval(pt);
-	Double_t pmass = fMassPt.Eval(pt);
+	Double_t psigma = fWidthPt->Eval(pt);
+	Double_t pmass = fMassPt->Eval(pt);
 
 	const char * name = fPartNames[kPi0].Data();
 

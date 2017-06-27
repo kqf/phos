@@ -22,7 +22,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20170222-1");
+	plugin->SetAliPhysicsVersion("vAN-20170620-1");
 
 
 	plugin->SetExecutableCommand("aliroot");

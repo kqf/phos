@@ -24,7 +24,7 @@ class MesonSelectionMC: public GeneralPhotonSelection
 {
 public:
 	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211, kPRho = 213, kNRho = -213};
-	MesonSelectionMC(): GeneralPhotonSelection() 
+	MesonSelectionMC(): GeneralPhotonSelection(), fMassPt(0), fWidthPt(0)
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -42,7 +42,7 @@ public:
 
 	}
 
-	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
+	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t), fMassPt(0), fWidthPt(0)
 	{
 		// Don't use c++11 here, as it might fail at some nodes
 		fPartNames[kGamma] = "#gamma";
@@ -62,6 +62,12 @@ public:
 	
 	virtual void InitSelectionHistograms();
     virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
+
+    virtual ~MesonSelectionMC()
+    {
+    	if(fMassPt) delete	fMassPt;
+    	if(fWidthPt) delete	fWidthPt;
+    }
 
 protected:
 	virtual void SecondaryPi0Contribution(AliAODMCParticle * particle);
@@ -86,8 +92,8 @@ protected:
 	EnumNames fPi0SourcesNames; 
 
 	// Pt-parametrizations for mass and width
-	TF1 fMassPt;
-	TF1 fWidthPt;
+	TF1 * fMassPt;     //!
+	TF1 * fWidthPt;    //!
 
 	ClassDef(MesonSelectionMC, 2)
 };
