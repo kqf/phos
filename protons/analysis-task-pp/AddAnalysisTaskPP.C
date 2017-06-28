@@ -88,7 +88,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		sel->SetTimingCut(fake_timecut);
 		selections->Add(sel);
 
-		if(suff.Contains("Only"))
+		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
 			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
 	}
 
@@ -187,4 +187,19 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	cout << "REACHED HERE" << endl;
 	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
+}
+
+Bool_t IsJetJetMC(TString description, Bool_t isMC)
+{
+	if(!isMC)
+		return kFALSE;
+
+	if(description.Contains("Jet-Jet"))
+		return kTRUE;
+
+
+	cout << "Not Using PythiaInfo!!! " << endl;
+
+	// Don't include Jet-Jet counters by default
+	return kFALSE;
 }

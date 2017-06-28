@@ -21,9 +21,9 @@ ClassImp(PythiaInfoSelection);
 //________________________________________________________________
 void PythiaInfoSelection::CountMBEvent()
 {
+	
 	GeneralPhotonSelection::CountMBEvent();
 
-	// TODO: Move it to separate selection?
 	// Fetch the histgram file
 	TTree * tree = AliAnalysisManager::GetAnalysisManager()->GetTree();
 
@@ -43,16 +43,16 @@ void PythiaInfoSelection::CountMBEvent()
 	TString file(curfile->GetName());
 	file.ReplaceAll(gSystem->BaseName(file.Data()), "");
 
-	TFile * fxsec = TFile::Open(Form("%s%s", file.Data(), "pyxsec_hists.root"));
+	TFile fxsec(Form("%s%s", file.Data(), "pyxsec_hists.root"));
 
-	if (!fxsec)
+	if (!fxsec.IsOpen())
 	{
 		// AliError(Form("There is no pyxsec_hists.root in this directory."));
 		return;
 	}
 
 	// find the tlist we want to be independtent of the name so use the Tkey
-	TKey * key = (TKey *)fxsec->GetListOfKeys()->At(0);
+	TKey * key = (TKey *)fxsec.GetListOfKeys()->At(0);
 	if (!key)
 		return;
 
@@ -62,7 +62,9 @@ void PythiaInfoSelection::CountMBEvent()
 
 	Float_t xsec    = ((TProfile *)list->FindObject("h1Xsec"))  ->GetBinContent(1);
 	Float_t trials  = ((TH1F *)    list->FindObject("h1Trials"))->GetBinContent(1);
-	fxsec->Close();
+
+	if(fxsec.IsOpen())
+		fxsec.Close();
 
 	FillHistogram("hXsec", 0.5, xsec);
 	FillHistogram("hTrials", 0.5, trials);

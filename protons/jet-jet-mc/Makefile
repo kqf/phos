@@ -1,9 +1,11 @@
-DATASET = LHC17f8e
+DATASET = LHC17f8a
 DPART = first
 MC = kTRUE
 
+PtBins = 1 2 3 4 5 
+# PtBins = 6 7 8 9 10 
 #PtBins = 9 10 
-PtBins = 1 2 3 4 5 6 7 8 9 10 
+# PtBins = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 #PtBins = 11 12 13 14 15 16 17 18 19 20
 #PtBins = 11 12 13 17 18 20
 # PtBins = 20 19 18 17 16 
@@ -87,7 +89,7 @@ endef
 define downloadstart
 	# root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
 	# mv AnalysisResults.root $(1).root
-	root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
+	# root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
 	@echo $(1) " Done."  
 endef 
 
