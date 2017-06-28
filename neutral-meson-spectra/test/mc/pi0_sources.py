@@ -11,51 +11,62 @@ import os.path
 import unittest
 
 
-class Efficiency(unittest.TestCase):
+class Pi0Sources(unittest.TestCase):
 
 
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.file = 'input-data/Pythia-LHC16-iteration22.root'
-        self.labels = ['#bar#Xi^{0}', '#bar#Sigma^{+}', '#bar#Sigma^{*}^{0}', '#bar#Lambda^{0}', '#bar#Delta^{+}', '#bar#Delta^{0}', '#barB^{0}', '#barD^{*}^{0}', '#barD^{0}', 'D^{-}', 'K^{*}^{-}', '#barK^{*}^{0}', '#rho^{-}', 'd', 'u', 's', 'c', 'b', 'g', '#rho^{+}', '#eta', '#omega', 'K_{S^{0}}', 'K^{*}^{0}', 'K^{*}^{+}', "#eta^{'}", '#phi', 'D^{+}', 'D^{0}', 'D^{*}^{0}', 'chi_{^{2}c}', 'dd_{^{1}}', 'ud_{^{0}}', 'ud_{^{1}}', 'neutron', '#Delta^{0}', 'uu_{^{1}}', '#Delta^{+}', '#Lambda^{0}', '#Sigma^{*}^{0}', '#Sigma^{+}', '#Xi^{0}']
+        self.file = 'input-data/Pythia-LHC16-a1.root'
+        self.filename = 'hPtGeneratedMC_#pi^{0}'
+        self.labels = {'#pi^{-}': -211, 'K_{S}^{0}': 310, '#omega': 223, '#rho^{-}': -213, '#pi^{+}': 211, '#Lambda^{0}': 3122, '#rho^{+}': 213, '#eta': 221}
+        self.labels = {self.labels[i]: i for i in self.labels}
 
 
     def read(self, x, y, p = 1):
         return read_histogram(self.file, self.mc_selection, x, label = y, priority = p)
 
 
-    @unittest.skip('')
     def testDifferentContributions(self):
-        filename = 'hPtGeneratedMC_#pi^{0}'
-        labels = 'secondary', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K_0^s', '#Lambda'
+        def contribution(contr_type = 'secondary'):
+            filename = self.filename + '_' + contr_type 
+            labels = '', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}'
 
-        hists = map(lambda x: self.read('{0}_{1}'.format(filename, x),  x, 999), labels)
-        hists[0].logy = True
+            print map(lambda x: '{0}_{1}'.format(filename, x), labels)
+            hists = map(lambda x: self.read('{0}_{1}'.format(filename, x),  x, 999), labels)
+            hists[0].logy = True
 
-        map(PtDependent.divide_bin_width, hists)
+            map(PtDependent.divide_bin_width, hists)
 
-        diff = Comparator()
-        diff.compare(hists)
+            diff = Comparator()
+            diff.compare(hists)
 
-        pall = self.read(filename, 'all', -1)
-        pall.logy = True
+            pall = self.read(self.filename, 'all', -1)
+            pall.logy = True
 
-        pprimary = self.read(filename + '_primary', 'primary', 999)
-        pprimary.logy = True
+            pprimary = self.read(self.filename + '_primary_', 'primary', 999)
+            pprimary.logy = True
 
-        map(PtDependent.divide_bin_width, (pall, pprimary))
-        diff.compare(pprimary, pall)
+            map(PtDependent.divide_bin_width, (pall, pprimary))
+            # diff.compare(pprimary, pall)
+            diff = Comparator(crange = (1e-9, 1))
+            diff.compare_ratios(hists, pall, logy = True)
+
+        contribution('secondary')
+        contribution('primary')
 
 
     def adjustBins(self, hist):
-        assert hist.GetNbinsX() == len(self.labels), 'self.Labels and histogram have different length'
         nhist = ROOT.TH1F('{}_binned'.format(hist.GetName()), hist.GetTitle(), len(self.labels), 0, len(self.labels))
 
-        for i, l in enumerate(self.labels):
-            nhist.SetBinContent(i + 1, hist.GetBinContent(i + 1))
-            nhist.SetBinError(i + 1, hist.GetBinError(i + 1))
-            nhist.GetXaxis().SetBinLabel(i + 1, l)
+        bins = {i: int(hist.GetBinCenter(i) - 0.5) for i in range(1, hist.GetNbinsX() + 1) if hist.GetBinContent(i) > 0}
+        nbins = hist.GetNbinsX()
+
+        assert len(bins) == len(self.labels), "You have different number of labels and particles"
+        for i, bin in enumerate(bins):
+            nhist.SetBinContent(i + 1, hist.GetBinContent(bin))
+            nhist.SetBinError(i + 1, hist.GetBinError(bin))
+            nhist.GetXaxis().SetBinLabel(i + 1, self.labels[bins[bin]])
 
         if 'label' in dir(hist):
             nhist.label = hist.label
@@ -64,8 +75,6 @@ class Efficiency(unittest.TestCase):
             nhist.priority = hist.priority
 
         nhist.SetOption('l')
-
-  
         return nhist
 
 
@@ -77,8 +86,10 @@ class Efficiency(unittest.TestCase):
         map(lambda x: x.Scale(1./x.Integral()), hists)
 
         hists[0].logy = True
+        hists[0].SetLabelSize(hists[0].GetLabelSize('X') * 2., 'X')
+        hists[0].SetTitleOffset(hists[0].GetTitleOffset('X') * 6. , 'X')
         diff = Comparator()
-        diff.compare(hists[::-1])
+        diff.compare(hists)
 
 
 

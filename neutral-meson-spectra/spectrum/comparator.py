@@ -7,11 +7,12 @@ from sutils import rebin_as
 import numpy as np
 
 class Visualizer(object):
-    def __init__(self, size, rrange, ratiofit):
+    def __init__(self, size, rrange, ratiofit, crange):
         super(Visualizer, self).__init__()
         self.size = size
         self.cache = []
         self.rrange = rrange
+        self.crange = crange
         self.ratiofit = ratiofit
         self.output_prefix = 'compared-'
         
@@ -137,7 +138,10 @@ class Visualizer(object):
 
         first_hist = sorted(hists, key=lambda x: x.priority)[0]
         first_hist.SetStats(False)
+        if self.crange:
+            first_hist.SetAxisRange(self.crange[0], self.crange[1] , 'Y')
         first_hist.DrawCopy()
+
         for i, h in enumerate(hists): 
             h.SetStats(False)
             h.SetLineColor(ci + i)
@@ -148,6 +152,7 @@ class Visualizer(object):
             legend.AddEntry(h, h.label)
 
         legend.Draw('same')
+
 
         if 'spectr' in first_hist.GetName() or 'logy' in dir(first_hist):
             ROOT.gPad.SetLogy()
@@ -199,9 +204,9 @@ def define_colors(ci = 1000):
 class Comparator(object):
     ci, colors = define_colors()
 
-    def __init__(self, size = (1, 1), rrange = None, ratiofit = False):
+    def __init__(self, size = (1, 1), rrange = None, ratiofit = False, crange = None):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size, rrange, ratiofit)
+        self.vi = Visualizer(size, rrange, ratiofit, crange)
 
 
     def compare(self, *args):
@@ -249,7 +254,7 @@ class Comparator(object):
 
 
 
-    def compare_ratios(self, hists, baseline, comparef = None):
+    def compare_ratios(self, hists, baseline, comparef = None, logy = False):
         if not comparef:
             comparef = self.vi.compare_visually
 
@@ -257,6 +262,7 @@ class Comparator(object):
             h = a.Clone(a.GetName() + '_ratio')
             h.label = a.label + '/' + baseline.label
             h.Divide(baseline)
+            if logy: h.logy = logy
             return h
 
         comparef(map(ratio, hists), self.ci)
