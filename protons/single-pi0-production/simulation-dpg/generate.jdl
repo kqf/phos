@@ -1,0 +1,38 @@
+Executable = "/alice/cern.ch/user/o/okovalen/single-pi0-production/dpgsim.sh";
+Jobtag={"comment:PHOS, pion"} ;
+
+Packages={"VO_ALICE@AliPhysics::vAN-20170516-1",
+         "VO_ALICE@APISCONFIG::V1.1x"};
+
+
+
+InputFile= {
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/generate.jdl",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/tag.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/AODtrainsim.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/Config.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/CreateSnapshot.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/QAtrainsim.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/rec.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/sim.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/CheckESD.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/ConfigVertexingHF.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/DetectorConfig.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/ExportGRPinfo.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/GeneratorConfig.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/OCDBConfig.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/ReconstructionConfig.C",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/SimulationConfig.C"
+            };
+
+OutputArchive={"log_archive:stdout,stderr,*.log@disk2"};
+OutputFile= {"AliAOD.root@disk2"};
+
+splitarguments = "#alien_counter#";
+split="production:$2-$3";
+
+OutputDir="/alice/cern.ch/user/o/okovalen/single-pi0-production/output/$1/#alien_counter#";
+
+
+Workdirectorysize={"4000MB"};
+Email="oleksandr.kovalenko@cern.ch";
