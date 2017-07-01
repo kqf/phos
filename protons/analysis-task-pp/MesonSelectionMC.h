@@ -72,7 +72,6 @@ public:
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
-	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
 
 	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;
 	virtual AliAODMCParticle * GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const;

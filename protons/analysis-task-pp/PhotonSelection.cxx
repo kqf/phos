@@ -102,3 +102,11 @@ Int_t PhotonSelection::CheckClusterGetSM(const AliVCluster * clus, Int_t & x, In
 
 	return sm;
 }
+
+//________________________________________________________________
+TLorentzVector PhotonSelection::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
+{
+	TLorentzVector p;
+	c1->GetMomentum(p, eflags.vtxBest);		
+	return p;
+}

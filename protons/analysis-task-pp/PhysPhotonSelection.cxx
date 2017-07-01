@@ -100,11 +100,3 @@ void PhysPhotonSelection::FillClusterHistograms(const AliVCluster * clus, const 
 	TLorentzVector p = ClusterMomentum(clus, eflags);
 	FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
 }
-
-//________________________________________________________________
-TLorentzVector PhysPhotonSelection::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
-{
-	TLorentzVector p;
-	c1->GetMomentum(p, eflags.vtxBest);		
-	return p;
-}

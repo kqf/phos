@@ -50,10 +50,7 @@ void TestPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Int_t sm1, sm2, x, z; // x, z are unused here 
 	if ((sm1 = CheckClusterGetSM(c1, x, z)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x, z)) < 0) return; //  To be sure that everything is Ok
-
-	Int_t s1 = (sm1 <= sm2) ? sm1 : sm2;
-	Int_t s2 = (sm1 <= sm2) ? sm2 : sm1;
-
+	
 	if (sm1 == sm2)
 		fhPi0Mass.FillAll(sm1, psum.M());
 }

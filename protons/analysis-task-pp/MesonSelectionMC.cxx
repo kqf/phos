@@ -26,25 +26,76 @@ ClassImp(MesonSelectionMC);
 
 
 //________________________________________________________________
-void MesonSelectionMC::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
-{
-	(void) clusArray;
-	(void) pool;
-	(void) eflags;
-}
-
-//________________________________________________________________
 void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
-	(void) c1;
-	(void) c2;
-	(void) eflags;
+	TLorentzVector p1 = ClusterMomentum(c1, eflags);
+	TLorentzVector p2 = ClusterMomentum(c2, eflags);
+	TLorentzVector psum = p1 + p2;
+
+	// Pair cuts can be applied here
+	if (psum.M2() < 0)  return;
+
+	Int_t sm1, sm2, x1, z1, x2, z2;
+	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
+	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
+
+
+	Double_t ma12 = psum.M();
+	Double_t pt12 = psum.Pt();
+
+	const char * suff = eflags.isMixing ? "Mix" : "";
+	FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12);
+
+
+	Int_t label1 = c1->GetLabelAt(0) ;
+	Int_t label2 = c2->GetLabelAt(0) ;
+
+	AliAODMCParticle * mother1 = GetParent(label1, eflags.fMcParticles);
+	AliAODMCParticle * mother2 = GetParent(label2, eflags.fMcParticles);
+
+	if(!mother1 || !mother2)
+		return;	
+
+	if(mother1 != mother2)
+		return;
+
+	if(mother1->GetPdgCode() != kPi0)
+		return;
+
+	// Looking at the source of pi0
+	// 
+	AliAODMCParticle * hadron = dynamic_cast<AliAODMCParticle *> (eflags.fMcParticles->At(mother1->GetMother()));
+	Int_t hcode = hadron->GetPdgCode();
+
+	if(!hadron)
+		return;
+
+	EnumNames::iterator s = fPi0SourcesNames.find(hcode);
+	if (s == fPi0SourcesNames.end())
+		return;
+
+	const char * pname = s->second.Data();
+
+	if(IsPrimary(hadron))
+		FillHistogram(Form("hMassPtN3_primary_%s", pname), ma12, pt12);
+	else 
+		FillHistogram(Form("hMassPtN3_secondary_%s", pname), ma12, pt12);
 }
 
 
 //________________________________________________________________
 void MesonSelectionMC::InitSelectionHistograms()
 {
+	Int_t nM       = 750;
+	Double_t mMin  = 0.0;
+	Double_t mMax  = 1.5;
+	Int_t nPt      = 400;
+	Double_t ptMin = 0;
+	Double_t ptMax = 20;
+
+	fListOfHistos->Add(new TH2F("hMassPtN3", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMixMassPtN3", "Mixed (M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+
 
 	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
@@ -76,6 +127,7 @@ void MesonSelectionMC::InitSelectionHistograms()
 			const char * ns = (const char *) s->second.Data();
 			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_%s", n, ns), Form("Distribution to primary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
 			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%s", n, ns), Form("Distribution to secondary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+			fListOfHistos->Add(new TH2F(Form("hMassPtN3_primary_%s", ns), Form("(M,p_{T})_{#gamma#gamma} primary %s, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", ns), nM, mMin, mMax, nPt, ptMin, ptMax));
 		}
 
 	}
@@ -115,7 +167,7 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TObjArray * clusArray, const E
 
 		// Use this to remove forward photons that can modify our true efficiency
 		// Use Rapidity instead of pseudo rapidity
-		// 
+		//
 		if (TMath::Abs(particle->Y()) > 0.5)
 			continue;
 
@@ -132,7 +184,7 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TObjArray * clusArray, const E
 			FillHistogram(Form("hPtGeneratedMC_%s_secondary_", name), pt) ;
 
 
-		// Now estimate Pi0 sources of secondaryflags.fMcParticles 
+		// Now estimate Pi0 sources of secondaryflags.fMcParticles
 		if (code != kPi0)
 			continue;
 
@@ -163,12 +215,6 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TObjArray * clusArray, const E
 		FillHistogram(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), pcode);
 		FillHistogram(Form("hPtGeneratedMC_%s_primary_%s", name, pname), pt) ;
 	}
-
-	// Try to extract all needed data
-	TObjArray photonCandidates;
-	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
-	for (Int_t i = 0; i < photonCandidates.GetEntries(); ++i)
-		FillClusterMC(dynamic_cast<AliVCluster *>(photonCandidates.At(i)), flags.fMcParticles);
 }
 
 //________________________________________________________________
@@ -208,6 +254,9 @@ AliAODMCParticle * MesonSelectionMC::GetParent(Int_t label, Int_t & plabel, TClo
 	// Particle # reached PHOS front surface
 	AliAODMCParticle * particle = dynamic_cast<AliAODMCParticle * >(particles->At(label));
 
+	if(!particle)
+		return 0;
+
 	plabel = particle->GetMother();
 	AliAODMCParticle * parent = dynamic_cast<AliAODMCParticle * >(particles->At(plabel));
 	return parent;
@@ -243,8 +292,11 @@ void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjA
 		// Fill histograms only for real events
 		if (eflags.isMixing)
 			continue;
+
+		// TODO: Redefine Cluster Histogram?
 		// There is no cluster histograms here
 		// FillClusterHistograms(clus, eflags);
+		FillClusterMC(clus, eflags.fMcParticles);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
