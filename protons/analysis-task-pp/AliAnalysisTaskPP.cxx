@@ -137,7 +137,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 		clusArray.Add(clus);
 	}
 
-	TClonesArray * mcparaticles = GetMCParticles(event);
+	evtProperties.fMcParticles = GetMCParticles(event);
 
 	TList * pool = fPreviousEvents->GetPool(evtProperties);
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
@@ -148,7 +148,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 			continue;
 
 		selection->FillPi0Mass(&clusArray, pool, evtProperties);
-		selection->ConsiderGeneratedParticles(mcparaticles, &clusArray, evtProperties);
+		selection->ConsiderGeneratedParticles(&clusArray, evtProperties);
 
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}

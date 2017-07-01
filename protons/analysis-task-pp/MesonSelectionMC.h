@@ -61,7 +61,7 @@ public:
 	}
 	
 	virtual void InitSelectionHistograms();
-    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
+    virtual void ConsiderGeneratedParticles(TObjArray * clusArray, const EventFlags & eflags);
 
     virtual ~MesonSelectionMC()
     {

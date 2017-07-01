@@ -92,16 +92,16 @@ void MesonSelectionMC::InitSelectionHistograms()
 }
 
 
-void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & flags)
+void MesonSelectionMC::ConsiderGeneratedParticles(TObjArray * clusArray, const EventFlags & flags)
 {
-	if (! particles)
+	if (!flags.fMcParticles)
 		return;
 
 	// TODO:
 	//	 RERUN real data to get zvertex histogram
-	for (Int_t i = 0; i < particles->GetEntriesFast(); i++)
+	for (Int_t i = 0; i < flags.fMcParticles->GetEntriesFast(); i++)
 	{
-		AliAODMCParticle * particle = ( AliAODMCParticle *) particles->At(i);
+		AliAODMCParticle * particle = ( AliAODMCParticle *) flags.fMcParticles->At(i);
 
 		Int_t code = TMath::Abs(particle->GetPdgCode());
 		const char * name = fPartNames[code].Data();
@@ -132,11 +132,11 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * particles, TObj
 			FillHistogram(Form("hPtGeneratedMC_%s_secondary_", name), pt) ;
 
 
-		// Now estimate Pi0 sources of secondary particles
+		// Now estimate Pi0 sources of secondaryflags.fMcParticles 
 		if (code != kPi0)
 			continue;
 
-		AliAODMCParticle * parent = GetParent(i, particles);
+		AliAODMCParticle * parent = GetParent(i, flags.fMcParticles);
 
 		if (!parent)
 			continue;
@@ -168,7 +168,7 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * particles, TObj
 	TObjArray photonCandidates;
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
 	for (Int_t i = 0; i < photonCandidates.GetEntries(); ++i)
-		FillClusterMC(dynamic_cast<AliVCluster *>(photonCandidates.At(i)), particles);
+		FillClusterMC(dynamic_cast<AliVCluster *>(photonCandidates.At(i)), flags.fMcParticles);
 }
 
 //________________________________________________________________

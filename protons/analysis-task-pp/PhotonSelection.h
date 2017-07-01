@@ -3,6 +3,7 @@
 
 // --- ROOT system ---
 #include <TObjArray.h>
+#include <TClonesArray.h>
 #include <TList.h>
 #include <TH1D.h>
 #include <TH1F.h>
@@ -21,7 +22,8 @@ struct EventFlags
 		isMixing(m),
 		eventPileup(p),
 		eventVtxExists(vtx),
-		ncontributors(0)
+		ncontributors(0),
+		fMcParticles(0)
 		//, eventV0AND(v0)
 	{}
 
@@ -33,6 +35,8 @@ struct EventFlags
 	Bool_t eventPileup;
 	Bool_t eventVtxExists;
 	Int_t ncontributors;
+	TClonesArray * fMcParticles;
+
 	// Bool_t eventV0AND;
 };
 
@@ -57,9 +61,8 @@ public:
 	// This is a dummy method to count number of Triggered Events.
 	virtual void CountMBEvent() {}
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
-    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags)
+    virtual void ConsiderGeneratedParticles(TObjArray * clusArray, const EventFlags & eflags)
     {
-    	(void) particles;
     	(void) clusArray;
     	(void) eflags;
     }
