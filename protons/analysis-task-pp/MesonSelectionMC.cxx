@@ -46,24 +46,6 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 void MesonSelectionMC::InitSelectionHistograms()
 {
 
-	//  Setup Mass range
-	//
-	//
-	Double_t width_pars[] = { -23.355251222631125, -1.9888500008083803, 265978104.16053003, 0.004917817517139441};
-	Double_t mass_pars[]  = { -4.387541839053645, -2.4257847611851093, 1.3167775301852713, 0.13730104925556225};
-
-	Int_t npars = sizeof(mass_pars) / sizeof(Double_t);
-	fMassPt = new TF1("fMassPt", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]");
-	fWidthPt = new TF1("fWidthPt", "TMath::Exp([0] + [1] * x ) * [2] * x + [3]");
-
-	// Set the parameters
-	for (Int_t i = 0; i < npars; ++i)
-	{
-		fMassPt->SetParameter(i, mass_pars[i]);
-		fWidthPt->SetParameter(i, width_pars[i]);
-	}
-
-
 	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
@@ -74,9 +56,6 @@ void MesonSelectionMC::InitSelectionHistograms()
 
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
-
-	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_nocut_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
-	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_nocut_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
@@ -91,11 +70,6 @@ void MesonSelectionMC::InitSelectionHistograms()
 
 		if (i->first != kPi0)
 			continue;
-
-		for (Int_t sigma = 1; sigma < 6; ++sigma)
-			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%d#sigma", n, sigma),
-			                            Form("Generated p_{T} spectrum of secondary %ss in %d #sigma m_{#gamma #gamma} window; p_{T}, GeV/c", n, sigma), ptsize - 1, ptbins));
-
 
 		for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
 		{
@@ -162,9 +136,6 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * particles, TObj
 		if (code != kPi0)
 			continue;
 
-		if(!primary)
-			SecondaryPi0Contribution(particle);
-
 		AliAODMCParticle * parent = GetParent(i, particles);
 
 		if (!parent)
@@ -177,12 +148,6 @@ void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * particles, TObj
 			continue;
 
 		const char * pname = s->second.Data();
-
-		if (!primary)
-			FillHistogram(Form("hMC_%s_sources_nocut_secondary", fPartNames[kPi0].Data()), pcode);
-		else
-			FillHistogram(Form("hMC_%s_sources_nocut_primary", fPartNames[kPi0].Data()), pcode);
-
 
 		// Reject MIPS and count again
 		if (pt < 0.3)
@@ -284,24 +249,4 @@ void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjA
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
 		FillHistogram("EventCounter", 4.5);
-}
-
-//________________________________________________________________
-void MesonSelectionMC::SecondaryPi0Contribution(AliAODMCParticle * particle)
-{
-	Double_t pt = particle->Pt();
-	Double_t mass = particle->GetCalcMass();
-
-	// Calculate 
-	Double_t psigma = fWidthPt->Eval(pt);
-	Double_t pmass = fMassPt->Eval(pt);
-
-	const char * name = fPartNames[kPi0].Data();
-
-	for(Int_t n = 1; n < 6; ++n)
-	{
-		if((pmass - n * psigma < mass) && (mass < pmass + n * psigma))
-			FillHistogram(Form("hPtGeneratedMC_%s_secondary_%d#sigma", name, n), pt);
-
-	}
 }

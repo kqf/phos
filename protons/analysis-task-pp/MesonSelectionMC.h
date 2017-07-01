@@ -24,7 +24,7 @@ class MesonSelectionMC: public GeneralPhotonSelection
 {
 public:
 	enum particles{kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211, kPRho = 213, kNRho = -213};
-	MesonSelectionMC(): GeneralPhotonSelection(), fMassPt(0), fWidthPt(0)
+	MesonSelectionMC(): GeneralPhotonSelection()
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -42,7 +42,7 @@ public:
 
 	}
 
-	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t), fMassPt(0), fWidthPt(0)
+	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999): GeneralPhotonSelection(name, title, ec, a, n, t)
 	{
 		// Don't use c++11 here, as it might fail at some nodes
 		fPartNames[kGamma] = "#gamma";
@@ -70,7 +70,6 @@ public:
     }
 
 protected:
-	virtual void SecondaryPi0Contribution(AliAODMCParticle * particle);
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
