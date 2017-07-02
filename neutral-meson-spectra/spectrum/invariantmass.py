@@ -65,6 +65,9 @@ class InvariantMass(object):
 
 
     def extract_histogram(self, hist):
+        if not hist:
+            return None
+
         a, b = map(hist.GetYaxis().FindBin, self.pt_range)
 
         # NB:  By default ProjectionX takes the last bin as well. 
@@ -85,14 +88,19 @@ class InvariantMass(object):
 
 
     def estimate_background(self, mass, mixed):
-        if not mass.GetEntries(): return None
+        if not mass.GetEntries():
+            return mass
+
+        if not mixed:
+            return mass
 
         # Divide real/mixed
         ratio = mass.Clone()
         ratio.Divide(mixed)
         ratio.GetYaxis().SetTitle("Real/ Mixed")
 
-        if ratio.GetEntries() == 0: return ratio
+        if ratio.GetEntries() == 0:
+            return ratio
         fitf, bckgrnd = self.peak_function.fit(ratio)
 
         mixed.Multiply(bckgrnd)
@@ -112,11 +120,14 @@ class InvariantMass(object):
         return map(pars, peak_and_bkrnd)
 
 
-    def substract_background(self, mass, mixed):
+    def subtract_background(self, mass, mixed):
         if not mass.GetEntries():
             return mass
 
-        # Substraction
+        if not mixed:
+            return mass
+
+        # Subtraction
         signal = mass.Clone()
 
         # Remove zeros, first one should find zeros! 
@@ -134,7 +145,7 @@ class InvariantMass(object):
     def extract_data(self):
         if not (self.sigf and self.bgrf):
             self.ratio = self.estimate_background(self.mass, self.mixed)
-            self.signal = self.substract_background(self.mass, self.mixed)
+            self.signal = self.subtract_background(self.mass, self.mixed)
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
 
@@ -185,10 +196,12 @@ class InvariantMass(object):
         
         self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
         self.mass.Draw()
-        self.mixed.Draw('same')
-
         legend.AddEntry(self.mass, 'data')
-        legend.AddEntry(self.mixed, 'background')
+
+        if self.mixed:
+            self.mixed.Draw('same')
+            legend.AddEntry(self.mixed, 'background')
+
         legend.Draw('same')
         self.draw_pt_bin(self.mass)
         canvas.Update()
