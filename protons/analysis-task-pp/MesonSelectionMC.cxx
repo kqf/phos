@@ -53,21 +53,21 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 	AliAODMCParticle * mother1 = GetParent(label1, eflags.fMcParticles);
 	AliAODMCParticle * mother2 = GetParent(label2, eflags.fMcParticles);
 
-	if(!mother1 || !mother2)
-		return;	
-
-	if(mother1 != mother2)
+	if (!mother1 || !mother2)
 		return;
 
-	if(mother1->GetPdgCode() != kPi0)
+	if (mother1 != mother2)
+		return;
+
+	if (mother1->GetPdgCode() != kPi0)
 		return;
 
 	// Looking at the source of pi0
-	// 
+	//
 	AliAODMCParticle * hadron = dynamic_cast<AliAODMCParticle *> (eflags.fMcParticles->At(mother1->GetMother()));
 	Int_t hcode = hadron->GetPdgCode();
 
-	if(!hadron)
+	if (!hadron)
 		return;
 
 	EnumNames::iterator s = fPi0SourcesNames.find(hcode);
@@ -76,9 +76,9 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 
 	const char * pname = s->second.Data();
 
-	if(IsPrimary(hadron))
+	if (IsPrimary(hadron))
 		FillHistogram(Form("hMassPtN3_primary_%s", pname), ma12, pt12);
-	else 
+	else
 		FillHistogram(Form("hMassPtN3_secondary_%s", pname), ma12, pt12);
 }
 
@@ -108,6 +108,17 @@ void MesonSelectionMC::InitSelectionHistograms()
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 
+
+	for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
+	{
+		const char * n = fPartNames[kPi0];
+		const char * ns = (const char *) s->second.Data();
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_%s", n, ns), Form("Distribution to primary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%s", n, ns), Form("Distribution to secondary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH2F(Form("hMassPtN3_primary_%s", ns), Form("(M,p_{T})_{#gamma#gamma} primary %s, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", ns), nM, mMin, mMax, nPt, ptMin, ptMax));
+		fListOfHistos->Add(new TH2F(Form("hMassPtN3_secondary_%s", ns), Form("(M,p_{T})_{#gamma#gamma} secondary %s, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", ns), nM, mMin, mMax, nPt, ptMin, ptMax));
+	}
+
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
 		const char * n = (const char *) i->second.Data();
@@ -118,17 +129,6 @@ void MesonSelectionMC::InitSelectionHistograms()
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
 		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-
-		if (i->first != kPi0)
-			continue;
-
-		for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
-		{
-			const char * ns = (const char *) s->second.Data();
-			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_%s", n, ns), Form("Distribution to primary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
-			fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%s", n, ns), Form("Distribution to secondary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
-			fListOfHistos->Add(new TH2F(Form("hMassPtN3_primary_%s", ns), Form("(M,p_{T})_{#gamma#gamma} primary %s, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", ns), nM, mMin, mMax, nPt, ptMin, ptMax));
-		}
 
 	}
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
@@ -254,7 +254,7 @@ AliAODMCParticle * MesonSelectionMC::GetParent(Int_t label, Int_t & plabel, TClo
 	// Particle # reached PHOS front surface
 	AliAODMCParticle * particle = dynamic_cast<AliAODMCParticle * >(particles->At(label));
 
-	if(!particle)
+	if (!particle)
 		return 0;
 
 	plabel = particle->GetMother();
