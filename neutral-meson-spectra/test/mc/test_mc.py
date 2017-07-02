@@ -17,8 +17,8 @@ class CheckMC(unittest.TestCase):
         #  The right flag in AddTender should be used for MC case.
 
         data =  f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data', Options())
-        pythia = f(TimecutInput('input-data/Pythia-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'Pythia', Options(priority = 0))
-        epos =   f(TimecutInput('input-data/EPOS-LHC16.root', 'TimeTender', 'MassPtN3').read(), 'EPOS', Options(priority = 0)) 
+        pythia = f(TimecutInput('input-data/Pythia-LHC16-a1.root', 'PhysNonlinTender', 'MassPtN3').read(), 'Pythia', Options(priority = 0))
+        epos =   f(TimecutInput('input-data/EPOS-LHC16.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 0)) 
 
         # self.results = [[data, data], [data, data], [data, data]]
         self.results = [[data, pythia], [data, epos], [epos, pythia]]

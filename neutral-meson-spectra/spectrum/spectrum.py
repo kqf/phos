@@ -11,14 +11,15 @@ ROOT.TH1.AddDirectory(False)
 
 
 class Spectrum(object):
-    with open('config/spectrum.json') as f:
-        conf = json.load(f)
 
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, options = Options()):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, options = Options(), configfile = 'config/spectrum.json'):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
         self.analyzer = PtAnalyzer(lst, label, mode, options)
         
+        with open(configfile) as f:
+            self.conf = json.load(f)
+
         self.canvas      = self.conf['canvas']
 
         config = self.conf[options.particle]

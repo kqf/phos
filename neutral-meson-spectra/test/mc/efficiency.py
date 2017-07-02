@@ -30,8 +30,8 @@ class Efficiency(unittest.TestCase):
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.pythiaf = 'input-data/scaled-LHC17f8a.root'
-        # self.pythiaf = 'input-data/Pythia-LHC16-a1.root'
+        # self.pythiaf = 'input-data/scaled-LHC17f8a.root'
+        self.pythiaf = 'input-data/Pythia-LHC16-a1.root'
         self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
         self.true_pt_mc = 'hPtGeneratedMC_#pi^{0}'
 
@@ -89,7 +89,7 @@ class Efficiency(unittest.TestCase):
         if oname: save_tobject(ratio, oname)
         return ratio
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testProductions(self):
         eff2 = self.efficiency(self.pythiaf, self.true_pt_mc, 'pythia')
         eff1 = self.efficiency(self.eposf, self.true_pt_mc, 'epos')
@@ -98,7 +98,7 @@ class Efficiency(unittest.TestCase):
         diff.compare(eff1, eff2)
 
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def testEffDifferentModules(self):
         modules = run_analysis(Options(), self.pythiaf, self.selection)
         c1 = get_canvas(1./2, 1.)
@@ -115,6 +115,7 @@ class Efficiency(unittest.TestCase):
         diff.compare_ratios(spectrums, true)
 
 
+    @unittest.skip('')
     def testPrimaryEfficiency(self):
         primary = self.efficiency(self.pythiaf, self.true_pt_mc + '_primary_', 'primaries')
         total = self.efficiency(self.pythiaf, self.true_pt_mc, 'total')

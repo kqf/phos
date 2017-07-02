@@ -17,8 +17,9 @@ class Pi0Sources(unittest.TestCase):
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.file = 'input-data/Pythia-LHC16-a1.root'
-        self.filename = 'hPtGeneratedMC_#pi^{0}'
+        self.file = 'input-data/scaled-LHC17f8a.root'
+        # self.file = 'input-data/Pythia-LHC16-a1.root'
+        self.histname = 'hPtGeneratedMC_#pi^{0}'
         self.labels = {'#pi^{-}': -211, 'K_{S}^{0}': 310, '#omega': 223, '#rho^{-}': -213, '#pi^{+}': 211, '#Lambda^{0}': 3122, '#rho^{+}': 213, '#eta': 221}
         self.labels = {self.labels[i]: i for i in self.labels}
 
@@ -29,7 +30,7 @@ class Pi0Sources(unittest.TestCase):
 
     def testDifferentContributions(self):
         def contribution(contr_type = 'secondary'):
-            filename = self.filename + '_' + contr_type 
+            filename = self.histname + '_' + contr_type 
             labels = '', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}'
 
             print map(lambda x: '{0}_{1}'.format(filename, x), labels)
@@ -41,10 +42,10 @@ class Pi0Sources(unittest.TestCase):
             diff = Comparator()
             diff.compare(hists)
 
-            pall = self.read(self.filename, 'all', -1)
+            pall = self.read(self.histname, 'all', -1)
             pall.logy = True
 
-            pprimary = self.read(self.filename + '_primary_', 'primary', 999)
+            pprimary = self.read(self.histname + '_primary_', 'primary', 999)
             pprimary.logy = True
 
             map(PtDependent.divide_bin_width, (pall, pprimary))

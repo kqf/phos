@@ -44,7 +44,7 @@ class TimecutOptimizer(unittest.TestCase):
 
     def testAsymmetryDependence(self):
         ROOT.gStyle.SetOptStat('e')
-        inp = MetricInput('input-data/LHC16-new.root', 'QualTender', 'MassPtN3A')
+        inp = MetricInput('input-data/LHC16.root', 'QualTender', 'MassPtN3A')
 
         data_m = map(lambda x: x.Project3D("zx"), [inp.data, inp.mixing])
         process(data_m, ['', 'mixing'])
