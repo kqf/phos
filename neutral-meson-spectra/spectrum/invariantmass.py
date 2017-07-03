@@ -6,8 +6,6 @@ from parametrisation import CrystalBall
 from sutils import get_canvas, ticks
 
 class InvariantMass(object):
-    with open('config/invariant-mass.json') as f:
-        conf = json.load(f)
    
     def __init__(self, inhists, pt_range, nrebin, options, tol = 0.00001):
         super(InvariantMass, self).__init__()
@@ -17,12 +15,15 @@ class InvariantMass(object):
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
         self.options = options
 
+        # Setup the fit function
         self.peak_function = CrystalBall(options.ispi0, options.relaxedcb)
 
         # Setup parameters
-        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, self.conf['xaxis_offsets'])]
-        self.legend_pos   = self.conf['legend_pos']
-        self.pt_label_pos = self.conf['pt_label_pos']
+        with open(options.invmass_config) as f:
+            conf = json.load(f)
+        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, conf['xaxis_offsets'])]
+        self.legend_pos   = conf['legend_pos']
+        self.pt_label_pos = conf['pt_label_pos']
 
         # Extract the data
         self.mass, self.mixed = map(self.extract_histogram, inhists)

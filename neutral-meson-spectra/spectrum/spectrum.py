@@ -12,17 +12,18 @@ ROOT.TH1.AddDirectory(False)
 
 class Spectrum(object):
 
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, options = Options(), configfile = 'config/spectrum.json'):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, options = Options()):
         super(Spectrum, self).__init__()
         self.nsigmas = nsigmas
         self.analyzer = PtAnalyzer(lst, label, mode, options)
+        self.fit = options.fit_mass_width
         
-        with open(configfile) as f:
-            self.conf = json.load(f)
+        with open(options.spectrum_config) as f:
+            conf = json.load(f)
 
-        self.canvas      = self.conf['canvas']
+        self.canvas = conf['canvas']
 
-        config = self.conf[options.particle]
+        config = conf[options.particle]
         # Width parametrizatin
         self.width_func  = config['width_func']
         self.width_pars  = config['width_pars']
@@ -56,7 +57,10 @@ class Spectrum(object):
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
-        quant.Fit(fitquant, "q")
+        if self.fit:
+            quant.Fit(fitquant, "q")
+
+        # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
         wait(pref + "-paramerisation-" + self.analyzer.label, self.analyzer.show_img, True)
         return fitquant

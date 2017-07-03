@@ -61,7 +61,7 @@ class PtAnalyzer(object):
         self.options = options
 
         # Configure analysis
-        with open(options.ptconfig) as f:
+        with open(options.pt_config) as f:
             conf = json.load(f)
 
         props           = conf[options.particle]

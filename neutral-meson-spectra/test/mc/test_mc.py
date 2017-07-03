@@ -13,14 +13,12 @@ class CheckMC(unittest.TestCase):
         super(CheckMC, self).setUp()
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
 
-        # The problem with the time distribution in MC:
-        #  The right flag in AddTender should be used for MC case.
 
-        data =  f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data', Options())
+        data   = f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data', Options())
         pythia = f(Input('input-data/Pythia-LHC16-a1.root', 'PhysNonlinTender', 'MassPtN3').read(), 'Pythia', Options(priority = 0))
-        epos =   f(Input('input-data/EPOS-LHC16.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 0)) 
+        epos   = f(Input('input-data/EPOS-LHC16.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 0)) 
 
-        # self.results = [[data, data], [data, data], [data, data]]
+        # self.results = pythia
         self.results = [[data, pythia], [data, epos], [epos, pythia]]
                        
 
@@ -30,5 +28,5 @@ class CheckMC(unittest.TestCase):
         import spectrum.comparator as cmpr
         for r in self.results:
             diff = cmpr.Comparator()
-            diff.compare_set_of_histograms(r)
+            diff.compare(r)
 

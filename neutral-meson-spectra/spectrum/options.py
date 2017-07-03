@@ -12,5 +12,8 @@ class Options(object):
 		self.particle = particle
 		self.average  = average
 		self.ispi0 = 'pi0' in self.particle
-		self.ptconfig = ptconfig
 		self.priority = priority
+		self.pt_config = ptconfig
+		self.spectrum_config = 'config/spectrum.json'
+		self.invmass_config = 'config/invariant-mass.json'
+		self.fit_mass_width = True
