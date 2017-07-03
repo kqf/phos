@@ -1,38 +1,48 @@
-void sim(Int_t nev = 1)
+/*
+ * AliDPG - ALICE Experiment Data Preparation Group
+ * Simulation steering script
+ *
+ */
+
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+
+void sim() 
 {
-	AliSimulation simulator;
 
-	simulator.SetMakeSDigits("PHOS");
-	simulator.SetMakeDigits("PHOS");
+  // number of events configuration
+  Int_t nev = 200;
+  if (gSystem->Getenv("CONFIG_NEVENTS"))
+    nev = atoi(gSystem->Getenv("CONFIG_NEVENTS"));
 
-	// simulator.SetMakeSDigits("PHOS ITS TPC");
-	// simulator.SetMakeDigits("PHOS ITS TPC");
-	// simulator.SetMakeDigitsFromHits("ITS TPC");
+  // simulation configuration
+  //gROOT->LoadMacro("$ALIDPG_ROOT/MC/SimulationConfig.C");
+  gROOT->LoadMacro("SimulationConfig.C");
+  Int_t simulationConfig = kSimulationDefault;
+  if (gSystem->Getenv("CONFIG_SIMULATION")) {
+    Bool_t valid = kFALSE;
+    for (Int_t isim = 0; isim < kNSimulations; isim++)
+      if (strcmp(gSystem->Getenv("CONFIG_SIMULATION"), SimulationName[isim]) == 0) {
+        simulationConfig = isim;
+        valid = kTRUE;
+        break;
+      }
+    if (!valid) {
+      printf(">>>>> Unknown simulation configuration: %s \n", gSystem->Getenv("CONFIG_SIMULATION"));
+      abort();
+    }
+  }
 
+  /* initialisation */
+  //AliSimulation sim("$ALIDPG_ROOT/MC/Config.C");
+  AliSimulation sim("Config.C");
 
-	simulator.SetDefaultStorage("alien://Folder=/alice/data/2016/OCDB");
-	// Vertex and magfield
+  /* configuration */
+  SimulationConfig(sim, simulationConfig);
 
-	simulator.UseVertexFromCDB();
-	simulator.UseMagFieldFromGRP();
+  /* run */
+  sim.Run(nev);
 
-	// PHOS simulation settings
-	AliPHOSSimParam *simParam = AliPHOSSimParam::GetInstance();
-	simParam->SetCellNonLinearity(kFALSE);//switch off cell non-linearity
-
-	simulator.SetRunQA(":");
-	simulator.SetRunNumber(257733);
-
-
-	if (gSystem->Getenv("CONFIG_SEED"))
-	{
-		seed = atoi(gSystem->Getenv("CONFIG_SEED"));
-		seed = 100 * seed + 10 * seed + seed;
-		simulator.SetSeed(seed);
-	}	
-
-
-	printf("Before simulator.Run(nev);\n");
-	simulator.Run(nev);
-	printf("After simulator.Run(nev);\n");
 }
+

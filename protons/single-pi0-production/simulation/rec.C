@@ -1,69 +1,41 @@
-void rec()
+/*
+ * AliDPG - ALICE Experiment Data Preparation Group
+ * Reconstruction steering script
+ *
+ */
+
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+
+void rec() 
 {
-	AliReconstruction reco;
-	// ********************************
 
-	reco.SetRunReconstruction("PHOS");
+  // reconstruction configuration
+  //gROOT->LoadMacro("$ALIDPG_ROOT/MC/ReconstructionConfig.C");
+  gROOT->LoadMacro("ReconstructionConfig.C");
+  Int_t reconstructionConfig = kReconstructionDefault;
+  if (gSystem->Getenv("CONFIG_RECONSTRUCTION")) {
+    Bool_t valid = kFALSE;
+    for (Int_t irec = 0; irec < kNReconstructions; irec++)
+      if (strcmp(gSystem->Getenv("CONFIG_RECONSTRUCTION"), ReconstructionName[irec]) == 0) {
+        reconstructionConfig = irec;
+        valid = kTRUE;
+        break;
+      }
+    if (!valid) {
+      printf(">>>>> Unknown reconstruction configuration: %s \n", gSystem->Getenv("CONFIG_RECONSTRUCTION"));
+      abort();
+    }
+  }
 
-	reco.SetCleanESD(kFALSE);
-	reco.SetStopOnError(kFALSE);
-	reco.SetWriteESDfriend();
-	reco.SetWriteAlignmentData();
-	reco.SetFractionFriends(.1);
+  /* initialisation */
+  AliReconstruction rec;
+ 
+  /* configuration */
+  ReconstructionConfig(rec, reconstructionConfig);
 
-	reco.SetRunPlaneEff(kTRUE);
-	reco.SetUseTrackingErrorsForAlignment("ITS");
-
-	// RAW OCDB
-	reco.SetDefaultStorage("alien://Folder=/alice/data/2016/OCDB");
-
-
-
-	// ********************************
-
-	// // Set the CDB storage location
-	// // AliCDBManager::Instance()->SetDefaultStorage("raw://");
-	// AliCDBManager * man = AliCDBManager::Instance();
-
-	// //man->SetDefaultStorage("local://OCDBdrain/alice/data/2010/OCDB");
-
-
-	// AliReconstruction reco;
-
-	// // Set reconstruction flags (skip detectors here if neded with -<detector name>
-
-	// reco.SetRunReconstruction("PHOS ITS TPC");
-	// reco.SetDefaultStorage("alien://Folder=/alice/data/2016/OCDB");
-
-	// reco.SetSpecificStorage("TPC/Align/Data",     "alien://Folder=/alice/simulation/2008/v4-15-Release/Residual/");
-	// reco.SetSpecificStorage("TPC/Calib/ClusterParam",   "alien://Folder=/alice/simulation/2008/v4-15-Release/Residual/");
-	// reco.SetSpecificStorage("TPC/Calib/RecoParam",  "alien://Folder=/alice/simulation/2008/v4-15-Release/Residual/");
-	// reco.SetSpecificStorage("TPC/Calib/TimeGain",   "alien://Folder=/alice/simulation/2008/v4-15-Release/Residual/");
-
-
-	// reco.SetQARefDefaultStorage("local://$ALICE_ROOT/QAref") ;
-
-	// // AliReconstruction settings
-	// reco.SetWriteESDfriend(kTRUE);
-	// //rec.SetInput(filename);
-
-	// // Special ZDC reco param.
-	// // reco.SetRecoParam("ZDC",AliZDCRecoParamPbPb::GetHighFluxParam(7000));
-
-	// // Write out 2% of ESD friends
-	// reco.SetFractionFriends(0.01);
-
-	// // switch off cleanESD
-	// // reco.SetCleanESD(kFALSE);
-
-	// //Ignore SetStopOnError
-	// reco.SetStopOnError(kFALSE);
-
-	AliLog::Flush();
-
-	reco.SetRunQA(":");
-	reco.Run();
+  /* run */
+  rec.Run();
 
 }
-
-
