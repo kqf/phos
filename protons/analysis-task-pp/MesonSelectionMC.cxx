@@ -77,9 +77,16 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 	const char * pname = s->second.Data();
 
 	if (IsPrimary(hadron))
+	{
+		FillHistogram("hMassPtN3_primary_", ma12, pt12);
 		FillHistogram(Form("hMassPtN3_primary_%s", pname), ma12, pt12);
+
+	}
 	else
+	{
+		FillHistogram("hMassPtN3_secondary_", ma12, pt12);
 		FillHistogram(Form("hMassPtN3_secondary_%s", pname), ma12, pt12);
+	}
 }
 
 
@@ -108,15 +115,28 @@ void MesonSelectionMC::InitSelectionHistograms()
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 
+	// Fill reconstruction histograms
+	//
+	fListOfHistos->Add(new TH2F("hMassPtN3_primary_", "(M,p_{T})_{#gamma#gamma} primary , N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	fListOfHistos->Add(new TH2F("hMassPtN3_secondary_", "(M,p_{T})_{#gamma#gamma} secondary , N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 
 	for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
 	{
-		const char * n = fPartNames[kPi0];
 		const char * ns = (const char *) s->second.Data();
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_%s", n, ns), Form("Distribution to primary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%s", n, ns), Form("Distribution to secondary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
 		fListOfHistos->Add(new TH2F(Form("hMassPtN3_primary_%s", ns), Form("(M,p_{T})_{#gamma#gamma} primary %s, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", ns), nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("hMassPtN3_secondary_%s", ns), Form("(M,p_{T})_{#gamma#gamma} secondary %s, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", ns), nM, mMin, mMax, nPt, ptMin, ptMax));
+	}
+
+	// Fill Generated histograms
+	const char * np = fPartNames[kPi0];
+	fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_", np), "Distribution of primary #pi^{0}s; p_{T}, GeV/c", ptsize - 1, ptbins));
+	fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_", np), "Distribution of secondary #pi^{0}s; p_{T}, GeV/c", ptsize - 1, ptbins));
+
+	for (EnumNames::iterator s = fPi0SourcesNames.begin(); s != fPi0SourcesNames.end(); s++)
+	{
+		const char * ns = (const char *) s->second.Data();
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_%s", np, ns), Form("Distribution to primary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_%s", np, ns), Form("Distribution to secondary #pi^{0}s from  %s decays; p_{T}, GeV/c", ns), ptsize - 1, ptbins));
 	}
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)

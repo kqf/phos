@@ -92,11 +92,3 @@ class Pi0Sources(unittest.TestCase):
         diff = Comparator()
         diff.compare(hists)
 
-
-
-
-
-   
-
-
-
