@@ -3,7 +3,7 @@ Geant4Config()
 
   if (gClassTable->GetID("TGeant4") == -1) {
     // LOCAL TEST
-    TString g4libsMacro="$ALIDPG_ROOT/MC/g4libs.C";
+    TString g4libsMacro="g4libs.C";
     //*TString g4libsMacro="$ALICE/geant4_vmc/examples/examples/macro/g4libs.C";
     
     //Load Geant4 libraries 

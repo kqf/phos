@@ -376,7 +376,7 @@ echo " DPGSIM - Snapshot"
 echo "============================================"
 echo
 
-    OCDBC=$ALIDPG_ROOT/MC/CreateSnapshot.C
+    OCDBC=CreateSnapshot.C
     if [ -f CreateSnapshot.C ]; then
 	SIMC=CreateSnapshot.C
     fi
@@ -446,7 +446,7 @@ fi
 
 ### automatic settings from GRP info
 
-aliroot -b -q $ALIDPG_ROOT/MC/ExportGRPinfo.C\($CONFIG_RUN\) 2>/dev/null | grep export > grpdump.sh && source grpdump.sh # && rm grpdump.sh
+aliroot -b -q ExportGRPinfo.C\($CONFIG_RUN\) 2>/dev/null | grep export > grpdump.sh && source grpdump.sh # && rm grpdump.sh
 
 ### override automatic settings from GRP info if requested 
 
@@ -536,7 +536,7 @@ if [[ $CONFIG_MODE == *"sim"* ]] || [[ $CONFIG_MODE == *"full"* ]]; then
 	exit 2
     fi
 
-    SIMC=$ALIDPG_ROOT/MC/sim.C
+    SIMC=sim.C
     if [ -f sim.C ]; then
 	SIMC=sim.C
     fi
@@ -594,7 +594,7 @@ fi
 
 if [[ $CONFIG_MODE == *"rec"* ]] || [[ $CONFIG_MODE == *"full"* ]]; then
 
-    RECC=$ALIDPG_ROOT/MC/rec.C
+    RECC=rec.C
     if [ -f rec.C ]; then
 	RECC=rec.C
     fi
@@ -607,13 +607,13 @@ if [[ $CONFIG_MODE == *"rec"* ]] || [[ $CONFIG_MODE == *"full"* ]]; then
 	exit 2
     fi
 
-    TAGC=$ALIDPG_ROOT/MC/tag.C
+    TAGC=tag.C
     if [ -f tag.C ]; then
 	TAGC=tag.C
     fi    
     runcommand "TAG" $TAGC tag.log 50
 
-    CHECKESDC=$ALIDPG_ROOT/MC/CheckESD.C
+    CHECKESDC=CheckESD.C
     if [ -f CheckESD.C ]; then
 	CHECKESDC=CheckESD.C
     fi    

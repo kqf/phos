@@ -9,7 +9,7 @@ ExportGRPinfo(Int_t run)
     ocdbConfig = gSystem->Getenv("CONFIG_OCDB");
   if (ocdbConfig.Contains("alien")) {
     // set OCDB 
-    gROOT->LoadMacro("$ALIDPG_ROOT/MC/OCDBConfig.C");
+    gROOT->LoadMacro("OCDBConfig.C");
     OCDBDefault(0);
   }
   else {

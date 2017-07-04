@@ -14,6 +14,7 @@ enum ESimulation_t {
   kSimulationEmbedBkg,
   kSimulationEmbedSig,
   kSimulationCustom,
+  kSimulationPHOS,
   kNSimulations
 };
 
@@ -23,6 +24,7 @@ const Char_t *SimulationName[kNSimulations] = {
   "EmbedBkg",
   "EmbedSig",
   "Custom"
+  ,"PHOS" //Daiki added
 };
 
 
@@ -81,6 +83,12 @@ SimulationConfig(AliSimulation &sim, ESimulation_t tag)
     }
     SimulationCustom(sim);
     return;
+    
+  case kSimulationPHOS:
+    SimulationDefault(sim);
+    sim.SetMakeSDigits("PHOS");
+    sim.SetMakeDigits("PHOS");
+    return;
 
   }
   
@@ -98,7 +106,7 @@ SimulationDefault(AliSimulation &sim)
     ocdbConfig = gSystem->Getenv("CONFIG_OCDB");
   if (ocdbConfig.Contains("alien")) {
     // set OCDB 
-    gROOT->LoadMacro("$ALIDPG_ROOT/MC/OCDBConfig.C");
+    gROOT->LoadMacro("OCDBConfig.C");
     OCDBDefault(0);
   }
   else {

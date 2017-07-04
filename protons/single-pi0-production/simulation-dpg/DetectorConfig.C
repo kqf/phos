@@ -109,7 +109,6 @@ DetectorConfig(Int_t tag)
       break;
 
 
-
   }
 
   DetectorInit();

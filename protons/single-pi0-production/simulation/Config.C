@@ -39,8 +39,8 @@ Config()
 {
 
   /* initialise */
-  gROOT->LoadMacro("$ALIDPG_ROOT/MC/DetectorConfig.C");
-  gROOT->LoadMacro("$ALIDPG_ROOT/MC/GeneratorConfig.C");
+  gROOT->LoadMacro("DetectorConfig.C");
+  gROOT->LoadMacro("GeneratorConfig.C");
   ProcessEnvironment();
 
   /* verbose */
@@ -81,7 +81,7 @@ Config()
 
   /* configure Geant4 if requested */
   if (isGeant4) {
-    gROOT->LoadMacro("$ALIDPG_ROOT/MC/Geant4Config.C");
+    gROOT->LoadMacro("Geant4Config.C");
     Geant4Config();
   }
 

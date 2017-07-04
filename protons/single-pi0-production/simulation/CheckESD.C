@@ -201,7 +201,7 @@ Bool_t CheckESD(const char* gAliceFileName = "galice.root",
     ocdbConfig = gSystem->Getenv("CONFIG_OCDB");
   if (ocdbConfig.Contains("alien")) {
     // set OCDB 
-    gROOT->LoadMacro("$ALIDPG_ROOT/MC/OCDBConfig.C");
+    gROOT->LoadMacro("OCDBConfig.C");
     OCDBDefault(1);
   }
   else {

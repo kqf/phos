@@ -199,7 +199,7 @@ GeneratorConfig(Int_t tag)
       return;
     }
     // load PWG custom generator macro
-    TString pwgmacro = "$ALIDPG_ROOT/MC/CustomGenerators/";
+    TString pwgmacro = "CustomGenerators/";
     pwgmacro += pwg->GetString();
     pwgmacro += "/";
     pwgmacro += pwggen->GetString();
@@ -533,7 +533,7 @@ GeneratorEPOSLHC()
   TString fifoname = "crmceventfifo";
   gROOT->ProcessLine(Form(".! rm -rf %s", fifoname.Data()));
   gROOT->ProcessLine(Form(".! mkfifo %s", fifoname.Data()));
-  gROOT->ProcessLine(Form(".! sh $ALIDPG_ROOT/MC/EXTRA/gen_eposlhc.sh %s %d %d %f %d %f &> gen_eposlhc.log &",
+  gROOT->ProcessLine(Form(".! sh EXTRA/gen_eposlhc.sh %s %d %d %f %d %f &> gen_eposlhc.log &",
 			  fifoname.Data(), neventsConfig,
 			  projectileId, projectileEnergy,
 			  targetId, targetEnergy));
