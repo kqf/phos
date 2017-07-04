@@ -82,7 +82,7 @@ const Char_t *snapshotName[2] = {
 CreateSnapshot(Int_t mode)
 {
 
-  gROOT->LoadMacro("$ALIDPG_ROOT/MC/OCDBConfig.C");
+  gROOT->LoadMacro("OCDBConfig.C");
   
   OCDBConfig(kOCDBDefault, mode);
   CreateSnapshot(snapshotName[mode]);

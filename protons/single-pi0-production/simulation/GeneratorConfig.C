@@ -214,6 +214,9 @@ GeneratorConfig(Int_t tag)
     else
       gen = GeneratorCustom();
     break;
+      case kPHOSPi0:
+    gen = GeneratorPHOSPi0();
+    break;
 
   }
 
