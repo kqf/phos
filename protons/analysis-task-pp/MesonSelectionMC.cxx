@@ -62,6 +62,10 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 	if (mother1->GetPdgCode() != kPi0)
 		return;
 
+	// Check if the selected \pi^{0} is primary
+	//
+	Bool_t primary = IsPrimary(mother1);
+
 	// Looking at the source of pi0
 	//
 	AliAODMCParticle * hadron = dynamic_cast<AliAODMCParticle *> (eflags.fMcParticles->At(mother1->GetMother()));
@@ -70,23 +74,22 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 	if (!hadron)
 		return;
 
+	if (primary)
+		FillHistogram("hMassPtN3_primary_", ma12, pt12);
+	else
+		FillHistogram("hMassPtN3_secondary_", ma12, pt12);
+
+
 	EnumNames::iterator s = fPi0SourcesNames.find(hcode);
 	if (s == fPi0SourcesNames.end())
 		return;
 
 	const char * pname = s->second.Data();
 
-	if (IsPrimary(hadron))
-	{
-		FillHistogram("hMassPtN3_primary_", ma12, pt12);
+	if (primary)
 		FillHistogram(Form("hMassPtN3_primary_%s", pname), ma12, pt12);
-
-	}
 	else
-	{
-		FillHistogram("hMassPtN3_secondary_", ma12, pt12);
 		FillHistogram(Form("hMassPtN3_secondary_%s", pname), ma12, pt12);
-	}
 }
 
 
