@@ -14,18 +14,17 @@ import os.path
 import unittest
 
 
-class SecondaryContributions(unittest.TestCase):
 
-    def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a2.root'
-        self.selection = 'MCStudyOnlyTender'
-        self.hname = 'MassPtN3'
-        # TODO: Add common histogram for all the particles
-        self.particle_names = ['#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
+# This is to check contributions of secondary particles to the 
+# $\pi^{0}$ spectrum.
+#
 
+class Estimator(object):
 
+    def __init__(self):
+        super(Estimator, self).__init__()
 
-    def estimate(self, ptype = 'primary'):
+    def estimate(self, ptype = 'secondary'):
         options = Options()
         options.fit_mass_width = False
         f = lambda x, y: Spectrum(x, label=y, mode = 'q', options = options).evaluate()
@@ -40,11 +39,14 @@ class SecondaryContributions(unittest.TestCase):
         diff.compare_ratios(particles, generated)
 
 
+class ParticleContributions(unittest.TestCase, Estimator):
 
-    def testSecondaries(self):
-    	self.estimate('primary')
+    def setUp(self):
+        self.infile = 'input-data/Pythia-LHC16-a2.root'
+        self.selection = 'MCStudyOnlyTender'
+        self.hname = 'MassPtN3'
+        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
+
+
+    def testContributions(self):
     	self.estimate('secondary')
-
-
-
-
