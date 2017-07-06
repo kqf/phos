@@ -20,13 +20,17 @@ public:
 	// Don't delete anything as all histograms belong to the owner
 	virtual ~DetectorHistogram() {}
 
-	void FillAll(Int_t sm, Float_t x, Float_t y = 1.0, Float_t z = 1.0);
+	void FillTotal(Float_t x, Float_t y = 1.0);
+	void FillAll(Int_t sm, Float_t x, Float_t y = 1.0);
+	void FillModules(Int_t sm, Int_t sm, Float_t x, Float_t y = 1.0);
 	TString Title(const char * title, Int_t i) const;
+	TString Title(const char * title, Int_t i, Int_t i) const;
 
 
 private:
 	DetectorHistogram(const DetectorHistogram &);
 	TH1 * fHistograms[kNhists]; //! Keep all modules + 1 histogram for all modules
+	TH1 * fModuleHistograms[kNhists][kNhists]; //! Keep all modules + 1 histogram for all modules
 
 private:
 	ClassDef(DetectorHistogram, 2)
