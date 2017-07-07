@@ -25,25 +25,20 @@ DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner)
 		owner->Add(fHistograms[i]);
 	}
 
-	for (Int_t sm = kMinModule; sm < (kMaxModule + 1); sm++)
+	for (Int_t sm = kFirstModule; sm < (kLastModule + 1); sm++)
 	{
-		for (Int_t sm2 = sm; sm2 < (kMaxModule + 1); sm2++)
+		for (Int_t sm2 = sm; sm2 < (kLastModule + 1); sm2++)
 		{
 			fModuleHistograms[sm][sm2] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%dSM%d", sm, sm2)));
-			fHistograms[i]->SetTitle(Title(title, sm, sm2));
-			owner->Add(fHistograms[i]);
+			fModuleHistograms[sm][sm2]->SetTitle(Title(title, sm, sm2));
+			owner->Add(fModuleHistograms[sm][sm2]);
 		}
 	}
 }
 
 //________________________________________________________________
-void DetectorHistogram::FillTotal(Int_t sm, Float_t x, Float_t y)
+void DetectorHistogram::FillTotal(Float_t x, Float_t y)
 {
-	if (sm < kFirstModule || sm > kLastModule)
-	{
-		cout << "Illegal module: " << sm << endl;
-		return;
-	}
 	// First fill the histogram for all modules
 	fHistograms[0]->Fill(x, y);
 }
@@ -65,9 +60,15 @@ void DetectorHistogram::FillAll(Int_t sm, Float_t x, Float_t y)
 //________________________________________________________________
 void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 {
-	if (sm < kFirstModule || sm > kLastModule)
+	if (sm1 < kFirstModule || sm1 > kLastModule)
 	{
-		cout << "Illegal module: " << sm << endl;
+		cout << "Illegal module: " << sm1 << endl;
+		return;
+	}
+
+	if (sm2 < kFirstModule || sm2 > kLastModule)
+	{
+		cout << "Illegal module: " << sm2 << endl;
 		return;
 	}
 
@@ -87,7 +88,7 @@ TString DetectorHistogram::Title(const char * title, Int_t i) const
 //________________________________________________________________
 TString DetectorHistogram::Title(const char * title, Int_t i, Int_t j) const
 {
-	TString s = (i == j) ? Form("SM%d"): Form("SM%d", i);
+	TString s = (i == j) ? Form("Module %d", i): Form("SM%dSM%d", i, j);
 	return Form(title, s.Data());
 }
 

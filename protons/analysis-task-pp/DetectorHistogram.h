@@ -22,9 +22,9 @@ public:
 
 	void FillTotal(Float_t x, Float_t y = 1.0);
 	void FillAll(Int_t sm, Float_t x, Float_t y = 1.0);
-	void FillModules(Int_t sm, Int_t sm, Float_t x, Float_t y = 1.0);
+	void FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y = 1.0);
 	TString Title(const char * title, Int_t i) const;
-	TString Title(const char * title, Int_t i, Int_t i) const;
+	TString Title(const char * title, Int_t i, Int_t j) const;
 
 
 private:
