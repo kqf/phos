@@ -11,7 +11,7 @@ using namespace std;
 
 
 //________________________________________________________________
-DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner)
+DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Bool_t needs_modules)
 {
 	if (!owner->IsOwner())
 		cout << "Warning: You are adding histograms to the list that doesn't have ownership" << endl;
@@ -25,13 +25,16 @@ DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner)
 		owner->Add(fHistograms[i]);
 	}
 
+	if(!needs_modules)
+		return;
+
 	for (Int_t sm = kFirstModule; sm < (kLastModule + 1); sm++)
 	{
 		for (Int_t sm2 = sm; sm2 < (kLastModule + 1); sm2++)
 		{
-			fModuleHistograms[sm][sm2] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%dSM%d", sm, sm2)));
-			fModuleHistograms[sm][sm2]->SetTitle(Title(title, sm, sm2));
-			owner->Add(fModuleHistograms[sm][sm2]);
+			fModuleHistograms[Index(sm, sm2)] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%dSM%d", sm, sm2)));
+			fModuleHistograms[Index(sm, sm2)]->SetTitle(Title(title, sm, sm2));
+			owner->Add(fModuleHistograms[Index(sm, sm2)]);
 		}
 	}
 }
@@ -72,10 +75,7 @@ void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 		return;
 	}
 
-	if (sm1 > sm2)
-		swap(sm1, sm2);
-
-	fModuleHistograms[sm1][sm2]->Fill(x, y);
+	fModuleHistograms[Index(sm1, sm2)]->Fill(x, y);
 }
 
 //________________________________________________________________
@@ -92,3 +92,23 @@ TString DetectorHistogram::Title(const char * title, Int_t i, Int_t j) const
 	return Form(title, s.Data());
 }
 
+//________________________________________________________________
+Int_t DetectorHistogram::Index(Int_t sm1, Int_t sm2) const
+{
+	if (sm1 > sm2)
+		swap(sm1, sm2);
+
+	// TODO: Get rid of this loop here
+	Int_t index = 0;
+	for (Int_t i = kFirstModule; i < (kLastModule + 1); ++i)
+	{
+		for (Int_t j = i; j < (kLastModule + 1); ++j)
+		{
+			if(i == sm1 && j == sm2)
+				return index;
+			++index;
+		}
+	}
+
+	return -1;
+}
