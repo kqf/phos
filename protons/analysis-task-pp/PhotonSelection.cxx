@@ -8,14 +8,14 @@
 ClassImp(PhotonSelection);
 
 //________________________________________________________________
-void PhotonSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void PhotonSelection::FillPi0Mass(TClonesArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	// Ensure that we are not doing mixing
 	EventFlags flags = eflags;
 	flags.isMixing = kFALSE;
 
 	// Select photons
-	TObjArray photonCandidates;
+	TClonesArray photonCandidates;
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
 
 	// All possible combinations on photon candadates
@@ -40,17 +40,17 @@ void PhotonSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const Eve
 }
 
 //________________________________________________________________
-void PhotonSelection::MixPhotons(TObjArray & photonCandidates, TList * pool, const EventFlags & eflags)
+void PhotonSelection::MixPhotons(TClonesArray & photonCandidates, TList * pool, const EventFlags & eflags)
 {
 	// Notify all selections that this is mixing
 	EventFlags mflags = eflags;
 	mflags.isMixing = kTRUE;
 
 	// Apply user selection
-	TObjArray previousPhotons;
+	TClonesArray previousPhotons;
 	for (Int_t ev = 0; ev < pool->GetEntries(); ++ev)
 	{
-		TObjArray * previousClusters = dynamic_cast<TObjArray *>(pool->At(ev));
+		TClonesArray * previousClusters = dynamic_cast<TClonesArray *>(pool->At(ev));
 		if (!previousClusters) continue;
 		SelectPhotonCandidates(previousClusters, &previousPhotons, mflags);
 	}

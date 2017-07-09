@@ -167,7 +167,7 @@ void MesonSelectionMC::InitSelectionHistograms()
 }
 
 
-void MesonSelectionMC::ConsiderGeneratedParticles(TObjArray * clusArray, const EventFlags & flags)
+void MesonSelectionMC::ConsiderGeneratedParticles(TClonesArray * clusArray, const EventFlags & flags)
 {
 	if (!flags.fMcParticles)
 		return;
@@ -296,9 +296,9 @@ Bool_t MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
 
 
 //________________________________________________________________
-void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+void MesonSelectionMC::SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags)
 {
-	// Don't return TObjArray: force user to handle candidates lifetime
+	// Don't return TClonesArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{

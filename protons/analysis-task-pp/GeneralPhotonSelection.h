@@ -5,7 +5,6 @@
 #include "PhotonSelection.h"
 
 // --- ROOT system ---
-#include <TObjArray.h>
 #include <TList.h>
 #include <TH2F.h>
 #include <TH3F.h>
@@ -44,7 +43,7 @@ public:
 	
 	virtual Bool_t SelectEvent(const EventFlags & flgs);
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
-	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
+	virtual void SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags);
 	virtual void FillClusterHistograms(const AliVCluster * c, const EventFlags & eflags)
 	{
 		(void) c;

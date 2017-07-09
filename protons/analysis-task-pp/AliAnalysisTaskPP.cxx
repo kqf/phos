@@ -2,7 +2,6 @@
 
 // --- ROOT header files ---
 #include <TFile.h>
-#include <TObjArray.h>
 #include <TROOT.h>
 
 // --- AliRoot header files ---
@@ -23,12 +22,7 @@
 #include <AliMCEvent.h>
 
 // --- Custom libraries ---
-#include "TestPhotonSelection.h"
-#include "PhysPhotonSelection.h"
-#include "PhotonTimecutSelection.h"
-#include "MesonSelectionMC.h"
-#include "QualityPhotonSelection.h"
-
+#include "PhotonSelection.h"
 
 
 ClassImp(AliAnalysisTaskPP)
@@ -117,10 +111,8 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	if (!EventSelected(event, evtProperties))
 		return;
 
-
-	// TODO: Use always TClonesArray? 
-	// collect clusters (photon candidates)
-	TObjArray clusArray;
+	// TODO: Check warnings for TClonesArrray !!!
+	TClonesArray clusArray;
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
 	{
 		AliVCluster * clus = event->GetCaloCluster(i);

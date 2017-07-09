@@ -109,9 +109,9 @@ void QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 
 
 //________________________________________________________________
-void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+void QualityPhotonSelection::SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags)
 {
-	// Don't return TObjArray: force user to handle candidates lifetime
+	// Don't return TClonesArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{

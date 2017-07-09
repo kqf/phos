@@ -5,7 +5,6 @@
 #include "GeneralPhotonSelection.h"
 
 // --- ROOT system ---
-#include <TObjArray.h>
 #include <TList.h>
 
 // --- AliRoot header files ---
@@ -21,9 +20,9 @@ public:
 	virtual void InitSelectionHistograms();
 
 protected:
-	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
+	virtual void SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
-	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
+	virtual void FillPi0Mass(TClonesArray * clusArray, TList * pool, const EventFlags & eflags);
 
 	TagAndProbeSelection(const TagAndProbeSelection &);
 	TagAndProbeSelection & operator = (const TagAndProbeSelection &);

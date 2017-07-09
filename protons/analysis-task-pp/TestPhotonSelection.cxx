@@ -56,9 +56,9 @@ void TestPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 }
 
 //________________________________________________________________
-void TestPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+void TestPhotonSelection::SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags)
 {
-	// Don't return TObjArray: force user to handle candidates lifetime
+	// Don't return TClonesArray: force user to handle candidates lifetime
 
 	// Don't test mixed data
 	if(eflags.isMixing)

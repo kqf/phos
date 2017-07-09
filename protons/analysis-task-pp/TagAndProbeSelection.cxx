@@ -15,7 +15,7 @@ ClassImp(TagAndProbeSelection);
 
 
 //________________________________________________________________
-void TagAndProbeSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void TagAndProbeSelection::FillPi0Mass(TClonesArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	(void) pool;
 	// Ensure that we are not doing mixing
@@ -23,7 +23,7 @@ void TagAndProbeSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, cons
 	flags.isMixing = kFALSE;
 
 	// Select photons
-	TObjArray photonCandidates;
+	TClonesArray photonCandidates;
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
 
 	// Consider N^2 - N combinations, excluding only same-same clusters.
@@ -116,9 +116,9 @@ void TagAndProbeSelection::InitSelectionHistograms()
 
 
 //________________________________________________________________
-void TagAndProbeSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+void TagAndProbeSelection::SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags)
 {
-	// Don't return TObjArray: force user to handle candidates lifetime
+	// Don't return TClonesArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{

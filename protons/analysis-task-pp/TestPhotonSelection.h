@@ -5,7 +5,6 @@
 #include "DetectorHistogram.h"
 
 // --- ROOT system ---
-#include <TObjArray.h>
 #include <TList.h>
 #include <TH1F.h>
 
@@ -27,10 +26,10 @@ public:
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
 	
 	// This selection doesn't require mixing
-	virtual void MixPhotons(TObjArray & p, TList * pl, const EventFlags & e) { if(p.GetEntries() && pl && e.isMixing) return; }
+	virtual void MixPhotons(TClonesArray & p, TList * pl, const EventFlags & e) { if(p.GetEntries() && pl && e.isMixing) return; }
 
 protected:
-	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
+	virtual void SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags);
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
 	TestPhotonSelection(const TestPhotonSelection &);
