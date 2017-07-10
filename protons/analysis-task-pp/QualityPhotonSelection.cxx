@@ -60,8 +60,8 @@ void QualityPhotonSelection::InitSelectionHistograms()
 
 	// Test Assymetry cut
 	//
-	fListOfHistos->Add(new TH3F("hMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
-	fListOfHistos->Add(new TH3F("hMixMassPtN3A", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+	fListOfHistos->Add(new TH3F("hMassPtA", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+	fListOfHistos->Add(new TH3F("hMixMassPtA", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
 
 	fListOfHistos->Add(new TH2F("hAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
 	fListOfHistos->Add(new TH2F("hMixAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
@@ -103,7 +103,7 @@ void QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 	Double_t pt12 = psum.Pt();
 
 	const char * suff = eflags.isMixing ? "Mix" : "";
-	FillHistogram(Form("h%sMassPtN3A", suff), ma12 , pt12, asym);
+	FillHistogram(Form("h%sMassPtA", suff), ma12 , pt12, asym);
 	FillHistogram(Form("h%sAsymmetry", suff), pt12, asym);
 }
 

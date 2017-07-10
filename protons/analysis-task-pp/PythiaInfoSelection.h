@@ -30,7 +30,6 @@ public:
 
 	// Make these methods empty
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
-    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
 
 protected:
 	PythiaInfoSelection(const PythiaInfoSelection &);

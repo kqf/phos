@@ -38,7 +38,7 @@ void PhotonTimecutSelection::InitSelectionHistograms()
 	for (Int_t i = 0; i < 2; i++)
 	{
 		const char * suff = (i == 0) ? "" : "Mix";
-		fListOfHistos->Add(new TH2F(Form("h%sMassPtN3", suff), "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+		fListOfHistos->Add(new TH2F(Form("h%sMassPt", suff), "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtMainMain", suff), "(M,p_{T})_{#gamma#gamma}, main-main; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtMainPileup", suff), "(M,p_{T})_{#gamma#gamma}, main-pileup; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
 		fListOfHistos->Add(new TH2F(Form("h%sMassPtPileupPileup", suff), "(M,p_{T})_{#gamma#gamma}, pileup-pileup; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
@@ -76,7 +76,7 @@ void PhotonTimecutSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 	Double_t pt12 = psum.Pt();
 
 	const char * suff = eflags.isMixing ? "Mix" : "";
-	FillHistogram(Form("h%sMassPtN3", suff), ma12 , pt12);
+	FillHistogram(Form("h%sMassPt", suff), ma12 , pt12);
 
 	Bool_t bc1 = IsMainBC(c1);
 	Bool_t bc2 = IsMainBC(c2);

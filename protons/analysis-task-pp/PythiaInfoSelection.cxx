@@ -79,16 +79,6 @@ void PythiaInfoSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const
 
 }
 
-
-//________________________________________________________________
-void PythiaInfoSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags)
-{
-	(void) particles;
-	(void) clusArray;
-	(void) eflags;
-}
-
-
 //________________________________________________________________
 void PythiaInfoSelection::InitSelectionHistograms()
 {
@@ -98,7 +88,7 @@ void PythiaInfoSelection::InitSelectionHistograms()
 	fListOfHistos->Add(hist);
 
 	hist = new TH1F("hTrials", "trials root file", 1, 0, 1);
-	hist->GetXaxis()->SetBinLabel(1, "#sum{ntrials}");
+	hist->GetXaxis()->SetBinLabel(1, "#sum_{ntrials}");
 	fListOfHistos->Add(hist);
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
@@ -108,5 +98,3 @@ void PythiaInfoSelection::InitSelectionHistograms()
 		hist->Sumw2();
 	}
 }
-
-

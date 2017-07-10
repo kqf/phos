@@ -10,6 +10,8 @@
 using namespace std;
 
 
+// TODO: Replace bool flag by enumeration {OnlyHist, Modules, InterModules }
+// 
 //________________________________________________________________
 DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Bool_t needs_modules)
 {
