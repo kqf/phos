@@ -18,9 +18,9 @@ DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Bool_t needs_mod
 
 	TString name = hist->GetName();
 	const char * title = hist->GetTitle();
-	for ( Int_t i = 0; i <= kLastModule; ++i)
+	for ( Int_t i = 0; i < 2; ++i)
 	{
-		fHistograms[i] = (i == 0) ? hist : dynamic_cast<TH1 *>( hist->Clone(name + Form("_SM%d", i)) );
+		fHistograms[i] = (i == 0) ? hist : dynamic_cast<TH1 *>( hist->Clone(name + "SM123") );
 		fHistograms[i]->SetTitle(Title(title, i));
 		owner->Add(fHistograms[i]);
 	}
@@ -39,29 +39,9 @@ DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Bool_t needs_mod
 	}
 }
 
-//________________________________________________________________
-void DetectorHistogram::FillTotal(Float_t x, Float_t y)
-{
-	// First fill the histogram for all modules
-	fHistograms[0]->Fill(x, y);
-}
 
 //________________________________________________________________
-void DetectorHistogram::FillAll(Int_t sm, Float_t x, Float_t y)
-{
-	if (sm < kFirstModule || sm > kLastModule)
-	{
-		cout << "Illegal module: " << sm << endl;
-		return;
-	}
-
-	FillTotal(x, y);
-	// Then fill the histogram for the specific module
-	fHistograms[sm]->Fill(x, y);
-}
-
-//________________________________________________________________
-void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
+void DetectorHistogram::FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 {
 	if (sm1 < kFirstModule || sm1 > kLastModule)
 	{
@@ -75,13 +55,25 @@ void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 		return;
 	}
 
+	fHistograms[0]->Fill(x, y);
+
+	// Fill histograms without specific Module
+	if(sm1 != 4 &&  sm2 != 4)
+		fHistograms[1]->Fill(x, y);
+
+	FillModules(sm1, sm2, x, y);
+}
+
+//________________________________________________________________
+void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
+{
 	fModuleHistograms[Index(sm1, sm2)]->Fill(x, y);
 }
 
 //________________________________________________________________
 TString DetectorHistogram::Title(const char * title, Int_t i) const
 {
-	TString s = (i == 0) ? " all modules " : Form("SM%d", i);
+	TString s = (i == 0) ? " all modules " : "modules 1, 2, 3";
 	return Form(title, s.Data());
 }
 
