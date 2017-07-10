@@ -6,6 +6,7 @@
 
 // --- ROOT system ---
 #include <TClonesArray.h>
+#include <TObjArray.h>
 #include <TList.h>
 
 // --- AliRoot header files ---
@@ -28,8 +29,8 @@ public:
 	virtual void CountMBEvent();
 
 	// Make these methods empty
-	virtual void FillPi0Mass(TClonesArray * clusArray, TList * pool, const EventFlags & eflags);
-    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TClonesArray * clusArray, const EventFlags & eflags);
+	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags);
+    virtual void ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags);
 
 protected:
 	PythiaInfoSelection(const PythiaInfoSelection &);

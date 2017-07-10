@@ -1,5 +1,9 @@
 // --- Custom header files ---
 #include "GeneralPhotonSelection.h"
+// #include "AliAnalysisTaskPP.h"
+
+// --- ROOT system ---
+#include <TH1F.h>
 
 // --- AliRoot header files ---
 #include <AliLog.h>
@@ -103,9 +107,9 @@ void GeneralPhotonSelection::FillHistogram(const char * key, Double_t x, Double_
 }
 
 //________________________________________________________________
-void GeneralPhotonSelection::SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags)
+void GeneralPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
-	// Don't return TClonesArray: force user to handle candidates lifetime
+	// Don't return TObjArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{

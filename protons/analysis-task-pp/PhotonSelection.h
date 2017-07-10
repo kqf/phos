@@ -2,6 +2,7 @@
 #define PHOTONSELECTION_H
 
 // --- ROOT system ---
+#include <TObjArray.h>
 #include <TClonesArray.h>
 #include <TList.h>
 #include <TH1D.h>
@@ -59,17 +60,16 @@ public:
 
 	// This is a dummy method to count number of Triggered Events.
 	virtual void CountMBEvent() {}
-	virtual void FillPi0Mass(TClonesArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
-    virtual void ConsiderGeneratedParticles(TClonesArray * clusArray, const EventFlags & eflags)
+	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
+    virtual void ConsiderGeneratedParticles(const EventFlags & eflags)
     {
-    	(void) clusArray;
     	(void) eflags;
     }
 
-	virtual void MixPhotons(TClonesArray & photons, TList * pool, const EventFlags & eflags);
+	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
 
 protected:
-	virtual void SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags) = 0;
+	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags) = 0;
 	virtual Int_t CheckClusterGetSM(const AliVCluster * clus, Int_t & x, Int_t & z) const;
 	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
 

@@ -4,6 +4,10 @@
 // --- Custom header files ---
 #include "GeneralPhotonSelection.h"
 
+// --- ROOT system ---
+#include <TObjArray.h>
+#include <TList.h>
+
 // --- AliRoot header files ---
 #include <AliVCluster.h>
 

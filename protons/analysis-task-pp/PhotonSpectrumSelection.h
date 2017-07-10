@@ -4,6 +4,9 @@
 // --- Custom header files ---
 #include "GeneralPhotonSelection.h"
 
+// --- ROOT system ---
+#include <TObjArray.h>
+
 // --- AliRoot header files ---
 #include <AliVCaloCells.h>
 #include <AliVCluster.h>
@@ -22,7 +25,7 @@ public:
     virtual void InitSelectionHistograms();
 
     // There is no need to mix events 
-    virtual void MixPhotons(TClonesArray & photons, TList * pool, const EventFlags & eflags)
+    virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags)
     {
         (void) photons;
         (void) pool;

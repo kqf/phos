@@ -5,6 +5,7 @@
 #include "PhysPhotonSelection.h"
 
 // --- ROOT system ---
+#include <TObjArray.h>
 #include <TList.h>
 
 // --- AliRoot header files ---

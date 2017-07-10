@@ -40,7 +40,7 @@ def draw_and_save(name, draw=False, save=True):
 def get_my_list(filename):
     print 'Processing %s file:' % filename
     mfile = ROOT.TFile(filename)
-    mlist = mfile.TestTender
+    mlist = mfile.PhysNonlinTender
     return mlist
     
 def hist_cut(h, namecut = lambda x: True): 
@@ -72,6 +72,8 @@ def compare_lists_of_histograms(l1, l2, ignore = []):
         percentile = h.Chi2Test(candidate)
         if not isclose(1., percentile) and not h.GetName() in ignore: 
             print bcolors.WARNING + 'Rate of change of %s%s%s is' % (bcolors.OKGREEN, h.GetName(), bcolors.WARNING), percentile, bcolors.ENDC
+        else:
+            print '{0}The histograms {1} are identical {2}'.format(bcolors.OKGREEN, h.GetName(), bcolors.ENDC)
 
 
 def compare_histograms():

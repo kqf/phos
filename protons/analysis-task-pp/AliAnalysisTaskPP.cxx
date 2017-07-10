@@ -2,6 +2,7 @@
 
 // --- ROOT header files ---
 #include <TFile.h>
+#include <TObjArray.h>
 #include <TROOT.h>
 
 // --- AliRoot header files ---
@@ -22,7 +23,12 @@
 #include <AliMCEvent.h>
 
 // --- Custom libraries ---
-#include "PhotonSelection.h"
+#include "TestPhotonSelection.h"
+#include "PhysPhotonSelection.h"
+#include "PhotonTimecutSelection.h"
+#include "MesonSelectionMC.h"
+#include "QualityPhotonSelection.h"
+
 
 
 ClassImp(AliAnalysisTaskPP)
@@ -111,8 +117,11 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	if (!EventSelected(event, evtProperties))
 		return;
 
-	// TODO: Check warnings for TClonesArrray !!!
-	TClonesArray clusArray;
+
+	// NB: Use don't use TClonesArray as you don't want to copy the clusters
+	// just use pointers
+	//
+	TObjArray clusArray;
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
 	{
 		AliVCluster * clus = event->GetCaloCluster(i);
@@ -140,7 +149,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 			continue;
 
 		selection->FillPi0Mass(&clusArray, pool, evtProperties);
-		selection->ConsiderGeneratedParticles(&clusArray, evtProperties);
+		selection->ConsiderGeneratedParticles(evtProperties);
 
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}

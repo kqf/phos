@@ -5,7 +5,7 @@
 #include "GeneralPhotonSelection.h"
 
 // --- ROOT system ---
-#include <TClonesArray.h>
+#include <TObjArray.h>
 
 // --- AliRoot header files ---
 #include <AliVCaloCells.h>
@@ -21,7 +21,7 @@ public:
     virtual Bool_t SelectEvent(const EventFlags & flgs);
 
 protected:
-	virtual void SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags);
+	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
 	QualityPhotonSelection(const QualityPhotonSelection &);

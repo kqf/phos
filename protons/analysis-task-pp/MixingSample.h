@@ -5,7 +5,7 @@
 
 #include <TList.h>
 #include <TObject.h>
-#include <TClonesArray.h>
+#include <TObjArray.h>
 
 // --- My Code ---
 #include "PhotonSelection.h"
@@ -33,7 +33,7 @@ public:
 	}
 
 	virtual TList * GetPool(EventFlags & e);
-	virtual void UpdatePool(const TClonesArray & clusters, EventFlags & e); 
+	virtual void UpdatePool(const TObjArray & clusters, EventFlags & e); 
 
 protected:
 	TList * fPool[10];
@@ -55,7 +55,7 @@ TList * MixingSample::GetPool(EventFlags & e)
 	return fPool[zbin];
 }   
 
-void MixingSample::UpdatePool(const TClonesArray & clusters, EventFlags & e)
+void MixingSample::UpdatePool(const TObjArray & clusters, EventFlags & e)
 {
 	TList * pool = GetPool(e);
 

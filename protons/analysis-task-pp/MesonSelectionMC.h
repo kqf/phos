@@ -9,6 +9,7 @@
 
 // --- ROOT system ---
 #include <TClonesArray.h>
+#include <TObjArray.h>
 #include <TList.h>
 #include <TF1.h>
 
@@ -60,7 +61,7 @@ public:
 	}
 	
 	virtual void InitSelectionHistograms();
-    virtual void ConsiderGeneratedParticles(TClonesArray * clusArray, const EventFlags & eflags);
+    virtual void ConsiderGeneratedParticles(const EventFlags & eflags);
 
     virtual ~MesonSelectionMC()
     {
@@ -69,7 +70,7 @@ public:
     }
 
 protected:
-	virtual void SelectPhotonCandidates(const TClonesArray * clusArray, TClonesArray * candidates, const EventFlags & eflags);
+	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
     virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
 	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;

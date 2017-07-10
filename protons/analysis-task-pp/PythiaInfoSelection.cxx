@@ -71,7 +71,7 @@ void PythiaInfoSelection::CountMBEvent()
 }
 
 //________________________________________________________________
-void PythiaInfoSelection::FillPi0Mass(TClonesArray * clusArray, TList * pool, const EventFlags & eflags)
+void PythiaInfoSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	(void) clusArray;
 	(void) pool;
@@ -81,7 +81,7 @@ void PythiaInfoSelection::FillPi0Mass(TClonesArray * clusArray, TList * pool, co
 
 
 //________________________________________________________________
-void PythiaInfoSelection::ConsiderGeneratedParticles(TClonesArray * particles, TClonesArray * clusArray, const EventFlags & eflags)
+void PythiaInfoSelection::ConsiderGeneratedParticles(TClonesArray * particles, TObjArray * clusArray, const EventFlags & eflags)
 {
 	(void) particles;
 	(void) clusArray;
