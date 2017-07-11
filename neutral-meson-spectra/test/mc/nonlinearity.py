@@ -45,8 +45,8 @@ class Nonlinearity(unittest.TestCase):
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
 
         self.data = f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'Data', Options())
-        self.mc = f(Input('input-data/Pythia-LHC16-iteration15.root', 'PhysRawOnlyTender', 'MassPtN3').read(), 'R2D zs 20 MeV nonlin', Options(priority = 1))
-        # self.mc = f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPtN3').read(), 'LHC16all 20MeV', Options(priority = 1))
+        self.mc = f(Input('input-data/Pythia-LHC16-iteration15.root', 'PhysRawOnlyTender', 'MassPt').read(), 'R2D zs 20 MeV nonlin', Options(priority = 1))
+        # self.mc = f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPt').read(), 'LHC16all 20MeV', Options(priority = 1))
 
         data, mc = self.data[0], self.mc[0]
         data.fifunc = self.getNonlinearityFunction()

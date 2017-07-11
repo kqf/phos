@@ -19,17 +19,17 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
         self.results = [
                              f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'Data', Options())
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration3.root', 'TimeTender', 'MassPtN3').read(), 'Run2Default', Options(priority = 0)) 
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration4.root', 'TimeTender', 'MassPtN3').read(), 'R2D zs 20 MeV', Options(priority = 1))
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration5.root', 'PhysTender', 'MassPtN3').read(), 'R2D zs 10 MeV', Options(priority = 1))
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration8.root', 'PhysTender', 'MassPtN3').read(), 'Nonlinearity', Options(priority = 1))
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration3.root', 'TimeTender', 'MassPt').read(), 'Run2Default', Options(priority = 0)) 
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration4.root', 'TimeTender', 'MassPt').read(), 'R2D zs 20 MeV', Options(priority = 1))
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration5.root', 'PhysTender', 'MassPt').read(), 'R2D zs 10 MeV', Options(priority = 1))
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration8.root', 'PhysTender', 'MassPt').read(), 'Nonlinearity', Options(priority = 1))
 
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration2.root', 'TimeTender', 'MassPtN3').read(), 'LHC16all', Options(priority = 0)) 
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPtN3').read(), 'LHC16 20 MeV', Options(priority = 1))
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration9.root', 'PhysTender', 'MassPtN3').read(), 'LHC16 25 MeV', Options(priority = 1))
-                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration10.root', 'PhysTender', 'MassPtN3').read(), 'nonlin LHC16 25 MeV', Options(priority = 1))
-                            ,f(Input('input-data/Pythia-LHC16-iteration17.root', 'PhysNonlinTender', 'MassPtN3').read(), 'Pythia', Options(priority = 1))
-                            ,f(Input('input-data/EPOS-LHC16-iteration3.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 1))
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration2.root', 'TimeTender', 'MassPt').read(), 'LHC16all', Options(priority = 0)) 
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPt').read(), 'LHC16 20 MeV', Options(priority = 1))
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration9.root', 'PhysTender', 'MassPt').read(), 'LHC16 25 MeV', Options(priority = 1))
+                            # ,f(TimecutInput('input-data/Pythia-LHC16-iteration10.root', 'PhysTender', 'MassPt').read(), 'nonlin LHC16 25 MeV', Options(priority = 1))
+                            ,f(Input('input-data/Pythia-LHC16-iteration17.root', 'PhysNonlinTender', 'MassPt').read(), 'Pythia', Options(priority = 1))
+                            ,f(Input('input-data/EPOS-LHC16-iteration3.root', 'PhysNonlinTender', 'MassPt').read(), 'EPOS', Options(priority = 1))
                         ]
 
 

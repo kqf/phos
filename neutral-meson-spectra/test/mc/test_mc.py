@@ -15,8 +15,8 @@ class CheckMC(unittest.TestCase):
 
 
         data   = f(Input('input-data/LHC16.root', 'PhysTender').read(), 'Data', Options())
-        pythia = f(Input('input-data/Pythia-LHC16-a1.root', 'PhysNonlinTender', 'MassPtN3').read(), 'Pythia', Options(priority = 0))
-        epos   = f(Input('input-data/EPOS-LHC16.root', 'PhysNonlinTender', 'MassPtN3').read(), 'EPOS', Options(priority = 0)) 
+        pythia = f(Input('input-data/Pythia-LHC16-a1.root', 'PhysNonlinTender', 'MassPt').read(), 'Pythia', Options(priority = 0))
+        epos   = f(Input('input-data/EPOS-LHC16.root', 'PhysNonlinTender', 'MassPt').read(), 'EPOS', Options(priority = 0)) 
 
         # self.results = pythia
         self.results = [[data, pythia], [data, epos], [epos, pythia]]
