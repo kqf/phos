@@ -10,6 +10,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("DetectorHistogram.cxx+");
+    gROOT->LoadMacro("ParticlesHistogram.cxx+");
     gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
@@ -142,6 +143,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonSpectrumSelection.cxx " +
 	    "QualityPhotonSelection.cxx " +
 	    "DetectorHistogram.cxx " +
+	    "ParticlesHistogram.cxx " +
 	    "TestPhotonSelection.cxx " +
 	    "PhysPhotonSelection.cxx " +
 	    "PhotonTimecutSelection.cxx " +
@@ -166,6 +168,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "QualityPhotonSelection.h " +
 	    "DetectorHistogram.cxx " +
 	    "DetectorHistogram.h " +
+	    "ParticlesHistogram.cxx " +
+	    "ParticlesHistogram.h " +
 	    "TestPhotonSelection.cxx " +
 	    "TestPhotonSelection.h " +
 	    "PhysPhotonSelection.cxx " +
