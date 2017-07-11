@@ -3,7 +3,7 @@ SEED=1123444
 MHOME=/alice/cern.ch/user/o/okovalen
 REPO=single-pi0-production
 OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
-FILES = dpgsim.sh  generate.jdl tag.C AODtrainsim.C Config.C CreateSnapshot.C QAtrainsim.C rec.C sim.C CheckESD.C ConfigVertexingHF.C DetectorConfig.C ExportGRPinfo.C GeneratorConfig.C OCDBConfig.C ReconstructionConfig.C SimulationConfig.C
+FILES = dpgsim.sh  generate.jdl tag.C AODtrainsim.C Config.C CreateSnapshot.C QAtrainsim.C rec.C sim.C CheckESD.C ConfigVertexingHF.C DetectorConfig.C ExportGRPinfo.C GeneratorConfig.C OCDBConfig.C ReconstructionConfig.C SimulationConfig.C run-sim.sh
 
 test:
 	./single-pion.sh
@@ -24,5 +24,6 @@ download:
 
 
 clean:
-	rm -rf tmp_results
-	rm -rf *.root *~ *.log *.so *.d *.ps GRP *.dat *.txt *.inp
+	rm -rf tmp_results validation_error.message
+	rm -rf *.root *~ *.log *.so *.d *.ps GRP *.dat *.txt *.inp *.xml
+	rm -rf 1_1_0_1.stat.aod 1_1_0_1.stat.qa grpdump.sh validation_extrafiles.list

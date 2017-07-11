@@ -3,9 +3,12 @@ DPART = first
 MC = kTRUE
 
 #PtBins = 1 2 
-PtBins = 4 5 6
-#PtBins = 6 7 8 9 10 
-#PtBins = 9 10 
+#PtBins = 4 5 6
+#PtBins = 7 8 9 10 
+#PtBins = 10 11 12
+#PtBins = 13 14 15
+#PtBins = 16 17 18
+PtBins = 19 20
 # PtBins = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 #PtBins = 11 12 13 14 15 16 17 18 19 20
 #PtBins = 11 12 13 17 18 20
@@ -16,12 +19,12 @@ PtBins = 4 5 6
 # 4 3 2 1
 
 grid: | %.cxx
-	$(call jetjet,gridstart,$(DATASET)) || make unlink
+	$(call jetjet,gridstart,$(DATASET))
 	@make unlink || echo "Directory is clean"
 	echo -e "\a"
 
 terminate: | %.cxx
-	$(call jetjet,terminatestart,$(DATASET)) || make unlink
+	$(call jetjet,terminatestart,$(DATASET))
 	@make unlink || echo "Directory is clean"
 	echo -e "\a"
 
@@ -88,9 +91,9 @@ define terminatestart
 endef
 
 define downloadstart
-	# root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
-	# mv AnalysisResults.root $(1).root
-	# root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
+	root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
+	mv AnalysisResults.root $(1).root
+	root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
 	@echo $(1) " Done."  
 endef 
 
