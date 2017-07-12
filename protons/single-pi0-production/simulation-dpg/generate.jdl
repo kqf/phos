@@ -1,13 +1,19 @@
 Executable = "/alice/cern.ch/user/o/okovalen/single-pi0-production/run-sim.sh";
-Jobtag={"comment:PHOS, pion"} ;
+Jobtag={"comment:PHOS, single pion production"} ;
 
-Packages={"VO_ALICE@AliPhysics::vAN-20170516-1",
-         "VO_ALICE@APISCONFIG::V1.1x"};
+Packages={
+			"VO_ALICE@AliDPG::v5-08-XX-15",
+		    "VO_ALICE@AliPhysics::v5-08-13u-01-cookdedx-1",
+            "VO_ALICE@APISCONFIG::V1.1x"
+         };
 
 
 
 InputFile= {
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/OCDBrec.root",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/OCDBsim.root",
 				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/run-sim.sh",
+				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/dpgsim.sh",
 				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/generate.jdl",
 				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/tag.C",
 				"LF:/alice/cern.ch/user/o/okovalen/single-pi0-production/AODtrainsim.C",

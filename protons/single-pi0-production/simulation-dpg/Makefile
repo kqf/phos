@@ -3,7 +3,7 @@ SEED=1123444
 MHOME=/alice/cern.ch/user/o/okovalen
 REPO=single-pi0-production
 OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
-FILES = dpgsim.sh  generate.jdl tag.C AODtrainsim.C Config.C CreateSnapshot.C QAtrainsim.C rec.C sim.C CheckESD.C ConfigVertexingHF.C DetectorConfig.C ExportGRPinfo.C GeneratorConfig.C OCDBConfig.C ReconstructionConfig.C SimulationConfig.C run-sim.sh
+FILES = dpgsim.sh  generate.jdl tag.C AODtrainsim.C Config.C CreateSnapshot.C QAtrainsim.C rec.C sim.C CheckESD.C ConfigVertexingHF.C DetectorConfig.C ExportGRPinfo.C GeneratorConfig.C OCDBConfig.C ReconstructionConfig.C SimulationConfig.C run-sim.sh OCDBrec.root OCDBsim.root
 
 test:
 	./single-pion.sh
