@@ -32,7 +32,7 @@ class Estimator(object):
         particles = [f(Input(self.infile, self.selection, histstam + pnames).read(), pnames)[2] for pnames in self.particle_names]
         map(PtDependent.divide_bin_width, particles)
 
-        generated = read_histogram(self.infile, self.selection, 'hPtGeneratedMC_#pi^{0}', 'generated')
+        generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
         PtDependent.divide_bin_width(generated)
 
         diff = Comparator()
@@ -42,11 +42,13 @@ class Estimator(object):
 class ParticleContributions(unittest.TestCase, Estimator):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a2.root'
+        self.infile = 'input-data/Pythia-LHC16-a4.root'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPtN3'
         self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
 
 
     def testContributions(self):
+        self.estimate('primary')
     	self.estimate('secondary')
+        self.estimate('feeddown')

@@ -151,11 +151,11 @@ void MesonSelectionMC::InitSelectionHistograms()
 		const char * n = (const char *) i->second.Data();
 
 		// cout << n << endl;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_AllRange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH2F(Form("hPtGeneratedMC_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_primary_", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
-		fListOfHistos->Add(new TH1F(Form("hPtGeneratedMC_%s_secondary_", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPt_AllRange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH2F(Form("hPt_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+		fListOfHistos->Add(new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH1F(Form("hPt_%s_primary_", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
+		fListOfHistos->Add(new TH1F(Form("hPt_%s_secondary_", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 
 	}
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)

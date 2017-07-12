@@ -9,7 +9,7 @@ import unittest
 class FeedDownCorrection(unittest.TestCase, Estimator):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a2.root'
+        self.infile = 'input-data/Pythia-LHC16-a3.root'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPtN3'
         # TODO: Select necessary particles
@@ -17,4 +17,4 @@ class FeedDownCorrection(unittest.TestCase, Estimator):
 
 
     def testContributions(self):
-    	self.estimate('primary')
+    	self.estimate('feeddown')
