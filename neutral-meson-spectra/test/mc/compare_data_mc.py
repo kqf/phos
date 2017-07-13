@@ -7,7 +7,7 @@ from spectrum.options import Options
 
 import unittest
 
-class CheckMC(unittest.TestCase):
+class CompareDataMC(unittest.TestCase):
 
     def setUp(self):
         super(CheckMC, self).setUp()

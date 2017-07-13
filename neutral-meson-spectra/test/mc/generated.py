@@ -1,4 +1,3 @@
-from test.mc.constributions_of_secondaries_to_pi0_spectrum import Estimator
 from spectrum.input import read_histogram
 from spectrum.ptanalyzer import PtDependent
 from spectrum.comparator import Comparator
@@ -16,6 +15,12 @@ class InspectSources(unittest.TestCase):
         self.selection = 'MCStudyOnlyTender'
         self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
 
+    def get_baseline(self):
+        # TODO: Replace this histogram with hPt_#pi^{0}
+        generated = read_histogram(self.infile, self.selection, 'hPtGeneratedMC_#pi^{0}', 'generated')
+        PtDependent.divide_bin_width(generated)
+        return generated 
+
     def inspect(self, ptype):
         particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p) for p in self.particle_names] 
         map(PtDependent.divide_bin_width, particles)
@@ -23,10 +28,13 @@ class InspectSources(unittest.TestCase):
         for p in particles:
         	p.logy = True
 
+        generated = self.get_baseline()
+
         diff = Comparator()
         diff.compare(particles)
+        diff.compare_ratios(particles, generated, logy= True)
 
-
+  
     def testContributions(self):
     	self.inspect('secondary')
     	self.inspect('primary')
