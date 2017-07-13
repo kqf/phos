@@ -11,8 +11,6 @@
 enum ESimulation_t {
   kSimulationDefault,
   kSimulationMuon,
-  kSimulationEmbedBkg,
-  kSimulationEmbedSig,
   kSimulationCustom,
   kSimulationPHOS,
   kNSimulations
@@ -21,8 +19,6 @@ enum ESimulation_t {
 const Char_t *SimulationName[kNSimulations] = {
   "Default",
   "Muon",
-  "EmbedBkg",
-  "EmbedSig",
   "Custom"
   ,"PHOS" //Daiki added
 };
@@ -33,7 +29,6 @@ const Char_t *SimulationName[kNSimulations] = {
 SimulationConfig(AliSimulation &sim, ESimulation_t tag)
 {
   
-  printf(">>>>> SimulationConfig: %s \n", SimulationName[tag]);
   
   switch(tag) {
     
@@ -45,33 +40,8 @@ SimulationConfig(AliSimulation &sim, ESimulation_t tag)
     // Muon
   case kSimulationMuon:
     SimulationDefault(sim);
-    sim.SetMakeSDigits("MUON VZERO T0 AD");
+    sim.SetMakeSDigits("MUON VZERO");
     sim.SetMakeDigitsFromHits("ITS");
-    sim.SetRunHLT("");
-    return;
-    
-    // EmbedBkg
-  case kSimulationEmbedBkg:
-    SimulationDefault(sim);
-    sim.SetMakeSDigits("ALL");
-    sim.SetMakeDigitsFromHits("");
-    return;
-    
-    // EmbedSig
-  case kSimulationEmbedSig:
-    SimulationDefault(sim);
-    sim.SetMakeSDigits("ALL");
-    sim.SetMakeDigitsFromHits("");
-    TString bgstr = gSystem->Getenv("CONFIG_BGEVDIR");
-    if (!bgstr.IsNull()) { 
-      if (bgstr.BeginsWith("alien://") && !gGrid && !TGrid::Connect("alien://")) {
-	printf("Failed to create a grid connection\n");
-	abort();
-      }
-      if (!bgstr.EndsWith("/")) bgstr += "/";
-      bgstr += "galice.root";
-      sim.EmbedInto(bgstr.Data());
-    }
     return;
     
     // Custom
@@ -83,13 +53,13 @@ SimulationConfig(AliSimulation &sim, ESimulation_t tag)
     }
     SimulationCustom(sim);
     return;
-    
+ 
   case kSimulationPHOS:
     SimulationDefault(sim);
     sim.SetMakeSDigits("PHOS");
     sim.SetMakeDigits("PHOS");
     return;
-
+ 
   }
   
 }
@@ -106,14 +76,14 @@ SimulationDefault(AliSimulation &sim)
     ocdbConfig = gSystem->Getenv("CONFIG_OCDB");
   if (ocdbConfig.Contains("alien")) {
     // set OCDB 
+    //gROOT->LoadMacro("$ALIDPG_ROOT/MC/OCDBConfig.C");
     gROOT->LoadMacro("OCDBConfig.C");
     OCDBDefault(0);
   }
   else {
     // set OCDB snapshot mode
     sim.SetCDBSnapshotMode("OCDBsim.root");
-    AliCDBManager *cdbm = AliCDBManager::Instance();
-    cdbm->SetDefaultStorage("local://");
+    //    AliCDBManager *cdbm = AliCDBManager::Instance();
     //    cdbm->SetSnapshotMode("OCDBsim.root");
   }
 
@@ -129,13 +99,6 @@ SimulationDefault(AliSimulation &sim)
   if (gSystem->Getenv("CONFIG_HLT"))
     hltConfig = gSystem->Getenv("CONFIG_HLT");
   sim.SetRunHLT(hltConfig.Data());
-
-  //
-  // material budget settings
-  if (gSystem->Getenv("CONFIG_MATERIAL")) {
-    Float_t material = atof(gSystem->Getenv("CONFIG_MATERIAL"));
-    sim.AliModule::SetDensityFactor(material);
-  }
 
   //
   //

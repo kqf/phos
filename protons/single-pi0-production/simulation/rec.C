@@ -12,6 +12,7 @@ void rec()
 {
 
   // reconstruction configuration
+  //gROOT->LoadMacro("$ALIDPG_ROOT/MC/ReconstructionConfig.C");
   gROOT->LoadMacro("ReconstructionConfig.C");
   Int_t reconstructionConfig = kReconstructionDefault;
   if (gSystem->Getenv("CONFIG_RECONSTRUCTION")) {

@@ -44,3 +44,17 @@ how the several files interrelate one to another.
 #
 # dpgsim.sh				[main steering script]
   --> ../AOD/AODtrainsim.C              [AOD train steering macro]
+
+
+
+### Daiki added folowing lines
+/cvmfs/alice.cern.ch/bin/alienv enter VO_ALICE@AliDPG::v5-08-XX-15,VO_ALICE@AliPhysics::v5-08-13u-01-cookdedx-1
+
+run number 257893 (LHC16k) is picked up for the test porpose.
+A sample JDL is https://alimonitor.cern.ch/productions/9250/JDL.html
+So, please copy 2 files from alien
+/alice/sim/2016/LHC16j2a1/OCDB/257893/OCDBsim.root (335 MB)
+/alice/sim/2016/LHC16j2a1/OCDB/257893/OCDBrec.root (335 MB)
+
+To run full simulation, please do:
+./dpgsim.sh --run 257893 --mode full --uid 1 --nevents 1 --generator PHOSPi0 --detector PHOS --simulation PHOS --reconstruction PHOS

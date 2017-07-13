@@ -9,6 +9,7 @@ ExportGRPinfo(Int_t run)
     ocdbConfig = gSystem->Getenv("CONFIG_OCDB");
   if (ocdbConfig.Contains("alien")) {
     // set OCDB 
+    //gROOT->LoadMacro("$ALIDPG_ROOT/MC/OCDBConfig.C");
     gROOT->LoadMacro("OCDBConfig.C");
     OCDBDefault(0);
   }
@@ -36,30 +37,19 @@ ExportGRPinfo(Int_t run)
   // PERIOD
   printf("export CONFIG_PERIOD=%s\n", grp->GetLHCPeriod().Data());
   //
-  // BEAMTYPE, SYSTEM, TRIGGER, ENERGY
+  // BEAMTYPE
   printf("export CONFIG_BEAMTYPE=%s\n", grp->GetBeamType().Data());
   if (grp->GetBeamType().EqualTo("A-A")) {
     printf("export CONFIG_SYSTEM=Pb-Pb\n");
     printf("export CONFIG_TRIGGER=Pb-Pb\n");
-    printf("export CONFIG_ENERGY=%.0f\n", grp->GetBeamEnergy() * 2.);
   }
   if (grp->GetBeamType().EqualTo("p-p")) {
     printf("export CONFIG_SYSTEM=p-p\n");
     printf("export CONFIG_TRIGGER=p-p\n");
-    printf("export CONFIG_ENERGY=%.0f\n", grp->GetBeamEnergy() * 2.);
-  }
-  if (grp->GetBeamType().EqualTo("p-A")) {
-    printf("export CONFIG_SYSTEM=Pb-p\n");
-    printf("export CONFIG_TRIGGER=p-p\n");
-    printf("export CONFIG_ENERGY=%.0f\n", grp->GetBeamEnergy() * 2. * TMath::Sqrt(82./208.));
-  }
-  if (grp->GetBeamType().EqualTo("A-p")) {
-    printf("export CONFIG_SYSTEM=p-Pb\n");
-    printf("export CONFIG_TRIGGER=p-p\n");
-    printf("export CONFIG_ENERGY=%.0f\n", grp->GetBeamEnergy() * 2. * TMath::Sqrt(82./208.));
   }
   //
   // ENERGY - must be fixed 
+  printf("export CONFIG_ENERGY=%.0f\n", grp->GetBeamEnergy() * 2.);
   //
   // return grp
   return grp;

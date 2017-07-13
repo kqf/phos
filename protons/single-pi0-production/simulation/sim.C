@@ -36,7 +36,7 @@ void sim()
 
   /* initialisation */
   //AliSimulation sim("$ALIDPG_ROOT/MC/Config.C");
-  AliSimulation sim("Config.C");
+  AliSimulation sim("Config.C");//Daiki changed
 
   /* configuration */
   SimulationConfig(sim, simulationConfig);

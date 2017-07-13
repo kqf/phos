@@ -1,30 +1,29 @@
-RUN     = 257893
-NEVENTS = 1
-MODE    = "full"
-EXTRA   = --uid 1 --detector PHOS --simulation PHOS --reconstruction PHOS --system p-p
+SEED=1123444
 
-OBJECTS = PHOSPi0
-SOURCEDIR   = $(ALIDPG_ROOT)/MC/CustomGenerators/
-SOURCES    := $(shell find $(SOURCEDIR) -name '*.C')
-# OBJECTS    += $(SOURCES:$(SOURCEDIR)%.C=%)
+MHOME=/alice/cern.ch/user/o/okovalen
+REPO=single-pi0-production
+OUTPUT=$(MHOME)/$(REPO)/output/$(SEED)
+FILES = dpgsim.sh  generate.jdl tag.C AODtrainsim.C Config.C CreateSnapshot.C QAtrainsim.C rec.C sim.C CheckESD.C ConfigVertexingHF.C DetectorConfig.C ExportGRPinfo.C GeneratorConfig.C OCDBConfig.C ReconstructionConfig.C SimulationConfig.C run-sim.sh OCDBrec.root OCDBsim.root
 
-all: $(OBJECTS)
+test:
+	./single-pion.sh
 
-$(OBJECTS): OCDBsim.root OCDBrec.root
-	$(eval GEN := $(subst /,:,$@))
-	@echo "=== Running test simulation run ${RUN} with generator ${GEN} ==="
-	@mkdir -p $@
-	# @ln -s $(PWD)/OCDBsim.root $@/.
-	# @ln -s $(PWD)/OCDBrec.root $@/.
-	@./dpgsim.sh --run ${RUN} --generator ${GEN} --mode ${MODE} --nevents ${NEVENTS} ${EXTRA} &> dpgsim.log && echo " [SUCCESS] Running test simulation run ${RUN} with generator ${GEN}" || echo " [FAILURE] Running test simulation run ${RUN} with generator ${GEN}"
+upload:
+	# -alien_rmdir $(MHOME)/$(REPO)
+	alien_mkdir -p $(MHOME)/$(REPO)/
+	$(foreach file, $(FILES), alien_cp -n $(file) alien:$(MHOME)/$(REPO)/;)
 
-OCDBsim.root:
-	@echo "=== Running OCDB snapshot creation for run ${RUN} ==="
-	@aliroot_dpgsim.sh --run ${RUN} --mode ocdb &> snapshot.log && echo " [SUCCESS] Running OCDB snapshot creation for run ${RUN}" || echo " [FAILURE] Running OCDB snapshot creation for run ${RUN}"
+download:
+	mkdir -p results 
+	for run in $$(alien_ls /$(OUTPUT) | grep .[0-9]*); do alien_cp alien://$(OUTPUT)/$$run/generated.root results/$$run.root; done	
+	rm -rf generated.root
+	hadd generated.root results/*.root
+	rm -rf results
+	echo -e "\x07
 
-OCDBrec.root:
-	@echo "=== Running OCDB snapshot creation for run ${RUN} ==="
-	@aliroot_dpgsim.sh --run ${RUN} --mode ocdb &> snapshot.log && echo " [SUCCESS] Running OCDB snapshot creation for run ${RUN}" || echo " [FAILURE] Running OCDB snapshot creation for run ${RUN}"
+
 
 clean:
-	rm -rf *~ *.log validation_error.message *.xml $(OBJECTS)
+	rm -rf tmp_results validation_error.message
+	rm -rf *.root *~ *.log *.so *.d *.ps GRP *.dat *.txt *.inp *.xml
+	rm -rf 1_1_0_1.stat.aod 1_1_0_1.stat.qa grpdump.sh validation_extrafiles.list

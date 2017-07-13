@@ -75,46 +75,44 @@ void
 DetectorConfig(Int_t tag)
 {
 
-  printf(">>>>> DetectorConfig: %s \n", DetectorName[tag]);
-
   switch (tag) {
 
     // kDetectorDefault
-  case kDetectorDefault:
-    DetectorDefault();
-    break;
-    
-    // kDetectorMuon
-  case kDetectorMuon:
-    DetectorMuon();
-    break;
-    
-    // kDetectorNoZDC
-  case kDetectorNoZDC:
-    DetectorDefault();
-    iZDC = 0;
-    break;
-    
-    // kDetectorCustom
-  case kDetectorCustom:
-    if ((gROOT->LoadMacro("DetectorCustom.C")) != 0) {
-      printf("ERROR: cannot find DetectorCustom.C\n");
-      abort();
-      return;
-    }
-    DetectorCustom();
-    break;
- 
+    case kDetectorDefault:
+      DetectorDefault();
+      break;
+
+      // kDetectorMuon
+    case kDetectorMuon:
+      DetectorMuon();
+      break;
+
+      // kDetectorNoZDC
+    case kDetectorNoZDC:
+      DetectorDefault();
+      iZDC = 0;
+      break;
+
+      // kDetectorCustom
+    case kDetectorCustom:
+      if ((gROOT->LoadMacro("DetectorCustom.C")) != 0) {
+        printf("ERROR: cannot find DetectorCustom.C\n");
+        abort();
+        return;
+      }
+      DetectorCustom();
+      break;
+
       // kDetectorPHOS
     case kDetectorPHOS:
       DetectorPHOS();
       break;
 
-   
+
   }
 
   DetectorInit();
-  
+
 }
 
 /*****************************************************************/
@@ -195,7 +193,7 @@ DetectorMuon()
   iZDC    = 0;
 
 }
-
+  
 /*****************************************************************/
 void
 DetectorPHOS()
@@ -323,8 +321,6 @@ DetectorInit()
       //============================ TPC parameters =====================
 
       AliTPC *TPC = new AliTPCv2("TPC", "Default");
-      if (isGeant4) 
-	TPC->SetPrimaryIonisation(1);
     }
 
 
@@ -377,12 +373,7 @@ DetectorInit()
     {
       //=================== TRD parameters ============================
 
-      if (isGeant4) {
-	AliTRDtestG4 *TRD = new AliTRDtestG4("TRD", "TRD slow simulator");
-	TRD->SetScaleG4(1.11);
-      }
-      else
-	AliTRD *TRD = new AliTRDv1("TRD", "TRD slow simulator");
+      AliTRD *TRD = new AliTRDv1("TRD", "TRD slow simulator");
       AliTRDgeometry *geoTRD = TRD->GetGeometry();
       // Partial geometry: modules at 0,1,7,8,9,16,17
       // starting at 3h in positive direction
