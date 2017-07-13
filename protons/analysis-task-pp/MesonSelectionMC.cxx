@@ -118,9 +118,9 @@ void MesonSelectionMC::InitSelectionHistograms()
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
 	// Sources of neutral pions, as a histogram
-	Int_t sbins = 3222 + 3322 + 1;
-	Int_t sstart = -3222;
-	Int_t sstop = 3322 + 1;
+	Int_t sstart = -10000;
+	Int_t sstop = 10000 + 1;
+	Int_t sbins = sstop - sstart;
 
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
 	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
@@ -151,9 +151,13 @@ void MesonSelectionMC::InitSelectionHistograms()
 		const char * n = (const char *) i->second.Data();
 
 		// cout << n << endl;
-		fListOfHistos->Add(new TH1F(Form("hPt_AllRange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH2F(Form("hPt_%s_Radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
+		fListOfHistos->Add(new TH1F(Form("hPt_allrange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+		fListOfHistos->Add(new TH2F(Form("hPt_%s_radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
 		fListOfHistos->Add(new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
+
+		if(i->first == kPi0)
+			continue;
+		
 		fListOfHistos->Add(new TH1F(Form("hPt_%s_primary_", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
 		fListOfHistos->Add(new TH1F(Form("hPt_%s_secondary_", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
 
@@ -164,10 +168,6 @@ void MesonSelectionMC::InitSelectionHistograms()
 		if (!hist) continue;
 		hist->Sumw2();
 	}
-
-	fListOfHistos->Add(new TH1F("hPrimaryParticles", "Primary Particles; PDG code", 6000, 0.5, 6000.5));
-	fListOfHistos->Add(new TH1F("hEnergeticParticles", "Primary Particles with E > 1 GeV, and tof > 0.05 ns; PDG code", 6000, 0.5, 6000.5));
-	fListOfHistos->Add(new TH1F("hLatePrimaryParticles", "Primalry Particles with E > 5 GeV and tof > 0.15 ns; PDG code", 6000, 0.5, 6000.5));
 }
 
 
@@ -190,7 +190,7 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 
 		Double_t pt = particle->Pt();
 
-		FillHistogram(Form("hPtGeneratedMC_AllRange_%s", name), pt) ;
+		FillHistogram(Form("hPt_allrange_%s", name), pt) ;
 
 		// Use this to remove forward photons that can modify our true efficiency
 		// Use Rapidity instead of pseudo rapidity
@@ -198,10 +198,10 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 		if (TMath::Abs(particle->Y()) > 0.5)
 			continue;
 
-		FillHistogram(Form("hPtGeneratedMC_%s", name), pt) ;
+		FillHistogram(Form("hPt_%s", name), pt);
 
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
-		FillHistogram(Form("hPtGeneratedMC_%s_Radius", name), r, pt) ;
+		FillHistogram(Form("hPt_%s_radius", name), r, pt) ;
 
 		Bool_t primary = IsPrimary(particle);
 
@@ -221,13 +221,14 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 			continue;
 
 		Int_t pcode = parent->GetPdgCode();
-		
+
 		// Reject MIPS and count again
 		if (pt < 0.3)
 			continue;
 
 		if (primary)
 		{
+			FillHistogram(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), pcode);
 			fPrimaryPi0[kGenerated]->Fill(pcode, pt);
 			continue;
 		}
@@ -236,6 +237,7 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 		//
 		if (!IsPrimary(parent))
 		{
+			FillHistogram(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), pcode);
 			fSecondaryPi0[kGenerated]->Fill(pcode, pt);
 			continue;
 		}
@@ -247,6 +249,7 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 //________________________________________________________________
 void MesonSelectionMC::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
 {
+	// TODO: Remove this method ? 
 	// Particle # reached PHOS front surface
 	Int_t label = cluster->GetLabelAt(0) ;
 
@@ -260,15 +263,6 @@ void MesonSelectionMC::FillClusterMC(const AliVCluster * cluster, TClonesArray *
 
 	if (!parent)
 		return;
-
-	FillHistogram("hPrimaryParticles", parent->GetPdgCode());
-
-	if (cluster->GetTOF() > 0.05e-6 && cluster->E() > 1)
-		FillHistogram("hEnergeticParticles", parent->GetPdgCode());
-
-	if (cluster->GetTOF() > 0.15e-6 && cluster->E() > 5)
-		FillHistogram("hLatePrimaryParticles", parent->GetPdgCode());
-
 }
 
 //________________________________________________________________

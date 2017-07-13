@@ -3,7 +3,7 @@
 # MC = kFALSE
 
 
-DATASET = LHC16j2a1
+DATASET = LHC16j2a2
 DPART = first
 MC = kTRUE
 
@@ -51,7 +51,6 @@ test: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
 	echo "Local analysis" >> .runhistory
 	$(call upload_result,AnalysisResults,test-analysis-pp)
-	$(call upload_result,TrackAverages,test-averages-pp)
 	@make unlink || echo "Directory is clean"
 	# make compare
 
