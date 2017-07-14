@@ -41,6 +41,8 @@ enum EGenerator_t {
   //
   kGeneratorCustom,
   kPHOSPi0, //Daiki added, kNGenerators must be the end.
+  kPHOSEta, //Sasha added, kNGenerators must be the end.
+  kPHOSGamma, //Sasha added, kNGenerators must be the end.
   kNGenerators
 };
 
@@ -82,6 +84,9 @@ const Char_t *GeneratorName[kNGenerators] = {
   "Custom"
   //Daiki added below
   ,"PHOSPi0"
+  //Sasha added below
+  ,"PHOSEta"
+  ,"PHOSGamma"
 };
 
 enum ETrigger_t {
@@ -133,7 +138,7 @@ AliGenerator *Generator_Jpsiee(const Char_t *params, Float_t jpsifrac, Float_t l
 AliGenerator *Generator_Nuclex(UInt_t injbit, Bool_t antiparticle, Int_t ninj);
 AliGenerator *GeneratorStarlight();
 AliGenerator *GeneratorAMPT();
-AliGenerator *GeneratorPHOSPi0();
+AliGenerator *GeneratorSingleParticlePHOS(Int_t pdg);
 
 /*****************************************************************/
 
@@ -527,9 +532,16 @@ GeneratorConfig(Int_t tag)
     //PHOS single pi0 Daiki added below
     break;
   case kPHOSPi0:
-    gen = GeneratorPHOSPi0();
+    gen = GeneratorSingleParticlePHOS(111); // pi0
     break;
 
+  case kPHOSEta:
+    gen = GeneratorSingleParticlePHOS(221); // eta
+    break;
+
+  case kPHOSGamma:
+    gen = GeneratorSingleParticlePHOS(22); // gamma
+    break;
   }
 
   // default diamond parameters
@@ -1287,17 +1299,17 @@ Generator_Nuclex(UInt_t injbit, Bool_t antiparticle, Int_t ninj)
 
 //Daiki added below
 /*** PHOS single pi0  ****************************************************/
-AliGenerator *GeneratorPHOSPi0()
+AliGenerator * GeneratorSingleParticlePHOS(Int_t pdg)
 {
-  AliGenCocktail *ctl = new AliGenCocktail();
+  AliGenCocktail * ctl = new AliGenCocktail();
 
-  const Double_t ptMin=0.5;
-  const Double_t ptMax=100.;
+  const Double_t ptMin = 0.5;
+  const Double_t ptMax = 100.;
 
   printf("pi0 will be generated %3.2f < pT < %3.2f GeV/c.\n",ptMin,ptMax);
 
   AliGenBox * gPHS = new AliGenBox(1);
-  gPHS->SetPart(111);//pi0
+  gPHS->SetPart(pdg); // desired particle
   gPHS->SetPtRange(ptMin,ptMax);
   gPHS->SetPhiRange(240,330);
   gPHS->SetYRange(-0.15,0.15);
