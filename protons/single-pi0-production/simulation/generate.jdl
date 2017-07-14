@@ -3,7 +3,7 @@ Jobtag={"comment:PHOS, single pion production"} ;
 
 Packages={
 			"VO_ALICE@AliDPG::v5-08-XX-15",
-		    "VO_ALICE@AliPhysics::v5-08-13u-01-cookdedx-1",
+		    "VO_ALICE@AliPhysics::v5-08-13x-01-cookdedx-1",
             "VO_ALICE@APISCONFIG::V1.1x"
          };
 
