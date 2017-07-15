@@ -13,11 +13,9 @@ import ROOT
 import os.path
 import unittest
 
+from spectrum.sutils import hsum
 
 
-# This is to check contributions of secondary particles to the 
-# $\pi^{0}$ spectrum.
-#
 
 class Estimator(object):
 
@@ -42,6 +40,10 @@ class Estimator(object):
         diff = Comparator()
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy = True)
+
+        total, summed = particles[0], hsum(particles[1:], 'summed')
+        diff.compare(total, summed)
+
 
     def get_baseline(self):
         # TODO: Replace this histogram with hPt_#pi^{0}

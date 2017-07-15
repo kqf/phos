@@ -3,10 +3,10 @@ from spectrum.ptanalyzer import PtDependent
 from spectrum.comparator import Comparator
 
 import ROOT
-
 import os.path
 import unittest
 
+from spectrum.sutils import hsum
 
 class InspectSources(unittest.TestCase):
 
@@ -15,11 +15,13 @@ class InspectSources(unittest.TestCase):
         self.selection = 'MCStudyOnlyTender'
         self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
 
+
     def get_baseline(self):
         # TODO: Replace this histogram with hPt_#pi^{0}
         generated = read_histogram(self.infile, self.selection, 'hPtGeneratedMC_#pi^{0}', 'generated')
         PtDependent.divide_bin_width(generated)
         return generated 
+
 
     def inspect(self, ptype):
         particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p) for p in self.particle_names] 
@@ -33,6 +35,9 @@ class InspectSources(unittest.TestCase):
         diff = Comparator()
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy= True)
+
+        total, summed = particles[0], hsum(particles[1:], 'summed')
+        diff.compare(total, summed)
 
   
     def testContributions(self):
