@@ -17,17 +17,21 @@ class Pi0Sources(unittest.TestCase):
     def setUp(self):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
-        self.file = 'input-data/scaled-LHC17f8a.root'
-        # self.file = 'input-data/Pythia-LHC16-a1.root'
-        self.histname = 'hPtGeneratedMC_#pi^{0}'
-        self.labels = {'#pi^{-}': -211, 'K_{S}^{0}': 310, '#omega': 223, '#rho^{-}': -213, '#pi^{+}': 211, '#Lambda^{0}': 3122, '#rho^{+}': 213, '#eta': 221}
-        self.labels = {self.labels[i]: i for i in self.labels}
+        # self.file = 'input-data/scaled-LHC17f8a.root'
+        self.file = 'input-data/Pythia-LHC16-a4.root'
+        self.histname = 'hPt_#pi^{0}'
+        # self.labels = {'#pi^{-}': -211, 'K_{S}^{0}': 310, '#omega': 223, '#rho^{-}': -213, '#pi^{+}': 211, '#Lambda^{0}': 3122, '#rho^{+}': 213, '#eta': 221}
+
+        self.sorted_labels = ['K^{*0}', '#barK^{*0}', 'K^{*-}', 'K^{*+}', 'c', 'K_{S}^{0}', 'g', 's', '#eta', '#omega', 'd', 'u', '#rho^{-}', '#rho^{+}']
+        self.labels = {'c': 4, 'd': 1, 'g': 21, 'K_{S}^{0}': 310, '#omega': 223, '#rho^{-}': -213, '#barK^{*0}': -313, '#rho^{+}': 213, 's': 3, 'u': 2, '#eta': 221, 'K^{*-}': -323, 'K^{*0}': 313, 'K^{*+}': 323}
+        self.cut = 1e-2
 
 
     def read(self, x, y, p = 1):
         return read_histogram(self.file, self.mc_selection, x, label = y, priority = p)
 
 
+    @unittest.skip('')
     def testDifferentContributions(self):
         def contribution(contr_type = 'secondary'):
             filename = self.histname + '_' + contr_type 
@@ -57,17 +61,39 @@ class Pi0Sources(unittest.TestCase):
         contribution('primary')
 
 
+    def mostProbableBins(self, hist):
+        nhist = hist.Clone(hist.GetName() + 'checking_the_main_contributors')
+        nhist.label = hist.label
+        nhist.Scale(1./ nhist.Integral())
+        bins = {int(nhist.GetBinCenter(i) - 0.5): nhist.GetBinContent(i) for i in range(1, nhist.GetNbinsX() + 1) if nhist.GetBinContent(i) > self.cut }
+
+        total = 0
+        for k in sorted(bins.keys()):
+            print '{0}: {1}'.format(k, bins[k])
+            total += bins[k]
+
+        print bins.keys()
+
+        print 'The selecte bins sum up to {0} percent of the histogram.'.format(total)
+        return nhist
+
+
     def adjustBins(self, hist):
         nhist = ROOT.TH1F('{}_binned'.format(hist.GetName()), hist.GetTitle(), len(self.labels), 0, len(self.labels))
 
-        bins = {i: int(hist.GetBinCenter(i) - 0.5) for i in range(1, hist.GetNbinsX() + 1) if hist.GetBinContent(i) > 0}
-        nbins = hist.GetNbinsX()
+        hist = self.mostProbableBins(hist)
 
-        assert len(bins) == len(self.labels), "You have different number of labels and particles"
-        for i, bin in enumerate(bins):
+        for l in self.labels:
+            print self.labels[l]
+
+        # data = {hist.GetBinContent(hist.FindBin(self.labels[l])): l for l in self.labels}
+        # print [data[l] for l in sorted(data.keys())]
+
+        for i, l in enumerate(self.sorted_labels):
+            bin = hist.FindBin(self.labels[l])
             nhist.SetBinContent(i + 1, hist.GetBinContent(bin))
             nhist.SetBinError(i + 1, hist.GetBinError(bin))
-            nhist.GetXaxis().SetBinLabel(i + 1, self.labels[bins[bin]])
+            nhist.GetXaxis().SetBinLabel(i + 1, l)
 
         if 'label' in dir(hist):
             nhist.label = hist.label
@@ -81,7 +107,7 @@ class Pi0Sources(unittest.TestCase):
 
     def testSources(self):
         filename = 'hMC_#pi^{0}_sources'
-        labels = 'primary', 'secondary'
+        labels =  'secondary', 'primary'
         hists = map(lambda x: self.read('{0}_{1}'.format(filename, x),  x, 999), labels)
         hists = map(self.adjustBins, hists)
         map(lambda x: x.Scale(1./x.Integral()), hists)

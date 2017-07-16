@@ -25,7 +25,14 @@ class MesonSelectionMC: public GeneralPhotonSelection
 {
 public:
 	enum Modes {kGenerated = 0, kReconstructed = 1, kNhists = 2};
-	enum Particles {kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310, kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211, kPRho = 213, kNRho = -213};
+	enum Particles
+	{
+		kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310,
+		kOmega = 223, kLambda = 3122, kPPion = 211, kNPion = -211,
+		kPRho = 213, kNRho = -213,
+		kKStarP = 323, kKStarN = -323, kKStar0 = 313, kBarKstar0 = -313
+	};
+
 	MesonSelectionMC():
 		GeneralPhotonSelection(),
 		fPrimaryPi0(),
@@ -45,7 +52,10 @@ public:
 		fPi0SourcesNames[kNPion] = "#pi^{-}";
 		fPi0SourcesNames[kEta] = "#eta";
 		fPi0SourcesNames[kOmega] = "#omega";
-
+		fPi0SourcesNames[kKStarP] = "K^{*+}";
+		fPi0SourcesNames[kKStarN] = "K^{*-}";
+		fPi0SourcesNames[kKStar0] = "K^{*0}";
+		fPi0SourcesNames[kBarKstar0] = "#barK^{*0}";
 	}
 
 	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
@@ -69,6 +79,10 @@ public:
 		fPi0SourcesNames[kNPion] = "#pi^{-}";
 		fPi0SourcesNames[kEta] = "#eta";
 		fPi0SourcesNames[kOmega] = "#omega";
+		fPi0SourcesNames[kKStarP] = "K^{*+}";
+		fPi0SourcesNames[kKStarN] = "K^{*-}";
+		fPi0SourcesNames[kKStar0] = "K^{*0}";
+		fPi0SourcesNames[kBarKstar0] = "#barK^{*0}";
 	}
 
 	virtual void InitSelectionHistograms();

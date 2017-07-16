@@ -18,7 +18,7 @@ class InspectSources(unittest.TestCase):
 
     def get_baseline(self):
         # TODO: Replace this histogram with hPt_#pi^{0}
-        generated = read_histogram(self.infile, self.selection, 'hPtGeneratedMC_#pi^{0}', 'generated')
+        generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
         PtDependent.divide_bin_width(generated)
         return generated 
 

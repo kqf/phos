@@ -139,6 +139,7 @@ def rebin_as(hist1, hist2):
 
     return (res, b) if a == hist1 else (b, res)
 
+
 def hsum(histograms, label):
     result = histograms[0].Clone(histograms[0].GetName() + label)
     result.Reset()
@@ -147,7 +148,6 @@ def hsum(histograms, label):
         result.Add(h)
     result.label = label
     return result
-
 
 
 class Cc:
