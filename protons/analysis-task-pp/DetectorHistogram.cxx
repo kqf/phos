@@ -10,10 +10,11 @@
 using namespace std;
 
 
-// TODO: Replace bool flag by enumeration {OnlyHist, Modules, InterModules }
-// 
+//
 //________________________________________________________________
-DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Bool_t needs_modules)
+DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Mode mode):
+	fMode(mode)
+
 {
 	if (!owner->IsOwner())
 		cout << "Warning: You are adding histograms to the list that doesn't have ownership" << endl;
@@ -27,16 +28,27 @@ DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Bool_t needs_mod
 		owner->Add(fHistograms[i]);
 	}
 
-	if(!needs_modules)
+	if (mode == kOnlyHist)
 		return;
 
-	for (Int_t sm = kFirstModule; sm < (kLastModule + 1); sm++)
+	if (mode == kModules)
 	{
-		for (Int_t sm2 = sm; sm2 < (kLastModule + 1); sm2++)
+		for (Int_t sm = kFirstModule; sm < (kLastModule + 1); ++sm)
 		{
-			fModuleHistograms[Index(sm, sm2)] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%dSM%d", sm, sm2)));
-			fModuleHistograms[Index(sm, sm2)]->SetTitle(Title(title, sm, sm2));
-			owner->Add(fModuleHistograms[Index(sm, sm2)]);
+			fModuleHistograms[sm] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%d", sm)));
+			fModuleHistograms[sm]->SetTitle(Title(title, sm, sm));
+			owner->Add(fModuleHistograms[sm]);
+		}
+		return;
+	}
+
+	for (Int_t sm = kFirstModule; sm < (kLastModule + 1); ++sm)
+	{
+		for (Int_t sm2 = sm; sm2 < (kLastModule + 1); ++sm2)
+		{
+			fInterModuleHistograms[Index(sm, sm2)] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%dSM%d", sm, sm2)));
+			fInterModuleHistograms[Index(sm, sm2)]->SetTitle(Title(title, sm, sm2));
+			owner->Add(fInterModuleHistograms[Index(sm, sm2)]);
 		}
 	}
 }
@@ -60,7 +72,7 @@ void DetectorHistogram::FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 	fHistograms[0]->Fill(x, y);
 
 	// Fill histograms without specific Module
-	if(sm1 != 4 &&  sm2 != 4)
+	if (sm1 != 4 &&  sm2 != 4)
 		fHistograms[1]->Fill(x, y);
 
 	FillModules(sm1, sm2, x, y);
@@ -69,7 +81,12 @@ void DetectorHistogram::FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 //________________________________________________________________
 void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 {
-	fModuleHistograms[Index(sm1, sm2)]->Fill(x, y);
+
+	if(sm1 == sm2 && fMode == kModules)
+		fModuleHistograms[sm1]->Fill(x, y);
+
+	if (fMode == kInterModules)
+		fInterModuleHistograms[Index(sm1, sm2)]->Fill(x, y);
 }
 
 //________________________________________________________________
@@ -82,7 +99,7 @@ TString DetectorHistogram::Title(const char * title, Int_t i) const
 //________________________________________________________________
 TString DetectorHistogram::Title(const char * title, Int_t i, Int_t j) const
 {
-	TString s = (i == j) ? Form("Module %d", i): Form("SM%dSM%d", i, j);
+	TString s = (i == j) ? Form("Module %d", i) : Form("SM%dSM%d", i, j);
 	return Form(title, s.Data());
 }
 
@@ -98,11 +115,10 @@ Int_t DetectorHistogram::Index(Int_t sm1, Int_t sm2) const
 	{
 		for (Int_t j = i; j < (kLastModule + 1); ++j)
 		{
-			if(i == sm1 && j == sm2)
+			if (i == sm1 && j == sm2)
 				return index;
 			++index;
 		}
 	}
-
 	return -1;
 }

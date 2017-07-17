@@ -28,10 +28,10 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	Double_t ptMax = 20;
 
 	TH1 * hist = new TH2F("hMassPt", "(M,p_{T})_{#gamma#gamma}, %s; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fInvariantMass = new DetectorHistogram(hist, fListOfHistos, kTRUE);
+	fInvariantMass = new DetectorHistogram(hist, fListOfHistos);
 
 	hist = new TH2F("hMixMassPt", "(M,p_{T})_{#gamma#gamma}, %s; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fMixedInvariantMass = new DetectorHistogram(hist, fListOfHistos, kTRUE);
+	fMixedInvariantMass = new DetectorHistogram(hist, fListOfHistos);
 
 
 	fListOfHistos->Add(new TH2F("hMassPtM123", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2 in modules 1,2,3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));

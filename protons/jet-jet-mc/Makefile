@@ -2,21 +2,9 @@ DATASET = LHC17f8a
 DPART = first
 MC = kTRUE
 
-PtBins = 1 2 
-#PtBins = 4 5 6
-#PtBins = 7 8 9 10 
-#PtBins = 10 11 12
-#PtBins = 13 14 15
-#PtBins = 16 17 18
-#PtBins = 19 20
 # PtBins = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-#PtBins = 11 12 13 14 15 16 17 18 19 20
-#PtBins = 11 12 13 17 18 20
-# PtBins = 20 19 18 17 16 
-# PtBins = 15 14 13 12 11 
-# PtBins = 11 10 9 8 7 6 
-# PtBins = 5
-# 4 3 2 1
+# PtBins = 1 2 3 4 5 6 7 8 9 10
+PtBins = 11 12 13 14 15 16 17 18 19 20
 
 grid: | %.cxx
 	$(call jetjet,gridstart,$(DATASET))
@@ -82,7 +70,7 @@ define gridstart
 	root -l -b -q 'run.C("$(1)", "grid", "full", "$(DPART)", $(MC))' 
 	rm -f *.xml .*xml
 	echo "Started grid analysis on" "$(1)" >> .runhistory
-	sleep 10m
+	sleep 25m
 endef
 
 
