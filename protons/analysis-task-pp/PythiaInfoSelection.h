@@ -18,11 +18,22 @@
 class PythiaInfoSelection: public GeneralPhotonSelection
 {
 public:
-	PythiaInfoSelection(): GeneralPhotonSelection() {}
-	PythiaInfoSelection(const char * name, const char * title): GeneralPhotonSelection(name, title, 0, 0, 0, 0)
+	PythiaInfoSelection():
+		GeneralPhotonSelection(),
+		fXsec(0),
+		fTrials(0)
 	{
+
 	}
-	
+
+	PythiaInfoSelection(const char * name, const char * title):
+		GeneralPhotonSelection(name, title, 0, 0, 0, 0),
+		fXsec(0),
+		fTrials(0)
+	{
+
+	}
+
 	virtual void InitSelectionHistograms();
 
 	// Fetch all pythia info here
@@ -34,6 +45,11 @@ public:
 protected:
 	PythiaInfoSelection(const PythiaInfoSelection &);
 	PythiaInfoSelection & operator = (const PythiaInfoSelection &);
+
+private:
+	// NB: Don't delete these pointers
+	TH1F * fXsec;    //!
+	TH1F * fTrials;  //!
 
 	ClassDef(PythiaInfoSelection, 2)
 };
