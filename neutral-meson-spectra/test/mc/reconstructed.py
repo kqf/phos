@@ -46,7 +46,7 @@ class Estimator(object):
 
     def get_baseline(self):
         # TODO: Replace this histogram with hPt_#pi^{0}
-        generated = read_histogram(self.infile, self.selection, 'hPtGeneratedMC_#pi^{0}', 'generated')
+        generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
         PtDependent.divide_bin_width(generated)
         return generated 
 
@@ -54,10 +54,10 @@ class Estimator(object):
 class ParticleContributions(unittest.TestCase, Estimator):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a4.root'
+        self.infile = 'input-data/Pythia-LHC16-a5.root'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPt_#pi^{0}'
-        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
+        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
 
 
     def testContributions(self):

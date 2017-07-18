@@ -11,9 +11,9 @@ from spectrum.sutils import hsum
 class InspectSources(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a4.root'
+        self.infile = 'input-data/Pythia-LHC16-a5.root'
         self.selection = 'MCStudyOnlyTender'
-        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}']
+        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
 
 
     def get_baseline(self):

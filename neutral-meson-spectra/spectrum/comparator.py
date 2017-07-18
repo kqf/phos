@@ -196,7 +196,7 @@ def define_colors(ci = 1000):
     with open("config/colors.json") as f:
         conf = json.load(f)
         
-    colors = conf["colors"][::-1]
+    colors = conf["colors"]
     rcolors = [[b / 255. for b in c] for c in colors]
     rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
     return ci, rcolors
