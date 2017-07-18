@@ -4,6 +4,7 @@
 
 // --- ROOT system ---
 #include <TString.h>
+#include <TH2.h>
 
 
 #include <iostream>
@@ -12,35 +13,41 @@ using namespace std;
 
 //
 //________________________________________________________________
-DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, Mode mode):
+DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, DetectorHistogram::Mode mode):
+	fHistogram123(0),
+	fHistograms(),
+	fInterModuleHistograms(),
 	fMode(mode)
 
 {
 	if (!owner->IsOwner())
 		cout << "Warning: You are adding histograms to the list that doesn't have ownership" << endl;
 
+	// TODO: Use factory method here once it will be clear what are the requiremets for this class
+	//
+
 	TString name = hist->GetName();
-	const char * title = hist->GetTitle();
-	for ( Int_t i = 0; i < 2; ++i)
+    TString title = hist->GetTitle();
+
+	fHistogram123 = dynamic_cast<TH1 *>( hist->Clone(name + "SM123") );
+	fHistogram123->SetTitle(Title(title.Data(), -1));
+	owner->Add(fHistogram123);
+
+	for (Int_t sm = 0; sm < (kLastModule + 1); ++sm)
 	{
-		fHistograms[i] = (i == 0) ? hist : dynamic_cast<TH1 *>( hist->Clone(name + "SM123") );
-		fHistograms[i]->SetTitle(Title(title, i));
-		owner->Add(fHistograms[i]);
+		if (sm > 1 && fMode == kSingleHist)
+			continue;
+
+		fHistograms[sm] = (sm == 0) ? hist : dynamic_cast<TH1 *>( hist->Clone(name + Form("SM%d", sm)) );
+		if (sm == 0 && fMode == kModules)
+			fHistograms[sm]->SetName(name + Form("SM%d", sm));
+
+		fHistograms[sm]->SetTitle(Title(title.Data(), sm));
+		owner->Add(fHistograms[sm]);
 	}
 
-	if (mode == kOnlyHist)
+	if (fMode != kInterModules)
 		return;
-
-	if (mode == kModules)
-	{
-		for (Int_t sm = kFirstModule; sm < (kLastModule + 1); ++sm)
-		{
-			fModuleHistograms[sm] = dynamic_cast<TH1 *>(hist->Clone(name + Form("SM%d", sm)));
-			fModuleHistograms[sm]->SetTitle(Title(title, sm, sm));
-			owner->Add(fModuleHistograms[sm]);
-		}
-		return;
-	}
 
 	for (Int_t sm = kFirstModule; sm < (kLastModule + 1); ++sm)
 	{
@@ -69,21 +76,64 @@ void DetectorHistogram::FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 		return;
 	}
 
+	// Fill histograms for all the modules
+	//
 	fHistograms[0]->Fill(x, y);
 
 	// Fill histograms without specific Module
+	//
 	if (sm1 != 4 &&  sm2 != 4)
-		fHistograms[1]->Fill(x, y);
+		fHistogram123->Fill(x, y);
 
 	FillModules(sm1, sm2, x, y);
 }
 
 //________________________________________________________________
+void DetectorHistogram::FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t y, Float_t z)
+{
+	if (sm1 < kFirstModule || sm1 > kLastModule)
+	{
+		cout << "Illegal module: " << sm1 << endl;
+		return;
+	}
+
+	if (sm2 < kFirstModule || sm2 > kLastModule)
+	{
+		cout << "Illegal module: " << sm2 << endl;
+		return;
+	}
+
+	// Fill histograms for all the modules
+	//
+	dynamic_cast<TH2 *>(fHistograms[0])->Fill(x, y, z);
+
+	// Fill histograms without specific Module
+	//
+	if (sm1 != 4 &&  sm2 != 4)
+		dynamic_cast<TH2 *>(fHistogram123)->Fill(x, y, z);
+
+	FillModules(sm1, sm2, x, y, z);
+}
+
+//________________________________________________________________
+void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y, Float_t z)
+{
+
+	if (sm1 == sm2 && fMode == kModules)
+		dynamic_cast<TH2 *>(fHistograms[sm1])->Fill(x, y, z);
+
+	if (fMode == kInterModules)
+		dynamic_cast<TH2 *>(fInterModuleHistograms[Index(sm1, sm2)])->Fill(x, y, z);
+}
+
+
+
+//________________________________________________________________
 void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 {
 
-	if(sm1 == sm2 && fMode == kModules)
-		fModuleHistograms[sm1]->Fill(x, y);
+	if (sm1 == sm2 && fMode == kModules)
+		fHistograms[sm1]->Fill(x, y);
 
 	if (fMode == kInterModules)
 		fInterModuleHistograms[Index(sm1, sm2)]->Fill(x, y);
@@ -92,7 +142,11 @@ void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 //________________________________________________________________
 TString DetectorHistogram::Title(const char * title, Int_t i) const
 {
-	TString s = (i == 0) ? " all modules " : "modules 1, 2, 3";
+	if (i == -1)
+		return Form(title, "M123");
+
+	TString s = (i == 0) ? "all modules" : Form("M%d", i);
+
 	return Form(title, s.Data());
 }
 

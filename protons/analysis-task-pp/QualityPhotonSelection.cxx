@@ -28,54 +28,40 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	Double_t ptMax = 20;
 
 
-	// Z-vertex 
+	// Z-vertex
 	fListOfHistos->Add(new TH1F("hZvertex", "Reconstructed vertex Z-coordinate; z_{vtx}, cm; counts", 200, -12, 12));
 
 	// Info about selected clusters
 	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; E, GeV; N_{cell}", 41, 0, 40, 81, 0, 80));
 	fListOfHistos->Add(new TH2F("hShapeE", "Cluster shape; E, GeV; M20, cm", 41, 0, 40, 41, 0, 40));
 
-
-	// Heatmap check for physics
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM_0_SM%d", i), mtitle("Cluster N(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM_0_SM%d", i), mtitle("Cluster E(X,Z), %s, E < 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluNXZM_1_SM%d", i), mtitle("Cluster N(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hCluEXZM_1_SM%d", i), mtitle("Cluster E(X,Z), %s, E > 1 GeV", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
-
-
-
-	// Heatmap check for physics + check abs Id numbering
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584  + 0.5));
-
 	// Test Assymetry cut
-	//
 	fListOfHistos->Add(new TH3F("hMassPtA", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
 	fListOfHistos->Add(new TH3F("hMixMassPtA", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
 
-	fListOfHistos->Add(new TH2F("hAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
-	fListOfHistos->Add(new TH2F("hMixAsymmetry", "(p_{T}, A)_{#gamma#gamma}, N_{cell}>2; p_{T}, GeV/c, Asymmetry ", nPt, ptMin, ptMax / 2., 20, 0., 1.));
+	// Cluster occupancy
+	for(Int_t i = 0; i < 2; ++i)
+	{
+		TString tenergy = Form(", E %s 1,", i == 0 ? "<" : ">");
+		fClusterNXZ[i] = new DetectorHistogram(new TH2F(Form("hCluNXZM_%d_", i), "Cluster N(X,Z)" + tenergy + " %s ; x; z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
+		fClusterEXZ[i] = new DetectorHistogram(new TH2F(Form("hCluEXZM_%d_", i), "Cluster E(X,Z)" + tenergy + " %s ; x; z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
+	}
 
+	// Time maps
+	fClusterTime    = new DetectorHistogram(new TH1F("hClusterTime", "Cluster Time scaled by E, %s ;t, s", 4800, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, DetectorHistogram::kModules);
+	fClusterEvsT    = new DetectorHistogram(new TH2F("hClusterEvsT", "Cluster energy vs time, %s ; cluster energy, GeV; time, s", 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, DetectorHistogram::kModules);
+	fClusterTimeMap = new DetectorHistogram(new TH2F("hClusterTimeMap", "Cluster time map, %s ; X; Z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
 
-	// Timing cut
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterTime%d", i), mtitle("Cluster Time scaled by E, %s; t, s", i), 4800, -0.25 * 1e-6, 0.25 * 1e-6));
+	// Heatmap check for physics + check abs Id numbering
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
+	for (Int_t i = 1; i < 5;  ++i)
+		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
 
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hClusterEvsTM%d", i), mtitle("Cluster energy vs time, %s; cluster energy, GeV; time, s", i), 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6));
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hClusterTimeMap%d", i), mtitle("Cluster time map, %s; X; Z", i), 64, 0.5, 64.5, 56, 0.5, 56.5));
 }
 
 
@@ -104,7 +90,6 @@ void QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 
 	const char * suff = eflags.isMixing ? "Mix" : "";
 	FillHistogram(Form("h%sMassPtA", suff), ma12 , pt12, asym);
-	FillHistogram(Form("h%sAsymmetry", suff), pt12, asym);
 }
 
 
@@ -127,14 +112,9 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 
 		if (!eflags.isMixing)
 		{
-			FillHistogram(Form("hClusterTime%d", sm), tof, clus->E());
-			FillHistogram(Form("hClusterEvsTM%d", sm), clus->E(), tof);
-			FillHistogram(Form("hClusterTimeMap%d", sm), x, z, tof);
-
-			FillHistogram(Form("hClusterTime%d", 0), tof, clus->E());
-			FillHistogram(Form("hClusterEvsTM%d", 0), clus->E(), tof);
-			FillHistogram(Form("hClusterTimeMap%d", 0), x, z, tof);
-
+			fClusterTime->FillAll(sm, sm, clus->E());
+			fClusterEvsT->FillAll(sm, sm, tof, clus->E());
+			fClusterTimeMap->FillAll(sm, sm, x, z, tof);
 		}
 		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
 
@@ -152,8 +132,8 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		Float_t energy = clus->E();
 		Int_t isHighECluster = Int_t(energy > 1.);
 
-		FillHistogram(Form("hCluNXZM_%d_SM%d", isHighECluster, sm), x, z, 1.);
-		FillHistogram(Form("hCluEXZM_%d_SM%d", isHighECluster, sm), x, z, energy);
+		fClusterNXZ[isHighECluster]->FillAll(sm, sm, x, z, 1.);
+		fClusterEXZ[isHighECluster]->FillAll(sm, sm, x, z, energy);
 
 		FillHistogram(Form("hClusterIdN_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm));
 		FillHistogram(Form("hClusterIdE_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm), energy);

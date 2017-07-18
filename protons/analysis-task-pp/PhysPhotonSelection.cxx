@@ -33,11 +33,6 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	hist = new TH2F("hMixMassPt", "(M,p_{T})_{#gamma#gamma}, %s; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
 	fMixedInvariantMass = new DetectorHistogram(hist, fListOfHistos);
 
-
-	fListOfHistos->Add(new TH2F("hMassPtM123", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2 in modules 1,2,3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPtM123", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2 in modules 1,2,3; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-
-
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
@@ -78,10 +73,6 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 		fMixedInvariantMass->FillAll(sm1, sm2, ma12, pt12);
 	else
 		fInvariantMass->FillAll(sm1, sm2, ma12, pt12);
-
-	const char * suff = eflags.isMixing ? "Mix" : "";
-	if (sm1 != 4 && sm2 != 4)
-		FillHistogram(Form("h%sMassPtM123", suff), ma12 , pt12);
 }
 
 //________________________________________________________________

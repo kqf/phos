@@ -3,7 +3,7 @@
 # MC = kFALSE
 
 
-DATASET = LHC16j2a1
+DATASET = LHC16j2a2
 DPART = second
 MC = kTRUE
 
@@ -77,7 +77,7 @@ endef
 
 define upload_result
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
 endef
 
 
