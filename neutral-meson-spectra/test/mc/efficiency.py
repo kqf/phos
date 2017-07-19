@@ -31,9 +31,14 @@ class Efficiency(unittest.TestCase):
         self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
         # self.pythiaf = 'input-data/scaled-LHC17f8a.root'
-        self.pythiaf = 'input-data/Pythia-LHC16-a1.root'
-        self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
-        self.true_pt_mc = 'hPtGeneratedMC_#pi^{0}'
+        self.pythiaf = 'input-data/Pythia-LHC16-a4.root'
+        self.eposf = 'input-data/scaled-LHC17f8a.root'
+
+        # To compare more than 1 production
+        self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root'}
+        # self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root', 'jet jet': 'input-data/scaled-LHC17f8a.root'}
+        # self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
+        self.true_pt_mc = 'hPt_#pi^{0}'
 
 
     def getEffitiencyFunction(self):
@@ -61,10 +66,8 @@ class Efficiency(unittest.TestCase):
     @cache
     def efficiency(self, iname, genname, label):
         oname = '{0}.{1}.eff'.format(iname, label)
-        print oname
         ratio = self.readEfficiency(oname)
         if ratio: 
-            print 'here'
             return ratio
 
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
@@ -73,7 +76,7 @@ class Efficiency(unittest.TestCase):
         true = read_histogram(iname, self.mc_selection, genname, label = 'Generated', priority = 0)
         PtDependent.divide_bin_width(true)
 
-        reco = f(Input(iname, self.selection).read(), 'Reconstructed', Options())[4]
+        reco = f(Input(iname, self.selection, 'MassPt').read(), 'Reconstructed', Options())[4]
         PtDependent.divide_bin_width(reco)
 
         reco.logy = True
@@ -85,17 +88,16 @@ class Efficiency(unittest.TestCase):
 
         diff = Comparator()
         ratio = diff.compare(reco, true)
+        ratio.label = label
 
         if oname: save_tobject(ratio, oname)
         return ratio
 
     # @unittest.skip('')
     def testProductions(self):
-        eff2 = self.efficiency(self.pythiaf, self.true_pt_mc, 'pythia')
-        eff1 = self.efficiency(self.eposf, self.true_pt_mc, 'epos')
-
+        efficiencies = [self.efficiency(f, self.true_pt_mc, k) for k, f in self.productions.iteritems()]
         diff = Comparator()
-        diff.compare(eff1, eff2)
+        diff.compare(efficiencies)
 
 
     @unittest.skip('')

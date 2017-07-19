@@ -12,6 +12,7 @@ class InspectSources(unittest.TestCase):
 
     def setUp(self):
         self.infile = 'input-data/Pythia-LHC16-a5.root'
+        self.infile = 'input-data/scaled-LHC17f8a.root'
         self.selection = 'MCStudyOnlyTender'
         self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
 
@@ -32,7 +33,7 @@ class InspectSources(unittest.TestCase):
 
         generated = self.get_baseline()
 
-        diff = Comparator()
+        diff = Comparator(crange = (1e-15, 1.))
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy= True)
 

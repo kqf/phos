@@ -57,6 +57,8 @@ class Spectrum(object):
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
+        # Doesn't fit and use default parameters for 
+        # width/mass, therefore this will give correct estimation
         if self.fit:
             quant.Fit(fitquant, "q")
 
