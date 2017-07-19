@@ -35,8 +35,8 @@ class Efficiency(unittest.TestCase):
         self.eposf = 'input-data/scaled-LHC17f8a.root'
 
         # To compare more than 1 production
-        self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root'}
-        # self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root', 'jet jet': 'input-data/scaled-LHC17f8a.root'}
+        # self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root'}
+        self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root', 'jet jet': 'input-data/scaled-LHC17f8a.root'}
         # self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
         self.true_pt_mc = 'hPt_#pi^{0}'
 
@@ -62,6 +62,12 @@ class Efficiency(unittest.TestCase):
             return None
         return infile.GetListOfKeys().At(0).ReadObj()
 
+    def get_true_distribution(self, iname, genname, label = 'Generated'):
+        true = read_histogram(iname, self.mc_selection, genname, label = label, priority = 0)
+        PtDependent.divide_bin_width(true)
+        true.logy = True
+        return true
+
 
     @cache
     def efficiency(self, iname, genname, label):
@@ -73,14 +79,11 @@ class Efficiency(unittest.TestCase):
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
         ## Calculate yield for mc 
 
-        true = read_histogram(iname, self.mc_selection, genname, label = 'Generated', priority = 0)
-        PtDependent.divide_bin_width(true)
-
+   
+        true = get_true_distribution(iname, genname, 'Generated')
         reco = f(Input(iname, self.selection, 'MassPt').read(), 'Reconstructed', Options())[4]
         PtDependent.divide_bin_width(reco)
-
         reco.logy = True
-        true.logy = True
 
         # data.fifunc = self.getNonlinearityFunction()
 
@@ -93,11 +96,22 @@ class Efficiency(unittest.TestCase):
         if oname: save_tobject(ratio, oname)
         return ratio
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def testProductions(self):
         efficiencies = [self.efficiency(f, self.true_pt_mc, k) for k, f in self.productions.iteritems()]
         diff = Comparator()
         diff.compare(efficiencies)
+
+
+    def testSpectrums(self):
+        """ 
+            This test checks the denominators of the efficiencies.
+        """
+        true = [self.get_true_distribution(f, self.true_pt_mc, k) for k, f in self.productions.iteritems()]
+        map(lambda x: x.Scale(1./ x.Integral('w')), true)
+        diff = Comparator()
+        diff.compare(true)
+
 
 
     @unittest.skip('')

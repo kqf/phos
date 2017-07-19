@@ -59,8 +59,11 @@ class Spectrum(object):
 
         # Doesn't fit and use default parameters for 
         # width/mass, therefore this will give correct estimation
-        if self.fit:
-            quant.Fit(fitquant, "q")
+        if not self.fit:
+            [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
+
+
+        quant.Fit(fitquant, "q")
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
