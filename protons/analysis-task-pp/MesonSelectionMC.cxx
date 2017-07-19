@@ -43,8 +43,7 @@ void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * 
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	const char * suff = eflags.isMixing ? "Mix" : "";
-	FillHistogram(Form("h%sMassPt", suff), ma12 , pt12);
+	fInvMass[eflags.isMixing]->Fill(ma12, pt12);
 
 	if (eflags.isMixing)
 		return;
@@ -113,8 +112,11 @@ void MesonSelectionMC::InitSelectionHistograms()
 	Double_t ptMin = 0;
 	Double_t ptMax = 20;
 
-	fListOfHistos->Add(new TH2F("hMassPt", "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
-	fListOfHistos->Add(new TH2F("hMixMassPt", "Mixed (M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax));
+	for(Int_t i = 0; i < 2; ++i)
+	{
+		fInvMass[i] = new TH2F(Form("h%sMassPt", i == 0 ? "": "Mix") , "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+		fListOfHistos->Add(fInvMass[i]);
+	}
 
 
 	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
@@ -252,25 +254,6 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 }
 
 //________________________________________________________________
-void MesonSelectionMC::FillClusterMC(const AliVCluster * cluster, TClonesArray * particles)
-{
-	// TODO: Remove this method ?
-	// Particle # reached PHOS front surface
-	Int_t label = cluster->GetLabelAt(0) ;
-
-	if (label <= -1)
-		return;
-
-	AliAODMCParticle * parent = dynamic_cast<AliAODMCParticle *> (particles->At(label));
-
-	while ((!IsPrimary(parent)) && (label > -1))
-		parent = GetParent(label, label, particles);
-
-	if (!parent)
-		return;
-}
-
-//________________________________________________________________
 AliAODMCParticle * MesonSelectionMC::GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const
 {
 	if (label <= -1)
@@ -326,7 +309,7 @@ void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjA
 		// TODO: Redefine Cluster Histogram?
 		// There is no cluster histograms here
 		// FillClusterHistograms(clus, eflags);
-		FillClusterMC(clus, eflags.fMcParticles);
+		// FillClusterMC(clus, eflags.fMcParticles);
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)

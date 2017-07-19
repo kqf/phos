@@ -38,7 +38,8 @@ public:
 		GeneralPhotonSelection(),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
-		fFeedDownPi0()
+		fFeedDownPi0(),
+		fInvMass()
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -66,7 +67,8 @@ public:
 		GeneralPhotonSelection(name, title, ec, a, n, t),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
-		fFeedDownPi0()
+		fFeedDownPi0(),
+		fInvMass()
 
 	{
 		// Don't use c++11 here, as it might fail at some nodes
@@ -117,8 +119,6 @@ protected:
 		Int_t plabel;
 		return GetParent(label, plabel, particles);
 	}
-	virtual void FillClusterMC(const AliVCluster * cluster, TClonesArray * particles);
-
 	MesonSelectionMC(const MesonSelectionMC &);
 	MesonSelectionMC & operator = (const MesonSelectionMC &);
 
@@ -126,6 +126,7 @@ protected:
 	ParticlesHistogram * fSecondaryPi0[kNhists];
 	ParticlesHistogram * fFeedDownPi0[kNhists];
 
+    TH1 * fInvMass[2];                     //!
 	typedef std::map<Int_t, TString> EnumNames;
 	EnumNames fPartNames;
 	EnumNames fPi0SourcesNames;
