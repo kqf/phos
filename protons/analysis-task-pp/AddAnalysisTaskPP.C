@@ -44,7 +44,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	
 	if(isTest)
 	{
-		selections->Add(new TestPhotonSelection("Test", "Cluster P_{t} Selection"));
+		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, timecut));
 	}
 
 
@@ -91,6 +91,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
 			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
+
+		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", 0.3, 1.0, 3, timecut));
 	}
 
 	// Setup task

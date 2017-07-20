@@ -1,5 +1,6 @@
 // --- Custom header files ---
 #include "TagAndProbeSelection.h"
+#include "DetectorHistogram.h"
 
 // --- ROOT system ---
 #include <TH2F.h>
@@ -36,7 +37,7 @@ void TagAndProbeSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, cons
 
 		for (Int_t j = 0; j < photonCandidates.GetEntriesFast(); j++)
 		{
-			if(i == j) // Skip the same clusters
+			if (i == j) // Skip the same clusters
 				continue;
 
 			AliVCluster * proble = dynamic_cast<AliVCluster *> (photonCandidates.At(j));
@@ -62,20 +63,12 @@ void TagAndProbeSelection::ConsiderPair(const AliVCluster * c1, const AliVCluste
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
 
-	const char * suff = eflags.isMixing ? "Mix" : "";
-
-	FillHistogram(Form("h%sMassEnergyAll_SM%d", suff, 0), m12 , energy);
-
-	if(sm1 == sm2)
-		FillHistogram(Form("h%sMassEnergyAll_SM%d", suff, sm1), m12 , energy);
+	fMassEnergyAll[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, energy);
 
 	if (TMath::Abs(c2->GetTOF()) > fTimingCut)
 		return;
 
-	FillHistogram(Form("h%sMassEnergyTOF_SM%d", suff, 0), m12 , energy);
-
-	if(sm1 == sm2)
-		FillHistogram(Form("h%sMassEnergyTOF_SM%d", suff, sm1), m12 , energy);
+	fMassEnergyTOF[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, energy);
 }
 
 
@@ -92,28 +85,24 @@ void TagAndProbeSelection::InitSelectionHistograms()
 	Double_t eMax = 20;
 
 
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hMassEnergyAll_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
+	for (Int_t i = 0; i < 2; ++i)
+	{
+		const char * sf = (i == 0) ? "" : "Mix";
+		TH2F * hist1 = new TH2F(Form("h%sMassEnergyAll_", sf), "(M_{#gamma#gamma}, E_{probe}) ; M_{#gamma#gamma}, GeV; E_{proble}, GeV", nM, mMin, mMax, nE, eMin, eMax);
+		TH2F * hist2 = new TH2F(Form("h%sMassEnergyTOF_", sf), "(M_{#gamma#gamma}, E_{probe}) ; M_{#gamma#gamma}, GeV; E_{proble}, GeV", nM, mMin, mMax, nE, eMin, eMax);
 
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hMassEnergyTOF_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
+		fMassEnergyAll[i] = new DetectorHistogram(hist1, fListOfHistos, DetectorHistogram::kModules);
+		fMassEnergyTOF[i] = new DetectorHistogram(hist2, fListOfHistos, DetectorHistogram::kModules);
+	}
 
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hMixMassEnergyAll_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH2F(Form("hMixMassEnergyTOF_SM%d", i), mtitle("(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{proble}, GeV", i), nM, mMin, mMax, nE, eMin, eMax));	
-
-
-	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
+	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
-		if(!hist) continue;
+		if (!hist) continue;
 		hist->Sumw2();
 	}
 
 }
-
 
 //________________________________________________________________
 void TagAndProbeSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
