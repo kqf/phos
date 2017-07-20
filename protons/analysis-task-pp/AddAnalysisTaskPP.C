@@ -5,13 +5,12 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
+    gROOT->LoadMacro("DetectorHistogram.cxx+");
     gROOT->LoadMacro("PhotonSelection.cxx+");
     gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("QualityPhotonSelection.cxx+");
-    gROOT->LoadMacro("DetectorHistogram.cxx+");
     gROOT->LoadMacro("ParticlesHistogram.cxx+");
-    gROOT->LoadMacro("TestPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("TagAndProbeSelection.cxx+");
@@ -140,13 +139,12 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	TString libs   = plugin->GetAdditionalLibs();
 	plugin->SetAnalysisSource(
 		sources +
+	    "DetectorHistogram.cxx " +
 	    "PhotonSelection.cxx " +
 	    "GeneralPhotonSelection.cxx " +
 	    "PhotonSpectrumSelection.cxx " +
 	    "QualityPhotonSelection.cxx " +
-	    "DetectorHistogram.cxx " +
 	    "ParticlesHistogram.cxx " +
-	    "TestPhotonSelection.cxx " +
 	    "PhysPhotonSelection.cxx " +
 	    "PhotonTimecutSelection.cxx " +
 	    "TagAndProbeSelection.cxx " +
@@ -160,6 +158,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	plugin->SetAdditionalLibs(
 		libs +
 		"libPWGGAPHOSTasks.so "	+
+	    "DetectorHistogram.cxx " +
+	    "DetectorHistogram.h " +
 	    "PhotonSelection.cxx " +
 	    "PhotonSelection.h " +
 	    "GeneralPhotonSelection.cxx " +
@@ -168,12 +168,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhotonSpectrumSelection.h " +
 	    "QualityPhotonSelection.cxx " +
 	    "QualityPhotonSelection.h " +
-	    "DetectorHistogram.cxx " +
-	    "DetectorHistogram.h " +
 	    "ParticlesHistogram.cxx " +
 	    "ParticlesHistogram.h " +
-	    "TestPhotonSelection.cxx " +
-	    "TestPhotonSelection.h " +
 	    "PhysPhotonSelection.cxx " +
 	    "PhysPhotonSelection.h " +
 	    "PhotonTimecutSelection.cxx " +

@@ -23,7 +23,6 @@
 #include <AliMCEvent.h>
 
 // --- Custom libraries ---
-#include "TestPhotonSelection.h"
 #include "PhysPhotonSelection.h"
 #include "PhotonTimecutSelection.h"
 #include "MesonSelectionMC.h"
