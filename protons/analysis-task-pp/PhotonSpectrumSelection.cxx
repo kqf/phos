@@ -37,17 +37,11 @@ void PhotonSpectrumSelection::InitSelectionHistograms()
 
 	this->SetTitle(Form("%s ## CPV = %.1f cm, Disp = %1.f cm", this->GetTitle(), fDistanceCPV, fDispersionCut));
 
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterPt_SM%d", i), mtitle("Cluster p_{T}, %s; cluster p_{T}, GeV/c; counts", i), nPt, ptMin, ptMax));
+	fSpectrum     = new DetectorHistogram(new TH1F("hClusterPt_",               "Cluster p_{T}, ; cluster p_{T}, GeV/c; counts", nPt, ptMin, ptMax), fListOfHistos, DetectorHistogram::kModules);
+	fSpectrumCPV  = new DetectorHistogram(new TH1F("hClusterPt_cpv_",      Form("Cluster p_{T} with CPV cut %.1f cm, ; cluster p_{T}, GeV/c; counts", fDistanceCPV) , nPt, ptMin, ptMax), fListOfHistos, DetectorHistogram::kModules);
+	fSpectrumDisp = new DetectorHistogram(new TH1F("hClusterPt_disp_",     Form("Cluster p_{T} with dispersion cut %.1f cm, ; cluster p_{T}, GeV/c; counts", fDispersionCut), nPt, ptMin, ptMax), fListOfHistos, DetectorHistogram::kModules);
+	fSpectrumBoth = new DetectorHistogram(new TH1F("hClusterPt_cpv_disp_", Form("Cluster p_{T} with CPV %.1f cm and dispersion %.1f cm cuts, ; cluster p_{T}, GeV/c; counts", fDistanceCPV, fDispersionCut), nPt, ptMin, ptMax), fListOfHistos, DetectorHistogram::kModules);
 
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterPt_cpv_SM%d", i), mtitle(TString(Form("Cluster p_{T} with CPV cut %.1f cm", fDistanceCPV)) + ", %s; cluster p_{T}, GeV/c; counts", i), nPt, ptMin, ptMax));
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterPt_disp_SM%d", i), mtitle(TString(Form("Cluster p_{T} with dispersion cut %.1f cm", fDispersionCut)) + ", %s; cluster p_{T}, GeV/c; counts", i), nPt, ptMin, ptMax));
-
-	for (Int_t i = 0; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterPt_cpv_disp_SM%d", i), mtitle(TString(Form("Cluster p_{T} with CPV %.1f cm and dispersion %.1f cm cuts", fDistanceCPV, fDispersionCut)) + ", %s; cluster p_{T}, GeV/c; counts", i), nPt, ptMin, ptMax));
 
 	for(Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
@@ -66,28 +60,18 @@ void PhotonSpectrumSelection::FillClusterHistograms(const AliVCluster * clus, co
 	TLorentzVector p;
 	clus->GetMomentum(p, eflags.vtxBest);
 
-	FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
-	FillHistogram(Form("hClusterPt_SM%d", sm), p.Pt());
+	fSpectrum->FillAll(sm, sm, p.Pt());
 
 	Bool_t cpv = clus->GetEmcCpvDistance() > fDistanceCPV;
 	if (cpv)
-	{
-		FillHistogram(Form("hClusterPt_cpv_SM%d", 0), p.Pt());
-		FillHistogram(Form("hClusterPt_cpv_SM%d", sm), p.Pt());
-	}
+		fSpectrumCPV->FillAll(sm, sm, p.Pt());
 
 	Bool_t disp = TestLambda(clus->GetM20(), clus->GetM02(), fDispersionCut);
 
 	if (disp)
-	{
-		FillHistogram(Form("hClusterPt_disp_SM%d", 0), p.Pt());
-		FillHistogram(Form("hClusterPt_disp_SM%d", sm), p.Pt());
-	}
+		fSpectrumDisp->FillAll(sm, sm, p.Pt());
 
 	if (cpv && disp)
-	{
-		FillHistogram(Form("hClusterPt_cpv_disp_SM%d", 0), p.Pt());
-		FillHistogram(Form("hClusterPt_cpv_disp_SM%d", sm), p.Pt());
-	}
+		fSpectrumBoth->FillAll(sm, sm, p.Pt());
 
 }

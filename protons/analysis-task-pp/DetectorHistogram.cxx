@@ -143,11 +143,11 @@ void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 TString DetectorHistogram::Title(const char * title, Int_t i) const
 {
 	if (i == -1)
-		return Form(title, "M123");
+		return TString(title) + "SM123";
 
-	TString s = (i == 0) ? "all modules" : Form("M%d", i);
+	TString s = (i == 0) ? "all modules" : Form("SM%d", i);
 
-	return Form(title, s.Data());
+	return TString(title) + s;
 }
 
 //________________________________________________________________

@@ -84,6 +84,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", 0.3, 1.0, 3, fake_timecut));
 		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
+
 		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(fake_timecut);
 		selections->Add(sel);
@@ -91,7 +92,10 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
 			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
 
+
+		// Test selections
 		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", 0.3, 1.0, 3, timecut));
+		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, timecut, 10., 3.));
 	}
 
 	// Setup task
