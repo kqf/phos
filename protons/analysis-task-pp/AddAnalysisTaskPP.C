@@ -96,6 +96,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		// Test selections
 		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", 0.3, 1.0, 3, timecut));
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, timecut, 10., 3.));
+		selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
 	}
 
 	// Setup task
@@ -191,7 +192,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliAnalysisTaskPP.h " 
 	);
 
-	cout << "REACHED HERE" << endl;
 	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
 }
 
