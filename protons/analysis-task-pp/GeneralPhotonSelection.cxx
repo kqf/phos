@@ -3,7 +3,9 @@
 // #include "AliAnalysisTaskPP.h"
 
 // --- ROOT system ---
-#include <TH1F.h>
+#include <TH2F.h>
+#include <TH3F.h>
+
 
 // --- AliRoot header files ---
 #include <AliLog.h>
@@ -23,21 +25,33 @@ void GeneralPhotonSelection::InitSummaryHistograms()
 	fListOfHistos->SetOwner(kTRUE);
 	InitSelectionHistograms();
 
-	TString cuts = Form(";\nCuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns", fClusterMinE, fAsymmetryCut, fNCellsCut, fTimingCut * 1e+9);
+	TString cuts = Form(
+		 	            ";\nCuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns", 
+						fClusterMinE,
+						fAsymmetryCut,
+						fNCellsCut,
+						fTimingCut * 1e+9
+					   );
+
 	this->SetTitle(this->GetTitle() + cuts);
 
 	cout << "Adding " << this->GetName() << ": " << this->GetTitle() << endl;
 
 
-	fListOfHistos->AddFirst( new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0) ); // Very important!!! Description, dummy way
+	// This histogram should't be modified, therefore 
+	// there is only local pointer to it 
+	TH1C * description = new TH1C(TString("h_description_") + this->GetName(), this->GetTitle(), 1, 0, 0);
+	fListOfHistos->AddFirst(description); // Very important!!! Description, dummy way
+
+
 	// The true event counter
-	TH1 * evntCounter = new TH1F("EventCounter", "Event cuts", 5, 0, 5);
-	evntCounter->GetXaxis()->SetBinLabel(1, "MB");
-	evntCounter->GetXaxis()->SetBinLabel(2, "all good");
-	evntCounter->GetXaxis()->SetBinLabel(3, "|Z_{vtx}| < 10");
-	evntCounter->GetXaxis()->SetBinLabel(4, "N_{vtx contrib} > 0");
-	evntCounter->GetXaxis()->SetBinLabel(5, "N_{#gamma} > 2");
-	fListOfHistos->AddFirst(evntCounter);
+	TH1 * fEventCounter = new TH1F("EventCounter", "Event cuts", 5, 0, 5);
+	fEventCounter->GetXaxis()->SetBinLabel(1, "MB");
+	fEventCounter->GetXaxis()->SetBinLabel(2, "all good");
+	fEventCounter->GetXaxis()->SetBinLabel(3, "|Z_{vtx}| < 10");
+	fEventCounter->GetXaxis()->SetBinLabel(4, "N_{vtx contrib} > 0");
+	fEventCounter->GetXaxis()->SetBinLabel(5, "N_{#gamma} > 2");
+	fListOfHistos->AddFirst(fEventCounter);
 
 }
 
@@ -51,6 +65,10 @@ void GeneralPhotonSelection::CountMBEvent()
 //________________________________________________________________
 GeneralPhotonSelection::~GeneralPhotonSelection()
 {
+	// Don't delete fEventCounter and other ROOT objects
+	// root has it's own memory management.
+	// 
+	
 	delete fListOfHistos;
 }
 

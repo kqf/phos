@@ -7,12 +7,11 @@
 // --- ROOT system ---
 #include <TObjArray.h>
 #include <TList.h>
+#include <TH1F.h>
 #include <TH2F.h>
 #include <TH3F.h>
 
-
 // --- AliRoot header files ---
-#include <AliVCaloCells.h>
 #include <AliVCluster.h>
 #include <AliLog.h>
 
@@ -26,14 +25,22 @@ class GeneralPhotonSelection : public PhotonSelection
 {
 public:
 
-	GeneralPhotonSelection(): PhotonSelection(), fListOfHistos(0), fClusterMinE(0.3), fAsymmetryCut(1.0), fNCellsCut(3) {}
+	GeneralPhotonSelection():
+		PhotonSelection(),
+		fListOfHistos(0),
+		fClusterMinE(0.3),
+		fAsymmetryCut(1.0),
+		fNCellsCut(3)
+	{}
+
 	GeneralPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
 		PhotonSelection(name, title),
 		fListOfHistos(0),
 		fClusterMinE(ec),
 		fAsymmetryCut(a),
 		fTimingCut(t),
-		fNCellsCut(n)
+		fNCellsCut(n),
+		fEventCounter(0)
 	{}
 
 	virtual ~GeneralPhotonSelection();
@@ -41,7 +48,7 @@ public:
 	virtual void InitSummaryHistograms();
 	virtual void InitSelectionHistograms() = 0;
 	virtual void CountMBEvent();
-	
+
 	virtual Bool_t SelectEvent(const EventFlags & flgs);
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
@@ -69,6 +76,7 @@ protected:
 	Float_t fTimingCut;
 	Int_t fNCellsCut;
 
+	TH1 * fEventCounter;  //!
 private:
 	ClassDef(GeneralPhotonSelection, 2)
 };

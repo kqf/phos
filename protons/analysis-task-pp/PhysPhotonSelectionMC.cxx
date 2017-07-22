@@ -1,8 +1,5 @@
 // --- Custom header files ---
 #include "PhysPhotonSelectionMC.h"
-// #include "AliAnalysisTaskPP.h"
-
-// --- ROOT system ---
 
 // --- AliRoot header files ---
 #include <AliPHOSAodCluster.h>
