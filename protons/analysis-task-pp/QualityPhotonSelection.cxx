@@ -43,25 +43,24 @@ void QualityPhotonSelection::InitSelectionHistograms()
 	for(Int_t i = 0; i < 2; ++i)
 	{
 		TString tenergy = Form(", E %s 1,", i == 0 ? "<" : ">");
-		fClusterNXZ[i] = new DetectorHistogram(new TH2F(Form("hCluNXZM_%d_", i), "Cluster N(X,Z)" + tenergy + " %s ; x; z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
-		fClusterEXZ[i] = new DetectorHistogram(new TH2F(Form("hCluEXZM_%d_", i), "Cluster E(X,Z)" + tenergy + " %s ; x; z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
+		fClusterNXZ[i] = new DetectorHistogram(new TH2F(Form("hCluNXZM_%d_", i), "Cluster N(X,Z)" + tenergy + " ; x; z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
+		fClusterEXZ[i] = new DetectorHistogram(new TH2F(Form("hCluEXZM_%d_", i), "Cluster E(X,Z)" + tenergy + " ; x; z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
 	}
 
 	// Time maps
-	fClusterTime    = new DetectorHistogram(new TH1F("hClusterTime", "Cluster Time scaled by E, %s ;t, s", 4800, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, DetectorHistogram::kModules);
-	fClusterEvsT    = new DetectorHistogram(new TH2F("hClusterEvsT", "Cluster energy vs time, %s ; cluster energy, GeV; time, s", 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, DetectorHistogram::kModules);
-	fClusterTimeMap = new DetectorHistogram(new TH2F("hClusterTimeMap", "Cluster time map, %s ; X; Z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
+	fClusterTime    = new DetectorHistogram(new TH1F("hClusterTime", "Cluster Time scaled by E, ;t, s", 4800, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, DetectorHistogram::kModules);
+	fClusterEvsT    = new DetectorHistogram(new TH2F("hClusterEvsT", "Cluster energy vs time, ; cluster energy, GeV; time, s", 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, DetectorHistogram::kModules);
+	fClusterTimeMap = new DetectorHistogram(new TH2F("hClusterTimeMap", "Cluster time map, ; X; Z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, DetectorHistogram::kModules);
 
-	// Heatmap check for physics + check abs Id numbering
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_0_SM%d", i), mtitle("Cluster N(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_0_SM%d", i), mtitle("Cluster E(Id), %s, E < 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdN_1_SM%d", i), mtitle("Cluster N(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
-	for (Int_t i = 1; i < 5;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterIdE_1_SM%d", i), mtitle("Cluster E(Id), %s, E > 1 GeV", i), 3584, 0.5 + (i - 1) * 3584 , i * 3584 + 0.5));
+	for(Int_t i = 0; i < 2; ++i)
+	{
+		const char * s = (i == 0) ? "E < 1 GeV": "E > 1 GeV";
+		fClusterIdN[i] = new TH1F(Form("hClusterIdN_%d", i), Form("Cluster N(Id), %s; id ", s), 4 * 3584, 0.5, 4 * 3584 + 0.5);
+		fClusterIdE[i] = new TH1F(Form("hClusterIdE_%d", i), Form("Cluster E(Id), %s; id ", s), 4 * 3584, 0.5, 4 * 3584 + 0.5);
 
+		fListOfHistos->Add(fClusterIdN[i]);
+		fListOfHistos->Add(fClusterIdE[i]);
+	}
 }
 
 
@@ -135,12 +134,16 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		fClusterNXZ[isHighECluster]->FillAll(sm, sm, x, z, 1.);
 		fClusterEXZ[isHighECluster]->FillAll(sm, sm, x, z, energy);
 
-		FillHistogram(Form("hClusterIdN_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm));
-		FillHistogram(Form("hClusterIdE_%d_SM%d", isHighECluster, sm), AbsId(x, z, sm), energy);
+		// Use sm number as weight in order to distinguish different modules
+		//
+		Int_t absId = AbsId(x, z, sm);
+		fClusterIdN[isHighECluster]->Fill(absId, sm);
+		fClusterIdE[isHighECluster]->Fill(absId, sm * energy);
 	}
 
+	// TODO: Replace these magic numbers by enumerated constsants
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-		FillHistogram("EventCounter", 2.5);
+		fEventCounter->Fill(2.5);
 }
 
 // Default version defined in PHOSutils uses ideal geometry

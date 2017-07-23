@@ -22,7 +22,9 @@ public:
 		fClusterEXZ(),
 		fClusterTime(0),
 		fClusterEvsT(0),
-		fClusterTimeMap(0)
+		fClusterTimeMap(0),
+		fClusterIdN(),
+		fClusterIdE()
 	{
 	}
 
@@ -32,7 +34,9 @@ public:
 		fClusterEXZ(),
 		fClusterTime(0),
 		fClusterEvsT(0),
-		fClusterTimeMap(0)
+		fClusterTimeMap(0),
+		fClusterIdN(),
+		fClusterIdE()
 	{
 	}
 
@@ -70,6 +74,8 @@ private:
 	DetectorHistogram * fClusterTime; //!
 	DetectorHistogram * fClusterEvsT; //!
 	DetectorHistogram * fClusterTimeMap; //!
+	TH1F * fClusterIdN[2]; //!
+	TH1F * fClusterIdE[2]; //!
 
 	ClassDef(QualityPhotonSelection, 2)
 };
