@@ -3,13 +3,18 @@
 import ROOT
 
 
-def read_histogram(filename, listname, histname, label = None, priority = 999):
+def read_histogram(filename, listname, histname, label = None, priority = 999, norm = False):
     infile = ROOT.TFile(filename)
     lst = infile.Get(listname)
     hist = lst.FindObject(histname)
 
+
     if not hist: 
         return None
+
+    if norm:
+        nevents = lst.FindObject('EventCounter').GetBinContent(2)
+        hist.Scale(1. / nevents)
 
 
     hist.label    = label if label else '' 
@@ -19,26 +24,36 @@ def read_histogram(filename, listname, histname, label = None, priority = 999):
 
 
 class Input(object):
-    def __init__(self, filename, listname, histname = 'MassPtN3', mixprefix = 'Mix'):
+    def __init__(self, filename, listname, histname = 'MassPtN3', mixprefix = 'Mix', norm = False):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
         self.mixprefix = mixprefix
         self.infile = ROOT.TFile(filename)
+        self.norm = norm    
 
     def events(self, lst):
         return lst.FindObject('EventCounter').GetBinContent(2)
+
+    def hist(self, lst, name):
+        hist, n = lst.FindObject('h' + name), self.events(lst)
+        if not hist:
+            return None
+            
+        hist.nevents = n
+
+        if self.norm: 
+            hist.Scale(1. / hist.nevents)
+
+        return hist
 
     def read(self, hname = ''):
         if not hname: hname = self.histname
 
         lst = self.infile.Get(self.listname)
-        hist = lambda n: lst.FindObject('h' + n)
 
-        n, raw, mix = self.events(lst), hist(hname), hist(self.mixprefix + hname)
-        raw.nevents = n
-        mix.nevents = n
+        raw, mix =  self.hist(lst, hname), self.hist(lst, self.mixprefix + hname)
         return raw, mix
 
     def read_per_module(self, threshold = 0.135):

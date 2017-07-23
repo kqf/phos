@@ -12,20 +12,20 @@ class InspectSources(unittest.TestCase):
 
     def setUp(self):
         self.infile = 'input-data/Pythia-LHC16-a5.root'
-        self.infile = 'input-data/scaled-LHC17f8a.root'
+        # self.infile = 'input-data/scaled-LHC17f8a.root'
         self.selection = 'MCStudyOnlyTender'
         self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
 
 
     def get_baseline(self):
         # TODO: Replace this histogram with hPt_#pi^{0}
-        generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
+        generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated', norm = True)
         PtDependent.divide_bin_width(generated)
         return generated 
 
 
     def inspect(self, ptype):
-        particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p) for p in self.particle_names] 
+        particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p, norm = True) for p in self.particle_names] 
         map(PtDependent.divide_bin_width, particles)
 
         for p in particles:

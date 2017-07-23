@@ -16,6 +16,11 @@ import unittest
 from spectrum.sutils import hsum
 
 
+# TODO: Spectrum, accepts only input object
+# TODO: Refactor the input and read_histogram
+# TODO: Make all the histograms normalized by default
+# TODO: Correct names in the output
+
 class Estimator(object):
 
     def __init__(self):
@@ -26,7 +31,7 @@ class Estimator(object):
         options.fit_mass_width = False
 
         histstame = '{0}_{1}_'.format(self.hname, ptype)
-        f = lambda x: Spectrum(Input(self.infile, self.selection, histstame + x).read(), label=x, mode = 'q', options = options).evaluate()[2]
+        f = lambda x: Spectrum(Input(self.infile, self.selection, histstame + x, norm = True).read(), label=x, mode = 'd', options = options).evaluate()[2]
 
         particles = map(f, self.particle_names)
         map(PtDependent.divide_bin_width, particles)
@@ -34,7 +39,7 @@ class Estimator(object):
         generated = self.get_baseline()
 
         # diff = Comparator(crange = (1e-15, 1.))
-        diff = Comparator()
+        diff = Comparator((1, 1))
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy = True)
 

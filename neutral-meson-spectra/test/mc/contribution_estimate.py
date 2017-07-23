@@ -20,7 +20,7 @@ class Estimate(object):
     def get_hist(self, x, z, label):
         options = Options()
         options.fit_mass_width = False
-        hist = Spectrum(Input(self.infile, z, x).read(), label = label, mode = 'q', options = options).evaluate()[2]
+        hist = Spectrum(Input(self.infile, z, x, norm = True).read(), label = label, mode = 'd', options = options).evaluate()[2]
         PtDependent.divide_bin_width(hist)
         return hist
 
@@ -37,13 +37,14 @@ class Estimate(object):
         # diff = Comparator(crange = (1e-15, 1.))
         diff = Comparator()
         diff.compare(contribution, reconstruction)
+        return contribution
 
 
 class TestEstimate(unittest.TestCase, Estimate):
 
     def setUp(self):
-        # self.infile = 'input-data/Pythia-LHC16-a5.root'
-        self.infile = 'input-data/scaled-LHC17f8a.root'
+        self.infile = 'input-data/Pythia-LHC16-a5.root'
+        # self.infile = 'input-data/scaled-LHC17f8a.root'
         self.mc_selection = 'MCStudyOnlyTender'
         self.nonlin_selection = 'PhysNonlinTender'
         self.hname = 'MassPt_#pi^{0}'
@@ -52,6 +53,10 @@ class TestEstimate(unittest.TestCase, Estimate):
     def testContributions(self):
         reconstruction = self.get_hist('MassPt', self.nonlin_selection, 'reconstructed')
         
-        self.estimate('secondary ', reconstruction)
-        self.estimate('feeddown ', reconstruction)
         # self.estimate('feeddown K^{s}_{0}', reconstruction)
+        secondary = self.estimate('secondary ', reconstruction)
+        feeddown = self.estimate('feeddown ', reconstruction)
+
+        diff = Comparator()
+        diff.compare(secondary, feeddown)
+
