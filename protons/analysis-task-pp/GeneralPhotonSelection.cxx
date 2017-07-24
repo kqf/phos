@@ -45,7 +45,7 @@ void GeneralPhotonSelection::InitSummaryHistograms()
 
 
 	// The true event counter
-	TH1 * fEventCounter = new TH1F("EventCounter", "Event cuts", 5, 0, 5);
+	fEventCounter = new TH1F("EventCounter", "Event cuts", 5, 0, 5);
 	fEventCounter->GetXaxis()->SetBinLabel(1, "MB");
 	fEventCounter->GetXaxis()->SetBinLabel(2, "all good");
 	fEventCounter->GetXaxis()->SetBinLabel(3, "|Z_{vtx}| < 10");

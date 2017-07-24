@@ -6,6 +6,10 @@
 #include "GeneralPhotonSelection.h"
 
 // --- ROOT system ---
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TH3F.h>
+
 #include <TObjArray.h>
 
 // --- AliRoot header files ---
@@ -24,7 +28,11 @@ public:
 		fClusterEvsT(0),
 		fClusterTimeMap(0),
 		fClusterIdN(),
-		fClusterIdE()
+		fClusterIdE(),
+		fMassPtA(),
+		fZvertex(0),
+		fNcellsE(0),
+		fShapeE(0)
 	{
 	}
 
@@ -36,7 +44,11 @@ public:
 		fClusterEvsT(0),
 		fClusterTimeMap(0),
 		fClusterIdN(),
-		fClusterIdE()
+		fClusterIdE(),
+		fMassPtA(),
+		fZvertex(0),
+		fNcellsE(0),
+		fShapeE(0)
 	{
 	}
 
@@ -76,6 +88,11 @@ private:
 	DetectorHistogram * fClusterTimeMap; //!
 	TH1F * fClusterIdN[2]; //!
 	TH1F * fClusterIdE[2]; //!
+
+	TH3F * fMassPtA[2]; //!
+	TH1F * fZvertex; //!
+	TH2F * fNcellsE; //!
+	TH2F * fShapeE;  //!
 
 	ClassDef(QualityPhotonSelection, 2)
 };

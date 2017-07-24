@@ -2,11 +2,6 @@
 #include "QualityPhotonSelection.h"
 // #include "AliAnalysisTaskPP.h"
 
-// --- ROOT system ---
-#include <TH1F.h>
-#include <TH2F.h>
-#include <TH3F.h>
-
 // --- AliRoot header files ---
 #include <AliPHOSGeometry.h>
 
@@ -29,15 +24,23 @@ void QualityPhotonSelection::InitSelectionHistograms()
 
 
 	// Z-vertex
-	fListOfHistos->Add(new TH1F("hZvertex", "Reconstructed vertex Z-coordinate; z_{vtx}, cm; counts", 200, -12, 12));
+	fZvertex = new TH1F("hZvertex", "Reconstructed vertex Z-coordinate; z_{vtx}, cm; counts", 200, -12, 12);
 
 	// Info about selected clusters
-	fListOfHistos->Add(new TH2F("hNcellsE", "Cell multiplicity; E, GeV; N_{cell}", 41, 0, 40, 81, 0, 80));
-	fListOfHistos->Add(new TH2F("hShapeE", "Cluster shape; E, GeV; M20, cm", 41, 0, 40, 41, 0, 40));
+	fNcellsE = new TH2F("hNcellsE", "Cell multiplicity; E, GeV; N_{cell}", 41, 0, 40, 81, 0, 80);
+	fShapeE  = new TH2F("hShapeE", "Cluster shape; E, GeV; M20, cm", 41, 0, 40, 41, 0, 40);
+
+	fListOfHistos->Add(fZvertex);
+	fListOfHistos->Add(fNcellsE);
+	fListOfHistos->Add(fShapeE);
 
 	// Test Assymetry cut
-	fListOfHistos->Add(new TH3F("hMassPtA", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
-	fListOfHistos->Add(new TH3F("hMixMassPtA", "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.));
+	for(Int_t i = 0; i < 2; ++i)
+	{
+		const char * s = (i == 0) ? "": "Mix";
+		fMassPtA[i] = new TH3F(Form("h%sMassPtA", s), "(M,p_{T}, A)_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax, 20, 0., 1.);
+		fListOfHistos->Add(fMassPtA[i]);
+	}
 
 	// Cluster occupancy
 	for(Int_t i = 0; i < 2; ++i)
@@ -86,9 +89,8 @@ void QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
-
-	const char * suff = eflags.isMixing ? "Mix" : "";
-	FillHistogram(Form("h%sMassPtA", suff), ma12 , pt12, asym);
+	
+	fMassPtA[Int_t(eflags.isMixing)]->Fill(ma12, pt12, asym);
 }
 
 
@@ -99,6 +101,8 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
+
+		// cout << "Start" << endl;
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
 		TLorentzVector p;
 		clus->GetMomentum(p, eflags.vtxBest);
@@ -134,6 +138,7 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		fClusterNXZ[isHighECluster]->FillAll(sm, sm, x, z, 1.);
 		fClusterEXZ[isHighECluster]->FillAll(sm, sm, x, z, energy);
 
+		// cout << "Stop" << endl;
 		// Use sm number as weight in order to distinguish different modules
 		//
 		Int_t absId = AbsId(x, z, sm);
