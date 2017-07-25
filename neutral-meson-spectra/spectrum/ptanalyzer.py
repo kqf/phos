@@ -47,14 +47,17 @@ class PtDependent(object):
             hist.SetBinError(i, e / w ** power)
 
 
-
-
 class PtAnalyzer(object):
         
     def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', options = Options()):
         super(PtAnalyzer, self).__init__()
         # These hists are needed for dynamic binning
-        self.hists = hists
+        try:
+            iter(hists)
+            self.hists = hists
+        except TypeError:
+            self.hists = hists.read()
+
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}.get(mode, True)
         self.dead_mode = ('dead' in mode) or ('d' in mode)
@@ -75,7 +78,7 @@ class PtAnalyzer(object):
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(hists, x, y, options)
+        f = lambda x, y: InvariantMass(self.hists, x, y, options)
         self.masses = map(f, pt_intervals, rebins)
 
 

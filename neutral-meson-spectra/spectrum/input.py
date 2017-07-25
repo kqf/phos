@@ -5,21 +5,17 @@ import ROOT
 
 def read_histogram(filename, listname, histname, label = None, priority = 999, norm = False):
     infile = ROOT.TFile(filename)
-    lst = infile.Get(listname)
-    hist = lst.FindObject(histname)
-
+    lst    = infile.Get(listname)
+    hist   = lst.FindObject(histname)
 
     if not hist: 
         return None
 
-    if norm:
-        nevents = lst.FindObject('EventCounter').GetBinContent(2)
-        hist.Scale(1. / nevents)
+    Input.events(lst, hist, norm)
 
 
     hist.label    = label if label else '' 
     hist.priority = priority
-
     return hist
 
 
@@ -33,19 +29,19 @@ class Input(object):
         self.infile = ROOT.TFile(filename)
         self.norm = norm    
 
-    def events(self, lst):
-        return lst.FindObject('EventCounter').GetBinContent(2)
-
-    def hist(self, lst, name):
-        hist, n = lst.FindObject('h' + name), self.events(lst)
-        if not hist:
-            return None
-            
-        hist.nevents = n
-
-        if self.norm: 
+    @staticmethod
+    def events(lst, hist, norm = False):
+        hist.nevents = lst.FindObject('EventCounter').GetBinContent(2)
+        if norm:
             hist.Scale(1. / hist.nevents)
 
+    def hist(self, lst, name):
+        hist = lst.FindObject('h' + name)
+        if not hist:
+            return None
+
+        self.events(lst, hist, self.norm) 
+        hist.nevents = n
         return hist
 
     def read(self, hname = ''):
