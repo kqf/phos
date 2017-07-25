@@ -27,11 +27,12 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	Double_t ptMin = 0;
 	Double_t ptMax = 20;
 
-	TH1 * hist = new TH2F("hMassPt", "(M,p_{T})_{#gamma#gamma}, %s; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fInvariantMass = new DetectorHistogram(hist, fListOfHistos);
-
-	hist = new TH2F("hMixMassPt", "(M,p_{T})_{#gamma#gamma}, %s; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fMixedInvariantMass = new DetectorHistogram(hist, fListOfHistos);
+	for (Int_t i = 0; i < 2; ++i)
+	{
+		const char * s = (i == 0) ? "" : "Mix";
+		TH1 * hist = new TH2F(Form("h%sMassPt", s), "(M,p_{T})_{#gamma#gamma}, ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+		fInvariantMass[i] = new DetectorHistogram(hist, fListOfHistos);
+	}
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
@@ -43,8 +44,9 @@ void PhysPhotonSelection::InitSelectionHistograms()
 	// These histograms are needed only to check the performance
 	// Don't do any analysis with these histograms.
 	//
-	for (Int_t i = 0; i < 1;  ++i)
-		fListOfHistos->Add(new TH1F(Form("hClusterPt_SM%d", i), mtitle("Cluster p_{T} spectrum with default cuts, %s; p_{T}, GeV/c", i), nPt, ptMin, ptMax));
+
+	fClusters = new TH1F("hClusterPt_SM0", "Cluster p_{T} spectrum with default cuts, all modules; p_{T}, GeV/c", nPt, ptMin, ptMax);	
+	fListOfHistos->Add(fClusters);
 }
 
 //________________________________________________________________
@@ -68,11 +70,7 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-
-	if (eflags.isMixing)
-		fMixedInvariantMass->FillAll(sm1, sm2, ma12, pt12);
-	else
-		fInvariantMass->FillAll(sm1, sm2, ma12, pt12);
+	fInvariantMass[Int_t(eflags.isMixing)]->FillAll(sm1, sm2, ma12, pt12);
 }
 
 //________________________________________________________________

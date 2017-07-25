@@ -17,20 +17,26 @@ class PhysPhotonSelection : public GeneralPhotonSelection
 public:
 	PhysPhotonSelection():
 		GeneralPhotonSelection(),
-		fInvariantMass(0),
-		fMixedInvariantMass(0)
+		fInvariantMass(),
+		fClusters(0)
 	{}
 
 	PhysPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
 		GeneralPhotonSelection(name, title, ec, a, n, t),
-		fInvariantMass(0),
-		fMixedInvariantMass(0)
+		fInvariantMass(),
+		fClusters(0)
 	{}
 
 	virtual ~PhysPhotonSelection()
 	{
-		if (fInvariantMass) delete fInvariantMass;
-		if (fMixedInvariantMass) delete fMixedInvariantMass;
+		// NB: Don't use this 
+		// delete [] fInvariantMass;
+
+		for(Int_t i = 0; i < 2; ++i)
+			if (fInvariantMass[i]) delete fInvariantMass[i];
+
+		// Don't delete fClusters, as ROOT will take 
+		// care of it.
 	}
 	
 	virtual void InitSelectionHistograms();
@@ -43,8 +49,8 @@ protected:
 	PhysPhotonSelection & operator = (const PhysPhotonSelection &);
 
 private:
-	DetectorHistogram * fInvariantMass; //!
-	DetectorHistogram * fMixedInvariantMass; //!
+	DetectorHistogram * fInvariantMass[2]; //!
+	TH1 * fClusters; //!
 	ClassDef(PhysPhotonSelection, 2)
 };
 #endif

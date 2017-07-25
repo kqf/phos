@@ -32,8 +32,8 @@ public:
 	virtual void FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t y, Float_t);
 	virtual void FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y, Float_t);
 
-	virtual TString Title(const char * title, Int_t i) const;
-	virtual TString Title(const char * title, Int_t i, Int_t j) const;
+	virtual TString Title(TString title, Int_t i) const;
+	virtual TString Title(TString title, Int_t i, Int_t j) const;
 
 protected:
 	virtual Int_t Index(Int_t sm1, Int_t sm2) const;

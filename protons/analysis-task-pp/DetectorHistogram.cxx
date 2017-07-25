@@ -35,7 +35,7 @@ DetectorHistogram::DetectorHistogram(TH1 * hist, TList * owner, DetectorHistogra
 
 	for (Int_t sm = 0; sm < (kLastModule + 1); ++sm)
 	{
-		if (sm > 1 && fMode == kSingleHist)
+		if (sm > 1 && (fMode == kSingleHist || fMode == kInterModules))
 			continue;
 
 		fHistograms[sm] = (sm == 0) ? hist : dynamic_cast<TH1 *>( hist->Clone(name + Form("SM%d", sm)) );
@@ -140,21 +140,20 @@ void DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Float_t y)
 }
 
 //________________________________________________________________
-TString DetectorHistogram::Title(const char * title, Int_t i) const
+TString DetectorHistogram::Title(TString title, Int_t i) const
 {
 	if (i == -1)
-		return TString(title) + "SM123";
+		return title + "SM123";
 
 	TString s = (i == 0) ? "all modules" : Form("SM%d", i);
-
-	return TString(title) + s;
+	return title + s;
 }
 
 //________________________________________________________________
-TString DetectorHistogram::Title(const char * title, Int_t i, Int_t j) const
+TString DetectorHistogram::Title(TString title, Int_t i, Int_t j) const
 {
-	TString s = (i == j) ? Form("Module %d", i) : Form("SM%dSM%d", i, j);
-	return Form(title, s.Data());
+	TString s = (i == j) ? Form("SM%d", i) : Form("SM%dSM%d", i, j);
+	return title + s;
 }
 
 //________________________________________________________________
