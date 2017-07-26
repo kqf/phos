@@ -3,7 +3,8 @@
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
 from spectrum.options import Options
-from spectrum.ptanalyzer import PtDependent
+from spectrum.sutils import scalew
+
 
 from phspace import InclusiveGenerator
 
@@ -23,12 +24,12 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=False)).evaluate()
         self.original_distributions = self.generator.generate(10000)
         
-        PtDependent.divide_bin_width(self.original_distributions)
+        scalew(self.original_distributions)
         self.original_distributions.priority = 1
         self.original_distributions.logy = 1
 
         reconstructed = f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[4]
-        PtDependent.divide_bin_width(reconstructed)
+        scalew(reconstructed)
 
         self.results = [
                         [reconstructed],

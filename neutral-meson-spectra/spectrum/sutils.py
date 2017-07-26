@@ -149,6 +149,10 @@ def hsum(histograms, label):
     result.label = label
     return result
 
+def scalew(hist, factor = 1.):
+    hist.Scale(factor, "width")
+    return hist
+
 
 class Cc:
     OKGREEN = '\033[92m'

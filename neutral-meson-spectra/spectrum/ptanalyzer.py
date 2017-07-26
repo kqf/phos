@@ -10,12 +10,11 @@ ROOT.TH1.AddDirectory(False)
 
 
 class PtDependent(object):
-    def __init__(self, name, title, label, priority = 999, nwidth = False):
+    def __init__(self, name, title, label, priority = 999):
         super(PtDependent, self).__init__()
         self.title = title
         self.label = label
         self.name = name + '_' + filter(str.isalnum, self.label)
-        self.nwidth = nwidth
         self.priority = priority
 
     def get_hist(self, bins, data):
@@ -33,8 +32,6 @@ class PtDependent(object):
             hist.SetBinContent(i + 1, d)
             hist.SetBinError(i + 1, e)
 
-        if self.nwidth:
-            PtDependent.divide_bin_width(hist)
 
         return hist 
 
@@ -58,6 +55,7 @@ class PtAnalyzer(object):
         except TypeError:
             self.hists = hists.read()
 
+        self.nevents = self.hists[0].nevents
         self.label = label
         self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}.get(mode, True)
         self.dead_mode = ('dead' in mode) or ('d' in mode)
@@ -104,7 +102,12 @@ class PtAnalyzer(object):
         ptedges, dummy = self.divide_into_bins()
 
         # Extract the data
-        return [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
+        result = [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
+
+        # Scale by the number of events 
+        result[2].Scale(1. / self.nevents)
+        
+        return  result
 
         
     def number_of_mesons(self, mass, intgr_ranges):

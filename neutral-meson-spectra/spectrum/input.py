@@ -20,14 +20,13 @@ def read_histogram(filename, listname, histname, label = None, priority = 999, n
 
 
 class Input(object):
-    def __init__(self, filename, listname, histname = 'MassPtN3', mixprefix = 'Mix', norm = False):
+    def __init__(self, filename, listname, histname = 'MassPtN3', mixprefix = 'Mix'):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
         self.mixprefix = mixprefix
         self.infile = ROOT.TFile(filename)
-        self.norm = norm    
 
     @staticmethod
     def events(lst, hist, norm = False):
@@ -40,8 +39,8 @@ class Input(object):
         if not hist:
             return None
 
-        self.events(lst, hist, self.norm) 
-        hist.nevents = n
+        # Don't normalize input histograms
+        self.events(lst, hist) 
         return hist
 
     def read(self, hname = ''):

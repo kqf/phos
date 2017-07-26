@@ -1,11 +1,10 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas, adjust_canvas
+from spectrum.sutils import get_canvas, adjust_canvas, scalew
 from spectrum.options import Options
 from spectrum.comparator import Comparator
 from spectrum.sutils import save_tobject
-from spectrum.ptanalyzer import PtDependent
 
 import ROOT
 
@@ -21,7 +20,7 @@ class Estimate(object):
         options = Options()
         options.fit_mass_width = False
         hist = Spectrum(Input(self.infile, z, x, norm = True).read(), label = label, mode = 'd', options = options).evaluate()[2]
-        PtDependent.divide_bin_width(hist)
+        scalew(hist)
         return hist
 
 

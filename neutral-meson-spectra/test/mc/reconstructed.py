@@ -5,8 +5,7 @@ from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator
-from spectrum.sutils import save_tobject
-from spectrum.ptanalyzer import PtDependent
+from spectrum.sutils import save_tobject, scalew
 
 import ROOT
 
@@ -16,9 +15,7 @@ import unittest
 from spectrum.sutils import hsum
 
 
-# TODO: Make all the histograms normalized by default
 # TODO: Correct names in the output
-
 class Estimator(object):
 
     def __init__(self):
@@ -28,11 +25,11 @@ class Estimator(object):
         options = Options()
         options.fit_mass_width = False
 
-        inp = lambda x: Input(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x), norm = True)
+        inp = lambda x: Input(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x))
         f = lambda x: Spectrum(inp(x), label=x, mode = 'd', options = options).evaluate()[2]
 
         particles = map(f, self.particle_names)
-        map(PtDependent.divide_bin_width, particles)
+        map(scalew, particles)
 
         generated = self.get_baseline()
 
@@ -47,7 +44,7 @@ class Estimator(object):
 
     def get_baseline(self):
         generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
-        PtDependent.divide_bin_width(generated)
+        scalew(generated)
         return generated 
 
 

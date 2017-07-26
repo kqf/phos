@@ -1,11 +1,10 @@
 #!/usr/bin/python
 
 from spectrum.spectrum import Spectrum
-from spectrum.ptanalyzer import PtDependent
 from spectrum.options import Options
 from spectrum.input import Input, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
-from spectrum.sutils import wait
+from spectrum.sutils import wait, scalew
 from spectrum.comparator import Comparator
 from spectrum.sutils import save_tobject
 
@@ -64,7 +63,7 @@ class Efficiency(unittest.TestCase):
 
     def get_true_distribution(self, iname, genname, label = 'Generated'):
         true = read_histogram(iname, self.mc_selection, genname, label = label, priority = 0)
-        PtDependent.divide_bin_width(true)
+        scalew(true)
         true.logy = True
         return true
 
@@ -82,7 +81,7 @@ class Efficiency(unittest.TestCase):
    
         true = get_true_distribution(iname, genname, 'Generated')
         reco = f(Input(iname, self.selection, 'MassPt').read(), 'Reconstructed', Options())[4]
-        PtDependent.divide_bin_width(reco)
+        scalew(reco)
         reco.logy = True
 
         # data.fifunc = self.getNonlinearityFunction()
@@ -122,12 +121,12 @@ class Efficiency(unittest.TestCase):
         diff.compare(modules)
 
         true = read_histogram(self.pythiaf, self.mc_selection, self.true_pt_mc, label = 'Generated', priority = 0)
-        PtDependent.divide_bin_width(true)
+        scalew(true)
 
         spectrums = zip(*modules)[2]
         map(lambda x: x.SetTitle('Efficiency per module'), spectrums)
         map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
-        map(PtDependent.divide_bin_width, spectrums)
+        map(scalew, spectrums)
         diff.compare_ratios(spectrums, true)
 
 

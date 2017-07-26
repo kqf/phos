@@ -6,7 +6,7 @@ import ROOT
 import os.path
 import unittest
 
-from spectrum.sutils import hsum
+from spectrum.sutils import hsum, scalew
 
 class InspectSources(unittest.TestCase):
 
@@ -20,13 +20,13 @@ class InspectSources(unittest.TestCase):
     def get_baseline(self):
         # TODO: Replace this histogram with hPt_#pi^{0}
         generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated', norm = True)
-        PtDependent.divide_bin_width(generated)
+        scalew(generated)
         return generated 
 
 
     def inspect(self, ptype):
         particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p, norm = True) for p in self.particle_names] 
-        map(PtDependent.divide_bin_width, particles)
+        map(scalew, particles)
 
         for p in particles:
         	p.logy = True

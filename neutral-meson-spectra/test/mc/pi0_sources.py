@@ -3,7 +3,7 @@
 from spectrum.input import read_histogram
 from spectrum.sutils import wait
 from spectrum.comparator import Comparator
-from spectrum.ptanalyzer import PtDependent
+from spectrum.ptanalyzer import PtDependent, scalew
 
 import ROOT
 
@@ -41,7 +41,7 @@ class Pi0Sources(unittest.TestCase):
             hists = map(lambda x: self.read('{0}_{1}'.format(filename, x),  x, 999), labels)
             hists[0].logy = True
 
-            map(PtDependent.divide_bin_width, hists)
+            map(scalew, hists)
 
             diff = Comparator()
             diff.compare(hists)
@@ -52,7 +52,7 @@ class Pi0Sources(unittest.TestCase):
             pprimary = self.read(self.histname + '_primary_', 'primary', 999)
             pprimary.logy = True
 
-            map(PtDependent.divide_bin_width, (pall, pprimary))
+            map(scalew, (pall, pprimary))
             # diff.compare(pprimary, pall)
             diff = Comparator(crange = (1e-9, 1))
             diff.compare_ratios(hists, pall, logy = True)
