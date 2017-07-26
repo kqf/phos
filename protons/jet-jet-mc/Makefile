@@ -2,9 +2,7 @@ DATASET = LHC17f8a
 DPART = first
 MC = kTRUE
 
-PtBins = 12 13 14 15 16 17 18 19 20
-# PtBins = 1 2 3 4 5 6 7 8 9 10
-# PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
+PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
 # PtBins = 20
 
 grid: | %.cxx
@@ -20,8 +18,11 @@ terminate: | %.cxx
 download: | %.cxx
 	$(call jetjet,downloadstart,$(DATASET))
 	make unlink
-	hadd $(DATASET).root scaled-$(DATASET)*.root
-	$(call upload_result, $(DATASET), scaled-$(DATASET))
+	hadd scaled-$(DATASET).root scaled-$(DATASET)*.root
+	$(call upload_result, scaled-$(DATASET).root)
+
+	hadd $(DATASET).root $(DATASET)*.root
+	$(call upload_result, $(DATASET).root)
 
 	echo "Terminated grid analysis" >> .runhistory
 	@make unlink || echo "Directory is clean"
@@ -81,9 +82,9 @@ define terminatestart
 endef
 
 define downloadstart
-	root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
-	mv AnalysisResults.root $(1).root
-	root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
+	# root -l -q 'run.C("$(1)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)'
+	# mv AnalysisResults.root $(1).root
+	-root -l -q 'scaleBins.C("$(1).root", "$(1).root/PythiaInfoOnlyTender/")'
 	@echo $(1) " Done."  
 endef 
 
@@ -103,8 +104,7 @@ endef
 
 
 define upload_result
-	-mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)
+	-alien_cp -n $(1) alien:$(ALIEN_HOME)
 endef
 
 

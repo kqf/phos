@@ -288,6 +288,10 @@ Bool_t MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
 //________________________________________________________________
 void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
+	// This method should be redefined here for 2 reasons:
+	//    - There is no timing cut in MC
+	//    - It allows to inspect MC clusters
+	
 	// Don't return TObjArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
@@ -313,5 +317,5 @@ void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjA
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-		FillHistogram("EventCounter", 4.5);
+		fEventCounter->Fill(EventFlags::kTwoPhotons);
 }

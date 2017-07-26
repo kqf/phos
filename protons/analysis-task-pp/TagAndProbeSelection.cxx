@@ -128,6 +128,6 @@ void TagAndProbeSelection::SelectPhotonCandidates(const TObjArray * clusArray, T
 			continue;
 
 		if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-			FillHistogram("EventCounter", 2.5);
+			fEventCounter->Fill(EventFlags::kTwoPhotons);
 	}
 }

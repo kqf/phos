@@ -121,8 +121,8 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		}
 		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
 
-		if (!eflags.isMixing) FillHistogram("hNcellsE", p.E(), clus->GetNCells());
-		if (!eflags.isMixing) FillHistogram("hShapeE", clus->GetM20(), clus->GetNCells());
+		if (!eflags.isMixing) fNcellsE->Fill(p.E(), clus->GetNCells());
+		if (!eflags.isMixing) fShapeE->Fill(clus->GetM20(), clus->GetNCells());
 
 		if (clus->GetNCells() < fNCellsCut) continue;
 		candidates->Add(clus);
@@ -146,9 +146,8 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		fClusterIdE[isHighECluster]->Fill(absId, sm * energy);
 	}
 
-	// TODO: Replace these magic numbers by enumerated constsants
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-		fEventCounter->Fill(2.5);
+		fEventCounter->Fill(EventFlags::kTwoPhotons);
 }
 
 // Default version defined in PHOSutils uses ideal geometry
@@ -183,7 +182,7 @@ Bool_t QualityPhotonSelection::SelectEvent(const EventFlags & flgs)
 
 	Bool_t accepted = GeneralPhotonSelection::SelectEvent(flgs);
 	if (accepted)
-		FillHistogram("hZvertex", flgs.vtxBest[2]);
+		fZvertex->Fill(flgs.vtxBest[2]);
 
 	return accepted;
 }

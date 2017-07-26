@@ -77,5 +77,5 @@ void PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 void PhysPhotonSelection::FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags)
 {
 	TLorentzVector p = ClusterMomentum(clus, eflags);
-	FillHistogram(Form("hClusterPt_SM%d", 0), p.Pt());
+	fClusters->Fill(p.Pt());
 }

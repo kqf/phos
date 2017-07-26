@@ -1,1 +1,0 @@
-/afs/cern.ch/work/o/okovalen/private/mc/AOD2016k/AliAOD.root

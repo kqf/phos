@@ -13,8 +13,10 @@
 #include "MixingSample.h"
 
 class EventFlags;
+
 class AliAnalysisTaskPP : public AliAnalysisTaskSE
 {
+
 public:
 	enum {kMinModule = 1, kMaxModule=4};
 	AliAnalysisTaskPP();
@@ -28,6 +30,7 @@ public:
 	void SetBadCells(Int_t badcells[], Int_t nbad);
 	void SetBadMap(const char * filename);
 	TList * GetSelections() { return fSelections; }
+
 protected:
 	TClonesArray * GetMCParticles(const AliVEvent * event) const;
 	Bool_t EventSelected(const AliVEvent * event, EventFlags & eprops) const;

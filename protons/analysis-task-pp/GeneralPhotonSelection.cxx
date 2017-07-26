@@ -58,7 +58,7 @@ void GeneralPhotonSelection::InitSummaryHistograms()
 //________________________________________________________________
 void GeneralPhotonSelection::CountMBEvent()
 {
-	FillHistogram("EventCounter", 0.5);
+	fEventCounter->Fill(EventFlags::kMB);
 }
 	
 
@@ -77,19 +77,23 @@ GeneralPhotonSelection::~GeneralPhotonSelection()
 Bool_t GeneralPhotonSelection::SelectEvent(const EventFlags & flgs)
 {
 	// All events
-	FillHistogram("EventCounter", 1.5);
+	fEventCounter->Fill(EventFlags::kGood);
 
 
-	if (TMath::Abs(flgs.vtxBest[2]) > 10) return kFALSE;
+	if (TMath::Abs(flgs.vtxBest[2]) > 10) 
+		return kFALSE;
 
-	// Physical Events
-	FillHistogram("EventCounter", 2.5);
+	// Z-vtx events
+	fEventCounter->Fill(EventFlags::kZvertex);
 
 
 	// Number of contributors > 0
-	if(flgs.ncontributors < 1) return kFALSE;
-	FillHistogram("EventCounter", 3.5);
+	if(flgs.ncontributors < 1)
+		return kFALSE;
 
+	fEventCounter->Fill(EventFlags::kNcontributors);
+
+	// Physical Events
 	return kTRUE;
 }
 
@@ -147,5 +151,5 @@ void GeneralPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 	}
 
 	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-		FillHistogram("EventCounter", 4.5);
+		fEventCounter->Fill(EventFlags::kTwoPhotons);
 }
