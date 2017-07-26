@@ -26,7 +26,7 @@ class Estimator(object):
         options.fit_mass_width = False
 
         inp = lambda x: Input(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x))
-        f = lambda x: Spectrum(inp(x), label=x, mode = 'd', options = options).evaluate()[2]
+        f = lambda x: Spectrum(inp(x), label= x if x else 'all', mode = 'd', options = options).evaluate()[2]
 
         particles = map(f, self.particle_names)
         map(scalew, particles)
@@ -55,7 +55,8 @@ class ParticleContributions(unittest.TestCase, Estimator):
         # self.infile = 'input-data/scaled-LHC17f8a.root'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPt_#pi^{0}'
-        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
+        # self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
+        self.particle_names = '', 'K^{s}_{0}', '#pi^{-}', '#pi^{+}', '#Lambda'
 
 
     def testContributions(self):
