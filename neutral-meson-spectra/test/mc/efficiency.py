@@ -71,7 +71,7 @@ class Efficiency(unittest.TestCase):
 
     def reco(self, iname, label):
         f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
-        reco = f(Input(iname, self.selection, 'MassPt').read(), 'Reconstructed', Options())[4]
+        reco = f(Input(iname, self.selection, 'MassPt').read(), label, Options())[4]
         reco.logy = True
         return scalew(reco)
 
@@ -99,17 +99,17 @@ class Efficiency(unittest.TestCase):
         diff.compare(efficiencies)
 
 
-    @unittest.skip('')
     def testSpectrums(self):
         """ 
             This test checks the denominators of the efficiencies.
         """
         true = [self.get_true_distribution(f, self.true_pt_mc + '_primary_', k) for k, f in self.productions.iteritems()]
         map(lambda x: x.Scale(1./ x.Integral('w')), true)
-        diff = Comparator()
+        diff = Comparator((0.5, 1))
         diff.compare(true)
 
 
+    @unittest.skip('')
     def testRecoSpectrums(self):
         reco = [self.reco(f, k) for k, f in self.productions.iteritems()]
         map(lambda x: x.Scale(1./ x.Integral('w')), reco)

@@ -11,10 +11,13 @@ from spectrum.sutils import hsum, scalew
 class InspectSources(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a5.root'
-        # self.infile = 'input-data/scaled-LHC17f8a.root'
+        # self.infile = 'input-data/Pythia-LHC16-a5.root'
+        self.infile = 'input-data/scaled-LHC17f8a.root'
         self.selection = 'MCStudyOnlyTender'
-        self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
+        self.particle_names = '', 'K^{s}_{0}', '#eta', '#omega', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}', '#Lambda', '#pi^{-}', '#pi^{+}'
+        # self.particle_names = '', "K^{s}_{0}", "#eta", "#omega", "#Lambda", "#rho^{+}", "#rho^{-}", "#barK^{*0}", "K^{+}", "K^{-}", "#Sigma^{0}",
+        # self.particle_names = '', "K^{s}_{0}", "K^{+}", "K^{-}",'#pi^{-}', '#pi^{+}', '#Lambda'
+
 
 
     def get_baseline(self):
@@ -25,7 +28,7 @@ class InspectSources(unittest.TestCase):
 
 
     def inspect(self, ptype):
-        particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p, norm = True) for p in self.particle_names] 
+        particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p if p else 'all', norm = True) for p in self.particle_names] 
         map(scalew, particles)
 
         for p in particles:
@@ -37,11 +40,11 @@ class InspectSources(unittest.TestCase):
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy= True)
 
-        total, summed = particles[0], hsum(particles[1:], 'summed')
+        total, summed = particles[0], hsum(particles[1:], 'sum')
         diff.compare(total, summed)
 
   
     def testContributions(self):
-    	self.inspect('secondary')
+    	# self.inspect('secondary')
     	self.inspect('primary')
-    	self.inspect('feeddown')
+    	# self.inspect('feeddown')
