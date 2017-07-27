@@ -1,8 +1,10 @@
-DATASET = LHC17f8a
+DATASET = LHC17f8c
 DPART = first
 MC = kTRUE
+PAUSE = 5m
 
-PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
+# PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
+PtBins =  9 8 7 6 5 4 3 2 1 
 # PtBins = 20
 
 grid: | %.cxx
@@ -72,7 +74,7 @@ define gridstart
 	root -l -b -q 'run.C("$(1)", "grid", "full", "$(DPART)", $(MC))' 
 	rm -f *.xml .*xml
 	echo "Started grid analysis on" "$(1)" >> .runhistory
-	sleep 25m
+	sleep $(PAUSE) 
 endef
 
 

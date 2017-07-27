@@ -21,6 +21,46 @@
 #include <AliLog.h>
 
 
+// NB: This will simplify the code
+//
+
+struct ParticleSpectrum
+{
+	ParticleSpectrum(const char * n, TList * fListOfHistos, Int_t ptsize, Float_t * ptbins, Bool_t full = kTRUE):
+		fPtAllRange(0),
+		fPtRadius(0),
+		fPt(0),
+		fPtPrimaries()
+	{
+		fPtAllRange = new TH1F(Form("hPt_allrange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize, ptbins);
+		fPtRadius   = new TH2F(Form("hPt_%s_radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20);
+		fPt         = new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize, ptbins);
+
+		fListOfHistos->Add(fPtAllRange);
+		fListOfHistos->Add(fPtRadius);
+		fListOfHistos->Add(fPt);
+
+		if (!full)
+			return;
+
+		for(Int_t i = 0; i < 2; ++i)
+		{
+			const char * s = (i == 0) ? "secondary": "primary";
+			fPtPrimaries[i] = new TH1F(Form("hPt_%s_%s_", n, s), Form("Generated p_{T} spectrum of %s %ss; p_{T}, GeV/c", s, n), ptsize, ptbins);
+			fListOfHistos->Add(fPtPrimaries[i]);
+		}
+	}
+
+private:
+
+	TH1F * fPtAllRange; //!
+	TH2F * fPtRadius; //!
+	TH1F * fPt; //!
+	TH1F * fPtPrimaries[2]; //!
+
+};
+
+
 class MesonSelectionMC: public GeneralPhotonSelection
 {
 public:
@@ -39,7 +79,8 @@ public:
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
-		fInvMass()
+		fInvMass(),
+		fPi0Sources()
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -68,7 +109,8 @@ public:
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
-		fInvMass()
+		fInvMass(),
+		fPi0Sources()
 
 	{
 		// Don't use c++11 here, as it might fail at some nodes
@@ -106,6 +148,9 @@ public:
 			if (fSecondaryPi0[i]) delete fSecondaryPi0[i];
 			if (fFeedDownPi0[i]) delete fFeedDownPi0[i];
 		}
+
+		for (ParticleSpectrums::iterator i = fSpectrums.begin(); i != fSpectrums.end(); ++i)
+			delete i->second;
 	}
 
 protected:
@@ -126,10 +171,18 @@ protected:
 	ParticlesHistogram * fSecondaryPi0[kNhists];
 	ParticlesHistogram * fFeedDownPi0[kNhists];
 
-    TH1 * fInvMass[2];                     //!
+
+	// This data structure contains all necesary histograms
+	// for the particles we want to get
+	typedef std::map<Int_t, ParticleSpectrum * > ParticleSpectrums;
+	ParticleSpectrums fSpectrums;
+
 	typedef std::map<Int_t, TString> EnumNames;
 	EnumNames fPartNames;
 	EnumNames fPi0SourcesNames;
+
+	TH1 * fInvMass[2];  //!
+	TH1 * fPi0Sources[2];  //!
 
 	ClassDef(MesonSelectionMC, 2)
 };

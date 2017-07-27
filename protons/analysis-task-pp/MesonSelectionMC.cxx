@@ -25,6 +25,9 @@ using namespace std;
 ClassImp(MesonSelectionMC);
 
 
+// TODO: Refactor the monster methods for pi0
+
+
 //________________________________________________________________
 void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
@@ -112,9 +115,9 @@ void MesonSelectionMC::InitSelectionHistograms()
 	Double_t ptMin = 0;
 	Double_t ptMax = 20;
 
-	for(Int_t i = 0; i < 2; ++i)
+	for (Int_t i = 0; i < 2; ++i)
 	{
-		fInvMass[i] = new TH2F(Form("h%sMassPt", i == 0 ? "": "Mix") , "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+		fInvMass[i] = new TH2F(Form("h%sMassPt", i == 0 ? "" : "Mix") , "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
 		fListOfHistos->Add(fInvMass[i]);
 	}
 
@@ -123,12 +126,16 @@ void MesonSelectionMC::InitSelectionHistograms()
 	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
 
 	// Sources of neutral pions, as a histogram
-	Int_t sstart = -10000;
-	Int_t sstop = 10000 + 1;
-	Int_t sbins = sstop - sstart;
+	for (int i = 0; i < 2; ++i)
+	{
+		Int_t sstart = -10000;
+		Int_t sstop = 10000 + 1;
+		Int_t sbins = sstop - sstart;
 
-	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), Form("Sources of primary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
-	fListOfHistos->Add(new TH1F(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), Form("Sources of secondary %ss ; PDG code", fPartNames[kPi0].Data()), sbins, sstart, sstop));
+		const char * s = (i == 0) ? "secondary" : "primary";
+		fPi0Sources[i] = new TH1F(Form("hMC_%s_sources_%s", fPartNames[kPi0].Data(), s), Form("Sources of %s %ss ; PDG code", s, fPartNames[kPi0].Data()), sbins, sstart, sstop);
+		fListOfHistos->Add(fPi0Sources[i]);
+	}
 
 	// Fill Generated histograms
 	const char * np = fPartNames[kPi0];
@@ -154,19 +161,9 @@ void MesonSelectionMC::InitSelectionHistograms()
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
 		const char * n = (const char *) i->second.Data();
-
-		// cout << n << endl;
-		fListOfHistos->Add(new TH1F(Form("hPt_allrange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-		fListOfHistos->Add(new TH2F(Form("hPt_%s_radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20));
-		fListOfHistos->Add(new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-
-		if (i->first == kPi0)
-			continue;
-
-		fListOfHistos->Add(new TH1F(Form("hPt_%s_primary_", n), Form("Generated p_{T} spectrum of primary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins)) ;
-		fListOfHistos->Add(new TH1F(Form("hPt_%s_secondary_", n), Form("Generated p_{T} spectrum of secondary %ss; p_{T}, GeV/c", n), ptsize - 1, ptbins));
-
+		fSpectrums[i->first] = new ParticleSpectrum(n, fListOfHistos, ptsize - 1, ptbins, i->first != kPi0);
 	}
+
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
@@ -181,41 +178,36 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 	if (!flags.fMcParticles)
 		return;
 
-	// TODO:
-	//	 RERUN real data to get zvertex histogram
+	// TODO: RERUN real data to get zvertex histogram
 	for (Int_t i = 0; i < flags.fMcParticles->GetEntriesFast(); i++)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) flags.fMcParticles->At(i);
-
 		Int_t code = TMath::Abs(particle->GetPdgCode());
-		const char * name = fPartNames[code].Data();
 
+		// NB: replace this condition by find, if the number of particles will grow
+		//
 		if (code != kGamma && code != kPi0 && code != kEta)
 			continue;
 
 		Double_t pt = particle->Pt();
-
-		FillHistogram(Form("hPt_allrange_%s", name), pt) ;
+		fSpectrums[code]->fPtAllRange->Fill(pt);
 
 		// Use this to remove forward photons that can modify our true efficiency
-		// Use Rapidity instead of pseudo rapidity
-		//
-		if (TMath::Abs(particle->Y()) > 0.5)
+		if (TMath::Abs(particle->Y()) > 0.5) // NB: Use rapidity instead of pseudo rapidity!
 			continue;
-
-		FillHistogram(Form("hPt_%s", name), pt);
 
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
-		FillHistogram(Form("hPt_%s_radius", name), r, pt) ;
+
+		fSpectrums[code]->fPt->Fill(pt);
+		fSpectrums[code]->fPtRadius->Fill(pt, r);
 
 		Bool_t primary = IsPrimary(particle);
-
-		// Now estimate Pi0 sources of secondaryflags.fMcParticles
 		if (code != kPi0)
 		{
-			FillHistogram(Form("hPt_%s_%s_", fPartNames[code].Data(), primary ? "primary" : "secondary"), pt);
+			fSpectrums[code]->fPtPrimaries[Int_t(primary)]->Fill(pt);
 			continue;
 		}
+
 
 		// Reject MIPS and count again
 		if (pt < 0.3)
@@ -233,9 +225,10 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 
 		Int_t pcode = parent->GetPdgCode();
 
+		fPi0Sources[Int_t(primary)]->Fill(pcode);
+		
 		if (primary)
 		{
-			FillHistogram(Form("hMC_%s_sources_primary", fPartNames[kPi0].Data()), pcode);
 			fPrimaryPi0[kGenerated]->Fill(pcode, pt);
 			continue;
 		}
@@ -244,7 +237,6 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 		//
 		if (!IsPrimary(parent))
 		{
-			FillHistogram(Form("hMC_%s_sources_secondary", fPartNames[kPi0].Data()), pcode);
 			fSecondaryPi0[kGenerated]->Fill(pcode, pt);
 			continue;
 		}
@@ -291,7 +283,7 @@ void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjA
 	// This method should be redefined here for 2 reasons:
 	//    - There is no timing cut in MC
 	//    - It allows to inspect MC clusters
-	
+
 	// Don't return TObjArray: force user to handle candidates lifetime
 	Int_t sm, x, z;
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
