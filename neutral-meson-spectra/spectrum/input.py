@@ -71,6 +71,14 @@ class TimecutInput(Input):
     def __init__(self, filename, listname, histname, mixprefix = 'Mix'):
         super(TimecutInput, self).__init__(filename, listname, histname, mixprefix)
 
-    def events(self, lst):
-        lst = self.infile.PhysTender
-        return lst.FindObject('EventCounter').GetBinContent(2)
+
+    def hist(self, lst, name):
+        hist = lst.FindObject('h' + name)
+        if not hist:
+            return None
+
+        # Don't normalize input histograms
+        # Make shure that we have event counter from PhysTender
+        #
+        self.events(self.infile.PhysTender, hist) 
+        return hist    

@@ -21,7 +21,7 @@ class TestMassParameters(unittest.TestCase):
 
 
     def get_analysis(self, iname):
-        return Spectrum(Input(iname, 'PhysNonlinTender').read())
+        return Spectrum(Input(iname, 'PhysNonlinTender', 'MassPt').read())
 
 
     def read_histograms(self, infile):
@@ -39,9 +39,9 @@ class TestMassParameters(unittest.TestCase):
         return mass, sigma
 
     def testMass(self):
-        iname = 'input-data/Pythia-LHC16-iteration16.root'
+        iname = 'input-data/Pythia-LHC16-a5.root'
         fs = self.get_analysis(iname)
-        mass, sigmma = self.data(fs, 'mass-Pythia-LHC16-iteration16.root')
+        mass, sigmma = self.data(fs, 'mass-' + iname)
 
         pars = [-4.13409, -1.4885, 6.26014, 0.1378]
         fitmass = fs.fit_quantity(mass, fs.mass_func, pars, fs.mass_names, 'mass')

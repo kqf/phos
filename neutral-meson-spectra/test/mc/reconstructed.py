@@ -28,7 +28,7 @@ class Estimator(object):
         inp = lambda x: Input(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x))
         f = lambda x: Spectrum(inp(x), label= x if x else 'all', mode = 'd', options = options).evaluate()[2]
 
-        particles = map(f, self.particle_names)
+        particles = map(f, self.particles_set[ptype])
         map(scalew, particles)
 
         generated = self.get_baseline()
@@ -55,11 +55,14 @@ class ParticleContributions(unittest.TestCase, Estimator):
         # self.infile = 'input-data/scaled-LHC17f8a.root'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPt_#pi^{0}'
-        # self.particle_names = ['', '#pi^{-}', '#pi^{+}', '#eta', '#omega', 'K^{s}_{0}', '#Lambda', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}']
-        self.particle_names = '', 'K^{s}_{0}', '#pi^{-}', '#pi^{+}', '#Lambda'
+        self.particles_set = {
+            'primary':   ['', '#rho^{+}', '#rho^{-}', 'K^{s}_{0}', '#Lambda', '#pi^{+}', '#pi^{-}', '#eta', '#omega', 'K^{*+}', 'K^{*-}', 'K^{*0}', '#barK^{*0}', 'K^{+}', 'K^{-}', '#Sigma^{0}'],
+            'secondary': ['', 'K^{s}_{0}', '#Lambda', '#pi^{+}', '#pi^{-}', '#eta', '#omega'],
+            'feeddown':  ['', 'K^{s}_{0}', '#Lambda', '#pi^{+}', '#pi^{-}', '#eta', '#omega']
+        }
 
 
     def testContributions(self):
         # self.estimate('primary')
-    	# self.estimate('secondary')
-        self.estimate('feeddown')
+    	self.estimate('secondary')
+        # self.estimate('feeddown')

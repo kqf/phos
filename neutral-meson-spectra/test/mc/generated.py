@@ -14,9 +14,11 @@ class InspectSources(unittest.TestCase):
         # self.infile = 'input-data/Pythia-LHC16-a5.root'
         self.infile = 'input-data/scaled-LHC17f8a.root'
         self.selection = 'MCStudyOnlyTender'
-        self.particle_names = '', 'K^{s}_{0}', '#eta', '#omega', '#rho^{-}', '#rho^{+}', 'K^{*-}', '#barK^{*0}', 'K^{*0}', 'K^{*+}', '#Lambda', '#pi^{-}', '#pi^{+}'
-        # self.particle_names = '', "K^{s}_{0}", "#eta", "#omega", "#Lambda", "#rho^{+}", "#rho^{-}", "#barK^{*0}", "K^{+}", "K^{-}", "#Sigma^{0}",
-        # self.particle_names = '', "K^{s}_{0}", "K^{+}", "K^{-}",'#pi^{-}', '#pi^{+}', '#Lambda'
+        self.particles_set = {
+            'primary':   ['', '#rho^{+}', '#rho^{-}', 'K^{s}_{0}', '#Lambda', '#pi^{+}', '#pi^{-}', '#eta', '#omega', 'K^{*+}', 'K^{*-}', 'K^{*0}', '#barK^{*0}', 'K^{+}', 'K^{-}', '#Sigma^{0}'],
+            'secondary': ['', 'K^{s}_{0}', '#Lambda', '#pi^{+}', '#pi^{-}', '#eta', '#omega'],
+            'feeddown':  ['', 'K^{s}_{0}', '#Lambda', '#pi^{+}', '#pi^{-}', '#eta', '#omega']
+        }
 
 
 
@@ -28,7 +30,8 @@ class InspectSources(unittest.TestCase):
 
 
     def inspect(self, ptype):
-        particles = [read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, p), p if p else 'all', norm = True) for p in self.particle_names] 
+        f = lambda x : read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, x), x if x else 'all', norm = True)
+        particles = map(f, self.particles_set[ptype])
         map(scalew, particles)
 
         for p in particles:
@@ -45,6 +48,6 @@ class InspectSources(unittest.TestCase):
 
   
     def testContributions(self):
-    	# self.inspect('secondary')
-    	self.inspect('primary')
+    	self.inspect('secondary')
+    	# self.inspect('primary')
     	# self.inspect('feeddown')
