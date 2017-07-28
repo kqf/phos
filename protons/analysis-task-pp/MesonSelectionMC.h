@@ -164,6 +164,8 @@ protected:
 		Int_t plabel;
 		return GetParent(label, plabel, particles);
 	}
+	void ConsiderGeneratedPi0(Int_t i, Double_t pt, Bool_t primary, const EventFlags & flags);
+
 	MesonSelectionMC(const MesonSelectionMC &);
 	MesonSelectionMC & operator = (const MesonSelectionMC &);
 

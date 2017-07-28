@@ -139,23 +139,19 @@ void MesonSelectionMC::InitSelectionHistograms()
 
 	// Fill Generated histograms
 	const char * np = fPartNames[kPi0];
-	TH1 * hist = new TH1F(Form("hPt_%s_primary_", np), "Distribution of primary #pi^{0}s from primary ; p_{T}, GeV/c", ptsize - 1, ptbins);
-	fPrimaryPi0[kGenerated] = new ParticlesHistogram(hist, fListOfHistos, fPi0SourcesNames);
+	TH1 * hist1 = new TH1F(Form("hPt_%s_primary_", np), "Distribution of primary #pi^{0}s from primary ; p_{T}, GeV/c", ptsize - 1, ptbins);
+	TH1 * hist2 = new TH1F(Form("hPt_%s_secondary_", np), "Distribution of secondary #pi^{0}s from secondary ; p_{T}, GeV/c", ptsize - 1, ptbins);
+	TH1 * hist3 = new TH1F(Form("hPt_%s_feeddown_", np), "Distribution of primary #pi^{0}s from secondary ; p_{T}, GeV/c", ptsize - 1, ptbins);
+	TH1 * hist4 = new TH2F(Form("hMassPt_%s_primary_", np), "(M,p_{T})_{#gamma#gamma} from primary ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+	TH1 * hist5 = new TH2F(Form("hMassPt_%s_secondary_", np), "(M,p_{T})_{#gamma#gamma} from secondary ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+	TH1 * hist6 = new TH2F(Form("hMassPt_%s_feeddown_", np), "(M,p_{T})_{#gamma#gamma} from secondary ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
 
-	hist = new TH1F(Form("hPt_%s_secondary_", np), "Distribution of secondary #pi^{0}s from secondary ; p_{T}, GeV/c", ptsize - 1, ptbins);
-	fSecondaryPi0[kGenerated] = new ParticlesHistogram(hist, fListOfHistos, fPi0SourcesNames);
-
-	hist = new TH1F(Form("hPt_%s_feeddown_", np), "Distribution of primary #pi^{0}s from secondary ; p_{T}, GeV/c", ptsize - 1, ptbins);
-	fFeedDownPi0[kGenerated] = new ParticlesHistogram(hist, fListOfHistos, fPi0SourcesNames);
-
-	hist = new TH2F(Form("hMassPt_%s_primary_", np), "(M,p_{T})_{#gamma#gamma} from primary ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fPrimaryPi0[kReconstructed] = new ParticlesHistogram(hist, fListOfHistos, fPi0SourcesNames);
-
-	hist = new TH2F(Form("hMassPt_%s_secondary_", np), "(M,p_{T})_{#gamma#gamma} from secondary ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fSecondaryPi0[kReconstructed] = new ParticlesHistogram(hist, fListOfHistos, fPi0SourcesNames);
-
-	hist = new TH2F(Form("hMassPt_%s_feeddown_", np), "(M,p_{T})_{#gamma#gamma} from secondary ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-	fFeedDownPi0[kReconstructed] = new ParticlesHistogram(hist, fListOfHistos, fPi0SourcesNames);
+	fPrimaryPi0[kGenerated]       = new ParticlesHistogram(hist1, fListOfHistos, fPi0SourcesNames);
+	fSecondaryPi0[kGenerated]     = new ParticlesHistogram(hist2, fListOfHistos, fPi0SourcesNames);
+	fFeedDownPi0[kGenerated]      = new ParticlesHistogram(hist3, fListOfHistos, fPi0SourcesNames);
+	fPrimaryPi0[kReconstructed]   = new ParticlesHistogram(hist4, fListOfHistos, fPi0SourcesNames);
+	fSecondaryPi0[kReconstructed] = new ParticlesHistogram(hist5, fListOfHistos, fPi0SourcesNames);
+	fFeedDownPi0[kReconstructed]  = new ParticlesHistogram(hist6, fListOfHistos, fPi0SourcesNames);
 
 
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
@@ -208,41 +204,45 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 			continue;
 		}
 
-
-		// Reject MIPS and count again
-		if (pt < 0.3)
-			continue;
-
-		if (primary)
-			fPrimaryPi0[kGenerated]->FillS(pt);
-		else
-			fSecondaryPi0[kGenerated]->FillS(pt);
-
-		AliAODMCParticle * parent = GetParent(i, flags.fMcParticles);
-
-		if (!parent)
-			continue;
-
-		Int_t pcode = parent->GetPdgCode();
-
-		fPi0Sources[Int_t(primary)]->Fill(pcode);
-		
-		if (primary)
-		{
-			fPrimaryPi0[kGenerated]->Fill(pcode, pt);
-			continue;
-		}
-
-		// Only for decay pi0s
-		//
-		if (!IsPrimary(parent))
-		{
-			fSecondaryPi0[kGenerated]->Fill(pcode, pt);
-			continue;
-		}
-
-		fFeedDownPi0[kGenerated]->FillAll(pcode, pt);
+		ConsiderGeneratedPi0(i, pt, primary, flags);
 	}
+}
+
+void MesonSelectionMC::ConsiderGeneratedPi0(Int_t i, Double_t pt, Bool_t primary, const EventFlags & flags)
+{
+	// Reject MIPS and count again
+	if (pt < 0.3)
+		return;
+
+	if (primary)
+		fPrimaryPi0[kGenerated]->FillS(pt);
+	else
+		fSecondaryPi0[kGenerated]->FillS(pt);
+
+	AliAODMCParticle * parent = GetParent(i, flags.fMcParticles);
+
+	if (!parent)
+		return;
+
+	Int_t pcode = parent->GetPdgCode();
+
+	fPi0Sources[Int_t(primary)]->Fill(pcode);
+
+	if (primary)
+	{
+		fPrimaryPi0[kGenerated]->Fill(pcode, pt);
+		return;
+	}
+
+	// Only for decay pi0s
+	//
+	if (!IsPrimary(parent))
+	{
+		fSecondaryPi0[kGenerated]->Fill(pcode, pt);
+		return;
+	}
+
+	fFeedDownPi0[kGenerated]->FillAll(pcode, pt);
 }
 
 //________________________________________________________________

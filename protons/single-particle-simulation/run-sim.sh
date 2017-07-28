@@ -6,7 +6,7 @@
 chmod +x dpgsim.sh
 
 # To generate single pi0 spectrum
-./dpgsim.sh --run 257893 --mode full --uid 1 --nevents 1 --generator PHOSPi0 --detector PHOS --simulation PHOS --reconstruction PHOS
+./dpgsim.sh --run 257893 --mode full --uid 1 --nevents 500 --generator PHOSPi0 --detector PHOS --simulation PHOS --reconstruction PHOS
 
 
 # To generate single eta spectrum
