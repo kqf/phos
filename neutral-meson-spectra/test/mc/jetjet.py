@@ -25,23 +25,50 @@ class Jetjet(unittest.TestCase):
 
     def setUp(self):
         self.selection = 'MCStudyOnlyTender'
-        self.histogram = 'hPt_#pi^{0}'
+        self.gen_histogram = 'hPt_#pi^{0}'
+        self.rec_histogram = 'MassPt'
 
         # To compare more than 1 production
-        self.files = {'weighed': 'input-data/scaled-LHC17f8a.root', 'no weights': 'input-data/LHC17f8a.root'}
+        self.productions = 'LHC17f8a', 'LHC17f8c'
+        self.files = {'weighed': 'input-data/scaled-%s.root', 'no weights #times 10^{-3}': 'input-data/%s.root'}
         # self.files = {'ok': 'input-data/LHC17f8a.root'}
 
 
-    def distribution(self, filename, histname, label):
+    def distribution(self, filename, histname, label, title):
         # Compare same selection
+
         hist = read_histogram(filename, self.selection, histname, label = label, priority = 0, norm = True)
-        scalew(hist, 1. / hist.Integral())
+        hist.SetTitle('{0} {1}'.format(hist.GetTitle(), title))
+        scalew(hist, 1e-3 if 'no' in label else 1)
+        # scalew(hist, 1. / hist.Integral())
         hist.logy = True
         return hist 
 
 
+    @unittest.skip('')
     def testFiles(self):
-        efficiencies = [self.distribution(f, self.histogram, k) for k, f in self.files.iteritems()]
-        diff = Comparator()
-        diff.compare(efficiencies)
+        """
+            To check files it's enough to check un/weighed generated spectra
+        """
+        for prod in self.productions:
+            efficiencies = [self.distribution(f % prod, self.gen_histogram, k, prod) for k, f in self.files.iteritems()]
+            diff = Comparator(rrange=(-1, -1))
+            diff.compare(efficiencies)
 
+
+    def reconstructed(self, filename, histname, label, title):
+        inp = Input(filename, self.selection, histname)
+        reco = Spectrum(inp, label= label, mode = 'd').evaluate()[2]
+        reco.SetTitle('{0} {1}'.format(reco.GetTitle(), title))
+        scalew(reco, 1e-3 if 'no' in label else 1)
+        return reco
+
+
+    def testProduction(self):
+        """
+            This is to check pi0 peak.
+        """
+        for prod in self.productions:
+            efficiencies = [self.reconstructed(f % prod, self.rec_histogram, k, prod) for k, f in self.files.iteritems()]
+            diff = Comparator((1, 1), rrange = (-1, -1))
+            diff.compare(efficiencies)

@@ -15,12 +15,19 @@ class Visualizer(object):
         self.crange = crange
         self.ratiofit = ratiofit
         self.output_prefix = 'compared-'
+        self.ignore_ratio = self.rrange and (self.rrange[0] < 0 or self.rrange[1] < 0)
         
 
     def preare_ratio_plot(self, hists, canvas):
-        c1 = canvas if canvas else get_canvas(*self.size)
+        c1 = canvas if canvas else get_canvas(self.size[0], self.size[1], resize = True)
         c1.Clear()
-        if len(hists) != 2: return c1, c1, c1
+
+        if self.ignore_ratio:
+            return c1, c1, c1
+
+        if len(hists) != 2: 
+            return c1, c1, c1
+
         pad1 = ROOT.TPad("pad1","main plot", 0, 0.3, 1, 1);
         pad1.SetBottomMargin(0);
         pad1.Draw()
@@ -55,6 +62,9 @@ class Visualizer(object):
     def draw_ratio(self, hists):
         ratio = self.ratio(hists)
         if not ratio:
+            return
+
+        if self.ignore_ratio:
             return
 
         adjust_labels(ratio, hists[0], scale = 7./3)
@@ -177,7 +187,7 @@ class Visualizer(object):
 
         
     def compare_multiple(self, hists, ci):
-        canvas = get_canvas(*self.size)
+        canvas = get_canvas(self.size[0], self.size[1], resize = True)
         canvas.Clear()
         canvas.Divide(2, 2)
 

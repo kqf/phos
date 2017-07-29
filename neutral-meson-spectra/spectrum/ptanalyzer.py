@@ -91,7 +91,7 @@ class PtAnalyzer(object):
         # Book histograms
         histgenerators = [PtDependent('mass', '%s mass position;;m, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
                           PtDependent('width', '%s peak width ;;#sigma, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
-                          PtDependent('spectrum', 'Raw %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
+                          PtDependent('spectrum', 'Reconstructed %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
                           PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label, self.options.priority),
                           PtDependent('npi0', 'Number of %ss in each p_{T} bin;; #frac{dN}{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
                           PtDependent('cball_alpha', 'Crystal ball parameter #alpha;; #alpha', self.label, self.options.priority),
