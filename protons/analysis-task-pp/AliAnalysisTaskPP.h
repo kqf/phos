@@ -9,7 +9,7 @@
 #include <AliAnalysisTaskSE.h>
 
 // --- Custom libraries ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 #include "MixingSample.h"
 
 class AliAnalysisTaskPP : public AliAnalysisTaskSE

@@ -22,7 +22,7 @@ ClassImp(PythiaInfoSelection);
 void PythiaInfoSelection::CountMBEvent()
 {
 
-	GeneralPhotonSelection::CountMBEvent();
+	PhotonSelection::CountMBEvent();
 
 	// Fetch the histgram file
 	TTree * tree = AliAnalysisManager::GetAnalysisManager()->GetTree();

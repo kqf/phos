@@ -3,7 +3,7 @@
 
 // --- Custom header files ---
 #include "DetectorHistogram.h"
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 
 // --- ROOT system ---
 #include <TH1F.h>
@@ -17,11 +17,11 @@
 #include <AliVCluster.h>
 #include <AliLog.h>
 
-class QualityPhotonSelection : public GeneralPhotonSelection
+class QualityPhotonSelection : public PhotonSelection
 {
 public:
 	QualityPhotonSelection():
-		GeneralPhotonSelection(),
+		PhotonSelection(),
 		fClusterNXZ(),
 		fClusterEXZ(),
 		fClusterTime(0),
@@ -37,7 +37,7 @@ public:
 	}
 
 	QualityPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3):
-		GeneralPhotonSelection(name, title, ec, a, n),
+		PhotonSelection(name, title, ec, a, n),
 		fClusterNXZ(),
 		fClusterEXZ(),
 		fClusterTime(0),

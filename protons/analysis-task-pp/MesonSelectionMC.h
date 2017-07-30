@@ -5,7 +5,7 @@
 #include <map>
 
 // --- Custom header files ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 #include "ParticlesHistogram.h"
 
 // --- ROOT system ---
@@ -61,7 +61,7 @@ private:
 };
 
 
-class MesonSelectionMC: public GeneralPhotonSelection
+class MesonSelectionMC: public PhotonSelection
 {
 public:
 	enum Modes {kGenerated = 0, kReconstructed = 1, kNhists = 2};
@@ -75,7 +75,7 @@ public:
 	};
 
 	MesonSelectionMC():
-		GeneralPhotonSelection(),
+		PhotonSelection(),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
@@ -105,7 +105,7 @@ public:
 	}
 
 	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
-		GeneralPhotonSelection(name, title, ec, a, n, t),
+		PhotonSelection(name, title, ec, a, n, t),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),

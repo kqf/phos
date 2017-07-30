@@ -6,12 +6,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	if (!mgr) return;
 
     gROOT->LoadMacro("DetectorHistogram.cxx+");
-    // gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
-    gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
+    gROOT->LoadMacro("PhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("ParticlesHistogram.cxx+");
-    gROOT->LoadMacro("PhotonTimecutSelection.cxx+");
+    gROOT->LoadMacro("PhotonTimecutStudySelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("MesonSelectionMC.cxx+");
@@ -27,12 +26,12 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	if (!isTest && !isMC)
 	{
 		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, timecut));
-		selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
+		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
 
 		selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7, 3, timecut));
-		selections->Add(new PhotonTimecutSelection("EtaTime", "Testing Timing Selection for eta meson", 0.3, 0.7, 3, timecut));
+		selections->Add(new PhotonTimecutStudySelection("EtaTime", "Testing Timing Selection for eta meson", 0.3, 0.7, 3, timecut));
 		
-		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
+		PhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(timecut);
 		selections->Add(sel);
 
@@ -85,7 +84,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", 0.3, 1.0, 3, fake_timecut));
 		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
 
-		GeneralPhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
+		PhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(fake_timecut);
 		selections->Add(sel);
 
@@ -96,7 +95,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		// Test selections
 		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", 0.3, 1.0, 3, timecut));
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, timecut, 10., 3.));
-		selections->Add(new PhotonTimecutSelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
+		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
 	}
 
 	// Setup task
@@ -128,7 +127,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	AliAnalysisDataContainer * coutput = 0;
 	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
 	{
-		GeneralPhotonSelection * fSel = dynamic_cast<GeneralPhotonSelection *> (task->GetSelections()->At(i));
+		PhotonSelection * fSel = dynamic_cast<PhotonSelection *> (task->GetSelections()->At(i));
 		fSel->SetTitle(description);
 		cout << fSel->GetTitle() << endl;
 
@@ -145,13 +144,12 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	plugin->SetAnalysisSource(
 		sources +
 	    "DetectorHistogram.cxx " +
-	    // "GeneralPhotonSelection.cxx " +
-	    "GeneralPhotonSelection.cxx " +
+	    "PhotonSelection.cxx " +
 	    "PhotonSpectrumSelection.cxx " +
 	    "QualityPhotonSelection.cxx " +
 	    "ParticlesHistogram.cxx " +
 	    "PhysPhotonSelection.cxx " +
-	    "PhotonTimecutSelection.cxx " +
+	    "PhotonTimecutStudySelection.cxx " +
 	    "TagAndProbeSelection.cxx " +
 	    "MesonSelectionMC.cxx " +
 	    "PythiaInfoSelection.cxx " +
@@ -165,10 +163,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		"libPWGGAPHOSTasks.so "	+
 	    "DetectorHistogram.cxx " +
 	    "DetectorHistogram.h " +
-	    // "GeneralPhotonSelection.cxx " +
-	    // "GeneralPhotonSelection.h " +
-	    "GeneralPhotonSelection.cxx " +
-	    "GeneralPhotonSelection.h " +
+	    "PhotonSelection.cxx " +
+	    "PhotonSelection.h " +
 	    "PhotonSpectrumSelection.cxx " +
 	    "PhotonSpectrumSelection.h " +
 	    "QualityPhotonSelection.cxx " +
@@ -177,8 +173,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "ParticlesHistogram.h " +
 	    "PhysPhotonSelection.cxx " +
 	    "PhysPhotonSelection.h " +
-	    "PhotonTimecutSelection.cxx " +
-	    "PhotonTimecutSelection.h " +
+	    "PhotonTimecutStudySelection.cxx " +
+	    "PhotonTimecutStudySelection.h " +
 	    "TagAndProbeSelection.cxx " +
 	    "TagAndProbeSelection.h " +
 	    "MesonSelectionMC.cxx " +

@@ -180,7 +180,7 @@ Bool_t QualityPhotonSelection::SelectEvent(const EventFlags & flgs)
 {
 	// Keep it this way if you decide to switch Bool_t -> Some_Other_type
 
-	Bool_t accepted = GeneralPhotonSelection::SelectEvent(flgs);
+	Bool_t accepted = PhotonSelection::SelectEvent(flgs);
 	if (accepted)
 		fZvertex->Fill(flgs.vtxBest[2]);
 

@@ -8,7 +8,7 @@
 #include <TObjArray.h>
 
 // --- Custom libraries ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 
 class MixingSample : public TObject
 {

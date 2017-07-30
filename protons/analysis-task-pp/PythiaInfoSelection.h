@@ -2,7 +2,7 @@
 #define PYTHIAINFOSELECTION_H
 
 // --- Custom header files ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 
 // --- ROOT system ---
 #include <TClonesArray.h>
@@ -15,11 +15,11 @@
 #include <AliStack.h>
 #include <AliLog.h>
 
-class PythiaInfoSelection: public GeneralPhotonSelection
+class PythiaInfoSelection: public PhotonSelection
 {
 public:
 	PythiaInfoSelection():
-		GeneralPhotonSelection(),
+		PhotonSelection(),
 		fXsec(0),
 		fTrials(0)
 	{
@@ -27,7 +27,7 @@ public:
 	}
 
 	PythiaInfoSelection(const char * name, const char * title):
-		GeneralPhotonSelection(name, title, 0, 0, 0, 0),
+		PhotonSelection(name, title, 0, 0, 0, 0),
 		fXsec(0),
 		fTrials(0)
 	{

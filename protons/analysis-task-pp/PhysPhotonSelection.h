@@ -2,7 +2,7 @@
 #define PHYSPHOTONSELECTION_H
 
 // --- Custom header files ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 #include "DetectorHistogram.h"
 
 // --- ROOT system ---
@@ -12,17 +12,17 @@
 // --- AliRoot header files ---
 #include <AliVCluster.h>
 
-class PhysPhotonSelection : public GeneralPhotonSelection
+class PhysPhotonSelection : public PhotonSelection
 {
 public:
 	PhysPhotonSelection():
-		GeneralPhotonSelection(),
+		PhotonSelection(),
 		fInvariantMass(),
 		fClusters(0)
 	{}
 
 	PhysPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
-		GeneralPhotonSelection(name, title, ec, a, n, t),
+		PhotonSelection(name, title, ec, a, n, t),
 		fInvariantMass(),
 		fClusters(0)
 	{}

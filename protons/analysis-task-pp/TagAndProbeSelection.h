@@ -2,7 +2,7 @@
 #define TAGANDPROBESELECTION_H
 
 // --- Custom header files ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 #include "DetectorHistogram.h"
 
 // --- ROOT system ---
@@ -14,18 +14,18 @@
 #include <AliVCluster.h>
 #include <AliLog.h>
 
-class TagAndProbeSelection: public GeneralPhotonSelection
+class TagAndProbeSelection: public PhotonSelection
 {
 public:
 	TagAndProbeSelection():
-		GeneralPhotonSelection(),
+		PhotonSelection(),
 		fMassEnergyAll(),
 		fMassEnergyTOF()
 	{
 	}
 
 	TagAndProbeSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
-		GeneralPhotonSelection(name, title, ec, a, n, t),
+		PhotonSelection(name, title, ec, a, n, t),
 		fMassEnergyAll(),
 		fMassEnergyTOF()
 	{

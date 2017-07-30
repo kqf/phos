@@ -1,31 +1,27 @@
 // --- Custom header files ---
-#include "PhotonTimecutSelection.h"
+#include "PhotonTimecutStudySelection.h"
 
 // --- ROOT system ---
 #include <TH2F.h>
-#include <TH3F.h>
-// #include "THashList.h"
 
 // --- AliRoot header files ---
-#include <AliVCaloCells.h>
 #include <AliVCluster.h>
 #include <AliLog.h>
-#include <AliPHOSGeometry.h>
 
 #include <iostream>
 using namespace std;
 
-ClassImp(PhotonTimecutSelection);
+ClassImp(PhotonTimecutStudySelection);
 
 
 //________________________________________________________________
-Bool_t PhotonTimecutSelection::IsMainBC(const AliVCluster * clus) const
+Bool_t PhotonTimecutStudySelection::IsMainBC(const AliVCluster * clus) const
 {
 	return TMath::Abs(clus->GetTOF()) < fTimingCut;
 }
 
 //________________________________________________________________
-void PhotonTimecutSelection::InitSelectionHistograms()
+void PhotonTimecutStudySelection::InitSelectionHistograms()
 {
 
 	// pi0 mass spectrum
@@ -59,7 +55,7 @@ void PhotonTimecutSelection::InitSelectionHistograms()
 }
 
 //________________________________________________________________
-void PhotonTimecutSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
+void PhotonTimecutStudySelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
 	TLorentzVector p1, p2, psum;
 	c1->GetMomentum(p1, eflags.vtxBest);

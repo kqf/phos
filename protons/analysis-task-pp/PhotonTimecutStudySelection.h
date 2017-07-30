@@ -2,19 +2,19 @@
 #define PHOTONTIMECUTSELECTION_H
 
 // --- Custom header files ---
-#include "GeneralPhotonSelection.h"
+#include "PhotonSelection.h"
 #include "DetectorHistogram.h"
 
 // --- ROOT header files ---
 #include "TH2F.h"
 
 
-class PhotonTimecutSelection : public GeneralPhotonSelection
+class PhotonTimecutStudySelection : public PhotonSelection
 {
 public:
 
-	PhotonTimecutSelection():
-		GeneralPhotonSelection(),
+	PhotonTimecutStudySelection():
+		PhotonSelection(),
 		fTimingCutPair(999999),
 		fMassPt(),
 		fMassPtMainMain(),
@@ -22,8 +22,8 @@ public:
 		fMassPtPileupPileup()
 	{}
 
-	PhotonTimecutSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Int_t t = 12.5e-9):
-		GeneralPhotonSelection(name, title, ec, a, n, 99999), // Pass infinite (99999) cut to select all clusters
+	PhotonTimecutStudySelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Int_t t = 12.5e-9):
+		PhotonSelection(name, title, ec, a, n, 99999), // Pass infinite (99999) cut to select all clusters
 		fTimingCutPair(t),                                   // Use timing cut for pair of clusters
 		fMassPt(),
 		fMassPtMainMain(),
@@ -36,8 +36,8 @@ public:
 protected:
 
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
-	PhotonTimecutSelection(const PhotonTimecutSelection &);
-	PhotonTimecutSelection & operator = (const PhotonTimecutSelection &);
+	PhotonTimecutStudySelection(const PhotonTimecutStudySelection &);
+	PhotonTimecutStudySelection & operator = (const PhotonTimecutStudySelection &);
 	virtual Bool_t IsMainBC(const AliVCluster * clus) const;
 
 	// This one should't be used for selection,
@@ -51,6 +51,6 @@ private:
 	DetectorHistogram * fMassPtMainPileup[2];   //!
 	DetectorHistogram * fMassPtPileupPileup[2]; //!
 
-	ClassDef(PhotonTimecutSelection, 1)
+	ClassDef(PhotonTimecutStudySelection, 1)
 };
 #endif

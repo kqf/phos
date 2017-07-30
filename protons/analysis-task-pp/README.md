@@ -1,36 +1,57 @@
-PHOS clusters in proton-proton collisions
-========================
-Main code for ESD/AOD data analysis.  Includes all necessary scripts to run the task locally, on grid and merger/download the output.
-
-## Environment 
-Make sure that you have proper environment. For example:
-
-```bash
-
-# Load alisoft
-alienv enter VO_ALICE@AliPhysics::vAN-20170222-1
-
-
-# Get grid token
-alien-token-init; source /tmp/gclient_env_`id -u $USER`
-```
-
-
+Neutral meson analysis in $pp$ at 13 TeV  
+=========================================
+Main code to analyse LHC16 proton-proton data. The code should support both AOD and ESD format of input data.
 
 ## Usage
-Look inside `Makefile` for more details.
-```bash
-# submit your analysis
-make grid
+This analysis task shoul alwaysd be used with [phos tender](https://github.com/alisw/AliPhysics/tree/master/PWGGA/PHOSTasksPHOS_PbPb/AddAODPHOSTender.C). This is important as tender handles calibrations, geometry etc. Just add the following lines in your analysis code:
 
-# merge output in grid
-make terminate
+```c++
+// In your run.C macro
 
+gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
+AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+PHOSSupply->ForceUsingBadMap("/path/to/badmap/BadMap_LHC16.root");
 
-# download the output
-make download
+if(isMC)
+{
+    // Use custom Zero Suppression threshold if needed
+    Double_t zs_threshold = 0.020;
+    PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+}
 
-# to test on local dataset:
-# you should have a valid token to upload your output on grid
-make test
+// If you don't strong cuts on clusters, leave 
+// this list of bad cells empty.
+std::vector<Int_t> cells;
+
+TString files = AddAnalysisTaskPP(AliVEvent::kINT7, // Physics selection 
+    "Changed ZS threshold to 20 MeV",               // Comments, tags to distinguish output *.root files
+    "SelectionPrefix",                              // Prefix all your output if you want to use add multiple AliAnalysisTaskPPs
+    "",                                             // Path to Bad Map, don't use it if you have set one in Tender
+    cells,                                          // List of bad cells
+    isMC);
+
+// Add files to the grid plugin
+//
+alienHandler->SetOutputFiles(files);
+```
+
+## Class hierarchy
+
+```c++
+AliAnalysisTaskPP            //  Main analysis 
+└───   MixingSample
+└───   PhotonSelection         
+        └───   PhysPhotonSelection   // Fills all histograms needed to reconstruct $\pi^{0}$s
+        │           DetectorHistogram
+        │
+        └───   PhotonTimecutSelection  // Study of timing cut efficiency and purity
+        └───   QualityPhotonSelection  // QA plots for PHOS clusters
+        └───   TagAndProbeSelection
+        └───   PhysPhotonSelectionMC   // Applies nonlinearity to PHOS clusters in MC
+        └───   MesonSelectionMC        // Neutral meson efficiency study
+        │           ParticlesHistogram
+        │
+        └───   PythiaInfoSelection     // Collects cross section and ntrials data. Needed for jet-jet MC only.
+
 ```

@@ -1,5 +1,5 @@
-#ifndef GENERALPHOTONSELECTION_H
-#define GENERALPHOTONSELECTION_H
+#ifndef GPHOTONSELECTION_H
+#define GPHOTONSELECTION_H
 
 
 // --- ROOT system ---
@@ -45,11 +45,11 @@ struct EventFlags
 };
 
 
-class GeneralPhotonSelection : public TNamed
+class PhotonSelection : public TNamed
 {
 public:
 
-	GeneralPhotonSelection():
+	PhotonSelection():
 		TNamed(),
 		fListOfHistos(0),
 		fClusterMinE(0.3),
@@ -57,7 +57,7 @@ public:
 		fNCellsCut(3)
 	{}
 
-	GeneralPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
+	PhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
 		TNamed(name, title),
 		fListOfHistos(0),
 		fClusterMinE(ec),
@@ -67,7 +67,7 @@ public:
 		fEventCounter(0)
 	{}
 
-	virtual ~GeneralPhotonSelection();
+	virtual ~PhotonSelection();
 
 	virtual void InitSummaryHistograms();
 	virtual void InitSelectionHistograms() = 0;
@@ -109,8 +109,8 @@ protected:
 		(void) eflags;
 	}	
 
-	GeneralPhotonSelection(const GeneralPhotonSelection &);
-	GeneralPhotonSelection & operator = (const GeneralPhotonSelection &);
+	PhotonSelection(const PhotonSelection &);
+	PhotonSelection & operator = (const PhotonSelection &);
 
 	void FillHistogram(const char * key, Double_t x, Double_t y = 1, Double_t z = 1); //Fill 3D histogram witn name key
 	TList  * fListOfHistos;  //! list of histograms
@@ -122,6 +122,6 @@ protected:
 
 	TH1 * fEventCounter;  //!
 private:
-	ClassDef(GeneralPhotonSelection, 2)
+	ClassDef(PhotonSelection, 2)
 };
 #endif
