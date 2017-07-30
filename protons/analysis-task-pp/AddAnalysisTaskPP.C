@@ -6,7 +6,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	if (!mgr) return;
 
     gROOT->LoadMacro("DetectorHistogram.cxx+");
-    gROOT->LoadMacro("PhotonSelection.cxx+");
+    // gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
     gROOT->LoadMacro("GeneralPhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("QualityPhotonSelection.cxx+");
@@ -128,7 +128,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	AliAnalysisDataContainer * coutput = 0;
 	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
 	{
-		PhotonSelection * fSel = dynamic_cast<PhotonSelection *> (task->GetSelections()->At(i));
+		GeneralPhotonSelection * fSel = dynamic_cast<GeneralPhotonSelection *> (task->GetSelections()->At(i));
 		fSel->SetTitle(description);
 		cout << fSel->GetTitle() << endl;
 
@@ -145,7 +145,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	plugin->SetAnalysisSource(
 		sources +
 	    "DetectorHistogram.cxx " +
-	    "PhotonSelection.cxx " +
+	    // "GeneralPhotonSelection.cxx " +
 	    "GeneralPhotonSelection.cxx " +
 	    "PhotonSpectrumSelection.cxx " +
 	    "QualityPhotonSelection.cxx " +
@@ -165,8 +165,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		"libPWGGAPHOSTasks.so "	+
 	    "DetectorHistogram.cxx " +
 	    "DetectorHistogram.h " +
-	    "PhotonSelection.cxx " +
-	    "PhotonSelection.h " +
+	    // "GeneralPhotonSelection.cxx " +
+	    // "GeneralPhotonSelection.h " +
 	    "GeneralPhotonSelection.cxx " +
 	    "GeneralPhotonSelection.h " +
 	    "PhotonSpectrumSelection.cxx " +

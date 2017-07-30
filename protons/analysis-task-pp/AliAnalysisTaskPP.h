@@ -9,10 +9,8 @@
 #include <AliAnalysisTaskSE.h>
 
 // --- Custom libraries ---
-#include "PhotonSelection.h"
+#include "GeneralPhotonSelection.h"
 #include "MixingSample.h"
-
-class EventFlags;
 
 class AliAnalysisTaskPP : public AliAnalysisTaskSE
 {

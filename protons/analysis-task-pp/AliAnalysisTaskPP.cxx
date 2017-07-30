@@ -22,13 +22,6 @@
 #include <AliMCEventHandler.h>
 #include <AliMCEvent.h>
 
-// --- Custom libraries ---
-#include "PhysPhotonSelection.h"
-#include "PhotonTimecutSelection.h"
-#include "MesonSelectionMC.h"
-#include "QualityPhotonSelection.h"
-
-
 
 ClassImp(AliAnalysisTaskPP)
 
@@ -74,7 +67,7 @@ void AliAnalysisTaskPP::UserCreateOutputObjects()
 	// Initialization of all outputs
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 	{
-		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
+		GeneralPhotonSelection * selection = dynamic_cast<GeneralPhotonSelection *> (fSelections->At(i));
 		selection->InitSummaryHistograms();
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
@@ -98,7 +91,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	// Count MB event before event cuts for every selection 
 	for (int i = 0; i < fSelections->GetEntries(); ++i) 
 	{
-		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
+		GeneralPhotonSelection * selection = dynamic_cast<GeneralPhotonSelection *> (fSelections->At(i));
 		selection->CountMBEvent();
 	}
 
@@ -142,7 +135,7 @@ void AliAnalysisTaskPP::UserExec(Option_t *)
 	TList * pool = fPreviousEvents->GetPool(evtProperties);
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
 	{
-		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
+		GeneralPhotonSelection * selection = dynamic_cast<GeneralPhotonSelection *> (fSelections->At(i));
 
 		if (!selection->SelectEvent(evtProperties))
 			continue;
