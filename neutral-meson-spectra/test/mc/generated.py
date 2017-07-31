@@ -48,6 +48,6 @@ class InspectSources(unittest.TestCase):
 
   
     def testContributions(self):
-    	self.inspect('secondary')
+    	# self.inspect('secondary')
     	# self.inspect('primary')
-    	# self.inspect('feeddown')
+    	self.inspect('feeddown')
