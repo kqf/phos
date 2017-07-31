@@ -1,10 +1,11 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Float_t timecut = 12.5e-9, Bool_t isTest = kFALSE)
+TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	cout << "Setting cells " <<  v.size() << endl;
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
+    gROOT->LoadMacro("ClusterCuts.cxx+");
     gROOT->LoadMacro("DetectorHistogram.cxx+");
     gROOT->LoadMacro("PhotonSelection.cxx+");
     gROOT->LoadMacro("PhotonSpectrumSelection.cxx+");
@@ -22,33 +23,37 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	// Setup Selections
 	TList * selections = new TList();
 
+	Float_t timecut = 12.5e-9;
+
+	ClusterCuts cuts_pi0 = ClusterCuts::GetClusterCuts();
+	ClusterCuts cuts_eta = ClusterCuts::GetClusterCuts();
+	cuts_eta.fAsymmetryCut = 0.7;
 
 	if (!isTest && !isMC)
 	{
-		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, timecut));
-		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
+		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", cuts_pi0));
+		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
 
-		selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", 0.3, 0.7, 3, timecut));
-		selections->Add(new PhotonTimecutStudySelection("EtaTime", "Testing Timing Selection for eta meson", 0.3, 0.7, 3, timecut));
+		selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", cuts_eta));
+		selections->Add(new PhotonTimecutStudySelection("EtaTime", "Testing Timing Selection for eta meson", cuts_eta));
 		
 		PhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
 		sel->SetTimingCut(timecut);
 		selections->Add(sel);
 
 		selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
-		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, timecut, 10., 3.));
+		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
 	}	
 
 	
 	if(isTest)
 	{
-		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", 0.3, 1.0, 3, timecut));
+		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", cuts_pi0));
 	}
 
 
 	if (isMC)
 	{
-		Float_t fake_timecut = 9999.0;
 		// Float_t nonlin_a = -1.84679e-02;
 		// Float_t nonlin_b = -4.70911e-01;
 		// Float_t nonlin_a = 0;
@@ -78,26 +83,22 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		// Float_t nonlin_b = 0.6;
 	    // Float_t ge_scale = 1.04;
 
-		selections->Add(new PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection", 0.3, 1.0, 3,
-			fake_timecut, nonlin_a, nonlin_b, ge_scale));
-
-		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", 0.3, 1.0, 3, fake_timecut));
-		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", 0.3, 1.0, 3, fake_timecut));
-
-		PhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
-		sel->SetTimingCut(fake_timecut);
-		selections->Add(sel);
+		selections->Add(new PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
+		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
+		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0));
+		selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
 
 		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
 			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
 
 
 		// Test selections
-		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", 0.3, 1.0, 3, timecut));
-		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", 0.3, 1.0, 3, timecut, 10., 3.));
-		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", 0.3, 1.0, 3, timecut));
+		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", cuts_pi0));
+		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
+		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
 	}
 
+	cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIII" << endl;
 	// Setup task
 	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons", selections);
 
@@ -143,6 +144,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	TString libs   = plugin->GetAdditionalLibs();
 	plugin->SetAnalysisSource(
 		sources +
+	    "ClusterCuts.cxx " +
 	    "DetectorHistogram.cxx " +
 	    "PhotonSelection.cxx " +
 	    "PhotonSpectrumSelection.cxx " +
@@ -161,6 +163,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	plugin->SetAdditionalLibs(
 		libs +
 		"libPWGGAPHOSTasks.so "	+
+	    "ClusterCuts.cxx " +
+	    "ClusterCuts.h " +
 	    "DetectorHistogram.cxx " +
 	    "DetectorHistogram.h " +
 	    "PhotonSelection.cxx " +

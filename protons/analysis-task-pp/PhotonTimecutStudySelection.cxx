@@ -17,7 +17,7 @@ ClassImp(PhotonTimecutStudySelection);
 //________________________________________________________________
 Bool_t PhotonTimecutStudySelection::IsMainBC(const AliVCluster * clus) const
 {
-	return TMath::Abs(clus->GetTOF()) < fTimingCut;
+	return TMath::Abs(clus->GetTOF()) < fTimingCutPair;
 }
 
 //________________________________________________________________
@@ -67,7 +67,7 @@ void PhotonTimecutStudySelection::ConsiderPair(const AliVCluster * c1, const Ali
 
 	// Apply assymetry cut
 	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
-	if (asym > fAsymmetryCut) return;
+	if (asym > fCuts.fAsymmetryCut) return;
 
 	Int_t sm1, sm2, x1, z1, x2, z2;
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok

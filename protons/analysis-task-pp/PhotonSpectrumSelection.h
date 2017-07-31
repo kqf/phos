@@ -25,8 +25,8 @@ public:
     {
     }
 
-    PhotonSpectrumSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999, Float_t cpv = 10., Float_t disp = 3.0):
-        PhotonSelection(name, title, ec, a, n, t),
+    PhotonSpectrumSelection(const char * name, const char * title, ClusterCuts cuts, Float_t cpv = 10., Float_t disp = 3.0):
+        PhotonSelection(name, title, cuts),
         fDistanceCPV(cpv),
         fDispersionCut(disp),
         fSpectrum(0),

@@ -22,15 +22,17 @@ public:
 		fMassPtPileupPileup()
 	{}
 
-	PhotonTimecutStudySelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Int_t t = 12.5e-9):
-		PhotonSelection(name, title, ec, a, n, 99999), // Pass infinite (99999) cut to select all clusters
-		fTimingCutPair(t),                                   // Use timing cut for pair of clusters
+	PhotonTimecutStudySelection(const char * name, const char * title, ClusterCuts cuts):
+		PhotonSelection(name, title, cuts), 
+		fTimingCutPair(cuts.fTimingCut), // Use timing cut for pair of clusters
 		fMassPt(),
 		fMassPtMainMain(),
 		fMassPtMainPileup(),
 		fMassPtPileupPileup()
 
-	{}
+	{
+		fCuts.fTimingCut = 99999; // Pass infinite (99999) cut to select all clusters 
+	}
 	virtual void InitSelectionHistograms();
 
 protected:

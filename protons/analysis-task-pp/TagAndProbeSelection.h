@@ -19,16 +19,19 @@ class TagAndProbeSelection: public PhotonSelection
 public:
 	TagAndProbeSelection():
 		PhotonSelection(),
+		fTimingCut(999999),
 		fMassEnergyAll(),
 		fMassEnergyTOF()
 	{
 	}
 
-	TagAndProbeSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
-		PhotonSelection(name, title, ec, a, n, t),
+	TagAndProbeSelection(const char * name, const char * title, ClusterCuts cuts):
+		PhotonSelection(name, title, cuts),
+		fTimingCut(cuts.fTimingCut),  // Copy timing cut information
 		fMassEnergyAll(),
 		fMassEnergyTOF()
 	{
+		fCuts.fTimingCut = 99999; // Don't use timecut for cluster selection
 	}
 
 	virtual void InitSelectionHistograms();
@@ -41,6 +44,7 @@ protected:
 	TagAndProbeSelection(const TagAndProbeSelection &);
 	TagAndProbeSelection & operator = (const TagAndProbeSelection &);
 private:
+	Float_t fTimingCut;
 	DetectorHistogram * fMassEnergyAll[2]; //!
 	DetectorHistogram * fMassEnergyTOF[2]; //!
 

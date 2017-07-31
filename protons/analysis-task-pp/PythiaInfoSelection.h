@@ -27,7 +27,7 @@ public:
 	}
 
 	PythiaInfoSelection(const char * name, const char * title):
-		PhotonSelection(name, title, 0, 0, 0, 0),
+		PhotonSelection(name, title, ClusterCuts()),
 		fXsec(0),
 		fTrials(0)
 	{

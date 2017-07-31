@@ -130,10 +130,10 @@ void PhotonSelection::InitSummaryHistograms()
 
 	TString cuts = Form(
 		 	            ";\nCuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns", 
-						fClusterMinE,
-						fAsymmetryCut,
-						fNCellsCut,
-						fTimingCut * 1e+9
+						fCuts.fClusterMinE,
+						fCuts.fAsymmetryCut,
+						fCuts.fNCellsCut,
+						fCuts.fTimingCut * 1e+9
 					   );
 
 	this->SetTitle(this->GetTitle() + cuts);
@@ -239,11 +239,16 @@ void PhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjAr
 	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
 	{
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 		
-		if (clus->GetNCells() < fNCellsCut) continue;
-		if (clus->E() < fClusterMinE) continue;
-		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
+		// TODO: Is this a good way of checking the sm?
+		//
+
+		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) 
+			continue;
+
+		if (!fCuts.AcceptCluster(clus))
+			continue;
+
 		candidates->Add(clus);
 
 		// Fill histograms only for real events

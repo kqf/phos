@@ -1,6 +1,9 @@
 #ifndef GPHOTONSELECTION_H
 #define GPHOTONSELECTION_H
 
+// --- Custom libraries ---
+#include "ClusterCuts.h"
+
 
 // --- ROOT system ---
 #include <TObjArray.h>
@@ -52,18 +55,14 @@ public:
 	PhotonSelection():
 		TNamed(),
 		fListOfHistos(0),
-		fClusterMinE(0.3),
-		fAsymmetryCut(1.0),
-		fNCellsCut(3)
+		fCuts(),
+		fEventCounter(0)
 	{}
 
-	PhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
+	PhotonSelection(const char * name, const char * title, ClusterCuts cuts):
 		TNamed(name, title),
 		fListOfHistos(0),
-		fClusterMinE(ec),
-		fAsymmetryCut(a),
-		fTimingCut(t),
-		fNCellsCut(n),
+		fCuts(cuts),
 		fEventCounter(0)
 	{}
 
@@ -72,6 +71,7 @@ public:
 	virtual void InitSummaryHistograms();
 	virtual void InitSelectionHistograms() = 0;
 	virtual Bool_t SelectEvent(const EventFlags & flgs);
+
 	// This is a dummy method to count number of Triggered Events.
 	virtual void CountMBEvent();
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
@@ -81,15 +81,7 @@ public:
     }
 
 	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
-
-
-
-	virtual void SetClusterMinEnergy(Float_t e) { fClusterMinE = e; }
-	virtual void SetAsymmetryCut(Float_t a) { fAsymmetryCut = a; }
-	virtual void SetTimingCut(Float_t t) { fTimingCut = t; }
-	virtual void SetMinCellsInCluster(Float_t n) { fNCellsCut = n; }
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
-
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
@@ -114,11 +106,7 @@ protected:
 
 	void FillHistogram(const char * key, Double_t x, Double_t y = 1, Double_t z = 1); //Fill 3D histogram witn name key
 	TList  * fListOfHistos;  //! list of histograms
-
-	Float_t fClusterMinE;
-	Float_t fAsymmetryCut;
-	Float_t fTimingCut;
-	Int_t fNCellsCut;
+	ClusterCuts fCuts;
 
 	TH1 * fEventCounter;  //!
 private:

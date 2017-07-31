@@ -281,7 +281,6 @@ Bool_t MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
 void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
 {
 	// This method should be redefined here for 2 reasons:
-	//    - There is no timing cut in MC
 	//    - It allows to inspect MC clusters
 
 	// Don't return TObjArray: force user to handle candidates lifetime
@@ -291,18 +290,16 @@ void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjA
 		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
 		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
 
-		if (clus->GetNCells() < fNCellsCut) continue;
-		if (clus->E() < fClusterMinE) continue;
+		if (!fCuts.AcceptCluster(clus))
+			continue;
 
-		// IMPORTANT: Don't apply timing cuts for MC
-		// if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
 		candidates->Add(clus);
 
 		// Fill histograms only for real events
 		if (eflags.isMixing)
 			continue;
 
-		// TODO: Redefine Cluster Histogram?
+		// TODO: Redefine Cluster Histogram?, Why do we have to have FillClusterMC ?
 		// There is no cluster histograms here
 		// FillClusterHistograms(clus, eflags);
 		// FillClusterMC(clus, eflags.fMcParticles);

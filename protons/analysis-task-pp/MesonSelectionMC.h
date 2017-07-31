@@ -104,8 +104,8 @@ public:
 		fPi0SourcesNames[kSigmaZero] = "#Sigma^{0}";
 	}
 
-	MesonSelectionMC(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3, Float_t t = 999):
-		PhotonSelection(name, title, ec, a, n, t),
+	MesonSelectionMC(const char * name, const char * title, ClusterCuts cuts):
+		PhotonSelection(name, title, cuts),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
@@ -113,6 +113,10 @@ public:
 		fPi0Sources()
 
 	{
+		// Force no timing cut for MC,
+		// as there is no photons from different bunches
+		fCuts.fTimingCut = 9999; 
+
 		// Don't use c++11 here, as it might fail at some nodes
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";

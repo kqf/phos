@@ -115,11 +115,16 @@ void TagAndProbeSelection::SelectPhotonCandidates(const TObjArray * clusArray, T
 		TLorentzVector p;
 		clus->GetMomentum(p, eflags.vtxBest);
 
-		if (clus->E() < fClusterMinE) continue;
-		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
-		if (clus->GetNCells() < fNCellsCut) continue;
+		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) 
+			continue;
+
+		// TODO: Remove this method?
 		// Don't cut on variables we want to study:
-		// In this case it's TOF
+		// In this case it's TOF	
+		if (!fCuts.AcceptCluster(clus))
+			continue;
+
+
 
 		candidates->Add(clus);
 

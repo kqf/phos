@@ -80,7 +80,7 @@ void QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVClus
 
 	// Appply asymmetry cut for pair
 	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
-	if (asym > fAsymmetryCut) return;
+	if (asym > fCuts.fAsymmetryCut) return;
 
 
 	Int_t sm1, sm2, x1, z1, x2, z2;
@@ -107,9 +107,10 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 		TLorentzVector p;
 		clus->GetMomentum(p, eflags.vtxBest);
 
+		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) 
+			continue;
 
-		if (clus->E() < fClusterMinE) continue;
-		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
+		if (clus->E() < fCuts.fClusterMinE) continue;
 
 		Float_t tof = clus->GetTOF();
 
@@ -119,12 +120,12 @@ void QualityPhotonSelection::SelectPhotonCandidates(const TObjArray * clusArray,
 			fClusterEvsT->FillAll(sm, sm, tof, clus->E());
 			fClusterTimeMap->FillAll(sm, sm, x, z, tof);
 		}
-		if (TMath::Abs(clus->GetTOF()) > fTimingCut) continue;
+		if (TMath::Abs(clus->GetTOF()) > fCuts.fTimingCut) continue;
 
 		if (!eflags.isMixing) fNcellsE->Fill(p.E(), clus->GetNCells());
 		if (!eflags.isMixing) fShapeE->Fill(clus->GetM20(), clus->GetNCells());
 
-		if (clus->GetNCells() < fNCellsCut) continue;
+		if (clus->GetNCells() < fCuts.fNCellsCut) continue;
 		candidates->Add(clus);
 
 

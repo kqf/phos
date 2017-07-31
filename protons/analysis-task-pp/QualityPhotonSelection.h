@@ -36,8 +36,8 @@ public:
 	{
 	}
 
-	QualityPhotonSelection(const char * name, const char * title, Float_t ec = 0.3, Float_t a = 1.0, Int_t n = 3):
-		PhotonSelection(name, title, ec, a, n),
+	QualityPhotonSelection(const char * name, const char * title, ClusterCuts cuts):
+		PhotonSelection(name, title, cuts),
 		fClusterNXZ(),
 		fClusterEXZ(),
 		fClusterTime(0),
