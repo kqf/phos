@@ -28,10 +28,12 @@ def equals(a, b, tol = 1e-7):
     return abs(a - b) < tol 
 
 def wait(name = '', draw=True, save = False, suffix = ''):
+    outdir = 'results/'
     canvas = get_canvas()
     canvas.Update()
     name = name.replace(' ', '-').replace('_', '-')
-    if save: canvas.SaveAs('results/' + name + '.pdf')
+
+    if save: canvas.SaveAs(outdir + name + '.pdf')
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
     if draw: ROOT.gApplication.Run(True)
 

@@ -7,7 +7,7 @@ from sutils import rebin_as
 import numpy as np
 
 class Visualizer(object):
-    def __init__(self, size, rrange, ratiofit, crange):
+    def __init__(self, size, rrange, ratiofit, crange, oname):
         super(Visualizer, self).__init__()
         self.size = size
         self.cache = []
@@ -16,6 +16,7 @@ class Visualizer(object):
         self.ratiofit = ratiofit
         self.output_prefix = 'compared-'
         self.ignore_ratio = self.rrange and (self.rrange[0] < 0 or self.rrange[1] < 0)
+        self.oname = oname
         
 
     def preare_ratio_plot(self, hists, canvas):
@@ -179,7 +180,8 @@ class Visualizer(object):
 
         if stop:
             fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
-            wait(self.output_prefix + fname.lower(), save=True)
+            oname = self.get_oname(fname.lower())
+            wait(oname, save=True)
 
         self.cache.append(ratio)
         self.cache.append(legend)
@@ -199,8 +201,17 @@ class Visualizer(object):
         for i, h in enumerate(hists):
             self.compare_visually(h, ci, False, canvas.cd(i + 1))
 
+        # Draw and save the output
         canvas.cd()
-        wait(self.output_prefix + hists[0][0].GetName(), True)
+        oname = self.get_oname(hists[0][0].GetName())
+        wait(oname, True)
+
+    def get_oname(self, name):
+        if self.oname:
+            return self.oname
+
+        oname = self.output_prefix + name
+        return oname
 
 def define_colors(ci = 1000):
     with open("config/colors.json") as f:
@@ -214,9 +225,9 @@ def define_colors(ci = 1000):
 class Comparator(object):
     ci, colors = define_colors()
 
-    def __init__(self, size = (1, 1), rrange = None, ratiofit = False, crange = None):
+    def __init__(self, size = (1, 1), rrange = None, ratiofit = False, crange = None, oname = ''):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size, rrange, ratiofit, crange)
+        self.vi = Visualizer(size, rrange, ratiofit, crange, oname)
 
 
     def compare(self, *args):

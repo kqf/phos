@@ -1,10 +1,25 @@
 #!/usr/bin/python
 
 import ROOT
+import os.path
+
+
+def read_root_file(name, directory = 'input-data/'):
+    if os.path.isfile(name):
+        return ROOT.TFile(name) 
+
+    if not directory in name:
+        return read_root_file(directory + name, directory)
+
+    if not '.root' in name:
+        return read_root_file(name + '.root', directory)
+
+    raise IOError('No such file: {0}'.format(name))
+
 
 
 def read_histogram(filename, listname, histname, label = None, priority = 999, norm = False):
-    infile = ROOT.TFile(filename)
+    infile = read_root_file(filename)
     lst    = infile.Get(listname)
     hist   = lst.FindObject(histname)
 
@@ -26,7 +41,7 @@ class Input(object):
         self.listname = listname
         self.histname = histname
         self.mixprefix = mixprefix
-        self.infile = ROOT.TFile(filename)
+        self.infile = read_root_file(self.filename) 
 
     @staticmethod
     def events(lst, hist, norm = False):

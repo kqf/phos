@@ -45,14 +45,13 @@ class Jetjet(unittest.TestCase):
         return hist 
 
 
-    @unittest.skip('')
     def testFiles(self):
         """
             To check files it's enough to check un/weighed generated spectra
         """
         for prod in self.productions:
             efficiencies = [self.distribution(f % prod, self.gen_histogram, k, prod) for k, f in self.files.iteritems()]
-            diff = Comparator(rrange=(-1, -1))
+            diff = Comparator(rrange=(-1, -1), oname = 'MC_PHOS_generated_{0}'.format(prod))
             diff.compare(efficiencies)
 
 
@@ -70,5 +69,5 @@ class Jetjet(unittest.TestCase):
         """
         for prod in self.productions:
             efficiencies = [self.reconstructed(f % prod, self.rec_histogram, k, prod) for k, f in self.files.iteritems()]
-            diff = Comparator((1, 1), rrange = (-1, -1))
+            diff = Comparator((1, 1), rrange = (-1, -1), oname = 'MC_PHOS_reconstructed_{0}'.format(prod))
             diff.compare(efficiencies)

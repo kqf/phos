@@ -15,7 +15,6 @@ import unittest
 from spectrum.sutils import hsum
 
 
-# TODO: Correct names in the output
 class Estimator(object):
 
     def __init__(self):
