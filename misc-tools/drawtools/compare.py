@@ -95,16 +95,16 @@ def main():
     not_reliable = [""]
 
     if len(sys.argv) != 4:
-        print sys.argv
+        print 'Invalid number of arguments.\nExample: file1.root file2.root SelectionName'
         raise ValueError('Invalid number of arguments.\nExample: file1.root file2.root SelectionName')
 
     diff = Comparator(not_reliable)
     file1, file2, selection = sys.argv[1:4]
     #
-    diff.compare_files(file1, file2, selection, compare_visually)
+    # diff.compare_files(file1, file2, selection, compare_visually)
 
     # If you are using lxplus it's better to use Chi^2 test
-    # diff.compare_files(file1, file2, selection, compare_chi)
+    diff.compare_files(file1, file2, selection, compare_chi)
 
 
 

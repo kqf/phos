@@ -1,7 +1,6 @@
 TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	cout << "Setting cells " <<  v.size() << endl;
-
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) return;
 
@@ -23,8 +22,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	// Setup Selections
 	TList * selections = new TList();
 
-	Float_t timecut = 12.5e-9;
-
 	ClusterCuts cuts_pi0 = ClusterCuts::GetClusterCuts();
 	ClusterCuts cuts_eta = ClusterCuts::GetClusterCuts();
 	cuts_eta.fAsymmetryCut = 0.7;
@@ -37,10 +34,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhysPhotonSelection("Eta", "Physics Selection for eta meson", cuts_eta));
 		selections->Add(new PhotonTimecutStudySelection("EtaTime", "Testing Timing Selection for eta meson", cuts_eta));
 		
-		PhotonSelection * sel = new QualityPhotonSelection("Qual", "Cluster quality Selection");
-		sel->SetTimingCut(timecut);
-		selections->Add(sel);
-
+		selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
 		selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
 	}	
@@ -98,7 +92,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
 	}
 
-	cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIII" << endl;
 	// Setup task
 	AliAnalysisTaskPP * task = new AliAnalysisTaskPP("PhosProtons", selections);
 
