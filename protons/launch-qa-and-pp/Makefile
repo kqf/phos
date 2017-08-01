@@ -6,6 +6,7 @@
 DATASET = LHC16j2a1
 DPART = second
 MC = kTRUE
+TEST_SELECTION = MCStudyOnlyTender
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call unlink) 
@@ -55,7 +56,7 @@ test: | %.cxx
 	@ln -s ../../misc-tools/drawtools/compare.py .
 	@# There are problems with python under alienv environment
 	@# Therefore it's necessary to use all these tweaks
-	./compare.py reference.root test-analysis-pp.root  TagAndProbleTender 2> /dev/null | grep -v Aborted  || echo 'Finished!' 
+	./compare.py reference.root test-analysis-pp.root $(TEST_SELECTION) 2> /dev/null | grep -v Aborted  || echo 'Finished!' 
 	@$(call unlink) && echo "Directory is clean"
 	@echo -e "\a"
 

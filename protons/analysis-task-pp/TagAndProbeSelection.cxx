@@ -103,36 +103,3 @@ void TagAndProbeSelection::InitSelectionHistograms()
 	}
 
 }
-
-//________________________________________________________________
-void TagAndProbeSelection::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
-{
-	// Don't return TObjArray: force user to handle candidates lifetime
-	Int_t sm, x, z;
-	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
-	{
-		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-		TLorentzVector p;
-		clus->GetMomentum(p, eflags.vtxBest);
-
-		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) 
-			continue;
-
-		// TODO: Remove this method?
-		// Don't cut on variables we want to study:
-		// In this case it's TOF	
-		if (!fCuts.AcceptCluster(clus))
-			continue;
-
-
-
-		candidates->Add(clus);
-
-		// Fill histograms only for real events
-		if (eflags.isMixing)
-			continue;
-
-		if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-			fEventCounter->Fill(EventFlags::kTwoPhotons);
-	}
-}

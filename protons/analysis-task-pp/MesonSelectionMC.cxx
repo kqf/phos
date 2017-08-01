@@ -275,36 +275,3 @@ Bool_t MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
 	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
 	return r2 < rcut * rcut;
 }
-
-
-//________________________________________________________________
-void MesonSelectionMC::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
-{
-	// This method should be redefined here for 2 reasons:
-	//    - It allows to inspect MC clusters
-
-	// Don't return TObjArray: force user to handle candidates lifetime
-	Int_t sm, x, z;
-	for (Int_t i = 0; i < clusArray->GetEntriesFast(); i++)
-	{
-		AliVCluster * clus = (AliVCluster *) clusArray->At(i);
-		if ((sm = CheckClusterGetSM(clus, x, z)) < 0) continue;
-
-		if (!fCuts.AcceptCluster(clus))
-			continue;
-
-		candidates->Add(clus);
-
-		// Fill histograms only for real events
-		if (eflags.isMixing)
-			continue;
-
-		// TODO: Redefine Cluster Histogram?, Why do we have to have FillClusterMC ?
-		// There is no cluster histograms here
-		// FillClusterHistograms(clus, eflags);
-		// FillClusterMC(clus, eflags.fMcParticles);
-	}
-
-	if (candidates->GetEntriesFast() > 1 && !eflags.isMixing)
-		fEventCounter->Fill(EventFlags::kTwoPhotons);
-}
