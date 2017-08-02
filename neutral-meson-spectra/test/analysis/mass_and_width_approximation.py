@@ -3,7 +3,7 @@ import ROOT
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas, wait
+from spectrum.sutils import get_canvas, wait, save_tobject
 from spectrum.options import Options
 
 
@@ -17,7 +17,7 @@ class TestMass(unittest.TestCase):
         infile = 'input-data/LHC16.root'
         self.input = Input(infile, 'EtaTender').read()
         self.analysis = Spectrum(self.input, label='fixed cb parameters', mode='q', options=Options(particle='eta', relaxedcb=True))
-        self.mass, self.width, self.spectrum, self.chi2, self.alpha, self.n = self.analysis.evaluate()
+        self.mass, self.width = self.analysis.evaluate()[0:2]
         self.target = self.mass
         self.models = {
                          "TMath::Exp([0] + [1] * x ) * [2] * x + [3]": [-0.9383877408174801, -7.313302813528194, -102.88494983600319, 0.5590698449654556]
@@ -69,3 +69,32 @@ class TestWidth(TestMass):
                        }
 
 
+class TestMassParameters(unittest.TestCase):
+
+
+    def get_analysis(self, iname):
+        return Spectrum(Input(iname, 'PhysNonlinTender', 'MassPt').read())
+
+
+    def read_histograms(self, infile):
+        return [i.ReadObj() for i in infile.GetListOfKeys()]
+
+
+    def data(self, f, oname):
+        infile = ROOT.TFile(oname)
+        if infile.IsOpen():
+            return self.read_histograms(infile)
+
+        mass, sigma = f.analyzer.quantities(False)[0:2]
+        save_tobject(mass, oname, 'recreate')
+        save_tobject(sigma, oname, 'update')
+        return mass, sigma
+
+    def testMass(self):
+        iname = 'input-data/Pythia-LHC16-a5.root'
+        fs = self.get_analysis(iname)
+        mass, sigmma = self.data(fs, 'mass-' + iname)
+
+        pars = [-4.13409, -1.4885, 6.26014, 0.1378]
+        fitmass = fs.fit_quantity(mass, fs.mass_func, pars, fs.mass_names, 'mass')
+        print fs.mass_pars

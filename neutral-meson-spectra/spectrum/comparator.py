@@ -83,7 +83,6 @@ class Visualizer(object):
             return
 
         bins = np.array([ratio.GetBinContent(i) for i in range(1, ratio.GetXaxis().GetNbins())])
-        # TODO: avoid numpy?
         mean, std = np.mean(bins), np.std(bins)
         withoutoutliers = [b for b in bins if abs(b - mean) < n * std]
 
