@@ -16,7 +16,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("MesonSelectionMC.cxx+");
     gROOT->LoadMacro("PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelectionMC.cxx+");
-    gROOT->LoadMacro("MixingSample.h+");
+    gROOT->LoadMacro("MixingSample.cxx+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
   
 	// Setup Selections
@@ -149,7 +149,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "MesonSelectionMC.cxx " +
 	    "PythiaInfoSelection.cxx " +
 	    "PhysPhotonSelectionMC.cxx " +
-	    "MixingSample.h " +
+	    "MixingSample.cxx " +
 	    "AliAnalysisTaskPP.cxx "
 	);
 
@@ -180,6 +180,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhysPhotonSelectionMC.h " +
 	    "PythiaInfoSelection.cxx " +
 	    "PythiaInfoSelection.h " +
+	    "MixingSample.cxx " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx " +
 	    "AliAnalysisTaskPP.h " 
