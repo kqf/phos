@@ -35,7 +35,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhotonTimecutStudySelection("EtaTime", "Testing Timing Selection for eta meson", cuts_eta));
 		
 		selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
-		selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection"));
+		selections->Add(new PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection", cuts_pi0));
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
 	}	
 

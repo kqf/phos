@@ -15,7 +15,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetOverwriteMode(kTRUE);
 
 	plugin->SetMergeViaJDL(useJDL);
-	plugin->SetOutputToRunNo(kTRUE);
+	// plugin->SetOutputToRunNo(kTRUE);
 	plugin->SetKeepLogs(kTRUE);
 
 
