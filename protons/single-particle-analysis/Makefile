@@ -1,15 +1,11 @@
-DATASET = LHC16j-muon-calo-pass1
+# TODO: Estimate the statistics, is DPART parameter is redundant here?
+PRODUCTION = 1
 DPART = first
-MC = kFALSE
 
-# DATASET = LHC16j2a1
-# DPART = second
-# MC = kTRUE
-# TEST_SELECTION = MCStudyOnlyTender
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call unlink) 
-	@echo $(DATASET) $(DPART) >> started_jobs.log
+	root -l -b -q 'run.C("$(PRODUCTION)", "grid", "full", "$(DPART)", kTRUE)' || $(call unlink) 
+	@echo $(PRODUCTIONs) $(DPART) >> started_jobs.log
 	@$(call unlink) && echo "Directory is clean"
 	@echo "Started grid analysis" >> .runhistory
 	@echo -e "\a"
@@ -17,39 +13,26 @@ grid: | %.cxx
 
 %.cxx:
 	@$(call unlink)	
-	@# Dirty?!? hack to avoid grid(plugin) limitations.
-	@# Add all necessary taks
-	@$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
 	@$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C "*.h" "*.cxx")
-	@$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C "*.h" "*.cxx")
 
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call unlink) 
+	root -l -q 'run.C("$(PRODUCTIONs)", "grid", "terminate", "$(DPART)", kTRUE)' || $(call unlink) 
 	@$(call unlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call unlink) 
+	root -l -q 'run.C("$(PRODUCTIONs)", "grid", "terminate", "$(DPART)", kTRUE, kFALSE)' || $(call unlink) 
 	make upload
 	@$(call unlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
-# Ignore problems with ALICE::RRC-KI::SE
-force-download:
-	@mkdir -p tmp 
-	@rm -rf LHC16o.root
-	@$(call save_runs,$(ALIEN_HOME)/pp-phos-$(DATASET),AnalysisResults.root,tmp)
-	hadd LHC16o.root tmp/*.root
-	@rm -rf tmp 
-	@echo -e "\x07"
-
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call unlink) 
+	root -l -q 'run.C("$(PRODUCTIONs)", "local", "test", "$(DPART)", kTRUE)' || $(call unlink) 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_result,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
@@ -60,7 +43,7 @@ test: | %.cxx
 	@echo -e "\a"
 
 upload:
-	$(call upload_result,AnalysisResults,$(DATASET))
+	$(call upload_result,AnalysisResults,$(PRODUCTIONs))
 
 clean:
 	rm *.so *.d *~ Task*

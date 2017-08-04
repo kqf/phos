@@ -20,8 +20,6 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString production, TStr
 	//      
 
 	// Extract production and reconstruction pass
-
-	// TODO: Use cl environment instead
 	TString path("/alice/cern.ch/user/o/okovalen/single-pi0-production/output/");
 
 	cout << "Rtun number " << production << endl;
