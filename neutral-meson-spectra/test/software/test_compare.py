@@ -23,11 +23,12 @@ class Test(unittest.TestCase):
             particles = json.load(f)
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
-    # @unittest.skip('test')
+    @unittest.skip('test')
     def testCompareMultiple(self):
         diff = cmpr.Comparator()
         diff.compare_set_of_histograms(zip(*[self.data, self.data]))
 
+    @unittest.skip('test')
     def testPriority(self):
         diff = cmpr.Comparator()
 

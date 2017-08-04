@@ -33,7 +33,7 @@ class Estimator(object):
         generated = self.get_baseline()
 
         # diff = Comparator(crange = (1e-15, 1.))
-        diff = Comparator((1, 1))
+        diff = Comparator((1, 1), oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy = True)
 
@@ -50,8 +50,8 @@ class Estimator(object):
 class ParticleContributions(unittest.TestCase, Estimator):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a5.root'
-        # self.infile = 'input-data/scaled-LHC17f8a.root'
+        self.infile = 'input-data/Pythia-LHC16-a5'
+        # self.infile = 'input-data/scaled-LHC17f8a'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPt_#pi^{0}'
         self.particles_set = {

@@ -16,6 +16,10 @@ import unittest
 
 class Nonlinearity(unittest.TestCase):
 
+    def setUp(self):
+        self.dataf, self.mcf = 'LHC16', 'Pythia-LHC16-a5'
+        self.nonlinearity_file = 'input-data/nonlinearity-{0}.root'.format(self.mcf)
+
 
     def getNonlinearityFunction(self):
         func_nonlin = ROOT.TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
@@ -26,9 +30,7 @@ class Nonlinearity(unittest.TestCase):
 
 
     def testFitNonlinearityFunction(self):
-        c1 = adjust_canvas(get_canvas(1., resize = True))
-        fname = 'datamcratio.root'
-        ratio = self.readRatio(fname) if os.path.isfile(fname) else self.getRatio(fname)
+        ratio = self.getRatio(self.nonlinearity_file)
         function = self.getNonlinearityFunction()
         ratio.SetAxisRange(0.90, 1.08, 'Y')
         ratio.Fit(function)
@@ -36,23 +38,32 @@ class Nonlinearity(unittest.TestCase):
         wait(ratio.GetName())
 
 
+    def getRatio(self, filename):
+        try:
+            return self.readRatio(filename)
+        except IOError:
+            return self.calculateRatio(filename)
+
+
     def readRatio(self, fname):
+        if not os.path.isfile(fname):
+            raise IOError('No such file: {0}'.format(fname))
+
         infile = ROOT.TFile(fname)
         return infile.GetListOfKeys().At(0).ReadObj()
 
 
-    def getRatio(self, fname):
-        f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
+    def calculateRatio(self, fname):
+        f = lambda x, y, z: Spectrum(x, label=y, mode = 'd', options = z).evaluate()
 
-        self.data = f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'Data', Options())
-        self.mc = f(Input('input-data/Pythia-LHC16-iteration15.root', 'PhysRawOnlyTender', 'MassPt').read(), 'R2D zs 20 MeV nonlin', Options(priority = 1))
-        # self.mc = f(TimecutInput('input-data/Pythia-LHC16-iteration7.root', 'PhysTender', 'MassPt').read(), 'LHC16all 20MeV', Options(priority = 1))
+        self.data = f(Input('LHC16', 'PhysOnlyTender'), 'Data', Options())
+        self.mc = f(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender', 'MassPt'), 'R2D zs 20 MeV nonlin', Options(priority = 1))
 
         data, mc = self.data[0], self.mc[0]
         data.fifunc = self.getNonlinearityFunction()
 
         diff = Comparator()
-        ratio = diff.compare_set_of_histograms([[data], [mc]])[0]
+        ratio = diff.compare(data, mc)
 
         save_tobject(ratio, fname)
         return ratio

@@ -18,4 +18,4 @@ imass:
 
 
 clean:
-	rm -f results/*.pdf signals.root *.pdf *.png input-data/*.eff
+	rm -f results/*.pdf signals.root *.pdf *.png input-data/*.eff *.root

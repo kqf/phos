@@ -8,13 +8,12 @@ from spectrum.sutils import get_canvas
 from spectrum.options import Options
 
 def main():
-    # c1 = get_canvas(1./ 2)
     f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(particle='eta')).evaluate()
 
-    infile = 'input-data/LHC16-new.root'
+    infile = 'input-data/LHC16.root'
     results = [
-               f(Input(infile, 'EtaTender').read(), 'A < 0.7', 'q'), 
-               f(Input(infile, 'PhysTender').read(), 'A < 1.0', 'q')
+               f(Input(infile, 'EtaTender'), 'A < 0.7', 'q'), 
+               f(Input(infile, 'PhysTender'), 'A < 1.0', 'q')
               ]
 
     import spectrum.comparator as cmpr

@@ -16,6 +16,7 @@ import os.path
 import unittest
 
 
+# TODO: Delete this ugly chunk of code
 def cache(function):
     def cached(self, infile, genfile, label):
         res = function(self, infile, genfile, label)
