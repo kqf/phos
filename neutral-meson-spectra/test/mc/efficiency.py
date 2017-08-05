@@ -16,19 +16,62 @@ import os.path
 import unittest
 
 
-# TODO: Delete this ugly chunk of code
-def cache(function):
-    def cached(self, infile, genfile, label):
-        res = function(self, infile, genfile, label)
-        res.label = label
-        return res
-    return cached
+class Efficiency(object):
 
-class Efficiency(unittest.TestCase):
+    def __init__(self, genname, label, iname):
+        super(Efficiency, self).__init__()
+        self.selection = 'MCStudyOnlyTender'
+        self.iname = iname
+        self.genname = genname
+        self.label = label
+        self.oname = 'input-data/efficiency-{0}-{1}.root'.format(self.iname, label)
+
+    def eff(self):
+        try:
+            return self.read_efficiency()
+        except IOError:
+            return self.efficiency()
+
+
+    def read_efficiency(self):
+        if not os.path.isfile(self.oname):
+            raise IOError('No such file: {0}'.format(self.oname))
+
+        infile = ROOT.TFile(self.oname)
+        result = infile.GetListOfKeys().At(0).ReadObj()
+        result.label = self.label
+        return result
+
+
+    def true(self, label = 'Generated'):
+        true = read_histogram(self.iname, self.selection, self.genname, label = label, priority = 0)
+        print true
+        true.logy = True
+        return scalew(true)
+
+
+    def reco(self):
+        inp = Input(self.iname, self.selection, 'MassPt')
+        reco = Spectrum(inp, self.label, mode = 'q').evaluate()[4]
+        reco.logy = True
+        return scalew(reco)
+
+
+    def efficiency(self):
+        reco, true = self.reco(), self.true()
+
+        diff = Comparator()
+        ratio = diff.compare(reco, true)
+        ratio.label = self.label
+
+        if self.oname: 
+            save_tobject(ratio, self.oname)
+        return ratio
+
+class CalculateEfficiency(unittest.TestCase):
 
 
     def setUp(self):
-        self.mc_selection = 'MCStudyOnlyTender'
         self.selection = 'PhysNonlinOnlyTender'
         # self.pythiaf = 'input-data/scaled-LHC17f8a.root'
         self.pythiaf = 'input-data/Pythia-LHC16-a5.root'
@@ -36,9 +79,10 @@ class Efficiency(unittest.TestCase):
 
         # To compare more than 1 production
         # self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root'}
-        self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root', 'jet jet': 'input-data/scaled-LHC17f8a.root'}
+        self.productions = {'pythia': 'Pythia-LHC16-a5', 'jet jet': 'scaled-LHC17f8a'}
         # self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
-        self.true_pt_mc = 'hPt_#pi^{0}'
+
+        self.true_pt_mc = 'hPt_#pi^{0}_primary_'
 
 
     def getEffitiencyFunction(self):
@@ -46,73 +90,38 @@ class Efficiency(unittest.TestCase):
 
     @unittest.skip('Modify it later')
     def testFitEfficiencyFunction(self):
-        c1 = adjust_canvas(get_canvas(1., resize = True))
-        fname = 'datamcratio.root'
-        ratio = self.readRatio(fname) if os.path.isfile(fname) else self.getRatio(fname)
-        function = self.getNonlinearityFunction()
-        ratio.SetAxisRange(0.90, 1.04, 'Y')
-        ratio.Fit(function)
-        ratio.Draw()
-        wait(ratio.GetName())
+        # Calculate and fit efficiency
+        pass
 
 
-    def readEfficiency(self, fname):
-        infile = ROOT.TFile(fname)
-        if not infile.IsOpen():
-            return None
-        return infile.GetListOfKeys().At(0).ReadObj()
-
-    def get_true_distribution(self, iname, genname, label = 'Generated'):
-        true = read_histogram(iname, self.mc_selection, genname, label = label, priority = 0)
-        scalew(true)
-        true.logy = True
-        return true
-
-
-
-    def reco(self, iname, label):
-        f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
-        reco = f(Input(iname, self.selection, 'MassPt').read(), label, Options())[4]
-        reco.logy = True
-        return scalew(reco)
-
-    @cache
-    def efficiency(self, iname, genname, label):
-        oname = '{0}.{1}.eff'.format(iname, label)
-        ratio = self.readEfficiency(oname)
-        if ratio: 
-            return ratio
-
-        reco = self.reco(iname, label)
-        true = self.get_true_distribution(iname, genname, 'Generated')
-
-        diff = Comparator()
-        ratio = diff.compare(reco, true)
-        ratio.label = label
-
-        if oname: save_tobject(ratio, oname)
-        return ratio
-
-    @unittest.skip('')
+    # @unittest.skip('')
     def testProductions(self):
-        efficiencies = [self.efficiency(f, self.true_pt_mc + '_primary_', k) for k, f in self.productions.iteritems()]
+        """
+            Calculate and compare efficiencies for different productions
+        """
+        efficiencies = [Efficiency(self.true_pt_mc, *p).eff() for p in self.productions.iteritems()]
         diff = Comparator()
         diff.compare(efficiencies)
 
 
+    @unittest.skip('')
     def testSpectrums(self):
         """ 
             This test checks the denominators of the efficiencies.
         """
-        true = [self.get_true_distribution(f, self.true_pt_mc + '_primary_', k) for k, f in self.productions.iteritems()]
+        true = [Efficiency(self.true_pt_mc, k, f).true(k) for k, f in self.productions.iteritems()]
         map(lambda x: x.Scale(1./ x.Integral('w')), true)
-        diff = Comparator((0.5, 1))
+
+        diff = Comparator(size = (0.5, 1))
         diff.compare(true)
 
 
     @unittest.skip('')
     def testRecoSpectrums(self):
-        reco = [self.reco(f, k) for k, f in self.productions.iteritems()]
+        """ 
+            This test checks the Numerators of the efficiencies.
+        """
+        reco = [Efficiency(self.true_pt_mc, *p).reco() for p in self.productions.iteritems()]
         map(lambda x: x.Scale(1./ x.Integral('w')), reco)
         diff = Comparator()
         diff.compare(reco)
@@ -120,26 +129,27 @@ class Efficiency(unittest.TestCase):
 
     @unittest.skip('')
     def testEffDifferentModules(self):
+
         modules = run_analysis(Options(), self.pythiaf, self.selection)
-        c1 = get_canvas(1./2, 1.)
         diff = Comparator()
         diff.compare(modules)
-
-        true = read_histogram(self.pythiaf, self.mc_selection, self.true_pt_mc, label = 'Generated', priority = 0)
-        scalew(true)
 
         spectrums = zip(*modules)[2]
         map(lambda x: x.SetTitle('Efficiency per module'), spectrums)
         map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
         map(scalew, spectrums)
+
+        true = Efficiency(self.true_pt_mc, '', self.pythiaf).true()
         diff.compare_ratios(spectrums, true)
 
 
-    @unittest.skip('')
-    def testPrimaryEfficiency(self):
-        primary = self.efficiency(self.pythiaf, self.true_pt_mc + '_primary_', 'primaries')
-        total = self.efficiency(self.pythiaf, self.true_pt_mc, 'total')
+    @unittest.skip('This test is meaningless remove it in the future \
+        or replace it with ratio of two primary generated to all generated')
+    def testComparePrimaryEfficiency(self):
+        files = {'primary': self.true_pt_mc, 'total': 'hPt_#pi^{0}'}
+
+        efficiencies = [Efficiency(hist, label, self.pythiaf).eff() for hist, label in files.iteritems()]
 
         diff = Comparator()
-        diff.compare(primary, total)
+        diff.compare(efficiencies)
 
