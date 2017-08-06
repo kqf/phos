@@ -1,31 +1,64 @@
-#ifndef NONLINEARITYSTUDY_H
-#define NONLINEARITYSTUDY_H
+#ifndef NONLINEARITYSCANSELECTION_H
+#define NONLINEARITYSCANSELECTION_H
 
 // --- Custom header files ---
-#include "PhysPhotonSelectionMC.h"
+#include "PhysPhotonSelection.h"
 
 // --- AliRoot header files ---
 #include <AliVCluster.h>
 
-class NonlinearityStudySelection : public PhysPhotonSelectionMC
+class NonlinearityScanSelection : public PhysPhotonSelection
 {
+	enum ScanSize {kNbinsA = 7, kNbinsSigma = 7};
 public:
-	NonlinearityStudySelection(): PhysPhotonSelectionMC() {}
-	NonlinearityStudySelection(const char * name, const char * title, ClusterCuts cuts, 
-		Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.):
-		PhysPhotonSelectionMC(name, title, cuts, nona, nonsigma, genergy)
+	NonlinearityScanSelection(): PhysPhotonSelection() {}
+	NonlinearityScanSelection(const char * name, const char * title, ClusterCuts cuts,
+	                           Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.):
+		PhysPhotonSelection(name, title, cuts),
+		fInvariantMass(),
+		fMixInvariantMass(),
+		fNonA(nona),
+		fNonSigma(nonsigma),
+		fGlobalEnergyScale(genergy),
+		fPrecisionA(0.01),
+		fPrecisionSigma(0.1)
 	{
+		fCuts.fTimingCut = 99999; // No timing cut in MC
 	}
 
-    virtual void InitSelectionHistograms();
+	virtual void InitSelectionHistograms();
 protected:
-	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
-	virtual Float_t Nonlinearity(Float_t x) const;
 
-	NonlinearityStudySelection(const NonlinearityStudySelection &);
-	NonlinearityStudySelection & operator = (const NonlinearityStudySelection &);
+	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
+	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags, Int_t ia = 0, Int_t ib = 0) const;
+	virtual Float_t Nonlinearity(Float_t x, Int_t ia = 0, Int_t ib = 0) const;
+
+	virtual Float_t GetA(Int_t ia) const
+	{
+		return fNonA - fPrecisionA * kNbinsA / 2 + ia * fPrecisionA;
+	}
+
+	virtual Float_t GetSigma(Int_t ib) const
+	{
+		return fNonSigma - fPrecisionSigma * kNbinsSigma / 2 + ib * fPrecisionSigma;
+	}
+
+	NonlinearityScanSelection(const NonlinearityScanSelection &);
+	NonlinearityScanSelection & operator = (const NonlinearityScanSelection &);
 
 private:
-	ClassDef(NonlinearityStudySelection, 2)
+
+	// Parameters of nonlinearity parametrization
+	TH1 * fInvariantMass[kNbinsA][kNbinsSigma];    //!
+	TH1 * fMixInvariantMass[kNbinsA][kNbinsSigma]; //!
+
+	Float_t fNonA;
+	Float_t fNonSigma;
+	Float_t fGlobalEnergyScale;
+
+	Float_t fPrecisionA;
+	Float_t fPrecisionSigma;
+
+	ClassDef(NonlinearityScanSelection, 2)
 };
 #endif
