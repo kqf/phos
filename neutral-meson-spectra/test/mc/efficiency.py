@@ -143,13 +143,3 @@ class CalculateEfficiency(unittest.TestCase):
         diff.compare_ratios(spectrums, true)
 
 
-    @unittest.skip('This test is meaningless remove it in the future \
-        or replace it with ratio of two primary generated to all generated')
-    def testComparePrimaryEfficiency(self):
-        files = {'primary': self.true_pt_mc, 'total': 'hPt_#pi^{0}'}
-
-        efficiencies = [Efficiency(hist, label, self.pythiaf).eff() for hist, label in files.iteritems()]
-
-        diff = Comparator()
-        diff.compare(efficiencies)
-

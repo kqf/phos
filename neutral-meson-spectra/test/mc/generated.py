@@ -1,4 +1,5 @@
 from spectrum.input import read_histogram
+
 from spectrum.ptanalyzer import PtDependent
 from spectrum.comparator import Comparator
 
@@ -47,7 +48,19 @@ class InspectSources(unittest.TestCase):
         diff.compare(total, summed)
 
   
+    @unittest.skip('')
     def testContributions(self):
     	# self.inspect('secondary')
     	# self.inspect('primary')
     	self.inspect('feeddown')
+
+
+    # Use this test to compare efficiencies calculated from all particles and from primaries.
+    # These efficiencies will differ only by denominators
+    def testComparePrimaryEfficiency(self):
+        generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'all', norm = True)
+        primaries = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_primary_', 'primary', norm = True)
+
+        diff = Comparator(oname = '{0}-primaries-to-all-generated-ratio.pdf')
+        diff.compare(primaries, generated)
+
