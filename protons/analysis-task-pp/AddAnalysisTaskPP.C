@@ -16,7 +16,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("MesonSelectionMC.cxx+");
     gROOT->LoadMacro("PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("PhysPhotonSelectionMC.cxx+");
-    // gROOT->LoadMacro("NonlinearityScanSelection.cxx+");
+    gROOT->LoadMacro("NonlinearityScanSelection.cxx+");
     gROOT->LoadMacro("MixingSample.cxx+");
     gROOT->LoadMacro("AliAnalysisTaskPP.cxx+");
 
@@ -93,6 +93,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new TagAndProbeSelection("TagAndProble", "Cluster P_{t} Selection", cuts_pi0));
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
 		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
+		selections->Add(new NonlinearityScanSelection("StudyNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 	}
 
 	// Setup task
@@ -184,8 +185,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "PhysPhotonSelectionMC.h " +
 	    "PythiaInfoSelection.cxx " +
 	    "PythiaInfoSelection.h " +
-	    // "NonlinearityScanSelection.cxx " +
-	    // "NonlinearityScanSelection.h " +
+	    "NonlinearityScanSelection.cxx " +
+	    "NonlinearityScanSelection.h " +
 	    "MixingSample.cxx " +
 	    "MixingSample.h " +
 	    "AliAnalysisTaskPP.cxx " +

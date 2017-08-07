@@ -52,6 +52,9 @@ void NonlinearityScanSelection::InitSelectionHistograms()
 
 			fInvariantMass[ia][ib]    = new TH2F(Form("hMassPt_%d_%d", ia, ib), Form("%f %f; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", a, b), nM, mMin, mMax, nPt, ptMin, ptMax);
 			fMixInvariantMass[ia][ib] = new TH2F(Form("hMixMassPt_%d_%d", ia, ib), Form("%f %f; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", a, b), nM, mMin, mMax, nPt, ptMin, ptMax);
+
+			fListOfHistos->Add(fInvariantMass[ia][ib]);
+			fListOfHistos->Add(fMixInvariantMass[ia][ib]);
 		}
 	}
 

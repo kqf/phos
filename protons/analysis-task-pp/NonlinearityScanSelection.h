@@ -30,16 +30,22 @@ public:
 protected:
 
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
-	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags, Int_t ia = 0, Int_t ib = 0) const;
-	virtual Float_t Nonlinearity(Float_t x, Int_t ia = 0, Int_t ib = 0) const;
+	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags, Int_t ia = -1, Int_t ib = -1) const;
+	virtual Float_t Nonlinearity(Float_t x, Int_t ia = -1, Int_t ib = -1) const;
 
 	virtual Float_t GetA(Int_t ia) const
 	{
+		if(ia < 0)
+			return fNonA;
+
 		return fNonA - fPrecisionA * kNbinsA / 2 + ia * fPrecisionA;
 	}
 
 	virtual Float_t GetSigma(Int_t ib) const
 	{
+		if(ib < 0)
+			return fNonSigma;
+
 		return fNonSigma - fPrecisionSigma * kNbinsSigma / 2 + ib * fPrecisionSigma;
 	}
 
