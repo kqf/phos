@@ -7,6 +7,10 @@ from spectrum.options import Options
 
 import unittest
 
+# This test is just to compare peak position mass and spectrum
+# for different productions in MC and Data
+#
+
 class CompareDataMC(unittest.TestCase):
 
     def setUp(self):

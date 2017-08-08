@@ -164,8 +164,8 @@ class Visualizer(object):
         legend.Draw('same')
 
 
-        if 'spectr' in first_hist.GetName() or 'logy' in dir(first_hist):
-            ROOT.gPad.SetLogy()
+        if 'logy' in dir(first_hist):
+            ROOT.gPad.SetLogy(first_hist.logy)
 
         # ROOT.gStyle.SetOptStat(0)
         mainpad.SetTickx()

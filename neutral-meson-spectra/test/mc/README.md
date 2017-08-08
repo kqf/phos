@@ -1,15 +1,18 @@
 Analysis of MC data
 -------------------
 
+## Explanation
 
-## TODO
 - [x] Nonlinearity
-- `nonlinearity.py`
-- `different_versions.py`
-- `compare_data_mc.py`
+	- Extract parameters for nonlinearity function `nonlinearity.py`
+	- Compare different versions of mc corrected for nonlinearity/weighed `different_versions.py`
+	- Compare different MC productions and data`compare_data_mc.py`
+
 - [x] Efficiency
-- `efficiency.py`
+	- Calculate efficiency for different productions `efficiency.py`
+
 - [ ] Contributions from differet sources
-- `pi0_sources.py`
-- `generated.py`
-- `reconstructed.py`
+	- Compare rates from different sources `pi0_sources.py`
+	- Generated spectra of $\pi^{0}$s `generated.py`
+	- Reconstructed spectra of $\pi^{0}$s `reconstructed.py`
+	- Feed-down correction `feeddown.py`
