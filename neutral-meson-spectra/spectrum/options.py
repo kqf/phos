@@ -1,6 +1,12 @@
 #!/usr/bin/python
 
 
+# TODO: Spilt this object across different configurables
+# example 
+#        options.spectrum.nsigmas = 5
+# 		 options.spectrum.config = 'config/spectrum.json'
+# 		 options.mass_range = (0.02, 0.06)
+
 class Options(object):
 	"""
 		This is class should handle all possible variable! options 
@@ -17,3 +23,4 @@ class Options(object):
 		self.spectrum_config = 'config/spectrum.json'
 		self.invmass_config = 'config/invariant-mass.json'
 		self.fit_mass_width = True
+		self.nsigmas = 2

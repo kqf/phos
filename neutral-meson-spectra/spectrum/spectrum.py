@@ -10,11 +10,13 @@ from options import Options
 ROOT.TH1.AddDirectory(False)
 
 
+# TODO: Move mode to options
+
 class Spectrum(object):
 
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', nsigmas = 2, options = Options()):
+    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', options = Options()):
         super(Spectrum, self).__init__()
-        self.nsigmas = nsigmas
+        self.nsigmas = options.nsigmas
         self.analyzer = PtAnalyzer(lst, label, mode, options)
         self.fit = options.fit_mass_width
         

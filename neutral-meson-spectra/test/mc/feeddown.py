@@ -75,6 +75,9 @@ class FedddownTest(unittest.TestCase):
     def testCompareProductions(self):
         pass
 
-
-
+        
+    # Extract parameters of feeddown correction
+    #
+    def testExtractParameters(self):
+        pass
 
