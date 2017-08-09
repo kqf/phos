@@ -9,18 +9,15 @@ from options import Options
 
 ROOT.TH1.AddDirectory(False)
 
-
-# TODO: Move mode to options
-
 class Spectrum(object):
 
-    def __init__(self, lst, label ='N_{cell} > 3', mode = 'v', options = Options()):
+    def __init__(self, lst, options = Options()):
         super(Spectrum, self).__init__()
-        self.nsigmas = options.nsigmas
-        self.analyzer = PtAnalyzer(lst, label, mode, options)
-        self.fit = options.fit_mass_width
+        self.nsigmas = options.spectrum.nsigmas
+        self.analyzer = PtAnalyzer(lst, options)
+        self.fit = options.spectrum.fit_mass_width
         
-        with open(options.spectrum_config) as f:
+        with open(options.spectrum.config) as f:
             conf = json.load(f)
 
         self.canvas = conf['canvas']
@@ -75,7 +72,7 @@ class Spectrum(object):
         
     def fit_ranges(self, quantities):
         ROOT.gStyle.SetOptStat('')
-        mass, sigma = quantities[0:2]
+        mass, sigma = quantities.mass, quantities.width
 
         fitsigma = self.fit_quantity(sigma, self.width_func, self.width_pars, self.width_names, 'width')
         fitmass = self.fit_quantity(mass, self.mass_func, self.mass_pars, self.mass_names, 'mass')

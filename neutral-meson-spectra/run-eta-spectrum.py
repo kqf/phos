@@ -8,7 +8,7 @@ from spectrum.sutils import get_canvas
 from spectrum.options import Options
 
 def main():
-    f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(particle='eta')).evaluate()
+    f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(x, y, particle='eta')).evaluate()
 
     infile = 'input-data/LHC16.root'
     results = [

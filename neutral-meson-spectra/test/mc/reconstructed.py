@@ -21,11 +21,8 @@ class Estimator(object):
         super(Estimator, self).__init__()
 
     def estimate(self, ptype = 'secondary'):
-        options = Options()
-        options.fit_mass_width = False
-
         inp = lambda x: Input(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x))
-        f = lambda x: Spectrum(inp(x), label= x if x else 'all', mode = 'd', options = options).evaluate()[2]
+        f = lambda x: Spectrum(inp(x), Options.fixed_peak(x)).evaluate().spectrum
 
         particles = map(f, self.particles_set[ptype])
         map(scalew, particles)
@@ -50,8 +47,8 @@ class Estimator(object):
 class ParticleContributions(unittest.TestCase, Estimator):
 
     def setUp(self):
-        self.infile = 'input-data/Pythia-LHC16-a5'
-        # self.infile = 'input-data/scaled-LHC17f8a'
+        self.infile = 'Pythia-LHC16-a5'
+        # self.infile = 'scaled-LHC17f8a'
         self.selection = 'MCStudyOnlyTender'
         self.hname = 'MassPt_#pi^{0}'
         self.particles_set = {

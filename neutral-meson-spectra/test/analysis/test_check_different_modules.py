@@ -16,13 +16,14 @@ def run_analysis(opt, infile, selection):
 class CheckModules(test.check_default.CheckDefault):
 
     def testPi0(self):
-        opt = Options(ptconfig='config/test_different_modules.json')
+        opt = Options()
+        opt.pt.config = 'config/test_different_modules.json'
         self.results = run_analysis(opt, 'input-data/LHC16.root', 'PhysTender')
         self.c1 = adjust_canvas(get_canvas())
 
-    # @unittest.skip('test')
     def testEta(self):
-        opt = Options(particle='eta', ptconfig='config/test_different_modules.json')
+        opt = Options(particle='eta')
+        opt.pt.config = 'config/test_different_modules.json'
         self.results = run_analysis(opt, 'input-data/LHC16.root', 'EtaTender')
         self.c1 = adjust_canvas(get_canvas())
 

@@ -98,7 +98,8 @@ class TagAndProbeRigorous(TagAndProbe):
         super(TagAndProbeRigorous, self).__init__(filename, selname, histname, cut, full,  conffile)
 
     def get_estimators(self, filename, selname, histname, cut, full):
-        options = Options(relaxedcb=True, ptconfig = self.conffile)
+        options = Options(relaxedcb=True)
+        options.pt.config = conffile
         f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, options)
         estimators = map(f, [cut, full])
         return estimators

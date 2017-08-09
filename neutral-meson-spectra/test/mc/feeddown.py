@@ -26,11 +26,9 @@ class FeeddownEstimator(object):
         self.baseline = self.get_baseline()
 
     def spectrum(self, histname, x):
-        options = Options()
         # TODO: Check if this is the final parametrization
-        options.fit_mass_width = False
         inp = Input(self.infile, self.selection, histname)
-        spectrum = Spectrum(inp, label= x if x else 'all', mode = 'd', options = options).evaluate()[2]
+        spectrum = Spectrum(inp, Options.fixed_peak(x if x else 'all')).evaluate().spectrum
         return scalew(spectrum) 
 
     def estimate(self, ptype = ''):

@@ -19,7 +19,7 @@ class InvariantMass(object):
         self.peak_function = CrystalBall(options.ispi0, options.relaxedcb)
 
         # Setup parameters
-        with open(options.invmass_config) as f:
+        with open(options.config) as f:
             conf = json.load(f)
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, conf['xaxis_offsets'])]
         self.legend_pos   = conf['legend_pos']

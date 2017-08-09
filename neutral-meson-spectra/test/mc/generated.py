@@ -1,7 +1,6 @@
-from spectrum.input import read_histogram
 
-from spectrum.ptanalyzer import PtDependent
 from spectrum.comparator import Comparator
+from spectrum.input import read_histogram
 
 import ROOT
 import os.path

@@ -12,8 +12,9 @@ from options import Options
 ROOT.TH1.AddDirectory(False)
 
 class PtAnalyzer(object):
-        
-    def __init__(self, hists, label ='N_{cell} > 3', mode = 'v', options = Options()):
+    modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
+
+    def __init__(self, hists, options = Options()):
         super(PtAnalyzer, self).__init__()
         # These hists are needed for dynamic binning
         try:
@@ -22,14 +23,14 @@ class PtAnalyzer(object):
         except TypeError:
             self.hists = hists.read()
 
+        self.options = options.pt
         self.nevents = self.hists[0].nevents
-        self.label = label
-        self.show_img = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}.get(mode, True)
-        self.dead_mode = ('dead' in mode) or ('d' in mode)
-        self.options = options
+        self.label   = self.options.label
+        self.show_img = self.modes.get(self.options.mode, True)
+        self.dead_mode = 'd' in self.options.mode
 
         # Configure analysis
-        with open(options.pt_config) as f:
+        with open(options.pt.config) as f:
             conf = json.load(f)
 
         props           = conf[options.particle]
@@ -38,16 +39,17 @@ class PtAnalyzer(object):
         self.multcanvas = props['multcanvas']
         self.partlabel  = props['partlabel']
         self.output     = conf['output']
+        self.output_order = conf['output_order']
 
-        # Define the output that will be returned from this class
-        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.output.keys())
+        # Define the output that will be returned from this classj
+        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', conf['output_order'])
 
         ptbins, rebins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(self.hists, x, y, options)
+        f = lambda x, y: InvariantMass(self.hists, x, y, options.invmass)
         self.masses = map(f, pt_intervals, rebins)
 
 
@@ -70,7 +72,7 @@ class PtAnalyzer(object):
         ptedges, _ = self.divide_into_bins()
 
         # Extract the data
-        output = {quant: output[quant].get_hist(ptedges, d) for quant, d in zip(output, zip(*data))}
+        output = {quant: output[quant].get_hist(ptedges, d) for quant, d in zip(self.output_order, zip(*data))}
 
         # Convert to a proper 
         result = self.OutType(**output)

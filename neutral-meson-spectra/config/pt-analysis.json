@@ -14,7 +14,8 @@
         "multcanvas": [4, 3, 0.001, 0.01],
         "partlabel": "#eta"
     },
-    
+
+    "output_order": ["mass", "width", "spectrum", "chi2", "npi0", "cball_alpha", "cball_n"],
     "output":
     {
         "mass": "Reconstructed %s mass position; p_{T}, GeV; m, GeV/c^{2}",
