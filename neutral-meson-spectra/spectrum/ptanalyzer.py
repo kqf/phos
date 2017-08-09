@@ -1,48 +1,15 @@
 #!/usr/bin/python
 
 import ROOT
-from sutils import nicely_draw, get_canvas, wait, area_and_error
-from invariantmass import InvariantMass
 import json
+import collections
+
+from sutils import nicely_draw, get_canvas, wait, area_and_error
+from outputcreator import OutputCreator
+from invariantmass import InvariantMass
 from options import Options
 
 ROOT.TH1.AddDirectory(False)
-
-
-class PtDependent(object):
-    def __init__(self, name, title, label, priority = 999):
-        super(PtDependent, self).__init__()
-        self.title = title
-        self.label = label
-        self.name = name + '_' + filter(str.isalnum, self.label)
-        self.priority = priority
-
-    def get_hist(self, bins, data):
-        from array import array
-        hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
-
-        if not hist.GetSumw2N(): 
-            hist.Sumw2()
-
-        hist.GetXaxis().SetTitle('p_{T}, GeV/c')
-        hist.label = self.label
-        hist.priority = self.priority
-
-        for i, (d, e) in enumerate(data):
-            hist.SetBinContent(i + 1, d)
-            hist.SetBinError(i + 1, e)
-
-
-        return hist 
-
-    @staticmethod
-    def divide_bin_width(hist, power = 1):
-        nbins = hist.GetNbinsX()
-        for i in range(1, nbins + 1): 
-            c, e, w = hist.GetBinContent(i), hist.GetBinError(i), hist.GetBinWidth(i)
-            hist.SetBinContent(i, c / w ** power)
-            hist.SetBinError(i, e / w ** power)
-
 
 class PtAnalyzer(object):
         
@@ -70,6 +37,10 @@ class PtAnalyzer(object):
         self.need_rebin = props['need_rebin']
         self.multcanvas = props['multcanvas']
         self.partlabel  = props['partlabel']
+        self.output     = conf['output']
+
+        # Define the output that will be returned from this class
+        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.output.keys())
 
         ptbins, rebins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
@@ -87,26 +58,25 @@ class PtAnalyzer(object):
         """
         return self.bins, self.need_rebin
 
+
     def histograms(self, data):
-        # Book histograms
-        histgenerators = [PtDependent('mass', '%s mass position;;m, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
-                          PtDependent('width', '%s peak width ;;#sigma, GeV/c^{2}' % self.partlabel, self.label, self.options.priority),
-                          PtDependent('spectrum', 'Reconstructed %s spectrum ;;#frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
-                          PtDependent('chi2ndf', '#chi^{2} / N_{dof} (p_{T});;#chi^{2} / N_{dof}', self.label, self.options.priority),
-                          PtDependent('npi0', 'Number of %ss in each p_{T} bin;; #frac{dN}{dp_{T}}' % self.partlabel, self.label, self.options.priority),  
-                          PtDependent('cball_alpha', 'Crystal ball parameter #alpha;; #alpha', self.label, self.options.priority),
-                          PtDependent('cball_n', 'Crystal ball parameter n;; n', self.label, self.options.priority)
-                          ]
+        # Don't use format, as it confuses root/latex syntax
+        f = lambda x, y: OutputCreator(x, y % self.partlabel, self.label, self.options.priority)
+
+        # Create actual output
+        output = {name: f(name, title) for name, title in self.output.iteritems()}
 
         # Extract bins
-        ptedges, dummy = self.divide_into_bins()
+        ptedges, _ = self.divide_into_bins()
 
         # Extract the data
-        result = [histgenerators[i].get_hist(ptedges, d) for i, d in enumerate(zip(*data))]
+        output = {quant: output[quant].get_hist(ptedges, d) for quant, d in zip(output, zip(*data))}
+
+        # Convert to a proper 
+        result = self.OutType(**output)
 
         # Scale by the number of events 
-        result[2].Scale(1. / self.nevents)
-        
+        result.spectrum.Scale(1. / self.nevents)
         return  result
 
         

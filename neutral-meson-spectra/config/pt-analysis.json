@@ -13,5 +13,16 @@
         "need_rebin": [5, 10, 5, 5, 3, 3, 3, 3, 3, 3, 5],
         "multcanvas": [4, 3, 0.001, 0.01],
         "partlabel": "#eta"
+    },
+    
+    "output":
+    {
+        "mass": "Reconstructed %s mass position; p_{T}, GeV; m, GeV/c^{2}",
+        "width": "Reconstructed %s peak width ; p_{T}, GeV; #sigma, GeV/c^{2}",
+        "spectrum": "Reconstructed %s spectrum ; p_{T}, GeV; #frac{1}{2 #pi #Delta p_{T} } #frac{dN_{rec} }{dp_{T}}",  
+        "chi2": "#chi^{2} / N_{dof} for %s spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
+        "npi0": "Number of %ss in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}",  
+        "cball_alpha": "Crystal ball parameter #alpha for %s peak; p_{T}, GeV; #alpha",
+        "cball_n": "Crystal ball parameter n for %s peak; p_{T}, GeV; n"
     }
 }
