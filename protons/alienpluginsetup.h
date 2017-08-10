@@ -15,7 +15,9 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetOverwriteMode(kTRUE);
 
 	plugin->SetMergeViaJDL(useJDL);
-	// plugin->SetOutputToRunNo(kTRUE);
+	// NB: Keep this option true, as otherwise 
+	// there is no possibility to divide the sample:
+	plugin->SetOutputToRunNo(kTRUE);
 	plugin->SetKeepLogs(kTRUE);
 
 

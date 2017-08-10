@@ -1,11 +1,11 @@
-# DATASET = LHC16m-muon-calo-pass1
-# DPART = first
-# MC = kFALSE
+DATASET = LHC16l-muon-calo-pass1
+DPART = first
+MC = kFALSE
 
-DATASET = LHC16j2a1
-DPART = second
-MC = kTRUE
-TEST_SELECTION = MCStudyOnlyTender
+# DATASET = LHC16j2a1
+# DPART = second
+# MC = kTRUE
+# TEST_SELECTION = MCStudyOnlyTender
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call unlink) 
