@@ -29,11 +29,8 @@ class PtAnalyzer(object):
         self.show_img = self.modes.get(self.options.mode, True)
         self.dead_mode = 'd' in self.options.mode
 
-        # Configure analysis
-        with open(options.pt.config) as f:
-            conf = json.load(f)
-
-        props           = conf[options.particle]
+        conf = self.options.conf
+        props = conf[options.particle]
         self.bins       = props['ptedges']
         self.need_rebin = props['need_rebin']
         self.multcanvas = props['multcanvas']
@@ -42,7 +39,7 @@ class PtAnalyzer(object):
         self.output_order = conf['output_order']
 
         # Define the output that will be returned from this classj
-        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', conf['output_order'])
+        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.output_order)
 
         ptbins, rebins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])

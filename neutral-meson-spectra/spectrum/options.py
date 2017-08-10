@@ -7,13 +7,15 @@
 #        options.spectrum.config = 'config/spectrum.json'
 #        options.mass_range = (0.02, 0.06)
 
+import json
+
 
 class AnalysisOption(object):
     def __init__(self, name, config):
         super(AnalysisOption, self).__init__()
         self.name = name
-        self.config = config
-
+        with open(config) as f:
+            self.conf = json.load(f)
 
 class Options(object):
     """

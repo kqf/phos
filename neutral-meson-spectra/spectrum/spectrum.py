@@ -13,16 +13,15 @@ class Spectrum(object):
 
     def __init__(self, lst, options = Options()):
         super(Spectrum, self).__init__()
-        self.nsigmas = options.spectrum.nsigmas
+        soptions = options.spectrum
+        self.nsigmas = soptions.nsigmas
         self.analyzer = PtAnalyzer(lst, options)
-        self.fit = options.spectrum.fit_mass_width
-        
-        with open(options.spectrum.config) as f:
-            conf = json.load(f)
+        self.fit = soptions.fit_mass_width
 
-        self.canvas = conf['canvas']
 
-        config = conf[options.particle]
+        self.canvas = soptions.conf['canvas']
+        config = soptions.conf[options.particle]
+
         # Width parametrizatin
         self.width_func  = config['width_func']
         self.width_pars  = config['width_pars']
