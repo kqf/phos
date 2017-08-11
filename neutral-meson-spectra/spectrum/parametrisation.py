@@ -38,6 +38,15 @@ class PeakParametrisation(object):
         ff.SetParameters(hist.GetMaximum()/3., *self.prel_paremeters)
         hist.Fit(ff, "0QL", "", *self.prel_range)
         return [ff.GetParameter(i) if i != 1 else self.fit_mass for i in range(4)]
+
+
+    @staticmethod
+    def get(ispi0, relaxcb, intype = 'CrystalBall'):
+        par = {'CrystalBall': CrystalBall, 'Gaus': Gaus}.get(intype, None)
+        if not par:
+            raise AttributeError('There is no such parametrization as {}'.format(intype))
+        obj = par(ispi0, relaxcb)
+        return obj
         
 
 class CrystalBall(PeakParametrisation):
@@ -86,6 +95,59 @@ class CrystalBall(PeakParametrisation):
 
         # signal + background
         fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.fit_range)
+        self.setup_parameters(fitfun, hist)
+
+        # For background extraction
+        npar = fitfun.GetNpar()
+
+        # Fit witout background
+        if skipbgrnd:
+            fitfun.FixParameter(npar - 3, 0)
+            fitfun.FixParameter(npar - 2, 0)
+            fitfun.FixParameter(npar - 1, 0)
+
+        if 'mix' in hist.GetName().lower():
+            fitfun.FixParameter(0, 0)
+
+        hist.Fit(fitfun,"QR", "")
+
+        background.SetParameter(0, fitfun.GetParameter(npar - 3))
+        background.SetParameter(1, fitfun.GetParameter(npar - 2))
+        background.SetParameter(2, fitfun.GetParameter(npar - 1))
+        return fitfun, background
+
+class Gaus(PeakParametrisation):
+    def __init__(self, fit_range, relaxed):
+        super(Gaus, self).__init__(fit_range)
+        self.relaxed = relaxed
+
+    def form_fitting_function(self, name = 'cball'):
+        signal = ROOT.TF1(name, "gaus(0)")
+        return signal
+
+
+    def setup_parameters(self, fitfun, hist):
+        fitfun.SetParNames("A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}")
+        fitfun.SetLineColor(46)
+        fitfun.SetLineWidth(2)
+        fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
+        fitfun.SetParLimits(1, *self.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.fit_width_limits)
+        pars = self.preliminary_fit(hist) 
+        fitfun.SetParameters(*pars)
+
+
+    def fit(self, hist, skipbgrnd = False):
+        if (not hist) or (hist.GetEntries() == 0): return None, None
+
+        # Initiate signal function
+        signal = self.form_fitting_function('mggaus')
+
+        # background
+        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.fit_mass, self.fit_mass), *self.fit_range)
+
+        # signal + background
+        fitfun = ROOT.TF1("fitfun", "mggaus + mypol2", *self.fit_range)
         self.setup_parameters(fitfun, hist)
 
         # For background extraction

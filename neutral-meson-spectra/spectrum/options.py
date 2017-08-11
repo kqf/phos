@@ -1,12 +1,6 @@
 #!/usr/bin/python
 
 
-# TODO: Spilt this object across different configurables
-# example 
-#        options.spectrum.nsigmas = 5
-#        options.spectrum.config = 'config/spectrum.json'
-#        options.mass_range = (0.02, 0.06)
-
 import json
 
 

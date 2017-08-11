@@ -4,5 +4,6 @@
         "xaxis_offsets": [1.01, 0.99],
         "legend_pos": [0.6, 0.6, 0.8, 0.8],
         "pt_label_pos": [1.2, 0.3],
-        "tol": 0.00001
+        "tol": 0.00001,
+        "par": "CrystalBall"
 }

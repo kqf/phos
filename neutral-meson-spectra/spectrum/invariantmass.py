@@ -2,7 +2,7 @@
 
 import ROOT
 import json
-from parametrisation import CrystalBall
+from parametrisation import PeakParametrisation
 from sutils import get_canvas, ticks
 
 class InvariantMass(object):
@@ -15,7 +15,7 @@ class InvariantMass(object):
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
 
         # Setup the fit function
-        self.peak_function = CrystalBall(options.ispi0, options.relaxedcb)
+        self.peak_function = PeakParametrisation.get(options.ispi0, options.relaxedcb, options.par)
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
