@@ -21,12 +21,11 @@ class RawYieldSystematicError(unittest.TestCase):
 
 
     def testRawYieldSysError(self):
-        spectrums = []
+        spectrums, options = [], Options('', mode = 'd')
         for nsigmas in [2, 3]:
-            label = 'n#sigma = {0}'.format(nsigmas)
-            options = Options(label)
-            options.nsigmas = nsigmas
-            options.mode = 'd'
+            options.pt.label = 'n#sigma = {0}'.format(nsigmas)
+            options.spectrum.nsigmas = nsigmas
+            
             spectrum = self.spectrum(options)
             spectrums.append(spectrum)
 

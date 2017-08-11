@@ -11,11 +11,33 @@ import json
 
 
 class AnalysisOption(object):
-    def __init__(self, name, config):
+    ignore_attributes = 'eta', 'pi0', 'comment'
+
+    def __init__(self, name, config, particle):
         super(AnalysisOption, self).__init__()
         self.name = name
         with open(config) as f:
-            self.conf = json.load(f)
+            conf = json.load(f)
+        self._setup_configurations(conf, particle)
+
+
+    def _setup_configurations(self, conf, particle):
+        self._update_variables(conf)
+
+        if not particle in conf:
+            return
+
+        conf = conf[particle]
+        self._update_variables(conf)
+
+
+    def _update_variables(self, vardict):
+        items = (k for k in vardict if not k in self.ignore_attributes)
+        for n in items:
+            # print n, vardict[n]
+            setattr(self, n, vardict[n])
+
+
 
 class Options(object):
     """
@@ -24,21 +46,16 @@ class Options(object):
     """
     def __init__(self, label = 'data', mode = 'q', relaxedcb = False, particle='pi0', average = {}, priority = 999):
         super(Options, self).__init__()
-        self.particle = particle
-
-        self.spectrum = AnalysisOption('spectrum', 'config/spectrum.json')
-        self.spectrum.fit_mass_width = True
-        self.spectrum.nsigmas = 2
-
-        self.pt = AnalysisOption('ptanalysis', 'config/pt-analysis.json')
-        self.pt.priority = 999
+        self.spectrum = AnalysisOption('spectrum', 'config/spectrum.json', particle)
+        self.pt = AnalysisOption('ptanalysis', 'config/pt-analysis.json', particle)
+        self.pt.priority = priority
         self.pt.label = label
-        self.pt.mode = 'q'
+        self.pt.mode = mode
 
-        self.invmass  = AnalysisOption('invmass', 'config/invariant-mass.json')
+        self.invmass = AnalysisOption('invmass', 'config/invariant-mass.json', particle)
         self.invmass.relaxedcb = relaxedcb
         self.invmass.average  = average
-        self.invmass.ispi0 = 'pi0' in self.particle
+        self.invmass.ispi0 = 'pi0' in particle
 
     @staticmethod
     def fixed_peak(*args):

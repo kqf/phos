@@ -13,25 +13,9 @@ class Spectrum(object):
 
     def __init__(self, lst, options = Options()):
         super(Spectrum, self).__init__()
-        soptions = options.spectrum
-        self.nsigmas = soptions.nsigmas
         self.analyzer = PtAnalyzer(lst, options)
-        self.fit = soptions.fit_mass_width
-
-
-        self.canvas = soptions.conf['canvas']
-        config = soptions.conf[options.particle]
-
-        # Width parametrizatin
-        self.width_func  = config['width_func']
-        self.width_pars  = config['width_pars']
-        self.width_names = config['width_names']
-
-        # Mass parametrizatin
-        self.mass_func   = config['mass_func']
-        self.mass_pars   = config['mass_pars']
-        self.mass_names  = config['mass_names']
-
+        self.opt = options.spectrum
+        self.label = options.pt.label
 
     def mass_ranges(self):
         quantities = self.analyzer.quantities(False)
@@ -41,7 +25,6 @@ class Spectrum(object):
     def evaluate(self):
         ranges = self.mass_ranges()
         return self.analyzer.quantities(True, ranges)
-
 
     def fit_quantity(self, quant, func, par, names, pref):
         canvas = get_canvas(1./ 2., 1, True)
@@ -57,7 +40,7 @@ class Spectrum(object):
 
         # Doesn't fit and use default parameters for 
         # width/mass, therefore this will give correct estimation
-        if not self.fit:
+        if not self.opt.fit_mass_width:
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
 
@@ -65,7 +48,7 @@ class Spectrum(object):
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
-        wait(pref + "-paramerisation-" + self.analyzer.label, self.analyzer.show_img, True)
+        wait(pref + "-paramerisation-" + self.label, self.analyzer.show_img, True)
         return fitquant
 
         
@@ -73,11 +56,11 @@ class Spectrum(object):
         ROOT.gStyle.SetOptStat('')
         mass, sigma = quantities.mass, quantities.width
 
-        fitsigma = self.fit_quantity(sigma, self.width_func, self.width_pars, self.width_names, 'width')
-        fitmass = self.fit_quantity(mass, self.mass_func, self.mass_pars, self.mass_names, 'mass')
+        fitsigma = self.fit_quantity(sigma, self.opt.width_func, self.opt.width_pars, self.opt.width_names, 'width')
+        fitmass = self.fit_quantity(mass, self.opt.mass_func, self.opt.mass_pars, self.opt.mass_names, 'mass')
 
-        mass_range = lambda pt: (fitmass.Eval(pt) - self.nsigmas * fitsigma.Eval(pt),
-                                 fitmass.Eval(pt) + self.nsigmas * fitsigma.Eval(pt))
+        mass_range = lambda pt: (fitmass.Eval(pt) - self.opt.nsigmas * fitsigma.Eval(pt),
+                                 fitmass.Eval(pt) + self.opt.nsigmas * fitsigma.Eval(pt))
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 

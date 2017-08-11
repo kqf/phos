@@ -7,29 +7,23 @@ from sutils import get_canvas, ticks
 
 class InvariantMass(object):
    
-    def __init__(self, inhists, pt_range, nrebin, options, tol = 0.00001):
+    def __init__(self, inhists, pt_range, nrebin, options):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
-        self.nrebin   = nrebin
-        self.tol      = tol
+        self.nrebin = nrebin
+        self.opt = options
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
-        self.options = options
 
         # Setup the fit function
         self.peak_function = CrystalBall(options.ispi0, options.relaxedcb)
-
-        # Setup parameters
-        conf = options.conf
-        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, conf['xaxis_offsets'])]
-        self.legend_pos   = conf['legend_pos']
-        self.pt_label_pos = conf['pt_label_pos']
+        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
 
     def remove_zeros(self, h, zeros):
-        if 'empty' in self.options.average:
+        if 'empty' in self.opt.average:
             return h
 
         fitf, bckgrnd = self.peak_function.fit(h)
@@ -52,7 +46,7 @@ class InvariantMass(object):
         bins = {i: hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)}
 
         # All bins that are less then certain value
-        zeros = {i: hist.GetBinCenter(i) for i, v in bins.iteritems() if v < self.tol}
+        zeros = {i: hist.GetBinCenter(i) for i, v in bins.iteritems() if v < self.opt.tol}
 
         # Don't take into account thos bins that are empty in both histograms
         unique_zeros = {i: v for i, v in zeros.iteritems() if not i in exclude}
@@ -153,14 +147,14 @@ class InvariantMass(object):
     def draw_pt_bin(self, hist):
         # Estimate coordinate
         mass = self.peak_function.fit_mass
-        x = mass * self.pt_label_pos[0]
+        x = mass * self.opt.pt_label_pos[0]
 
         bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
         bmax, bmin = map(hist.GetBinContent, bins)
         zero = bmax - bmin 
         # print zero
 
-        y = bmin + zero * self.pt_label_pos[1]
+        y = bmin + zero * self.opt.pt_label_pos[1]
         # Draw the lable
         tl = ROOT.TLatex()
         tl.SetTextAlign(12)
@@ -190,7 +184,7 @@ class InvariantMass(object):
         canvas.SetTicky(False) 
 
         self.mass.SetAxisRange(*self.xaxis_range)
-        legend = ROOT.TLegend(*self.legend_pos)
+        legend = ROOT.TLegend(*self.opt.legend_pos)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         

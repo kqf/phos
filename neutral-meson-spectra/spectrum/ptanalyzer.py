@@ -16,30 +16,18 @@ class PtAnalyzer(object):
 
     def __init__(self, hists, options = Options()):
         super(PtAnalyzer, self).__init__()
-        # These hists are needed for dynamic binning
         try:
             iter(hists)
             self.hists = hists
         except TypeError:
             self.hists = hists.read()
 
-        self.options = options.pt
         self.nevents = self.hists[0].nevents
-        self.label   = self.options.label
-        self.show_img = self.modes.get(self.options.mode, True)
-        self.dead_mode = 'd' in self.options.mode
+        self.opt = options.pt
+        self.show_img = self.modes.get(self.opt.mode, True)
+        self.dead_mode = 'd' in self.opt.mode
 
-        conf = self.options.conf
-        props = conf[options.particle]
-        self.bins       = props['ptedges']
-        self.need_rebin = props['need_rebin']
-        self.multcanvas = props['multcanvas']
-        self.partlabel  = props['partlabel']
-        self.output     = conf['output']
-        self.output_order = conf['output_order']
-
-        # Define the output that will be returned from this classj
-        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.output_order)
+        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
 
         ptbins, rebins = self.divide_into_bins()
         pt_intervals = zip(ptbins[:-1], ptbins[1:])
@@ -50,26 +38,27 @@ class PtAnalyzer(object):
         self.masses = map(f, pt_intervals, rebins)
 
 
+    # TODO: delete this method edit cnfiguration for dynamic binning
     def divide_into_bins(self):
         """
             This method is needed because then we can redefine it
             for dynamical binning instead of static one.
         """
-        return self.bins, self.need_rebin
+        return self.opt.ptedges, self.opt.need_rebin
 
 
     def histograms(self, data):
         # Don't use format, as it confuses root/latex syntax
-        f = lambda x, y: OutputCreator(x, y % self.partlabel, self.label, self.options.priority)
+        f = lambda x, y: OutputCreator(x, y % self.opt.partlabel, self.opt.label, self.opt.priority)
 
         # Create actual output
-        output = {name: f(name, title) for name, title in self.output.iteritems()}
+        output = {name: f(name, title) for name, title in self.opt.output.iteritems()}
 
         # Extract bins
         ptedges, _ = self.divide_into_bins()
 
         # Extract the data
-        output = {quant: output[quant].get_hist(ptedges, d) for quant, d in zip(self.output_order, zip(*data))}
+        output = {quant: output[quant].get_hist(ptedges, d) for quant, d in zip(self.opt.output_order, zip(*data))}
 
         # Convert to a proper 
         result = self.OutType(**output)
@@ -126,7 +115,7 @@ class PtAnalyzer(object):
     def draw_all_bins(self, f, intgr_ranges, name = ''):
         canvas = get_canvas(1, 1, True)
         canvas.Clear()
-        canvas.Divide(*self.multcanvas)
+        canvas.Divide(*self.opt.multcanvas)
         for i, (m, r) in enumerate(zip(self.masses, intgr_ranges)):
             distr = f(m, canvas.cd(i + 1))
 
@@ -135,7 +124,7 @@ class PtAnalyzer(object):
             m.line_low = self.draw_line(distr, r[0])
             m.line_up = self.draw_line(distr, r[1])
 
-        wait(name + self.label, self.show_img, save=True)
+        wait(name + self.opt.label, self.show_img, save=True)
 
     def draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)
