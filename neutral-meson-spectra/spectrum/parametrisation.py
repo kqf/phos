@@ -1,29 +1,13 @@
 #!/usr/bin/python
 
 import ROOT
-import json
 
 class PeakParametrisation(object):
-    with open('config/peak-parameters.json') as f:
-        configuration = json.load(f)
 
-    def __init__(self, ispi0peak):
+    def __init__(self, options):
         super(PeakParametrisation, self).__init__()
+        self.opt = options
         ROOT.gStyle.SetOptFit()
-        self.ispi0peak = ispi0peak
-
-        name = 'pi0' if self.ispi0peak else 'eta'
-        self.d = self.configuration[name]
-
-        self.fit_range         = self.d["fit_range"]
-        self.prel_mass_limits  = self.d["prel_mass_limits"]
-        self.prel_width_limits = self.d["prel_width_limits"]
-        self.prel_range        = self.d["prel_range"]
-        self.prel_paremeters   = self.d["prel_paremeters"]
-        self.fit_mass          = self.d["fit_mass"]
-        self.fit_mass_limits   = self.d["fit_mass_limits"]
-        self.fit_width_limits  = self.d["fit_width_limits"]
-
 
     def fit(self):
         return None, None
@@ -33,32 +17,27 @@ class PeakParametrisation(object):
         # make a preliminary fit to estimate parameters
         ff = ROOT.TF1("fastfit", "gaus(0) + [3]")
         ff.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
-        ff.SetParLimits(1, *self.prel_mass_limits)
-        ff.SetParLimits(2, *self.prel_width_limits)
-        ff.SetParameters(hist.GetMaximum()/3., *self.prel_paremeters)
-        hist.Fit(ff, "0QL", "", *self.prel_range)
-        return [ff.GetParameter(i) if i != 1 else self.fit_mass for i in range(4)]
+        ff.SetParLimits(1, *self.opt.prel_mass_limits)
+        ff.SetParLimits(2, *self.opt.prel_width_limits)
+        ff.SetParameters(hist.GetMaximum()/3., *self.opt.prel_paremeters)
+        hist.Fit(ff, "0QL", "", *self.opt.prel_range)
+        return [ff.GetParameter(i) if i != 1 else self.opt.fit_mass for i in range(4)]
 
 
     @staticmethod
-    def get(ispi0, relaxcb, intype = 'CrystalBall'):
-        par = {'CrystalBall': CrystalBall, 'Gaus': Gaus}.get(intype, None)
+    def get(options):
+        par = {'CrystalBall': CrystalBall, 'Gaus': Gaus}.get(options.fit_function, None)
         if not par:
-            raise AttributeError('There is no such parametrization as {}'.format(intype))
-        obj = par(ispi0, relaxcb)
+            raise AttributeError('There is no such parametrization as {}'.format(options.fit_function))
+        obj = par(options)
         return obj
         
 
 class CrystalBall(PeakParametrisation):
-    def __init__(self, fit_range, relaxed):
-        super(CrystalBall, self).__init__(fit_range)
-        self.relaxed = relaxed
 
-        self.cb_n = self.d["cb_n"]
-        self.cb_alpha = self.d["cb_alpha"]
-        self.cb_n_limits = self.d["cb_n_limits"]
-        self.cb_alpha_limits = self.d["cb_alpha_limits"]
-        
+    def __init__(self, options):
+        super(CrystalBall, self).__init__(options)
+
 
     def form_fitting_function(self, name = 'cball'):
         alpha, n = '[3]', '[4]' # alpha >= 0, n > 1
@@ -73,16 +52,16 @@ class CrystalBall(PeakParametrisation):
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
         fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
-        fitfun.SetParLimits(1, *self.fit_mass_limits)
-        fitfun.SetParLimits(2, *self.fit_width_limits)
-        fitfun.SetParLimits(3, *self.cb_alpha_limits)
-        fitfun.SetParLimits(4, *self.cb_n_limits)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
+        fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
+        fitfun.SetParLimits(4, *self.opt.cb_n_limits)
         pars = self.preliminary_fit(hist) 
-        fitfun.SetParameters(*(pars[:3] + [self.cb_alpha, self.cb_n] + pars[3:]))
+        fitfun.SetParameters(*(pars[:3] + [self.opt.cb_alpha, self.opt.cb_n] + pars[3:]))
 
-        if not self.relaxed:
-            fitfun.FixParameter(3, self.cb_alpha)
-            fitfun.FixParameter(4, self.cb_n) 
+        if not self.opt.relaxed:
+            fitfun.FixParameter(3, self.opt.cb_alpha)
+            fitfun.FixParameter(4, self.opt.cb_n) 
 
     def fit(self, hist, skipbgrnd = False):
         if (not hist) or (hist.GetEntries() == 0): return None, None
@@ -91,10 +70,10 @@ class CrystalBall(PeakParametrisation):
         signal = self.form_fitting_function('cball')
 
         # background
-        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.fit_mass, self.fit_mass), *self.fit_range)
+        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
 
         # signal + background
-        fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.fit_range)
+        fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.opt.fit_range)
         self.setup_parameters(fitfun, hist)
 
         # For background extraction
@@ -117,9 +96,9 @@ class CrystalBall(PeakParametrisation):
         return fitfun, background
 
 class Gaus(PeakParametrisation):
-    def __init__(self, fit_range, relaxed):
-        super(Gaus, self).__init__(fit_range)
-        self.relaxed = relaxed
+    def __init__(self, options):
+        super(Gaus, self).__init__(options)
+
 
     def form_fitting_function(self, name = 'cball'):
         signal = ROOT.TF1(name, "gaus(0)")
@@ -131,8 +110,8 @@ class Gaus(PeakParametrisation):
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
         fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
-        fitfun.SetParLimits(1, *self.fit_mass_limits)
-        fitfun.SetParLimits(2, *self.fit_width_limits)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
         pars = self.preliminary_fit(hist) 
         fitfun.SetParameters(*pars)
 
@@ -144,10 +123,10 @@ class Gaus(PeakParametrisation):
         signal = self.form_fitting_function('mggaus')
 
         # background
-        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.fit_mass, self.fit_mass), *self.fit_range)
+        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
 
         # signal + background
-        fitfun = ROOT.TF1("fitfun", "mggaus + mypol2", *self.fit_range)
+        fitfun = ROOT.TF1("fitfun", "mggaus + mypol2", *self.opt.fit_range)
         self.setup_parameters(fitfun, hist)
 
         # For background extraction

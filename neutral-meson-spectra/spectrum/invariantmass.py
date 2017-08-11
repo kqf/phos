@@ -11,12 +11,12 @@ class InvariantMass(object):
         super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.nrebin = nrebin
-        self.opt = options
+        self.opt = options.invmass
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
 
         # Setup the fit function
-        self.peak_function = PeakParametrisation.get(options.ispi0, options.relaxedcb, options.par)
-        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.fit_range, self.opt.xaxis_offsets)]
+        self.peak_function = PeakParametrisation.get(options.param)
+        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
         self.mass, self.mixed = map(self.extract_histogram, inhists)
@@ -146,7 +146,7 @@ class InvariantMass(object):
 
     def draw_pt_bin(self, hist):
         # Estimate coordinate
-        mass = self.peak_function.fit_mass
+        mass = self.peak_function.opt.fit_mass
         x = mass * self.opt.pt_label_pos[0]
 
         bins = (hist.GetMaximumBin(), hist.GetMinimumBin())

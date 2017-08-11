@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import ROOT
-import json
 import collections
 
 from sutils import nicely_draw, get_canvas, wait, area_and_error
@@ -34,7 +33,7 @@ class PtAnalyzer(object):
 
         assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(self.hists, x, y, options.invmass)
+        f = lambda x, y: InvariantMass(self.hists, x, y, options)
         self.masses = map(f, pt_intervals, rebins)
 
 
@@ -69,7 +68,7 @@ class PtAnalyzer(object):
 
         
     def number_of_mesons(self, mass, intgr_ranges):
-        a, b = intgr_ranges if intgr_ranges else mass.peak_function.fit_range
+        a, b = intgr_ranges if intgr_ranges else mass.peak_function.opt.fit_range
         area, areae = area_and_error(mass.signal, a, b)
         # area = mass.mass.Integral()
         return area, areae

@@ -41,15 +41,18 @@ class Options(object):
     def __init__(self, label = 'data', mode = 'q', relaxedcb = False, particle='pi0', average = {}, priority = 999):
         super(Options, self).__init__()
         self.spectrum = AnalysisOption('spectrum', 'config/spectrum.json', particle)
+
         self.pt = AnalysisOption('ptanalysis', 'config/pt-analysis.json', particle)
         self.pt.priority = priority
         self.pt.label = label
         self.pt.mode = mode
 
         self.invmass = AnalysisOption('invmass', 'config/invariant-mass.json', particle)
-        self.invmass.relaxedcb = relaxedcb
         self.invmass.average  = average
-        self.invmass.ispi0 = 'pi0' in particle
+
+        self.param = AnalysisOption('param', 'config/peak-parameters.json', particle)
+        self.param.relaxed = relaxedcb
+        self.param.ispi0 = 'pi0' in particle
 
     @staticmethod
     def fixed_peak(*args):
