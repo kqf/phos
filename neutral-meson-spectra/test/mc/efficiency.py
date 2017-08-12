@@ -52,7 +52,7 @@ class Efficiency(object):
 
     def reco(self):
         inp = Input(self.iname, self.selection, 'MassPt')
-        reco = Spectrum(inp, self.label, mode = 'q').evaluate()[4]
+        reco = Spectrum(inp, Options(self.label, mode = 'q')).evaluate().npi0
         reco.logy = True
         return scalew(reco)
 
@@ -127,14 +127,15 @@ class CalculateEfficiency(unittest.TestCase):
         diff.compare(reco)
 
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testEffDifferentModules(self):
-
-        modules = run_analysis(Options(), self.pythiaf, self.selection)
+        opt = Options(mode='d')
+        opt.pt.config = 'config/test_different_modules.json'
+        modules = run_analysis(opt, self.pythiaf, self.selection)
         diff = Comparator()
         diff.compare(modules)
 
-        spectrums = zip(*modules)[2]
+        spectrums = zip(*modules).npi0
         map(lambda x: x.SetTitle('Efficiency per module'), spectrums)
         map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
         map(scalew, spectrums)

@@ -38,14 +38,20 @@ class Options(object):
         This is class should handle all possible variable! options 
         that i need to compare in my analysis.
     """
+    modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
+
     def __init__(self, label = 'data', mode = 'q', relaxedcb = False, particle='pi0', average = {}, priority = 999):
         super(Options, self).__init__()
+        show_img = self.modes.get(mode, True)
+
         self.spectrum = AnalysisOption('spectrum', 'config/spectrum.json', particle)
+        self.spectrum.show_img = show_img
 
         self.pt = AnalysisOption('ptanalysis', 'config/pt-analysis.json', particle)
         self.pt.priority = priority
         self.pt.label = label
-        self.pt.mode = mode
+        self.pt.show_img = show_img
+        self.pt.dead_mode = 'd' in mode
 
         self.invmass = AnalysisOption('invmass', 'config/invariant-mass.json', particle)
         self.invmass.average  = average
@@ -53,6 +59,14 @@ class Options(object):
         self.param = AnalysisOption('param', 'config/peak-parameters.json', particle)
         self.param.relaxed = relaxedcb
         self.param.ispi0 = 'pi0' in particle
+
+    @property
+    def label(self):
+        return self.pt.label
+
+    @label.setter
+    def label(self, label):
+        self.pt.label = label
 
     @staticmethod
     def fixed_peak(*args):

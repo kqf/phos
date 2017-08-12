@@ -11,39 +11,30 @@ from options import Options
 ROOT.TH1.AddDirectory(False)
 
 class PtAnalyzer(object):
-    modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
 
     def __init__(self, hists, options = Options()):
         super(PtAnalyzer, self).__init__()
-        try:
-            iter(hists)
-            self.hists = hists
-        except TypeError:
-            self.hists = hists.read()
-
+        self.hists = self._hists(hists)
         self.nevents = self.hists[0].nevents
         self.opt = options.pt
-        self.show_img = self.modes.get(self.opt.mode, True)
-        self.dead_mode = 'd' in self.opt.mode
+
+        print self.opt.dead_mode
 
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
 
-        ptbins, rebins = self.divide_into_bins()
-        pt_intervals = zip(ptbins[:-1], ptbins[1:])
-
-        assert len(pt_intervals) == len(rebins), 'Number of intervals is not equal to the number of rebin parameters'
+        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
+        assert len(intervals) == len(self.opt.rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
         f = lambda x, y: InvariantMass(self.hists, x, y, options)
-        self.masses = map(f, pt_intervals, rebins)
+        self.masses = map(f, intervals, self.opt.rebins)
 
-
-    # TODO: delete this method edit cnfiguration for dynamic binning
-    def divide_into_bins(self):
-        """
-            This method is needed because then we can redefine it
-            for dynamical binning instead of static one.
-        """
-        return self.opt.ptedges, self.opt.need_rebin
+    @staticmethod
+    def _hists(hists):
+        try:
+            iter(hists)
+            return hists
+        except TypeError:
+            return hists.read()
 
 
     def histograms(self, data):
@@ -53,11 +44,8 @@ class PtAnalyzer(object):
         # Create actual output
         output = {name: f(name, title) for name, title in self.opt.output.iteritems()}
 
-        # Extract bins
-        ptedges, _ = self.divide_into_bins()
-
         # Extract the data
-        output = {quant: output[quant].get_hist(ptedges, d) for quant, d in zip(self.opt.output_order, zip(*data))}
+        output = {quant: output[quant].get_hist(self.opt.ptedges, d) for quant, d in zip(self.opt.output_order, zip(*data))}
 
         # Convert to a proper 
         result = self.OutType(**output)
@@ -96,9 +84,9 @@ class PtAnalyzer(object):
 
         # Create hitograms
         histos = self.histograms(values)
-        if self.show_img: map(nicely_draw, histos)
+        if self.opt.show_img: map(nicely_draw, histos)
 
-        if self.dead_mode: 
+        if self.opt.dead_mode: 
             return histos
 
         if not draw:
@@ -123,7 +111,7 @@ class PtAnalyzer(object):
             m.line_low = self.draw_line(distr, r[0])
             m.line_up = self.draw_line(distr, r[1])
 
-        wait(name + self.opt.label, self.show_img, save=True)
+        wait(name + self.opt.label, self.opt.show_img, save=True)
 
     def draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)

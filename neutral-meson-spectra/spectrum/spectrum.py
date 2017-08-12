@@ -48,7 +48,7 @@ class Spectrum(object):
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
-        wait(pref + "-paramerisation-" + self.label, self.analyzer.show_img, True)
+        wait(pref + "-paramerisation-" + self.label, self.opt.show_img, True)
         return fitquant
 
         
