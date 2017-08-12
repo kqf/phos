@@ -9,8 +9,42 @@ class PeakParametrisation(object):
         self.opt = options
         ROOT.gStyle.SetOptFit()
 
-    def fit(self):
-        return None, None
+
+    def fit(self, hist, skipbgrnd = False):
+        if (not hist) or (hist.GetEntries() == 0): 
+            return None, None
+
+        funcname = self.__class__.__name__
+        # Initiate signal function
+        signal = self.form_fitting_function(funcname)
+
+        # TODO: add option to select the background function
+        # background
+        bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
+        background = ROOT.TF1("mypol", bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
+
+        # signal + background
+        fitfun = ROOT.TF1("fitfun", funcname + " + mypol", *self.opt.fit_range)
+        self.setup_parameters(fitfun, hist)
+
+        # For background extraction
+        npar = fitfun.GetNpar()
+
+        # Fit witout background
+        if skipbgrnd:
+            fitfun.FixParameter(npar - 3, 0)
+            fitfun.FixParameter(npar - 2, 0)
+            fitfun.FixParameter(npar - 1, 0)
+
+        if 'mix' in hist.GetName().lower():
+            fitfun.FixParameter(0, 0)
+
+        hist.Fit(fitfun,"QR", "")
+
+        background.SetParameter(0, fitfun.GetParameter(npar - 3))
+        background.SetParameter(1, fitfun.GetParameter(npar - 2))
+        background.SetParameter(2, fitfun.GetParameter(npar - 1))
+        return fitfun, background
 
 
     def preliminary_fit(self, hist):
@@ -24,11 +58,23 @@ class PeakParametrisation(object):
         return [ff.GetParameter(i) if i != 1 else self.opt.fit_mass for i in range(4)]
 
 
+    def setup_parameters(self, fitfun, hist):
+        fitfun.SetParNames(*self.opt.par_names)
+        fitfun.SetLineColor(46)
+        fitfun.SetLineWidth(2)
+        fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
+        pars = self.preliminary_fit(hist) 
+        fitfun.SetParameters(*pars)
+        return pars
+
+
     @staticmethod
     def get(options):
-        par = {'CrystalBall': CrystalBall, 'Gaus': Gaus}.get(options.fit_function, None)
+        par = {'CrystalBall': CrystalBall, 'Gaus': Gaus}.get(options.fitf, None)
         if not par:
-            raise AttributeError('There is no such parametrization as {}'.format(options.fit_function))
+            raise AttributeError('There is no such parametrization as {}'.format(options.fitf))
         obj = par(options)
         return obj
         
@@ -43,57 +89,21 @@ class CrystalBall(PeakParametrisation):
         alpha, n = '[3]', '[4]' # alpha >= 0, n > 1
         a = 'TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])'
         b = '[4] / [3] - [3]'
-        signal = ROOT.TF1("cball", "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%s*(%s-(x-[1])/[2])^(-%s)" % (alpha, a, b, n) )
+        cff = "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%s*(%s-(x-[1])/[2])^(-%s)"
+        signal = ROOT.TF1(name, cff % (alpha, a, b, n))
         return signal
 
 
     def setup_parameters(self, fitfun, hist):
-        fitfun.SetParNames("A", "M", "#sigma", "#alpha", "n", "a_{0}", "a_{1}", "a_{2}")
-        fitfun.SetLineColor(46)
-        fitfun.SetLineWidth(2)
-        fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
-        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
-        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
+        pars = super(CrystalBall, self).setup_parameters(fitfun, hist)
         fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
         fitfun.SetParLimits(4, *self.opt.cb_n_limits)
-        pars = self.preliminary_fit(hist) 
         fitfun.SetParameters(*(pars[:3] + [self.opt.cb_alpha, self.opt.cb_n] + pars[3:]))
-
         if not self.opt.relaxed:
             fitfun.FixParameter(3, self.opt.cb_alpha)
             fitfun.FixParameter(4, self.opt.cb_n) 
 
-    def fit(self, hist, skipbgrnd = False):
-        if (not hist) or (hist.GetEntries() == 0): return None, None
 
-        # Initiate signal function
-        signal = self.form_fitting_function('cball')
-
-        # background
-        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
-
-        # signal + background
-        fitfun = ROOT.TF1("fitfun", "cball + mypol2", *self.opt.fit_range)
-        self.setup_parameters(fitfun, hist)
-
-        # For background extraction
-        npar = fitfun.GetNpar()
-
-        # Fit witout background
-        if skipbgrnd:
-            fitfun.FixParameter(npar - 3, 0)
-            fitfun.FixParameter(npar - 2, 0)
-            fitfun.FixParameter(npar - 1, 0)
-
-        if 'mix' in hist.GetName().lower():
-            fitfun.FixParameter(0, 0)
-
-        hist.Fit(fitfun,"QR", "")
-
-        background.SetParameter(0, fitfun.GetParameter(npar - 3))
-        background.SetParameter(1, fitfun.GetParameter(npar - 2))
-        background.SetParameter(2, fitfun.GetParameter(npar - 1))
-        return fitfun, background
 
 class Gaus(PeakParametrisation):
     def __init__(self, options):
@@ -104,46 +114,3 @@ class Gaus(PeakParametrisation):
         signal = ROOT.TF1(name, "gaus(0)")
         return signal
 
-
-    def setup_parameters(self, fitfun, hist):
-        fitfun.SetParNames("A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}")
-        fitfun.SetLineColor(46)
-        fitfun.SetLineWidth(2)
-        fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
-        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
-        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
-        pars = self.preliminary_fit(hist) 
-        fitfun.SetParameters(*pars)
-
-
-    def fit(self, hist, skipbgrnd = False):
-        if (not hist) or (hist.GetEntries() == 0): return None, None
-
-        # Initiate signal function
-        signal = self.form_fitting_function('mggaus')
-
-        # background
-        background = ROOT.TF1("mypol2", "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2" % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
-
-        # signal + background
-        fitfun = ROOT.TF1("fitfun", "mggaus + mypol2", *self.opt.fit_range)
-        self.setup_parameters(fitfun, hist)
-
-        # For background extraction
-        npar = fitfun.GetNpar()
-
-        # Fit witout background
-        if skipbgrnd:
-            fitfun.FixParameter(npar - 3, 0)
-            fitfun.FixParameter(npar - 2, 0)
-            fitfun.FixParameter(npar - 1, 0)
-
-        if 'mix' in hist.GetName().lower():
-            fitfun.FixParameter(0, 0)
-
-        hist.Fit(fitfun,"QR", "")
-
-        background.SetParameter(0, fitfun.GetParameter(npar - 3))
-        background.SetParameter(1, fitfun.GetParameter(npar - 2))
-        background.SetParameter(2, fitfun.GetParameter(npar - 1))
-        return fitfun, background

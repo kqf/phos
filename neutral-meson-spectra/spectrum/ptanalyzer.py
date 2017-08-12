@@ -18,8 +18,6 @@ class PtAnalyzer(object):
         self.nevents = self.hists[0].nevents
         self.opt = options.pt
 
-        print self.opt.dead_mode
-
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
 
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])

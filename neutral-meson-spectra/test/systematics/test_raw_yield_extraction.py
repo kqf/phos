@@ -26,7 +26,7 @@ class RawYieldSystematicError(unittest.TestCase):
             for nsigmas in [2, 3]:
                 options.pt.label = 'n#sigma = {0} {1}'.format(nsigmas, par)
                 options.spectrum.nsigmas = nsigmas
-                options.param.fit_function = par
+                options.param.fitf = par
                 
                 spectrum = self.spectrum(options)
                 spectrums.append(spectrum)

@@ -40,7 +40,7 @@ class Options(object):
     """
     modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
 
-    def __init__(self, label = 'data', mode = 'q', relaxedcb = False, particle='pi0', average = {}, priority = 999):
+    def __init__(self, label = 'data', mode = 'q', relaxedcb = False, particle='pi0', average = {}, priority = 999, fitf = 'cball'):
         super(Options, self).__init__()
         show_img = self.modes.get(mode, True)
 
@@ -54,11 +54,25 @@ class Options(object):
         self.pt.dead_mode = 'd' in mode
 
         self.invmass = AnalysisOption('invmass', 'config/invariant-mass.json', particle)
-        self.invmass.average  = average
+        self.invmass.average = average
 
-        self.param = AnalysisOption('param', 'config/peak-parameters.json', particle)
+        pconf = 'config/{0}-parameters.json'.format('gaus' if 'gaus' in fitf.lower() else 'cball')
+        self.param = AnalysisOption('param', pconf, particle)
         self.param.relaxed = relaxedcb
+        # TODO: Deleteme?
         self.param.ispi0 = 'pi0' in particle
+
+    @property
+    def fitf(self):
+        return self.param.fitf
+
+    @fitf.setter
+    def fitf(self, fitf):
+        r, p = self.param.relaxed, self.param.ispi0 
+        pconf = 'config/gaus-parameters.json' if 'gaus' in fitf.lower() else 'config/cball-parameters.json'
+        self.param = AnalysisOption('param', pconf, particle)
+        self.param.relaxed = r
+        self.param.ispi0 = p
 
     @property
     def label(self):
