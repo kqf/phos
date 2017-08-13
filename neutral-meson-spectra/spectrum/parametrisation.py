@@ -10,7 +10,20 @@ class PeakParametrisation(object):
         ROOT.gStyle.SetOptFit()
 
 
-    def fit(self, hist, skipbgrnd = False):
+    def configure_background(self, fitfun):
+        if 'pol2' in self.opt.background:
+            return
+
+        npar = fitfun.GetNpar()
+        if 'pol1' in self.opt.background:
+            fitfun.FixParameter(npar - 1, 0)
+            return
+
+        fitfun.FixParameter(npar - 3, 0)
+        fitfun.FixParameter(npar - 2, 0)
+        fitfun.FixParameter(npar - 1, 0)
+
+    def fit(self, hist):
         if (not hist) or (hist.GetEntries() == 0): 
             return None, None
 
@@ -26,21 +39,14 @@ class PeakParametrisation(object):
         # signal + background
         fitfun = ROOT.TF1("fitfun", funcname + " + mypol", *self.opt.fit_range)
         self.setup_parameters(fitfun, hist)
-
-        # For background extraction
-        npar = fitfun.GetNpar()
-
-        # Fit witout background
-        if skipbgrnd:
-            fitfun.FixParameter(npar - 3, 0)
-            fitfun.FixParameter(npar - 2, 0)
-            fitfun.FixParameter(npar - 1, 0)
+        self.configure_background(fitfun)
 
         if 'mix' in hist.GetName().lower():
             fitfun.FixParameter(0, 0)
 
         hist.Fit(fitfun,"QR", "")
 
+        npar = fitfun.GetNpar()
         background.SetParameter(0, fitfun.GetParameter(npar - 3))
         background.SetParameter(1, fitfun.GetParameter(npar - 2))
         background.SetParameter(2, fitfun.GetParameter(npar - 1))

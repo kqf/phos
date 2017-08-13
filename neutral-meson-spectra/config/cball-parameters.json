@@ -1,6 +1,7 @@
 {
         "fitf": "CrystalBall",
         "par_names": ["A", "M", "#sigma", "#alpha", "n", "a_{0}", "a_{1}", "a_{2}"],
+        "background": "pol2",
 	"pi0":
 	{
 

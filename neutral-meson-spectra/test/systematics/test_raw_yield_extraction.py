@@ -22,14 +22,17 @@ class RawYieldSystematicError(unittest.TestCase):
 
     def testRawYieldSysError(self):
         spectrums, options = [], Options('', mode = 'd')
-        for par in ['CrystalBall', 'Gaus']:
-            for nsigmas in [2, 3]:
-                options.pt.label = 'n#sigma = {0} {1}'.format(nsigmas, par)
-                options.spectrum.nsigmas = nsigmas
-                options.param.fitf = par
-                
-                spectrum = self.spectrum(options)
-                spectrums.append(spectrum)
+        for bckgr in ['pol1', 'pol2']:
+            for par in ['CrystalBall', 'Gaus']:
+                for nsigmas in [2, 3]:
+                    options.pt.label = 'n#sigma = {0} {1} {2}'.format(nsigmas, par, bckgr)
+                    options.spectrum.nsigmas = nsigmas
+                    options.param.fitf = par
+                    options.param.background = bckgr
+
+                    
+                    spectrum = self.spectrum(options)
+                    spectrums.append(spectrum)
 
         diff = Comparator()
         diff.compare(spectrums)

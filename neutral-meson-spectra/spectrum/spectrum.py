@@ -27,14 +27,16 @@ class Spectrum(object):
         return self.analyzer.quantities(True, ranges)
 
     def fit_quantity(self, quant, func, par, names, pref):
-        canvas = get_canvas(1./ 2., 1, True)
-        adjust_canvas(canvas)
-        ticks(canvas)
-
         fitquant = ROOT.TF1("fitquant" + pref, func)
         fitquant.SetLineColor(46)
 
+        
+        # if self.opt.show_img:
+        canvas = get_canvas(1./ 2., 1, True)
+        adjust_canvas(canvas)
+        ticks(canvas) 
         quant.Draw()
+
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
