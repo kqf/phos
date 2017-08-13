@@ -1,6 +1,7 @@
 {
 	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
 	"canvas": [0.001, 0.001],
+    "dead": "",
     "pi0":
     {
         "width_func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",

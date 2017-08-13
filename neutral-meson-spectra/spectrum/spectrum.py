@@ -30,12 +30,12 @@ class Spectrum(object):
         fitquant = ROOT.TF1("fitquant" + pref, func)
         fitquant.SetLineColor(46)
 
-        
-        # if self.opt.show_img:
-        canvas = get_canvas(1./ 2., 1, True)
-        adjust_canvas(canvas)
-        ticks(canvas) 
-        quant.Draw()
+
+        if not self.opt.dead:
+            canvas = get_canvas(1./ 2., 1, True)
+            adjust_canvas(canvas)
+            ticks(canvas) 
+            quant.Draw()
 
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
