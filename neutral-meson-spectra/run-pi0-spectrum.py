@@ -4,18 +4,18 @@ import ROOT
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas
+from spectrum.sutils import get_canvas, scalew
 from spectrum.options import Options
 
 def main():
     g = lambda x, y: Spectrum(x, y).evaluate()
 
-    infile1 = 'input-data/LHC16.root'
-    infile2 = 'input-data/LHC16-new.root'
-    results = [
-               g(Input(infile1, 'PhysTender'), Options('old', 'q')), 
-               g(Input(infile1, 'PhysOnlyTender'), Options('new', 'q'))
-              ]
+    inputs = Input('LHC16.root', 'PhysTender'), Input('LHC16-fixed.root', 'PhysTender', 'MassPt')
+    options = Options('old', 'q'),  Options('new', 'q')
+    results = map(g, inputs, options)
+              
+    for r in results: 
+      scalew(r.spectrum)
               
     c1 = get_canvas(1./2, resize=True)
     import spectrum.comparator as cmpr

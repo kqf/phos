@@ -30,14 +30,13 @@ class TestSpectrum(unittest.TestCase):
 			conf = json.load(f)
 
 		self.infile = conf['infile']
-		hsum = conf['hsum256']
-
 		system = conf[sys.platform]
 		self.nominal_pi0 = system['pi0']
 		self.nominal_eta = system['eta']
 		# Make sure that you have the same copy of LHC16.root file. 
 		# sha 256 sum: 
-		assert self.checkInputFile(hsum), "You are using a wrong file to test your data. Your hash sums don't coincide."
+		hsum = conf['hsum256']
+		self.checkInputFile(hsum)
 		self.longMessage = True
 
 
@@ -46,12 +45,15 @@ class TestSpectrum(unittest.TestCase):
 		with open(self.infile, 'rb') as f:
 				data = f.read()
 		hashsum.update(data)
-		return hashsum.hexdigest() == hsum
 
+		msg = "You are using a wrong file to test your data. Your hash sums don't coincide."\
+			  "\n\nActual:  {}\nNominal: {}".format(hashsum.hexdigest(), hsum)
+		self.assertEqual(hashsum.hexdigest(), hsum, msg)
 
 
 	def testPi0SpectrumLHC16(self):
-		indata, options = Input(self.infile, 'PhysTender'), Options('testsignal')
+		# TODO: Change the defalut value MassPtN3 -> MassPt 
+		indata, options = Input(self.infile, 'PhysTender', 'MassPt'), Options('testsignal')
 		second = Spectrum(indata, options).evaluate()
 		actual = [ [ h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in second]
 
@@ -61,7 +63,7 @@ class TestSpectrum(unittest.TestCase):
 			for aa, bb in zip(a, b): self.assertAlmostEqual(aa, bb, msg=mymsg)
 
 	def testEtaSpectrumLHC16(self):
-		indata, options = Input(self.infile, 'EtaTender'), Options('testsignal', particle='eta')
+		indata, options = Input(self.infile, 'EtaTender', 'MassPt'), Options('testsignal', particle='eta')
 		analysis = Spectrum(indata, options)
 		histograms = analysis.evaluate()
 		
