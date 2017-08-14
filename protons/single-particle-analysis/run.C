@@ -36,10 +36,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
-    gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
+    // gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
+    // gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
-    gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
+    // gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
     TString pref =  "MC";
@@ -78,11 +78,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 
-    if ( !mgr->InitAnalysis( ) ) return;
+    if (!mgr->InitAnalysis()) return;
     mgr->PrintStatus();
 
-
-    cout << "Downloading files " << files << endl;
+    // cout << "Downloading files " << files << endl;
     alienHandler->SetOutputFiles(files);
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );

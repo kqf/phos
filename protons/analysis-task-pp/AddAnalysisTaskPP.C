@@ -2,7 +2,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 {
 	cout << "Setting cells " <<  v.size() << endl;
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
-	if (!mgr) return;
+	if (!mgr) 
+	{
+		cerr << "Fatal: There is no analysis manager" << endl;
+		return;
+	}
 
     gROOT->LoadMacro("ClusterCuts.cxx+");
     gROOT->LoadMacro("DetectorHistogram.cxx+");

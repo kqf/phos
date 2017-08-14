@@ -1,4 +1,4 @@
-DATASET = LHC16l-muon-calo-pass1
+DATASET = LHC16p-muon-calo-pass1
 DPART = first
 MC = kFALSE
 
@@ -8,15 +8,15 @@ MC = kFALSE
 # TEST_SELECTION = MCStudyOnlyTender
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call unlink) 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink) 
 	@echo $(DATASET) $(DPART) >> started_jobs.log
-	@$(call unlink) && echo "Directory is clean"
+	@$(call funlink) && echo "Directory is clean"
 	@echo "Started grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 %.cxx:
-	@$(call unlink)	
+	@$(call funlink)	
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 	@# Add all necessary taks
 	@$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
@@ -25,16 +25,16 @@ grid: | %.cxx
 
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call unlink) 
-	@$(call unlink) && echo "Directory is clean"
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink) 
+	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call unlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink) 
 	make upload
-	@$(call unlink) && echo "Directory is clean"
+	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
@@ -49,14 +49,14 @@ force-download:
 
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call unlink) 
+	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink) 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_result,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
 	@# There are problems with python under alienv environment
 	@# Therefore it's necessary to use all these tweaks
 	./compare.py reference.root test-analysis-pp.root $(TEST_SELECTION) 2> /dev/null | grep -v Aborted  || echo 'Finished!' 
-	@$(call unlink) && echo "Directory is clean"
+	@$(call funlink) && echo "Directory is clean"
 	@echo -e "\a"
 
 upload:
@@ -65,8 +65,11 @@ upload:
 clean:
 	rm *.so *.d *~ Task*
 
+unlink:
+	$(call funlink) 	
 
-define unlink
+	
+define funlink
 	find -type l -delete	
 endef
 

@@ -43,8 +43,9 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	//
 
 	// Int_t msize = 200;
-	Int_t start = (dpart.Contains("first") || v.size() <  msize) ? 0 : v.size() / 2;
-	Int_t stop =  (dpart.Contains("first") && !(v.size() <  msize)) ? v.size() / 2 : v.size();
+	Int_t vsize = v.size();
+	Int_t start = (dpart.Contains("first") || vsize < msize) ? 0 : vsize / 2;
+	Int_t stop =  (dpart.Contains("first") && !(vsize <  msize)) ? vsize / 2 : vsize;
 
 
 
@@ -52,7 +53,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	TString info = dpart.Contains("first") ? "first" :  "second";
 
 	// Don't add any endings if we have only one
-	if (v.size() > msize && TString(pluginmode).Contains("full"))
+	if (vsize > msize && TString(pluginmode).Contains("full"))
 	{
 		// Repeat the message othervise it's not visible in the logs.
 		for (int i = 0; i < 5; ++i)

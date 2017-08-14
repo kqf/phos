@@ -5,7 +5,7 @@ DPART = first
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(PRODUCTION)", "grid", "full", "$(DPART)", kTRUE)' || $(call unlink) 
-	@echo $(PRODUCTIONs) $(DPART) >> started_jobs.log
+	@echo $(PRODUCTION) $(DPART) >> started_jobs.log
 	@$(call unlink) && echo "Directory is clean"
 	@echo "Started grid analysis" >> .runhistory
 	@echo -e "\a"
@@ -17,14 +17,14 @@ grid: | %.cxx
 
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(PRODUCTIONs)", "grid", "terminate", "$(DPART)", kTRUE)' || $(call unlink) 
+	root -l -q 'run.C("$(PRODUCTION)", "grid", "terminate", "$(DPART)", kTRUE)' || $(call unlink) 
 	@$(call unlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: | %.cxx
-	root -l -q 'run.C("$(PRODUCTIONs)", "grid", "terminate", "$(DPART)", kTRUE, kFALSE)' || $(call unlink) 
+	root -l -q 'run.C("$(PRODUCTION)", "grid", "terminate", "$(DPART)", kTRUE, kFALSE)' || $(call unlink) 
 	make upload
 	@$(call unlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
@@ -32,7 +32,7 @@ download: | %.cxx
 
 
 test: | %.cxx
-	root -l -q 'run.C("$(PRODUCTIONs)", "local", "test", "$(DPART)", kTRUE)' || $(call unlink) 
+	root -l -q 'run.C("$(PRODUCTION)", "local", "test", "$(DPART)", kTRUE)' || $(call unlink) 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_result,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
@@ -43,7 +43,7 @@ test: | %.cxx
 	@echo -e "\a"
 
 upload:
-	$(call upload_result,AnalysisResults,$(PRODUCTIONs))
+	$(call upload_result,AnalysisResults,$(PRODUCTION))
 
 clean:
 	rm *.so *.d *~ Task*
