@@ -2,6 +2,7 @@
 
 import ROOT
 import json
+import copy
 from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
 from sutils import rebin_as
 import numpy as np
@@ -47,8 +48,7 @@ class Visualizer(object):
         if len(hists) != 2: return
         a, b = hists
         ratio = a.Clone('ratio' + a.GetName())
-        if 'fitfunc' in dir(a):
-            ratio.fitfunc = a.fitfunc
+        ratio.__dict__ = copy.deepcopy(a.__dict__)
 
         if ratio.GetNbinsX() != b.GetNbinsX():
             ratio, b = rebin_as(ratio, b)
@@ -93,28 +93,27 @@ class Visualizer(object):
         ratio.SetAxisRange(a, b , 'Y')
 
 
-    def linear_fit(self, ratio):
-        if not self.ratiofit:
-            return False
-
-        ratio.Fit("pol1", "q", "", *self.ratiofit)
-        func = ratio.GetFunction("pol1")
-        func.SetLineColor(38)
-        return True
+    # TODO: Fix default linear fit
+    # def linear_fit(self, ratio):
+    #     # if not self.ratiofit:
+    #         # return False
+    #     ratio.Fit("pol1", "q", "", *self.ratiofit)
+    #     func = ratio.GetFunction("pol1")
+    #     func.SetLineColor(38)
+    #     return True
 
     def nonlinear_fit(self, ratio):
-        if not 'fitfunc' in dir(ratio):
-            return False
-
         ratio.Fit(ratio.fitfunc, "r")
         ratio.fitfunc.SetLineColor(38)
+        ratio.SetStats(True)
         return True
     
     def fit_ratio(self, ratio):
-        if not (self.linear_fit(ratio) or self.nonlinear_fit(ratio)):
+        try:
+            self.nonlinear_fit(ratio)
+        except AttributeError: # there is no fitfunc defined
             return
 
-        ratio.SetStats(True)
         ROOT.gStyle.SetStatFontSize(0.1)
         ROOT.gStyle.SetOptStat('')
         ROOT.gStyle.SetStatX(0.35)

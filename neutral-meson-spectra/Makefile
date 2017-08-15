@@ -18,4 +18,4 @@ imass:
 
 
 clean:
-	rm -f results/*.pdf signals.root *.pdf *.png input-data/efficiency-*.root *.root
+	rm -f results/*.pdf signals.root *.pdf *.png input-data/efficiency-*.root *.root input-data/nonlinearity-*.root

@@ -10,7 +10,7 @@ from spectrum.options import Options
 def main():
     g = lambda x, y: Spectrum(x, y).evaluate()
 
-    inputs = Input('LHC16.root', 'PhysTender'), Input('LHC16-fixed.root', 'PhysTender', 'MassPt')
+    inputs = Input('LHC16-old.root', 'PhysTender', 'MassPtN3'), Input('LHC16.root', 'PhysTender', 'MassPt')
     options = Options('old', 'q'),  Options('new', 'q')
     results = map(g, inputs, options)
               

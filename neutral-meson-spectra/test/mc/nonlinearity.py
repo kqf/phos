@@ -23,18 +23,24 @@ class Nonlinearity(unittest.TestCase):
 
     def getNonlinearityFunction(self):
         func_nonlin = ROOT.TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
+        func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
         func_nonlin.SetParameter(0, -0.05)
         func_nonlin.SetParameter(1, 0.6)
+        func_nonlin.SetParLimits(1, 0, 10)
         func_nonlin.SetParameter(2, 1.04)
         return func_nonlin
 
 
     def testFitNonlinearityFunction(self):
+        canvas = get_canvas()
         ratio = self.getRatio(self.nonlinearity_file)
         function = self.getNonlinearityFunction()
         ratio.SetAxisRange(0.90, 1.08, 'Y')
         ratio.Fit(function)
         ratio.Draw()
+
+        parameters = map(function.GetParameter, range(function.GetNpar()))
+        print 'Nonlinearity parameters: {}'.format(parameters)
         wait(ratio.GetName())
 
 
@@ -54,14 +60,12 @@ class Nonlinearity(unittest.TestCase):
 
 
     def calculateRatio(self, fname):
-        f = lambda x, y, z: Spectrum(x, label=y, mode = 'd', options = z).evaluate()
+        f = lambda x, y: Spectrum(x, options = y).evaluate()
 
-        self.data = f(Input('LHC16', 'PhysOnlyTender'), 'Data', Options())
-        self.mc = f(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender', 'MassPt'), 'R2D zs 20 MeV nonlin', Options(priority = 1))
+        data = f(Input('LHC16', 'PhysOnlyTender'), Options('Data', 'd')).mass
+        mc = f(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender'), Options('R2D zs 20 MeV nonlin', 'd')).mass
 
-        data, mc = self.data[0], self.mc[0]
-        data.fifunc = self.getNonlinearityFunction()
-
+        data.fitfunc = self.getNonlinearityFunction()
         diff = Comparator()
         ratio = diff.compare(data, mc)
 

@@ -12,6 +12,6 @@
 
 	},
 
-	"infile": "input-data/LHC16-fixed.root",
+	"infile": "input-data/LHC16.root",
 	"hsum256":"7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37"
 }

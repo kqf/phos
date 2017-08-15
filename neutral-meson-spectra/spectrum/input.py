@@ -35,7 +35,7 @@ def read_histogram(filename, listname, histname, label = None, priority = 999, n
 
 
 class Input(object):
-    def __init__(self, filename, listname, histname = 'MassPtN3', mixprefix = 'Mix'):
+    def __init__(self, filename, listname, histname = 'MassPt', mixprefix = 'Mix'):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
