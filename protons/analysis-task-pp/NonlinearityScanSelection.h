@@ -9,7 +9,7 @@
 
 class NonlinearityScanSelection : public PhysPhotonSelection
 {
-	enum ScanSize {kNbinsA = 7, kNbinsSigma = 7};
+	enum ScanSize {kNbinsA = 11, kNbinsSigma = 11};
 public:
 	NonlinearityScanSelection(): PhysPhotonSelection() {}
 	NonlinearityScanSelection(const char * name, const char * title, ClusterCuts cuts,

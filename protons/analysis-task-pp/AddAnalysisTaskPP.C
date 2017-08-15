@@ -55,34 +55,14 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	if (isMC)
 	{
-		// Float_t nonlin_a = -1.84679e-02;
-		// Float_t nonlin_b = -4.70911e-01;
-		// Float_t nonlin_a = 0;
-		// Float_t nonlin_b = 1;
-
-		// Nonlinearity for zs 25 LHC16all
-		//
-		
-		// Float_t nonlin_a = -6.90763e-03;
-		// Float_t nonlin_b = -1.74981e+00;
-
-
 		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
-		// 
-		// 
+		// Calculated for the updated version for the corrected Data
 
-	    Float_t ge_scale = 1.04408e+00;
-		Float_t nonlin_a = -2.00071e-02;
-		Float_t nonlin_b = 1.24818e+00;
+		Float_t nonlin_a = -0.020025549129372242;
+		Float_t nonlin_b = 1.1154536660217529;
+	    Float_t ge_scale = 1.0493128193171741;
 
-		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
-		// Now using Daiki's parameters, and no extra x/2, x/2 factors
-		// Global energy scale: A * 1.04
-		// 
-		// Float_t nonlin_a = -0.05;
-		// Float_t nonlin_b = 0.6;
-	    // Float_t ge_scale = 1.04;
 
 		selections->Add(new PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
