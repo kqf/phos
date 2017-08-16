@@ -2,13 +2,14 @@ import unittest
 import ROOT
 import sys
 import json
+
 from spectrum.sutils import get_canvas, wait, area_and_error, ratio, adjust_canvas
 from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
 from spectrum.spectrum import Spectrum
-from spectrum.ptanalyzer import PtDependent
 from spectrum.options import Options
+from spectrum.outputcreator import OutputCreator
 
 
 import numpy as np
@@ -98,19 +99,23 @@ class TagAndProbeRigorous(TagAndProbe):
         super(TagAndProbeRigorous, self).__init__(filename, selname, histname, cut, full,  conffile)
 
     def get_estimators(self, filename, selname, histname, cut, full):
-        options = Options(relaxedcb=True)
-        options.pt.config = conffile
-        f = lambda x : Spectrum(Input(filename, selname, histname % x).read(), x, 'q', self.nsigma, options)
+        def f(x):
+            options = Options(x, 'q', relaxedcb = True)
+            options.spectrum.nsigmas = self.nsigma
+            options.pt.config = self.conffile
+            inp = Input(filename, selname, histname % x).read()
+            return Spectrum(inp, options)
+
         estimators = map(f, [cut, full])
         return estimators
 
     def probe_spectrum(self, estimator):
         mranges = estimator.mass_ranges()
         results = map(lambda x, y: area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
-        ehist = PtDependent('spectrum', 'probe distribution; E, GeV', estimator.analyzer.label)
-        return ehist.get_hist(estimator.analyzer.divide_into_bins()[0], results, True)
+        ehist = OutputCreator('spectrum', 'probe distribution; E, GeV', estimator.analyzer.opt.label)
+        return ehist.get_hist(estimator.analyzer.opt.ptedges, results)
 
-    def estimate(self):
+    def estimate(self)  :
         return map(self.probe_spectrum, self.cut_and_full)
 
 
