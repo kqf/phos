@@ -26,7 +26,7 @@ class TestSpectrum(unittest.TestCase):
 		# NB: test Spectrum class, not Pt-dependent as it produces negative values due to wide integration range
 		# Expected values for $\pi^0$ extraction
 
-		with open('config/test_spectrum_extraction.json') as f:
+		with open('config/test_observables.json') as f:
 			conf = json.load(f)
 
 		self.infile = conf['infile']
