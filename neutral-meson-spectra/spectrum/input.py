@@ -50,7 +50,13 @@ class Input(object):
             hist.Scale(1. / hist.nevents)
 
     def hist(self, lst, name):
-        hist = lst.FindObject('h' + name)
+        try:
+            hist = lst.FindObject('h' + name)
+        except TypeError:
+            self.infile.ls()
+            print 'input'
+            raise IOError('There is no {0} selection in file {1}'.format(self.listname, self.filename))
+
         if not hist:
             return None
 

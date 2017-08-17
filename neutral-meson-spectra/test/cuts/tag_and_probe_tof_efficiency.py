@@ -124,7 +124,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def setUp(self):
         self.canvas = get_canvas()
-        self.infile = 'input-data/LHC16-new.root'
+        self.infile = 'input-data/LHC16-old.root'
         self.sel = 'TOFStudyTender'
         self.eff_calculator_relaxed = TagAndProbe(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
         self.eff_calculator = TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
