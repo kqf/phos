@@ -2,13 +2,16 @@
 
 
 import ROOT
-import progressbar
+
 import json
-from itertools import combinations, product
-from spectrum.sutils import tsallis
-from spectrum.ptanalyzer import PtDependent
+import progressbar
+
 from array import array
 from random import random
+from itertools import combinations, product
+
+from spectrum.sutils import tsallis
+from spectrum.outputcreator import OutputCreator 
 
 def particle(pt, mass = 0):
     x, y, z = ROOT.Double(0), ROOT.Double(0), ROOT.Double(0)
@@ -33,16 +36,15 @@ class BackgroundGenerator(object):
         return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
 
 
-
-# TODO: Swap definitions of the classes SignalGenerator, FlatGenerator
+        
 class SignalGenerator(object):
     def __init__(self, config):
         super(SignalGenerator, self).__init__()
-        ptbins = self.configure(config)
-        self.generated = PtDependent("hGenerated", "Generated spectrum", "Generated").get_hist(ptbins, [])
+        ptbins = self._configure(config)
+        self.generated = OutputCreator("hGenerated", "Generated spectrum", "Generated").get_hist(ptbins, [])
 
 
-    def configure(self, conffile):
+    def _configure(self, conffile):
         with open(conffile) as f: 
             conf = json.load(f)
 
@@ -61,13 +63,13 @@ class SignalGenerator(object):
 
     def generate(self):
         nmesons = 4 #int(ROOT.gRandom.Exp(1. / self.average_nmesons))
-        mesons = [self.generate_meson() for i in range(nmesons)]
+        mesons = [self._generate_meson() for i in range(nmesons)]
         return sum(mesons, [])
 
 
-    def generate_meson(self):
+    def _generate_meson(self):
         pt = self.random_momentum()
-        mass = self.random_mass(pt)
+        mass = self._random_mass(pt)
 
         pi0 = particle(pt, mass)
         self.generated.Fill(pi0.Pt())
@@ -80,7 +82,7 @@ class SignalGenerator(object):
         return [event.GetDecay(i) for i in range(nphot)]
 
 
-    def random_mass(self, pt):
+    def _random_mass(self, pt):
         mass, width = self.true_mass.Eval(pt), self.true_width.Eval(pt)
         gen_mass = ROOT.gRandom.Gaus(mass, width)
         return gen_mass
@@ -96,7 +98,7 @@ class FlatGenerator(SignalGenerator):
         super(FlatGenerator, self).__init__(config)
 
 
-    def random_mass(self, pt):
+    def _random_mass(self, pt):
         gen_mass = ROOT.gRandom.Gaus(0.135, 0.005)
         return gen_mass
 
@@ -107,8 +109,8 @@ class FlatGenerator(SignalGenerator):
 
 
 class InclusiveGenerator(object):
-    def __init__(self, fname, signalconf, selname = 'PhysNonlinTender', 
-                 hnames = ['hMassPtN3', 'hMixMassPtN3', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root', meanphotons = 0, flat = False):
+    def __init__(self, fname, signalconf, selname = 'PhysOnlyTender', 
+                 hnames = ['hMassPt', 'hMixMassPt', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root', meanphotons = 0, flat = False):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
         self.genfilename = genfilename

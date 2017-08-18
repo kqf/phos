@@ -22,4 +22,4 @@ class CheckDefault(unittest.TestCase):
     def compare(self):
         import spectrum.comparator as cmpr
         diff = cmpr.Comparator()
-        diff.compare_set_of_histograms(self.results)
+        diff.compare(self.results)

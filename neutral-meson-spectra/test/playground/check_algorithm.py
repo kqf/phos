@@ -1,40 +1,38 @@
 #!/usr/bin/python
 
 from spectrum.spectrum import Spectrum
-from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.sutils import scalew
+from spectrum.input import Input
 
+from test.playground.phspace import InclusiveGenerator
 
-from phspace import InclusiveGenerator
-
-import test.check_default
 import os
+import test.check_default
+
 
 class CheckAlgorithm(test.check_default.CheckDefault):
     def setUp(self):
         super(CheckAlgorithm, self).setUp()
 
+        self.mode = 'd'
         self.genfilename = 'LHC16-fake.root'
-        self.generator = InclusiveGenerator('input-data/Pythia-LHC16-iteration18.root', 'config/test_algorithm.json', genfilename = self.genfilename, flat = True)
+        infile, conf = 'input-data/LHC16.root', 'config/test_algorithm.json'
+        self.generator = InclusiveGenerator(infile, conf, genfilename = self.genfilename, flat = True)
         self.clean = False
 
-    
+
+
     def test(self):
-        f = lambda x, y, z: Spectrum(x, label=y, mode=z, options=Options(relaxedcb=False)).evaluate()
-        self.original_distributions = self.generator.generate(10000)
-        
-        scalew(self.original_distributions)
-        self.original_distributions.priority = 1
-        self.original_distributions.logy = 1
+        f = lambda x, y, z: Spectrum(x, options=Options(y, z)).evaluate()
+        generated = self.generator.generate(100000)
+        generated.logy = 1
+        generated.priority = 1
 
-        reconstructed = f(Input(self.genfilename, self.generator.selname).read(), '', self.mode)[4]
-        scalew(reconstructed)
+        reconstructed = f(Input(self.genfilename, self.generator.selname), 'reconstructed', self.mode).npi0
 
-        self.results = [
-                        [reconstructed],
-                        [self.original_distributions]
-                       ]
+
+        self.results = map(scalew, [reconstructed, generated])
 
 
 
