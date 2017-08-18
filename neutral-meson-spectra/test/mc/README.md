@@ -3,6 +3,10 @@ Analysis of MC data
 
 ## Explanation
 
+- [x] Check if the $Z_{\text{vertex}} distribution looks the same in MC and in real Data. 
+The `zvertex.py` compares all listed MC productions to the real-data distribution.
+
+
 - [x] Nonlinearity
 	- Extract parameters for nonlinearity function `nonlinearity.py`
 	- Compare different versions of mc corrected for nonlinearity/weighed `different_versions.py`

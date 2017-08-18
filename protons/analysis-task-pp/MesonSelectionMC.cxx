@@ -25,9 +25,6 @@ using namespace std;
 ClassImp(MesonSelectionMC);
 
 
-// TODO: Refactor the monster methods for pi0
-
-
 //________________________________________________________________
 void MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
@@ -174,7 +171,6 @@ void MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
 	if (!flags.fMcParticles)
 		return;
 
-	// TODO: RERUN real data to get zvertex histogram
 	for (Int_t i = 0; i < flags.fMcParticles->GetEntriesFast(); i++)
 	{
 		AliAODMCParticle * particle = ( AliAODMCParticle *) flags.fMcParticles->At(i);
