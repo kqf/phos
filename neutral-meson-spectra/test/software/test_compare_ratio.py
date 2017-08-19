@@ -27,14 +27,12 @@ class Test(unittest.TestCase):
         self.data = [get_spectrum(i, *particles[i]) for i in particles]
 
 
-    @unittest.skip('')
     def testCompareTwo(self):
         diff = cmpr.Comparator()
         self.data[2].SetTitle('Comparing double plots')
         diff.compare(self.data[2], self.data[1])
 
 
-    @unittest.skip('')
     def testCompareRatio(self):
         diff = cmpr.Comparator()
         main = self.data[1]
@@ -45,27 +43,21 @@ class Test(unittest.TestCase):
         diff.compare(main, distorted)
 
 
-    @unittest.skip('')
     def testCompareTwoWithFit(self):
         """
             Checks multiple fitting ranges. 
         """
    
-        self.data[2].SetTitle('Comparing different ratiofit ranges')
-        diff = cmpr.Comparator(ratiofit=(0, 0))
-        diff.compare(self.data[2], self.data[1])
+        title = 'Comparing different ratiofit ranges {!r}'
+        ranges = (0, 0), (0, 10), (10, 5), (4, 8)
 
-        diff = cmpr.Comparator(ratiofit=(0, 10))
-        diff.compare(self.data[2], self.data[1])
-
-        diff = cmpr.Comparator(ratiofit=(5, 10))
-        diff.compare(self.data[2], self.data[1])
-
-        diff = cmpr.Comparator(ratiofit=(5, 0))
-        diff.compare(self.data[2], self.data[1])
+        for frange in ranges:
+            self.data[2].SetTitle(title.format(frange))
+            self.data[2].fitfunc = ROOT.TF1('f1', 'pol1(0)', *frange)
+            diff = cmpr.Comparator()
+            diff.compare(self.data[2], self.data[1])
 
 
-    @unittest.skip('')
     def testCompareNonlinear(self):
         diff = cmpr.Comparator()
         # diff.compare(self.data[2], self.data[1])

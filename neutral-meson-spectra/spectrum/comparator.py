@@ -8,13 +8,12 @@ from sutils import rebin_as
 import numpy as np
 
 class Visualizer(object):
-    def __init__(self, size, rrange, ratiofit, crange, oname):
+    def __init__(self, size, rrange, crange, oname):
         super(Visualizer, self).__init__()
         self.size = size
         self.cache = []
         self.rrange = rrange
         self.crange = crange
-        self.ratiofit = ratiofit
         self.output_prefix = 'compared-'
         self.ignore_ratio = self.rrange and (self.rrange[0] < 0 or self.rrange[1] < 0)
         self.oname = oname
@@ -93,24 +92,16 @@ class Visualizer(object):
         ratio.SetAxisRange(a, b , 'Y')
 
 
-    # TODO: Fix default linear fit
-    # def linear_fit(self, ratio):
-    #     # if not self.ratiofit:
-    #         # return False
-    #     ratio.Fit("pol1", "q", "", *self.ratiofit)
-    #     func = ratio.GetFunction("pol1")
-    #     func.SetLineColor(38)
-    #     return True
-
-    def nonlinear_fit(self, ratio):
-        ratio.Fit(ratio.fitfunc, "r")
+    def _fit(self, ratio):
+        # Add fitfunc as an attribute to
+        # the numerator histogram to get the output
+        ratio.Fit(ratio.fitfunc, "Rq")
         ratio.fitfunc.SetLineColor(38)
         ratio.SetStats(True)
-        return True
-    
+
     def fit_ratio(self, ratio):
         try:
-            self.nonlinear_fit(ratio)
+            self._fit(ratio)
         except AttributeError: # there is no fitfunc defined
             return
 
@@ -223,9 +214,9 @@ def define_colors(ci = 1000):
 class Comparator(object):
     ci, colors = define_colors()
 
-    def __init__(self, size = (1, 1), rrange = None, ratiofit = False, crange = None, oname = ''):
+    def __init__(self, size = (1, 1), rrange = None, crange = None, oname = ''):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size, rrange, ratiofit, crange, oname)
+        self.vi = Visualizer(size, rrange, crange, oname)
 
 
     def compare(self, *args):
