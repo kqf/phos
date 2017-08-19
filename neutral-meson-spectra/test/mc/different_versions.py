@@ -6,26 +6,20 @@ from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 
 import unittest
+import operator
 
-
-# Keep this one for comparison of different versions of nonlinearity
-# and weight function
-#
 
 class CheckMCDifferentVersions(unittest.TestCase):
 
     def setUp(self):
-        super(CheckMCDifferentVersions, self).setUp()
-        f = lambda x, y, z: Spectrum(x, label=y, mode = 'q', options = z).evaluate()
+        inputs = Input('LHC16', 'PhysOnlyTender'), Input('Pythia-LHC16-a5', 'PhysNonlinTender'),\
+             Input('Pythia-LHC16-a5', 'PhysNonlinTender')
 
-        # The problem with the time distribution in MC:
-        #  The right flag in AddTender should be used for MC case.
+        inputs = map(operator.methodcaller('read'), inputs)
+        options = Options('Data', 'q'), Options('Pythia8', 'q', priority = 1), Options('EPOS', 'q', priority = 1)
 
-        self.results = [
-                             f(Input('input-data/LHC16.root', 'PhysOnlyTender').read(), 'Data', Options())
-                            ,f(Input('input-data/Pythia-LHC16-iteration17.root', 'PhysNonlinTender', 'MassPt').read(), 'Pythia', Options(priority = 1))
-                            ,f(Input('input-data/EPOS-LHC16-iteration3.root', 'PhysNonlinTender', 'MassPt').read(), 'EPOS', Options(priority = 1))
-                        ]
+        f = lambda x, y: Spectrum(x, y).evaluate()
+        self.results = map(f, inputs, options)
 
 
     def testResultMC(self):
@@ -38,9 +32,6 @@ class CheckMCDifferentVersions(unittest.TestCase):
         c1 = adjust_canvas(get_canvas(1., resize = True))
         masses, widths = zip(*self.results)[0:2]
         diff.compare_multiple_ratios(widths, masses)
-
-
-
 
 
 if __name__ == '__main__':

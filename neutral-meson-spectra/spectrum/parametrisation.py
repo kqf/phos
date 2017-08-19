@@ -31,7 +31,6 @@ class PeakParametrisation(object):
         # Initiate signal function
         signal = self.form_fitting_function(funcname)
 
-        # TODO: add option to select the background function
         # background
         bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
         background = ROOT.TF1("mypol", bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)

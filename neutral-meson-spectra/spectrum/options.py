@@ -59,8 +59,6 @@ class Options(object):
         pconf = 'config/{0}-parameters.json'.format('gaus' if 'gaus' in fitf.lower() else 'cball')
         self.param = AnalysisOption('param', pconf, particle)
         self.param.relaxed = relaxedcb
-        # TODO: Deleteme?
-        self.param.ispi0 = 'pi0' in particle
 
     @property
     def fitf(self):
