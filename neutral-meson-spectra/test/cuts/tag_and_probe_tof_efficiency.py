@@ -129,18 +129,32 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         self.eff_calculator_relaxed = TagAndProbe(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
         self.eff_calculator = TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
 
+    @staticmethod
+    def get_efficincy_function():
+        func_nonlin = ROOT.TF1("tof_eff", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]) - pol3(3) * (x > 6))", 0, 100);
+        func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
+        func_nonlin.SetParameter(0, -0.05)
+        func_nonlin.SetParameter(1, 0.6)
+        func_nonlin.SetParLimits(1, 0, 10)
+        func_nonlin.SetParameter(2, 1.04)
+        return func_nonlin
+
     # @unittest.skip('Debug')
     def testEstimateEfficiency(self):
-        res = self.eff_calculator.estimate()
+        results = self.eff_calculator.estimate()
 
         # Decorate
         f = lambda x: x.SetTitle('Energy spectrum of probe photons; E_{#gamma}, GeV')
-        map(f, res)
+        map(f, results)
+
+        fitfunc = self.get_efficincy_function()
+        for r in results:
+            r.fitfunc = fitfunc
 
         diff = Comparator()
-        diff.compare_set_of_histograms([[i] for i in res])
+        diff.compare(results)
 
-    # @unittest.skip('Debug')
+    @unittest.skip('Debug')
     def testCompareEfficienciesDifferentMethods(self):
         cut, full = self.eff_calculator.estimate()
         eff1 = ratio(cut, full, 'TOF efficiency; E, GeV', 'rigorous')
@@ -149,9 +163,9 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         eff2 = ratio(cut, full, 'TOF efficiency; E, GeV', 'simple')
         
         diff = Comparator()
-        diff.compare_set_of_histograms([[eff1], [eff2]])
+        diff.compare(eff1, eff2)
 
-    # @unittest.skip('Debug')
+    @unittest.skip('Debug')
     def testDifferentModules(self):
         conf = 'config/test_tagandprobe_modules.json'
         estimators = [TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s' + '_SM%d' % i, cut='TOF', full='All', conffile=conf) for i in range(1, 5)]
@@ -160,7 +174,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
         c1 = adjust_canvas(get_canvas())
         diff = Comparator()
-        diff.compare_set_of_histograms(multiple)
+        diff.compare(multiple)
 
 
 
