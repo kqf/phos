@@ -137,7 +137,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "MesonSelectionMC.cxx " +
 	    "PythiaInfoSelection.cxx " +
 	    "PhysPhotonSelectionMC.cxx " +
-	    // "NonlinearityScanSelection.cxx " +
+	    "NonlinearityScanSelection.cxx " +
 	    "MixingSample.cxx " +
 	    "AliAnalysisTaskPP.cxx "
 	);
