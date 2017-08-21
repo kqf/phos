@@ -3,9 +3,20 @@
 import ROOT
 import json
 import copy
+import numpy as np
+
 from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
 from sutils import rebin_as
-import numpy as np
+from broot import Property
+
+
+def setup_input(func):
+    def f(self, hists, *args, **kwargs):
+        for h in hists:
+            Property.update_properties(h)
+        return func(self, hists, *args, **kwargs)
+    return f
+
 
 class Visualizer(object):
     def __init__(self, size, rrange, crange, oname):
@@ -47,6 +58,7 @@ class Visualizer(object):
         if len(hists) != 2: return
         a, b = hists
         ratio = a.Clone('ratio' + a.GetName())
+        # TODO: Replace deep copy by broot methods?
         ratio.__dict__ = copy.deepcopy(a.__dict__)
 
         if ratio.GetNbinsX() != b.GetNbinsX():
@@ -114,14 +126,8 @@ class Visualizer(object):
         ROOT.gStyle.SetOptFit(1)
 
 
-    def prepare_hists(self, hists):
-        for h in hists:
-            if not 'priority' in dir(h):
-                h.priority = 999
-
-
+    @setup_input
     def compare_visually(self, hists, ci, stop = True, canvas = None):
-        self.prepare_hists(hists)
         canvas, mainpad, ratiopad = self.preare_ratio_plot(hists, canvas)
 
         if len(hists) == 1:
@@ -152,10 +158,6 @@ class Visualizer(object):
             legend.AddEntry(h, h.label)
 
         legend.Draw('same')
-
-
-        if 'logy' in dir(first_hist):
-            ROOT.gPad.SetLogy(first_hist.logy)
 
         # ROOT.gStyle.SetOptStat(0)
         mainpad.SetTickx()
@@ -212,7 +214,6 @@ def define_colors(ci = 1000):
     return ci, rcolors
 
 
-# TODO: Decorate all objects that don't have necessary attributes
 class Comparator(object):
     ci, colors = define_colors()
 

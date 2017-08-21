@@ -7,8 +7,8 @@ import ROOT
 # TODO: Use decorators when it will be clear what fields are needed.
 
 class Property(object):
-    properties = {'label': '', 'logy': '', 'logx': '', 'priority': 999, 'fitfunc': None}
-    def __init__(self, label = '', logy = '', logx = '', priority = 999, fitfunc = None):
+    properties = {'label': '', 'logy': 1, 'logx': 0, 'priority': 999}
+    def __init__(self, label = '', logy = 1, logx = 0, priority = 999):
         super(Property, self).__init__()
         self.__dict__.update(self.properties)
 
@@ -16,16 +16,25 @@ class Property(object):
         self.logy = logy
         self.logx = logx
         self.priority = priority
-        self.fitfunc = fitfunc
+        # self.fitfunc = fitfunc
 
-    def set_properties(self, source):
+
+    def set_properties(self, source, force = False):
         assert self.has_properties(source), "There is no properties in source histogram"
-        Property.copy_properties(self, source)
+        Property.copy_properties(self, source, force)
+
+    @classmethod
+    def update_properties(klass, hist, force = False):
+        self = klass()
+        klass.copy_properties(hist, self, force)
 
     @staticmethod
-    def copy_properties(dest, source):
+    def copy_properties(dest, source, force = False):
         assert Property.has_properties(source), "There is no properties in source histogram"
-        for key in Property.properties:
+
+        keys = (key for key in Property.properties if key not in dir(dest) or force)
+        for key in keys:
+            # print dest.GetName(), 'added', key
             dest.__dict__[key] = source.__dict__[key]
 
     @staticmethod
