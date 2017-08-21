@@ -211,6 +211,8 @@ def define_colors(ci = 1000):
     rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
     return ci, rcolors
 
+
+# TODO: Decorate all objects that don't have necessary attributes
 class Comparator(object):
     ci, colors = define_colors()
 

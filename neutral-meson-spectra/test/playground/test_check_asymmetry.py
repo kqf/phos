@@ -7,14 +7,18 @@ import ROOT
 
 def process(data, pref):
     c1 = get_canvas()
+    c1.Clear()
     c1.Divide(2, 1)
-    for i, h in enumerate(data):
-        c1.cd(i + 1)
-        c1.SetLogz()
-        h.SetTitle(h.GetTitle() + pref[i])
+    for i, (h, p) in enumerate(zip(data, pref)):
+        pad = c1.cd(i + 1)
+        pad.SetLogz()
+        h.SetTitle(h.GetTitle() + p)
         h.GetYaxis().SetTitle('Asymmetry')
         h.Draw('colz')
-    wait('name', True, False)
+        pad.Update()
+
+    c1.Update()
+    wait('name')
 
 class TimecutOptimizer(unittest.TestCase):
 
@@ -22,10 +26,11 @@ class TimecutOptimizer(unittest.TestCase):
         # This should be done because fitter is a static object.
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
         self.canvas = get_canvas()
+        self.filename = 'input-data/LHC16-old.root'
 
-    # @unittest.skip('Temporary skiping the test')
+    @unittest.skip('')
     def testRanges(self):
-        inp = MetricInput('input-data/LHC16.root', 'QualTender', 'MassPtN3A')
+        inp = MetricInput(self.filename, 'QualTender', 'MassPtN3A')
 
         scale = lambda a : a.Scale(1. / a.Integral(a.FindBin(0.3), a.FindBin(0.7)))
 
@@ -42,15 +47,19 @@ class TimecutOptimizer(unittest.TestCase):
         	a.Draw((i > 0) * 'same')
         wait('name', True, False)
 
-    def testAsymmetryDependence(self):
+    def test_asymmetry_dependence_mass(self):
         ROOT.gStyle.SetOptStat('e')
-        inp = MetricInput('input-data/LHC16.root', 'QualTender', 'MassPtN3A')
+        inp = MetricInput(self.filename, 'QualTender', 'MassPtN3A')
 
-        data_m = map(lambda x: x.Project3D("zx"), [inp.data, inp.mixing])
+        data_m = map(lambda x: x.Project3D("zx"), inp.data_mixing)
         process(data_m, ['', 'mixing'])
 
-        data_pt = map(lambda x: x.Project3D("zy"), [inp.data, inp.mixing])
-        process(data_m, ['', 'mixing'])
+    def test_asymmetry_dependence_pt(self):
+        ROOT.gStyle.SetOptStat('e')
+        inp = MetricInput(self.filename, 'QualTender', 'MassPtN3A')
+
+        data_pt = map(lambda x: x.Project3D("zy"), inp.data_mixing)
+        process(data_pt, ['', 'mixing'])
 
 
     # def testCutMaxSignal(self):
