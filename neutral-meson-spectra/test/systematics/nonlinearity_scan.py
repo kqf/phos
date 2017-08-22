@@ -45,9 +45,9 @@ class Nonlinearity(Chi2Entry):
     def __init__(self, sinput, options):
         super(Nonlinearity, self).__init__()
         spectrum = Spectrum(sinput, options)
-        # sresults = spectrum.evaluate()
-        # self.mass, self.width = self.extract_values(sresults[0:2])
-        self.mass, self.width = range(1, 20), range(1, 20)
+        sresults = spectrum.evaluate()
+        self.mass, self.width = self.extract_values(sresults[0:2])
+        # self.mass, self.width = range(1, 20), range(1, 20)
         self.R = [m / w for m, w in zip(self.mass, self.width)]
         self.width_inv = [1. / w for w in self.width]
 
@@ -71,7 +71,7 @@ class NonlinearityParameters(unittest.TestCase):
         self.infile = 'Pythia-new.root'
         self.sel = 'StudyNonlinOnlyTender'
         self.hname = 'MassPt_%d_%d'
-        self.sbins = 5, 5
+        self.sbins = 11, 11
 
     def inputs(self):
         x, y = self.sbins
@@ -92,9 +92,6 @@ class NonlinearityParameters(unittest.TestCase):
         print mean.mean()
 
         bmin, bmax = nonlinearities[0].ranges, nonlinearities[-1].ranges
-        print bmin
-        print bmax
-
 
         x, y = self.sbins
         c1 = get_canvas(1, 1, resize = True)

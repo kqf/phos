@@ -50,7 +50,6 @@ class Input(object):
             hist.Scale(1. / hist.nevents)
 
     def hist(self, lst, name):
-        ROOT.TH1.AddDirectory(False)
         try:
             hist = lst.FindObject('h' + name)
         except TypeError:
@@ -61,8 +60,15 @@ class Input(object):
         if not hist:
             return None
 
-        # Don't normalize input histograms
+        # NB: This is important,
+        #     as you delete owner of the histogram
+        #     it's necessary to copy it.
+        #
+
         hist = hist.Clone()
+
+        # Don't normalize input histograms
+        #
         self.events(lst, hist) 
         return hist
 
@@ -70,6 +76,9 @@ class Input(object):
         lst = self.infile.Get(self.listname)
         raw_mix = self.histname,  self.mixprefix + self.histname
         raw, mix = map(lambda x: self.hist(lst, x), raw_mix)
+        # NB: This is important,
+        #     invoke destructor directly
+        lst.IsA().Destructor(lst)
         return raw, mix
 
     def read_per_module(self, threshold = 0.135):
