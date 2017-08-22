@@ -10,7 +10,11 @@ import ROOT
 import os.path
 import unittest
 
+ROOT.TH1.AddDirectory(False)
 
+def extract_range(hist):
+    text = hist.GetTitle()
+    return map(float, text.split())
 
 class Chi2Entry(object):
 
@@ -40,15 +44,23 @@ class Chi2Entry(object):
 class Nonlinearity(Chi2Entry):
     def __init__(self, sinput, options):
         super(Nonlinearity, self).__init__()
-        # self.spectrum = Spectrum(sinput, options).evaluate()
-        # self.mass, self.width = self.spectrum[0:2]
+        spectrum = Spectrum(sinput, options)
+        # sresults = spectrum.evaluate()
+        # self.mass, self.width = self.extract_values(sresults[0:2])
         self.mass, self.width = range(1, 20), range(1, 20)
-
         self.R = [m / w for m, w in zip(self.mass, self.width)]
         self.width_inv = [1. / w for w in self.width]
 
-    def extract_masses(self, histograms):
-        f = [h.GetBinContent(i + 1) for i in range(h.GetNbinsX())]
+        # Set Values for different ranges
+        self.ranges = extract_range(spectrum.analyzer.hists[0])
+
+        # for h in sresults:
+        #     h.IsA().Destructor(h)
+
+    def extract_values(self, histograms):
+        f = lambda h : \
+         [h.GetBinContent(i + 1) for i in range(h.GetNbinsX())]
+
         return map(f, histograms)
 
 
@@ -56,33 +68,43 @@ class Nonlinearity(Chi2Entry):
 class NonlinearityParameters(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'Pythia-deleteme.root'
+        self.infile = 'Pythia-new.root'
+        self.sel = 'StudyNonlinOnlyTender'
         self.hname = 'MassPt_%d_%d'
-        self.sbins = 10, 10
+        self.sbins = 5, 5
 
     def inputs(self):
         x, y = self.sbins
-        return (Input(self.infile, self.hname % (i, j)) for j in range(y) for i in range(x))
+        return (Input(self.infile, self.sel, self.hname % (i, j)).read() for j in range(y) for i in range(x))
+
 
     def options(self):
         x, y = self.sbins
-        return (Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x))
+        return [Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x)]
 
     def testRatio(self):
         inputs, options = self.inputs(), self.options()
         nonlinearities = map(Nonlinearity, inputs, options)
 
+
         # Total ratio
         mean = sum(nonlinearities, Chi2Entry())
         print mean.mean()
 
+        bmin, bmax = nonlinearities[0].ranges, nonlinearities[-1].ranges
+        print bmin
+        print bmax
+
 
         x, y = self.sbins
-        c1 = get_canvas()
-        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', x, 0, x, y, 0, y)
-        for i in range(1, x + 1):
-            for j in range(1, y + 1):
-                chi2_hist.SetBinContent(i, j, mean.chi2(nonlinearities[i + j]))
+        c1 = get_canvas(1, 1, resize = True)
+        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', x, bmin[0], bmax[0], y, bmin[1], bmax[1])
+        for i in range(x):
+            for j in range(y):
+                chi2_hist.SetBinContent(i + 1, j + 1, mean.chi2(nonlinearities[x * i + j]))
 
         chi2_hist.Draw('colz')
         wait()
+
+
+
