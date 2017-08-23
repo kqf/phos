@@ -21,12 +21,21 @@ class Chi2Entry(object):
     def __init__(self):
         super(Chi2Entry, self).__init__()
 
+    @classmethod
+    def evaluate(klass, nonlins):
+        self, nsize = sum(nonlins, klass()), len(nonlins)
+        self.mean(nsize)
+        return self
+
     @staticmethod
     def sum_bins(a, b):
-        return (r1 + r2 for r1, r2 in zip(a, b))
+        return [r1 + r2 for r1, r2 in zip(a, b)]
 
-    def mean(self):
-        self._mean = [r / invw for r, invw in zip(self.R, self.width_inv)] 
+    def mean(self, nsize):
+        self._mean = [r / nsize for r, invw in zip(self.R, self.width_inv)] 
+        self._width = [1. / inv / nsize for inv in self.width_inv]
+        # print 'mean', len(self.width_inv)
+
         return self._mean
 
     def __add__(self, rhs):
@@ -39,7 +48,13 @@ class Chi2Entry(object):
         return self
 
     def chi2(self, rhs):
-        return sum(((r - m)/w) ** 2 for r, m, w in zip(rhs.R, self._mean, rhs.width))
+        # print len(self._width)
+        sample = zip(rhs.R, self._mean, self._width)
+        # for r, m, w in sample:
+            # print r, m, w
+        res = sum(((r - m) / w) ** 2 for r, m, w in sample)
+        # print '>>> ', res
+        return res
         
 class Nonlinearity(Chi2Entry):
     def __init__(self, sinput, options):
@@ -54,8 +69,6 @@ class Nonlinearity(Chi2Entry):
         # Set Values for different ranges
         self.ranges = extract_range(spectrum.analyzer.hists[0])
 
-        # for h in sresults:
-        #     h.IsA().Destructor(h)
 
     def extract_values(self, histograms):
         f = lambda h : \
@@ -86,22 +99,39 @@ class NonlinearityParameters(unittest.TestCase):
         inputs, options = self.inputs(), self.options()
         nonlinearities = map(Nonlinearity, inputs, options)
 
-
         # Total ratio
-        mean = sum(nonlinearities, Chi2Entry())
-        print mean.mean()
+        mean = Chi2Entry.evaluate(nonlinearities)
 
-        bmin, bmax = nonlinearities[0].ranges, nonlinearities[-1].ranges
-
-        x, y = self.sbins
         c1 = get_canvas(1, 1, resize = True)
-        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', x, bmin[0], bmax[0], y, bmin[1], bmax[1])
-        for i in range(x):
-            for j in range(y):
-                chi2_hist.SetBinContent(i + 1, j + 1, mean.chi2(nonlinearities[x * i + j]))
+        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', \
+            *self.calculate_ranges(nonlinearities))
+
+        for nonlin in nonlinearities:
+            (xx, yy), val = nonlin.ranges, mean.chi2(nonlin)
+            # print chi2_hist.Fill(xx, yy, val)
 
         chi2_hist.Draw('colz')
         wait()
+
+    def calculate_ranges(self, nonlins):
+        xbins, ybins = self.sbins
+        (xmin, ymin), (xmax, ymax) = nonlins[0].ranges, nonlins[-1].ranges
+        halfstep = lambda mmin, mmax, nbins: (mmax - mmin) / nbins / 2.
+
+        x_halfstep = halfstep(xmin, xmax, xbins)
+        xstart = xmin - x_halfstep
+        xstop = xmax + x_halfstep
+
+        y_halfstep = halfstep(ymin, ymax, ybins)
+        ystart = ymin - y_halfstep
+        ystop = ymax + y_halfstep
+
+        return xbins, xstart, xstop, ybins, ystart, ystop
+
+
+
+
+
 
 
 
