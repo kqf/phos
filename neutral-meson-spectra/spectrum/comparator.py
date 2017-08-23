@@ -19,6 +19,8 @@ def setup_input(func):
 
 
 class Visualizer(object):
+    markers = {i: 20 + i for i in range(7)}
+
     def __init__(self, size, rrange, crange, oname):
         super(Visualizer, self).__init__()
         self.size = size
@@ -143,7 +145,10 @@ class Visualizer(object):
         mainpad.SetGridy()
 
         first_hist = sorted(hists, key=lambda x: x.priority)[0]
+        mainpad.SetLogx(first_hist.logx)
+        mainpad.SetLogy(first_hist.logy)
         first_hist.SetStats(False)
+
         if self.crange:
             first_hist.SetAxisRange(self.crange[0], self.crange[1] , 'Y')
         first_hist.DrawCopy()
@@ -152,7 +157,8 @@ class Visualizer(object):
             h.SetStats(False)
             h.SetLineColor(ci + i)
             h.SetFillColor(ci + i)
-            h.SetMarkerStyle(20)
+            mstyle = self.markers.get(h.marker, 20)
+            h.SetMarkerStyle(mstyle)
             h.SetMarkerColor(ci + i)
             h.DrawCopy('same')
             legend.AddEntry(h, h.label)

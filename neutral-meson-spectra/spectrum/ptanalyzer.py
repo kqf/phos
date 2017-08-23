@@ -51,6 +51,7 @@ class PtAnalyzer(object):
         # Scale by the number of events 
         result.spectrum.Scale(1. / self.nevents)
         result.spectrum.logy = True
+        result.npi0.logy = True
         return  result
 
         

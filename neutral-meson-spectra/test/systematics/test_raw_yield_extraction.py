@@ -38,7 +38,7 @@ class RawYieldSystematicError(unittest.TestCase):
     def testRawYieldSysError(self):
         spectrums, options = [], Options('', mode = 'd')
         for bckgr in ['pol1', 'pol2']:
-            for par in ['CrystalBall', 'Gaus']:
+            for marker, par in enumerate(['CrystalBall', 'Gaus']):
                 for nsigmas in [2, 3]:
                     options.spectrum.dead = True
                     options.pt.label = 'n#sigma = {0} {1} {2}'.format(nsigmas, par, bckgr)
@@ -46,8 +46,8 @@ class RawYieldSystematicError(unittest.TestCase):
                     options.param.fitf = par
                     options.param.background = bckgr
 
-                    
                     spectrum = self.spectrum(options)
+                    spectrum.marker = marker
                     spectrums.append(spectrum)
 
 

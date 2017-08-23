@@ -7,17 +7,17 @@ import ROOT
 # TODO: Use decorators when it will be clear what fields are needed.
 
 class Property(object):
-    properties = {'label': '', 'logy': 1, 'logx': 0, 'priority': 999}
-    def __init__(self, label = '', logy = 1, logx = 0, priority = 999):
+    properties = {'label': '', 'logy': 1, 'logx': 0, 'priority': 999, 'marker': 0}
+    def __init__(self, label = '', logy = 0, logx = 0, priority = 999, marker = 0):
         super(Property, self).__init__()
         self.__dict__.update(self.properties)
 
+        self.marker = marker
         self.label = label
         self.logy = logy
         self.logx = logx
         self.priority = priority
         # self.fitfunc = fitfunc
-
 
     def set_properties(self, source, force = False):
         assert self.has_properties(source), "There is no properties in source histogram"
