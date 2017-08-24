@@ -7,13 +7,17 @@ import numpy as np
 
 from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
 from sutils import rebin_as
-from broot import Property
+import broot
+
+
+class NoRatioMessage(ValueError):
+    pass
 
 
 def setup_input(func):
     def f(self, hists, *args, **kwargs):
         for h in hists:
-            Property.update_properties(h)
+            broot.Property.update_properties(h)
         return func(self, hists, *args, **kwargs)
     return f
 
@@ -57,11 +61,15 @@ class Visualizer(object):
 
     @staticmethod
     def ratio(hists):
-        if len(hists) != 2: return
-        a, b = hists
+        try:
+            a, b = hists
+        except ValueError:
+            raise NoRatioMessage
+
         ratio = a.Clone('ratio' + a.GetName())
         # TODO: Replace deep copy by broot methods?
         ratio.__dict__ = copy.deepcopy(a.__dict__)
+        broot.Property
 
         if ratio.GetNbinsX() != b.GetNbinsX():
             ratio, b = rebin_as(ratio, b)
@@ -75,11 +83,6 @@ class Visualizer(object):
 
     def draw_ratio(self, hists):
         ratio = self.ratio(hists)
-        if not ratio:
-            return
-
-        if self.ignore_ratio:
-            return
 
         adjust_labels(ratio, hists[0], scale = 7./3)
         ratio.GetYaxis().CenterTitle(True)
@@ -97,12 +100,12 @@ class Visualizer(object):
 
         bins = np.array([ratio.GetBinContent(i) for i in range(1, ratio.GetXaxis().GetNbins())])
         mean, std = np.mean(bins), np.std(bins)
-        withoutoutliers = [b for b in bins if abs(b - mean) < n * std]
+        no_outliers = [b for b in bins if abs(b - mean) < n * std]
 
-        if not withoutoutliers:
+        if not no_outliers:
             return
 
-        a, b = map(lambda x: x(withoutoutliers), (min, max))
+        a, b = min(no_outliers), max(no_outliers)
         ratio.SetAxisRange(a, b , 'Y')
 
 
@@ -170,7 +173,10 @@ class Visualizer(object):
         mainpad.SetTicky() 
 
         ratiopad.cd()
-        ratio = self.draw_ratio(hists)
+        try:
+            ratio = self.draw_ratio(hists)
+        except NoRatioMessage:
+            ratio = None
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
