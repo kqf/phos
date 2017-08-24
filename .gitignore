@@ -54,3 +54,5 @@ gphysi.dat
 *.root.*
 */.ipynb_checkpoints
 *.tgz
+id_rsa
+Dockerfile.slc
