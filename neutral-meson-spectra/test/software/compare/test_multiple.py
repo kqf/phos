@@ -1,19 +1,13 @@
-
 import unittest
-import ROOT
-import json
-
 
 import spectrum.comparator as cmpr
-from test.software.test_compare import get_spectrum
+from particles import Particles
 
 
-class Test(unittest.TestCase):
+class Test(unittest.TestCase, Particles):
 
     def setUp(self):
-        with open('config/test_particles.json') as f: 
-            particles = json.load(f)
-        self.data = [get_spectrum(i, *particles[i]) for i in particles]
+        self.data = self.config()
 
 
     def testCompareRations(self):

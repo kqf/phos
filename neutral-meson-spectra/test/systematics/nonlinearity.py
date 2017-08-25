@@ -32,7 +32,7 @@ class NonlinearityAtOptimalParameters(unittest.TestCase):
         self.sel = 'StudyNonlinOnlyTender'
         self.hname = 'MassPt_%d_%d'
         self.sbins = 4, 4
-        self.optimal = 2, 3
+        self.optimal = 3, 1
 
     def inputs(self, x = None, y = None):
         if not x:
@@ -78,6 +78,10 @@ class NonlinearityAtOptimalParameters(unittest.TestCase):
         pars = self.optimal[0], None
         self.compare_parameter(pars)
 
+
+    def test_compare_sigma_parameter(self):
+        pars = None, self.optimal[1]
+        self.compare_parameter(pars)
 
 
 

@@ -1,16 +1,10 @@
-
 import unittest
-import ROOT
-import json
 
 import spectrum.comparator as cmpr
 from spectrum.sutils import wait, get_canvas
+from particles import Particles
 
-from test.software.test_compare import get_spectrum
-
-
-
-class TestOutputRatio(unittest.TestCase):
+class TestOutputRatio(unittest.TestCase, Particles):
     """
          This test is needed to check if comparator returns ratio histogram correctly
          or none object when it's not relevant.
@@ -18,12 +12,7 @@ class TestOutputRatio(unittest.TestCase):
 
 
     def setUp(self):
-        with open('config/test_particles.json') as f: 
-            particles = json.load(f)
-        self.data = [get_spectrum(i, *particles[i]) for i in particles]
-
-        for h in self.data:
-            h.SetTitle("Checking ratio output")
+        self.data = self.config()
 
 
     def testCompareTwo(self):

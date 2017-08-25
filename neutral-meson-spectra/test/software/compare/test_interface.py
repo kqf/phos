@@ -1,20 +1,12 @@
-
 import unittest
-import ROOT
-import json
-
-
 import spectrum.comparator as cmpr
-from test.software.test_compare import get_spectrum
+from particles import Particles
 
-class TestComparatorInterface(unittest.TestCase):
+class TestComparatorInterface(unittest.TestCase, Particles):
 
     def setUp(self):
-        with open('config/test_particles.json') as f: 
-            particles = json.load(f)
-        self.data = [get_spectrum(i, *particles[i]) for i in particles]
+        self.data = self.config()
 
-    # @unittest.skip('test')
     def testCompareOK(self):
         diff = cmpr.Comparator()
         for d in self.data: d.SetTitle('Compare coma separated arguments')

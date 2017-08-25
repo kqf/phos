@@ -1,10 +1,9 @@
 
 import unittest
 import ROOT
-import json
 
 import spectrum.comparator as cmpr
-from test.software.test_compare import get_spectrum
+from particles import Particles
 
 def get_fit_function():
     func_nonlin = ROOT.TF1("func_nonlin", "pol2(0) + pol1(3)", 0, 100);
@@ -18,14 +17,10 @@ def get_fit_function():
     return func_nonlin
 
 
-
-class Test(unittest.TestCase):
+class TestRatio(unittest.TestCase, Particles):
 
     def setUp(self):
-        with open('config/test_particles.json') as f: 
-            particles = json.load(f)
-        self.data = [get_spectrum(i, *particles[i]) for i in particles]
-
+        self.data = self.config()
 
     def testCompareTwo(self):
         diff = cmpr.Comparator()
