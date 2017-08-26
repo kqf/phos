@@ -2,15 +2,15 @@
 
 import ROOT
 
+# TODO: Replace inheritance with factory moethods, and decorate cloning and copying?
 # TODO: Make sure that all histograms have these properties
-
 # TODO: Use decorators when it will be clear what fields are needed.
 
 class Property(object):
-    properties = {'label': '', 'logy': 1, 'logx': 0, 'priority': 999, 'marker': 0}
+    _properties = {'label': '', 'logy': 0, 'logx': 0, 'priority': 999, 'marker': 0}
     def __init__(self, label = '', logy = 0, logx = 0, priority = 999, marker = 0):
         super(Property, self).__init__()
-        self.__dict__.update(self.properties)
+        self.__dict__.update(self._properties)
 
         self.marker = marker
         self.label = label
@@ -32,18 +32,18 @@ class Property(object):
     def copy_properties(dest, source, force = False):
         assert Property.has_properties(source), "There is no properties in source histogram"
 
-        keys = (key for key in Property.properties if key not in dir(dest) or force)
+        keys = (key for key in Property._properties if key not in dir(dest) or force)
         for key in keys:
             # print dest.GetName(), 'added', key
             dest.__dict__[key] = source.__dict__[key]
 
     @staticmethod
     def has_properties(hist):
-        return all(prop in dir(hist) for prop in Property.properties) 
+        return all(prop in dir(hist) for prop in Property._properties) 
 
     def same_as(self, b):
         assert Property.has_properties(b), "There is no properties in b histogram"
-        return all(self.__dict__[prop] == b.__dict__[prop] for prop in Property.properties) 
+        return all(self.__dict__[prop] == b.__dict__[prop] for prop in Property._properties) 
 
 
 # TODO: Add rebin_as function
@@ -56,7 +56,7 @@ class BH1F(ROOT.TH1F, Property):
     def Clone(self, name = "1"):
         hist = BH1F(self)
         hist.SetName(self.GetName() + name)
-        hist.set_properties(self)
+        hist.set_properties(self, force = True)
         return  hist
 
 class BH1D(ROOT.TH1D, Property):
@@ -67,7 +67,7 @@ class BH1D(ROOT.TH1D, Property):
     def Clone(self, name = "1"):
         hist = BH1D(self)
         hist.SetName(self.GetName() + name)
-        hist.set_properties(self)
+        hist.set_properties(self, force = True)
         return  hist
 
 
@@ -80,11 +80,11 @@ class BH2F(ROOT.TH2F, Property):
     def Clone(self, name = "1"):
         hist = BH2F(self)
         hist.SetName(self.GetName() + name)
-        hist.set_properties(self)
+        hist.set_properties(self, force = True)
         return  hist
 
     def ProjectionX(self, name, a, b):
         hist = ROOT.TH2F.ProjectionX(self, name, a, b)
         hist = BH1D(hist)
-        hist.set_properties(self)
+        hist.set_properties(self, force = True)
         return hist
