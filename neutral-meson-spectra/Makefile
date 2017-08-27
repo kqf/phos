@@ -1,20 +1,10 @@
-emtpy:
-	$(ROOT_PYTHON) -m unittest test.playground.test_check_emptybins
+.PHONY: integrity-test graphs clean
 
-pi0:
-	$(ROOT_PYTHON) run-pi0-spectrum.py
+integrity-test:
+	$(ROOT_PYTHON) -m unittest -q test.software.test_observables
 
-
-tag:
-	$(ROOT_PYTHON) -m unittest test.cuts.tag_and_probe_tof_efficiency
-
-
-eta:
-	$(ROOT_PYTHON) run-eta-spectrum.py
-
-
-imass:
-	$(ROOT_PYTHON) -m unittest test.test_invariant_mass
+graphs:
+	$(ROOT_PYTHON) -m unittest test.analysis.test_quantities
 
 
 clean:

@@ -59,6 +59,7 @@ class Visualizer(object):
         pad2.SetGridy()
         return c1, pad1, pad2
 
+    # TODO: Move this to broot
     @staticmethod
     def ratio(hists):
         try:
