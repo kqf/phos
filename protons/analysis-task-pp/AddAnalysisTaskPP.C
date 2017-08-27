@@ -47,24 +47,25 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
 	}	
 
+	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
+	// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
+	// Calculated for the updated version for the corrected Data
+	Float_t nonlin_a = -0.020025549129372242;
+	Float_t nonlin_b = 1.1154536660217529;
+    Float_t ge_scale = 1.0493128193171741;
 	
 	if(isTest)
 	{
 		selections->Add(new PhysPhotonSelection("Phys", "Physics Selection", cuts_pi0));
+		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
+		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
+		selections->Add(new TagAndProbeSelection("TagAndProbleTOF", "Cluster P_{t} Selection", cuts_pi0));
+		selections->Add(new NonlinearityScanSelection("StudyNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 	}
 
 
 	if (isMC)
 	{
-		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
-		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
-		// Calculated for the updated version for the corrected Data
-
-		Float_t nonlin_a = -0.020025549129372242;
-		Float_t nonlin_b = 1.1154536660217529;
-	    Float_t ge_scale = 1.0493128193171741;
-
-
 		selections->Add(new PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
 		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0));
@@ -72,12 +73,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
 			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
-
-
-		// Test selections
-		selections->Add(new PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
-		selections->Add(new PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
-		selections->Add(new NonlinearityScanSelection("StudyNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 	}
 
 	// Setup task
