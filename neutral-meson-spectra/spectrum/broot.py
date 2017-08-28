@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import ROOT
+import copy
+from sutils import rebin_as
 
 # TODO: Replace inheritance with factory moethods, and decorate cloning and copying?
 # TODO: Make sure that all histograms have these properties
@@ -23,27 +25,47 @@ class Property(object):
         assert self.has_properties(source), "There is no properties in source histogram"
         Property.copy_properties(self, source, force)
 
+    def same_as(self, b):
+        assert self.has_properties(b), "There is no properties in b histogram"
+        return all(self.__dict__[prop] == b.__dict__[prop] for prop in self._properties) 
+
     @classmethod
     def update_properties(klass, hist, force = False):
         self = klass()
         klass.copy_properties(hist, self, force)
 
-    @staticmethod
-    def copy_properties(dest, source, force = False):
-        assert Property.has_properties(source), "There is no properties in source histogram"
+    @classmethod
+    def copy_properties(klass, dest, source, force = False):
+        assert klass.has_properties(source), "There is no properties in source histogram"
 
-        keys = (key for key in Property._properties if key not in dir(dest) or force)
+        keys = (key for key in klass._properties if key not in dir(dest) or force)
         for key in keys:
             # print dest.GetName(), 'added', key
-            dest.__dict__[key] = source.__dict__[key]
+            dest.__dict__[key] = copy.deepcopy(source.__dict__[key])
 
     @staticmethod
-    def has_properties(hist):
-        return all(prop in dir(hist) for prop in Property._properties) 
+    def copy(dest, source):
+        keys = (key for key in dir(source) if key not in dir(dest))
+        for key in keys:
+            dest.__dict__[key] = source.__dict__[key]
 
-    def same_as(self, b):
-        assert Property.has_properties(b), "There is no properties in b histogram"
-        return all(self.__dict__[prop] == b.__dict__[prop] for prop in Property._properties) 
+    @classmethod
+    def has_properties(klass, hist):
+        return all(prop in dir(hist) for prop in klass._properties) 
+
+    @classmethod
+    def ratio(klass, a, b, option = "B"):
+        ratio = a.Clone('ratio' + a.GetName())
+        klass.copy(ratio, a)
+
+        if ratio.GetNbinsX() != b.GetNbinsX():
+            ratio, b = rebin_as(ratio, b)
+
+        ratio.Divide(a, b, 1, 1, option)
+        label = a.label + ' / ' + b.label
+        ratio.SetTitle('')
+        ratio.GetYaxis().SetTitle(label)
+        return ratio
 
 
 # TODO: Add rebin_as function

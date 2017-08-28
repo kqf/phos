@@ -2,16 +2,10 @@
 
 import ROOT
 import json
-import copy
 import numpy as np
 
 from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
-from sutils import rebin_as
 import broot
-
-
-class NoRatioMessage(ValueError):
-    pass
 
 
 def setup_input(func):
@@ -59,32 +53,17 @@ class Visualizer(object):
         pad2.SetGridy()
         return c1, pad1, pad2
 
-    # TODO: Move this to broot
-    @staticmethod
-    def ratio(hists):
+    def draw_ratio(self, hists, pad):
         try:
             a, b = hists
+            ratio = broot.Property.ratio(a, b)
         except ValueError:
-            raise NoRatioMessage
+            return None
+        # Add this to cache othervise the 
+        # histogram will be deleted automatically by ROOT
+        self.cache.append(ratio)
 
-        ratio = a.Clone('ratio' + a.GetName())
-        # TODO: Replace deep copy by broot methods?
-        ratio.__dict__ = copy.deepcopy(a.__dict__)
-        broot.Property
-
-        if ratio.GetNbinsX() != b.GetNbinsX():
-            ratio, b = rebin_as(ratio, b)
-
-        # Enable binomail errors
-        ratio.Divide(a, b, 1, 1, "B")
-        label = a.label + ' / ' + b.label
-        ratio.SetTitle('')
-        ratio.GetYaxis().SetTitle(label)
-        return ratio
-
-    def draw_ratio(self, hists):
-        ratio = self.ratio(hists)
-
+        pad.cd()
         adjust_labels(ratio, hists[0], scale = 7./3)
         ratio.GetYaxis().CenterTitle(True)
         self.fit_ratio(ratio)
@@ -173,11 +152,7 @@ class Visualizer(object):
         mainpad.SetTickx()
         mainpad.SetTicky() 
 
-        ratiopad.cd()
-        try:
-            ratio = self.draw_ratio(hists)
-        except NoRatioMessage:
-            ratio = None
+        ratio = self.draw_ratio(hists, ratiopad)
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
@@ -187,7 +162,6 @@ class Visualizer(object):
             oname = self.get_oname(fname.lower())
             wait(oname, save=True)
 
-        self.cache.append(ratio)
         self.cache.append(legend)
         return adjust_labels(ratio, hists[0])
 
