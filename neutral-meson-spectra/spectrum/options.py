@@ -40,20 +40,25 @@ class Options(object):
     """
     modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
 
-    def __init__(self, label = 'data', mode = 'q', relaxedcb = False, particle='pi0', average = {}, priority = 999, fitf = 'cball'):
+    def __init__(self, label = 'data', mode = 'q', relaxedcb = False, 
+                    particle='pi0', average = {}, priority = 999, fitf = 'cball',
+                    spectrumconf = 'config/spectrum.json',
+                    ptconf = 'config/pt-analysis.json',
+                    invmassconf = 'config/invariant-mass.json'):
+
         super(Options, self).__init__()
         show_img = self.modes.get(mode, True)
 
-        self.spectrum = AnalysisOption('spectrum', 'config/spectrum.json', particle)
+        self.spectrum = AnalysisOption('spectrum', spectrumconf, particle)
         self.spectrum.show_img = show_img
 
-        self.pt = AnalysisOption('ptanalysis', 'config/pt-analysis.json', particle)
+        self.pt = AnalysisOption('ptanalysis', ptconf, particle)
         self.pt.priority = priority
         self.pt.label = label
         self.pt.show_img = show_img
         self.pt.dead_mode = 'd' in mode
 
-        self.invmass = AnalysisOption('invmass', 'config/invariant-mass.json', particle)
+        self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = average
 
         pconf = 'config/{0}-parameters.json'.format('gaus' if 'gaus' in fitf.lower() else 'cball')
