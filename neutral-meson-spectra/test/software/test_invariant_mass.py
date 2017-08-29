@@ -1,4 +1,5 @@
 
+import sys
 import unittest
 import ROOT
 
@@ -13,6 +14,7 @@ from spectrum.options import Options
 class TestInvariantMassClass(unittest.TestCase):
 
     def setUp(self):
+        self.wait = 'discover' not in sys.argv 
         self.input = Input('input-data/LHC16.root', 'PhysTender').read()
         self.particles = {
                             'pi0': ((8, 9), 0)
@@ -24,7 +26,7 @@ class TestInvariantMassClass(unittest.TestCase):
         mass = InvariantMass(self.input, bin, nrebin, Options(particle=particle))
         mass.extract_data()
         func(mass)
-        wait('test-inmass-%s-' % particle + title , True, True)
+        wait('test-inmass-%s-' % particle + title , self.wait, True)
 
     # @unittest.skip('')
     def testDrawSignal(self):
@@ -49,7 +51,12 @@ class TestInvariantMassClass(unittest.TestCase):
 
 
     def draw_multiple(self, particle):
-        analysis = Spectrum(self.input, 'test-' + particle, 'q', options=Options(particle=particle))
+        option = Options(
+                            particle = particle, 
+                            label = 'test-' + particle, 
+                            mode  =  'q'
+                         )
+        analysis = Spectrum(self.input, option)
         analysis.evaluate()
         pt = analysis.analyzer
         pt.show_img = True
