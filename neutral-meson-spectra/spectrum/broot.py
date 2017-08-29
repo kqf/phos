@@ -4,9 +4,8 @@ import ROOT
 import copy
 from sutils import rebin_as
 
-# TODO: Replace inheritance with factory moethods, and decorate cloning and copying?
-# TODO: Make sure that all histograms have these properties
-# TODO: Use decorators when it will be clear what fields are needed.
+# TODO: Finalize BROOT class
+# TODO: Add rebin_as function
 
 class Property(object):
     _properties = {'label': '', 'logy': 0, 'logx': 0, 'priority': 999, 'marker': 0}
@@ -68,45 +67,34 @@ class Property(object):
         return ratio
 
 
-# TODO: Add rebin_as function
-# better histogram
-class BH1F(ROOT.TH1F, Property):
-    def __init__(self, *args, **kwargs):
-        ROOT.TH1F.__init__(self, *args)
-        Property.__init__(self, **kwargs)
 
-    def Clone(self, name = "1"):
-        hist = BH1F(self)
-        hist.SetName(self.GetName() + name)
-        hist.set_properties(self, force = True)
-        return  hist
+class BROOT(object):
+    def __init__(self):
+        super(BROOT, self).__init__()
 
-class BH1D(ROOT.TH1D, Property):
-    def __init__(self, *args, **kwargs):
-        ROOT.TH1D.__init__(self, *args)
-        Property.__init__(self, **kwargs)
-
-    def Clone(self, name = "1"):
-        hist = BH1D(self)
-        hist.SetName(self.GetName() + name)
-        hist.set_properties(self, force = True)
-        return  hist
-
-
-
-class BH2F(ROOT.TH2F, Property):
-    def __init__(self, *args, **kwargs):
-        ROOT.TH2F.__init__(self, *args)
-        Property.__init__(self, **kwargs)
-
-    def Clone(self, name = "1"):
-        hist = BH2F(self)
-        hist.SetName(self.GetName() + name)
-        hist.set_properties(self, force = True)
-        return  hist
-
-    def ProjectionX(self, name, a, b):
-        hist = ROOT.TH2F.ProjectionX(self, name, a, b)
-        hist = BH1D(hist)
-        hist.set_properties(self, force = True)
+    @staticmethod
+    def BH(THnT, *args, **kwargs):
+        hist = THnT(*args)
+        Property.copy_properties(hist, Property(**kwargs))
         return hist
+
+    @staticmethod
+    def clone(hist, name = '_copied', replace = False):
+        name = name if replace else hist.GetName() + name 
+        cloned = hist.Clone(name)
+        Property.copy_properties(cloned, hist)
+        return cloned
+
+    @staticmethod
+    def copy(hist, name = '_copied', replace = False):
+        return BROOT.clone(hist, name, replace)
+
+
+    @staticmethod
+    def projection(hist, name, a, b, axis = 'x'):
+        pass
+        # f = lambda x: x.ProjectionX if axis.lower() == 'x' else lambda x: x.ProjectionY
+        # proj = f(hist)(name, a, b)
+        # proj = BH1D(proj)
+        # Property.set_properties(self, force = True)
+        # returnproj 

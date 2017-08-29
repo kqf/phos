@@ -3,13 +3,14 @@
 import ROOT
 import unittest
 import random
-from spectrum.broot import BH1F, BH2F, Property
+from spectrum.broot import Property
+from spectrum.broot import BROOT as br
 from spectrum.sutils import wait
 
 class TestTH(unittest.TestCase):
 
     def setUp(self):
-        self.hist = BH1F("hist", "Testing creating of the histogram", 100, -10, 10,
+        self.hist = br.BH(ROOT.TH1F, "hist", "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
         self.hist.FillRandom("gaus")
         self.properties = Property._properties.keys()
@@ -25,20 +26,20 @@ class TestTH(unittest.TestCase):
         self.hist.Draw()
         wait()
 
-
-    def test_copy_constructor(self):
-        histcopy = BH1F(self.hist)
+    def test_copy(self):
+        histcopy = br.clone(self.hist, '')
         histcopy.SetBinContent(5,  1000)
         histcopy.Draw()
         self.hist.Draw('same')
         wait()
 
 
+    @unittest.skip('Replace same_as with br.same static method')
     def test_set_properties(self):
-        hist = BH1F("refhistSet", "Testing set_property method", 100, -10, 10,
+        hist = br.BH(ROOT.TH1F, "refhistSet", "Testing set_property method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
-        hist2 = BH1F(hist)
+        hist2 = br.clone(hist)
 
         # Properties should not copy when using copy constructor
         # NB: Is it neccessary? Yes!
@@ -52,21 +53,22 @@ class TestTH(unittest.TestCase):
     def test_clone_from_root(self):
         hist = ROOT.TH1F("refhistROOT", "Testing set_property method", 100, -10, 10)
 
-        hist2 = BH1F(hist)
+        hist2 = br.BH(ROOT.TH1F, hist)
 
         # Properties should not copy when using copy constructor
         #
         self.assertTrue(Property.has_properties(hist2))
 
 
+    @unittest.skip('Replace same_as with br.same static method')
     def test_clone(self):
-        hist = BH1F("refhistClone", "Testing updated Clone method", 100, -10, 10,
+        hist = br.BH(ROOT.TH1F, "refhistClone", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
         self.hist.FillRandom("gaus")
 
         ## NB: There is no need to manually set properties
-        hist2 = hist.Clone()
+        hist2 = br.clone(hist)
 
 
         ## Copy differs from copy constructor
@@ -77,6 +79,7 @@ class TestTH(unittest.TestCase):
         self.assertTrue(hist2.same_as(hist))
 
 
+    @unittest.skip('Replace BHn classes with static methods')
     def test_bh2_projection(self):
         hist = BH2F("refhistProj",                              # Name
                     "Testing updated ProjectX method for BH2F", # Title
