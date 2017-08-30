@@ -72,9 +72,11 @@ class Input(object):
         self.events(lst, hist) 
         return hist
 
-    def read(self):
+    def read(self, histo = None):
         lst = self.infile.Get(self.listname)
-        raw_mix = self.histname,  self.mixprefix + self.histname
+        # NB: Use histo to support per module histogram
+        histo = histo if histo else self.histname
+        raw_mix = histo, self.mixprefix + histo
         raw, mix = map(lambda x: self.hist(lst, x), raw_mix)
         # NB: This is important,
         #     invoke destructor directly
@@ -87,6 +89,7 @@ class Input(object):
 
         good = lambda r: r or r.GetXaxis().GetBinCenter(r.FindFirstBinAbove(0)) > threshold 
         input_data = ((h, l) for h, l in zip(data, names) if good(h))
+        print input_data
         return zip(*input_data)
 
 
