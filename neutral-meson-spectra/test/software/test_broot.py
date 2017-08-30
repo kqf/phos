@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
-import ROOT
 import unittest
+import sys
 import random
+
+import ROOT
+
 from spectrum.broot import Property
 from spectrum.broot import BROOT as br
 from spectrum.sutils import wait
@@ -10,7 +13,8 @@ from spectrum.sutils import wait
 class TestTH(unittest.TestCase):
 
     def setUp(self):
-        self.hist = br.BH(ROOT.TH1F, "hist", "Testing creating of the histogram", 100, -10, 10,
+        self.mode = 'discover' not in sys.argv
+        self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
         self.hist.FillRandom("gaus")
         self.properties = Property._properties.keys()
@@ -24,34 +28,20 @@ class TestTH(unittest.TestCase):
     def test_draw(self):
         self.assertIsNotNone(self.hist)
         self.hist.Draw()
-        wait()
-
-    def test_copy(self):
-        histcopy = br.clone(self.hist, '')
-        histcopy.SetBinContent(5,  1000)
-        histcopy.Draw()
-        self.hist.Draw('same')
-        wait()
+        wait(draw = self.mode)
 
 
-    @unittest.skip('Replace same_as with br.same static method')
-    def test_set_properties(self):
-        hist = br.BH(ROOT.TH1F, "refhistSet", "Testing set_property method", 100, -10, 10,
-            label = "test prop", logy=True, logx=False, priority = 3)
+    def test_setp(self):
+        hist = ROOT.TH1F("refhistSet", "Testing set_property method", 100, -10, 10)
 
-        hist2 = br.clone(hist)
+        # Set properties of root object
+        br.setp(hist, self.hist)
 
-        # Properties should not copy when using copy constructor
-        # NB: Is it neccessary? Yes!
-        self.assertFalse(hist2.same_as(hist))
-
-        ## Now copy the properties
-        hist2.set_properties(hist, force = True)
-        self.assertTrue(hist2.same_as(hist))
+        self.assertTrue(br.same(hist, self.hist))
 
 
     def test_clone_from_root(self):
-        hist = ROOT.TH1F("refhistROOT", "Testing set_property method", 100, -10, 10)
+        hist = br.BH(ROOT.TH1F, "refhistROOT", "Testing set_property method", 100, -10, 10)
 
         hist2 = br.BH(ROOT.TH1F, hist)
 
@@ -60,28 +50,50 @@ class TestTH(unittest.TestCase):
         self.assertTrue(Property.has_properties(hist2))
 
 
-    @unittest.skip('Replace same_as with br.same static method')
+
     def test_clone(self):
         hist = br.BH(ROOT.TH1F, "refhistClone", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
-        self.hist.FillRandom("gaus")
+        hist.FillRandom("gaus")
 
         ## NB: There is no need to manually set properties
         hist2 = br.clone(hist)
 
-
-        ## Copy differs from copy constructor
+        ## Copy differs clone
         self.assertTrue(hist.GetEntries() == hist2.GetEntries())
 
+        ## Now copy the properties
+        self.assertTrue(br.same(hist2, hist))
+
+
+    def test_copy(self):
+        hist = br.BH(ROOT.TH1F, "refhistClone", "Testing updated Clone method", 100, -10, 10,
+            label = "test prop", logy=True, logx=False, priority = 3)
+
+        hist.FillRandom("gaus")
+
+        ## NB: There is no need to manually set properties
+        ## Now try copy instead of clone
+        hist2 = br.copy(hist)
+
+        ## Copy differs clone
+        ## These should not equal
+        self.assertFalse(hist.GetEntries() == hist2.GetEntries()) 
 
         ## Now copy the properties
-        self.assertTrue(hist2.same_as(hist))
+        self.assertTrue(br.same(hist2, hist))
 
 
-    @unittest.skip('Replace BHn classes with static methods')
+    def test_clone_visual(self):
+        histcopy = br.clone(self.hist, '')
+        histcopy.SetBinContent(5,  1000)
+        histcopy.Draw()
+        self.hist.Draw('same')
+        wait(draw = self.mode)
+
     def test_bh2_projection(self):
-        hist = BH2F("refhistProj",                              # Name
+        hist = br.BH(ROOT.TH2F, "refhistProj",                  # Name
                     "Testing updated ProjectX method for BH2F", # Title
                     100, -10, 10, 100, -10, 10,                 # Xbins, Ybins
                     label = "test prop",                        # Label
@@ -95,11 +107,13 @@ class TestTH(unittest.TestCase):
 
  
         hist.Draw('colz')
-        wait()
+        wait(draw = self.mode)
 
         ## NB: There is no need to manually set properties
-        hist2 = hist.ProjectionX('newname', 1, 50)
+        hist2 = br.projection(hist, 'newname', 1, 50)
 
+        hist2.Draw()
+        wait(draw = self.mode)
 
         ## Now copy the properties
-        self.assertTrue(hist2.same_as(hist))
+        self.assertTrue(br.same(hist2, hist))

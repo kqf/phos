@@ -5,13 +5,13 @@ import json
 import numpy as np
 
 from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
-import broot
+from broot import BROOT as br
 
 
 def setup_input(func):
     def f(self, hists, *args, **kwargs):
         for h in hists:
-            broot.Property.update_properties(h)
+            br.setp(h)
         return func(self, hists, *args, **kwargs)
     return f
 
@@ -56,7 +56,7 @@ class Visualizer(object):
     def draw_ratio(self, hists, pad):
         try:
             a, b = hists
-            ratio = broot.Property.ratio(a, b)
+            ratio = br.ratio(a, b)
         except ValueError:
             return None
         # Add this to cache othervise the 
