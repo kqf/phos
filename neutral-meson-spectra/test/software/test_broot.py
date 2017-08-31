@@ -6,7 +6,6 @@ import random
 
 import ROOT
 
-from spectrum.broot import Property
 from spectrum.broot import BROOT as br
 from spectrum.sutils import wait
 
@@ -17,7 +16,7 @@ class TestTH(unittest.TestCase):
         self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
         self.hist.FillRandom("gaus")
-        self.properties = Property._properties.keys()
+        self.properties = br.prop._properties.keys()
 
 
     def test_properties(self):
@@ -47,7 +46,7 @@ class TestTH(unittest.TestCase):
 
         # Properties should not copy when using copy constructor
         #
-        self.assertTrue(Property.has_properties(hist2))
+        self.assertTrue(br.prop.has_properties(hist2))
 
 
 
