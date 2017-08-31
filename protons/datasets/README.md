@@ -1,6 +1,21 @@
 Datasets, description
 ---------------------
 
+
+## How to
+In order to check if files available on grid run `check-dataset.sh` macro to verify the dataset.
+All missing/corrupted runs will be marked as `[Fail]`. 
+
+Example:
+```bash
+./check-dataset.sh LHC17f8a.txt
+
+```
+
+## Important:
+Always add an extra line at the end of the dataset file.
+
+
 ## Old data ($pp$ 7 TeV)
 
 Data
@@ -55,20 +70,19 @@ LHC16j2b2.txt
 
 Jet-Jet MC
 
-
-**TODO:** Remember to reinclude the problematic runs once the productin will be finished
-
+**NB:**  The production is over, but still the missing runs were not fixed
 ```
 LHC17f8a.txt 
-	259334 8
-	259477 8
-LHC17f8c.txt 
-	254332 8
-LHC17f8d.txt 
-	256373 14
-LHC17f8e.txt
-	262528
 
+Missing:
+	- 259334 8
+	- 259477 8
+LHC17f8c.txt 
+	- 254332 8
+LHC17f8d.txt 
+	- 256373 14
+LHC17f8e.txt
+	- 262528
 ```
 
 

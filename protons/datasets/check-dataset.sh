@@ -45,7 +45,7 @@ function main()
 			echo $name >> good-runs-$PERIOD.log
 		fi
 	done < $INFILE
-	echo "This is main" $INFILE
+	echo "Done" $INFILE
 }
 
 main
