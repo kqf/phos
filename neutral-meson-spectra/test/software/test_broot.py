@@ -9,11 +9,26 @@ import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.sutils import wait
 
+def write_histogram(filename, selection, histname):
+    hist = ROOT.TH1F(histname, 'Testing reading ' + \
+         'histograms from a rootfile', 10, -3, 3)
+    tlist = ROOT.TList()
+    tlist.SetOwner(True)
+    tlist.Add(hist)
+
+    ofile = ROOT.TFile(filename, 'recreate')
+    tlist.Write(selection, 1)
+    ofile.Close()
+
+
+
 class TestTH(unittest.TestCase):
 
     def setUp(self):
         self.mode = 'discover' not in sys.argv
-        self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), "Testing creating of the histogram", 100, -10, 10,
+        self.mode = 'discover' in sys.argv
+        self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), 
+            "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
         self.hist.FillRandom("gaus")
         self.properties = br.prop._properties.keys()
@@ -116,3 +131,15 @@ class TestTH(unittest.TestCase):
 
         ## Now copy the properties
         self.assertTrue(br.same(hist2, hist))
+
+
+    def test_read(self):
+        data = 'test_read.root', 'testSelection', 'testHistogram'
+        write_histogram(*data)
+        self.assertIsNotNone(br.read.read(*data))
+
+        # Now raise exceptions when reading 
+        # the root file with wrong names
+        self.assertRaises(IOError, br.read.read, 'junk' + data[0], data[1], data[2])
+        self.assertRaises(IOError, br.read.read, data[0], 'junk' + data[1], data[2])
+        self.assertRaises(IOError, br.read.read, data[0], data[1], 'junk' + data[2])
