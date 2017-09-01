@@ -79,14 +79,16 @@ Missing:
 	- 259477 8
 LHC17f8c.txt  (LHC16g)
 	- 254332 8
-LHC17f8d.txt (LHC16j)
+LHC17f8j.txt  (LHC16h)
+LHC17f8d.txt  (LHC16j)
 	- 256373 14
+
+LHC17f8f.txt  (LHC16k)
 LHC17f8e.txt
-	- 262528 (LHC16o)
+	- 262528  (LHC16o)
 
-LHC17f8f.txt (LHC16k)
 
-LHC17f8k.txt (LHC16p)
+LHC17f8k.txt  (LHC16p)
 ```
 
 
