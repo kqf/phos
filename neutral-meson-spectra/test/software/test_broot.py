@@ -2,6 +2,7 @@
 
 import unittest
 import sys
+import os
 import random
 
 import ROOT
@@ -20,13 +21,26 @@ def write_histogram(filename, selection, histname):
     tlist.Write(selection, 1)
     ofile.Close()
 
+def write_histograms(filename, selection, histnames):
+    hists = [ROOT.TH1F(histname, 'Testing reading ' + 
+                'histograms from a rootfile', 10, -3, 3) 
+                for histname in histnames]
+
+    tlist = ROOT.TList()
+    tlist.SetOwner(True)
+    map(tlist.Add, hists)
+
+    ofile = ROOT.TFile(filename, 'recreate')
+    tlist.Write(selection, 1)
+    ofile.Close()
+
 
 
 class TestTH(unittest.TestCase):
 
     def setUp(self):
         self.mode = 'discover' not in sys.argv
-        self.mode = 'discover' in sys.argv
+        # self.mode = 'discover' in sys.argv
         self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), 
             "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
@@ -143,3 +157,23 @@ class TestTH(unittest.TestCase):
         self.assertRaises(IOError, br.read.read, 'junk' + data[0], data[1], data[2])
         self.assertRaises(IOError, br.read.read, data[0], 'junk' + data[1], data[2])
         self.assertRaises(IOError, br.read.read, data[0], data[1], 'junk' + data[2])
+        os.remove(data[0])
+
+    def test_read_multiple(self):
+        ofilename = 'test_read.root'
+        selection = 'testSelection'
+        histnames = ['testHistogram_{0}'.format(i) for i in range(10)]
+
+        write_histograms(ofilename, selection, histnames)
+
+
+        histograms = br.read.read_multiple(ofilename, selection, histnames)
+        self.assertIsNotNone(histograms)
+        self.assertEqual(len(histograms), len(histnames))
+        self.assertIsNotNone(histograms[0])
+
+
+        # Now feed it with wrong name 
+        histnames.append('junk')
+        self.assertRaises(IOError, br.read.read_multiple, ofilename, selection, histnames)
+

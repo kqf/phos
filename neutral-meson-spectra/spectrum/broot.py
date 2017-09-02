@@ -84,9 +84,25 @@ class BROOT(object):
                 raise IOError('No such histogram {2} for selection {1} in file: ' + \
                     '{0}'.format(filename, selection, histname))
 
+            # TODO: Check performance? 
             BROOT.prop.init(hist)
             return hist
 
+        # NB: Keep this function to keep memory/time performance
+        @classmethod
+        def read_multiple(klass, filename, selection, histnames):
+            lst = klass._read_list(filename, selection)
+
+            histograms = []
+            for histname in histnames:
+                hist = lst.FindObject(histname)
+                if not hist:
+                    raise IOError('No such histogram {2} for selection {1} in file: {0}'
+                        .format(filename, selection, histname))
+
+                BROOT.prop.init(hist)
+                histograms.append(hist)
+            return histograms
             
     def __init__(self):
         super(BROOT, self).__init__()
@@ -98,7 +114,7 @@ class BROOT(object):
         return hist
 
     @classmethod
-    def setp(klass, dest, source, force = False):
+    def setp(klass, dest, source = None, force = False):
         if not source: source = klass.prop()
         klass.prop.copy(dest, source, force)
 
