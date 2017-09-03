@@ -58,10 +58,17 @@ class BROOT(object):
         def __init__(self):
             super(BROOT.read, self).__init__()
 
-        @staticmethod
-        def _read_file(filename):
+        @classmethod
+        def _read_file(klass, filename, directory = 'input-data/'):
             if os.path.isfile(filename):
                 return ROOT.TFile(filename) 
+
+            if not directory in filename:
+                return klass._read_file(directory + filename, directory)
+
+            if not '.root' in filename:
+                return klass._read_file(filename + '.root', directory)
+
             raise IOError('No such file: {0}'.format(filename))
 
         @classmethod
@@ -81,11 +88,14 @@ class BROOT(object):
             hist = lst.FindObject(histname)
 
             if not hist:
-                raise IOError('No such histogram {2} for selection {1} in file: ' + \
-                    '{0}'.format(filename, selection, histname))
+                raise IOError('No such histogram {2} for selection {1} in file: {0}'
+                    .format(filename, selection, histname))
 
-            # TODO: Check performance? 
+
+            # TODO: Check performance? for clone
+            hist = hist.Clone()
             BROOT.prop.init(hist)
+            lst.IsA().Destructor(lst)
             return hist
 
         # NB: Keep this function to keep memory/time performance
@@ -100,8 +110,10 @@ class BROOT(object):
                     raise IOError('No such histogram {2} for selection {1} in file: {0}'
                         .format(filename, selection, histname))
 
+                hist = hist.Clone()
                 BROOT.prop.init(hist)
                 histograms.append(hist)
+            lst.IsA().Destructor(lst)
             return histograms
             
     def __init__(self):
@@ -162,3 +174,10 @@ class BROOT(object):
         ratio.SetTitle('')
         ratio.GetYaxis().SetTitle(label)
         return ratio
+
+    # TODO: Add test for this
+    @classmethod
+    def set_nevents(klass, hist, nevents, norm = False):
+        hist.nevents = nevents
+        if norm:
+            hist.Integral(1. / nevents)
