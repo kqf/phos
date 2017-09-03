@@ -1,7 +1,7 @@
-DATASET = LHC17f8a
+DATASET = LHC17f8k
 DPART = first
 MC = kTRUE
-PAUSE = 30m
+PAUSE = 10m
 
 PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
 # PtBins = 1 2 13 14 
