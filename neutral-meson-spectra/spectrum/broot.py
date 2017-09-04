@@ -92,7 +92,6 @@ class BROOT(object):
                     .format(filename, selection, histname))
 
 
-            # TODO: Check performance? for clone
             hist = hist.Clone()
             BROOT.prop.init(hist)
             lst.IsA().Destructor(lst)
@@ -137,7 +136,6 @@ class BROOT(object):
         klass.setp(cloned, hist)
         return cloned
 
-    # TODO: Add test for this
     @classmethod
     def copy(klass, hist, name = '_copied', replace = False):
         hist = BROOT.clone(hist, name, replace)
@@ -175,9 +173,8 @@ class BROOT(object):
         ratio.GetYaxis().SetTitle(label)
         return ratio
 
-    # TODO: Add test for this
     @classmethod
     def set_nevents(klass, hist, nevents, norm = False):
         hist.nevents = nevents
         if norm:
-            hist.Integral(1. / nevents)
+            hist.Scale(1. / nevents)

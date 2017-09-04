@@ -4,6 +4,7 @@ import unittest
 import sys
 import os
 import random
+from math import ceil
 
 import ROOT
 
@@ -60,7 +61,8 @@ class TestTH(unittest.TestCase):
 
 
     def test_setp(self):
-        hist = ROOT.TH1F("refhistSet", "Testing set_property method", 100, -10, 10)
+        hist = ROOT.TH1F("refhistSet", "Testing set_property method",
+            100, -10, 10)
 
         # Set properties of root object
         br.setp(hist, self.hist)
@@ -69,7 +71,8 @@ class TestTH(unittest.TestCase):
 
 
     def test_clone_from_root(self):
-        hist = br.BH(ROOT.TH1F, "refhistROOT", "Testing set_property method", 100, -10, 10)
+        hist = br.BH(ROOT.TH1F, "refhistROOT", "Testing set_property method", 
+            100, -10, 10)
 
         hist2 = br.BH(ROOT.TH1F, hist)
 
@@ -80,7 +83,8 @@ class TestTH(unittest.TestCase):
 
 
     def test_clone(self):
-        hist = br.BH(ROOT.TH1F, "refhistClone", "Testing updated Clone method", 100, -10, 10,
+        hist = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
         hist.FillRandom("gaus")
@@ -96,7 +100,8 @@ class TestTH(unittest.TestCase):
 
 
     def test_copy(self):
-        hist = br.BH(ROOT.TH1F, "refhistClone", "Testing updated Clone method", 100, -10, 10,
+        hist = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
         hist.FillRandom("gaus")
@@ -175,5 +180,54 @@ class TestTH(unittest.TestCase):
 
         # Now feed it with wrong name 
         histnames.append('junk')
-        self.assertRaises(IOError, br.read.read_multiple, ofilename, selection, histnames)
+        self.assertRaises(IOError, br.read.read_multiple, 
+            ofilename, selection, histnames)
+
+    def test_ratio(self):
+        hist1 = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing the ratio method", 100, -10, 10,
+            label = "test ratio", logy=True, logx=False, priority = 3)
+
+        hist2 = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing the ratio method", 100, -10, 10,
+            label = "test ratio b", logy=True, logx=False, priority = 3)
+
+        hist1.FillRandom("gaus")
+        hist1.FillRandom("expo")
+        ratio = br.ratio(hist1, hist2)
+
+        # Check if the numerator and the ratio are the same
+        self.assertTrue(br.same(hist1, ratio))
+
+        # Check if the numerator and the ratio are not same
+        self.assertFalse(br.same(hist2, ratio))
+
+    def test_sets_events(self):
+        hist1 = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing set events", 100, -10, 10,
+            label = "test ratio", logy=True, logx=False, priority = 3)
+
+        hist1.FillRandom("gaus")
+        events, integral = 1000, hist1.Integral()
+
+        # No normalization
+        br.set_nevents(hist1, events)
+
+        # Check if .nevents attribute is OK
+        self.assertEqual(hist1.nevents, events)
+        # Check if we don't mess with area
+        self.assertNotEqual(ceil(hist1.Integral()), ceil(integral / events))
+
+        # Now with normalization
+
+        br.set_nevents(hist1, events, True)
+        # Check if .nevents attribute is OK
+        self.assertEqual(hist1.nevents, events)
+        # Check if we don't mess with area
+        self.assertEqual(ceil(hist1.Integral()), ceil(integral / events))
+
+
+
+
+
 
