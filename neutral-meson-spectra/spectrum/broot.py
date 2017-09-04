@@ -4,9 +4,10 @@ import ROOT
 
 import os
 import copy
+import array
 from sutils import rebin_as
 
-# TODO: Add rebin_as function
+# TODO: move all broot-like functions from sutils
 class BROOT(object):
     class prop(object):
         _properties = {'label': '', 'logy': 0, 'logx': 0, 'priority': 999, 'marker': 0}
@@ -178,3 +179,16 @@ class BROOT(object):
         hist.nevents = nevents
         if norm:
             hist.Scale(1. / nevents)
+
+    @classmethod
+    def rebin_as(klass, hist1, hist2):
+        # TODO: Change this interface
+        greater = lambda x, y: x.GetNbinsX() > y.GetNbinsX()
+        lbins = lambda x: (x.GetBinLowEdge(i) for i in range(0, x.GetNbinsX() + 1))
+
+        a, b = (hist1, hist2) if greater(hist1, hist2) else (hist2, hist1)
+        xbin = array.array('d', lbins(b))
+        rebinned = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
+        klass.setp(rebinned, a)
+        return (rebinned, b) if a == hist1 else (b, rebinned)
+

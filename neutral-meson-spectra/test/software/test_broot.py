@@ -41,7 +41,7 @@ class TestTH(unittest.TestCase):
 
     def setUp(self):
         self.mode = 'discover' not in sys.argv
-        # self.mode = 'discover' in sys.argv
+        self.mode = 'discover' in sys.argv
         self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), 
             "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
@@ -225,6 +225,32 @@ class TestTH(unittest.TestCase):
         self.assertEqual(hist1.nevents, events)
         # Check if we don't mess with area
         self.assertEqual(ceil(hist1.Integral()), ceil(integral / events))
+
+
+    def test_rebins(self):
+        hist1 = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing rebins", 200, -10, 10,
+            label = "test ratio", logy=True, logx=False, priority = 3)
+
+        hist2 = br.BH(ROOT.TH1F, 
+            "refhistClone", "Testing rebins", 100, -10, 10,
+            label = "test ratio", logy=True, logx=False, priority = 3)
+
+        hist1.FillRandom("gaus")
+        hist2.FillRandom("gaus")
+
+        rebinned, hist2 = br.rebin_as(hist1, hist2)
+
+        self.assertNotEqual(hist1.GetNbinsX(), hist2.GetNbinsX())
+
+        self.assertEqual(rebinned.GetNbinsX(), hist2.GetNbinsX())
+
+        # Just check if ratio gives warnings
+        ratio = br.ratio(rebinned, hist2)
+        self.assertTrue(br.same(rebinned, hist1))
+
+
+
 
 
 
