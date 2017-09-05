@@ -7,16 +7,12 @@ from broot import BROOT as br
 
 def read_histogram(filename, listname, histname, label = '', priority = 999, norm = False):
     hist = br.read.read(filename, listname, histname)
-
-    if not hist: 
-        return None
-
     br.set_nevents(hist, Input.events(filename, listname), norm)
     hist.priority = priority
     hist.label = label
     return hist
 
-
+# TODO: Reimplement this for the case when we don't need mixed histogram
 class Input(object):
     def __init__(self, filename, listname, histname = 'MassPt', mixprefix = 'Mix'):
         super(Input, self).__init__()
@@ -47,7 +43,6 @@ class Input(object):
 
         good = lambda r: r or r.GetXaxis().GetBinCenter(r.FindFirstBinAbove(0)) > threshold 
         input_data = ((h, l) for h, l in zip(data, names) if good(h))
-        print input_data
         return zip(*input_data)
 
 class ExampleInput(Input):

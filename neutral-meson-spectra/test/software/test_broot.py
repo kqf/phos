@@ -12,8 +12,9 @@ from spectrum.broot import BROOT as br
 from spectrum.sutils import wait
 
 def write_histogram(filename, selection, histname):
-    hist = ROOT.TH1F(histname, 'Testing reading ' + \
+    hist = br.BH(ROOT.TH1F, histname, 'Testing reading ' + \
          'histograms from a rootfile', 10, -3, 3)
+    hist.FillRandom('gaus')
     tlist = ROOT.TList()
     tlist.SetOwner(True)
     tlist.Add(hist)
@@ -21,11 +22,15 @@ def write_histogram(filename, selection, histname):
     ofile = ROOT.TFile(filename, 'recreate')
     tlist.Write(selection, 1)
     ofile.Close()
+    return br.clone(hist)
 
 def write_histograms(filename, selection, histnames):
-    hists = [ROOT.TH1F(histname, 'Testing reading ' + 
+    hists = [br.BH(ROOT.TH1F, histname, 'Testing reading ' + 
                 'histograms from a rootfile', 10, -3, 3) 
                 for histname in histnames]
+
+    for hist in hists:
+        hist.FillRandom('gaus')
 
     tlist = ROOT.TList()
     tlist.SetOwner(True)
@@ -34,6 +39,7 @@ def write_histograms(filename, selection, histnames):
     ofile = ROOT.TFile(filename, 'recreate')
     tlist.Write(selection, 1)
     ofile.Close()
+    return map(br.clone, hists)
 
 
 
@@ -267,17 +273,4 @@ class TestTH(unittest.TestCase):
 
         self.assertEqual(total.GetEntries(), entries)
         self.assertEqual(total.label, newlabel)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
