@@ -112,9 +112,6 @@ def save_tobject(obj, fname, option = 'recreate'):
     obj.Write()
     ofile.Close()
 
-
-
-
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()
     canvas.SetBottomMargin(0.02 * height)
@@ -124,32 +121,9 @@ def adjust_canvas(canvas):
     canvas.SetRightMargin(0.01 * width)
     canvas.SetLeftMargin(0.01 * width)
     return canvas
+    
 
-def rebin_as(hist1, hist2):
-    greater = lambda x, y: x.GetNbinsX() > y.GetNbinsX()
-    lbins = lambda x: (x.GetBinLowEdge(i) for i in range(0, x.GetNbinsX() + 1))
-
-    a, b = (hist1, hist2) if greater(hist1, hist2) else (hist2, hist1)
-    xbin = array.array('d', lbins(b))
-    res = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
-
-    if 'logy'     in dir(a): res.logy = a.logy
-    if 'label'    in dir(a): res.label = a.label
-    if 'fitfunc'  in dir(a): res.fitfunc = a.fitfunc
-    if 'priority' in dir(a): res.priority = a.priority
-
-    return (res, b) if a == hist1 else (b, res)
-
-
-def hsum(histograms, label):
-    result = histograms[0].Clone(histograms[0].GetName() + label)
-    result.Reset()
-    print result.GetEntries()
-    for h in histograms:
-        result.Add(h)
-    result.label = label
-    return result
-
+# TODO: Move this to broot
 def scalew(hist, factor = 1.):
     hist.Scale(factor, "width")
     return hist

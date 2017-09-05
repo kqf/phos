@@ -1,4 +1,8 @@
 
+import ROOT
+import os.path
+import unittest
+
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
@@ -7,12 +11,7 @@ from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator
 from spectrum.sutils import save_tobject, scalew
 
-import ROOT
-
-import os.path
-import unittest
-
-from spectrum.sutils import hsum
+from spectrum.broot import BROOT as br
 
 
 class Estimator(object):
@@ -34,7 +33,7 @@ class Estimator(object):
         diff.compare(particles)
         diff.compare_ratios(particles, generated, logy = True)
 
-        total, summed = particles[0], hsum(particles[1:], 'summed')
+        total, summed = particles[0], br.sum(particles[1:], 'summed')
         diff.compare(total, summed)
 
 

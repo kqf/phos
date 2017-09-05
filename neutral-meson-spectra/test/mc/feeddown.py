@@ -12,8 +12,6 @@ import ROOT
 import os.path
 import unittest
 
-from spectrum.sutils import hsum
-
 
 class FeeddownEstimator(object):
 

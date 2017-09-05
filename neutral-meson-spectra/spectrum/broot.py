@@ -5,7 +5,6 @@ import ROOT
 import os
 import copy
 import array
-from sutils import rebin_as
 
 # TODO: move all broot-like functions from sutils
 class BROOT(object):
@@ -191,4 +190,23 @@ class BROOT(object):
         rebinned = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
         klass.setp(rebinned, a)
         return (rebinned, b) if a == hist1 else (b, rebinned)
+
+    @classmethod
+    def sum(klass, histograms, label = None):
+        if not histograms:
+            raise ValueError("You are trying to sum 0 histograms")
+
+        first = histograms[0]
+        label = label if label else first.label
+
+        result = klass.copy(first, label)
+        klass.setp(result, first)
+        result.label = label
+
+        # Finally sum the histograms
+        for h in histograms:
+            result.Add(h)
+
+        return result
+
 

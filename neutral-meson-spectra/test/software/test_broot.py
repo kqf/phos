@@ -182,6 +182,7 @@ class TestTH(unittest.TestCase):
         histnames.append('junk')
         self.assertRaises(IOError, br.read.read_multiple, 
             ofilename, selection, histnames)
+        os.remove(ofilename)
 
     def test_ratio(self):
         hist1 = br.BH(ROOT.TH1F, 
@@ -248,6 +249,29 @@ class TestTH(unittest.TestCase):
         # Just check if ratio gives warnings
         ratio = br.ratio(rebinned, hist2)
         self.assertTrue(br.same(rebinned, hist1))
+
+
+    def test_sum(self):
+        hists = [ br.BH(ROOT.TH1F, 
+            "refhistClone_%d" % i, "Testing sum %d" % i, 200, -10, 10,
+            label = "%dth histogram" % i, logy=True, logx=False, priority = 3)
+            for i in range(10)]
+
+        for hist in hists:
+            hist.FillRandom('gaus')
+
+        entries = sum(h.GetEntries() for h in hists)
+
+        newlabel = 'total'
+        total = br.sum(hists, newlabel)
+
+        self.assertEqual(total.GetEntries(), entries)
+        self.assertEqual(total.label, newlabel)
+
+
+
+
+
 
 
 

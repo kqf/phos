@@ -6,7 +6,8 @@ import ROOT
 import os.path
 import unittest
 
-from spectrum.sutils import hsum, scalew
+from spectrum.sutils import scalew
+from spectrum.broot import BROOT as br
 
 class InspectSources(unittest.TestCase):
 
@@ -43,11 +44,11 @@ class InspectSources(unittest.TestCase):
         diff.compare_ratios(particles, generated, logy= True)
 
         diff = Comparator(crange = (1e-15, 1.), oname = '{0}_sum{1}'.format(ptype, self.infile))
-        total, summed = particles[0], hsum(particles[1:], 'sum')
+        total, summed = particles[0], br.sum(particles[1:], 'sum')
         diff.compare(total, summed)
 
   
-    @unittest.skip('')
+    # @unittest.skip('')
     def testContributions(self):
     	# self.inspect('secondary')
     	# self.inspect('primary')
