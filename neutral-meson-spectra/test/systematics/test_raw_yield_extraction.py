@@ -3,7 +3,8 @@ from spectrum.input import Input, TimecutInput, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.comparator import Visualizer, Comparator
-from spectrum.sutils import save_tobject, scalew
+
+from spectrum.broot import BROOT as br
 
 import ROOT
 
@@ -67,7 +68,7 @@ class RawYieldSystematicError(unittest.TestCase):
     def spectrum(self, options):
         inp = Input(self.infile, self.selection)
         spectrum = Spectrum(inp, options).evaluate().spectrum
-        return scalew(spectrum)  
+        return br.scalew(spectrum)  
 
 
 

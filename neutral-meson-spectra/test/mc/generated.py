@@ -6,7 +6,6 @@ import ROOT
 import os.path
 import unittest
 
-from spectrum.sutils import scalew
 from spectrum.broot import BROOT as br
 
 class InspectSources(unittest.TestCase):
@@ -24,14 +23,14 @@ class InspectSources(unittest.TestCase):
 
     def get_baseline(self):
         generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated', norm = True)
-        scalew(generated)
+        br.scalew(generated)
         return generated 
 
 
     def inspect(self, ptype):
         f = lambda x : read_histogram(self.infile, self.selection, 'hPt_#pi^{0}_%s_%s' % (ptype, x), x if x else 'all', norm = True)
         particles = map(f, self.particles_set[ptype])
-        map(scalew, particles)
+        map(br.scalew, particles)
 
         for p in particles:
         	p.logy = True

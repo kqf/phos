@@ -4,11 +4,12 @@ from spectrum.spectrum import Spectrum
 from spectrum.options import Options
 from spectrum.input import Input, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
-from spectrum.sutils import wait, scalew
 from spectrum.comparator import Comparator
 from spectrum.sutils import save_tobject
 
 from test.analysis.test_check_different_modules import run_analysis
+
+from spectrum.broot import BROOT as br
 
 import ROOT
 
@@ -47,14 +48,14 @@ class Efficiency(object):
         true = read_histogram(self.iname, self.selection, self.genname, label = label, priority = 0)
         print true
         true.logy = True
-        return scalew(true)
+        return br.scalew(true)
 
 
     def reco(self):
         inp = Input(self.iname, self.selection, 'MassPt')
         reco = Spectrum(inp, Options(self.label, mode = 'q')).evaluate().npi0
         reco.logy = True
-        return scalew(reco)
+        return br.scalew(reco)
 
 
     def efficiency(self):
@@ -138,7 +139,7 @@ class CalculateEfficiency(unittest.TestCase):
         spectrums = zip(*modules).npi0
         map(lambda x: x.SetTitle('Efficiency per module'), spectrums)
         map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
-        map(scalew, spectrums)
+        map(br.scalew, spectrums)
 
         true = Efficiency(self.true_pt_mc, '', self.pythiaf).true()
         diff.compare_ratios(spectrums, true)

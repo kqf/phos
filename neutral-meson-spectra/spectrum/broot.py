@@ -209,4 +209,9 @@ class BROOT(object):
 
         return result
 
+    @classmethod
+    def scalew(klass, hist, factor = 1.):
+        hist.Scale(factor, "width")
+        return hist
+
 

@@ -5,7 +5,8 @@ from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator
-from spectrum.sutils import save_tobject, scalew
+
+from spectrum.broot import BROOT as br
 
 import ROOT
 
@@ -27,7 +28,7 @@ class FeeddownEstimator(object):
         # TODO: Check if this is the final parametrization
         inp = NoMixingInput(self.infile, self.selection, histname)
         spectrum = Spectrum(inp, Options.fixed_peak(x if x else 'all')).evaluate().spectrum
-        return scalew(spectrum) 
+        return br.scalew(spectrum) 
 
     def estimate(self, ptype = ''):
         feeddown = self.spectrum(self.hname + ptype, ptype)
@@ -40,7 +41,7 @@ class FeeddownEstimator(object):
 
     def get_baseline(self):
         # generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
-        # scalew(generated)
+        # br.scalew(generated)
         # Estimate this quantity in a following way
         return self.spectrum('MassPt', '\pi^{0}_{rec} all')
 

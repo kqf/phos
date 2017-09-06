@@ -2,9 +2,9 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.options import Options
-from spectrum.sutils import scalew
 from spectrum.input import Input
 
+from spectrum.broot import BROOT as br
 from test.playground.phspace import InclusiveGenerator
 
 import os
@@ -32,7 +32,7 @@ class CheckAlgorithm(test.check_default.CheckDefault):
         reconstructed = f(Input(self.genfilename, self.generator.selname), 'reconstructed', self.mode).npi0
 
 
-        self.results = map(scalew, [reconstructed, generated])
+        self.results = map(br.scalew, [reconstructed, generated])
 
 
 

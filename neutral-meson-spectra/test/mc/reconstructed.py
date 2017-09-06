@@ -9,7 +9,6 @@ from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator
-from spectrum.sutils import save_tobject, scalew
 
 from spectrum.broot import BROOT as br
 
@@ -24,7 +23,7 @@ class Estimator(object):
         f = lambda x: Spectrum(inp(x), Options.fixed_peak(x)).evaluate().spectrum
 
         particles = map(f, self.particles_set[ptype])
-        map(scalew, particles)
+        map(br.scalew, particles)
 
         generated = self.get_baseline()
 
@@ -39,7 +38,7 @@ class Estimator(object):
 
     def get_baseline(self):
         generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
-        scalew(generated)
+        br.scalew(generated)
         return generated 
 
 

@@ -6,9 +6,11 @@ import operator as op
 import ROOT
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas, scalew
+from spectrum.sutils import get_canvas
 from spectrum.options import Options
 import spectrum.comparator as cmpr
+
+from spectrum.broot import BROOT as br
 
 
 class TestRawQauntities(unittest.TestCase):
@@ -24,8 +26,8 @@ class TestRawQauntities(unittest.TestCase):
         observables = map(op.methodcaller('evaluate'), spectrums)
 
         for obs in observables:
-            scalew(obs.spectrum)
-            scalew(obs.npi0)
+            br.scalew(obs.spectrum)
+            br.scalew(obs.npi0)
 
         c1 = get_canvas(1./2, resize=True)
         diff = cmpr.Comparator()

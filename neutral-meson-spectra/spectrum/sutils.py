@@ -122,13 +122,6 @@ def adjust_canvas(canvas):
     canvas.SetLeftMargin(0.01 * width)
     return canvas
     
-
-# TODO: Move this to broot
-def scalew(hist, factor = 1.):
-    hist.Scale(factor, "width")
-    return hist
-
-
 class Cc:
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'

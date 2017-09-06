@@ -4,7 +4,6 @@ import unittest
 import sys
 import os
 import random
-from math import ceil
 
 import ROOT
 
@@ -107,7 +106,7 @@ class TestTH(unittest.TestCase):
 
     def test_copy(self):
         hist = br.BH(ROOT.TH1F, 
-            "refhistClone", "Testing updated Clone method", 100, -10, 10,
+            "refhistCopy", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
         hist.FillRandom("gaus")
@@ -192,11 +191,11 @@ class TestTH(unittest.TestCase):
 
     def test_ratio(self):
         hist1 = br.BH(ROOT.TH1F, 
-            "refhistClone", "Testing the ratio method", 100, -10, 10,
+            "refhistRatio1", "Testing the ratio method", 100, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
         hist2 = br.BH(ROOT.TH1F, 
-            "refhistClone", "Testing the ratio method", 100, -10, 10,
+            "refhistRatio2", "Testing the ratio method", 100, -10, 10,
             label = "test ratio b", logy=True, logx=False, priority = 3)
 
         hist1.FillRandom("gaus")
@@ -211,7 +210,7 @@ class TestTH(unittest.TestCase):
 
     def test_sets_events(self):
         hist1 = br.BH(ROOT.TH1F, 
-            "refhistClone", "Testing set events", 100, -10, 10,
+            "refhistSetEvents", "Testing set events", 100, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
         hist1.FillRandom("gaus")
@@ -223,24 +222,24 @@ class TestTH(unittest.TestCase):
         # Check if .nevents attribute is OK
         self.assertEqual(hist1.nevents, events)
         # Check if we don't mess with area
-        self.assertNotEqual(ceil(hist1.Integral()), ceil(integral / events))
+        self.assertNotEqual(int(hist1.Integral()), int(integral / events))
+
 
         # Now with normalization
-
         br.set_nevents(hist1, events, True)
         # Check if .nevents attribute is OK
         self.assertEqual(hist1.nevents, events)
         # Check if we don't mess with area
-        self.assertEqual(ceil(hist1.Integral()), ceil(integral / events))
+        self.assertEqual(int(hist1.Integral()), int(integral / events))
 
 
     def test_rebins(self):
         hist1 = br.BH(ROOT.TH1F, 
-            "refhistClone", "Testing rebins", 200, -10, 10,
+            "refhistRebin1", "Testing rebins", 200, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
         hist2 = br.BH(ROOT.TH1F, 
-            "refhistClone", "Testing rebins", 100, -10, 10,
+            "refhistRebin2", "Testing rebins", 100, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
         hist1.FillRandom("gaus")
@@ -259,7 +258,7 @@ class TestTH(unittest.TestCase):
 
     def test_sum(self):
         hists = [ br.BH(ROOT.TH1F, 
-            "refhistClone_%d" % i, "Testing sum %d" % i, 200, -10, 10,
+            "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
             label = "%dth histogram" % i, logy=True, logx=False, priority = 3)
             for i in range(10)]
 
@@ -273,4 +272,32 @@ class TestTH(unittest.TestCase):
 
         self.assertEqual(total.GetEntries(), entries)
         self.assertEqual(total.label, newlabel)
+
+
+    def test_scales_histogram(self):
+        nbins, start, stop =  200, -10, 10
+
+        hist = br.BH(ROOT.TH1F, 
+            "refhistScale", "Testing scalew", nbins, start, stop,
+            label = "scale", logy=True, logx=False, priority = 3)
+
+        hist.FillRandom('gaus')
+
+        # Calculate bin width
+        binwidth = nbins * 1./ (stop - start)
+
+        # For normal even binning these numbers are the same
+        entries, integral = hist.GetEntries(), hist.Integral()
+        self.assertEqual(entries, integral)
+
+        br.scalew(hist, 1)
+        self.assertEqual(entries, hist.GetEntries())
+        self.assertEqual(hist.Integral(), integral * binwidth)
+
+        # NB: Be careful when applying scalew consecutively
+        #     the factors multiply
+        br.scalew(hist, 2)
+        self.assertEqual(entries, hist.GetEntries())
+        self.assertEqual(hist.Integral(), integral * binwidth * binwidth * 2)
+
 
