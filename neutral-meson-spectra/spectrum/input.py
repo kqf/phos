@@ -45,6 +45,16 @@ class Input(object):
         input_data = ((h, l) for h, l in zip(data, names) if good(h))
         return zip(*input_data)
 
+class NoMixingInput(Input):
+    def __init__(self, filename, listname, histname = 'MassPt', mixprefix = 'Mix'):
+        super(NoMixingInput, self).__init__(filename, listname, histname, mixprefix)
+
+    def read(self, histo = ''):
+        histo = histo if histo else self.histname
+        raw = br.read.read(self.filename, self.listname, 'h' + histo)
+        br.set_nevents(raw, self._events)
+        return raw, None
+
 class ExampleInput(Input):
     def __init__(self, filename, listname = 'Data', histname = 'MassPtA10vtx10', mixprefix = 'Mi'):
         super(ExampleInput, self).__init__(filename, listname, histname, mixprefix)

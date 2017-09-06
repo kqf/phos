@@ -3,7 +3,7 @@ import os
 import unittest
 import progressbar
 
-from spectrum.input import Input, TimecutInput, read_histogram
+from spectrum.input import Input, NoMixingInput, read_histogram
 from test.software.test_broot import write_histogram, write_histograms
 
 
@@ -53,6 +53,28 @@ class TestInput(unittest.TestCase):
 
         self.assertEqual(real.nevents, onevents)
         self.assertEqual(real.nevents, mixed.nevents)
+        os.remove(ofilename)
+
+    def test_reads_nomixing_input(self):
+        ofilename = 'test_read.root'
+        selection = 'testSelection'
+        histnames = 'hMassPt', 'EventCounter'
+
+        original = write_histograms(ofilename, selection, histnames)
+        oreal, onevents = original[0], original[-1].GetBinContent(2)
+
+        real, mixed = NoMixingInput(ofilename, selection).read()
+
+        self.assertIsNotNone(real)
+        self.assertIsNone(mixed)
+
+        # We are reading different histograms
+        self.assertFalse(real is oreal)
+
+        # And those histograms have the same name
+        self.assertEqual(real.GetEntries(), oreal.GetEntries())
+
+        self.assertEqual(real.nevents, onevents)
         os.remove(ofilename)
 
 

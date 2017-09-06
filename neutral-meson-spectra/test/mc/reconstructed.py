@@ -4,7 +4,7 @@ import os.path
 import unittest
 
 from spectrum.spectrum import Spectrum
-from spectrum.input import Input, TimecutInput, read_histogram
+from spectrum.input import NoMixingInput, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
@@ -20,7 +20,7 @@ class Estimator(object):
         super(Estimator, self).__init__()
 
     def estimate(self, ptype = 'secondary'):
-        inp = lambda x: Input(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x))
+        inp = lambda x: NoMixingInput(self.infile, self.selection, '{0}_{1}_{2}'.format(self.hname, ptype, x))
         f = lambda x: Spectrum(inp(x), Options.fixed_peak(x)).evaluate().spectrum
 
         particles = map(f, self.particles_set[ptype])
