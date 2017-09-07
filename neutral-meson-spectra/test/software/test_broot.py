@@ -301,3 +301,38 @@ class TestTH(unittest.TestCase):
         self.assertEqual(hist.Integral(), integral * binwidth * binwidth * 2)
 
 
+    def test_calculates_area_and_error(self):
+        nbins, start, stop = 10, 0, 10
+        hist = br.BH(ROOT.TH1F, 
+            "refhistScale", "Testing scalew", nbins, start, stop,
+            label = "scale", logy=True, logx=False, priority = 3)
+
+        for i in range(nbins):
+            hist.Fill(i, i)
+
+
+        triangle = lambda n: n * (n - 1) / 2
+        farea = lambda a, b: triangle(b) - triangle(a)
+
+        # These areas work according to the formula
+        test_areas = (0, 10), (5, 10), (0, 0)
+        for interval in test_areas:
+            area, error = br.area_and_error(hist, *interval)
+
+            true = farea(*interval)
+
+            self.assertEqual(area, true)
+            self.assertEqual(error, true ** 0.5)
+
+        # NB: ROOT behaviour
+        # But these areas don't work according agree with expectations
+        # because ROOT takes into account both ends of the interval
+        fail_areas =  (5, 6), (0, 1), (1, 8)
+        for interval in fail_areas:
+            area, error = br.area_and_error(hist, *interval)
+            true = farea(*interval)
+
+            self.assertNotEqual(area, true)
+            # There is no need to compare errors
+
+

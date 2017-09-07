@@ -3,13 +3,15 @@ import ROOT
 import sys
 import json
 
-from spectrum.sutils import get_canvas, wait, area_and_error, ratio, adjust_canvas
+from spectrum.sutils import get_canvas, wait, adjust_canvas
 from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
 from spectrum.spectrum import Spectrum
 from spectrum.options import Options
 from spectrum.outputcreator import OutputCreator
+
+from spectrum.broot import BROOT as br
 
 
 import numpy as np
@@ -111,7 +113,7 @@ class TagAndProbeRigorous(TagAndProbe):
 
     def probe_spectrum(self, estimator):
         mranges = estimator.mass_ranges()
-        results = map(lambda x, y: area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
+        results = map(lambda x, y: br.area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
         ehist = OutputCreator('spectrum', 'probe distribution; E, GeV', estimator.analyzer.opt.label)
         return ehist.get_hist(estimator.analyzer.opt.ptedges, results)
 
@@ -157,10 +159,10 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
     @unittest.skip('Debug')
     def testCompareEfficienciesDifferentMethods(self):
         cut, full = self.eff_calculator.estimate()
-        eff1 = ratio(cut, full, 'TOF efficiency; E, GeV', 'rigorous')
+        eff1 = br.ratio(cut, full, 'TOF efficiency; E, GeV', 'rigorous')
 
         cut, full = self.eff_calculator_relaxed.estimate()
-        eff2 = ratio(cut, full, 'TOF efficiency; E, GeV', 'simple')
+        eff2 = br.ratio(cut, full, 'TOF efficiency; E, GeV', 'simple')
         
         diff = Comparator()
         diff.compare(eff1, eff2)
@@ -169,7 +171,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
     def testDifferentModules(self):
         conf = 'config/test_tagandprobe_modules.json'
         estimators = [TagAndProbeRigorous(self.infile, self.sel, 'MassEnergy%s' + '_SM%d' % i, cut='TOF', full='All', conffile=conf) for i in range(1, 5)]
-        f = lambda i, x, y: ratio(x, y, 'TOF efficiency in different modules; E, GeV', 'SM%d' % i)
+        f = lambda i, x, y: br.ratio(x, y, 'TOF efficiency in different modules; E, GeV', 'SM%d' % i)
         multiple = [[f(i + 1, *(e.estimate()))] for i, e in enumerate(estimators)]
 
         c1 = adjust_canvas(get_canvas())

@@ -3,10 +3,12 @@
 import ROOT
 import collections
 
-from sutils import nicely_draw, get_canvas, wait, area_and_error
+from sutils import nicely_draw, get_canvas, wait
 from outputcreator import OutputCreator
 from invariantmass import InvariantMass
 from options import Options
+
+from broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)
 
@@ -57,7 +59,7 @@ class PtAnalyzer(object):
         
     def number_of_mesons(self, mass, intgr_ranges):
         a, b = intgr_ranges if intgr_ranges else mass.peak_function.opt.fit_range
-        area, areae = area_and_error(mass.signal, a, b)
+        area, areae = br.area_and_error(mass.signal, a, b)
         # area = mass.mass.Integral()
         return area, areae
 

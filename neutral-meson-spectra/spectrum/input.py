@@ -12,7 +12,6 @@ def read_histogram(filename, listname, histname, label = '', priority = 999, nor
     hist.label = label
     return hist
 
-# TODO: Reimplement this for the case when we don't need mixed histogram
 class Input(object):
     def __init__(self, filename, listname, histname = 'MassPt', mixprefix = 'Mix'):
         super(Input, self).__init__()

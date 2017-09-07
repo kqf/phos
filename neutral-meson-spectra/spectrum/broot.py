@@ -214,4 +214,11 @@ class BROOT(object):
         hist.Scale(factor, "width")
         return hist
 
+    @classmethod
+    def area_and_error(klass, hist, a, b):
+        area, areae = ROOT.Double(), ROOT.Double()
+        bin = lambda x: hist.FindBin(x)
+        area = hist.IntegralAndError(bin(a), bin(b), areae)
+        return area, areae
+
 
