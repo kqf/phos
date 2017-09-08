@@ -51,6 +51,7 @@ class Visualizer(object):
         pad2.SetTickx()
         pad2.SetTicky()
         pad2.SetGridy()
+        pad2.SetGridx()
         return c1, pad1, pad2
 
     def draw_ratio(self, hists, pad):
@@ -301,7 +302,7 @@ class Comparator(object):
         if not candidates:
             print Cc.warning('Warning: There is no such histogram ') + Cc.ok(ref.GetName()) + Cc.warning(' in the second file or it\'s empty')
             return None
-        if len(candidates) > 1: print Cc.warning('Warning: you have multiple histograms with the same name!!! Act!!')
+        if len(candidates) > 1: print ac.warning('Warning: you have multiple histograms with the same name!!! Act!!')
         return candidates[0]
         
 def main():

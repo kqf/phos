@@ -48,7 +48,7 @@ class ProbeSpectrum(object):
 
     def probe_spectrum(self, hist, mrange):
         a, b = map(hist.GetXaxis().FindBin, mrange)
-        mass = hist.ProjectionY(hist.GetName() + '_e_%d_%d' % (a, b), a, b)
+        mass = br.project_range(hist, '_e_%d_%d', *mrange, axis = 'y')
         mass.SetTitle('Probe distribution, %s #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (self.pref, hist.nevents / 1e6))         
         mass.SetLineColor(46)
         mass.SetStats(False)
@@ -59,8 +59,8 @@ class ProbeSpectrum(object):
         fullrange = self.calculate_range(self.hist)
         spectr = self.probe_spectrum(self.hist, fullrange)
 
-        edges = arr.array('d', edges)
-        spectr = spectr.Rebin(len(edges) - 1, spectr.GetName() + "_rebinned", edges)
+        # Rebin the spectrum, check if spectr has properties
+        spectr = br.rebin(spectr, edges)
         spectr.label = self.pref
         spectr.logy = True
         return spectr
@@ -115,7 +115,10 @@ class TagAndProbeRigorous(TagAndProbe):
         mranges = estimator.mass_ranges()
         results = map(lambda x, y: br.area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
         ehist = OutputCreator('spectrum', 'probe distribution; E, GeV', estimator.analyzer.opt.label)
-        return ehist.get_hist(estimator.analyzer.opt.ptedges, results)
+        ehist = ehist.get_hist(estimator.analyzer.opt.ptedges, results)
+        ehist.logy = True
+        return ehist
+
 
     def estimate(self)  :
         return map(self.probe_spectrum, self.cut_and_full)

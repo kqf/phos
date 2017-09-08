@@ -371,4 +371,28 @@ class TestTH(unittest.TestCase):
             self.assertNotEqual(area, true)
             # There is no need to compare errors
 
+    def test_rebins_for_given_ranges(self):
+        nbins, start, stop =  200, -10, 10
+
+        new_edges = [-10, -3, -2, 0, 1, 4, 6, 10]
+        newbins = zip(new_edges[:-1], new_edges[1:])
+
+        hist = br.BH(ROOT.TH1F, 
+            "refhistEdges", "Testing scalew", nbins, start, stop,
+            label = "scale", logy=True, logx=False, priority = 3)
+        hist.FillRandom('gaus')
+
+        rebinned = br.rebin(hist, new_edges)
+        self.assertEqual(hist.Integral(), rebinned.Integral())
+        self.assertEqual(hist.GetEntries(), rebinned.GetEntries())
+        self.assertTrue(br.same(hist, rebinned))
+        self.assertEqual(rebinned.GetNbinsX(), len(newbins))
+
+        for i, bin in enumerate(newbins):
+            binw = bin[1] - bin[0]
+            self.assertEqual(rebinned.GetBinWidth(i + 1), binw)
+
+
+
+
 

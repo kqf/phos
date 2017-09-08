@@ -153,7 +153,8 @@ class BROOT(object):
         #      beginning of the next bin. Therefore use "b - 1" here!
         #
 
-        proj = hist.ProjectionX(name, a, b - 1) if axis == 'x' else hist.ProjectionY(name, a, b - 1)
+        args = name, a, b - 1
+        proj = hist.ProjectionX(*args) if axis == 'x' else hist.ProjectionY(*args)
         klass.setp(proj, hist, force = True)
         return proj
 
@@ -241,5 +242,12 @@ class BROOT(object):
         area = hist.IntegralAndError(bin(a), bin(b), areae)
         return area, areae
 
+    @classmethod
+    def rebin(klass, hist, edges, name = "_rebinned"):
+        edges = array.array('d', edges)
+        rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
+        klass.setp(rebin, hist, force = True)
+        return rebin
+  
 
 
