@@ -163,6 +163,8 @@ Int_t DetectorHistogram::Index(Int_t sm1, Int_t sm2) const
 		swap(sm1, sm2);
 
 	// TODO: Get rid of this loop here
+	//       Replace by the triangular array indexing
+	
 	Int_t index = 0;
 	for (Int_t i = kFirstModule; i < (kLastModule + 1); ++i)
 	{

@@ -41,7 +41,6 @@ class BROOT(object):
 
             keys = (key for key in klass._properties if key not in dir(dest) or force)
             for key in keys:
-                # print dest.GetName(), 'added', key
                 dest.__dict__[key] = copy.deepcopy(source.__dict__[key])
 
         @staticmethod
@@ -145,9 +144,25 @@ class BROOT(object):
     @classmethod
     def projection(klass, hist, name, a, b, axis = 'x'):
         axis, name = axis.lower(), hist.GetName() + name
-        proj = hist.ProjectionX(name, a, b) if axis == 'x' else hist.ProjectionY(name, a, b)
+
+        if '%d_%d' in name:
+            name = name % (a, b)
+
+        # NB:  By default ProjectionX takes the last bin as well. 
+        #      We don't want to take last bin as it contains the
+        #      beginning of the next bin. Therefore use "b - 1" here!
+        #
+
+        proj = hist.ProjectionX(name, a, b - 1) if axis == 'x' else hist.ProjectionY(name, a, b - 1)
         klass.setp(proj, hist, force = True)
         return proj
+
+
+    @classmethod
+    def project_range(klass, hist, name, xa, xb, axis = 'x'):
+        bin = klass.bincenterf(hist, not 'x' in axis)
+        return klass.projection(hist, name, bin(xa), bin(xb), axis)
+
 
     @classmethod
     def same(klass, hist1, hist2):
@@ -214,11 +229,17 @@ class BROOT(object):
         hist.Scale(factor, "width")
         return hist
 
+    @staticmethod
+    def bincenterf(hist, isxaxis = True):
+        axis = hist.GetXaxis() if isxaxis else hist.GetYaxis()
+        return lambda x: axis.FindBin(x)
+
     @classmethod
     def area_and_error(klass, hist, a, b):
         area, areae = ROOT.Double(), ROOT.Double()
-        bin = lambda x: hist.FindBin(x)
+        bin = klass.bincenterf(hist)
         area = hist.IntegralAndError(bin(a), bin(b), areae)
         return area, areae
+
 
 

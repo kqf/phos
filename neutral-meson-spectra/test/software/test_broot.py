@@ -130,10 +130,10 @@ class TestTH(unittest.TestCase):
         self.hist.Draw('same')
         wait(draw = self.mode)
 
-    def test_bh2_projection(self):
+    def test_bh2_draws_projection_range(self):
         hist = br.BH(ROOT.TH2F, "refhistProj",                  # Name
                     "Testing updated ProjectX method for BH2F", # Title
-                    100, -10, 10, 100, -10, 10,                 # Xbins, Ybins
+                    100, 20, 30, 100, -10, 10,                 # Xbins, Ybins
                     label = "test prop",                        # Label
                     logy = 1, logx = 0, priority = 3            # Misc properties
                    )
@@ -148,7 +148,7 @@ class TestTH(unittest.TestCase):
         wait(draw = self.mode)
 
         ## NB: There is no need to manually set properties
-        hist2 = br.projection(hist, 'newname', 1, 50)
+        hist2 = br.project_range(hist, 'newname', -5, 5)
 
         hist2.Draw()
         wait(draw = self.mode)
@@ -156,6 +156,42 @@ class TestTH(unittest.TestCase):
         ## Now copy the properties
         self.assertTrue(br.same(hist2, hist))
 
+    def test_projection_saves_area(self):
+        # NB: Bin according to this sequence https://oeis.org/A000124 
+        #     so the bin width of a projection hist always increases
+        #
+        carter, ncarter = lambda n: n * (n + 1) / 2 + 1, 16
+
+        # TODO: figure out what is why do we should nbinsx, not nbinsy
+        #       this contradicts regular logic
+
+        nbinsx, startx, stopx = carter(ncarter), -10, 10
+        nbinsy, starty, stopy = 100, -10, 10
+
+        hist = br.BH(ROOT.TH2F, "refhistProjArea",                # Name
+                    "Testing updated ProjectX method for BH2F",   # Title
+                    nbinsx, startx, stopx, nbinsy, starty, stopy, # Xbins, Ybins
+                    label = "test prop",                          # Label
+                    logy = 1, logx = 0, priority = 3              # Misc properties
+                   )
+
+        # Fill random values
+        for i in range(1, hist.GetXaxis().GetNbins() + 1):
+            for j in range(1, hist.GetYaxis().GetNbins() + 1):
+                hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
+
+        bin_edges = map(carter, range(ncarter))
+        bins = zip(bin_edges[:-1], bin_edges[1:])
+
+        projections = [br.projection(hist, "%d_%d", *bin) for bin in bins]
+
+        # print 
+        # for b, p in zip(bins, projections):
+            # print b, p.Integral()
+        print sum(p.Integral() for p in projections), hist.Integral()
+
+        total = sum(p.Integral() for p in projections) 
+        self.assertEqual(total, hist.Integral())
 
     def test_read(self):
         data = 'test_read.root', 'testSelection', 'testHistogram'
@@ -304,7 +340,7 @@ class TestTH(unittest.TestCase):
     def test_calculates_area_and_error(self):
         nbins, start, stop = 10, 0, 10
         hist = br.BH(ROOT.TH1F, 
-            "refhistScale", "Testing scalew", nbins, start, stop,
+            "refhistAreaError", "Testing area and error", nbins, start, stop,
             label = "scale", logy=True, logx=False, priority = 3)
 
         for i in range(nbins):

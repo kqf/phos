@@ -4,6 +4,7 @@ import ROOT
 import json
 from parametrisation import PeakParametrisation
 from sutils import get_canvas, ticks
+from broot import BROOT as br
 
 class InvariantMass(object):
    
@@ -62,13 +63,7 @@ class InvariantMass(object):
         if not hist:
             return None
 
-        a, b = map(hist.GetYaxis().FindBin, self.pt_range)
-
-        # NB:  By default ProjectionX takes the last bin as well. 
-        #      We don't want to take last bin as it contains the beginning of the next bin. Therefore use "b - 1" here!
-        #
-        
-        mass = hist.ProjectionX(hist.GetName() + '_%d_%d' % (a, b), a, b - 1)
+        mass = br.project_range(hist, '_%d_%d', *self.pt_range)
         mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
         mass.SetLineColor(37)
 
