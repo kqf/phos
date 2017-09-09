@@ -196,13 +196,13 @@ class TestTH(unittest.TestCase):
     def test_read(self):
         data = 'test_read.root', 'testSelection', 'testHistogram'
         write_histogram(*data)
-        self.assertIsNotNone(br.read.read(*data))
+        self.assertIsNotNone(br.io.read(*data))
 
         # Now raise exceptions when reading 
         # the root file with wrong names
-        self.assertRaises(IOError, br.read.read, 'junk' + data[0], data[1], data[2])
-        self.assertRaises(IOError, br.read.read, data[0], 'junk' + data[1], data[2])
-        self.assertRaises(IOError, br.read.read, data[0], data[1], 'junk' + data[2])
+        self.assertRaises(IOError, br.io.read, 'junk' + data[0], data[1], data[2])
+        self.assertRaises(IOError, br.io.read, data[0], 'junk' + data[1], data[2])
+        self.assertRaises(IOError, br.io.read, data[0], data[1], 'junk' + data[2])
         os.remove(data[0])
 
     def test_read_multiple(self):
@@ -213,7 +213,7 @@ class TestTH(unittest.TestCase):
         write_histograms(ofilename, selection, histnames)
 
 
-        histograms = br.read.read_multiple(ofilename, selection, histnames)
+        histograms = br.io.read_multiple(ofilename, selection, histnames)
         self.assertIsNotNone(histograms)
         self.assertEqual(len(histograms), len(histnames))
         self.assertIsNotNone(histograms[0])
@@ -221,7 +221,7 @@ class TestTH(unittest.TestCase):
 
         # Now feed it with wrong name 
         histnames.append('junk')
-        self.assertRaises(IOError, br.read.read_multiple, 
+        self.assertRaises(IOError, br.io.read_multiple, 
             ofilename, selection, histnames)
         os.remove(ofilename)
 

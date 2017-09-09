@@ -6,7 +6,7 @@ from broot import BROOT as br
 
 
 def read_histogram(filename, listname, histname, label = '', priority = 999, norm = False):
-    hist = br.read.read(filename, listname, histname)
+    hist = br.io.read(filename, listname, histname)
     br.set_nevents(hist, Input.events(filename, listname), norm)
     hist.priority = priority
     hist.label = label
@@ -23,13 +23,13 @@ class Input(object):
 
     @staticmethod
     def events(filename, listname):
-        return br.read.read(filename, listname, 'EventCounter').GetBinContent(2)
+        return br.io.read(filename, listname, 'EventCounter').GetBinContent(2)
 
     def read(self, histo = ''):
         # NB: Use histo to support per module histogram
         histo = histo if histo else self.histname
         raw_mix = ['h' + p + histo for p in self.prefix]
-        raw_mix = br.read.read_multiple(self.filename, self.listname, raw_mix)
+        raw_mix = br.io.read_multiple(self.filename, self.listname, raw_mix)
 
         for h in raw_mix:
             if not h: continue
@@ -50,7 +50,7 @@ class NoMixingInput(Input):
 
     def read(self, histo = ''):
         histo = histo if histo else self.histname
-        raw = br.read.read(self.filename, self.listname, 'h' + histo)
+        raw = br.io.read(self.filename, self.listname, 'h' + histo)
         br.set_nevents(raw, self._events)
         return raw, None
 
@@ -61,7 +61,7 @@ class ExampleInput(Input):
 
     @staticmethod
     def events(filename, listname):
-        return br.read.read(filename, listname, 'hSelEvents').GetBinContent(4)
+        return br.io.read(filename, listname, 'hSelEvents').GetBinContent(4)
 
         
 class TimecutInput(Input):
@@ -70,5 +70,5 @@ class TimecutInput(Input):
 
     @staticmethod
     def events(filename, listname):
-        return br.read.read(filename, 'PhysTender', 'EventCounter').GetBinContent(2)
+        return br.io.read(filename, 'PhysTender', 'EventCounter').GetBinContent(2)
 

@@ -5,7 +5,6 @@ from spectrum.options import Options
 from spectrum.input import Input, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.comparator import Comparator
-from spectrum.sutils import save_tobject
 
 
 from spectrum.broot import BROOT as br

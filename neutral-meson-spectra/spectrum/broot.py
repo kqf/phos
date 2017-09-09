@@ -53,9 +53,9 @@ class BROOT(object):
         def has_properties(klass, hist):
             return all(prop in dir(hist) for prop in klass._properties) 
 
-    class read(object):
+    class io(object):
         def __init__(self):
-            super(BROOT.read, self).__init__()
+            super(BROOT.io, self).__init__()
 
         @classmethod
         def _read_file(klass, filename, directory = 'input-data/'):
@@ -113,7 +113,7 @@ class BROOT(object):
                 histograms.append(hist)
             lst.IsA().Destructor(lst)
             return histograms
-            
+              
     def __init__(self):
         super(BROOT, self).__init__()
 
@@ -249,5 +249,3 @@ class BROOT(object):
         klass.setp(rebin, hist, force = True)
         return rebin
   
-
-
