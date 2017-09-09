@@ -113,7 +113,22 @@ class BROOT(object):
                 histograms.append(hist)
             lst.IsA().Destructor(lst)
             return histograms
-              
+
+        @classmethod
+        def save(klass, obj, fname = 'output.root', selection = '', option = 'recreate'):
+            ofile = ROOT.TFile(fname, option)
+
+            if not selection:
+                obj.Write()
+                ofile.Close()
+
+            olist = ROOT.TList()
+            olist.SetOwner(True)
+            olist.Add(obj)
+            olist.Write(selection, 1)
+            ofile.Close()
+
+            
     def __init__(self):
         super(BROOT, self).__init__()
 

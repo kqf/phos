@@ -6,7 +6,7 @@ from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator
-from spectrum.sutils import save_tobject
+from spectrum.broot import BROOT as br
 
 import ROOT
 
@@ -69,6 +69,6 @@ class Nonlinearity(unittest.TestCase):
         diff = Comparator()
         ratio = diff.compare(data, mc)
 
-        save_tobject(ratio, fname)
+        br.io.save(ratio, fname)
         return ratio
 

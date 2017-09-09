@@ -5,8 +5,6 @@ from spectrum.options import Options
 from spectrum.input import Input, read_histogram
 from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.comparator import Comparator
-from spectrum.sutils import save_tobject
-
 from test.analysis.test_check_different_modules import run_analysis
 
 from spectrum.broot import BROOT as br
@@ -66,7 +64,7 @@ class Efficiency(object):
         ratio.label = self.label
 
         if self.oname: 
-            save_tobject(ratio, self.oname)
+            br.io.save(ratio, self.oname)
         return ratio
 
 class CalculateEfficiency(unittest.TestCase):

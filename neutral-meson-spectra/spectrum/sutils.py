@@ -82,12 +82,6 @@ def get_canvas(x = 1., y = 1, resize = False, scale = 6):
     ticks(canvas)
     return adjust_canvas(canvas)
 
-
-def save_tobject(obj, fname, option = 'recreate'):
-    ofile = ROOT.TFile(fname, option)
-    obj.Write()
-    ofile.Close()
-
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()
     canvas.SetBottomMargin(0.02 * height)

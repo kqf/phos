@@ -3,8 +3,9 @@ import ROOT
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas, wait, save_tobject
+from spectrum.sutils import get_canvas, wait
 from spectrum.options import Options
+from spectrum.broot import BROOT as br
 
 
 class TestMass(unittest.TestCase):
@@ -86,8 +87,8 @@ class TestMassParameters(unittest.TestCase):
             return self.read_histograms(infile)
 
         mass, sigma = f.analyzer.quantities(False)[0:2]
-        save_tobject(mass, oname, 'recreate')
-        save_tobject(sigma, oname, 'update')
+        br.io.save(mass, oname, 'recreate')
+        br.io.save(sigma, oname, 'update')
         return mass, sigma
 
     def testMass(self):

@@ -10,6 +10,10 @@ import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.sutils import wait
 
+# NB: Don't use broot in write functions
+#     as it's important to test without broot
+# 
+
 def write_histogram(filename, selection, histname):
     hist = br.BH(ROOT.TH1F, histname, 'Testing reading ' + \
          'histograms from a rootfile', 10, -3, 3)
@@ -392,6 +396,26 @@ class TestTH(unittest.TestCase):
             binw = bin[1] - bin[0]
             self.assertEqual(rebinned.GetBinWidth(i + 1), binw)
 
+
+
+    def test_saves_histogram(self):
+
+        oname, selection, histname = 'testSave.root', 'testSelection', 'refhistSave'
+        hist = br.BH(ROOT.TH1F, 
+            histname, "Testing scalew", 200, -10, 10,
+            label = "scale", logy=True, logx=False, priority = 3)
+        hist.FillRandom('gaus')
+        integral = hist.Integral()
+        entries = hist.GetEntries()
+
+
+        br.io.save(hist, oname, selection)
+        self.assertTrue(os.path.isfile(oname))
+
+        ffile = br.io.read(oname, selection, histname)
+        self.assertEqual(ffile.GetEntries(), entries)
+        self.assertEqual(ffile.Integral(), integral)
+        os.remove(oname)
 
 
 
