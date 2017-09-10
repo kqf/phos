@@ -3,7 +3,7 @@
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
 from spectrum.options import Options
-from spectrum.sutils import get_canvas, adjust_canvas
+from spectrum.sutils import gcanvas, adjust_canvas
 
 import test.check_default
 import unittest
@@ -22,13 +22,13 @@ class CheckModules(test.check_default.CheckDefault):
         opt = Options(mode='d')
         opt.pt.config = 'config/test_different_modules.json'
         self.results = run_analysis(opt, 'input-data/LHC16.root', 'PhysTender')
-        self.c1 = adjust_canvas(get_canvas())
+        self.c1 = adjust_canvas(gcanvas())
 
     def testEta(self):
         opt = Options(particle='eta', mode='d')
         opt.pt.config = 'config/test_different_modules.json'
         self.results = run_analysis(opt, 'input-data/LHC16.root', 'EtaTender')
-        self.c1 = adjust_canvas(get_canvas())
+        self.c1 = adjust_canvas(gcanvas())
 
 
 

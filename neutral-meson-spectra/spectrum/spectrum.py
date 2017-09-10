@@ -2,7 +2,7 @@
 
 import ROOT
 import json
-from sutils import get_canvas, wait, adjust_canvas, ticks
+from sutils import gcanvas, wait, adjust_canvas, ticks
 from ptanalyzer import PtAnalyzer
 from options import Options
 
@@ -32,7 +32,7 @@ class Spectrum(object):
 
 
         if not self.opt.dead:
-            canvas = get_canvas(1./ 2., 1, True)
+            canvas = gcanvas(1./ 2., 1, True)
             adjust_canvas(canvas)
             ticks(canvas) 
             quant.Draw()

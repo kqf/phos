@@ -3,7 +3,7 @@ import ROOT
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas, ticks
+from spectrum.sutils import gcanvas, ticks
 from spectrum.options import Options
 
 
@@ -51,7 +51,7 @@ class CrystalBallParametersPi0(unittest.TestCase):
             to run the comparison.
         """
 
-        c1 = get_canvas(1./2)
+        c1 = gcanvas(1./2)
         g = lambda x, y, z, w: Spectrum(x, label=y, mode=z, options=w).evaluate()
 
         infile = 'input-data/LHC16.root'

@@ -1,12 +1,12 @@
 import unittest
 
-from spectrum.sutils import get_canvas, wait
+from spectrum.sutils import gcanvas, wait
 from optimizer.optimizer import Optimizer
 from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
 
 def process(data, pref):
-    c1 = get_canvas()
+    c1 = gcanvas()
     c1.Clear()
     c1.Divide(2, 1)
     for i, (h, p) in enumerate(zip(data, pref)):
@@ -25,7 +25,7 @@ class TimecutOptimizer(unittest.TestCase):
     def setUp(self):
         # This should be done because fitter is a static object.
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
-        self.canvas = get_canvas()
+        self.canvas = gcanvas()
         self.filename = 'input-data/LHC16-old.root'
 
     @unittest.skip('')
@@ -40,7 +40,7 @@ class TimecutOptimizer(unittest.TestCase):
             scale(p)
             assymetries.append(p)
 
-        canvas = get_canvas()
+        canvas = gcanvas()
         for i, a in enumerate(assymetries):
         	a.SetLineColor(2 * i + 1)
         	a.SetAxisRange(0.3, 0.7, 'X')

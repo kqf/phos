@@ -5,7 +5,7 @@ import array
 
 def wait(name = '', draw=True, save = False, suffix = ''):
     outdir = 'results/'
-    canvas = get_canvas()
+    canvas = gcanvas()
     canvas.Update()
     name = name.replace(' ', '-').replace('_', '-')
 
@@ -65,7 +65,7 @@ def nicely_draw(hist, option = '', legend = None):
     wait('xlin_' + hist.GetName(), draw = True, save = True)
 
     
-def get_canvas(x = 1., y = 1, resize = False, scale = 6):
+def gcanvas(x = 1., y = 1, resize = False, scale = 6):
     canvas = ROOT.gROOT.FindObject('c1')
     if canvas: 
         if not resize:

@@ -1,6 +1,6 @@
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, read_histogram
-from spectrum.sutils import get_canvas, adjust_canvas, wait
+from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
 from spectrum.comparator import Visualizer, Comparator
 
@@ -101,7 +101,7 @@ class NonlinearityParameters(unittest.TestCase):
         # Total ratio
         mean = Chi2Entry.evaluate(nonlinearities)
 
-        c1 = get_canvas(1, 1, resize = True)
+        c1 = gcanvas(1, 1, resize = True)
         chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', \
             *self.calculate_ranges(nonlinearities))
 

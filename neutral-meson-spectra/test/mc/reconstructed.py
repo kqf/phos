@@ -5,7 +5,6 @@ import unittest
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import NoMixingInput, read_histogram
-from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator

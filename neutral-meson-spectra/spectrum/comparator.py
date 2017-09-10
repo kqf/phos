@@ -4,7 +4,7 @@ import ROOT
 import json
 import numpy as np
 
-from sutils import wait, get_canvas, Cc, adjust_canvas, adjust_labels
+from sutils import wait, gcanvas, Cc, adjust_canvas, adjust_labels
 from broot import BROOT as br
 
 
@@ -31,7 +31,7 @@ class Visualizer(object):
         
 
     def preare_ratio_plot(self, hists, canvas):
-        c1 = canvas if canvas else get_canvas(self.size[0], self.size[1], resize = True)
+        c1 = canvas if canvas else gcanvas(self.size[0], self.size[1], resize = True)
         c1.Clear()
 
         if self.ignore_ratio:
@@ -168,7 +168,7 @@ class Visualizer(object):
 
         
     def compare_multiple(self, hists, ci):
-        canvas = get_canvas(self.size[0], self.size[1], resize = True)
+        canvas = gcanvas(self.size[0], self.size[1], resize = True)
         canvas.Clear()
         canvas.Divide(2, 2)
 

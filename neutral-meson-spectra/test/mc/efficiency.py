@@ -3,7 +3,6 @@
 from spectrum.spectrum import Spectrum
 from spectrum.options import Options
 from spectrum.input import Input, read_histogram
-from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.comparator import Comparator
 from test.analysis.test_check_different_modules import run_analysis
 

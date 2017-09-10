@@ -3,7 +3,7 @@ import ROOT
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas, wait
+from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
 
@@ -14,7 +14,7 @@ class TestMass(unittest.TestCase):
     """
 
     def setUp(self):
-        self.canvas = get_canvas(1./ 2)
+        self.canvas = gcanvas(1./ 2)
         infile = 'input-data/LHC16.root'
         self.input = Input(infile, 'EtaTender').read()
         self.analysis = Spectrum(self.input, label='fixed cb parameters', mode='q', options=Options(particle='eta', relaxedcb=True))
@@ -27,7 +27,7 @@ class TestMass(unittest.TestCase):
 
 
     def check_parameterisation(self, func, pars):
-        self.canvas = get_canvas(1. / 2)
+        self.canvas = gcanvas(1. / 2)
         self.canvas.Clear()
 
         function = ROOT.TF1('f', func)

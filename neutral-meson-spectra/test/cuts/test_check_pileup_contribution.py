@@ -2,7 +2,7 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
-from spectrum.sutils import get_canvas
+from spectrum.sutils import gcanvas
 
 import test.check_default
 
@@ -17,7 +17,7 @@ class CheckPileup(test.check_default.CheckDefault):
         # Don't forget to enable this cut later
         #
 
-        canvas = get_canvas(1. / 2.)
+        canvas = gcanvas(1. / 2.)
         self.results = [
                         f(Input('input-data/LHC16.root', 'PhysTender').read(), '12.5 ns', self.mode),
                         f(TimecutInput('input-data/LHC16.root', 'TimeTender', 'MassPtN3').read(), 'no timecut', self.mode)

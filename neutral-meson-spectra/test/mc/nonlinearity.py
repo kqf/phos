@@ -2,7 +2,7 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
-from spectrum.sutils import get_canvas, adjust_canvas
+from spectrum.sutils import gcanvas
 from spectrum.options import Options
 from spectrum.sutils import wait
 from spectrum.comparator import Visualizer, Comparator
@@ -32,7 +32,7 @@ class Nonlinearity(unittest.TestCase):
 
 
     def testFitNonlinearityFunction(self):
-        canvas = get_canvas()
+        canvas = gcanvas()
         ratio = self.getRatio(self.nonlinearity_file)
         function = self.getNonlinearityFunction()
         ratio.SetAxisRange(0.90, 1.08, 'Y')

@@ -3,7 +3,7 @@
 import ROOT
 import collections
 
-from sutils import nicely_draw, get_canvas, wait
+from sutils import nicely_draw, gcanvas, wait
 from outputcreator import OutputCreator
 from invariantmass import InvariantMass
 from options import Options
@@ -102,7 +102,7 @@ class PtAnalyzer(object):
 
 
     def draw_all_bins(self, f, intgr_ranges, name = ''):
-        canvas = get_canvas(1, 1, True)
+        canvas = gcanvas(1, 1, True)
         canvas.Clear()
         canvas.Divide(*self.opt.multcanvas)
         for i, (m, r) in enumerate(zip(self.masses, intgr_ranges)):

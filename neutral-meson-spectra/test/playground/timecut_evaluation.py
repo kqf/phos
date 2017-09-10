@@ -1,6 +1,6 @@
 import unittest
 
-from spectrum.sutils import get_canvas, wait
+from spectrum.sutils import gcanvas, wait
 from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
 
@@ -46,7 +46,7 @@ class TestTimecutQuality(unittest.TestCase):
     def setUp(self):
         # This should be done because fitter is a static object.
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
-        self.canvas = get_canvas()
+        self.canvas = gcanvas()
 
     def testEfficiencyVsPurity(self):
         ref = MetricInput('input-data/LHC16k-pass1-ok.root', 'PhysTender', 'MassPtN3')

@@ -1,7 +1,7 @@
 import unittest
 
 import spectrum.comparator as cmpr
-from spectrum.sutils import wait, get_canvas
+from spectrum.sutils import wait, gcanvas
 from particles import Particles
 
 class TestOutputRatio(unittest.TestCase, Particles):
@@ -21,7 +21,7 @@ class TestOutputRatio(unittest.TestCase, Particles):
         self.data[2].SetTitle('Checking output ratio comparator')
         ratio = diff.compare(self.data[2], self.data[1])
 
-        c1 = get_canvas()
+        c1 = gcanvas()
         c1.SetLogy(0)
         if ratio:
             ratio.Draw()

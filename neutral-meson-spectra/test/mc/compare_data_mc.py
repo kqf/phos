@@ -2,7 +2,7 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
-from spectrum.sutils import get_canvas, adjust_canvas
+from spectrum.sutils import gcanvas, adjust_canvas
 from spectrum.options import Options
 
 import unittest
@@ -27,7 +27,7 @@ class CompareDataMC(unittest.TestCase):
                        
 
     def testResultMC(self):
-        c1 = get_canvas(1./2, resize=True)
+        c1 = gcanvas(1./2, resize=True)
 
         import spectrum.comparator as cmpr
         for r in self.results:

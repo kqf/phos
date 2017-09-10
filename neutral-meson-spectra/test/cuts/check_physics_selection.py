@@ -1,6 +1,6 @@
 import unittest
 
-from spectrum.sutils import get_canvas, wait, ratio
+from spectrum.sutils import gcanvas, wait, ratio
 from spectrum.spectrum import PtAnalyzer, Spectrum
 from spectrum.input import Input, TimecutInput
 from test.test_check_different_modules import ModuleAnalyzer
@@ -19,7 +19,7 @@ def decorate_hist(h, label, logy = False, norm = 1, rebin = 1):
 
 def multiple_plot(hists, name):
     ROOT.gStyle.SetOptStat('erm')
-    canvas = get_canvas(1, 1)
+    canvas = gcanvas(1, 1)
     canvas.Clear()
     canvas.Divide(2, 2)
 
@@ -36,7 +36,7 @@ def multiple_plot(hists, name):
 class CheckPhysicsSelection(unittest.TestCase):
 
     def setUp(self):
-        self.canvas = get_canvas()
+        self.canvas = gcanvas()
 
     def test_selection(self):
         hists, multiples = zip(*[self.extract_data('input-data/LHC16l.root', 'old PS'), self.extract_data('input-data/LHC16l-psel.root', 'new PS')])

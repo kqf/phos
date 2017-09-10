@@ -3,7 +3,7 @@ import ROOT
 import sys
 import json
 
-from spectrum.sutils import get_canvas, wait, adjust_canvas
+from spectrum.sutils import gcanvas, wait, adjust_canvas
 from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
@@ -37,7 +37,7 @@ class ProbeSpectrum(object):
 
 
     def calculate_range(self, hist):
-        canvas = get_canvas()
+        canvas = gcanvas()
         mass = InvariantMass((hist, hist), tuple(self.erange), 1, self.options)
         peak, bgrnd = mass.noisy_peak_parameters()
         wait('single-tag-tof-mass-fit-' + self.pref, True, True)
@@ -128,7 +128,7 @@ class TagAndProbeRigorous(TagAndProbe):
 class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def setUp(self):
-        self.canvas = get_canvas()
+        self.canvas = gcanvas()
         self.infile = 'input-data/LHC16-old.root'
         self.sel = 'TOFStudyTender'
         self.eff_calculator_relaxed = TagAndProbe(self.infile, self.sel, 'MassEnergy%s_SM0', cut='TOF', full='All')
@@ -177,7 +177,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         f = lambda i, x, y: br.ratio(x, y, 'TOF efficiency in different modules; E, GeV', 'SM%d' % i)
         multiple = [[f(i + 1, *(e.estimate()))] for i, e in enumerate(estimators)]
 
-        c1 = adjust_canvas(get_canvas())
+        c1 = adjust_canvas(gcanvas())
         diff = Comparator()
         diff.compare(multiple)
 

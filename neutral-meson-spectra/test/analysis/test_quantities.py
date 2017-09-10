@@ -6,7 +6,7 @@ import operator as op
 import ROOT
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import get_canvas
+from spectrum.sutils import gcanvas
 from spectrum.options import Options
 import spectrum.comparator as cmpr
 
@@ -29,7 +29,7 @@ class TestRawQauntities(unittest.TestCase):
             br.scalew(obs.spectrum)
             br.scalew(obs.npi0)
 
-        c1 = get_canvas(1./2, resize=True)
+        c1 = gcanvas(1./2, resize=True)
         diff = cmpr.Comparator()
         diff.compare(observables)
 

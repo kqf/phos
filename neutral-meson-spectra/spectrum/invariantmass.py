@@ -3,7 +3,7 @@
 import ROOT
 import json
 from parametrisation import PeakParametrisation
-from sutils import get_canvas, ticks
+from sutils import gcanvas, ticks
 from broot import BROOT as br
 
 class InvariantMass(object):
@@ -162,7 +162,7 @@ class InvariantMass(object):
         if not self.ratio:
             return
 
-        canvas = pad if pad else get_canvas()
+        canvas = pad if pad else gcanvas()
         ticks(canvas)
         canvas.SetTicky(False)
 
@@ -174,7 +174,7 @@ class InvariantMass(object):
 
 
     def draw_mass(self, pad = 0):
-        canvas = pad if pad else get_canvas()
+        canvas = pad if pad else gcanvas()
         ticks(canvas)
         canvas.SetTicky(False) 
 
@@ -198,7 +198,7 @@ class InvariantMass(object):
 
         
     def draw_signal(self, pad = 0):
-        canvas = pad if pad else get_canvas()
+        canvas = pad if pad else gcanvas()
 
         ticks(canvas)
         canvas.SetTicky(False)  

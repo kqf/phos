@@ -3,14 +3,14 @@ import unittest
 import ROOT
 import sys
 
-from spectrum.sutils import get_canvas
+from spectrum.sutils import gcanvas
 
 class CheckDefault(unittest.TestCase):
 
     def setUp(self):
         self.discover = 'discover' in sys.argv
         self.mode = 'dead' if self.discover else 'q'
-        self.canvas = get_canvas() 
+        self.canvas = gcanvas() 
 
     def tearDown(self):
         if self.discover:

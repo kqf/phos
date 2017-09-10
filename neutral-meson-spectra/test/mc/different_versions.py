@@ -2,7 +2,7 @@
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
-from spectrum.sutils import get_canvas, adjust_canvas
+from spectrum.sutils import gcanvas, adjust_canvas
 from spectrum.options import Options
 
 import unittest
@@ -23,13 +23,13 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
 
     def testResultMC(self):
-        c1 = adjust_canvas(get_canvas(1., resize = True))
+        c1 = adjust_canvas(gcanvas(1., resize = True))
 
         import spectrum.comparator as cmpr
         diff = cmpr.Comparator((1., 1.))
         diff.compare_set_of_histograms(self.results)
 
-        c1 = adjust_canvas(get_canvas(1., resize = True))
+        c1 = adjust_canvas(gcanvas(1., resize = True))
         masses, widths = zip(*self.results)[0:2]
         diff.compare_multiple_ratios(widths, masses)
 

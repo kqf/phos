@@ -1,6 +1,6 @@
 import unittest
 
-from spectrum.sutils import get_canvas
+from spectrum.sutils import gcanvas
 from optimizer.optimizer import Optimizer
 from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
@@ -12,7 +12,7 @@ class TimecutOptimizer(unittest.TestCase):
     def setUp(self):
         # This should be done because fitter is a static object.
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
-        self.canvas = get_canvas()
+        self.canvas = gcanvas()
 
     def Ranges(self):
         inp = MetricInput('input-data/LHC16k-pass1-ok.root', 'TimeTender', 'MassPtTOF')

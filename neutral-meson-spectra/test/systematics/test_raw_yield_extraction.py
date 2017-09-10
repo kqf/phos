@@ -1,6 +1,5 @@
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput, read_histogram
-from spectrum.sutils import get_canvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.comparator import Visualizer, Comparator
 
