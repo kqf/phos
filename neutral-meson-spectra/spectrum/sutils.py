@@ -3,15 +3,35 @@ from math import sqrt
 from collections import Iterable
 import array
 
-def wait(name = '', draw=True, save = False, suffix = ''):
+def wait(name = '', draw = True, save = False, suffix = ''):
     outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()
     name = name.replace(' ', '-').replace('_', '-')
 
-    if save: canvas.SaveAs(outdir + name + '.pdf')
+    if save:
+        canvas.SaveAs(outdir + name + '.pdf')
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-    if draw: ROOT.gApplication.Run(True)
+
+    if draw: 
+        ROOT.gApplication.Run(True)
+
+def gcanvas(x = 1., y = 1, resize = False, scale = 6):
+    canvas = ROOT.gROOT.FindObject('c1')
+    if canvas: 
+        if not resize:
+            canvas.cd()
+            return canvas 
+
+        cx, cy = map(int, [128 * x * scale, 96 * y * scale])
+        canvas.SetWindowSize(cx, cy)
+        canvas.SetCanvasSize(cx, cy)
+        return adjust_canvas(canvas)
+
+
+    canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
+    ticks(canvas)
+    return adjust_canvas(canvas)
 
 
 def adjust_labels(hist1, hist2, scale = 1):
@@ -26,16 +46,6 @@ def adjust_labels(hist1, hist2, scale = 1):
     hist1.SetLabelSize(hist2.GetLabelSize('Y') * scale, 'Y')
     return hist1
 
-
-def draw_and_save(histograms, name = '', draw = True, save = True, suffix = ''):
-    ROOT.gStyle.SetOptStat('erm')
-    histograms = [h.Clone(h.GetName() + str(id(h))) for h in histograms]
-    if name: 
-        for h in histograms: h.SetTitle(name.replace('_', ' ') + ' ' + suffix + ' ' + h.GetTitle())
-
-    histograms[0].Draw()
-    for h in histograms: h.Draw('same')
-    wait(name + histograms[0].GetName() +  '_' + suffix , draw, save)
 
 def ticks(pad):
     ROOT.gPad.SetGridx()
@@ -65,23 +75,6 @@ def nicely_draw(hist, option = '', legend = None):
     wait('xlin_' + hist.GetName(), draw = True, save = True)
 
     
-def gcanvas(x = 1., y = 1, resize = False, scale = 6):
-    canvas = ROOT.gROOT.FindObject('c1')
-    if canvas: 
-        if not resize:
-            canvas.cd()
-            return canvas 
-
-        cx, cy = map(int, [128 * x * scale, 96 * y * scale])
-        canvas.SetWindowSize(cx, cy)
-        canvas.SetCanvasSize(cx, cy)
-        return adjust_canvas(canvas)
-
-
-    canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
-    ticks(canvas)
-    return adjust_canvas(canvas)
-
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()
     canvas.SetBottomMargin(0.02 * height)
