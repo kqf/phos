@@ -55,6 +55,9 @@ class Visualizer(object):
         return c1, pad1, pad2
 
     def draw_ratio(self, hists, pad):
+        if self.ignore_ratio:
+            return None
+
         try:
             a, b = hists
             ratio = br.ratio(a, b)

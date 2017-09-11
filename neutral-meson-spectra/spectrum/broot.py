@@ -196,7 +196,7 @@ class BROOT(object):
         klass.prop.copy_everything(ratio, a)
 
         if ratio.GetNbinsX() != b.GetNbinsX():
-            ratio, b = rebin_as(ratio, b)
+            ratio, b = klass.rebin_as(ratio, b)
 
         ratio.Divide(a, b, 1, 1, option)
         label = a.label + ' / ' + b.label

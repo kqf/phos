@@ -29,7 +29,7 @@ class Jetjet(unittest.TestCase):
         self.rec_histogram = 'MassPt'
 
         # To compare more than 1 production
-        self.productions = 'LHC17f8a', 'LHC17f8c'
+        self.productions = 'LHC17f8a', 'LHC17f8c', 'LHC17f8d', 'LHC17f8g', 'LHC17f8k'
         self.files = {'weighed': 'input-data/scaled-%s.root', 'no weights #times 10^{-3}': 'input-data/%s.root'}
         # self.files = {'ok': 'input-data/LHC17f8a.root'}
 
@@ -39,9 +39,9 @@ class Jetjet(unittest.TestCase):
 
         hist = read_histogram(filename, self.selection, histname, label = label, priority = 0, norm = True)
         hist.SetTitle('{0} {1}'.format(hist.GetTitle(), title))
-        br.scalew(hist, 1e-3 if 'no' in label else 1)
-        # br.scalew(hist, 1. / hist.Integral())
-        hist.logy = True
+        const =  1e-3 if 'no' in label else 1
+        br.scalew(hist, const *  1. / hist.Integral())
+        hist.logy = 1
         return hist 
 
 
@@ -50,14 +50,15 @@ class Jetjet(unittest.TestCase):
             To check files it's enough to check un/weighed generated spectra
         """
         for prod in self.productions:
-            efficiencies = [self.distribution(f % prod, self.gen_histogram, k, prod) for k, f in self.files.iteritems()]
-            diff = Comparator(rrange=(-1, -1), oname = 'MC_PHOS_generated_{0}'.format(prod))
-            diff.compare(efficiencies)
+            gen = [self.distribution(f % prod, self.gen_histogram, k, prod) for k, f in self.files.iteritems()]
+            diff = Comparator(rrange = (-1, -1), oname = 'MC_PHOS_generated_{0}'.format(prod))
+            diff.compare(gen)
 
 
     def reconstructed(self, filename, histname, label, title):
         inp = Input(filename, self.selection, histname)
-        reco = Spectrum(inp, label= label, mode = 'd').evaluate()[2]
+        reco = Spectrum(inp, Options(label= label, mode = 'd')).evaluate().spectrum
+        reco.logy = 1
         reco.SetTitle('{0} {1}'.format(reco.GetTitle(), title))
         br.scalew(reco, 1e-3 if 'no' in label else 1)
         return reco
@@ -68,6 +69,6 @@ class Jetjet(unittest.TestCase):
             This is to check pi0 peak.
         """
         for prod in self.productions:
-            efficiencies = [self.reconstructed(f % prod, self.rec_histogram, k, prod) for k, f in self.files.iteritems()]
+            rec = [self.reconstructed(f % prod, self.rec_histogram, k, prod) for k, f in self.files.iteritems()]
             diff = Comparator((1, 1), rrange = (-1, -1), oname = 'MC_PHOS_reconstructed_{0}'.format(prod))
-            diff.compare(efficiencies)
+            diff.compare(rec)
