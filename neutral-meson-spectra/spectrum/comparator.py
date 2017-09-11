@@ -156,17 +156,16 @@ class Visualizer(object):
         mainpad.SetTickx()
         mainpad.SetTicky() 
 
+        self.cache.append(legend)
         ratio = self.draw_ratio(hists, ratiopad)
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
 
-        if stop:
-            fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
-            oname = self.get_oname(fname.lower())
-            wait(oname, save=True)
+        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
+        oname = self.get_oname(fname.lower())
+        wait(oname, save=True, draw=stop)
 
-        self.cache.append(legend)
         return adjust_labels(ratio, hists[0])
 
         

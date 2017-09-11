@@ -61,6 +61,7 @@ class TestRatio(unittest.TestCase, Particles):
         self.data[0].fitfunc = get_fit_function()
         diff.compare(self.data[0], self.data[1])
 
+
     def testRebin(self):
         diff = cmpr.Comparator()
         # diff.compare(self.data[2], self.data[1])
@@ -71,5 +72,16 @@ class TestRatio(unittest.TestCase, Particles):
 
         self.data[0].SetTitle('Test Rebin Function first')
         self.data[1].Rebin(2)
+        diff.compare(self.data[0], self.data[1])
+
+    def test_ignore_ratio_plot(self):
+        diff = cmpr.Comparator()
+
+        self.data[0].SetTitle('Test ignore ratio plot: This should be OK')
+        diff.compare(self.data[0], self.data[1])
+
+        diff = cmpr.Comparator(rrange = (-1, -1))
+
+        self.data[0].SetTitle('Test ignore ratio plot: This plot should be without ratio pad')
         diff.compare(self.data[0], self.data[1])
 
