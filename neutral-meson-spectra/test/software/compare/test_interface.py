@@ -5,10 +5,10 @@ from particles import Particles
 class TestComparatorInterface(unittest.TestCase, Particles):
 
     def setUp(self):
-        self.data = self.config()
+        self.data, self.stop = self.config()
 
     def testCompareOK(self):
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
         for d in self.data: d.SetTitle('Compare coma separated arguments')
         diff.compare(*self.data)
 
@@ -22,7 +22,7 @@ class TestComparatorInterface(unittest.TestCase, Particles):
         diff.compare(zip(*[self.data, self.data]))
 
     def testCompareFail(self):
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
         for d in self.data: d.SetTitle('Fail')
 
         with self.assertRaises(AssertionError):

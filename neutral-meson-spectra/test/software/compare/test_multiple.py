@@ -7,7 +7,7 @@ from particles import Particles
 class Test(unittest.TestCase, Particles):
 
     def setUp(self):
-        self.data = self.config()
+        self.data, self.stop = self.config()
 
 
     def testCompareRations(self):
@@ -15,7 +15,7 @@ class Test(unittest.TestCase, Particles):
             This one is needed to compare "double ratio" plots.
         """
         self.data[0].SetTitle('Checking multiple ratios with common baseline')
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
         diff.compare_ratios(self.data, self.data[2])
 
     def testCompareMultipleRations(self):
@@ -25,5 +25,5 @@ class Test(unittest.TestCase, Particles):
         """
 
         self.data[0].SetTitle('Checking multiple ratios with different baselines')
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
         diff.compare_multiple_ratios(self.data, self.data) 

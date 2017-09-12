@@ -19,7 +19,7 @@ def setup_input(func):
 class Visualizer(object):
     markers = {i: 20 + i for i in range(7)}
 
-    def __init__(self, size, rrange, crange, oname):
+    def __init__(self, size, rrange, crange, stop, oname):
         super(Visualizer, self).__init__()
         self.size = size
         self.cache = []
@@ -28,6 +28,7 @@ class Visualizer(object):
         self.output_prefix = 'compared-'
         self.ignore_ratio = self.rrange and (self.rrange[0] < 0 or self.rrange[1] < 0)
         self.oname = oname
+        self.stop = stop
         
 
     def preare_ratio_plot(self, hists, canvas):
@@ -116,7 +117,7 @@ class Visualizer(object):
 
 
     @setup_input
-    def compare_visually(self, hists, ci, stop = True, canvas = None):
+    def compare_visually(self, hists, ci, canvas = None):
         canvas, mainpad, ratiopad = self.preare_ratio_plot(hists, canvas)
 
         if len(hists) == 1:
@@ -164,7 +165,7 @@ class Visualizer(object):
 
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
         oname = self.get_oname(fname.lower())
-        wait(oname, save=True, draw=stop)
+        wait(oname, save=True, draw=self.stop)
 
         return adjust_labels(ratio, hists[0])
 
@@ -179,13 +180,15 @@ class Visualizer(object):
         for h in hists:
             print h
 
+        stop_backup, self.stop = self.stop, False
         for i, h in enumerate(hists):
-            self.compare_visually(h, ci, False, canvas.cd(i + 1))
+            self.compare_visually(h, ci, canvas.cd(i + 1))
+        self.stop = stop_backup
 
         # Draw and save the output
         canvas.cd()
         oname = self.get_oname(hists[0][0].GetName())
-        wait(oname, True)
+        wait(oname, True, draw=self.stop)
 
     def get_oname(self, name):
         if self.oname:
@@ -207,9 +210,9 @@ def define_colors(ci = 1000):
 class Comparator(object):
     ci, colors = define_colors()
 
-    def __init__(self, size = (1, 1), rrange = None, crange = None, oname = ''):
+    def __init__(self, size = (1, 1), rrange = None, crange = None, stop = True, oname = ''):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size, rrange, crange, oname)
+        self.vi = Visualizer(size, rrange, crange, stop, oname)
 
 
     def compare(self, *args):

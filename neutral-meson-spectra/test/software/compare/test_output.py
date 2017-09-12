@@ -12,11 +12,11 @@ class TestOutputRatio(unittest.TestCase, Particles):
 
 
     def setUp(self):
-        self.data = self.config()
+        self.data, self.stop = self.config()
 
 
     def testCompareTwo(self):
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
 
         self.data[2].SetTitle('Checking output ratio comparator')
         ratio = diff.compare(self.data[2], self.data[1])
@@ -30,7 +30,7 @@ class TestOutputRatio(unittest.TestCase, Particles):
 
 
     def testCompareMultiple(self):
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
 
         self.data[0].SetTitle('Checking output ratio comparator')
         ratio = diff.compare(zip(*[self.data, self.data]))

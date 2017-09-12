@@ -1,6 +1,8 @@
 import ROOT
 import json
 
+import sys
+
 class Particles(object):
 
     def __init__(self):
@@ -15,7 +17,11 @@ class Particles(object):
         for hist in data:
             hist.logy = 1
 
-        return data
+        discover = 'discover' in sys.argv
+        compare = 'test.software.compare' in sys.argv
+        skip = discover and not compare
+
+        return data, not skip
 
     @staticmethod
     def _spectrum(name, a, b, par):
