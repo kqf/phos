@@ -1,12 +1,15 @@
-DATASET = LHC17f8k
+DATASET = LHC17f8e
 DPART = first
 MC = kTRUE
-PAUSE = 10m
+PAUSE = 15m
 
 PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
-# PtBins = 1 2 13 14 
-# PtBins =  9 8 7 6 5 4 3 2 1 
-# PtBins = 20
+# PtBins = 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
+#PtBins = 3 2 1 
+# PtBins = 13 12 11 10 9 8 
+## PtBins = 1 2 13 14 
+#PtBins =  5 4 3 2 1 
+# PtBins = 20 19
 
 grid: | %.cxx
 	$(call jetjet,gridstart,$(DATASET))
@@ -107,7 +110,7 @@ endef
 
 
 define upload_result
-	-alien_cp -n $(1) alien:$(ALIEN_HOME)
+	-alien_cp -n $(1) alien:$(ALIEN_HOME)@ALICE::GSI::SE2
 endef
 
 

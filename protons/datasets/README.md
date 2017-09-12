@@ -91,5 +91,10 @@ LHC17f8k.txt  (LHC16p)
 LHC17f8g.txt  (LHC16i)
 ```
 
+The runs that are not anchored to the data taken with phos:
+```
+LHC17f8b.txt
+```
+
 
 
