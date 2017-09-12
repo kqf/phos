@@ -397,9 +397,7 @@ class TestTH(unittest.TestCase):
             self.assertEqual(rebinned.GetBinWidth(i + 1), binw)
 
 
-
     def test_saves_histogram(self):
-
         oname, selection, histname = 'testSave.root', 'testSelection', 'refhistSave'
         hist = br.BH(ROOT.TH1F, 
             histname, "Testing scalew", 200, -10, 10,

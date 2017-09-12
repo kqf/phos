@@ -3,7 +3,7 @@
 import ROOT
 import collections
 
-from sutils import nicely_draw, gcanvas, wait
+from sutils import gcanvas, wait
 from outputcreator import OutputCreator
 from invariantmass import InvariantMass
 from options import Options
@@ -86,8 +86,7 @@ class PtAnalyzer(object):
 
         # Create hitograms
         histos = self.histograms(values)
-        if self.opt.show_img: map(nicely_draw, histos)
-
+        
         if self.opt.dead_mode: 
             return histos
 

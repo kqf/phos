@@ -58,23 +58,6 @@ def ticks(pad):
     pad.SetGridy()
     return pad
        
-def nicely_draw(hist, option = '', legend = None):
-    hist.Draw(option)
-
-    if 'spectrum' in hist.GetName(): 
-        ROOT.gPad.SetLogy()
-    else:
-        ROOT.gPad.SetLogy(0)
-
-    legend = legend if legend else ROOT.TLegend(0.9, 0.4, 1.0, 0.6)
-    legend.SetBorderSize(0)
-    legend.SetFillStyle(0)
-    legend.SetTextSize(0.04)
-    legend.AddEntry(hist, hist.label)
-    legend.Draw('same')
-    wait('xlin_' + hist.GetName(), draw = True, save = True)
-
-    
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()
     canvas.SetBottomMargin(0.02 * height)
@@ -104,13 +87,13 @@ class Cc:
 
     @staticmethod
     def fail(s): 
-        return Cc.FAIL + s + Cc.ENDC
+        return '{0}{1}{2}'.format(Cc.FAIL, s, Cc.ENDC)
 
     @staticmethod
     def warning(s): 
-        return Cc.WARNING + s + Cc.ENDC
+        return '{0}{1}{2}'.format(Cc.warning, s, Cc.ENDC)
 
     @staticmethod
     def ok(s): 
-        return Cc.OKGREEN + s + Cc.ENDC 
+        return '{0}{1}{2}'.format(Cc.OKGREEN, s, Cc.ENDC)
  
