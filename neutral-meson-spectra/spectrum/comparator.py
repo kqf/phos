@@ -31,8 +31,8 @@ class Visualizer(object):
         self.stop = stop
         
 
-    def preare_ratio_plot(self, hists, canvas):
-        c1 = canvas if canvas else gcanvas(self.size[0], self.size[1], resize = True)
+    def _canvas(self, hists):
+        c1 = gcanvas(self.size[0], self.size[1], resize = True)
         c1.Clear()
 
         if self.ignore_ratio:
@@ -117,8 +117,8 @@ class Visualizer(object):
 
 
     @setup_input
-    def compare_visually(self, hists, ci, canvas = None):
-        canvas, mainpad, ratiopad = self.preare_ratio_plot(hists, canvas)
+    def compare_visually(self, hists, ci):
+        canvas, mainpad, ratiopad = self._canvas(hists)
 
         if len(hists) == 1:
             adjust_canvas(canvas)
@@ -169,26 +169,6 @@ class Visualizer(object):
 
         return adjust_labels(ratio, hists[0])
 
-        
-    def compare_multiple(self, hists, ci):
-        canvas = gcanvas(self.size[0], self.size[1], resize = True)
-        canvas.Clear()
-        canvas.Divide(2, 2)
-
-        hists = zip(*hists)
-
-        for h in hists:
-            print h
-
-        stop_backup, self.stop = self.stop, False
-        for i, h in enumerate(hists):
-            self.compare_visually(h, ci, canvas.cd(i + 1))
-        self.stop = stop_backup
-
-        # Draw and save the output
-        canvas.cd()
-        oname = self.get_oname(hists[0][0].GetName())
-        wait(oname, True, draw=self.stop)
 
     def get_oname(self, name):
         if self.oname:
@@ -196,6 +176,24 @@ class Visualizer(object):
 
         oname = self.output_prefix + name
         return oname
+
+
+class MultipleVisualizer(Visualizer):
+
+    def __init__(self, size, rrange, crange, stop, oname):
+        super(MultipleVisualizer, self).__init__(size, rrange, crange, stop, oname)
+        
+    def compare_visually(self, hists, ci):
+        super(MultipleVisualizer, self).compare_visually(hists, ci)
+
+    def draw_ratio(self, hists, pad):
+        return None
+
+    def _canvas(self, hists):
+        c1 = gcanvas(self.size[0], self.size[1], resize = True)
+        c1.Clear()
+        return c1, c1, c1
+
 
 def define_colors(ci = 1000):
     with open("config/colors.json") as f:
@@ -205,6 +203,11 @@ def define_colors(ci = 1000):
     rcolors = [[b / 255. for b in c] for c in colors]
     rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
     return ci, rcolors
+
+
+# TODO: Separate multiple visualisator from double
+#       It's possible to arrange: compare_visually calls draw, and draw double
+#       ivoke right function from the Comparator class
 
 
 class Comparator(object):
@@ -296,10 +299,6 @@ class Comparator(object):
 
         print "That's it!! Your computation is done"
 
-
-    def compare_multiple(self, l):
-        for hists in zip(*l):
-            self.vi.compare_multiple(hists, self.ci)
 
     @staticmethod
     def find_similar_in(self, lst, ref):

@@ -12,12 +12,15 @@ class TestComparatorInterface(unittest.TestCase, Particles):
         for d in self.data: d.SetTitle('Compare coma separated arguments')
         diff.compare(*self.data)
 
+        diff = cmpr.Comparator(stop = self.stop)
         for d in self.data: d.SetTitle('Compare a single list of arguments')
         diff.compare(self.data)
 
+        diff = cmpr.Comparator(stop = self.stop)
         for d in self.data: d.SetTitle('Compare two lists of arguments')
         diff.compare(self.data, self.data[::-1])
 
+        diff = cmpr.Comparator(stop = self.stop)
         for d in self.data: d.SetTitle('Compare set of arguments')
         diff.compare(zip(*[self.data, self.data]))
 

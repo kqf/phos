@@ -23,10 +23,10 @@ class TestOutputRatio(unittest.TestCase, Particles):
 
         c1 = gcanvas()
         c1.SetLogy(0)
-        if ratio:
-            ratio.Draw()
-
-        wait("test", True, False)
+        self.assertIsNotNone(ratio)
+        ratio.SetTitle("Test Output: This is output ratio plot")
+        ratio.Draw()
+        wait("test", draw = self.stop)
 
 
     def testCompareMultiple(self):
