@@ -3,27 +3,18 @@
 import json
 import ROOT
 
-from vis import Visualizer
-
-def define_colors(ci = 1000):
-    with open("config/colors.json") as f:
-        conf = json.load(f)
-        
-    colors = conf["colors"]
-    rcolors = [[b / 255. for b in c] for c in colors]
-    rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
-    return ci, rcolors
+from vis import VisHub
 
 # TODO: Separate multiple visualisator from double
 #       It's possible to arrange: compare_visually calls draw, and draw double
-#       ivoke right function from the Comparator class
+#       ivoke right function from the Comparator class, Replece unnecesaary ifs
 
 class Comparator(object):
     ci, colors = define_colors()
 
     def __init__(self, size = (1, 1), rrange = None, crange = None, stop = True, oname = ''):
         super(Comparator, self).__init__()
-        self.vi = Visualizer(size, rrange, crange, stop, oname)
+        self.vi = VisHub(size, rrange, crange, stop, oname)
 
 
     def compare(self, *args):
@@ -92,7 +83,16 @@ class Comparator(object):
         result = [comparef(hists, self.ci) for hists in zip(*l)]
         return result if len(result) > 1 else result[0]
 
-      
+    @staticmethod
+    def define_colors(ci = 1000):
+        with open("config/colors.json") as f:
+            conf = json.load(f)
+            
+        colors = conf["colors"]
+        rcolors = [[b / 255. for b in c] for c in colors]
+        rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
+        return ci, rcolors
+
 def main():
     print "Use:\n\t... \n\tcmp = Comparator((0.5, 2))\n\t...\n\nto comparef lists of histograms."
 

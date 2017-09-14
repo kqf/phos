@@ -1,6 +1,7 @@
 import unittest
 
 import spectrum.comparator as cmpr
+import spectrum.vis as vi
 
 from particles import Particles
 
@@ -13,12 +14,18 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
         self.data, self.stop = self.config()
 
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_draws_multiple_plots(self):
-        # TODO: Separate further double plot and multiple plot graphs
-        diff = cmpr.Comparator()
-        diff.vi = cmpr.MultipleVisualizer((1, 1), None, None, True, '')
+        vis = vi.VisHub((1, 1), None, None, True, '')
 
-        self.data[0].SetTitle('Testing MultipleVisualizer')
-        diff.compare(self.data)
+        self.data[0].SetTitle('Test ViHub: Testing MultipleVisualizer')
+        vis.compare_visually(self.data, 1)
+
+        
+        self.data[0].SetTitle('Test VisHub: MultipleVisualizer')
+        vis.compare_visually(self.data[0:2], 1)
+
+
+        self.data[0].SetTitle('Test VisHub: Single Visualizer')
+        vis.compare_visually(self.data[0:2], 1)
 

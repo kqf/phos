@@ -6,6 +6,21 @@ from sutils import wait, gcanvas, Cc, adjust_canvas, adjust_labels
 from broot import BROOT as br
 
 
+
+class VisHub(object):
+
+	def __init__(self, *args, **kwargs):
+		super(VisHub, self).__init__()
+		self.double = Visualizer(*args, **kwargs)
+		self.regular = MultipleVisualizer(*args, **kwargs)
+
+	def compare_visually(self, hists, ci):
+		if len(hists) == 2:
+			return self.double.compare_visually(hists, ci)
+		return self.regular.compare_visually(hists, ci)
+
+		
+# TODO: Clean this interface
 class Visualizer(object):
 	# TODO: replace with a function
     markers = {i: 20 + i for i in range(7)}
