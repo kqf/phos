@@ -262,7 +262,7 @@ class TestTH(unittest.TestCase):
         # Check if .nevents attribute is OK
         self.assertEqual(hist1.nevents, events)
         # Check if we don't mess with area
-        self.assertNotEqual(int(hist1.Integral()), int(integral / events))
+        self.assertNotEqual(hist1.Integral(), integral / events)
 
 
         # Now with normalization
@@ -270,7 +270,7 @@ class TestTH(unittest.TestCase):
         # Check if .nevents attribute is OK
         self.assertEqual(hist1.nevents, events)
         # Check if we don't mess with area
-        self.assertEqual(int(hist1.Integral()), int(integral / events))
+        self.assertTrue(abs(hist1.Integral() - integral / events) < 0.001)
 
 
     def test_rebins(self):
@@ -416,5 +416,36 @@ class TestTH(unittest.TestCase):
         os.remove(oname)
 
 
+    # Just to check if init decorator works as expected
+    # 
+    def test_initializes_inputs(self):
+        class Empty(object):
 
+            def __init__(self):
+                super(Empty, self).__init__()
+
+            @br.init_inputs
+            def identity(self, hists):
+                return hists
+
+        inputs = (ROOT.TH1F("hTestInitMultiple%d" % i, "Testing sum %d" % i, 200, -10, 10)
+                   for i in range(10))
+
+        for hist in inputs:
+            hist.FillRandom('gaus')
+
+        # There is no porperties
+        for hist in inputs:
+            self.assertFalse(br.prop.has_properties(hist))
+
+        data = Empty()
+        outputs = data.identity(inputs)
+
+        # Decorated method takes alrady modified objects
+        for hist in outputs:
+            self.assertTrue(br.prop.has_properties(hist))
+
+        # It's the same objects
+        for inp, out in zip(inputs, outputs):
+            self.assertTrue(inp is out)
 

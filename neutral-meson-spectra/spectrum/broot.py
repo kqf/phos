@@ -264,3 +264,12 @@ class BROOT(object):
         klass.setp(rebin, hist, force = True)
         return rebin
   
+    @classmethod
+    def init_inputs(klass, func):
+        def f(self, hists, *args, **kwargs):
+            for h in hists:
+                klass.setp(h)
+            return func(self, hists, *args, **kwargs)
+        return f
+
+
