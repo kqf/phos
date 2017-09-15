@@ -59,11 +59,12 @@ class MultipleVisualizer(object):
 
         for i, h in enumerate(hists): 
             h.SetStats(False)
-            h.SetLineColor(ci + i)
-            h.SetFillColor(ci + i)
-            mstyle = self.markers.get(h.marker, 20)
+            color = ci + i % 5
+            h.SetLineColor(color)
+            h.SetFillColor(color)
+            mstyle = self.markers.get(h.marker, 20) if h.marker else 20 + i // 5
             h.SetMarkerStyle(mstyle)
-            h.SetMarkerColor(ci + i)
+            h.SetMarkerColor(color)
             h.DrawCopy('same')
             legend.AddEntry(h, h.label)
         legend.Draw('same')

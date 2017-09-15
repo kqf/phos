@@ -37,18 +37,20 @@ class RawYieldSystematicError(unittest.TestCase):
 
     def testRawYieldSysError(self):
         spectrums, options = [], Options('', mode = 'd')
-        for bckgr in ['pol1', 'pol2']:
-            for marker, par in enumerate(['CrystalBall', 'Gaus']):
-                for nsigmas in [2, 3]:
-                    options.spectrum.dead = True
-                    options.pt.label = 'n#sigma = {0} {1} {2}'.format(nsigmas, par, bckgr)
-                    options.spectrum.nsigmas = nsigmas
-                    options.param.fitf = par
-                    options.param.background = bckgr
+        for frange, flab in zip([[0.06,0.22],[0.04,0.20],[0.08,0.24]], ['low', 'mid', 'wide']):
+            for bckgr in ['pol1', 'pol2']:
+                for marker, par in enumerate(['CrystalBall', 'Gaus']):
+                    for nsigmas in [2, 3]:
+                        options.spectrum.dead = True
+                        options.pt.label = 'n#sigma = {0} {1} {2} {3}'.format(nsigmas, par, bckgr, flab)
+                        options.spectrum.nsigmas = nsigmas
+                        options.param.fitf = par
+                        options.param.background = bckgr
+                        options.param.fit_range = frange
 
-                    spectrum = self.spectrum(options)
-                    spectrum.marker = marker
-                    spectrums.append(spectrum)
+                        spectrum = self.spectrum(options)
+                        spectrum.marker = marker
+                        spectrums.append(spectrum)
 
 
         diff = Comparator(oname = 'spectrum_extraction_methods')
