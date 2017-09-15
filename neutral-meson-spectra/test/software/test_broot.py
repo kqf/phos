@@ -449,3 +449,14 @@ class TestTH(unittest.TestCase):
         for inp, out in zip(inputs, outputs):
             self.assertTrue(inp is out)
 
+    def test_initializes_colors(self):
+        ci, colors = br.define_colors()
+        hist = ROOT.TH1F("hColored", "Test BROOT: This should be nicely colored", 40, -4, 4)
+
+        hist.FillRandom('gaus')
+        hist.SetLineColor(ci)
+        hist.SetFillColor(ci + 1)
+        hist.SetMarkerColor(ci + 2)
+        hist.SetMarkerStyle(20)
+        hist.Draw()
+        wait(draw = self.mode)

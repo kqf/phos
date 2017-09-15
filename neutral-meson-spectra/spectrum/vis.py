@@ -6,27 +6,25 @@ from sutils import wait, gcanvas, Cc, adjust_canvas, adjust_labels
 from broot import BROOT as br
 
 
-
 class VisHub(object):
 
-	def __init__(self, *args, **kwargs):
-		super(VisHub, self).__init__()
-		self.double = Visualizer(*args, **kwargs)
-		self.regular = MultipleVisualizer(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(VisHub, self).__init__()
+        self.double = Visualizer(*args, **kwargs)
+        self.regular = MultipleVisualizer(*args, **kwargs)
 
-	def compare_visually(self, hists, ci):
-		if len(hists) == 2:
-			return self.double.compare_visually(hists, ci)
-		return self.regular.compare_visually(hists, ci)
+    def compare_visually(self, hists, ci):
+        if len(hists) == 2:
+            return self.double.compare_visually(hists, ci)
+        return self.regular.compare_visually(hists, ci)
 
-		
-# TODO: Clean this interface
-class Visualizer(object):
-	# TODO: replace with a function
+
+class MultipleVisualizer(object):
+    # TODO: replace with a function
     markers = {i: 20 + i for i in range(7)}
 
     def __init__(self, size, rrange, crange, stop, oname):
-        super(Visualizer, self).__init__()
+        super(MultipleVisualizer, self).__init__()
         self.size = size
         self.cache = []
         self.rrange = rrange
@@ -36,15 +34,76 @@ class Visualizer(object):
         self.oname = oname
         self.stop = stop
         
+    @br.init_inputs
+    def compare_visually(self, hists, ci, pad = None):
+        # TODO: Add tests for a single histogram
+        # if len(hists) == 1: # adjust_canvas(canvas)
+        legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
+        legend.SetBorderSize(0)
+        legend.SetFillStyle(0)
+        legend.SetTextSize(0.04)
+
+        mainpad = pad if pad else gcanvas()
+        mainpad.cd()
+        mainpad.SetGridx()
+        mainpad.SetGridy()
+
+        first_hist = sorted(hists, key=lambda x: x.priority)[0]
+        mainpad.SetLogx(first_hist.logx)
+        mainpad.SetLogy(first_hist.logy)
+        first_hist.SetStats(False)
+
+        if self.crange:
+            first_hist.SetAxisRange(self.crange[0], self.crange[1] , 'Y')
+        first_hist.DrawCopy()
+
+        for i, h in enumerate(hists): 
+            h.SetStats(False)
+            h.SetLineColor(ci + i)
+            h.SetFillColor(ci + i)
+            mstyle = self.markers.get(h.marker, 20)
+            h.SetMarkerStyle(mstyle)
+            h.SetMarkerColor(ci + i)
+            h.DrawCopy('same')
+            legend.AddEntry(h, h.label)
+        legend.Draw('same')
+
+        ROOT.gStyle.SetOptStat(0)
+        mainpad.SetTickx()
+        mainpad.SetTicky() 
+
+        self.cache.append(legend)
+
+        if pad:
+            return None
+
+        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
+        oname = self.get_oname(fname.lower())
+        wait(oname, save=True, draw=self.stop)
+        return None
+
+
+    def draw_ratio(self, hists, pad):
+        return None
+
+
+    def get_oname(self, name):
+        if self.oname:
+            return self.oname
+
+        oname = self.output_prefix + name
+        return oname
+
+        
+class Visualizer(MultipleVisualizer):
+    def __init__(self, size, rrange, crange, stop, oname):
+        super(Visualizer, self).__init__(size, rrange, crange, stop, oname)
 
     def _canvas(self, hists):
         c1 = gcanvas(self.size[0], self.size[1], resize = True)
         c1.Clear()
 
         if self.ignore_ratio:
-            return c1, c1, c1
-
-        if len(hists) != 2: 
             return c1, c1, c1
 
         pad1 = ROOT.TPad("pad1","main plot", 0, 0.3, 1, 1);
@@ -122,80 +181,16 @@ class Visualizer(object):
         ROOT.gStyle.SetOptFit(1)
 
 
-    @br.init_inputs
     def compare_visually(self, hists, ci):
         canvas, mainpad, ratiopad = self._canvas(hists)
 
-        if len(hists) == 1:
-            adjust_canvas(canvas)
-
-        legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
-        legend.SetBorderSize(0)
-        legend.SetFillStyle(0)
-        legend.SetTextSize(0.04)
-
-        mainpad.cd()
-        mainpad.SetGridx()
-        mainpad.SetGridy()
-
-        first_hist = sorted(hists, key=lambda x: x.priority)[0]
-        mainpad.SetLogx(first_hist.logx)
-        mainpad.SetLogy(first_hist.logy)
-        first_hist.SetStats(False)
-
-        if self.crange:
-            first_hist.SetAxisRange(self.crange[0], self.crange[1] , 'Y')
-        first_hist.DrawCopy()
-
-        for i, h in enumerate(hists): 
-            h.SetStats(False)
-            h.SetLineColor(ci + i)
-            h.SetFillColor(ci + i)
-            mstyle = self.markers.get(h.marker, 20)
-            h.SetMarkerStyle(mstyle)
-            h.SetMarkerColor(ci + i)
-            h.DrawCopy('same')
-            legend.AddEntry(h, h.label)
-
-        legend.Draw('same')
-
-        # ROOT.gStyle.SetOptStat(0)
-        mainpad.SetTickx()
-        mainpad.SetTicky() 
-
-        self.cache.append(legend)
+        super(Visualizer, self).compare_visually(hists, ci, mainpad)
         ratio = self.draw_ratio(hists, ratiopad)
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
         oname = self.get_oname(fname.lower())
         wait(oname, save=True, draw=self.stop)
-
         return adjust_labels(ratio, hists[0])
 
-
-    def get_oname(self, name):
-        if self.oname:
-            return self.oname
-
-        oname = self.output_prefix + name
-        return oname
-
-
-class MultipleVisualizer(Visualizer):
-
-    def __init__(self, size, rrange, crange, stop, oname):
-        super(MultipleVisualizer, self).__init__(size, rrange, crange, stop, oname)
-        
-    def compare_visually(self, hists, ci):
-        super(MultipleVisualizer, self).compare_visually(hists, ci)
-
-    def draw_ratio(self, hists, pad):
-        return None
-
-    def _canvas(self, hists):
-        c1 = gcanvas(self.size[0], self.size[1], resize = True)
-        c1.Clear()
-        return c1, c1, c1
