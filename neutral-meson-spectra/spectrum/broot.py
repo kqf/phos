@@ -282,3 +282,22 @@ class BROOT(object):
         rcolors = [[b / 255. for b in c] for c in colors]
         rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
         return ci, rcolors
+
+    @classmethod
+    def systematic_deviation(klass, histograms):
+        import numpy as np
+        bins = lambda x: np.array([x.GetBinContent(i) for i in range(1, x.GetNbinsX() + 1)])
+        matrix = np.array([bins(h) for h in histograms])
+
+        rms, mean = np.std(matrix, axis = 0), np.mean(matrix, axis = 0)
+
+        klass.setp(histograms[0])
+        syst = klass.copy(histograms[0], 'RMS/mean')
+        syst.GetYaxis().SetTitle('rms/mean')
+        syst.label = 'yield extraction'
+
+        for i, r in enumerate(rms / mean):
+            syst.SetBinContent(i + 1, r)
+
+        return syst, rms, mean
+

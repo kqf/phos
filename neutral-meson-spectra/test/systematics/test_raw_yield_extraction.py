@@ -1,7 +1,7 @@
 from spectrum.spectrum import Spectrum
-from spectrum.input import Input, TimecutInput, read_histogram
+from spectrum.input import Input
 from spectrum.options import Options
-from spectrum.comparator import Visualizer, Comparator
+from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 
@@ -58,7 +58,11 @@ class RawYieldSystematicError(unittest.TestCase):
         diff = Comparator(oname = 'yield_deviation_from_average')
         diff.compare_ratios(spectrums, average)
 
-        # TODO: How to get uncertanity from this
+        uncert, rms, mean = br.systematic_deviation(spectrums)
+        uncert.SetTitle('Systematic uncertanity from yield extraction (RMS/mean)')
+        diff = Comparator(oname = 'syst-error-yield-extraction')
+        diff.compare(uncert)
+
 
   
 

@@ -192,7 +192,7 @@ class TestTH(unittest.TestCase):
         # print 
         # for b, p in zip(bins, projections):
             # print b, p.Integral()
-        print sum(p.Integral() for p in projections), hist.Integral()
+        # print sum(p.Integral() for p in projections), hist.Integral()
 
         total = sum(p.Integral() for p in projections) 
         self.assertEqual(total, hist.Integral())
@@ -460,3 +460,30 @@ class TestTH(unittest.TestCase):
         hist.SetMarkerStyle(20)
         hist.Draw()
         wait(draw = self.mode)
+
+    def test_caclulates_syst_deviation(self):
+        hists = [ROOT.TH1F("hDev_%d" % i, "%d; x, GeV; y, N" % i, 20, 0, 20) for i in range(10)]
+
+        for i, hist in enumerate(hists):
+            for b in range(1, hist.GetNbinsX() + 1):
+                hist.SetBinContent(b, b)
+
+        hist, rms, mean = br.systematic_deviation(hists)
+
+        for i, m in enumerate(mean):
+            self.assertEqual(i + 1, m)
+
+        for r in rms:
+            self.assertEqual(r, 0)
+
+        hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
+        hist.Draw()
+        wait(draw = True)
+
+
+
+
+
+
+
+
