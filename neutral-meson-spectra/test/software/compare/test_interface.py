@@ -9,6 +9,10 @@ class TestComparatorInterface(unittest.TestCase, Particles):
 
     def testCompareOK(self):
         diff = cmpr.Comparator(stop = self.stop)
+        
+        self.data[0].SetTitle('Compare one single histogram')
+        diff.compare(self.data[0])
+
         for d in self.data: d.SetTitle('Compare coma separated arguments')
         diff.compare(*self.data)
 

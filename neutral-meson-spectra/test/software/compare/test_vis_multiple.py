@@ -16,7 +16,7 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
 
     # @unittest.skip('')
     def test_draws_multiple_plots(self):
-        vis = vi.VisHub((1, 1), None, None, True, '')
+        vis = vi.VisHub((1, 1), (), (), True, '')
 
         self.data[0].SetTitle('Test ViHub: Testing MultipleVisualizer')
         vis.compare_visually(self.data, 1)
