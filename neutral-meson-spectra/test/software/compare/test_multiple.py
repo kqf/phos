@@ -14,7 +14,7 @@ class Test(unittest.TestCase, Particles):
         """
             This one is needed to compare "double ratio" plots.
         """
-        self.data[0].SetTitle('Checking multiple ratios with common baseline')
+        self.data[0].SetTitle('Test compare: ratios with common baselines')
         diff = cmpr.Comparator(stop = self.stop)
         diff.compare_ratios(self.data, self.data[2])
 
@@ -24,6 +24,6 @@ class Test(unittest.TestCase, Particles):
             The result of this test should give three constant( = 1) graphs.
         """
 
-        self.data[0].SetTitle('Checking multiple ratios with different baselines')
+        self.data[0].SetTitle('Test compare: ratios with different baselines')
         diff = cmpr.Comparator(stop = self.stop)
         diff.compare_multiple_ratios(self.data, self.data) 

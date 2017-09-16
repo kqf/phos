@@ -201,8 +201,9 @@ class BROOT(object):
 
         ratio.Divide(a, b, 1, 1, option)
         label = a.label + ' / ' + b.label
-        ratio.SetTitle('')
+        ratio.SetTitle(a.GetTitle())
         ratio.GetYaxis().SetTitle(label)
+        ratio.Sumw2()
         return ratio
 
     @classmethod

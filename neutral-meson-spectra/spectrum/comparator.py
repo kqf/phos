@@ -48,32 +48,14 @@ class Comparator(object):
     def compare_multiple_ratios(self, hists, baselines, comparef = None):
         if not comparef:
             comparef = self.vi.compare_visually
-
-        def ratio(a, b):
-            h = a.Clone(a.GetName() + '_ratio')
-            # Here we assume that a, b have the same lables
-            h.label = a.label
-            h.Divide(b)
-            ytitle = lambda x: x.GetYaxis().GetTitle()
-            h.SetTitle(a.GetTitle() + ' / ' + b.GetTitle())
-            h.GetYaxis().SetTitle(ytitle(a) +  ' / ' + ytitle(b))
-            return h
-
-        comparef(map(ratio, hists, baselines), self.ci)
-
+        comparef(map(br.ratio, hists, baselines), self.ci)
 
 
     def compare_ratios(self, hists, baseline, comparef = None, logy = False):
         if not comparef:
             comparef = self.vi.compare_visually
 
-        def ratio(a):
-            h = a.Clone(a.GetName() + '_ratio')
-            h.label = a.label + '/' + baseline.label
-            h.Divide(baseline)
-            if logy: h.logy = logy
-            return h
-
+        ratio = lambda x: br.ratio(x, baseline)
         comparef(map(ratio, hists), self.ci)
 
 
