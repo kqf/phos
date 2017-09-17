@@ -5,9 +5,6 @@ import ROOT
 from vis import VisHub
 from broot import BROOT as br
 
-# TODO: Separate multiple visualisator from double
-#       It's possible to arrange: compare_visually calls draw, and draw double
-#       ivoke right function from the Comparator class, Replece unnecesaary ifs
 
 class Comparator(object):
 
@@ -66,10 +63,3 @@ class Comparator(object):
         result = [comparef(hists, self.ci) for hists in zip(*l)]
         return result if len(result) > 1 else result[0]
 
-
-
-def main():
-    print "Use:\n\t... \n\tcmp = Comparator((0.5, 2))\n\t...\n\nto comparef lists of histograms."
-
-if __name__ == '__main__':
-    main()

@@ -285,10 +285,17 @@ class BROOT(object):
         return ci, rcolors
 
     @classmethod
+    def bins(klass, hist):
+        import numpy as np
+        content = np.array([hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)])
+        errors = np.array([hist.GetBinError(i) for i in range(1, hist.GetNbinsX() + 1)])
+        return content, errors
+
+
+    @classmethod
     def systematic_deviation(klass, histograms):
         import numpy as np
-        bins = lambda x: np.array([x.GetBinContent(i) for i in range(1, x.GetNbinsX() + 1)])
-        matrix = np.array([bins(h) for h in histograms])
+        matrix = np.array([klass.bins(h)[0] for h in histograms])
 
         rms, mean = np.std(matrix, axis = 0), np.mean(matrix, axis = 0)
 

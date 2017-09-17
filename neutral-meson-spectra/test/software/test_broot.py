@@ -478,12 +478,25 @@ class TestTH(unittest.TestCase):
 
         hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
         hist.Draw()
-        wait(draw = True)
+        wait(draw = self.mode)
+
+    def test_extracts_bins(self):
+        hist = ROOT.TH1F("hGetBins", "Test BROOT: Retuns binvalues", 40, 0, 40)
+        for i in range(1, hist.GetNbinsX() + 1):
+            hist.Fill(i - 0.5, i), hist.GetBinContent(i)
+
+        bins, errors = br.bins(hist)
+        self.assertEqual(len(bins), hist.GetNbinsX())
+        self.assertEqual(len(errors), hist.GetNbinsX())
+
+        for i, b in enumerate(bins):
+            self.assertEqual(hist.GetBinContent(i + 1), b)
+
+        for b, e in zip(bins, errors):
+            self.assertEqual(e, b ** 0.5)
 
 
-
-
-
-
+        for i, b in enumerate(errors):
+            self.assertEqual(hist.GetBinError(i + 1), b)
 
 
