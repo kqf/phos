@@ -69,8 +69,8 @@ def adjust_canvas(canvas):
     return canvas
     
     
-def tsallis(x, p, a = 0.135, b = 0.135):
-    return x[0]*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt(x[0]*x[0]+a*a)-b)/(p[2]*p[1])) ** (-p[2])
+def tsallis(x, p, a = 0.135, b = 0.135, bias = 0):
+    return (x[0] + x[0] * bias)*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt((x[0] +x[0] * bias)*(x[0] +x[0] * bias)+a*a)-b)/(p[2]*p[1])) ** (-p[2])
 
 
 def equals(a, b, tol = 1e-7):

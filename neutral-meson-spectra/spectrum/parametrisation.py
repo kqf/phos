@@ -34,7 +34,6 @@ class PeakParametrisation(object):
         # background
         bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
         background = ROOT.TF1("mypol", bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
-        print self.opt.fit_range
 
         # signal + background
         fitfun = ROOT.TF1("fitfun", funcname + " + mypol", *self.opt.fit_range)
