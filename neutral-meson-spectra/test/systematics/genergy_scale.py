@@ -51,11 +51,8 @@ class TestGlobalEnergyScaleUncetanity(unittest.TestCase):
         upper.Draw('same')
         sl.wait()
 
-
-
-
-
-    def test(self):
+    def test_systematics(self):
         self.fit()
+        return None
 
 

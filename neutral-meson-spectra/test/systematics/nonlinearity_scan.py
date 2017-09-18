@@ -2,7 +2,7 @@ from spectrum.spectrum import Spectrum
 from spectrum.input import Input, read_histogram
 from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
-from spectrum.comparator import Visualizer, Comparator
+from spectrum.comparator import Comparator
 
 import ROOT
 
@@ -94,23 +94,6 @@ class NonlinearityParameters(unittest.TestCase):
         x, y = self.sbins
         return [Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x)]
 
-    def testRatio(self):
-        inputs, options = self.inputs(), self.options()
-        nonlinearities = map(Nonlinearity, inputs, options)
-
-        # Total ratio
-        mean = Chi2Entry.evaluate(nonlinearities)
-
-        c1 = gcanvas(1, 1, resize = True)
-        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', \
-            *self.calculate_ranges(nonlinearities))
-
-        for nonlin in nonlinearities:
-            (xx, yy), val = nonlin.ranges, mean.chi2(nonlin)
-            # print chi2_hist.Fill(xx, yy, val)
-
-        chi2_hist.Draw('colz')
-        wait()
 
     def calculate_ranges(self, nonlins):
         xbins, ybins = self.sbins
@@ -128,9 +111,23 @@ class NonlinearityParameters(unittest.TestCase):
         return xbins, xstart, xstop, ybins, ystart, ystop
 
 
+    def test_systematics(self):
+        inputs, options = self.inputs(), self.options()
+        nonlinearities = map(Nonlinearity, inputs, options)
 
+        # Total ratio
+        mean = Chi2Entry.evaluate(nonlinearities)
 
+        c1 = gcanvas(1, 1, resize = True)
+        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', \
+            *self.calculate_ranges(nonlinearities))
 
+        for nonlin in nonlinearities:
+            (xx, yy), val = nonlin.ranges, mean.chi2(nonlin)
+            # print chi2_hist.Fill(xx, yy, val)
 
+        chi2_hist.Draw('colz')
+        wait()
+        return None
 
 
