@@ -6,6 +6,7 @@ import os
 import json
 import copy
 import array
+import urllib2          
 
 # TODO: move all broot-like functions from sutils
 class BROOT(object):
@@ -128,6 +129,22 @@ class BROOT(object):
             olist.Add(obj)
             olist.Write(selection, 1)
             ofile.Close()
+
+        @classmethod
+        def hepdata(klass, record, ofilename):
+            try:
+                download = 'https://www.hepdata.net/download/table/{0}/Table1/1/root' 
+                response = urllib2.urlopen(download.format(record))
+
+                with open(ofilename, 'wb') as f:
+                    f.write(response.read())
+            except urllib2.HTTPError, e:
+                raise IOError('HTTP error {0}\nInvalid record {1}\n{2}'
+                    .format(e.code, record, download.format(record)))
+
+            except urllib2.URLError, e:
+                raise IOError('URL error {0}\nInvalid record {1}\n{2}'
+                    .format(e.code, record, download.format(record)))
 
             
     def __init__(self):
@@ -308,4 +325,5 @@ class BROOT(object):
             syst.SetBinContent(i + 1, r)
 
         return syst, rms, mean
+
 

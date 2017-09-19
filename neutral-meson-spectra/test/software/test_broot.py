@@ -500,3 +500,21 @@ class TestTH(unittest.TestCase):
             self.assertEqual(hist.GetBinError(i + 1), b)
 
 
+    def test_downloads_from_hepdata(self):
+        record, ofile = 'ins1620477', 'test_hepdata.root'
+
+        br.io.hepdata(record, ofile)
+        self.assertTrue(os.path.isfile(ofile))
+
+        rfile = br.io._read_file(ofile)
+        self.assertTrue(rfile.IsOpen())
+
+        # Now try fake record
+        frecord = 'x'
+        self.assertRaises(IOError, br.io.hepdata, frecord, 'fake_' + ofile)
+
+        os.remove(ofile)
+
+
+
+

@@ -1,10 +1,28 @@
+import os
+import json
 import unittest
 
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 
-class ComparePublishedResults(unittest.TestCase):
 
+
+def download_data(directory = 'input-data/'):
+    with open('config/links.json') as f:
+        conf = json.load(f)
+
+    for fname, record in conf.iteritems():
+    	infile = directory + fname
+    	if os.path.isfile(infile):
+    		continue
+    	br.io.hepdata(record, infile)
+
+    return conf.keys()
+
+
+
+class ComparePublishedResults(unittest.TestCase):
+	infiles = download_data()
 
 	def setUp(self):
 		tdir = 'Table 1'
@@ -12,10 +30,9 @@ class ComparePublishedResults(unittest.TestCase):
 		self.hreader = lambda h: br.io.read(h, tdir, hname)
 
 	def test(self):
-		infiles = '7.TeV.root', '2.76.TeV.root', '8.TeV.root'
-		histograms = map(self.hreader, infiles)
+		histograms = map(self.hreader, self.infiles)
 
-		for name, hist in zip(infiles, histograms):
+		for name, hist in zip(self.infiles, histograms):
 			label = name.replace('.', ' ')
 			label = name.replace('root', '')
 			hist.label = label
