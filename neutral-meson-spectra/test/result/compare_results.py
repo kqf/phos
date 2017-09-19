@@ -36,6 +36,10 @@ class ComparePublishedResults(unittest.TestCase):
 			label = name.replace('.', ' ')
 			label = name.replace('root', '')
 			hist.label = label
+			hist.logy = 1
+			hist.logx = 1
+			hist.GetYaxis().SetTitleOffset(1.2)
+			hist.Scale(1. / 10 ** (2* int(label[0])))
 
 		diff = Comparator()
 		diff.compare(histograms)

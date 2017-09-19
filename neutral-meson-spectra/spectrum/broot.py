@@ -8,7 +8,8 @@ import copy
 import array
 import urllib2          
 
-# TODO: move all broot-like functions from sutils
+ROOT.TH1.AddDirectory(False)
+
 class BROOT(object):
     class prop(object):
         _properties = {'label': '', 'logy': 0, 'logx': 0, 'priority': 999, 'marker': 0}
@@ -72,6 +73,20 @@ class BROOT(object):
 
             raise IOError('No such file: {0}'.format(filename))
 
+
+        @classmethod
+        def _dir_to_list(klass, tdir):
+            try:
+                keys = tdir.GetListOfKeys()
+            except AttributeError: # It's not a tdirectory
+                return tdir
+
+            nlist = ROOT.TList()
+            # nlist.SetOwner(True)
+            for key in keys:
+                nlist.Add(key.ReadObj().Clone())
+            return nlist
+
         @classmethod
         def _read_list(klass, filename, selection):
             infile = klass._read_file(filename)
@@ -81,7 +96,9 @@ class BROOT(object):
                 infile.ls()
                 raise IOError('No such selection {1} in file: \
                     {0}'.format(filename, selection))
-            return lst
+
+            return klass._dir_to_list(lst)
+
 
         @classmethod
         def read(klass, filename, selection, histname):

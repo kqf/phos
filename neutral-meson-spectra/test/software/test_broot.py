@@ -500,6 +500,7 @@ class TestTH(unittest.TestCase):
             self.assertEqual(hist.GetBinError(i + 1), b)
 
 
+    @unittest.skip("Skip to save some tiem")
     def test_downloads_from_hepdata(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
 
@@ -516,5 +517,13 @@ class TestTH(unittest.TestCase):
         os.remove(ofile)
 
 
+    def test_reads_from_tdir(self):
+        record, ofile = 'ins1620477', 'test_hepdata.root'
+
+        br.io.hepdata(record, ofile)
+        hist = br.io.read(ofile, 'Table 1', 'Hist1D_y1')
+        hist.SetTitle('TEST BROOT: Test read from TDirectory')
+        hist.Draw()
+        wait(draw = self.mode)
 
 
