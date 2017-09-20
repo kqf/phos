@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import sys
 import unittest
 import operator as op
 
@@ -19,6 +20,7 @@ class TestRawQauntities(unittest.TestCase):
         self.inputs = Input('LHC16-old.root', 'PhysTender', 'MassPtN3'), Input('LHC16.root', 'PhysTender', 'MassPt')
         self.options_pi0 = Options('old', 'q'),  Options('new', 'q')
         self.options_eta = Options('old', 'q', particle = 'eta'),  Options('new', 'q', particle = 'eta')
+        self.stop = 'discover' not in sys.argv
 
 
     def run_analysis(self, inputs, options):
@@ -30,7 +32,7 @@ class TestRawQauntities(unittest.TestCase):
             br.scalew(obs.npi0)
 
         c1 = gcanvas(1./2, resize=True)
-        diff = cmpr.Comparator()
+        diff = cmpr.Comparator(stop = self.stop)
         diff.compare(observables)
 
 

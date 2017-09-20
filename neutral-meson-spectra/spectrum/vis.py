@@ -10,16 +10,16 @@ class VisHub(object):
 
     def __init__(self, *args, **kwargs):
         super(VisHub, self).__init__()
-        self.double = Visualizer(*args, **kwargs)
-        self.regular = MultipleVisualizer(*args, **kwargs)
+        self._double = Visualizer(*args, **kwargs)
+        self._regular = MultipleVisualizer(*args, **kwargs)
 
     def compare_visually(self, hists, ci):
-        neglimits = any(i < 0 for i in self.double.rrange)
-        ignoreratio = neglimits and self.double.rrange
+        neglimits = any(i < 0 for i in self._double.rrange)
+        ignoreratio = neglimits and self._double.rrange
 
         if len(hists) != 2 or ignoreratio:
-            return self.regular.compare_visually(hists, ci)
-        return self.double.compare_visually(hists, ci)
+            return self._regular.compare_visually(hists, ci)
+        return self._double.compare_visually(hists, ci)
 
 
 class MultipleVisualizer(object):

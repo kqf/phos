@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from spectrum.sutils import gcanvas, wait
@@ -5,7 +6,7 @@ from optimizer.optimizer import Optimizer
 from optimizer.metrics import MaximumSignalMetrics, MetricInput, MaximumDeviationMetrics
 import ROOT
 
-def process(data, pref):
+def process(data, pref, stop = True):
     c1 = gcanvas()
     c1.Clear()
     c1.Divide(2, 1)
@@ -18,7 +19,7 @@ def process(data, pref):
         pad.Update()
 
     c1.Update()
-    wait('name')
+    wait('name', draw = stop)
 
 class TimecutOptimizer(unittest.TestCase):
 
@@ -27,6 +28,7 @@ class TimecutOptimizer(unittest.TestCase):
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit2')
         self.canvas = gcanvas()
         self.filename = 'input-data/LHC16-old.root'
+        self.stop = 'discover' not in sys.argv
 
     @unittest.skip('')
     def testRanges(self):
@@ -52,14 +54,14 @@ class TimecutOptimizer(unittest.TestCase):
         inp = MetricInput(self.filename, 'QualTender', 'MassPtN3A')
 
         data_m = map(lambda x: x.Project3D("zx"), inp.data_mixing)
-        process(data_m, ['', 'mixing'])
+        process(data_m, ['', 'mixing'], self.stop)
 
     def test_asymmetry_dependence_pt(self):
         ROOT.gStyle.SetOptStat('e')
         inp = MetricInput(self.filename, 'QualTender', 'MassPtN3A')
 
         data_pt = map(lambda x: x.Project3D("zy"), inp.data_mixing)
-        process(data_pt, ['', 'mixing'])
+        process(data_pt, ['', 'mixing'], self.stop)
 
 
     # def testCutMaxSignal(self):

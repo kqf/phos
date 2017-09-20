@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from spectrum.sutils import gcanvas, wait
@@ -15,6 +16,7 @@ class Evaluator(object):
         super(Evaluator, self).__init__()
         self.original = original
         self.withcut = withcut
+        self.stop = 'discover' not in sys.argv
 
     def cut_characteristic(self):
         eff = ROOT.TGraph()
@@ -27,7 +29,7 @@ class Evaluator(object):
         for i, (x, y) in enumerate(self.characteristic(self.purity)):
             purity.SetPoint(i, x, y)
         purity.Draw('apl same')
-        wait('', True)
+        wait('', draw = self.stop)
 
     def characteristic(self, f):
         cuts = np.linspace(10, 30, 10)

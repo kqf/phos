@@ -50,7 +50,7 @@ class TestTH(unittest.TestCase):
 
     def setUp(self):
         self.mode = 'discover' not in sys.argv
-        self.mode = 'discover' in sys.argv
+        # self.mode = 'discover' in sys.argv
         self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), 
             "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
@@ -525,5 +525,6 @@ class TestTH(unittest.TestCase):
         hist.SetTitle('TEST BROOT: Test read from TDirectory')
         hist.Draw()
         wait(draw = self.mode)
+        os.remove(ofile)
 
 
