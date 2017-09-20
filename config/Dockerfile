@@ -9,7 +9,7 @@ RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN apt-get -y update 
 RUN apt-get -y upgrade
 
-RUN apt-get install -y gcc-6
+# RUN apt-get install -y gcc-6
 
 RUN apt-get -y install python
 RUN apt-get -y install python-pip
@@ -41,12 +41,9 @@ RUN touch /root/.ssh/known_hosts
 # Add bitbuckets key
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-# Build aliroot
-RUN aliBuild build AliRoot
-
-
 # Add keys to the aliphysics
 WORKDIR /alice/AliPhysics
 RUN git remote add kqf git@github.com:kqf/AliPhysics
 
-RUN aliDoctor AliRoot
+RUN echo "Install aliPhysics aliBuild build AliPhysics"
+WORKDIR /alice
