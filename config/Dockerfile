@@ -28,7 +28,8 @@ RUN apt-get -y install libbz2-dev libbz2-1.0
 RUN apt-get -y install freeglut3-dev
 RUN apt-get -y install libx11-dev libxext-dev libxft-dev libxpm-dev
 
-
+# Install libssl, required by root
+RUN apt-get -y install libssl-dev   
 
 # Make ssh dir
 RUN mkdir /root/.ssh/

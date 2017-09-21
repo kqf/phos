@@ -34,3 +34,15 @@ exit
 # Now on your machine
 docker commit <container ID> aliworker:physics
 ```
+
+
+# Run
+To run existing image use following command
+
+```bash
+docker run -v $HOME/path/to/workdir/:/alice/AliPhysics/PWGGA/PHOSTasks/workdir -it aliworker:physics
+
+
+# For this repo run the script
+./run-in-docker.sh
+```
