@@ -1,5 +1,5 @@
-#ifndef QUALITYSELECTION_H
-#define QUALITYSELECTION_H
+#ifndef QUALITYPHOTONSELECTION_H
+#define QUALITYPHOTONSELECTION_H
 
 // --- Custom header files ---
 #include "DetectorHistogram.h"

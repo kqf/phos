@@ -51,7 +51,7 @@ struct ParticleSpectrum
 		}
 	}
 
-private:
+// private:
 
 	TH1F * fPtAllRange; //!
 	TH2F * fPtRadius; //!

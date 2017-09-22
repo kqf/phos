@@ -1,9 +1,18 @@
-# Setup
+# Run on lxplus
+
+Use following command to enable CVMS environment on lxplus machine. It will load packages and initialize a token if needed.
+
+```bash
+
+./setup-env.sh
+```
+
+# Setup docker image
 
 The first step is to copy your ssh-key to the directory with the `Dockerfile`. Unfortunately `ln -s` doesn't work.
 ```bash
 cd /path/to/Dockerfile
-cp ~/id_rsa .
+cp ~/.ssh/id_rsa .
 ```
 
 Then change github user name in `Dockerfile` and build a base image with dependencies only. It will update the system and install all necessary packages.
