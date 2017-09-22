@@ -7,7 +7,6 @@ from spectrum.comparator import Comparator
 import ROOT
 
 import os.path
-import unittest
 
 ROOT.TH1.AddDirectory(False)
 
@@ -77,13 +76,15 @@ class Nonlinearity(Chi2Entry):
 
 
 
-class NonlinearityParameters(unittest.TestCase):
+class NonlinearityScanner(object):
 
-    def setUp(self):
+    def __init__(self, stop):
+        super(NonlinearityScanner, self).__init__()
         self.infile = 'Pythia-new.root'
         self.sel = 'StudyNonlinOnlyTender'
         self.hname = 'MassPt_%d_%d'
-        self.sbins = 11, 11
+        self.sbins = 2, 2
+        self.stop = stop
 
     def inputs(self):
         x, y = self.sbins
@@ -127,7 +128,6 @@ class NonlinearityParameters(unittest.TestCase):
             # print chi2_hist.Fill(xx, yy, val)
 
         chi2_hist.Draw('colz')
-        wait()
+        wait(draw = self.stop)
         return None
-
 

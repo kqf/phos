@@ -12,13 +12,15 @@ import os.path
 import unittest
 
 
-class TestGlobalEnergyScaleUncetanity(unittest.TestCase):
+class GlobalEnergyScaleUncetanityEvaluator(object):
 
-    def setUp(self):
+    def __init__(self, stop):
+        super(GlobalEnergyScaleUncetanityEvaluator, self).__init__()
         # This should be studied on corrected yield
         #
         self.infile = 'LHC16'
         self.selection = 'PhysOnlyTender'
+        self.stop = stop
 
 
     def fitfunc(self, bias = 0):
@@ -38,7 +40,7 @@ class TestGlobalEnergyScaleUncetanity(unittest.TestCase):
         br.scalew(spectrum)
         spectrum.Fit(fitf, '', '')
         spectrum.Draw()
-        sl.wait()
+        sl.wait(draw = self.stop)
 
         parameters = [fitf.GetParameter(i) for i in range(fitf.GetNpar())]
         lower = self.fitfunc(-0.1)
@@ -49,8 +51,10 @@ class TestGlobalEnergyScaleUncetanity(unittest.TestCase):
 
         lower.Draw()
         upper.Draw('same')
-        sl.wait()
+        sl.wait(draw = self.stop)
 
+    # TODO: Create Output Histogram definition
+    # 
     def test_systematics(self):
         self.fit()
         return None
