@@ -49,8 +49,8 @@ def write_histograms(filename, selection, histnames):
 class TestTH(unittest.TestCase):
 
     def setUp(self):
-        self.mode = 'discover' not in sys.argv
-        # self.mode = 'discover' in sys.argv
+        # self.mode = 'discover' not in sys.argv
+        self.mode = 'discover' in sys.argv
         self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), 
             "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
@@ -143,8 +143,8 @@ class TestTH(unittest.TestCase):
                    )
 
         # Fill random values
-        for i in range(1, hist.GetXaxis().GetNbins() + 1):
-            for j in range(1, hist.GetYaxis().GetNbins() + 1):
+        for i in br.range(hist):
+            for j in br.range(hist, 'y'):
                 hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
  
@@ -180,8 +180,8 @@ class TestTH(unittest.TestCase):
                    )
 
         # Fill random values
-        for i in range(1, hist.GetXaxis().GetNbins() + 1):
-            for j in range(1, hist.GetYaxis().GetNbins() + 1):
+        for i in br.range(hist):
+            for j in br.range(hist, 'y'):
                 hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
         bin_edges = map(carter, range(ncarter))
@@ -465,7 +465,7 @@ class TestTH(unittest.TestCase):
         hists = [ROOT.TH1F("hDev_%d" % i, "%d; x, GeV; y, N" % i, 20, 0, 20) for i in range(10)]
 
         for i, hist in enumerate(hists):
-            for b in range(1, hist.GetNbinsX() + 1):
+            for b in br.range(hist):
                 hist.SetBinContent(b, b)
 
         hist, rms, mean = br.systematic_deviation(hists)
@@ -482,7 +482,7 @@ class TestTH(unittest.TestCase):
 
     def test_extracts_bins(self):
         hist = ROOT.TH1F("hGetBins", "Test BROOT: Retuns binvalues", 40, 0, 40)
-        for i in range(1, hist.GetNbinsX() + 1):
+        for i in br.range(hist):
             hist.Fill(i - 0.5, i), hist.GetBinContent(i)
 
         bins, errors = br.bins(hist)
@@ -526,5 +526,29 @@ class TestTH(unittest.TestCase):
         hist.Draw()
         wait(draw = self.mode)
         os.remove(ofile)
+
+
+    def test_iterates_over_bins(self):
+        # If fill returns bin number, then it's ok
+        # otherwise it returns -1
+        #
+
+        hist = ROOT.TH1F("hIterations1", "Test BROOT: Test iterations", 100, -4, 4)
+        for i in br.range(hist):
+            hcenter = hist.GetBinCenter(i)
+            self.assertEqual(hist.Fill(hcenter, i), i)
+
+        hist = ROOT.TH1F("hIterations2", "Test BROOT: Test iterations", 100, 0, 4000)
+        for i in br.range(hist):
+            hcenter = hist.GetBinCenter(i)
+            self.assertEqual(hist.Fill(hcenter, i), i)
+
+        hist = ROOT.TH1F("hIterations2", "Test BROOT: Test iterations", 4, 0, 4)
+        for i in br.range(hist):
+            hcenter = hist.GetBinCenter(i)
+            self.assertEqual(hist.Fill(hcenter, i), i)
+
+
+
 
 

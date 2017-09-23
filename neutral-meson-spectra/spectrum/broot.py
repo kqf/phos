@@ -250,7 +250,7 @@ class BROOT(object):
     def rebin_as(klass, hist1, hist2):
         # TODO: Change this interface
         greater = lambda x, y: x.GetNbinsX() > y.GetNbinsX()
-        lbins = lambda x: (x.GetBinLowEdge(i) for i in range(0, x.GetNbinsX() + 1))
+        lbins = lambda x: (x.GetBinLowEdge(i) for i in klass.range(x, start = 0))
 
         a, b = (hist1, hist2) if greater(hist1, hist2) else (hist2, hist1)
         xbin = array.array('d', lbins(b))
@@ -321,10 +321,9 @@ class BROOT(object):
     @classmethod
     def bins(klass, hist):
         import numpy as np
-        content = np.array([hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)])
-        errors = np.array([hist.GetBinError(i) for i in range(1, hist.GetNbinsX() + 1)])
+        content = np.array([hist.GetBinContent(i) for i in klass.range(hist)])
+        errors = np.array([hist.GetBinError(i) for i in klass.range(hist)])
         return content, errors
-
 
     @classmethod
     def systematic_deviation(klass, histograms):
@@ -343,4 +342,10 @@ class BROOT(object):
 
         return syst, rms, mean
 
+    @classmethod
+    def range(klass, hist, axis = 'x', start = 1):
+        nbins = hist.GetNbinsX() if 'x' in axis.lower() else hist.GetNbinsY()
+        # NB: Default value should be 1
+        #     one should use 0 if bin edges are needed
+        return range(start, nbins + 1)
 
