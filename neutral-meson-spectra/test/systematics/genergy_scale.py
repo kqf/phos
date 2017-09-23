@@ -1,10 +1,12 @@
-from spectrum.spectrum import Spectrum
 from spectrum.input import Input
 from spectrum.options import Options
+from spectrum.spectrum import Spectrum
 from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 import spectrum.sutils as sl
+
+from systematic_error import SysError
 
 import ROOT
 
@@ -21,6 +23,7 @@ class GlobalEnergyScaleUncetanityEvaluator(object):
         self.infile = 'LHC16'
         self.selection = 'PhysOnlyTender'
         self.stop = stop
+        self.outsys = SysError(label = 'global energy scale')
 
 
     def fitfunc(self, bias = 0):
@@ -30,6 +33,7 @@ class GlobalEnergyScaleUncetanityEvaluator(object):
         fitf.SetParameter(1, 0.139)
         fitf.SetParameter(2, 6.88)
         return fitf
+
 
     def fit(self):
         inp, options = Input(self.infile, self.selection), Options('data')
@@ -52,11 +56,9 @@ class GlobalEnergyScaleUncetanityEvaluator(object):
         lower.Draw()
         upper.Draw('same')
         sl.wait(draw = self.stop)
+        return spectrum
 
-    # TODO: Create Output Histogram definition
-    # 
+
     def test_systematics(self):
-        self.fit()
-        return None
-
-
+        specrum = self.fit()
+        return self.outsys.histogram(specrum)

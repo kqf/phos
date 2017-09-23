@@ -3,6 +3,7 @@ from spectrum.input import Input, read_histogram
 from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
 from spectrum.comparator import Comparator
+from systematic_error import SysError
 
 import ROOT
 
@@ -67,6 +68,9 @@ class Nonlinearity(Chi2Entry):
         # Set Values for different ranges
         self.ranges = extract_range(spectrum.analyzer.hists[0])
 
+        # Save it to have a reference
+        self.spectrum = sresults.spectrum
+
 
     def extract_values(self, histograms):
         f = lambda h : \
@@ -85,6 +89,7 @@ class NonlinearityScanner(object):
         self.hname = 'MassPt_%d_%d'
         self.sbins = 2, 2
         self.stop = stop
+        self.outsys = SysError(label = 'nonlinearity')
 
     def inputs(self):
         x, y = self.sbins
@@ -129,5 +134,5 @@ class NonlinearityScanner(object):
 
         chi2_hist.Draw('colz')
         wait(draw = self.stop)
-        return None
+        return self.outsys.histogram(nonlinearities[0].spectrum)
 

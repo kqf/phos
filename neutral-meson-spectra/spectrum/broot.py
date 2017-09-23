@@ -182,7 +182,8 @@ class BROOT(object):
     def clone(klass, hist, name = '_copied', replace = False):
         name = name if replace else hist.GetName() + name 
         cloned = hist.Clone(name)
-        klass.setp(cloned, hist)
+        prop = hist if klass.prop.has_properties(hist) else klass.prop()
+        klass.setp(cloned, prop)
         return cloned
 
     @classmethod
