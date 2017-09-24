@@ -4,20 +4,22 @@ from spectrum.options import Options
 from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
+from systematic_error import SysError
 
 import ROOT
 
 import os.path
-import unittest
 
+class RawYieldError(object):
 
-class RawYieldSystematicError(unittest.TestCase):
-
-    def setUp(self):
+    def __init__(self, stop):
+        super(RawYieldError, self).__init__()
         # This should be studied on corrected yield
         #
         self.infile = 'LHC16'
         self.selection = 'PhysOnlyTender'
+        self.outsys = SysError(label = 'yield extraction')
+        self.stop = stop
 
 
     def average_yiled(self, histos):
@@ -35,7 +37,7 @@ class RawYieldSystematicError(unittest.TestCase):
         return average
 
 
-    def testRawYieldSysError(self):
+    def test_systematics(self):
         spectrums, options = [], Options('', mode = 'd')
         for frange, flab in zip([[0.06,0.22],[0.04,0.20],[0.08,0.24]], ['low', 'mid', 'wide']):
             for bckgr in ['pol1', 'pol2']:
@@ -53,21 +55,18 @@ class RawYieldSystematicError(unittest.TestCase):
                         spectrums.append(spectrum)
 
 
-        diff = Comparator(oname = 'spectrum_extraction_methods')
+        diff = Comparator(stop = self.stop, oname = 'spectrum_extraction_methods')
         diff.compare(spectrums)
 
         average = self.average_yiled(spectrums)
-        diff = Comparator(oname = 'yield_deviation_from_average')
+        diff = Comparator(stop = self.stop, oname = 'yield_deviation_from_average')
         diff.compare_ratios(spectrums, average)
 
         uncert, rms, mean = br.systematic_deviation(spectrums)
         uncert.SetTitle('Systematic uncertanity from yield extraction (RMS/mean)')
-        diff = Comparator(oname = 'syst-error-yield-extraction')
+        diff = Comparator(stop = self.stop, oname = 'syst-error-yield-extraction')
         diff.compare(uncert)
-
-
-  
-
+        return self.outsys.histogram(spectrums[0], uncert)
 
 
     def spectrum(self, options):

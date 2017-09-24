@@ -4,14 +4,15 @@ from spectrum.broot import BROOT as br
 import ROOT
 import unittest
 
-from test.systematics.genergy_scale import GlobalEnergyScaleUncetanityEvaluator
+from test.systematics.yield_extraction import RawYieldError
 from test.systematics.nonlinearity_scan import NonlinearityScanner
+from test.systematics.genergy_scale import GlobalEnergyScaleUncetanityEvaluator
 
 class DrawAllSources(unittest.TestCase):
 
     def test_all(self):
         stop = False
-        tests = GlobalEnergyScaleUncetanityEvaluator(stop), NonlinearityScanner(stop)
+        tests = GlobalEnergyScaleUncetanityEvaluator(stop), NonlinearityScanner(stop), RawYieldError(stop)
         output = [test.test_systematics() for test in tests]
 
         diff = Comparator()

@@ -76,7 +76,7 @@ class MultipleVisualizer(object):
     def _color_marker(self, ci, i, h):
         color = ci + i % self.ncolors
         if h.marker:
-            return color, 20 + marker
+            return color, 20 + h.marker
 
         return color, 20 + i // self.ncolors
 
