@@ -21,7 +21,7 @@ grid: | %.cxx
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 	@# Add all necessary taks
 	@$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
-	@$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C "*.h" "*.cxx")
+	@$(call link_sources,../analysis-task-pp, "*.h" "*.cxx")
 	@$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C "*.h" "*.cxx")
 
 

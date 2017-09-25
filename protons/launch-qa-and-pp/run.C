@@ -38,7 +38,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
+    gROOT->LoadMacro("../analysis-task-pp/macros/AddAnalysisTaskPP.C");
     gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";

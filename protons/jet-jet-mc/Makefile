@@ -1,15 +1,15 @@
-DATASET = LHC17f8e
-DPART = first
+DATASET = LHC17f8f
+DPART = second
 MC = kTRUE
-PAUSE = 15m
+PAUSE = 10m
 
-PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
-# PtBins = 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
+#PtBins = 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
+#PtBins =  2 1 
 #PtBins = 3 2 1 
 # PtBins = 13 12 11 10 9 8 
-## PtBins = 1 2 13 14 
+PtBins = 9 8 7 6 5 4 3 2 1
 #PtBins =  5 4 3 2 1 
-# PtBins = 20 19
+#PtBins = 15
 
 grid: | %.cxx
 	$(call jetjet,gridstart,$(DATASET))
@@ -39,7 +39,7 @@ download: | %.cxx
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 	@# Add all necessary taks
 	$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
-	$(call link_sources,../analysis-task-pp,AddAnalysisTaskPP.C "*.h" "*.cxx")
+	$(call link_sources,../analysis-task-pp,"*.h" "*.cxx")
 	$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C "*.h" "*.cxx")
 
 
