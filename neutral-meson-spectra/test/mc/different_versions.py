@@ -12,11 +12,13 @@ import operator
 class CheckMCDifferentVersions(unittest.TestCase):
 
     def setUp(self):
-        inputs = Input('LHC16', 'PhysOnlyTender'), Input('Pythia-LHC16-a5', 'PhysNonlinTender'),\
-             Input('Pythia-LHC16-a5', 'PhysNonlinTender')
+        inputs = Input('LHC16', 'PhysOnlyTender'), Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender'),\
+             Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender'), Input('pythia-jet-jet', 'PhysNonlinOnlyTender')
+
 
         inputs = map(operator.methodcaller('read'), inputs)
-        options = Options('Data', 'q'), Options('Pythia8', 'q', priority = 1), Options('EPOS', 'q', priority = 1)
+        options = Options('Data', 'q'), Options('Pythia8', 'q', priority = 1), \
+                Options('EPOS', 'q', priority = 1), Options('Pythia8 JJ', 'q', priority = 1)
 
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)

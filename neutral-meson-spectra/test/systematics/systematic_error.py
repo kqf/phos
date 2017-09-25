@@ -10,6 +10,7 @@ class SysError(object):
 		systhist = br.copy(hist)
 		# Force saved options
 		br.setp(systhist, self.prop)
+		systhist.label = self.prop.label
 
 		if not values:
 			return systhist

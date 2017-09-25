@@ -14,6 +14,7 @@ import os.path
 import unittest
 
 
+# TODO: Check me
 class Efficiency(object):
 
     def __init__(self, genname, label, iname):
@@ -74,10 +75,12 @@ class CalculateEfficiency(unittest.TestCase):
         # self.pythiaf = 'input-data/scaled-LHC17f8a.root'
         self.pythiaf = 'input-data/Pythia-LHC16-a5.root'
         self.eposf = 'input-data/scaled-LHC17f8a.root'
+        self.jetjetf = 'input-data/pythia-jet-jet.root'
+
 
         # To compare more than 1 production
         # self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root'}
-        self.productions = {'pythia': 'Pythia-LHC16-a5', 'jet jet': 'scaled-LHC17f8a'}
+        self.productions = {'pythia': 'Pythia-LHC16-a5', 'jet jet': 'pythia-jet-jet'}
         # self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
 
         self.true_pt_mc = 'hPt_#pi^{0}_primary_'

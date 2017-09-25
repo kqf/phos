@@ -29,7 +29,7 @@ class Jetjet(unittest.TestCase):
         self.rec_histogram = 'MassPt'
 
         # To compare more than 1 production
-        self.productions = 'LHC17f8a', 'LHC17f8c', 'LHC17f8d', 'LHC17f8g', 'LHC17f8k'
+        self.productions = 'LHC17f8a', 'LHC17f8c', 'LHC17f8d', 'LHC17f8e', 'LHC17f8f', 'LHC17f8j', 'LHC17f8g', 'LHC17f8k'
         self.files = {'weighed': 'input-data/scaled-%s.root', 'no weights #times 10^{-3}': 'input-data/%s.root'}
         # self.files = {'ok': 'input-data/LHC17f8a.root'}
 
