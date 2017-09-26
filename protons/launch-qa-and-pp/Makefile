@@ -6,7 +6,7 @@ DATASET = LHC16j2a2
 DPART = first
 MC = kTRUE
 
-TEST_SELECTION = MCStudyOnlyTender
+TEST_SELECTION = PhysTender
 
 grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink) 
