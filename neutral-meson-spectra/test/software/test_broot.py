@@ -408,6 +408,12 @@ class TestTH(unittest.TestCase):
 
 
         br.io.save(hist, oname, selection)
+        
+        # It's important to check if we don't delete 
+        # the hist accidentally
+        self.assertIsNotNone(hist)
+
+
         self.assertTrue(os.path.isfile(oname))
 
         ffile = br.io.read(oname, selection, histname)
@@ -500,7 +506,7 @@ class TestTH(unittest.TestCase):
             self.assertEqual(hist.GetBinError(i + 1), b)
 
 
-    @unittest.skip("Skip to save some tiem")
+    # @unittest.skip("Skip to save some tiem")
     def test_downloads_from_hepdata(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
 

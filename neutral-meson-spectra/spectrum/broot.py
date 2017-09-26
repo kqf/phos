@@ -143,7 +143,8 @@ class BROOT(object):
 
             olist = ROOT.TList()
             olist.SetOwner(True)
-            olist.Add(obj)
+            cloned = BROOT.clone(obj, '')
+            olist.Add(cloned)
             olist.Write(selection, 1)
             ofile.Close()
 

@@ -14,7 +14,6 @@ import os.path
 import unittest
 
 
-# TODO: Check me
 class Efficiency(object):
 
     def __init__(self, genname, label, iname):
@@ -44,7 +43,6 @@ class Efficiency(object):
 
     def true(self, label = 'Generated'):
         true = read_histogram(self.iname, self.selection, self.genname, label = label, priority = 0)
-        print true
         true.logy = True
         return br.scalew(true)
 
@@ -74,15 +72,12 @@ class CalculateEfficiency(unittest.TestCase):
         self.selection = 'PhysNonlinOnlyTender'
         # self.pythiaf = 'input-data/scaled-LHC17f8a.root'
         self.pythiaf = 'input-data/Pythia-LHC16-a5.root'
-        self.eposf = 'input-data/scaled-LHC17f8a.root'
         self.jetjetf = 'input-data/pythia-jet-jet.root'
 
 
         # To compare more than 1 production
         # self.productions = {'pythia': 'input-data/Pythia-LHC16-a5.root'}
         self.productions = {'pythia': 'Pythia-LHC16-a5', 'jet jet': 'pythia-jet-jet'}
-        # self.eposf = 'input-data/EPOS-LHC16-iteration3.root'
-
         self.true_pt_mc = 'hPt_#pi^{0}_primary_'
 
 
@@ -101,11 +96,12 @@ class CalculateEfficiency(unittest.TestCase):
             Calculate and compare efficiencies for different productions
         """
         efficiencies = [Efficiency(self.true_pt_mc, *p).eff() for p in self.productions.iteritems()]
+
         diff = Comparator()
         diff.compare(efficiencies)
 
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testSpectrums(self):
         """ 
             This test checks the denominators of the efficiencies.
@@ -117,7 +113,7 @@ class CalculateEfficiency(unittest.TestCase):
         diff.compare(true)
 
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def testRecoSpectrums(self):
         """ 
             This test checks the Numerators of the efficiencies.
@@ -136,7 +132,7 @@ class CalculateEfficiency(unittest.TestCase):
         diff = Comparator()
         diff.compare(modules)
 
-        spectrums = zip(*modules).npi0
+        spectrums = [sm.npi0 for sm in modules]
         map(lambda x: x.SetTitle('Efficiency per module'), spectrums)
         map(lambda x: x.GetYaxis().SetTitle('measured / generated'), spectrums)
         map(br.scalew, spectrums)
