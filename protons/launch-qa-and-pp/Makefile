@@ -2,8 +2,8 @@
 # DPART = first
 # MC = kFALSE
 
-DATASET = LHC16j2a2
-DPART = first
+DATASET = LHC17d20a2
+DPART = second
 MC = kTRUE
 
 TEST_SELECTION = PhysTender

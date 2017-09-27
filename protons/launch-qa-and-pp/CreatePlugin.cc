@@ -13,12 +13,12 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
 	// Extract period and reconstruction pass
-	TString dir(period, isMC ? 9 : 6); // fancy slicing
+	TString dir(period, isMC ? 10 : 6); // fancy slicing
 	TString reconstruction(period);
 	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
 	reconstruction.ReplaceAll("-", "_");
 
-	TString globaldir = isMC ? "/alice/sim/2016/" : "/alice/data/2016/";
+	TString globaldir = isMC ? "/alice/sim/2017/" : "/alice/data/2016/";
 	plugin->SetGridDataDir(globaldir + dir);
 	cout << "/alice/data/2016/" + dir << endl;
 
