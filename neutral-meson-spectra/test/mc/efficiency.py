@@ -71,7 +71,7 @@ class CalculateEfficiency(unittest.TestCase):
     def setUp(self):
         self.selection = 'PhysNonlinOnlyTender'
         # self.pythiaf = 'input-data/scaled-LHC17f8a.root'
-        self.pythiaf = 'input-data/Pythia-LHC16-a5.root'
+        self.pythiaf = 'input-data/LHC17d20a.root'
         self.jetjetf = 'input-data/pythia-jet-jet.root'
 
 
@@ -97,7 +97,7 @@ class CalculateEfficiency(unittest.TestCase):
         """
         efficiencies = [Efficiency(self.true_pt_mc, *p).eff() for p in self.productions.iteritems()]
 
-        diff = Comparator()
+        diff = Comparator(oname='different-efficiencies')
         diff.compare(efficiencies)
 
 

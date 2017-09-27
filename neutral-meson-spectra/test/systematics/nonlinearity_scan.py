@@ -4,6 +4,7 @@ from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
 from spectrum.comparator import Comparator
 from systematic_error import SysError
+from spectrum.broot import BROOT as br
 
 import ROOT
 
@@ -26,57 +27,44 @@ class Chi2Entry(object):
         self.mean(nsize)
         return self
 
-    @staticmethod
-    def sum_bins(a, b):
-        return [r1 + r2 for r1, r2 in zip(a, b)]
-
     def mean(self, nsize):
-        self._mean = [r / nsize for r, invw in zip(self.R, self.width_inv)] 
-        self._width = [1. / inv / nsize for inv in self.width_inv]
-        # print 'mean', len(self.width_inv)
-
-        return self._mean
+        hmean = br.clone(self.ratio)
+        hmean.Scale(1. / nsize)
+        return hmean
 
     def __add__(self, rhs):
         try:
-            self.R = self.sum_bins(self.R, rhs.R)
-            self.width_inv = self.sum_bins(self.width_inv, rhs.width_inv)
+            self.ratio.Add(rhs.ratio)
         except AttributeError:
-            self.R = list(rhs.R)
-            self.width_inv = list(rhs.width_inv)
+            self.ratio = br.clone(rhs.ratio)
+            self.ratio.SetTitle('#pi^{0} mass positition / #pi^{0} peak width; p_{T}, GeV/c; m/#sigma')
+            self.ratio.label = 'mean'
         return self
 
-    def chi2(self, rhs):
-        # print len(self._width)
-        sample = zip(rhs.R, self._mean, self._width)
-        # for r, m, w in sample:
-            # print r, m, w
-        res = sum(((r - m) / w) ** 2 for r, m, w in sample)
-        # print '>>> ', res
-        return res
+    @staticmethod
+    def chi2(mean, nonlin):
+        mean, sigma = br.bins(mean)
+        xi, _ = br.bins(nonlin.ratio)
+        result = sum((mean - xi) ** 2 / sigma)
+        print result
+        return result
         
 class Nonlinearity(Chi2Entry):
     def __init__(self, sinput, options):
         super(Nonlinearity, self).__init__()
         spectrum = Spectrum(sinput, options)
         sresults = spectrum.evaluate()
-        self.mass, self.width = self.extract_values(sresults[0:2])
-        # self.mass, self.width = range(1, 20), range(1, 20)
-        self.R = [m / w for m, w in zip(self.mass, self.width)]
-        self.width_inv = [1. / w for w in self.width]
+        self.mass, self.width = sresults[0:2]
 
         # Set Values for different ranges
         self.ranges = extract_range(spectrum.analyzer.hists[0])
 
+        # self.mass, self.width = range(1, 20), range(1, 20)
+        self.ratio = br.ratio(self.mass, self.width)
+        self.ratio.label = 'a = {0:.2f}, #sigma = {1:.2f}'.format(*self.ranges)
+
         # Save it to have a reference
         self.spectrum = sresults.spectrum
-
-
-    def extract_values(self, histograms):
-        f = lambda h : \
-         [h.GetBinContent(i + 1) for i in range(h.GetNbinsX())]
-
-        return map(f, histograms)
 
 
 
@@ -87,7 +75,7 @@ class NonlinearityScanner(object):
         self.infile = 'Pythia-new.root'
         self.sel = 'StudyNonlinOnlyTender'
         self.hname = 'MassPt_%d_%d'
-        self.sbins = 2, 2
+        self.sbins = 11, 11
         self.stop = stop
         self.outsys = SysError(label = 'nonlinearity')
 
@@ -128,11 +116,16 @@ class NonlinearityScanner(object):
         chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', \
             *self.calculate_ranges(nonlinearities))
 
+        mean_hist = mean.mean(len(nonlinearities))
+        diff = Comparator()
+        diff.compare([mean_hist] + map(lambda x: x.ratio, nonlinearities[::10]))
+        # wait(draw = self.stop or True)
+
         for nonlin in nonlinearities:
-            (xx, yy), val = nonlin.ranges, mean.chi2(nonlin)
-            # print chi2_hist.Fill(xx, yy, val)
+            (xx, yy), val = nonlin.ranges, mean.chi2(mean_hist,  nonlin)
+            print chi2_hist.Fill(xx, yy, val)
 
         chi2_hist.Draw('colz')
-        wait(draw = self.stop)
+        wait(draw = self.stop or True)
         return self.outsys.histogram(nonlinearities[0].spectrum)
 

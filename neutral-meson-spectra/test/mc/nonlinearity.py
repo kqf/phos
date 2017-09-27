@@ -5,7 +5,7 @@ from spectrum.input import Input, TimecutInput
 from spectrum.sutils import gcanvas
 from spectrum.options import Options
 from spectrum.sutils import wait
-from spectrum.comparator import Visualizer, Comparator
+from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 
 import ROOT

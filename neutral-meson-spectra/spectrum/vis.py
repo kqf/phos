@@ -35,6 +35,7 @@ class MultipleVisualizer(object):
         
     @br.init_inputs
     def compare_visually(self, hists, ci, pad = None):
+        canvas = sl.gcanvas(self.size[0], self.size[1], resize = True)
         legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)

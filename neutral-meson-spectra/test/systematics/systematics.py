@@ -12,7 +12,7 @@ class DrawAllSources(unittest.TestCase):
 
     def test_all(self):
         stop = False
-        tests = GlobalEnergyScaleUncetanityEvaluator(stop), NonlinearityScanner(stop), RawYieldError(stop)
+        tests = NonlinearityScanner(stop), #GlobalEnergyScaleUncetanityEvaluator(stop), RawYieldError(stop)
         output = [test.test_systematics() for test in tests]
 
         diff = Comparator()
