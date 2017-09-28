@@ -70,7 +70,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
 		selections->Add(new MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0));
 		selections->Add(new QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
-		selections->Add(new NonlinearityScanSelection("StudyNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 
 		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
 			selections->Add(new PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
