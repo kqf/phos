@@ -129,3 +129,33 @@ class NonlinearityScanner(object):
         wait(draw = self.stop or True)
         return self.outsys.histogram(nonlinearities[0].spectrum)
 
+    def test_systematics(self):
+        inp = Input('LHC16.root', 'PhysTender').read()
+        opt = Options('data')
+        spectrum = Spectrum(inp, opt)
+        sresults = spectrum.evaluate()
+        data = br.ratio(*sresults[0:2])
+
+        inputs, options = self.inputs(), self.options()
+        nonlinearities = map(Nonlinearity, inputs, options)
+
+
+        c1 = gcanvas(1, 1, resize = True)
+        chi2_hist = ROOT.TH2F('chi2_from_data', 'Deviation from data: #chi^{2} distriubiton; a; #sigma, GeV/c', \
+            *self.calculate_ranges(nonlinearities))
+
+        diff = Comparator()
+        diff.compare([data] + map(lambda x: x.ratio, nonlinearities[::10]))
+        # wait(draw = self.stop or True)
+
+        for nonlin in nonlinearities:
+            (xx, yy), val = nonlin.ranges, Chi2Entry.chi2(data, nonlin)
+            print chi2_hist.Fill(xx, yy, val)
+
+        chi2_hist.Draw('colz')
+        wait(draw = self.stop or True)
+        return self.outsys.histogram(nonlinearities[0].spectrum)
+
+
+
+
