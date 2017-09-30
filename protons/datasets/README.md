@@ -57,8 +57,11 @@ LHC16p-muon-calo-pass1.txt
 Pythia
 
 ```
-LHC16j2a1.txt
-LHC16j2a2.txt
+LHC16j2a1.txt -> LHC17d20a1.txt
+LHC16j2a2.txt -> LHC17d20a2.txt
+
+LHC17d20a1_extra.txt
+LHC17d20a2_extra.txt
 ```
 
 EPOS
