@@ -50,7 +50,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
+    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
     if(isMC)
     {

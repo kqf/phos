@@ -54,7 +54,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // TODO: Move bad map outside this directory
     // 
     
-    PHOSSupply->ForceUsingBadMap("BadMap_LHC16-updated.root");
+    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
     if(isMC)
     {
