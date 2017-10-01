@@ -2,7 +2,7 @@
 # DPART = first
 # MC = kFALSE
 
-DATASET = LHC17d20a2
+DATASET = LHC17d20a1_extra
 DPART = second
 MC = kTRUE
 

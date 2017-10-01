@@ -13,7 +13,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
 	// Extract period and reconstruction pass
-	TString dir(period, isMC ? 10 : 6); // fancy slicing
+	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
+	
 	TString reconstruction(period);
 	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
 	reconstruction.ReplaceAll("-", "_");
