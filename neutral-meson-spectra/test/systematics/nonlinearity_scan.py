@@ -86,7 +86,9 @@ class NonlinearityScanner(object):
 
     def options(self):
         x, y = self.sbins
-        return [Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x)]
+        options = [Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x)]
+        options = map(Options.coarse_binning, options)
+        return options
 
 
     def calculate_ranges(self, nonlins):
@@ -132,6 +134,7 @@ class NonlinearityScanner(object):
     def test_systematics(self):
         inp = Input('LHC16.root', 'PhysTender').read()
         opt = Options('data')
+        opt = Options.coarse_binning(opt)
         spectrum = Spectrum(inp, opt)
         sresults = spectrum.evaluate()
         data = br.ratio(*sresults[0:2])

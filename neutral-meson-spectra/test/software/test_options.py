@@ -78,3 +78,21 @@ class TestOptions(unittest.TestCase):
             os.remove(self.conffile)
         except OSError:
             pass
+
+            
+    def test_rebins(self):
+        option = Options()
+        print 'ptedges before', option.pt.ptedges 
+        edg_before = len(option.pt.ptedges)
+        Options.coarse_binning(option)
+        print 'ptedges edges', option.pt.ptedges 
+
+        edg_after = len(option.pt.ptedges)
+        reb_after = len(option.pt.rebins)
+
+        # Check if the data is consistent
+        self.assertEquals(edg_after - 1, reb_after)
+
+        # The binning is indeed coarse
+        self.assertTrue(edg_after < edg_before)
+
