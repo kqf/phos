@@ -45,7 +45,8 @@ class Jetjet(unittest.TestCase):
         return hist 
 
 
-    def testFiles(self):
+    @unittest.skip('work on full production')
+    def test_files(self):
         """
             To check files it's enough to check un/weighed generated spectra
         """
@@ -64,7 +65,8 @@ class Jetjet(unittest.TestCase):
         return reco
 
 
-    def testProduction(self):
+    @unittest.skip('work on full production')
+    def test_different_productions(self):
         """
             This is to check pi0 peak.
         """
@@ -72,3 +74,12 @@ class Jetjet(unittest.TestCase):
             rec = [self.reconstructed(f % prod, self.rec_histogram, k, prod) for k, f in self.files.iteritems()]
             diff = Comparator((1, 1), rrange = (-1, -1), oname = 'MC_PHOS_reconstructed_{0}'.format(prod))
             diff.compare(rec)
+
+
+    def test_full_production(self):
+        inp = Input('pythia-jet-jet', 'PhysNonlinOnlyTender')
+        opt = Options('Pythia8 JJ', 'v', priority = 1)
+        opt.pt.rebins[-1] = 0
+        results = Spectrum(inp, opt).evaluate().mass
+        diff = Comparator()
+        diff.compare(results)

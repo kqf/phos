@@ -239,7 +239,10 @@ class BROOT(object):
         label = a.label + ' / ' + b.label
         ratio.SetTitle(a.GetTitle())
         ratio.GetYaxis().SetTitle(label)
-        ratio.Sumw2()
+        
+        if not ratio.GetSumw2N():
+            ratio.Sumw2()
+
         return ratio
 
     @classmethod

@@ -84,8 +84,7 @@ class InvariantMass(object):
             return mass
 
         # Divide real/mixed
-        ratio = mass.Clone()
-        ratio.Divide(mixed)
+        ratio = br.ratio(mass, mixed, '')
         ratio.GetYaxis().SetTitle("Real/ Mixed")
 
         if ratio.GetEntries() == 0:
