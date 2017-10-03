@@ -354,3 +354,15 @@ class BROOT(object):
         #     one should use 0 if bin edges are needed
         return range(start, nbins + 1)
 
+    @classmethod
+    def pars(klass, tfunc, npars = None):
+        if not npars:
+            npars = tfunc.GetNpar()
+            
+        pp = [tfunc.GetParameter(i) for i in range(npars)] 
+        ep = [tfunc.GetParError(i) for i in range(npars)] 
+        return pp, ep
+
+
+
+

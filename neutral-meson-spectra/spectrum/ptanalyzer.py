@@ -67,7 +67,7 @@ class PtAnalyzer(object):
         fitfun, background = mass.extract_data() 
         if not (fitfun and background): return [[0, 0]] * 7
         # calculate pi0 values
-        area, mmass, sigma = [(fitfun.GetParameter(i), fitfun.GetParError(i)) for i in range(3)]
+        area, mmass, sigma = zip(*br.pars(fitfun, 3))
         npi0 = self.number_of_mesons(mass, intgr_ranges)
         nraw = map(lambda x: x / (2. * ROOT.TMath.Pi()), npi0)
 

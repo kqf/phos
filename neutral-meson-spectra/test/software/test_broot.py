@@ -555,6 +555,25 @@ class TestTH(unittest.TestCase):
             self.assertEqual(hist.Fill(hcenter, i), i)
 
 
+    def test_returns_func_parameters(self):
+        func = ROOT.TF1('h', '[1] * x * x  + [0] * x + [2]', 0, 10)
+        parameters = 1, 2, 3
+        func.SetParameters(*parameters)
+
+        pars, errors = br.pars(func)
+
+        for pair in zip(pars, parameters):
+            self.assertEqual(*pair)
+
+        pars, _ = br.pars(func, 2)
+
+        for pair in zip(pars, parameters[0:2]):
+            self.assertEqual(*pair)
+
+
+
+
+
 
 
 

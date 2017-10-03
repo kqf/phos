@@ -104,8 +104,8 @@ class InvariantMass(object):
             It's needed for tag and probe analysis.
         """
         peak_and_bkrnd = self.peak_function.fit(self.mass)
-        pars = lambda x: [x.GetParameter(i) for i in range(x.GetNpar())] 
-        return map(pars, peak_and_bkrnd)
+        pars, _ = br.pars(peak_and_bkrnd)
+        return pars
 
 
     def subtract_background(self, mass, mixed):
