@@ -79,6 +79,12 @@ def equals(a, b, tol = 1e-7):
     return abs(a - b) < tol 
 
     
+def in_range(x, somerange):
+    a, b = somerange
+    return a < x < b
+
+
+    
 class Cc:
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'

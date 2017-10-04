@@ -3,7 +3,7 @@
 import ROOT
 import json
 from parametrisation import PeakParametrisation
-from sutils import gcanvas, ticks
+from sutils import gcanvas, ticks, in_range
 from broot import BROOT as br
 
 class InvariantMass(object):
@@ -38,7 +38,7 @@ class InvariantMass(object):
 
         # Delete bin only if it's empty
         valid = lambda i: h.GetBinContent(i) < self.opt.tol and \
-             self.in_range(h.GetBinCenter(i), self.xaxis_range)
+             in_range(h.GetBinCenter(i), self.xaxis_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
         for i, c in centers.iteritems():
@@ -49,13 +49,6 @@ class InvariantMass(object):
             h.SetBinError(i, res ** 0.5 )
         return h
 
-
-    def in_range(self, x, somerange):
-        if not somerange:
-            somerange = self.pt_range
-
-        a, b = somerange
-        return a < x and x < b
 
 
     def extract_histogram(self, hist):
@@ -127,7 +120,7 @@ class InvariantMass(object):
         # Remove all zero bins and don't 
         # touch bins that are zeros in both cases.
         #
-        
+
         signal = self.remove_zeros(signal, zeros)
         mixed  = self.remove_zeros(mixed, zeros)
 

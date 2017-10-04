@@ -365,7 +365,7 @@ class BROOT(object):
 
     @classmethod
     def empty_bins(klass, hist, tolerance = 1e-10):
-        return set([i for i in klass.range(hist) if hist.GetBinContent(i) < tolerance])
+        return [i for i in klass.range(hist) if hist.GetBinContent(i) < tolerance]
 
 
 
