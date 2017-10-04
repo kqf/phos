@@ -363,6 +363,11 @@ class BROOT(object):
         ep = [tfunc.GetParError(i) for i in range(npars)] 
         return pp, ep
 
+    @classmethod
+    def empty_bins(klass, hist, tolerance = 1e-10):
+        return set([i for i in klass.range(hist) if hist.GetBinContent(i) < tolerance])
+
+
 
 
 

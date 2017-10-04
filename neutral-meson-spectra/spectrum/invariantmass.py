@@ -27,35 +27,34 @@ class InvariantMass(object):
         if 'empty' in self.opt.average:
             return h
 
+        if not zeros:
+            return h
+
         fitf, bckgrnd = self.peak_function.fit(h)
 
         # If we failed to fit: do nothing
         if not (fitf and bckgrnd):
             return 
 
-        zeros = {i: c for i, c in zeros.iteritems() if self.xaxis_range[0] < c and c < self.xaxis_range[1]}
-        for i, c in zeros.iteritems():
+        # Delete bin only if it's empty
+        valid = lambda i: h.GetBinContent(i) < self.opt.tol and \
+             self.in_range(h.GetBinCenter(i), self.xaxis_range)
+
+        centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
+        for i, c in centers.iteritems():
             res = fitf.Eval(c)
             if res < 0:
-                print 'Warning zero bin found at ', self.pt_label, ' ,mass: ', c
+                print 'Warning zero bin found at ', self.pt_label, ', mass: ', c
                 res = 0
             h.SetBinError(i, res ** 0.5 )
         return h
 
 
-    def zero_bins(self, hist, exclude = {}):
-        bins = {i: hist.GetBinContent(i) for i in range(1, hist.GetNbinsX() + 1)}
+    def in_range(self, x, somerange):
+        if not somerange:
+            somerange = self.pt_range
 
-        # All bins that are less then certain value
-        zeros = {i: hist.GetBinCenter(i) for i, v in bins.iteritems() if v < self.opt.tol}
-
-        # Don't take into account thos bins that are empty in both histograms
-        unique_zeros = {i: v for i, v in zeros.iteritems() if not i in exclude}
-        return unique_zeros
-
-
-    def in_range(self, x):
-        a, b = self.pt_range
+        a, b = somerange
         return a < x and x < b
 
 
@@ -117,12 +116,20 @@ class InvariantMass(object):
 
         # Subtraction
         signal = mass.Clone()
+        zeros = set()
 
-        # Remove zeros, first one should find zeros! 
-        # In this procedure we don't touch bins that are zeros in both cases.
-        f = lambda x, y: (x, self.zero_bins(x, self.zero_bins(y)))
-        signal = self.remove_zeros(*f(signal, mixed))
-        mixed  = self.remove_zeros(*f(mixed, signal))
+        zsig = br.empty_bins(signal, self.opt.tol)
+        zmix = br.empty_bins(mixed, self.opt.tol)
+
+        zeros.symmetric_difference_update(zsig)
+        zeros.symmetric_difference_update(zmix)
+
+        # Remove all zero bins and don't 
+        # touch bins that are zeros in both cases.
+        #
+        
+        signal = self.remove_zeros(signal, zeros)
+        mixed  = self.remove_zeros(mixed, zeros)
 
         signal.Add(signal, mixed, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
