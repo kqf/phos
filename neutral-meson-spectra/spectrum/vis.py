@@ -42,7 +42,10 @@ class MultipleVisualizer(object):
         legend.SetTextSize(0.04)
 
         first_hist = sorted(hists, key=lambda x: x.priority)[0]
-        first_hist.SetStats(False)
+        try:
+            first_hist.SetStats(False)
+        except AttributeError:
+            pass
 
         mainpad = pad if pad else sl.gcanvas()
         mainpad.cd()
@@ -55,7 +58,6 @@ class MultipleVisualizer(object):
 
         for i, h in enumerate(hists): 
             color, marker = self._color_marker(ci, i, h)
-            h.SetStats(False)
             h.SetLineColor(color)
             h.SetFillColor(color)
             h.SetMarkerStyle(marker)
