@@ -9,13 +9,17 @@ def wait(name = '', draw = True, save = False, suffix = ''):
     canvas.Update()
     name = name.replace(' ', '-').replace('_', '-')
 
-    if save:
-        canvas.SaveAs(outdir + name + '.pdf')
+    try:
+        if save:
+            canvas.SaveAs(outdir + name + '.pdf')
+    except Exception:
+        print "ERROR: In sutils.wait. Can't save the image."
+
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
 
     if draw: 
         ROOT.gApplication.Run(True)
-
+        
 def gcanvas(x = 1., y = 1, resize = False, scale = 6):
     canvas = ROOT.gROOT.FindObject('c1')
     if canvas: 
