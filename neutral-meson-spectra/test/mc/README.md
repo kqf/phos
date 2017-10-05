@@ -6,6 +6,8 @@ Analysis of MC data
 - [x] Check if the $Z_{\text{vertex}} distribution looks the same in MC and in real Data. 
 The `zvertex.py` compares all listed MC productions to the real-data distribution.
 
+- [ ] Spectrum shape. Distributions in real data and in MC differ. Therefore 
+      we should correct for it. Check `weight.py`.
 
 - [x] Nonlinearity
 	- Extract parameters for nonlinearity function `nonlinearity.py`
