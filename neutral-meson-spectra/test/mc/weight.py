@@ -43,6 +43,7 @@ class WeighMC(unittest.TestCase):
 
         productions = [Spectrum(*pair) for pair in zip(inputs, options)]
         self.mcspectra = [br.scalew(s.evaluate().spectrum) for s in productions]
+        self.mcspectra_gen = [br.scalew(s.evaluate().spectrum) for s in productions]
 
 
     def test_weights(self):
