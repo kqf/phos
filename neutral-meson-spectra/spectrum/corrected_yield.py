@@ -1,5 +1,8 @@
 from broot import BROOT as br
 from spectrum import Spectrum
+from .input import Input
+from options import Options
+from efficiency import Efficiency
 
 class CorrectedYield(object):
 
@@ -17,6 +20,20 @@ class CorrectedYield(object):
         corrected_yield = br.ratio(spectrum, self.efficiency)
         corrected_yield.SetTitle(spectrum.GetTitle() + ' corrected for efficiency')
         return br.scalew(corrected_yield)
+
+    @classmethod
+    def create_evaluate(klass, infile = 'LHC16.root', sel = 'PhysOnlyTender', 
+                        effile = 'Pythia-LHC16-a5', effhist = 'hPt_#pi^{0}_primary_'):
+
+       inp, opt = Input(infile, sel), Options('data', 'q')
+       eff = Efficiency(effhist, 'eff', effile).eff()
+       cy_estimator = klass(inp, opt, eff)
+
+       corrected_spectrum = cy_estimator.evaluate()
+       return corrected_spectrum
+
+
+
 
 
         
