@@ -31,9 +31,3 @@ class CorrectedYield(object):
 
        corrected_spectrum = cy_estimator.evaluate()
        return corrected_spectrum
-
-
-
-
-
-        
