@@ -368,6 +368,18 @@ class BROOT(object):
         return [i for i in klass.range(hist) if hist.GetBinContent(i) < tolerance]
 
 
+    @classmethod
+    def diff(klass, hist1, hist2, tol = 1e-10):
+        bins1, errors1 = klass.bins(hist1)
+        bins2, errors2 = klass.bins(hist2)
+
+        kernel = lambda x, y: abs(x - y) < tol
+
+        bins_ok = map(kernel, bins1, bins2)
+        errors_ok = map(kernel, errors1, errors2)
+        return all(bins_ok) and all(errors_ok)
+
+
 
 
 

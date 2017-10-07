@@ -7,6 +7,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.corrected_yield import CorrectedYield
 
 from spectrum.comparator import Comparator
+from spectrum.broot import BROOT as br
 
 
 class TestCorrectedYield(unittest.TestCase):
@@ -20,6 +21,10 @@ class TestCorrectedYield(unittest.TestCase):
 
         corrected_spectrum2 = CorrectedYield.create_evaluate('LHC16.root',\
                  'PhysOnlyTender', 'Pythia-LHC16-a5', 'hPt_#pi^{0}_primary_')
+
+
+        # This method is better as it compares errors as well
+        br.diff(corrected_spectrum1, corrected_spectrum2)
 
         diff = Comparator()
         diff.compare(corrected_spectrum1,

@@ -571,6 +571,24 @@ class TestTH(unittest.TestCase):
             self.assertEqual(*pair)
 
 
+    def test_diffs_histograms(self):
+        hist = ROOT.TH1F("hDiff", "Test BROOT: Test iterations", 100, -4, 4)
+        hist.FillRandom('gaus')
+
+        self.assertTrue(br.diff(hist, hist))
+
+        cloned = br.clone(hist)
+        self.assertTrue(br.diff(hist, cloned))
+
+        # NB: This test will pass as this value doesn't exceed default tolerance
+        cloned.Fill(0, 1e-9)
+        self.assertTrue(br.diff(hist, cloned))
+
+
+        cloned.Fill(0, 1e-5)
+        self.assertFalse(br.diff(hist, cloned))
+
+
 
 
 
