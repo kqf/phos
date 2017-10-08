@@ -5,6 +5,8 @@ from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 from systematic_error import SysError
+from spectrum.efficiency import Efficiency
+from spectrum.corrected_yield import CorrectedYield
 
 import ROOT
 
@@ -20,6 +22,14 @@ class RawYieldError(object):
         self.selection = 'PhysOnlyTender'
         self.outsys = SysError(label = 'yield extraction')
         self.stop = stop
+
+        # Calculate efficiency to correct the yield
+        #
+        effile = 'Pythia-LHC16-a5'
+        effhist = 'hPt_#pi^{0}_primary_'
+        self.eff = Efficiency(effhist, 'eff', effile).eff()
+
+        
 
 
     def average_yiled(self, histos):
@@ -50,7 +60,7 @@ class RawYieldError(object):
                         options.param.background = bckgr
                         options.param.fit_range = frange
 
-                        spectrum = self.spectrum(options)
+                        spectrum = self.corr_spectrum(options)
                         spectrum.marker = marker
                         spectrums.append(spectrum)
 
@@ -73,6 +83,12 @@ class RawYieldError(object):
         inp = Input(self.infile, self.selection)
         spectrum = Spectrum(inp, options).evaluate().spectrum
         return br.scalew(spectrum)  
+
+
+    def corr_spectrum(self, options):
+        inp = Input(self.infile, self.selection)
+        cy_estimator = CorrectedYield(inp, options, self.eff)
+        return cy_estimator.evaluate()
 
 
 
