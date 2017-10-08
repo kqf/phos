@@ -15,7 +15,8 @@ ClassImp(AliPP13WeighedPhysPhotonSelectionMC);
 //________________________________________________________________
 TLorentzVector AliPP13WeighedPhysPhotonSelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
 {
-    TLorentzVector p = AliPP13PhysPhotonSelectionMC::ClusterMomentum(c1, eflags);
+    Float_t energy = c1->E();
+	TLorentzVector p = AliPP13PhysPhotonSelectionMC::ClusterMomentum(c1, eflags);
     p *= Weigh(energy);
 	return p;
 }
