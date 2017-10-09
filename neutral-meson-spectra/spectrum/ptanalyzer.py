@@ -101,6 +101,22 @@ class PtAnalyzer(object):
         return histos
 
 
+    def draw_last_bins(self, f, intgr_ranges, name = ''):
+        canvas = gcanvas(1, 1, True)
+        canvas.Clear()
+        canvas.Divide(*self.opt.lastcanvas)
+        for i, (m, r) in enumerate(zip(self.masses[-4:], intgr_ranges[-4:])):
+            distr = f(m, canvas.cd(i + 1))
+
+            # Draw integration region, when specified
+            if not r: continue
+            m.line_low = self.draw_line(distr, r[0])
+            m.line_up = self.draw_line(distr, r[1])
+
+        wait(name + self.opt.label, self.opt.show_img, save=True)
+
+
+
     def draw_all_bins(self, f, intgr_ranges, name = ''):
         canvas = gcanvas(1, 1, True)
         canvas.Clear()
@@ -115,6 +131,7 @@ class PtAnalyzer(object):
 
         wait(name + self.opt.label, self.opt.show_img, save=True)
 
+    # TODO: Add particle species to the oname
     def draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)
         self.draw_all_bins(f, intgr_ranges,'multiple-ratio-' + name)
@@ -126,6 +143,7 @@ class PtAnalyzer(object):
     def draw_signal(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_signal(y) 
         self.draw_all_bins(f, intgr_ranges,'multiple-signal-' + name)
+        self.draw_last_bins(f, intgr_ranges, 'multiple-signal-high-pt-' + name)
 
     def draw_line(self, distr, position):
         line = ROOT.TLine(position, distr.GetMinimum(), position, distr.GetMaximum())

@@ -208,7 +208,7 @@ class InvariantMass(object):
 
         if self.area_error:
             n, sigma = self.area_error
-            self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.16)
+            self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
 
         # Use broot instead if needed
         # ofile = ROOT.TFile('signals.root', 'update')
