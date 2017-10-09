@@ -58,8 +58,10 @@ class PtAnalyzer(object):
 
         
     def number_of_mesons(self, mass, intgr_ranges):
+        # TODO: Move this function inside invariantmass ?
         a, b = intgr_ranges if intgr_ranges else mass.peak_function.opt.fit_range
         area, areae = br.area_and_error(mass.signal, a, b)
+        mass.area_error = area, areae
         return area, areae
 
 

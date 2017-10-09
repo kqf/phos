@@ -25,25 +25,27 @@ class TestInvariantMassClass(unittest.TestCase):
         bin, nrebin = self.particles[particle]
         mass = InvariantMass(self.input, bin, nrebin, Options(particle=particle))
         mass.extract_data()
+        # NB: Add this to be able to see the significance
+        mass.area_error = 10, 0.05
         func(mass)
         wait('test-inmass-%s-' % particle + title , self.wait, True)
 
     # @unittest.skip('')
-    def testDrawSignal(self):
+    def test_draws_signal(self):
         f = lambda x: x.draw_signal()
 
         for p in self.particles: 
             self.draw(p, f, 'signal')
 
-    # @unittest.skip('')
-    def testDrawRatio(self):
+    @unittest.skip('')
+    def test_draws_ratio(self):
         f = lambda x: x.draw_ratio()
 
         for p in self.particles: 
             self.draw(p, f, 'ratio')
 
-    # @unittest.skip('')
-    def testDrawMass(self):
+    @unittest.skip('')
+    def test_draws_mass(self):
         f = lambda x: x.draw_mass()
 
         for p in self.particles: 
@@ -65,7 +67,8 @@ class TestInvariantMassClass(unittest.TestCase):
         pt.draw_mass(intgr_ranges)
         pt.draw_signal(intgr_ranges)
 
-    def testMultiplePlots(self):
+    @unittest.skip('')
+    def test_multiple_plots(self):
         for p in self.particles: 
             self.draw_multiple(p)
 

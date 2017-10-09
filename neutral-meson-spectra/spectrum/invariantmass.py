@@ -22,6 +22,7 @@ class InvariantMass(object):
         # Extract the data
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
+        self.area_error = None
 
     def remove_zeros(self, h, zeros):
         if 'empty' in self.opt.average:
@@ -138,7 +139,7 @@ class InvariantMass(object):
         return self.sigf, self.bgrf
 
 
-    def draw_pt_bin(self, hist):
+    def draw_text(self, hist, text, color = 46, bias = 0):
         # Estimate coordinate
         mass = self.peak_function.opt.fit_mass
         x = mass * self.opt.pt_label_pos[0]
@@ -148,13 +149,12 @@ class InvariantMass(object):
         zero = bmax - bmin 
         # print zero
 
-        y = bmin + zero * self.opt.pt_label_pos[1]
+        y = bmin + zero * (self.opt.pt_label_pos[1] + bias)
         # Draw the lable
         tl = ROOT.TLatex()
         tl.SetTextAlign(12)
         tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
-        tl.DrawLatex(x, y, '#color[46]{' + self.pt_label + ', GeV/c}');
-
+        tl.DrawLatex(x, y, '#color[%d]{%s}' %(color , text));
 
 
     def draw_ratio(self, pad = 0):
@@ -167,7 +167,7 @@ class InvariantMass(object):
 
         self.ratio.SetAxisRange(*self.xaxis_range)
         self.ratio.Draw()
-        self.draw_pt_bin(self.ratio)
+        self.draw_text(self.ratio, self.pt_label + ', GeV/c')
         canvas.Update()
         return self.ratio
 
@@ -191,7 +191,7 @@ class InvariantMass(object):
             legend.AddEntry(self.mixed, 'background')
 
         legend.Draw('same')
-        self.draw_pt_bin(self.mass)
+        self.draw_text(self.mass, self.pt_label + ', GeV/c')
         canvas.Update()
         return self.mass
 
@@ -204,11 +204,16 @@ class InvariantMass(object):
 
         self.signal.SetAxisRange(*self.xaxis_range)
         self.signal.Draw()
-        self.draw_pt_bin(self.signal)
-        canvas.Update()
+        self.draw_text(self.signal, self.pt_label + ', GeV/c')
 
-        ofile = ROOT.TFile('signals.root', 'update')
-        self.signal.Write()
+        if self.area_error:
+            n, sigma = self.area_error
+            self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.16)
+
+        # Use broot instead if needed
+        # ofile = ROOT.TFile('signals.root', 'update')
+        # self.signal.Write()
         # ofile.Write()
-        ofile.Close()
+        # ofile.Close()
+        canvas.Update()
         return self.signal
