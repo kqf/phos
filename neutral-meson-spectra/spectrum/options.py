@@ -57,6 +57,7 @@ class Options(object):
         self.pt.label = label
         self.pt.show_img = show_img
         self.pt.dead_mode = 'd' in mode
+        self.pt.particle = particle
 
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}

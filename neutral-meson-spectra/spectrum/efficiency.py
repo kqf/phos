@@ -17,10 +17,6 @@ import unittest
 #     estimated from different productions
 #
 
-
-# TODO: Add efficiecny tests when it will be defined
-#
-
 class Efficiency(object):
 
     def __init__(self, genname, label, iname, recalculate = False):
@@ -35,7 +31,7 @@ class Efficiency(object):
     def eff(self):
         if self.recalculate:
             return self.efficiency()
-            
+
         try:
             return self.read_efficiency()
         except IOError:

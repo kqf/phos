@@ -134,16 +134,21 @@ class PtAnalyzer(object):
     # TODO: Add particle species to the oname
     def draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)
-        self.draw_all_bins(f, intgr_ranges,'multiple-ratio-' + name)
+        oname = 'multiple-ratio-{0}-{1}'.format(self.opt.particle, name)
+        self.draw_all_bins(f, intgr_ranges, oname)
 
     def draw_mass(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_mass(y)
-        self.draw_all_bins(f, intgr_ranges,'multiple-mass-' + name)
+        oname = 'multiple-mass-{0}-{1}'.format(self.opt.particle, name)
+        self.draw_all_bins(f, intgr_ranges, oname)
 
     def draw_signal(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_signal(y) 
-        self.draw_all_bins(f, intgr_ranges,'multiple-signal-' + name)
-        self.draw_last_bins(f, intgr_ranges, 'multiple-signal-high-pt-' + name)
+        oname = 'multiple-signal-{0}-{1}'.format(self.opt.particle, name)
+        self.draw_all_bins(f, intgr_ranges, oname)
+
+        oname = 'multiple-signal-high-pt-{0}-{1}'.format(self.opt.particle, name)
+        self.draw_last_bins(f, intgr_ranges, oname)
 
     def draw_line(self, distr, position):
         line = ROOT.TLine(position, distr.GetMinimum(), position, distr.GetMaximum())
