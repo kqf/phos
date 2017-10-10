@@ -23,15 +23,19 @@ import unittest
 
 class Efficiency(object):
 
-    def __init__(self, genname, label, iname):
+    def __init__(self, genname, label, iname, recalculate = False):
         super(Efficiency, self).__init__()
         self.selection = 'MCStudyOnlyTender'
         self.iname = iname
         self.genname = genname
         self.label = label
+        self.recalculate = recalculate
         self.oname = 'input-data/efficiency-{0}-{1}.root'.format(self.iname, label)
 
     def eff(self):
+        if self.recalculate:
+            return self.efficiency()
+            
         try:
             return self.read_efficiency()
         except IOError:
