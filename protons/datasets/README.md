@@ -109,6 +109,15 @@ Check this dataset, but it shouldn't increase the statistics
 LHC17i3a1.txt
 LHC17i3a2.txt
 ```
+## Triggered Jet-Jet MC`
+
+Check this dataset, but it shouldn't increase the statistics
+
+```
+LHC17i3b1.txt
+LHC17i3b2.txt
+LHC17i3c1.txt
+``
 
 ## General purpose 13 TeV
 
