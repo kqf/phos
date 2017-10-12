@@ -47,6 +47,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
+
+    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C"); 
+    AliAnalysisTaskPIDResponse *PIDResponse = AddTaskPIDResponse(isMC);
+    PIDResponse->SelectCollisionCandidates(AliVEvent::kINT7);
+
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
     AddTaskPHOSEpRatio(isMC);
 

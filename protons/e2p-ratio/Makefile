@@ -8,6 +8,7 @@ grid:
 	@echo "Started grid analysis" >> .runhistory
 	@echo -e "\a"
 
+
 terminate:
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' 
 	@echo "Terminated grid analysis" >> .runhistory
@@ -39,9 +40,11 @@ test:
 	@# Therefore it's necessary to use all these tweaks
 	@echo -e "\a"
 
+
 upload:
 	$(call upload_result,AnalysisResults,$(DATASET))
 
+	
 clean:
 	rm *.so *.d *~ Task*
 

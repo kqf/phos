@@ -137,7 +137,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
-	    "AliPP13WeighedPhysPhotonSelectionMC.cxx+" +
+	    "AliPP13WeighedPhysPhotonSelectionMC.cxx " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
 	    "AliAnalysisTaskPP13.cxx "
@@ -168,8 +168,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13MesonSelectionMC.h " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.h " +
-	    "AliPP13WeighedPhysPhotonSelectionMC.cxx+" +
-	    "AliPP13WeighedPhysPhotonSelectionMC.h+" +
+	    "AliPP13WeighedPhysPhotonSelectionMC.cxx " +
+	    "AliPP13WeighedPhysPhotonSelectionMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
