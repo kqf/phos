@@ -1,17 +1,14 @@
+import json
 import ROOT
 
-from sutils import gcanvas, wait, adjust_canvas
+from sutils import gcanvas, wait
 from .input import Input
 from invariantmass import InvariantMass
-from comparator import Comparator
 from spectrum import Spectrum
 from options import Options
 from outputcreator import OutputCreator
 
 from broot import BROOT as br
-
-import numpy as np
-import array as arr
 
 ROOT.TH1.AddDirectory(False)
 
