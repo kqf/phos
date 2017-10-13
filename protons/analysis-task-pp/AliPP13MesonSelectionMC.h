@@ -80,7 +80,9 @@ public:
 		fSecondaryPi0(),
 		fFeedDownPi0(),
 		fInvMass(),
-		fPi0Sources()
+		fPi0Sources(),
+		fEtaPhi(),
+		fPtQA()
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -110,7 +112,9 @@ public:
 		fSecondaryPi0(),
 		fFeedDownPi0(),
 		fInvMass(),
-		fPi0Sources()
+		fPi0Sources(),
+		fEtaPhi(),
+		fPtQA()
 
 	{
 		// Force no timing cut for MC,
@@ -186,8 +190,10 @@ protected:
 	EnumNames fPartNames;
 	EnumNames fPi0SourcesNames;
 
-	TH1 * fInvMass[2];  //!
+	TH1 * fInvMass[2];     //!
 	TH1 * fPi0Sources[2];  //!
+	TH1 * fEtaPhi[2];      //!
+	TH1 * fPtQA[2];        //!
 
 	ClassDef(AliPP13MesonSelectionMC, 2)
 };
