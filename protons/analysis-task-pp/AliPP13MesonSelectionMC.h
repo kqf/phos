@@ -74,6 +74,7 @@ public:
 		kKplus = 321, kKminus = -321, kSigmaZero = 3212
 	};
 
+				
 	AliPP13MesonSelectionMC():
 		AliPP13PhotonSelection(),
 		fPrimaryPi0(),
@@ -82,7 +83,10 @@ public:
 		fInvMass(),
 		fPi0Sources(),
 		fEtaPhi(),
-		fPtQA()
+		fPtQA(),
+		fWeighA(0.),
+		fWeighSigma(1.),
+		fWeighScale(1.)
 	{
 		fPartNames[kGamma] = "#gamma";
 		fPartNames[kPi0] = "#pi^{0}";
@@ -106,7 +110,8 @@ public:
 		fPi0SourcesNames[kSigmaZero] = "#Sigma^{0}";
 	}
 
-	AliPP13MesonSelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts):
+	AliPP13MesonSelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, 
+		Float_t wa = 0., Float_t wsigma = 1., Float_t wscale = 1.):
 		AliPP13PhotonSelection(name, title, cuts),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
@@ -114,7 +119,10 @@ public:
 		fInvMass(),
 		fPi0Sources(),
 		fEtaPhi(),
-		fPtQA()
+		fPtQA(),
+		fWeighA(wa),
+		fWeighSigma(wsigma),
+		fWeighScale(wscale)
 
 	{
 		// Force no timing cut for MC,
@@ -162,6 +170,7 @@ public:
 	}
 
 protected:
+	virtual Float_t Weigh(Float_t x) const;
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
 	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;
@@ -194,6 +203,11 @@ protected:
 	TH1 * fPi0Sources[2];  //!
 	TH1 * fEtaPhi[2];      //!
 	TH1 * fPtQA[2];        //!
+
+	// Parameters of weighed MC parametrization
+	Float_t fWeighA;
+	Float_t fWeighSigma;
+	Float_t fWeighScale;
 
 	ClassDef(AliPP13MesonSelectionMC, 2)
 };

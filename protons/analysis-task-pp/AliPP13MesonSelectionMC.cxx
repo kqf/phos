@@ -286,3 +286,10 @@ Bool_t AliPP13MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) con
 	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
 	return r2 < rcut * rcut;
 }
+
+//________________________________________________________________
+Float_t AliPP13MesonSelectionMC::Weigh(Float_t x) const
+{
+	return fWeighScale * (1. + fWeighA * TMath::Exp(-x / 2. * x / fWeighSigma / fWeighSigma));
+}
+
