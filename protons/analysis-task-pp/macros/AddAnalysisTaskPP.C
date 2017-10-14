@@ -20,7 +20,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
-    gROOT->LoadMacro("AliPP13WeighedPhysPhotonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
     gROOT->LoadMacro("AliPP13MixingSample.cxx+");
     gROOT->LoadMacro("AliAnalysisTaskPP13.cxx+");
@@ -70,7 +69,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	if (isMC)
 	{
-		selections->Add(new AliPP13WeighedPhysPhotonSelectionMC("WeighNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale, weigh_a, weigh_b));
 		selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 		selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, weigh_a, weigh_b));
@@ -137,7 +135,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
-	    "AliPP13WeighedPhysPhotonSelectionMC.cxx " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
 	    "AliAnalysisTaskPP13.cxx "
@@ -168,8 +165,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13MesonSelectionMC.h " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.h " +
-	    "AliPP13WeighedPhysPhotonSelectionMC.cxx " +
-	    "AliPP13WeighedPhysPhotonSelectionMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
