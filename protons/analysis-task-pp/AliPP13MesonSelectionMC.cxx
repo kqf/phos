@@ -215,6 +215,9 @@ void AliPP13MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flag
 			continue;
 		}
 
+		// Scale input distribution
+		pt *= Weigh(particle->E());
+
 		ConsiderGeneratedPi0(i, pt, primary, flags);
 	}
 }
@@ -285,6 +288,17 @@ Bool_t AliPP13MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) con
 	Double_t rcut = 1.;
 	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
 	return r2 < rcut * rcut;
+}
+
+//________________________________________________________________
+TLorentzVector AliPP13MesonSelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
+{
+    Float_t energy = c1->E();
+    // TODO: Do I need to correct this for nonlinearity?
+	// TLorentzVector p = AliPP13PhysPhotonSelectionMC::ClusterMomentum(c1, eflags);
+	TLorentzVector p = AliPP13PhotonSelection::ClusterMomentum(c1, eflags);
+    p *= Weigh(energy);
+	return p;
 }
 
 //________________________________________________________________

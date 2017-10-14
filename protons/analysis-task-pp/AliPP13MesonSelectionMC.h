@@ -170,6 +170,7 @@ public:
 	}
 
 protected:
+	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
 	virtual Float_t Weigh(Float_t x) const;
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
