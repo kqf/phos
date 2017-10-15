@@ -17,9 +17,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("AliPP13PhotonTimecutStudySelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelection.cxx+");
     gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
-    gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
+    gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
     gROOT->LoadMacro("AliPP13MixingSample.cxx+");
     gROOT->LoadMacro("AliAnalysisTaskPP13.cxx+");
@@ -71,7 +71,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	{
 		selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 		selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
-		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, weigh_a, weigh_b));
+
+		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0,
+			nonlin_a, nonlin_b, ge_scale, 
+			weigh_a, weigh_b));
+
 		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
 
 		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
@@ -132,9 +136,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13PhysPhotonSelection.cxx " +
 	    "AliPP13PhotonTimecutStudySelection.cxx " +
 	    "AliPP13TagAndProbeSelection.cxx " +
-	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
+	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
 	    "AliAnalysisTaskPP13.cxx "
@@ -161,12 +165,12 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13PhotonTimecutStudySelection.h " +
 	    "AliPP13TagAndProbeSelection.cxx " +
 	    "AliPP13TagAndProbeSelection.h " +
-	    "AliPP13MesonSelectionMC.cxx " +
-	    "AliPP13MesonSelectionMC.h " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
+	    "AliPP13MesonSelectionMC.cxx " +
+	    "AliPP13MesonSelectionMC.h " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13NonlinearityScanSelection.h " +
 	    "AliPP13MixingSample.cxx " +

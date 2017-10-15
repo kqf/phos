@@ -5,7 +5,7 @@
 #include <map>
 
 // --- Custom header files ---
-#include "AliPP13PhotonSelection.h"
+#include "AliPP13PhysPhotonSelectionMC.h"
 #include "AliPP13ParticlesHistogram.h"
 
 // --- ROOT system ---
@@ -61,7 +61,7 @@ struct ParticleSpectrum
 };
 
 
-class AliPP13MesonSelectionMC: public AliPP13PhotonSelection
+class AliPP13MesonSelectionMC: public AliPP13PhysPhotonSelectionMC
 {
 public:
 	enum Modes {kGenerated = 0, kReconstructed = 1, kNhists = 2};
@@ -76,7 +76,7 @@ public:
 
 				
 	AliPP13MesonSelectionMC():
-		AliPP13PhotonSelection(),
+		AliPP13PhysPhotonSelectionMC(),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
@@ -111,8 +111,9 @@ public:
 	}
 
 	AliPP13MesonSelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, 
+		Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.,
 		Float_t wa = 0., Float_t wsigma = 1., Float_t wscale = 1.):
-		AliPP13PhotonSelection(name, title, cuts),
+		AliPP13PhysPhotonSelectionMC(name, title, cuts, nona, nonsigma, genergy),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
