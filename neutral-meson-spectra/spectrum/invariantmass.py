@@ -217,3 +217,10 @@ class InvariantMass(object):
         # ofile.Close()
         canvas.Update()
         return self.signal
+
+
+    def number_of_mesons(self, intgr_ranges):
+        a, b = intgr_ranges if intgr_ranges else self.peak_function.opt.fit_range
+        area, areae = br.area_and_error(self.signal, a, b)
+        self.area_error = area, areae
+        return area, areae

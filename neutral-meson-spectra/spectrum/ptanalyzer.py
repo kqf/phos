@@ -56,21 +56,13 @@ class PtAnalyzer(object):
         result.npi0.logy = True
         return  result
 
-        
-    def number_of_mesons(self, mass, intgr_ranges):
-        # TODO: Move this function inside invariantmass ?
-        a, b = intgr_ranges if intgr_ranges else mass.peak_function.opt.fit_range
-        area, areae = br.area_and_error(mass.signal, a, b)
-        mass.area_error = area, areae
-        return area, areae
-
 
     def properties(self, mass, intgr_ranges):
         fitfun, background = mass.extract_data() 
         if not (fitfun and background): return [[0, 0]] * 7
         # calculate pi0 values
         area, mmass, sigma = zip(*br.pars(fitfun, 3))
-        npi0 = self.number_of_mesons(mass, intgr_ranges)
+        npi0 = mass.number_of_mesons(intgr_ranges)
         nraw = map(lambda x: x / (2. * ROOT.TMath.Pi()), npi0)
 
         ndf = fitfun.GetNDF() if fitfun.GetNDF() > 0 else 1
@@ -131,7 +123,6 @@ class PtAnalyzer(object):
 
         wait(name + self.opt.label, self.opt.show_img, save=True)
 
-    # TODO: Add particle species to the oname
     def draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)
         oname = 'multiple-ratio-{0}-{1}'.format(self.opt.particle, name)
