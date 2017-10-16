@@ -1,4 +1,4 @@
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
@@ -21,12 +21,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // mgr->SetInputEventHandler( esdH );
     mgr->SetInputEventHandler(aodH);
 
-    if ( isMC )
-    {
-        AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Don't read track references
-        mgr->SetMCtruthEventHandler ( mchandler );
-    }
+    // if ( isMC )
+    // {
+        // AliMCEventHandler * mchandler = new AliMCEventHandler();
+        // mchandler->SetReadTR ( kFALSE ); // Don't read track references
+        // mgr->SetMCtruthEventHandler ( mchandler );
+    // }
 
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
@@ -36,26 +36,26 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    // gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
-    // gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
-    // gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
+    gROOT->LoadMacro("../analysis-task-pp/macros/AddAnalysisTaskPP.C");
 
     TString files = "";
-    TString pref =  "MC";
+    TString pref =  isMC ? "MC": "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString tenderOption = "Run2Default";
+    TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
-    // Important: Keep track of this variable
-    // ZS threshold in unit of GeV  
-    Double_t zs_threshold = 0.020;
-    PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+    if(isMC)
+    {
+        // Important: Keep track of this variable
+        // ZS threshold in unit of GeV  
+        Double_t zs_threshold = 0.020;
+        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+    }
 
 
     gROOT->LoadMacro("../datasets/values_for_dataset.h+");
@@ -65,7 +65,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
         // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## Single Pi0 production";
+    TString msg = "Single particle Analysis";
 
     if (tenderOption)
     {
@@ -73,15 +73,17 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC);
+    Bool_t isTest = TString(pluginmode).Contains("test");
+    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 
-    if (!mgr->InitAnalysis()) return;
+    if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
 
-    // cout << "Downloading files " << files << endl;
+
+    cout << "Downloading files " << files << endl;
     alienHandler->SetOutputFiles(files);
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );

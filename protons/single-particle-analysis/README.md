@@ -1,8 +1,8 @@
-Steering macro single $\pi^0$ analysis
+Steering macro for pp analysis
 =============================
 
-All codes needed for single pion generation are available in the folder `simulation`. 
-CL interface remains the same. 
+This folder contains macro to run QA + physics analysis on **new** LHC16 data. It differs a bit from the old data.
+Therefore it's better to split these macros. Codes for the old dataset can be found [here](../run-analysis-old/).
 
 
 ## Run
