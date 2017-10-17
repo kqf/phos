@@ -1,6 +1,5 @@
 import unittest
 import sys
-import json
 
 import ROOT
 from spectrum.sutils import gcanvas, wait, adjust_canvas
