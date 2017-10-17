@@ -77,6 +77,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
+    files += AliAnalysisManager::GetCommonFileName();
 
 
     if ( !mgr->InitAnalysis( ) ) return;
