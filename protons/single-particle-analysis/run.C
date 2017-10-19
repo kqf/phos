@@ -36,7 +36,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("../analysis-task-pp/macros/AddAnalysisTaskPP.C");
+    // NB: This is a local copy of steering macro
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
 
     TString files = "";
     TString pref =  isMC ? "MC": "";

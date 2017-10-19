@@ -60,7 +60,7 @@ upload:
 	$(call upload_result,AnalysisResults,$(DATASET))
 
 clean:
-	rm *.so *.d *~ Task*
+	rm *.so *.d *~ Task* *.xml *.root
 
 unlink:
 	$(call funlink) 	
