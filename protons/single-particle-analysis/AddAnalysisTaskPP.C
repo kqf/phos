@@ -32,6 +32,11 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
+
+	// This will fix the problem with Single particle MC
+	
+	cuts_pi0.fNContributors = 0;
+	cuts_eta.fNContributors = 0;
 	cuts_eta.fAsymmetryCut = 0.7;
 
 	if (!isTest && !isMC)
@@ -96,7 +101,9 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;
 
 	// task->GetSelections()->Add
-	task->SelectCollisionCandidates(offlineTriggerMask);
+
+	// Don't use collision candidats for single particle productions
+	// task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
 
 

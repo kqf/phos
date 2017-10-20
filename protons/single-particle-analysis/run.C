@@ -8,25 +8,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
-    AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-    if (isMC)
-    {
-        esdH->SetReadFriends( isMC );
-        esdH->SetNeedField();
-        // mgr->SetInputEventHandler( esdH );
-
-    }
-    // mgr->SetInputEventHandler( esdH );
     mgr->SetInputEventHandler(aodH);
-
-    if ( isMC )
-    {
-        AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Don't read track references
-        mgr->SetMCtruthEventHandler ( mchandler );
-    }
+    
+    // if ( isMC )
+    // {
+    //     AliMCEventHandler * mchandler = new AliMCEventHandler();
+    //     mchandler->SetReadTR ( kFALSE ); // Don't read track references
+    //     mgr->SetMCtruthEventHandler ( mchandler );
+    // }
 
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
