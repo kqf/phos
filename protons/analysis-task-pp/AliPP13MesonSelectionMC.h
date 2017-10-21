@@ -24,20 +24,26 @@
 // NB: This will simplify the code
 //
 
+// TODO: Split this class to have separate efficiency and contamination estimators
+// 
+
 struct ParticleSpectrum
 {
 	ParticleSpectrum(const char * n, TList * fListOfHistos, Int_t ptsize, Float_t * ptbins, Bool_t full = kTRUE):
 		fPtAllRange(0),
 		fPtRadius(0),
+		fEtaPhi(0),
 		fPt(0),
 		fPtPrimaries()
 	{
 		fPtAllRange = new TH1F(Form("hPt_allrange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize, ptbins);
 		fPtRadius   = new TH2F(Form("hPt_%s_radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20);
+		fEtaPhi     = new TH2F(Form("hEtaPhi_%s", n), Form("Generated %ss #eta vs #phi plot; #phi (rad); #eta", n), 100, 0, TMath::Pi() * 2, 100, -1, 1);
 		fPt         = new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize, ptbins);
 
 		fListOfHistos->Add(fPtAllRange);
 		fListOfHistos->Add(fPtRadius);
+		fListOfHistos->Add(fEtaPhi);
 		fListOfHistos->Add(fPt);
 
 		if (!full)
@@ -54,8 +60,9 @@ struct ParticleSpectrum
 // private:
 
 	TH1F * fPtAllRange; //!
-	TH2F * fPtRadius; //!
-	TH1F * fPt; //!
+	TH2F * fPtRadius;   //!
+	TH2F * fEtaPhi;     //!
+	TH1F * fPt;         //!
 	TH1F * fPtPrimaries[2]; //!
 
 };
@@ -81,9 +88,7 @@ public:
 		fSecondaryPi0(),
 		fFeedDownPi0(),
 		fInvMass(),
-		fPi0Sources(),
-		fEtaPhi(),
-		fPtQA(),
+		fPi0Sources(),	
 		fWeighA(0.),
 		fWeighSigma(1.),
 		fWeighScale(1.)
@@ -118,9 +123,7 @@ public:
 		fSecondaryPi0(),
 		fFeedDownPi0(),
 		fInvMass(),
-		fPi0Sources(),
-		fEtaPhi(),
-		fPtQA(),
+		fPi0Sources(),	
 		fWeighA(wa),
 		fWeighSigma(wsigma),
 		fWeighScale(wscale)
@@ -203,8 +206,6 @@ protected:
 
 	TH1 * fInvMass[2];     //!
 	TH1 * fPi0Sources[2];  //!
-	TH1 * fEtaPhi[2];      //!
-	TH1 * fPtQA[2];        //!
 
 	// Parameters of weighed MC parametrization
 	Float_t fWeighA;

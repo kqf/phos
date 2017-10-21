@@ -150,19 +150,7 @@ void AliPP13MesonSelectionMC::InitSelectionHistograms()
 	fSecondaryPi0[kReconstructed] = new AliPP13ParticlesHistogram(hist5, fListOfHistos, fPi0SourcesNames);
 	fFeedDownPi0[kReconstructed]  = new AliPP13ParticlesHistogram(hist6, fListOfHistos, fPi0SourcesNames);
 
-
-	for(Int_t i = 0; i < 2; ++i)
-	{
-		const char * ss = i == 0 ? "generated":  "reconstructed";
-		
-		fEtaPhi[i] = new TH2F(Form("hEtaPhi_%s", ss), Form("%s #eta vs #phi plot; #phi (rad); #eta", ss), 100, 0, TMath::Pi() * 2, 100, -1, 1);
-		fListOfHistos->Add(fEtaPhi[i]);
-
-		fPtQA[i] = new TH1F(Form("hPtQA_%s", ss), Form("%s p_{T} distribution; p_{T}, GeV/c; #frac{dN}{dp_{T}}, (GeV/c)^{-1}", ss), 1000, 0, 100);
-		fListOfHistos->Add(fPtQA[i]);
-	}
-
-
+	
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
 		const char * n = (const char *) i->second.Data();
@@ -196,8 +184,7 @@ void AliPP13MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flag
 
 		Double_t pt = particle->Pt();
 		fSpectrums[code]->fPtAllRange->Fill(pt);
-		fEtaPhi[0]->Fill(particle->Phi(), particle->Eta());
-		fPtQA[0]->Fill(pt);
+		fSpectrums[code]->fEtaPhi->Fill(particle->Phi(), particle->Eta());
 
 		// Use this to remove forward photons that can modify our true efficiency
 		if (TMath::Abs(particle->Y()) > 0.5) // NB: Use rapidity instead of pseudo rapidity!
