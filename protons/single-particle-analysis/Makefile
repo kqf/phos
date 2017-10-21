@@ -30,7 +30,11 @@ terminate: | %.cxx
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink) 
-	make upload
+	@# Scale and upload both versions
+	-root -l -q 'scaleAnalysisResult.C("AnalysisResults.root", "scaled-")'
+	$(call upload_result,AnalysisResults,$(DATASET))
+	$(call upload_result,scaled-AnalysisResults,scaled-$(DATASET))
+
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
@@ -56,8 +60,6 @@ test: | %.cxx
 	@$(call funlink) && echo "Directory is clean"
 	@echo -e "\a"
 
-upload:
-	$(call upload_result,AnalysisResults,$(DATASET))
 
 clean:
 	rm *.so *.d *~ Task* *.xml *.root
