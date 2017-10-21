@@ -1,5 +1,7 @@
 #include "../alienpluginsetup.h"	
 #include "iostream"
+#include "AliAnalysisManager.h"
+
 
 using std::cout;
 using std::endl;
@@ -23,6 +25,8 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	cout << "DataDir " <<  datadir << " pattern " << datapattern << endl;
 
 	plugin->SetFileForTestMode ("filesmc.txt");
+    plugin->SetOutputFiles(AliAnalysisManager::GetCommonFileName());
+    
     //plugin->SetUseSubmitPolicy();
 	return plugin;
 }

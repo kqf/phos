@@ -1,4 +1,4 @@
-TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v)
 {
 	cout << "Setting cells " <<  v.size() << endl;
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
@@ -39,47 +39,34 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	cuts_eta.fNContributors = 0;
 	cuts_eta.fAsymmetryCut = 0.7;
 
-	if (!isTest && !isMC)
-	{
-		selections->Add(new AliPP13PhysPhotonSelection("Phys", "Physics Selection", cuts_pi0));
-		selections->Add(new AliPP13PhotonTimecutStudySelection("Time", "Testing Timing Selection", cuts_pi0));
-		selections->Add(new AliPP13TagAndProbeSelection("TagAndProbleTOF", "Cluster P_{t} Selection", cuts_pi0));
-
-		selections->Add(new AliPP13PhysPhotonSelection("Eta", "Physics Selection for eta meson", cuts_eta));
-		selections->Add(new AliPP13PhotonTimecutStudySelection("EtaTime", "Testing Timing Selection for eta meson", cuts_eta));
-		
-		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
-		selections->Add(new AliPP13PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection", cuts_pi0));
-		selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
-	}	
-
 	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 	// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
 	// Calculated for the updated version for the corrected Data
-	Float_t nonlin_a = -0.020025549129372242;
-	Float_t nonlin_b = 1.1154536660217529;
-    Float_t ge_scale = 1.0493128193171741;
+	// Float_t nonlin_a = -0.020025549129372242;
+	// Float_t nonlin_b = 1.1154536660217529;
+ //    Float_t ge_scale = 1.0493128193171741;
 
-    Float_t weigh_a = -1.063;
-    Float_t weigh_b = 0.855;
-	
+ //    Float_t weigh_a = -1.063;
+ //    Float_t weigh_b = 0.855;
 
-	if (isMC)
-	{
-		selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
-		selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
+	Float_t nonlin_a = 0;
+	Float_t nonlin_b = 1.;
+    Float_t ge_scale = 1.;
 
-		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0,
-			nonlin_a, nonlin_b, ge_scale, 
-			weigh_a, weigh_b));
+    Float_t weigh_a = 0;
+    Float_t weigh_b = 1.;
 
-		selections->Add(new AliPP13SingleParticleQA("SingleParticle", "MC Selection with timing cut", cuts_pi0,
-			nonlin_a, nonlin_b, ge_scale, 
-			weigh_a, weigh_b));
 
-		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
-			selections->Add(new AliPP13PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
-	}
+	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
+	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
+
+	selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0,
+		nonlin_a, nonlin_b, ge_scale, 
+		weigh_a, weigh_b));
+
+	selections->Add(new AliPP13SingleParticleQA("SingleParticle", "MC Selection with timing cut", cuts_pi0,
+		nonlin_a, nonlin_b, ge_scale, 
+		weigh_a, weigh_b));
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
@@ -182,21 +169,4 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliAnalysisTaskPP13.cxx " +
 	    "AliAnalysisTaskPP13.h " 
 	);
-
-	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
-}
-
-Bool_t IsJetJetMC(TString description, Bool_t isMC)
-{
-	if(!isMC)
-		return kFALSE;
-
-	if(description.Contains("Jet-Jet"))
-		return kTRUE;
-
-
-	cout << "Not Using PythiaInfo!!! " << endl;
-
-	// Don't include Jet-Jet counters by default
-	return kFALSE;
 }

@@ -11,7 +11,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
     mgr->SetInputEventHandler(aodH);
-    
+
     // if ( isMC )
     // {
     //     AliMCEventHandler * mchandler = new AliMCEventHandler();
@@ -30,8 +30,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // NB: This is a local copy of steering macro
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
 
-    TString files = "";
-    TString pref =  isMC ? "MC": "";
+    TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
@@ -41,12 +40,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
-    if(isMC)
+    if (isMC)
     {
         // Important: Keep track of this variable
-        // ZS threshold in unit of GeV  
+        // ZS threshold in unit of GeV
         Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+        PHOSSupply->ApplyZeroSuppression(zs_threshold);
     }
 
 
@@ -55,7 +54,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
-        // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
     TString msg = "Single particle Analysis";
 
@@ -65,21 +63,18 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    Bool_t isTest = TString(pluginmode).Contains("test");
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
-    //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
-    files += AliAnalysisManager::GetCommonFileName();
-
-
+    AddAnalysisTaskPP(period + pref + msg, "Tender", "", cells);
+    AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
     if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
 
 
-    cout << "Downloading files " << files << endl;
+    TString files = AliAnalysisManager::GetCommonFileName();
+    cout << "Output files " << files << endl;
     alienHandler->SetOutputFiles(files);
-    mgr->StartAnalysis (runmode);
-    gObjectTable->Print( );
+
+    mgr->StartAnalysis(runmode);
+    gObjectTable->Print();
 }
 
 void SetupEnvironment()
