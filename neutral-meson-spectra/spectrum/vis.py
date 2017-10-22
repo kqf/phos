@@ -62,9 +62,12 @@ class MultipleVisualizer(object):
             h.SetFillColor(color)
             h.SetMarkerStyle(marker)
             h.SetMarkerColor(color)
-            h.DrawCopy('same')
+            h.DrawCopy('colz same')
             legend.AddEntry(h, h.label)
-        legend.Draw('same')
+
+        # Don't draw legend for TH2 histograms
+        if not issubclass(type(first_hist), ROOT.TH2):
+            legend.Draw('same')
 
         ROOT.gStyle.SetOptStat(0)
         self.cache.append(legend)
