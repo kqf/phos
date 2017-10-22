@@ -8,17 +8,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
-    AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-    if (isMC)
-    {
-        esdH->SetReadFriends( isMC );
-        esdH->SetNeedField();
-        // mgr->SetInputEventHandler( esdH );
-
-    }
-    // mgr->SetInputEventHandler( esdH );
     mgr->SetInputEventHandler(aodH);
 
     if ( isMC )
@@ -38,11 +29,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
     gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
-    gROOT->LoadMacro("../analysis-task-pp/macros/AddAnalysisTaskPP.C");
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
     TString files = "";
-    TString pref =  isMC ? "MC": "";
+    TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
@@ -52,12 +43,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
-    if(isMC)
+    if (isMC)
     {
         // Important: Keep track of this variable
-        // ZS threshold in unit of GeV  
+        // ZS threshold in unit of GeV
         Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+        PHOSSupply->ApplyZeroSuppression(zs_threshold);
     }
 
 
@@ -66,7 +57,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
-        // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
+    // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
     TString msg = "## Updated parameters for nonlinearity, 20 MeV Zero Supression ";
 
