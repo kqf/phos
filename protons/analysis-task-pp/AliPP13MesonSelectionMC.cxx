@@ -183,8 +183,7 @@ void AliPP13MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flag
 
 
 		Double_t pt = particle->Pt();
-		fSpectrums[code]->fPtAllRange->Fill(pt);
-		fSpectrums[code]->fEtaPhi->Fill(particle->Phi(), particle->Eta());
+
 
 		// Use this to remove forward photons that can modify our true efficiency
 		if (TMath::Abs(particle->Y()) > 0.5) // NB: Use rapidity instead of pseudo rapidity!
@@ -196,6 +195,14 @@ void AliPP13MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flag
 		fSpectrums[code]->fPtRadius->Fill(pt, r);
 
 		Bool_t primary = IsPrimary(particle);
+
+
+		if (primary && particle->E() > 0.3)
+		{
+			fSpectrums[code]->fPtAllRange->Fill(pt);
+			fSpectrums[code]->fEtaPhi->Fill(particle->Phi(), particle->Eta());
+		}
+
 		if (code != kPi0)
 		{
 			fSpectrums[code]->fPtPrimaries[Int_t(primary)]->Fill(pt);
