@@ -25,7 +25,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
+    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
 
     // NB: This is a local copy of steering macro
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
