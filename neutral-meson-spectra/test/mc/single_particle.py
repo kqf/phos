@@ -33,7 +33,7 @@ class SingleParticleQA(unittest.TestCase):
 
         # Define input
         self.selection = 'MCStudyOnlyTender'
-        self.productions = 'LHC17j3b2', 'LHC17j3a2'
+        self.productions = 'LHC17j3b2', 'LHC17j3a2', 'LHC17j3c2', 'LHC17j3b1', 'LHC17j3a1', 'LHC17j3c1'
 
 
     def test_pt_reconstructed(self):
