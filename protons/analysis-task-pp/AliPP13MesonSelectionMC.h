@@ -38,7 +38,7 @@ struct ParticleSpectrum
 	{
 		fPtAllRange = new TH1F(Form("hPt_allrange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize, ptbins);
 		fPtRadius   = new TH2F(Form("hPt_%s_radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20);
-		fEtaPhi     = new TH2F(Form("hEtaPhi_%s", n), Form("Generated %ss #eta vs #phi plot; #phi (rad); #eta", n), 100, 0, TMath::Pi() * 2, 100, -1, 1);
+		fEtaPhi     = new TH2F(Form("hEtaPhi_%s", n), Form("Generated %ss y vs #phi plot; #phi (rad); y", n), 100, 0, TMath::Pi() * 2, 100, -1, 1);
 		fPt         = new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize, ptbins);
 
 		fListOfHistos->Add(fPtAllRange);

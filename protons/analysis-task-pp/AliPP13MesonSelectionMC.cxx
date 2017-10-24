@@ -200,7 +200,7 @@ void AliPP13MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flag
 		if (primary && particle->E() > 0.3)
 		{
 			fSpectrums[code]->fPtAllRange->Fill(pt);
-			fSpectrums[code]->fEtaPhi->Fill(particle->Phi(), particle->Eta());
+			fSpectrums[code]->fEtaPhi->Fill(particle->Phi(), particle->Y());
 		}
 
 		if (code != kPi0)
