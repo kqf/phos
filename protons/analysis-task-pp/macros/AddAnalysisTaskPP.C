@@ -43,11 +43,6 @@ void AddAnalysisTaskPP(Bool_t isMC = kFALSE, UInt_t offlineTriggerMask, TString 
 		                nonlin_a, nonlin_b, ge_scale,
 		                weigh_a, weigh_b));
 
-		selections->Add(new AliPP13SingleParticleQA("SingleParticle", "MC Selection with timing cut", cuts_pi0,
-		                nonlin_a, nonlin_b, ge_scale,
-		                weigh_a, weigh_b));
-
-
 		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
 
 		if (suff.Contains("Only") && IsJetJetMC(description, isMC))
