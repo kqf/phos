@@ -21,6 +21,10 @@ class SingleParticleQA(unittest.TestCase):
 
     def particle_ptbin(self, prod):
         name, bin = prod[:-1], prod[-1]
+
+        if bin not in self.ptbin:
+            name, bin = prod, ''
+
         return self.simulation.get(name), self.ptbin.get(bin)
 
 
@@ -28,12 +32,12 @@ class SingleParticleQA(unittest.TestCase):
         # Dataset description
         #
         # NB: Always use unscaled version for QA
-        self.simulation = {'LHC17j3a': '#gamma', 'LHC17j3b': '#pi^{0}', 'LHC17j3c': '#eta'}
-        self.ptbin  = {'1': 'low p_{T}', '2': 'high p_{T}'}
+        self.simulation = {'LHC17j3a': '#gamma', 'LHC17j3b': '#pi^{0}', 'LHC17j3c': '#eta', 'scaled-LHC17j3b': '#pi^{0}'}
+        self.ptbin  = {'1': 'low p_{T}', '2': 'high p_{T}', '': 'all'}
 
         # Define input
         self.selection = 'MCStudyOnlyTender'
-        self.productions = 'LHC17j3b2', 'LHC17j3a2', 'LHC17j3c2', 'LHC17j3b1', 'LHC17j3a1', 'LHC17j3c1'
+        self.productions = 'scaled-LHC17j3b', 'LHC17j3a2', 'LHC17j3c2', 'LHC17j3b1', 'LHC17j3a1', 'LHC17j3c1'
 
 
     def test_pt_reconstructed(self):
