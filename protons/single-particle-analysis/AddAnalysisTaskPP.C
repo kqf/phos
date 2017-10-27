@@ -20,7 +20,6 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
-    // gROOT->LoadMacro("AliPP13SingleParticleQA.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
     gROOT->LoadMacro("AliPP13MixingSample.cxx+");
     gROOT->LoadMacro("AliAnalysisTaskPP13.cxx+");
@@ -62,10 +61,6 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 
 	selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0,
-		nonlin_a, nonlin_b, ge_scale, 
-		weigh_a, weigh_b));
-
-	selections->Add(new AliPP13SingleParticleQA("SingleParticle", "MC Selection with timing cut", cuts_pi0,
 		nonlin_a, nonlin_b, ge_scale, 
 		weigh_a, weigh_b));
 
@@ -128,7 +123,6 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.cxx " +
-        // "AliPP13SingleParticleQA.cxx " + 
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
 	    "AliAnalysisTaskPP13.cxx "
@@ -161,8 +155,6 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	    "AliPP13PythiaInfoSelection.h " +
 	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.h " +
-        // "AliPP13SingleParticleQA.cxx " + 
-        // "AliPP13SingleParticleQA.h " + 
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13NonlinearityScanSelection.h " +
 	    "AliPP13MixingSample.cxx " +

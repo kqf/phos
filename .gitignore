@@ -56,3 +56,4 @@ gphysi.dat
 *.tgz
 id_rsa
 Dockerfile.slc
+*/test_pp_task/*
