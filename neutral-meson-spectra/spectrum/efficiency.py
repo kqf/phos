@@ -71,3 +71,14 @@ class Efficiency(object):
         if self.oname: 
             br.io.save(ratio, self.oname)
         return ratio
+
+
+# TODO: Finish efficiency code
+class EfficiencyMultirange(Efficiency):
+
+    def __init__(self, genname, label, inames, recalculate = False):
+        super(EfficiencyMultirange, self).__init__(genname, label, inames[0], recalculate)
+
+
+
+  

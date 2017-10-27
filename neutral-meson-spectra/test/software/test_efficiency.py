@@ -1,6 +1,6 @@
 import unittest
 
-from spectrum.efficiency import Efficiency
+from spectrum.efficiency import Efficiency, EfficiencyMultirange
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 
@@ -34,3 +34,17 @@ class TestEfficiency(unittest.TestCase):
         diff = Comparator()
         diff.compare(efficiency)
     
+
+
+class TestMultirangeEfficiency(unittest.TestCase):
+
+    def test_interface(self):
+        efficiency_estimator = EfficiencyMultirange('hPt_#pi^{0}_primary_', 'eff', ['LHC17j3b1', 'LHC17j3b2'])
+        efficiency = efficiency_estimator.eff()
+        efficiency.SetTitle('Testing the interface')
+
+        diff = Comparator()
+        diff.compare(efficiency)
+        
+
+  
