@@ -46,7 +46,7 @@ class Spectrum(object):
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
 
-        quant.Fit(fitquant, "q")
+        quant.Fit(fitquant, "q", "", *self.opt.fit_range)
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
