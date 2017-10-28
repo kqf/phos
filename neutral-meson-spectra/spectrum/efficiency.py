@@ -27,6 +27,8 @@ class Efficiency(object):
         self.label = label
         self.recalculate = recalculate
         self.oname = 'input-data/efficiency-{0}-{1}.root'.format(self.iname, label)
+        self.opt = Options(self.label, mode = 'q')
+
 
     def eff(self):
         if self.recalculate:
@@ -56,7 +58,7 @@ class Efficiency(object):
 
     def reco(self):
         inp = Input(self.iname, self.selection, 'MassPt')
-        reco = Spectrum(inp, Options(self.label, mode = 'q')).evaluate().npi0
+        reco = Spectrum(inp, self.opt).evaluate().npi0
         reco.logy = True
         return br.scalew(reco)
 
@@ -73,12 +75,19 @@ class Efficiency(object):
         return ratio
 
 
-# TODO: Finish efficiency code
 class EfficiencyMultirange(Efficiency):
 
     def __init__(self, genname, label, inames, recalculate = False):
-        super(EfficiencyMultirange, self).__init__(genname, label, inames[0], recalculate)
+        super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate)
+        self.single_estimators = [Efficiency(genname, label, n, recalculate) for n in inames]
+        self.rranges = inames.values()
+        for est, rr in zip(self.single_estimators, self.rranges):
+            est.opt.spectrum.fit_range = rr
 
+        self.recalculate = recalculate
 
+    def efficiency(self):
+        diff = Comparator(rrange = (-1, -1), crange = (0, 0.2))
+        effs = [e.eff() for e in self.single_estimators]
+        return br.sum_trimm(effs, self.rranges[::-1])
 
-  

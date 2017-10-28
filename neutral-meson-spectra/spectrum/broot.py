@@ -385,14 +385,16 @@ class BROOT(object):
     @classmethod
     def set_to_zero(klass, hist, rrange):
         a, bb = rrange
+
+        # TODO: Should I reverse the condition?
         bins = (b for b in klass.range(hist) if a < hist.GetBinCenter(b) < bb)
         for bin in bins:
             hist.SetBinContent(bin, 0)
             hist.SetBinError(bin, 0)
 
+
     @classmethod
     def sum_trimm(klass, hists, ranges):
-
         clones = map(klass.clone, hists)
         for c, r in zip(clones, ranges):
             klass.set_to_zero(c, r)
