@@ -379,6 +379,26 @@ class BROOT(object):
         errors_ok = map(kernel, errors1, errors2)
         return all(bins_ok) and all(errors_ok)
 
+        if not histograms:
+            raise ValueError("You are trying to sum 0 histograms")
+
+    @classmethod
+    def set_to_zero(klass, hist, rrange):
+        a, bb = rrange
+        bins = (b for b in klass.range(hist) if a < hist.GetBinCenter(b) < bb)
+        for bin in bins:
+            hist.SetBinContent(bin, 0)
+            hist.SetBinError(bin, 0)
+
+    @classmethod
+    def sum_trimm(klass, hists, ranges):
+
+        clones = map(klass.clone, hists)
+        for c, r in zip(clones, ranges):
+            klass.set_to_zero(c, r)
+
+        return klass.sum(clones)
+
 
 
 

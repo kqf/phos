@@ -506,7 +506,7 @@ class TestTH(unittest.TestCase):
             self.assertEqual(hist.GetBinError(i + 1), b)
 
 
-    # @unittest.skip("Skip to save some tiem")
+    @unittest.skip("Some Problems with Hepdata The site is not reachable")
     def test_downloads_from_hepdata(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
 
@@ -523,6 +523,7 @@ class TestTH(unittest.TestCase):
         os.remove(ofile)
 
 
+    @unittest.skip("Some Problems with Hepdata The site is not reachable")
     def test_reads_from_tdir(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
 
@@ -587,6 +588,51 @@ class TestTH(unittest.TestCase):
 
         cloned.Fill(0, 1e-5)
         self.assertFalse(br.diff(hist, cloned))
+
+
+    def test_sets_to_zero(self):
+        hist1 = br.BH(ROOT.TH1F, "hAddTrimm1", "Test BROOT1: Test add Trimm", 100, -4, 4)
+        hist1.label = 'Remove this label later'
+        hist1.SetLineColor(46)
+        for bin in br.range(hist1):
+            hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
+
+
+        hist1.Sumw2()
+        hist1.Draw()
+        wait(draw = self.mode)
+
+        br.set_to_zero(hist1, (-4, -1))
+        hist1.Draw()
+        wait(draw = self.mode)
+
+
+
+
+    def test_sum_trimm(self):
+        hist1 = br.BH(ROOT.TH1F, "hAddTrimm1", "Test BROOT1: Test add Trimm", 100, -4, 4)
+        hist1.label = 'Remove this label later'
+        hist1.SetLineColor(46)
+        for bin in br.range(hist1):
+            hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
+
+        hist2 = br.BH(ROOT.TH1F, "hAddTrimm2", "Test BROOT2: Test add Trimm", 100, -4, 4)
+        hist2.label = 'Remove this label later'
+        hist2.SetLineColor(37)
+        for bin in br.range(hist2):
+            hist2.SetBinContent(bin, hist2.GetBinCenter(bin))
+
+        hists = hist1, hist2
+        ranges = (-0.5, 4), (-4, -0.5)
+        hist = br.sum_trimm(hists, ranges)
+
+        hist.Draw()
+        hist1.Draw("same")
+        hist2.Draw("same")
+        wait(draw = not self.mode)
+
+
+
 
 
 
