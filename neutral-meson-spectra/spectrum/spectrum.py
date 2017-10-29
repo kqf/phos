@@ -70,7 +70,7 @@ class Spectrum(object):
 class CompositeSpectrum(Spectrum):
 
     def __init__(self, lst, options = Options()):
-        super(Spectrum, self).__init__([], options)
+        super(CompositeSpectrum, self).__init__(lst.keys()[0], options)
         self.spectrums = [Spectrum(l) for l in lst]
 
     def evaluate(self):

@@ -10,10 +10,10 @@ class TestCompositeSpectrum(unittest.TestCase):
 
 
    def test_interface(self):
-        inputs = {Input('LHC17j3b1'): (0, 7), Input('LHC17j3b2'): (7, 20)}
+        inputs = {Input('LHC17j3b1', 'MCStudyOnlyTender'): (0, 7), Input('LHC17j3b2', 'MCStudyOnlyTender'): (7, 20)}
         spectrum_estimator = CompositeSpectrum(inputs)
         histograms = spectrum_estimator.evaluate()
-        
+
         diff = Comparator()
         diff.compare(histograms)
    
