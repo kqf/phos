@@ -598,6 +598,9 @@ class TestTH(unittest.TestCase):
             hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
 
 
+        # TODO: Write normal assertions
+        #
+
         hist1.Sumw2()
         hist1.Draw()
         wait(draw = self.mode)
@@ -623,13 +626,13 @@ class TestTH(unittest.TestCase):
             hist2.SetBinContent(bin, hist2.GetBinCenter(bin))
 
         hists = hist1, hist2
-        ranges = (-0.5, 4), (-4, -0.5)
+        ranges = (-4, -0.5), (-0.5, 4)
         hist = br.sum_trimm(hists, ranges)
 
         hist.Draw()
         hist1.Draw("same")
         hist2.Draw("same")
-        wait(draw = not self.mode)
+        wait(draw = self.mode)
 
 
 

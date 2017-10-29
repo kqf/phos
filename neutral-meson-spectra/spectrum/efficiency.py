@@ -89,5 +89,5 @@ class EfficiencyMultirange(Efficiency):
     def efficiency(self):
         diff = Comparator(rrange = (-1, -1), crange = (0, 0.2))
         effs = [e.eff() for e in self.single_estimators]
-        return br.sum_trimm(effs, self.rranges[::-1])
+        return br.sum_trimm(effs, self.rranges)
 

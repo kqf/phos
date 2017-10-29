@@ -387,7 +387,7 @@ class BROOT(object):
         a, bb = rrange
 
         # TODO: Should I reverse the condition?
-        bins = (b for b in klass.range(hist) if a < hist.GetBinCenter(b) < bb)
+        bins = (b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
         for bin in bins:
             hist.SetBinContent(bin, 0)
             hist.SetBinError(bin, 0)
