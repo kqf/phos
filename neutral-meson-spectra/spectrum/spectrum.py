@@ -17,16 +17,16 @@ class Spectrum(object):
         self.opt = options.spectrum
         self.label = options.pt.label
 
-    def mass_ranges(self):
+    def _mass_ranges(self):
         quantities = self.analyzer.quantities(False)
-        ranges = self.fit_ranges(quantities)
+        ranges = self._fit_ranges(quantities)
         return ranges
 
     def evaluate(self):
-        ranges = self.mass_ranges()
+        ranges = self._mass_ranges()
         return self.analyzer.quantities(True, ranges)
 
-    def fit_quantity(self, quant, func, par, names, pref):
+    def _fit_quantity(self, quant, func, par, names, pref):
         fitquant = ROOT.TF1("fitquant" + pref, func)
         fitquant.SetLineColor(46)
 
@@ -54,15 +54,26 @@ class Spectrum(object):
         return fitquant
 
         
-    def fit_ranges(self, quantities):
+    def _fit_ranges(self, quantities):
         ROOT.gStyle.SetOptStat('')
         mass, sigma = quantities.mass, quantities.width
 
-        fitsigma = self.fit_quantity(sigma, self.opt.width_func, self.opt.width_pars, self.opt.width_names, 'width')
-        fitmass = self.fit_quantity(mass, self.opt.mass_func, self.opt.mass_pars, self.opt.mass_names, 'mass')
+        fitsigma = self._fit_quantity(sigma, self.opt.width_func, self.opt.width_pars, self.opt.width_names, 'width')
+        fitmass = self._fit_quantity(mass, self.opt.mass_func, self.opt.mass_pars, self.opt.mass_names, 'mass')
 
         mass_range = lambda pt: (fitmass.Eval(pt) - self.opt.nsigmas * fitsigma.Eval(pt),
                                  fitmass.Eval(pt) + self.opt.nsigmas * fitsigma.Eval(pt))
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
+
+class CompositeSpectrum(Spectrum):
+
+    def __init__(self, lst, options = Options()):
+        super(Spectrum, self).__init__([], options)
+        self.spectrums = [Spectrum(l) for l in lst]
+
+    def evaluate(self):
+        hists = [s.evaluate() for s in self.spectrums]
+        return hists
+
