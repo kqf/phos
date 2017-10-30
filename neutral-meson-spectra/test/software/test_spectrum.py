@@ -10,10 +10,17 @@ class TestCompositeSpectrum(unittest.TestCase):
 
 
    def test_interface(self):
-        inputs = {Input('LHC17j3b1', 'MCStudyOnlyTender'): (0, 7), Input('LHC17j3b2', 'MCStudyOnlyTender'): (7, 20)}
+        datadir = '/single/plain/'
+        inputs = {
+            Input(datadir + 'scaled-LHC17j3b1', 'MCStudyOnlyTender'): (0, 7), 
+            Input(datadir + 'scaled-LHC17j3b2', 'MCStudyOnlyTender'): (7, 20)
+        }
+
         spectrum_estimator = CompositeSpectrum(inputs)
         histograms = spectrum_estimator.evaluate()
 
+        # TODO: Should I draw this in discover mode?
         diff = Comparator()
-        diff.compare(histograms)
+        for hist in histograms:
+            diff.compare(hist)
    

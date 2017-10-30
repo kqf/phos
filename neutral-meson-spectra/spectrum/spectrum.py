@@ -5,6 +5,7 @@ import json
 from sutils import gcanvas, wait, adjust_canvas, ticks
 from ptanalyzer import PtAnalyzer
 from options import Options
+from broot import BROOT as br
 
 
 ROOT.TH1.AddDirectory(False)
@@ -67,13 +68,25 @@ class Spectrum(object):
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
 
+
 class CompositeSpectrum(Spectrum):
 
     def __init__(self, lst, options = Options()):
         super(CompositeSpectrum, self).__init__(lst.keys()[0], options)
-        self.spectrums = [Spectrum(l) for l in lst]
+        self.spectrums = [Spectrum(l, Options('single', mode = 'd')) for l in lst]
+
+        for est, rr in zip(self.spectrums, lst.values()):
+            est.opt.fit_range = rr
 
     def evaluate(self):
         hists = [s.evaluate() for s in self.spectrums]
-        return hists
+        ranges = [s.opt.fit_range for s in self.spectrums]
+        # Transpose
+        hists = zip(*hists)
+        truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in hists]
+
+        for obs_pt in truncated:
+            print obs_pt
+   
+        return truncated
 
