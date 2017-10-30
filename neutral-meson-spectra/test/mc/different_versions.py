@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from spectrum.spectrum import Spectrum
+from spectrum.spectrum import Spectrum, CompositeSpectrum
 from spectrum.input import Input, TimecutInput
 from spectrum.sutils import gcanvas, adjust_canvas
 from spectrum.options import Options
@@ -16,8 +16,7 @@ class CheckMCDifferentVersions(unittest.TestCase):
         inputs = (
                       Input('LHC16', 'PhysOnlyTender'), Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender'),\
                       Input('LHC17d20a', 'PhysNonlinOnlyTender'), \
-                      # Input('pythia-jet-jet', 'PhysNonlinOnlyTender'), \
-                      Input('scaled-LHC17j3b', 'MCStudyTender')
+                      Input('pythia-jet-jet', 'PhysNonlinOnlyTender') \
                   )
 
 
@@ -26,13 +25,23 @@ class CheckMCDifferentVersions(unittest.TestCase):
         options = (
                     Options('Data', 'q', priority = 999), Options('Pythia8', 'q', priority = 1), \
                     Options('EPOS', 'q', priority = 99), \
-                    # Options('Pythia8 JJ', 'q', priority = 1), \
-                    Options('single', 'q', priority = 99)
+                    Options('Pythia8 JJ', 'q', priority = 1)
                  )
 
 
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)
+        datadirs = 'plain', 'nonlin'
+        inputs = [
+            {
+                Input('/single/{0}/scaled-LHC17j3b1'.format(d), 'MCStudyOnlyTender'): (0, 7), 
+                Input('/single/{0}/scaled-LHC17j3b2'.format(d), 'MCStudyOnlyTender'): (7, 20)
+            } for d in datadirs]
+
+        f = lambda x, y: CompositeSpectrum(x, Options(y, mode = 'd')).evaluate()
+        spmc = map(f, inputs, datadirs)
+        self.results += spmc
+
 
 
     def testResultMC(self):

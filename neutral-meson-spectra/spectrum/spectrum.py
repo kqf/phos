@@ -73,7 +73,7 @@ class CompositeSpectrum(Spectrum):
 
     def __init__(self, lst, options = Options()):
         super(CompositeSpectrum, self).__init__(lst.keys()[0], options)
-        self.spectrums = [Spectrum(l, Options('single', mode = 'd')) for l in lst]
+        self.spectrums = [Spectrum(l, Options(options.label, mode = 'd')) for l in lst]
 
         for est, rr in zip(self.spectrums, lst.values()):
             est.opt.fit_range = rr
