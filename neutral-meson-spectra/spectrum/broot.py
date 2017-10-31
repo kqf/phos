@@ -237,8 +237,12 @@ class BROOT(object):
 
         ratio.Divide(a, b, 1, 1, option)
         label = a.label + ' / ' + b.label
-        ratio.SetTitle(a.GetTitle())
-        ratio.GetYaxis().SetTitle(label)
+
+        at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
+        ratio.GetYaxis().SetTitle(at + '/' + bt)
+
+        title = a.GetTitle() + ' / ' + b.GetTitle()
+        ratio.SetTitle(title)
         
         if not ratio.GetSumw2N():
             ratio.Sumw2()

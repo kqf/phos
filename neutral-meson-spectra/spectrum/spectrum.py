@@ -84,6 +84,8 @@ class CompositeSpectrum(Spectrum):
         # Transpose
         hists = zip(*hists)
         truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in hists]
+        for h in truncated: 
+            h.label = self.label 
 
         for obs_pt in truncated:
             print obs_pt

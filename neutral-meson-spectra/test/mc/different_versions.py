@@ -52,9 +52,13 @@ class CheckMCDifferentVersions(unittest.TestCase):
         masses, widths = zip(*self.results)[0:2]
 
         diff = cmpr.Comparator((0.5, 1.), oname = 'compared-mc-masses')
+        # for m in masses:
+            # m.label = 'm_{#pi^{0}}'
         diff.compare(masses)
 
         diff = cmpr.Comparator((0.5, 1.), oname = 'compared-mc-widths')
+        # for w in widths:
+            # w.label = '#sigma_{#pi^{0}}'
         diff.compare(widths)
 
         diff = cmpr.Comparator((1., 1.))
