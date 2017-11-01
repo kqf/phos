@@ -3,7 +3,7 @@ Analysis of MC data
 
 ## Explanation
 
-- [x] Check if the $Z_{\text{vertex}} distribution looks the same in MC and in real Data. 
+- [x] Check if the $Z_{\text{vertex}}$ distribution looks the same in MC and in real Data. 
 The `zvertex.py` compares all listed MC productions to the real-data distribution.
 
 - [ ] Spectrum shape. Distributions in real data and in MC differ. Therefore 

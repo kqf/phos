@@ -81,14 +81,14 @@ class CompositeSpectrum(Spectrum):
     def evaluate(self):
         hists = [s.evaluate() for s in self.spectrums]
         ranges = [s.opt.fit_range for s in self.spectrums]
+        
         # Transpose
         hists = zip(*hists)
         truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in hists]
         for h in truncated: 
             h.label = self.label 
 
-        for obs_pt in truncated:
-            print obs_pt
-   
-        return truncated
+        # Use the same container as normal analysis
+        # 
+        return self.analyzer.OutType(*truncated)
 
