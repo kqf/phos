@@ -6,7 +6,7 @@ This complicates analysis of the single particle MC.
 
 Here are the steps that are needed to run the code.
 
-- [ ] Compare $p_T$ distributions in different ranges and try to choose optimal join point
-- [ ] Choose right joining point for efficiency. Use `mc/single/overlap_region.py`
-- [ ] Nonlinearity study
+- [x] Compare $p_T$ distributions in different ranges and try to choose optimal join point
+- [x] Choose right joining point for efficiency. Use `mc/single/overlap_region.py`
+- [x] Nonlinearity study
 - [ ] Weights for single particle mc

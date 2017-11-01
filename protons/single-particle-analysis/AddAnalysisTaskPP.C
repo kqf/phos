@@ -42,12 +42,21 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
 	// Calculated for the updated version for the corrected Data
 	
-	Float_t nonlin_a = -0.020025549129372242;
-	Float_t nonlin_b = 1.1154536660217529;
-    Float_t ge_scale = 1.0493128193171741;
+	// Float_t nonlin_a = -0.020025549129372242;
+	// Float_t nonlin_b = 1.1154536660217529;
+	// Float_t ge_scale = 1.0493128193171741;
 
- //    Float_t weigh_a = -1.063;
- //    Float_t weigh_b = 0.855;
+	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
+	// Calculated on single particle MC
+	//
+	
+	Float_t nonlin_a = -0.024603176300721907;
+	Float_t nonlin_b =  1.1443886239082113;
+    Float_t ge_scale =  1.0560164522642017;
+
+
+	// Float_t weigh_a = -1.063;
+	// Float_t weigh_b = 0.855;
 
 	// Float_t nonlin_a = 0;
 	// Float_t nonlin_b = 1.;
