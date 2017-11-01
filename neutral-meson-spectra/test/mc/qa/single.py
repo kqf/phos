@@ -32,12 +32,13 @@ class SingleParticleQA(unittest.TestCase):
         # Dataset description
         #
         # NB: Always use unscaled version for QA
+        self.dir = 'single/plain/'
         self.simulation = {'LHC17j3a': '#gamma', 'LHC17j3b': '#pi^{0}', 'LHC17j3c': '#eta', 'scaled-LHC17j3b': '#pi^{0}'}
         self.ptbin  = {'1': 'low p_{T}', '2': 'high p_{T}', '': 'all'}
 
         # Define input
         self.selection = 'MCStudyOnlyTender'
-        self.productions = 'scaled-LHC17j3b', 'LHC17j3a2', 'LHC17j3c2', 'LHC17j3b1', 'LHC17j3a1', 'LHC17j3c1'
+        self.productions = 'LHC17j3a2', 'LHC17j3c2', 'LHC17j3b1', 'LHC17j3a1', 'LHC17j3c1'
 
 
     def test_pt_reconstructed(self):
@@ -66,7 +67,7 @@ class SingleParticleQA(unittest.TestCase):
     def distribution(self, filename, histname, logy = 1):
         part, ptbin = self.particle_ptbin(filename)
         label = '{0} {1}'.format(part, ptbin)
-        hist = read_histogram(filename, self.selection,\
+        hist = read_histogram(self.dir + filename, self.selection,\
             histname.format(part), label = label)
         hist.SetTitle(hist.GetTitle() + ', ' + ptbin)
 
@@ -91,7 +92,7 @@ class SingleParticleQA(unittest.TestCase):
         part, ptbin = self.particle_ptbin(filename)
         label = '{0} {1}'.format(part, ptbin)
 
-        inp = Input(filename, self.selection)
+        inp = Input(self.dir + filename, self.selection)
         opt = Options(label= label, mode = 'd', particle = 'pi0' if 'pi' in part else 'eta')
         reco = Spectrum(inp, opt).evaluate().spectrum
         reco.SetTitle(reco.GetTitle() + ', ' + ptbin)
