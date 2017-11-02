@@ -207,8 +207,11 @@ class InvariantMass(object):
         self.draw_text(self.signal, self.pt_label + ', GeV/c')
 
         if self.area_error:
-            n, sigma = self.area_error
-            self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
+            try:
+                n, sigma = self.area_error
+                self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
+            except ZeroDivisionError as e:
+                print e
 
         # Use broot instead if needed
         # ofile = ROOT.TFile('signals.root', 'update')
