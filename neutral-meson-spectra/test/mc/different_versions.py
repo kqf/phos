@@ -44,7 +44,7 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
 
 
-    def testResultMC(self):
+    def test_different_mc_productions(self):
         import spectrum.comparator as cmpr
         diff = cmpr.Comparator((1., 1.))
         diff.compare(self.results)
@@ -52,8 +52,8 @@ class CheckMCDifferentVersions(unittest.TestCase):
         masses, widths = zip(*self.results)[0:2]
 
         diff = cmpr.Comparator((0.5, 1.), oname = 'compared-mc-masses')
-        for m in masses:
-            # m.label = 'm_{#pi^{0}}'
+        # for m in masses:
+        # m.label = 'm_{#pi^{0}}'
         diff.compare(masses)
 
         diff = cmpr.Comparator((0.5, 1.), oname = 'compared-mc-widths')
