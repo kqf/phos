@@ -1,5 +1,9 @@
 import unittest
+import ROOT
 
+from spectrum.spectrum import Spectrum
+from spectrum.options import Options
+from spectrum.input import Input
 from spectrum.nonlinearity import Nonlinearity
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
@@ -7,22 +11,16 @@ from spectrum.broot import BROOT as br
 
 class TestNonlinearity(unittest.TestCase):
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_interface(self):
-        efficiency_estimator = Efficiency('hPt_#pi^{0}_primary_', 'eff', 'Pythia-LHC16-a5')
-        efficiency = efficiency_estimator.eff()
-        efficiency.SetTitle('Testing the interface')
+        data = Spectrum(Input('LHC16', 'PhysOnlyTender'), Options('Data', 'd'))
+        data = data.evaluate()
 
-        diff = Comparator()
-        diff.compare(efficiency)
-
-        
-        efficiency_estimator = Efficiency('hPt_#pi^{0}_primary_', 'eff', 'Pythia-LHC16-a5')
-        efficiency = efficiency_estimator.eff()
-        efficiency.SetTitle('Testing the interface')
-
-        diff = Comparator()
-        diff.compare(efficiency)
+        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender'), Options('R2D zs 20 MeV nonlin', 'd'))
+        mc = mc.evaluate()
+        func = self._nonlinearity_function()
+        nonlin = Nonlinearity(data.mass, mc.mass, func, mcname = 'pythia8')
+        nonlin.evaluate_parameters()
 
 
     def _nonlinearity_function(self):
@@ -35,16 +33,3 @@ class TestNonlinearity(unittest.TestCase):
         return func_nonlin
 
 
-    @unittest.skip('')
-    def test_nonlin_general(self):
-        """
-            Estimates nonlinearity parameters for General purpose MC
-        """
-        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender'), Options('R2D zs 20 MeV nonlin', 'd'))
-        mc = mc.evaluate()
-        mc = mc.mass
-        func = self._nonlinearity_function()
-        nonlin = Nonlinearity(self.data, mc, func, mcname = 'pythia8')
-        nonlin.evaluate_parameters()
-
-  
