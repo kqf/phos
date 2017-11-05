@@ -49,7 +49,8 @@ alienHandler->SetOutputFiles(files);
     ├── AliPP13::PhotonTimecutStudySelection
     ├── AliPP13::PythiaInfoSelection
     ├── AliPP13::QualityPhotonSelection
-    ├── AliPP13::TagAndProbeSelection    // TODO: Check final parametrization
+    ├── AliPP13::TagAndProbeSelection       // TODO: Check final parametrization
+    ├── AliPP13::EfficiencySelectionMC
     └── AliPP13::PhysPhotonSelection
         ├── AliPP13::NonlinearityScanSelection
         └── AliPP13::PhysPhotonSelectionMC
