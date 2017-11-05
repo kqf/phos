@@ -9,6 +9,7 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	}
 
     gROOT->LoadMacro("AliPP13ClusterCuts.cxx+");
+    gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
     gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
@@ -32,6 +33,9 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
+
+
+    // exit(1);
 
 	// This will fix the problem with Single particle MC
 	
@@ -69,7 +73,9 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 
 	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
 	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
-	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles", cuts_pi0));
+	
+	AliPP13SelectionWeights spmc_weights = AliPP13SelectionWeights::GetWeigtsSPMC();
+	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles", cuts_pi0, spmc_weights));
 
 	selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0,
 		nonlin_a, nonlin_b, ge_scale, 
@@ -123,6 +129,7 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	plugin->SetAnalysisSource(
 		sources +
 	    "AliPP13ClusterCuts.cxx " +
+	    "AliPP13SelectionWeights.cxx " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13PhotonSelection.cxx " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
@@ -145,6 +152,8 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 		"libPWGGAPHOSTasks.so "	+
 	    "AliPP13ClusterCuts.cxx " +
 	    "AliPP13ClusterCuts.h " +
+	    "AliPP13SelectionWeights.cxx " +
+	    "AliPP13SelectionWeights.h " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13DetectorHistogram.h " +
 	    "AliPP13PhotonSelection.cxx " +

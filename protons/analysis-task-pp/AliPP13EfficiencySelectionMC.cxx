@@ -37,7 +37,9 @@ void AliPP13EfficiencySelectionMC::ConsiderPair(const AliVCluster * c1, const Al
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	fInvMass[eflags.isMixing]->Fill(ma12, pt12);
+	Double_t w = fWeights.Weight(pt12);
+	TH2 * hist = dynamic_cast<TH2 *> (fInvMass[eflags.isMixing]);
+	hist->Fill(ma12, pt12, w);
 
 	if (eflags.isMixing)
 		return;
@@ -100,6 +102,7 @@ void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags &
 
 
 		Double_t pt = particle->Pt();
+		Double_t w = fWeights.Weight(pt);
 
 
 		// Use this to remove forward photons that can modify our true efficiency
@@ -108,8 +111,8 @@ void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags &
 
 		Double_t r = TMath::Sqrt(particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv());
 
-		fSpectrums[code]->fPt->Fill(pt);
-		fSpectrums[code]->fPtRadius->Fill(pt, r);
+		fSpectrums[code]->fPt->Fill(pt, w);
+		fSpectrums[code]->fPtRadius->Fill(pt, r, w);
 
 		Bool_t primary = IsPrimary(particle);
 
@@ -117,12 +120,12 @@ void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags &
 		// Tese conditions are just for QA purpose
 		if (primary && particle->E() > 0.3)
 		{
-			fSpectrums[code]->fPtLong->Fill(pt);
-			fSpectrums[code]->fPtAllRange->Fill(pt);
+			fSpectrums[code]->fPtLong->Fill(pt, w);
+			fSpectrums[code]->fPtAllRange->Fill(pt, w);
 			fSpectrums[code]->fEtaPhi->Fill(particle->Phi(), particle->Y());
 		}
 
-		fSpectrums[code]->fPtPrimaries[Int_t(primary)]->Fill(pt);
+		fSpectrums[code]->fPtPrimaries[Int_t(primary)]->Fill(pt, w);
 		ConsiderGeneratedParticle(i, pt, primary, flags);
 	}
 }
