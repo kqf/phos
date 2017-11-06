@@ -19,9 +19,9 @@ import unittest
 
 class Efficiency(object):
 
-    def __init__(self, genname, label, iname, recalculate = False):
+    def __init__(self, genname, label, iname, recalculate = False, selection = 'MCStudyOnlyTender'):
         super(Efficiency, self).__init__()
-        self.selection = 'MCStudyOnlyTender'
+        self.selection = selection
         self.iname = iname
         self.genname = genname
         self.label = label
@@ -77,7 +77,7 @@ class Efficiency(object):
 
 class EfficiencyMultirange(Efficiency):
 
-    def __init__(self, genname, label, inames, recalculate = False):
+    def __init__(self, genname, label, inames, recalculate = False, selection = 'MCStudyOnlyTender'):
         super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate)
         self.single_estimators = [Efficiency(genname, label, n, recalculate) for n in inames]
         self.rranges = inames.values()
@@ -87,7 +87,11 @@ class EfficiencyMultirange(Efficiency):
         self.recalculate = recalculate
 
     def efficiency(self):
-        diff = Comparator(rrange = (-1, -1), crange = (0, 0.2))
         effs = [e.eff() for e in self.single_estimators]
         return br.sum_trimm(effs, self.rranges)
+
+
+    def true(self):
+        true = [e.true() for e in self.single_estimators]
+        return br.sum_trimm(true, self.rranges)
 
