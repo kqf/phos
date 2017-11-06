@@ -9,10 +9,8 @@
 //________________________________________________________________
 Double_t AliPP13SelectionWeights::Weight(Double_t x) const
 {
-	(void) x;
-	if(!fSpectrumWeight) // Not needed
-		return 1.0;
-
+	// if(!fSpectrumWeight) // Not needed
+		// return 1.0;
 	return fSpectrumWeight->Eval(x);
 }
 

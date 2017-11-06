@@ -1,4 +1,4 @@
-DATASET = LHC17j3b2
+DATASET = LHC17j3b1
 DPART = first
 MC = kTRUE
 
