@@ -78,8 +78,8 @@ class Efficiency(object):
 class EfficiencyMultirange(Efficiency):
 
     def __init__(self, genname, label, inames, recalculate = False, selection = 'MCStudyOnlyTender'):
-        super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate)
-        self.single_estimators = [Efficiency(genname, label, n, recalculate) for n in inames]
+        super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate, selection)
+        self.single_estimators = [Efficiency(genname, label, n, recalculate, selection) for n in inames]
         self.rranges = inames.values()
         for est, rr in zip(self.single_estimators, self.rranges):
             est.opt.spectrum.fit_range = rr
@@ -93,5 +93,10 @@ class EfficiencyMultirange(Efficiency):
 
     def true(self):
         true = [e.true() for e in self.single_estimators]
+
+        for t in true:
+            bin = true[0].FindBin(self.rranges[0][1])
+            t.Scale(1. / t.Integral(bin - 1, bin + 1))
+
         return br.sum_trimm(true, self.rranges)
 
