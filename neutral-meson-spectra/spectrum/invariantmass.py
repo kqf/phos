@@ -6,10 +6,12 @@ from parametrisation import PeakParametrisation
 from sutils import gcanvas, ticks, in_range
 from broot import BROOT as br
 
-class InvariantMass(object):
+# TODO: Separate MassDrawInterface from the computation classes
+
+class InvariantMassNoMixing(object):
    
     def __init__(self, inhists, pt_range, nrebin, options):
-        super(InvariantMass, self).__init__()
+        super(InvariantMassNoMixing, self).__init__()
         self.pt_range = pt_range 
         self.nrebin = nrebin
         self.opt = options.invmass
@@ -23,6 +25,132 @@ class InvariantMass(object):
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
         self.area_error = None
+
+    def extract_histogram(self, hist):
+        if not hist:
+            return None
+
+        mass = br.project_range(hist, '_%d_%d', *self.pt_range)
+        mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
+        mass.SetLineColor(37)
+
+        if not mass.GetSumw2N():
+            mass.Sumw2()
+
+        if self.nrebin: 
+            mass.Rebin(self.nrebin)
+            
+        return mass
+
+
+    def estimate_background(self, mass, mixed):
+        if not mass.GetEntries():
+            return mass
+
+        sigf, bgrf = self.peak_function.fit(mass)
+        bgrf.SetLineColor(8)
+        bgrf.SetFillColor(8)
+        bgrf.SetFillStyle(3436)
+        return bgrf
+
+
+    def subtract_background(self, mass, mixed):
+        if not mass.GetEntries():
+            return mass
+
+        signal = mass.Clone()
+        signal.Add(mixed, -1)
+        return signal
+
+
+    def extract_data(self):
+        if not (self.sigf and self.bgrf):
+            self.mixed = self.estimate_background(self.mass, self.mixed)
+            print self.mixed
+            self.signal = self.subtract_background(self.mass, self.mixed)
+            self.sigf, self.bgrf = self.peak_function.fit(self.signal)
+        return self.sigf, self.bgrf
+
+
+    def draw_text(self, hist, text, color = 46, bias = 0):
+        # Estimate coordinate
+        mass = self.peak_function.opt.fit_mass
+        x = mass * self.opt.pt_label_pos[0]
+
+        bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
+        bmax, bmin = map(hist.GetBinContent, bins)
+        zero = bmax - bmin 
+        # print zero
+
+        y = bmin + zero * (self.opt.pt_label_pos[1] + bias)
+        # Draw the lable
+        tl = ROOT.TLatex()
+        tl.SetTextAlign(12)
+        tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
+        tl.DrawLatex(x, y, '#color[%d]{%s}' %(color , text));
+
+
+    def draw_mass(self, pad = 0):
+        canvas = pad if pad else gcanvas()
+        ticks(canvas)
+        canvas.SetTicky(False) 
+
+        self.mass.SetAxisRange(*self.xaxis_range)
+        legend = ROOT.TLegend(*self.opt.legend_pos)
+        legend.SetBorderSize(0)
+        legend.SetFillStyle(0)
+        
+        self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
+        self.mass.Draw()
+        legend.AddEntry(self.mass, 'data')
+
+        if self.mixed:
+            self.mixed.Draw('same')
+            legend.AddEntry(self.mixed, 'background')
+
+        legend.Draw('same')
+        self.draw_text(self.mass, self.pt_label + ', GeV/c')
+        canvas.Update()
+        return self.mass 
+
+
+    def draw_signal(self, pad = 0):
+        canvas = pad if pad else gcanvas()
+
+        ticks(canvas)
+        canvas.SetTicky(False)  
+
+        self.signal.SetAxisRange(*self.xaxis_range)
+        self.signal.Draw()
+        self.draw_text(self.signal, self.pt_label + ', GeV/c')
+
+        if self.area_error:
+            try:
+                n, sigma = self.area_error
+                self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
+            except ZeroDivisionError as e:
+                print e
+
+        canvas.Update()
+        return self.signal
+
+
+    def draw_ratio(self, pad = 0):
+        pass
+
+ 
+    def number_of_mesons(self, intgr_ranges):
+        a, b = intgr_ranges if intgr_ranges else self.peak_function.opt.fit_range
+        area, areae = br.area_and_error(self.signal, a, b)
+        self.area_error = area, areae
+        return area, areae
+
+
+class InvariantMass(InvariantMassNoMixing):
+   
+    def __init__(self, inhists, pt_range, nrebin, options):
+        super(InvariantMass, self).__init__(inhists, pt_range, nrebin, options)
+
 
     def remove_zeros(self, h, zeros):
         if 'empty' in self.opt.average:
@@ -51,22 +179,6 @@ class InvariantMass(object):
         return h
 
 
-
-    def extract_histogram(self, hist):
-        if not hist:
-            return None
-
-        mass = br.project_range(hist, '_%d_%d', *self.pt_range)
-        mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
-        mass.SetLineColor(37)
-
-        if not mass.GetSumw2N():
-            mass.Sumw2()
-
-        if self.nrebin: 
-            mass.Rebin(self.nrebin)
-            
-        return mass
 
 
     def estimate_background(self, mass, mixed):
@@ -172,28 +284,7 @@ class InvariantMass(object):
         return self.ratio
 
 
-    def draw_mass(self, pad = 0):
-        canvas = pad if pad else gcanvas()
-        ticks(canvas)
-        canvas.SetTicky(False) 
 
-        self.mass.SetAxisRange(*self.xaxis_range)
-        legend = ROOT.TLegend(*self.opt.legend_pos)
-        legend.SetBorderSize(0)
-        legend.SetFillStyle(0)
-        
-        self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
-        self.mass.Draw()
-        legend.AddEntry(self.mass, 'data')
-
-        if self.mixed:
-            self.mixed.Draw('same')
-            legend.AddEntry(self.mixed, 'background')
-
-        legend.Draw('same')
-        self.draw_text(self.mass, self.pt_label + ', GeV/c')
-        canvas.Update()
-        return self.mass
 
         
     def draw_signal(self, pad = 0):
@@ -220,10 +311,3 @@ class InvariantMass(object):
         # ofile.Close()
         canvas.Update()
         return self.signal
-
-
-    def number_of_mesons(self, intgr_ranges):
-        a, b = intgr_ranges if intgr_ranges else self.peak_function.opt.fit_range
-        area, areae = br.area_and_error(self.signal, a, b)
-        self.area_error = area, areae
-        return area, areae

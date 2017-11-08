@@ -5,13 +5,13 @@ import ROOT
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.invariantmass import InvariantMass
+from spectrum.invariantmass import InvariantMass, InvariantMassNoMixing
 from spectrum.sutils import wait
 from spectrum.options import Options
 
 
 
-class TestInvariantMassClass(unittest.TestCase):
+class TestInvariantMass(unittest.TestCase):
 
     def setUp(self):
         self.wait = 'discover' not in sys.argv 
@@ -37,14 +37,14 @@ class TestInvariantMassClass(unittest.TestCase):
         for p in self.particles: 
             self.draw(p, f, 'signal')
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_draws_ratio(self):
         f = lambda x: x.draw_ratio()
 
         for p in self.particles: 
             self.draw(p, f, 'ratio')
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_draws_mass(self):
         f = lambda x: x.draw_mass()
 
@@ -67,8 +67,28 @@ class TestInvariantMassClass(unittest.TestCase):
         pt.draw_mass(intgr_ranges)
         pt.draw_signal(intgr_ranges)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_multiple_plots(self):
         for p in self.particles: 
             self.draw_multiple(p)
+
+
+class ATestInvariantMassNoMixing(TestInvariantMass):
+
+    def setUp(self):
+        self.wait = 'discover' not in sys.argv 
+        self.input = Input('single/weight/LHC17j3b2.root', 'PhysEffTender').read()
+        self.particles = {'pi0': ((8, 9), 0) }
+
+    def draw(self, particle, func, title):
+        bin, nrebin = self.particles[particle]
+
+        options = Options(particle=particle)
+
+        mass = InvariantMassNoMixing(self.input, bin, nrebin, options)
+        mass.extract_data()
+        # NB: Add this to be able to see the significance
+        mass.area_error = 10, 0.05
+        func(mass)
+        wait('test-inmass-%s-' % particle + title , self.wait, True)
 
