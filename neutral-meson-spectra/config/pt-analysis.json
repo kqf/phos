@@ -27,5 +27,6 @@
         "npi0": "Number of %ss in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}",  
         "cball_alpha": "Crystal ball parameter #alpha for %s peak; p_{T}, GeV; #alpha",
         "cball_n": "Crystal ball parameter n for %s peak; p_{T}, GeV; n"
-    }
+    },
+    "use_mixed": 1
 }

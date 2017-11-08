@@ -5,7 +5,7 @@ import collections
 
 from sutils import gcanvas, wait
 from outputcreator import OutputCreator
-from invariantmass import InvariantMass
+from invariantmass import InvariantMass, InvariantMassNoMixing
 from options import Options
 
 from broot import BROOT as br
@@ -25,7 +25,8 @@ class PtAnalyzer(object):
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), 'Number of intervals is not equal to the number of rebin parameters'
 
-        f = lambda x, y: InvariantMass(self.hists, x, y, options)
+        mass_algorithm = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
+        f = lambda x, y: mass_algorithm(self.hists, x, y, options)
         self.masses = map(f, intervals, self.opt.rebins)
 
     @staticmethod
@@ -142,6 +143,8 @@ class PtAnalyzer(object):
         self.draw_last_bins(f, intgr_ranges, oname)
 
     def draw_line(self, distr, position):
+        if not distr:
+            return
         line = ROOT.TLine(position, distr.GetMinimum(), position, distr.GetMaximum())
         line.SetLineColor(1)
         line.SetLineStyle(7)

@@ -44,7 +44,8 @@ class Options(object):
                     particle='pi0', priority = 999, fitf = 'cball',
                     spectrumconf = 'config/spectrum.json',
                     ptconf = 'config/pt-analysis.json',
-                    invmassconf = 'config/invariant-mass.json'):
+                    invmassconf = 'config/invariant-mass.json',
+                    use_mixed = True):
 
         super(Options, self).__init__()
         show_img = self.modes.get(mode, True)
@@ -58,6 +59,7 @@ class Options(object):
         self.pt.show_img = show_img
         self.pt.dead_mode = 'd' in mode
         self.pt.particle = particle
+        self.pt.use_mixed = use_mixed
 
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}

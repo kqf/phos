@@ -13,13 +13,18 @@ import operator
 class TestMassWidth(unittest.TestCase):
 
     def setUp(self):
-        ddir = '/single/plain/'
-        inputs = (Input(ddir + 'LHC17j3b1', 'PhysNonlinOnlyTender'),
-                  Input(ddir + 'LHC17j3b2', 'PhysNonlinOnlyTender'))
+        ddir = '/single/weight/'
+        inputs = (Input(ddir + 'LHC17j3b1', 'PhysEffOnlyTender'),
+                  Input(ddir + 'LHC17j3b2', 'PhysEffOnlyTender'))
 
 
         inputs = map(operator.methodcaller('read'), inputs)
-        options = ( Options('low p_{T}', 'd'), Options('high p_{T}', 'd'))
+
+        # NB: Always set use_mixed to False
+        # 
+
+        options = ( Options('low p_{T}', 'q', use_mixed = False), 
+                    Options('high p_{T}', 'q', use_mixed = False))
 
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)
