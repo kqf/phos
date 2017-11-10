@@ -55,7 +55,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
 
-    TString msg = "Single particle Analysis + updated spmc nonlinearity parameters";
+    TString msg = "Single particle Analysis + weights iteration 1";
 
     if (tenderOption)
     {
