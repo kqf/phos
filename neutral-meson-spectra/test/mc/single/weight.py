@@ -27,12 +27,12 @@ class WeighSingleParticleMC(unittest.TestCase):
         self.stop = 'discover' not in sys.argv
 
         # Define inputs and options for different productions
-        dinp, dopt = Input('LHC16', 'PhysOnlyTender'), Options('data', 'q')
+        dinp, dopt = Input('LHC16', 'PhysOnlyTender'), Options('data', 'd')
 
         # SPMC
         inputs = {
-            'single/weight0/LHC17j3b1': (0, 7), 
-            'single/weight0/LHC17j3b2': (7, 20)
+            'single/weight0/LHC17j3b1': (0, 5), 
+            'single/weight0/LHC17j3b2': (5, 20)
         }
 
         eff = EfficiencyMultirange(
@@ -51,14 +51,18 @@ class WeighSingleParticleMC(unittest.TestCase):
         cyield.Draw()
         ROOT.gPad.SetLogx()
         ROOT.gPad.SetLogy()
+        parameters = map(fitf.GetParameter, range(fitf.GetNpar()))
+        print parameters
         wait()
         
 
     @staticmethod
     def fit_function():
         tsallis =  ROOT.TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
-        tsallis.SetParameters(2.4, 0.139, 6.880);
+        tsallis.SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668)
+        # tsallis.SetParameters(2.4, 0.139, 6.880);
         tsallis.FixParameter(3, 0.135);
         tsallis.FixParameter(4, 0.135);
+
         return tsallis
 

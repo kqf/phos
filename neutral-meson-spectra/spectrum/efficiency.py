@@ -27,7 +27,7 @@ class Efficiency(object):
         self.label = label
         self.recalculate = recalculate
         self.oname = 'input-data/efficiency-{0}-{1}.root'.format(self.iname, label)
-        self.opt = Options(self.label, mode = 'q')
+        self.opt = Options(self.label, mode = 'd')
 
 
     def eff(self):
@@ -83,6 +83,7 @@ class EfficiencyMultirange(Efficiency):
         self.rranges = inames.values()
         for est, rr in zip(self.single_estimators, self.rranges):
             est.opt.spectrum.fit_range = rr
+            est.opt.param.fit_range = (0.1, 0.2)
 
         self.recalculate = recalculate
 

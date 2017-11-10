@@ -13,7 +13,7 @@ import operator
 class TestMassWidth(unittest.TestCase):
 
     def setUp(self):
-        ddir = '/single/weight/'
+        ddir = '/single/weight0/'
         inputs = (Input(ddir + 'LHC17j3b1', 'PhysEffOnlyTender'),
                   Input(ddir + 'LHC17j3b2', 'PhysEffOnlyTender'))
 
@@ -25,6 +25,8 @@ class TestMassWidth(unittest.TestCase):
 
         options = ( Options('low p_{T}', 'q', use_mixed = False), 
                     Options('high p_{T}', 'q', use_mixed = False))
+        for opt in options:
+            opt.param.fit_range = (0.1, 0.2)
 
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)
