@@ -7,7 +7,7 @@ import operator as op
 import ROOT
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
-from spectrum.sutils import gcanvas
+from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
 from spectrum.efficiency import Efficiency, EfficiencyMultirange
 from spectrum.corrected_yield import CorrectedYield
@@ -21,7 +21,7 @@ from spectrum.broot import BROOT as br
 #     affect the efficiency
 
 
-class WeighMC(unittest.TestCase):
+class WeighGeneralPurposeMC(unittest.TestCase):
 
     def setUp(self):
         genhist = 'hPt_#pi^{0}_primary_'
@@ -32,23 +32,7 @@ class WeighMC(unittest.TestCase):
 
         # 
         inputs = Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender'), #Input('LHC17d20a', 'PhysNonlinOnlyTender'), \
-        # eff = [Efficiency(genhist, 'eff', i.filename) for i in inputs]
-
-        eff = []
-
-        # SPMC
-        inputs = {
-            'single/weight/LHC17j3b1': (0, 7), 
-            'single/weight/LHC17j3b2': (7, 20)
-        }
-
-        eff.append(EfficiencyMultirange(
-            genhist, 'eff', 
-            inputs,
-            selection = 'PhysEffOnlyTender'
-            )
-       )
-
+        eff = [Efficiency(genhist, 'eff', i.filename) for i in inputs]
 
         self.productions = [CorrectedYield(dinp, dopt, e.eff()) for e in eff]
         self.mcgenerated = [e.true() for e in eff]

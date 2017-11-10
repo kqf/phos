@@ -54,22 +54,3 @@ class Nonlinearity(object):
         parameters = map(self.function.GetParameter, range(self.function.GetNpar()))
         print 'Nonlinearity parameters: {}'.format(parameters)
         wait(ratio.GetName())
-
-
-class NonlinearitySPMC(object):
-    def __init__(self, data, mc, function, rrange = (0.90, 1.08), mcname = ''):
-        super(NonlinearitySPMC, self).__init__(data, mc, function, rrange, mcname)
-        self.data = data
-        self.mc = mc
-        self.function = function
-        self.rrange = rrange
-        self.nonlinearity_file = 'nonlinearity-{0}.root'.format(mcname)
-
-
-    def _ratio(self, fname):
-        self.data.fitfunc = self.function
-        diff = Comparator()
-        self.data.Fit(self.function)
-        br.io.save(self.data, fname)
-        return ratio
-
