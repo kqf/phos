@@ -29,7 +29,6 @@ class GlobalEnergyScaleUncetanityEvaluator(object):
         self.outsys = SysError(label = 'global energy scale')
 
 
-    # TODO: Fix tsallis function
     @staticmethod
     def ratiofunc(fitf, name = '' ,bias = 0.01, color = 46):
         rf = lambda x, p: sl.tsallis([x[0] + x[0] * bias] , p) / sl.tsallis(x, p)
@@ -42,7 +41,7 @@ class GlobalEnergyScaleUncetanityEvaluator(object):
 
     @classmethod
     def fitfunc(klass, name = '' ,bias = 0.0001):
-        fitf =  ROOT.TF1(name, lambda x, p: sl.tsallis(x, p, bias = bias), 2, 25, 3)
+        fitf =  ROOT.TF1(name, lambda x, p: x[0] * sl.tsallis(x, p, bias = bias), 2, 25, 3)
         fitf.SetParameter(0, 2.40)
         fitf.SetParameter(1, 0.139)
         fitf.SetParameter(2, 6.88)
@@ -62,8 +61,12 @@ class GlobalEnergyScaleUncetanityEvaluator(object):
         lower = self.ratiofunc(fitf,'low', -0.01, 38)
         upper = self.ratiofunc(fitf,'up', 0.01, 47)
 
-        diff = Comparator(stop = self.stop, rrange = (-1, ))
-        diff.compare(lower, upper)
+        diff = Comparator(stop = self.stop, rrange = (-1, ), crange = (0.9, 1.1))
+        diff.compare(
+                        lower.GetHistogram(),
+                        upper.GetHistogram()
+                    )
+
         return corrected_spectrum, lower, upper
 
 
