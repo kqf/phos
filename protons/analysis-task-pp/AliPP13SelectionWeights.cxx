@@ -36,7 +36,7 @@ AliPP13SelectionWeights AliPP13SelectionWeights::GetWeigtsSPMC()
 	// Iteration 0
 	// weights.fSpectrumWeight->SetParameters(2.4, 0.139, 6.880);
 	// Iteration 1
-    weights.fSpectrumWeight->SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668)
+    weights.fSpectrumWeight->SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668);
 
 	weights.fSpectrumWeight->SetParameter(3, 0.135);
 	weights.fSpectrumWeight->SetParameter(4, 0.135);
