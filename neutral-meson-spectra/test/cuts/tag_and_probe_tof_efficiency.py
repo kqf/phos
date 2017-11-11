@@ -12,7 +12,7 @@ from spectrum.outputcreator import OutputCreator
 
 from spectrum.broot import BROOT as br
 
-from spectrum.probe import ProbeSpectrum, TagAndProbe, TagAndProbeRigorous
+from tools.probe import ProbeSpectrum, TagAndProbe, TagAndProbeRigorous
 import numpy as np
 import array as arr
 

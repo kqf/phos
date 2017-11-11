@@ -1,16 +1,17 @@
 import json
 import ROOT
 
-from sutils import gcanvas, wait
-from .input import Input
-from invariantmass import InvariantMass
-from spectrum import Spectrum
-from options import Options
-from outputcreator import OutputCreator
+from spectrum.input import Input
+from spectrum.options import Options
+from spectrum.spectrum import Spectrum
+from spectrum.sutils import gcanvas, wait
+from spectrum.invariantmass import InvariantMass
+from spectrum.outputcreator import OutputCreator
 
-from broot import BROOT as br
+from spectrum.broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)
+# TODO: Write tests for probe spectra
 
 class ProbeSpectrum(object):
     def __init__(self, filename, selname, histname, pref, erange, nsigma, options):
@@ -105,7 +106,7 @@ class TagAndProbeRigorous(TagAndProbe):
         return estimators
 
     def probe_spectrum(self, estimator):
-        mranges = estimator.mass_ranges()
+        mranges = estimator._mass_ranges()
         results = map(lambda x, y: br.area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
         ehist = OutputCreator('spectrum', 'probe distribution; E, GeV', estimator.analyzer.opt.label)
         ehist = ehist.get_hist(estimator.analyzer.opt.ptedges, results)
