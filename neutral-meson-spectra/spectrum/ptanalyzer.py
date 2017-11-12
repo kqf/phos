@@ -19,7 +19,6 @@ class PtAnalyzer(object):
         self.hists = self._hists(hists)
         self.nevents = self.hists[0].nevents
         self.opt = options.pt
-
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
 
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])

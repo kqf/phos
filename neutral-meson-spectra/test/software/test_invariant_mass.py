@@ -77,7 +77,7 @@ class ATestInvariantMassNoMixing(TestInvariantMass):
 
     def setUp(self):
         self.wait = 'discover' not in sys.argv 
-        self.input = Input('single/weight/LHC17j3b2.root', 'PhysEffTender').read()
+        self.input = Input('single/weight0/LHC17j3b2.root', 'PhysEffTender').read()
         self.particles = {'pi0': ((8, 9), 0) }
 
     def draw(self, particle, func, title):

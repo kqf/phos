@@ -8,7 +8,93 @@ from broot import BROOT as br
 
 # TODO: Separate MassDrawInterface from the computation classes
 
-class InvariantMassNoMixing(object):
+
+class VisualizeMass(object):
+    def __init__(self):
+        super(VisualizeMass, self).__init__()
+
+
+    def draw_text(self, hist, text, color = 46, bias = 0):
+        # Estimate coordinate
+        mass = self.peak_function.opt.fit_mass
+        x = mass * self.opt.pt_label_pos[0]
+
+        bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
+        bmax, bmin = map(hist.GetBinContent, bins)
+        zero = bmax - bmin 
+        # print zero
+
+        y = bmin + zero * (self.opt.pt_label_pos[1] + bias)
+        # Draw the lable
+        tl = ROOT.TLatex()
+        tl.SetTextAlign(12)
+        tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
+        tl.DrawLatex(x, y, '#color[%d]{%s}' %(color , text));
+
+
+    def draw_ratio(self, pad = 0):
+        if not self.ratio:
+            return
+
+        canvas = pad if pad else gcanvas()
+        ticks(canvas)
+        canvas.SetTicky(False)
+
+        self.ratio.SetAxisRange(*self.xaxis_range)
+        self.ratio.Draw()
+        self.draw_text(self.ratio, self.pt_label + ', GeV/c')
+        canvas.Update()
+        return self.ratio
+
+
+    def draw_signal(self, pad = 0):
+        canvas = pad if pad else gcanvas()
+
+        ticks(canvas)
+        canvas.SetTicky(False)  
+
+        self.signal.SetAxisRange(*self.xaxis_range)
+        self.signal.Draw()
+        self.draw_text(self.signal, self.pt_label + ', GeV/c')
+
+        if self.area_error:
+            try:
+                n, sigma = self.area_error
+                self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
+            except ZeroDivisionError as e:
+                print e
+
+        canvas.Update()
+        return self.signal
+
+
+    def draw_mass(self, pad = 0):
+        canvas = pad if pad else gcanvas()
+        ticks(canvas)
+        canvas.SetTicky(False) 
+
+        self.mass.SetAxisRange(*self.xaxis_range)
+        legend = ROOT.TLegend(*self.opt.legend_pos)
+        legend.SetBorderSize(0)
+        legend.SetFillStyle(0)
+        
+        self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
+        self.mass.Draw()
+        legend.AddEntry(self.mass, 'data')
+
+        if self.mixed:
+            self.mixed.Draw('same')
+            legend.AddEntry(self.mixed, 'background')
+
+        legend.Draw('same')
+        self.draw_text(self.mass, self.pt_label + ', GeV/c')
+        canvas.Update()
+        return self.mass 
+
+
+
+
+class InvariantMassNoMixing(VisualizeMass):
    
     def __init__(self, inhists, pt_range, nrebin, options):
         super(InvariantMassNoMixing, self).__init__()
@@ -26,6 +112,7 @@ class InvariantMassNoMixing(object):
         self.sigf, self.bgrf = None, None
         self.area_error = None
 
+
     def extract_histogram(self, hist):
         if not hist:
             return None
@@ -41,6 +128,13 @@ class InvariantMassNoMixing(object):
             mass.Rebin(self.nrebin)
             
         return mass
+
+
+    def number_of_mesons(self, intgr_ranges):
+        a, b = intgr_ranges if intgr_ranges else self.peak_function.opt.fit_range
+        area, areae = br.area_and_error(self.signal, a, b)
+        self.area_error = area, areae
+        return area, areae
 
 
     def estimate_background(self, mass, mixed):
@@ -72,78 +166,10 @@ class InvariantMassNoMixing(object):
         return self.sigf, self.bgrf
 
 
-    def draw_text(self, hist, text, color = 46, bias = 0):
-        # Estimate coordinate
-        mass = self.peak_function.opt.fit_mass
-        x = mass * self.opt.pt_label_pos[0]
-
-        bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
-        bmax, bmin = map(hist.GetBinContent, bins)
-        zero = bmax - bmin 
-        # print zero
-
-        y = bmin + zero * (self.opt.pt_label_pos[1] + bias)
-        # Draw the lable
-        tl = ROOT.TLatex()
-        tl.SetTextAlign(12)
-        tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
-        tl.DrawLatex(x, y, '#color[%d]{%s}' %(color , text));
-
-
-    def draw_mass(self, pad = 0):
-        canvas = pad if pad else gcanvas()
-        ticks(canvas)
-        canvas.SetTicky(False) 
-
-        self.mass.SetAxisRange(*self.xaxis_range)
-        legend = ROOT.TLegend(*self.opt.legend_pos)
-        legend.SetBorderSize(0)
-        legend.SetFillStyle(0)
-        
-        self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
-        self.mass.Draw()
-        legend.AddEntry(self.mass, 'data')
-
-        if self.mixed:
-            self.mixed.Draw('same')
-            legend.AddEntry(self.mixed, 'background')
-
-        legend.Draw('same')
-        self.draw_text(self.mass, self.pt_label + ', GeV/c')
-        canvas.Update()
-        return self.mass 
-
-
-    def draw_signal(self, pad = 0):
-        canvas = pad if pad else gcanvas()
-
-        ticks(canvas)
-        canvas.SetTicky(False)  
-
-        self.signal.SetAxisRange(*self.xaxis_range)
-        self.signal.Draw()
-        self.draw_text(self.signal, self.pt_label + ', GeV/c')
-
-        if self.area_error:
-            try:
-                n, sigma = self.area_error
-                self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
-            except ZeroDivisionError as e:
-                print e
-
-        canvas.Update()
-        return self.signal
-
-
     def draw_ratio(self, pad = 0):
         pass
 
  
-    def number_of_mesons(self, intgr_ranges):
-        a, b = intgr_ranges if intgr_ranges else self.peak_function.opt.fit_range
-        area, areae = br.area_and_error(self.signal, a, b)
-        self.area_error = area, areae
-        return area, areae
 
 
 class InvariantMass(InvariantMassNoMixing):
@@ -177,8 +203,6 @@ class InvariantMass(InvariantMassNoMixing):
                 res = 0
             h.SetBinError(i, res ** 0.5 )
         return h
-
-
 
 
     def estimate_background(self, mass, mixed):
@@ -249,65 +273,3 @@ class InvariantMass(InvariantMassNoMixing):
             self.signal = self.subtract_background(self.mass, self.mixed)
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
-
-
-    def draw_text(self, hist, text, color = 46, bias = 0):
-        # Estimate coordinate
-        mass = self.peak_function.opt.fit_mass
-        x = mass * self.opt.pt_label_pos[0]
-
-        bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
-        bmax, bmin = map(hist.GetBinContent, bins)
-        zero = bmax - bmin 
-        # print zero
-
-        y = bmin + zero * (self.opt.pt_label_pos[1] + bias)
-        # Draw the lable
-        tl = ROOT.TLatex()
-        tl.SetTextAlign(12)
-        tl.SetTextSize(0.06 * (mass > 0.3) + 0.08 * (mass < 0.3));
-        tl.DrawLatex(x, y, '#color[%d]{%s}' %(color , text));
-
-
-    def draw_ratio(self, pad = 0):
-        if not self.ratio:
-            return
-
-        canvas = pad if pad else gcanvas()
-        ticks(canvas)
-        canvas.SetTicky(False)
-
-        self.ratio.SetAxisRange(*self.xaxis_range)
-        self.ratio.Draw()
-        self.draw_text(self.ratio, self.pt_label + ', GeV/c')
-        canvas.Update()
-        return self.ratio
-
-
-
-
-        
-    def draw_signal(self, pad = 0):
-        canvas = pad if pad else gcanvas()
-
-        ticks(canvas)
-        canvas.SetTicky(False)  
-
-        self.signal.SetAxisRange(*self.xaxis_range)
-        self.signal.Draw()
-        self.draw_text(self.signal, self.pt_label + ', GeV/c')
-
-        if self.area_error:
-            try:
-                n, sigma = self.area_error
-                self.draw_text(self.signal, '#sigma/N = {0:0.2f} '.format(sigma / n), 37, 0.18)
-            except ZeroDivisionError as e:
-                print e
-
-        # Use broot instead if needed
-        # ofile = ROOT.TFile('signals.root', 'update')
-        # self.signal.Write()
-        # ofile.Write()
-        # ofile.Close()
-        canvas.Update()
-        return self.signal
