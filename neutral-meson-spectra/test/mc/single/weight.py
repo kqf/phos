@@ -31,8 +31,8 @@ class WeighSingleParticleMC(unittest.TestCase):
 
         # SPMC
         inputs = {
-            'single/weight0/LHC17j3b1': (0, 5), 
-            'single/weight0/LHC17j3b2': (5, 20)
+            'single/weight1/LHC17j3b1': (0, 5), 
+            'single/weight1/LHC17j3b2': (5, 20)
         }
 
         eff = EfficiencyMultirange(
@@ -59,8 +59,16 @@ class WeighSingleParticleMC(unittest.TestCase):
     @staticmethod
     def fit_function():
         tsallis =  ROOT.TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
-        tsallis.SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668)
+
+        # No Weights
         # tsallis.SetParameters(2.4, 0.139, 6.880);
+
+        # Weights0
+        tsallis.SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668)
+
+        # Weights1
+        tsallis.SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755)
+
         tsallis.FixParameter(3, 0.135);
         tsallis.FixParameter(4, 0.135);
 
