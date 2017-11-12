@@ -7,112 +7,46 @@ from spectrum.spectrum import Spectrum
 from spectrum.sutils import gcanvas, wait
 from spectrum.invariantmass import InvariantMass
 from spectrum.outputcreator import OutputCreator
+from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)
-# TODO: Write tests for probe spectra
 
-class ProbeSpectrum(object):
-    def __init__(self, filename, selname, histname, pref, erange, nsigma, options):
-        super(ProbeSpectrum, self).__init__()
-        self.selection = selname
-        self.erange = erange
-        self.nsigma = nsigma
-        self.pref = pref
-        self.options = options
-        self.hist = self.read(filename, histname, pref)
-
-
-    def read(self, filename, histname, ending):
-        reader = Input(filename, self.selection, histname % ending)
-        hist, dummy = reader.read()
-        return hist
-
-
-    def calculate_range(self, hist):
-        canvas = gcanvas()
-        mass = InvariantMass((hist, hist), tuple(self.erange), 1, self.options)
-        peak, bgrnd = mass.noisy_peak_parameters()
-        wait('single-tag-tof-mass-fit-' + self.pref, True, True)
-
-        mass, sigma = peak[1], peak[2]
-        return (mass - self.nsigma * sigma, mass + self.nsigma * sigma)
-
-
-    def probe_spectrum(self, hist, mrange):
-        a, b = map(hist.GetXaxis().FindBin, mrange)
-        mass = br.project_range(hist, '_e_%d_%d', *mrange, axis = 'y')
-        mass.SetTitle('Probe distribution, %s #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (self.pref, hist.nevents / 1e6))         
-        mass.SetLineColor(46)
-        mass.SetStats(False)
-        return mass        
-
-
-    def spectrum(self, edges):
-        fullrange = self.calculate_range(self.hist)
-        spectr = self.probe_spectrum(self.hist, fullrange)
-
-        # Rebin the spectrum, check if spectr has properties
-        spectr = br.rebin(spectr, edges)
-        spectr.label = self.pref
-        spectr.logy = True
-        return spectr
-
+# TODO: Draw corrected version with invariant mass
+# TODO: Fix different modules: pass (hist name as a paramter?)
 
 class TagAndProbe(object):
-
-
-    def __init__(self, filename, selname, histname, cut, full, conffile = 'config/test_tagandprobe.json'):
+    def __init__(self, sinput, nsigmas, cut_nocut = ('TOF', 'All')):
         super(TagAndProbe, self).__init__()
-        self.conffile = conffile 
-        with open(self.conffile) as f:
-            conf = json.load(f)
-
-        self.ispi0  = conf["particle"]
-        self.erange = conf["erange"]
-        self.nsigma = conf["nsigma"]
-
-        prop = conf[self.ispi0]
-        self.ptedges = prop["ptedges"]
-        self.need_rebin = prop["need_rebin"]
-        self.cut_and_full = self.get_estimators(filename, selname, histname, cut, full)
+        self.hpattern = sinput.histname
+        self.nsigmas = nsigmas
+        self.input = sinput
+        self.cut_and_full = map(self._estimator, cut_nocut)
 
 
-    def get_estimators(self, filename, selname, histname, cut, full):
-        f = lambda x : ProbeSpectrum(filename, selname, histname, x, self.erange, self.nsigma, Options(relaxedcb = True))
-        return map(f, [cut, full])
-  
-
-    def estimate(self):
-        f = lambda x: x.spectrum(self.ptedges)
-        return map(f, self.cut_and_full)
+    def _estimator(self, x):
+        options = Options(x, 'q', relaxedcb = True)
+        options.spectrum.nsigmas = self.nsigmas
+        self.input.histname = self.hpattern % x
+        return Spectrum(self.input.read(), options)
 
 
-
-class TagAndProbeRigorous(TagAndProbe):
-    def __init__(self, filename, selname, histname, cut, full, conffile = 'config/test_tagandprobe.json'):
-        super(TagAndProbeRigorous, self).__init__(filename, selname, histname, cut, full,  conffile)
-
-    def get_estimators(self, filename, selname, histname, cut, full):
-        def f(x):
-            options = Options(x, 'q', relaxedcb = True)
-            options.spectrum.nsigmas = self.nsigma
-            options.pt.config = self.conffile
-            inp = Input(filename, selname, histname % x).read()
-            return Spectrum(inp, options)
-
-        estimators = map(f, [cut, full])
-        return estimators
-
-    def probe_spectrum(self, estimator):
+    def _probe_spectrum(self, estimator):
         mranges = estimator._mass_ranges()
         results = map(lambda x, y: br.area_and_error(x.mass, *y), estimator.analyzer.masses, mranges)
-        ehist = OutputCreator('spectrum', 'probe distribution; E, GeV', estimator.analyzer.opt.label)
+        ehist = OutputCreator('spectrum', 'Energy spectrum of probe photons; E_{#gamma}, GeV', estimator.analyzer.opt.label)
         ehist = ehist.get_hist(estimator.analyzer.opt.ptedges, results)
         ehist.logy = True
         return ehist
 
 
-    def estimate(self)  :
-        return map(self.probe_spectrum, self.cut_and_full)
+    def eff(self, stop=True, fitfunc=None):
+        results = map(self._probe_spectrum, self.cut_and_full)
+
+        for r in results:
+            if fitfunc:
+                r.fitfunc = fitfunc
+
+        diff = Comparator(stop=stop)
+        return diff.compare(results) 

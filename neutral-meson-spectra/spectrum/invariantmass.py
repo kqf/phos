@@ -6,7 +6,7 @@ from parametrisation import PeakParametrisation
 from sutils import gcanvas, ticks, in_range
 from broot import BROOT as br
 
-# TODO: Separate MassDrawInterface from the computation classes
+# TODO: Move VisualizeMass to separate object
 
 
 class VisualizeMass(object):
