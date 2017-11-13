@@ -598,17 +598,23 @@ class TestTH(unittest.TestCase):
             hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
 
 
-        # TODO: Write normal assertions
-        #
+        zero_range = (-1, 4)
+        bin_range = map(hist1.FindBin, zero_range)
+
 
         hist1.Sumw2()
         hist1.Draw()
         wait(draw = self.mode)
 
-        br.set_to_zero(hist1, (-4, -1))
+        br.set_to_zero(hist1, zero_range)
         hist1.Draw()
         wait(draw = self.mode)
 
+        for bin in range(1, hist1.GetNbinsX()):
+            if bin_range[0] < bin < bin_range[1]:
+                continue
+
+            self.assertEqual(hist1.GetBinContent(bin), 0)
 
 
 
@@ -632,15 +638,15 @@ class TestTH(unittest.TestCase):
         hist.Draw()
         hist1.Draw("same")
         hist2.Draw("same")
+
+        # TODO: Figure out what is wrong here
+        for hh, rr in zip(hists, ranges):
+            for bin in range(1, hh.GetNbinsX()):
+                if rr[0] < bin < rr[1]:
+                    # self.assertEqual(hh.GetBinContent(bin), hist.GetBinContent(bin))
+                    # print hh.GetBinContent(bin), hist.GetBinContent(bin)
+                    pass
+
         wait(draw = self.mode)
-
-
-
-
-
-
-
-
-
 
 

@@ -390,7 +390,10 @@ class BROOT(object):
     def set_to_zero(klass, hist, rrange):
         a, bb = rrange
 
-        # TODO: Should I reverse the condition?
+        # NB: It should be reversed indicating that we want to 
+        #     keep have clean interface for spmc: weight, (0, 1) - range
+        #
+        
         bins = (b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
         for bin in bins:
             hist.SetBinContent(bin, 0)
