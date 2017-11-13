@@ -642,11 +642,10 @@ class TestTH(unittest.TestCase):
         # TODO: Figure out what is wrong here
         for hh, rr in zip(hists, ranges):
             for bin in range(1, hh.GetNbinsX()):
-                if rr[0] < bin < rr[1]:
+                if not rr[0] < bin < rr[1]:
                     # self.assertEqual(hh.GetBinContent(bin), hist.GetBinContent(bin))
                     # print hh.GetBinContent(bin), hist.GetBinContent(bin)
                     pass
 
         wait(draw = self.mode)
-
 

@@ -72,7 +72,16 @@ class WeighSingleParticleMC(unittest.TestCase):
 
         diff = cmpr.Comparator()
         w1w0 = diff.compare(w1, w0)
-        # TODO: Add more graphs when/if available
+
+        w2 = corrected_spectrum('weight2').evaluate()
+        w2.label = 'w2'
+
+        diff = cmpr.Comparator()
+        w2w1 = diff.compare(w2, w1)
+
+        diff = cmpr.Comparator()
+        diff.compare(w2w1, w1w0)
+
 
         
 
