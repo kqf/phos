@@ -20,19 +20,17 @@ from spectrum.broot import BROOT as br
 #     one can simply use different tsallist fits as weith function for
 #     for flat p_T distribution
 
-class WeighSingleParticleMC(unittest.TestCase):
 
-    def setUp(self):
+def corrected_spectrum(directory, join_point = 5):
         genhist = 'hPt_#pi^{0}_primary_'
-        self.stop = 'discover' not in sys.argv
 
         # Define inputs and options for different productions
         dinp, dopt = Input('LHC16', 'PhysOnlyTender'), Options('data', 'd')
 
         # SPMC
         inputs = {
-            'single/weight1/LHC17j3b1': (0, 5), 
-            'single/weight1/LHC17j3b2': (5, 20)
+            'single/{0}/LHC17j3b1'.format(directory): (0, join_point), 
+            'single/{0}/LHC17j3b2'.format(directory): (join_point, 20)
         }
 
         eff = EfficiencyMultirange(
@@ -41,19 +39,41 @@ class WeighSingleParticleMC(unittest.TestCase):
             selection = 'PhysEffOnlyTender'
         )
 
-        self.corrected_spectrum = CorrectedYield(dinp, dopt, eff.eff())
+        return CorrectedYield(dinp, dopt, eff.eff())
 
 
+class WeighSingleParticleMC(unittest.TestCase):
+
+    def setUp(self):
+        self.stop = 'discover' not in sys.argv
+        self.corrected_spectrum = corrected_spectrum('weight1', 5)
+
+
+    @unittest.skip('')
     def test_weights(self):
         fitf = self.fit_function()
         cyield = self.corrected_spectrum.evaluate()
         cyield.Fit(fitf)
         cyield.Draw()
+
         ROOT.gPad.SetLogx()
         ROOT.gPad.SetLogy()
         parameters = map(fitf.GetParameter, range(fitf.GetNpar()))
         print parameters
-        wait()
+        wait(stop = self.stop)
+
+
+    def test_different_iterations(self):
+        w0 = corrected_spectrum('weight0').evaluate()
+        w0.label = 'w0'
+
+        w1 = corrected_spectrum('weight1').evaluate()
+        w1.label = 'w1'
+
+        diff = cmpr.Comparator()
+        w1w0 = diff.compare(w1, w0)
+        # TODO: Add more graphs when/if available
+
         
 
     @staticmethod
@@ -64,7 +84,7 @@ class WeighSingleParticleMC(unittest.TestCase):
         # tsallis.SetParameters(2.4, 0.139, 6.880);
 
         # Weights0
-        tsallis.SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668)
+        # tsallis.SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668)
 
         # Weights1
         tsallis.SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755)
@@ -73,4 +93,3 @@ class WeighSingleParticleMC(unittest.TestCase):
         tsallis.FixParameter(4, 0.135);
 
         return tsallis
-
