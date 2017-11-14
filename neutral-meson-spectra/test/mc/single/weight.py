@@ -46,10 +46,9 @@ class WeighSingleParticleMC(unittest.TestCase):
 
     def setUp(self):
         self.stop = 'discover' not in sys.argv
-        self.corrected_spectrum = corrected_spectrum('weight1', 5)
+        self.corrected_spectrum = corrected_spectrum('weight0', 5)
 
 
-    @unittest.skip('')
     def test_weights(self):
         fitf = self.fit_function()
         cyield = self.corrected_spectrum.evaluate()
@@ -60,9 +59,10 @@ class WeighSingleParticleMC(unittest.TestCase):
         ROOT.gPad.SetLogy()
         parameters = map(fitf.GetParameter, range(fitf.GetNpar()))
         print parameters
-        wait(stop = self.stop)
+        wait()
 
 
+    @unittest.skip('')
     def test_different_iterations(self):
         w0 = corrected_spectrum('weight0').evaluate()
         w0.label = 'w0'

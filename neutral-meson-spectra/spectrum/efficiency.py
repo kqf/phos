@@ -84,7 +84,7 @@ class EfficiencyMultirange(Efficiency):
         self.single_estimators = [Efficiency(genname, label, n, recalculate, selection) for n in inames]
         self.rranges = inames.values()
         for est, rr in zip(self.single_estimators, self.rranges):
-            est.options = Options.spmc(rr)
+            est.opt = Options.spmc(rr)
 
         self.recalculate = recalculate
 

@@ -31,11 +31,11 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)
-        datadirs = 'plain', 'nonlin'
+        datadirs = 'weight0',
         inputs = [
             {
-                Input('/single/{0}/scaled-LHC17j3b1'.format(d), 'MCStudyOnlyTender'): (0, 7), 
-                Input('/single/{0}/scaled-LHC17j3b2'.format(d), 'MCStudyOnlyTender'): (7, 20)
+                Input('/single/{0}/LHC17j3b1'.format(d), 'PhysEffOnlyTender'): (0, 7), 
+                Input('/single/{0}/LHC17j3b2'.format(d), 'PhysEffOnlyTender'): (7, 20)
             } for d in datadirs]
 
         f = lambda x, y: CompositeSpectrum(x, Options(y, mode = 'd')).evaluate()
