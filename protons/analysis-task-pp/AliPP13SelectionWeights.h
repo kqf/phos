@@ -24,7 +24,12 @@ struct AliPP13SelectionWeights
 		fNonlinearity(0)
 	{
 		fSpectrumWeight = new TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
-		fSpectrumWeight->SetParameters(2.4, 0.139, 6.880);
+		
+		// Weights 0
+		// fSpectrumWeight->SetParameters(2.4, 0.139, 6.880);
+
+		// Weights 1
+	    weights.fSpectrumWeight->SetParameters(0.014972585670033522, 0.2858040967480923, 9.871553924028612);
 		fSpectrumWeight->SetParameter(3, 0.135);
 		fSpectrumWeight->SetParameter(4, 0.135);
 	}

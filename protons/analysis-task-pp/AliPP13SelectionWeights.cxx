@@ -24,6 +24,7 @@ Double_t AliPP13SelectionWeights::Nonlinearity(Double_t x) const
 
 	// Not implemented
 	return 1.0;
+	// return fNonlinearity->Eval(x);
 }
 
 //________________________________________________________________
@@ -45,6 +46,9 @@ AliPP13SelectionWeights AliPP13SelectionWeights::GetWeigtsSPMC()
 
 	weights.fSpectrumWeight->SetParameter(3, 0.135);
 	weights.fSpectrumWeight->SetParameter(4, 0.135);
+
+	weights.fNonlinearity = new TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x * x / 2./[1]/[1]))", 0, 100);
+    weights.fNonlinearity->SetParameters(-0.024603176300721907, 1.1443886239082113, 1.0560164522642017);
 	return weights;
 }
 

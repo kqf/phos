@@ -118,6 +118,8 @@ public:
 protected:
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;
+	// TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
+
 
 	// NB: Impelement these methods if needed
 	// 
