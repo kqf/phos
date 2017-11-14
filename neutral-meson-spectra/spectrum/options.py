@@ -105,3 +105,16 @@ class Options(object):
         options.pt.ptedges = edges
         options.pt.rebins = rebins
         return options
+
+    @staticmethod
+    def spmc(pt_fit_range, mass_fit_range = (0.1, 0.2), label = ''):
+        name = '%.4g < p_{T} < %.4g' % pt_fit_range
+        options = Options(name, mode  ='q')
+        options.spectrum.fit_range = pt_fit_range
+        options.param.fit_range = mass_fit_range
+        options.pt.use_mixed = False
+
+        if label:
+            options.label = label 
+
+        return options

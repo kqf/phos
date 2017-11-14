@@ -47,6 +47,7 @@ class Spectrum(object):
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
 
+        print self.opt.fit_range
         quant.Fit(fitquant, "q", "", *self.opt.fit_range)
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
@@ -69,14 +70,14 @@ class Spectrum(object):
         return map(mass_range, pt_values) 
 
 
+# TODO: Add Options factory for singleParticleMC
+
 class CompositeSpectrum(Spectrum):
 
     def __init__(self, lst, options = Options()):
         super(CompositeSpectrum, self).__init__(lst.keys()[0], options)
-        self.spectrums = [Spectrum(l, Options(options.label, mode = 'd')) for l in lst]
+        self.spectrums = [Spectrum(l, Options.spmc(rr)) for l, rr in lst.iteritems()]
 
-        for est, rr in zip(self.spectrums, lst.values()):
-            est.opt.fit_range = rr
 
     def evaluate(self):
         hists = [s.evaluate() for s in self.spectrums]

@@ -17,6 +17,10 @@ class TestCompositeSpectrum(unittest.TestCase):
         }
 
         spectrum_estimator = CompositeSpectrum(inputs)
+        for est in spectrum_estimator.spectrums:
+            est.opt.show_img = True
+            est.analyzer.opt.show_img = True
+
         histograms = spectrum_estimator.evaluate()
 
         # TODO: Should I draw this in discover mode?

@@ -1,5 +1,6 @@
 import unittest
 
+from spectrum.options import Options
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
@@ -13,13 +14,13 @@ class TestOverlapRegion(unittest.TestCase):
 
 
     def test_eff_overlap(self):
-        ddir = 'single/weight0/'
+        ddir = 'single/weight2/'
         files = {
                     ddir + 'LHC17j3b1': (0, 6),
                     ddir + 'LHC17j3b2': (8, 20)
                 }
 
-        self.efficiency_overlap(files, 'weight0')
+        self.efficiency_overlap(files, 'weight1')
 
 
     def efficiency_overlap(self, files, pref):
@@ -29,8 +30,7 @@ class TestOverlapRegion(unittest.TestCase):
         # Set Custom Fit Range
         for est, rr in zip(estimators, files.values()):
             est.selection = 'PhysEffOnlyTender'
-            est.opt.spectrum.fit_range = rr
-            est.opt.param.fit_range = [0.1, 0.2]
+            est.opt = Options.spmc(rr)
 
         self.check_range(estimators, pref)
 

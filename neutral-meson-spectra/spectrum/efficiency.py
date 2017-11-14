@@ -19,15 +19,17 @@ import unittest
 
 class Efficiency(object):
 
-    def __init__(self, genname, label, iname, recalculate = False, selection = 'MCStudyOnlyTender'):
+    def __init__(self, genname, label, iname, recalculate = False, 
+            selection = 'MCStudyOnlyTender', opt = Options('', mode = 'd')):
         super(Efficiency, self).__init__()
+        self.recalculate = recalculate
         self.selection = selection
-        self.iname = iname
         self.genname = genname
         self.label = label
-        self.recalculate = recalculate
+        self.iname = iname
         self.oname = 'input-data/efficiency-{0}-{1}.root'.format(self.iname, label)
-        self.opt = Options(self.label, mode = 'd')
+        self.opt = opt
+        self.opt.label = label
 
 
     def eff(self):
@@ -82,8 +84,7 @@ class EfficiencyMultirange(Efficiency):
         self.single_estimators = [Efficiency(genname, label, n, recalculate, selection) for n in inames]
         self.rranges = inames.values()
         for est, rr in zip(self.single_estimators, self.rranges):
-            est.opt.spectrum.fit_range = rr
-            est.opt.param.fit_range = (0.1, 0.2)
+            est.options = Options.spmc(rr)
 
         self.recalculate = recalculate
 
