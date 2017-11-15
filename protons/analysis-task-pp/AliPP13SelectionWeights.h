@@ -29,14 +29,10 @@ struct AliPP13SelectionWeights
 		// fSpectrumWeight->SetParameters(2.4, 0.139, 6.880);
 
 		// Weights 1
-	    // weights.fSpectrumWeight->SetParameters(0.014972585670033522, 0.2858040967480923, 9.871553924028612);
-
-		// Weights 2
-	    // weights.fSpectrumWeight->SetParameters(0.014972585670033522, 0.2858040967480923, 9.871553924028612);
-
+	    // fSpectrumWeight.fSpectrumWeight->SetParameters(0.014972585670033522, 0.2858040967480923, 9.871553924028612);
 
 		// Weights 3
-	    weights.fSpectrumWeight->SetParameters(0.014875782846110793, 0.28727403800708634, 9.9198075195331);
+	    fSpectrumWeight.fSpectrumWeight->SetParameters(0.014875782846110793, 0.28727403800708634, 9.9198075195331);
 
 		fSpectrumWeight->SetParameter(3, 0.135);
 		fSpectrumWeight->SetParameter(4, 0.135);
