@@ -14,7 +14,6 @@ from spectrum.broot import BROOT as br
 ROOT.TH1.AddDirectory(False)
 
 # TODO: Draw corrected version with invariant mass
-# TODO: Fix different modules: pass (hist name as a paramter?)
 
 class TagAndProbe(object):
     def __init__(self, sinput, nsigmas, cut_nocut = ('TOF', 'All')):

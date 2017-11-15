@@ -23,12 +23,6 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def setUp(self):
         self.canvas = gcanvas()
-        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
-        self.eff_calculator = TagAndProbe(sinput, 3)
-
-        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
-        self.eff_calculator_improved = TagAndProbe(sinput, 3)
-
 
     @staticmethod
     def efficincy_function():
@@ -41,29 +35,40 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         return func_nonlin
 
 
+    @unittest.skip('Debug')
     def test_estimate_tof_efficiency(self):
+        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
+        probe_estimator = TagAndProbe(sinput, 3)
         fitf = self.efficincy_function()
-        eff = self.eff_calculator.eff(True, fitf)
+        eff = probe_estimator.eff(True, fitf)
 
 
-    def testCompareEfficienciesDifferentMethods(self):
-        eff1 = self.eff_calculator.eff()
-        eff2 = self.eff_calculator_improved.eff()
+    @unittest.skip('Debug')
+    def test_compare_different_methods(self):
+        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
+        eff1 = TagAndProbe(sinput, 3).eff()
+
+        # Improved version
+        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
+        eff2 = TagAndProbe(sinput, 3).eff()
 
         diff = Comparator()
         diff.compare(eff1, eff2)
 
 
-    @unittest.skip('Debug')
     def test_different_modules(self):
         conf = 'config/test_tagandprobe_modules.json'
-        estimators = [TagAndProbe(self.infile, self.sel, 'MassEnergy%s' + '_SM%d' % i, cut='TOF', full='All', conffile=conf) for i in range(1, 5)]
-        f = lambda i, x, y: br.ratio(x, y, 'TOF efficiency in different modules; E, GeV', 'SM%d' % i)
-        multiple = [[f(i + 1, *(e.estimate()))] for i, e in enumerate(estimators)]
 
-        c1 = adjust_canvas(gcanvas())
-        diff = Comparator()
-        diff.compare(multiple)
+        inputs = [Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s' + '_SM{0}'.format(i)) for i in range(1, 5)] 
+        estimators = [TagAndProbe(si, 3).eff() for si in inputs]
+        for i, e in enumerate(estimators):
+            e.SetTitle('TOF efficiency in different modules; E, GeV; TOF efficiency')
+            e.label = 'SM{0}'.format(i + 1)
+            e.logy = 0
+
+        canvas = adjust_canvas(gcanvas())
+        diff = Comparator(crange = (0, 1))
+        diff.compare(estimators)
 
 
 

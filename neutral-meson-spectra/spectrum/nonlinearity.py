@@ -8,7 +8,6 @@ import ROOT
 import os.path
 
 
-# TODO: Add tests for nonlinearity
 # TODO: Merge with efficiency ???
 
 
