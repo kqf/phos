@@ -139,16 +139,16 @@ Bool_t AliPP13EfficiencySelectionMC::IsPrimary(const AliAODMCParticle * particle
 	return r2 < rcut * rcut;
 }
 
-// //________________________________________________________________
-// TLorentzVector AliPP13EfficiencySelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
-// {
-//     Float_t energy = c1->E();
+//________________________________________________________________
+TLorentzVector AliPP13EfficiencySelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
+{
+    Float_t energy = c1->E();
 
-//     TLorentzVector p;
-//     c1->GetMomentum(p, eflags.vtxBest);
-//     p *= fWeights.Nonlinearity(energy);
-// 	return p;
-// }
+    TLorentzVector p;
+    c1->GetMomentum(p, eflags.vtxBest);
+    p *= fWeights.Nonlinearity(energy);
+	return p;
+}
 
 
 // Move these methods to method selection

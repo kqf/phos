@@ -36,6 +36,10 @@ struct AliPP13SelectionWeights
 
 		fSpectrumWeight->SetParameter(3, 0.135);
 		fSpectrumWeight->SetParameter(4, 0.135);
+
+		fNonlinearity = new TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x * x / 2./[1]/[1]))", 0, 100);
+		fNonlinearity->SetParameters(-0.022934923767457753, 1.4188237289034245, 1.0579663356860527);
+
 	}
 
 	~AliPP13SelectionWeights()
