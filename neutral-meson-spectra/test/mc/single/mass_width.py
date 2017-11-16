@@ -16,7 +16,7 @@ class TestMassWidth(unittest.TestCase):
         ddir = '/single/weight2/'
         files = {
                     ddir + 'LHC17j3b1': (0, 6),
-                    ddir + 'LHC17j3b2': (8, 20)
+                    ddir + 'LHC17j3b2': (9, 20)
                 }
 
         inputs = [Input(f, 'PhysEffOnlyTender') for f in files]

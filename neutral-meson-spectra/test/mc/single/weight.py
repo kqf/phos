@@ -9,6 +9,7 @@ from spectrum.sutils import wait
 from spectrum.options import Options
 from spectrum.efficiency import EfficiencyMultirange
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.sutils import gcanvas, adjust_canvas
 
 import spectrum.comparator as cmpr
 from spectrum.broot import BROOT as br
@@ -49,9 +50,12 @@ class WeighSingleParticleMC(unittest.TestCase):
 
 
     def test_calculate_weights_parameters(self):
-        cspectrum = corrected_spectrum('weight1', 5)
+        cspectrum = corrected_spectrum('weight2', 5)
         fitf = self.fit_function()
+        fitf.SetLineColor(46)
+
         cyield = cspectrum.evaluate()
+        canvas = adjust_canvas(gcanvas(1, 1, True))
         cyield.Fit(fitf)
         cyield.Draw()
 
@@ -59,7 +63,7 @@ class WeighSingleParticleMC(unittest.TestCase):
         ROOT.gPad.SetLogy()
         parameters = map(fitf.GetParameter, range(fitf.GetNpar()))
         print parameters
-        wait()
+        wait(save=True)
 
 
     @unittest.skip('')
@@ -73,14 +77,14 @@ class WeighSingleParticleMC(unittest.TestCase):
         diff = cmpr.Comparator()
         w1w0 = diff.compare(w1, w0)
 
-        # w2 = corrected_spectrum('weight2').evaluate()
-        # w2.label = 'w2'
+        w2 = corrected_spectrum('weight2').evaluate()
+        w2.label = 'w2'
 
-        # diff = cmpr.Comparator()
-        # w2w1 = diff.compare(w2, w1)
+        diff = cmpr.Comparator()
+        w2w1 = diff.compare(w2, w1)
 
-        # diff = cmpr.Comparator()
-        # diff.compare(w2w1, w1w0)
+        diff = cmpr.Comparator()
+        diff.compare(w2w1, w1w0)
 
 
         
@@ -97,6 +101,7 @@ class WeighSingleParticleMC(unittest.TestCase):
 
         # Weights1
         tsallis.SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755)
+                             # [0.014850211992453644, 0.28695967166609104, 9.90060126848571        
 
         tsallis.FixParameter(3, 0.135);
         tsallis.FixParameter(4, 0.135);

@@ -10,14 +10,14 @@ class TestOverlapRegion(unittest.TestCase):
 
 
     def setUp(self):
-        self.eff_title = '#varepsilon =  #frac{Number of reconstructed #pi^{0}}{Number of generated primary #pi^{0}}'
+        self.eff_title = '#varepsilon = #Delta #phi #Delta y/ 2 #pi #frac{Number of reconstructed #pi^{0}}{Number of generated primary #pi^{0}}'
 
 
     def test_eff_overlap(self):
         ddir = 'single/weight2/'
         files = {
-                    ddir + 'LHC17j3b1': (0, 6),
-                    ddir + 'LHC17j3b2': (8, 20)
+                    ddir + 'LHC17j3b1': (0, 5),
+                    ddir + 'LHC17j3b2': (9, 20)
                 }
 
         self.efficiency_overlap(files, 'weight1')
@@ -36,12 +36,13 @@ class TestOverlapRegion(unittest.TestCase):
 
     def check_range(self, estimators, pref):
         # Define compare options
-        diff = Comparator(rrange = (-1, -1), crange = (0, 0.2),
+        diff = Comparator(rrange = (-1, -1), crange = (0, 0.016),
             oname = 'compared-efficiency-{0}'.format(pref))
         effs = [e.eff() for e in estimators]
 
         # Avoid problem with negative values
         for e in effs: 
+            e.Scale(1./ 4. * 0.3)
             e.SetTitle(self.eff_title)
             e.GetYaxis().SetTitle('efficiency #times acceptance')
             e.logy = 0
