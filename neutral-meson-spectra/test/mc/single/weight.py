@@ -50,7 +50,7 @@ class WeighSingleParticleMC(unittest.TestCase):
 
 
     def test_calculate_weights_parameters(self):
-        cspectrum = corrected_spectrum('weight2', 5)
+        cspectrum = corrected_spectrum('nonlin', 5)
         fitf = self.fit_function()
         fitf.SetLineColor(46)
 

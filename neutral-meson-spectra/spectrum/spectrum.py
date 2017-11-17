@@ -82,7 +82,13 @@ class CompositeSpectrum(Spectrum):
     def evaluate(self):
         hists = [s.evaluate() for s in self.spectrums]
         ranges = [s.opt.fit_range for s in self.spectrums]
-        
+
+        if len(hists) == 2:
+            spectra = map(lambda x: x.spectrum, hists)
+            for spec in spectra:
+                bin = spec.FindBin(ranges[0][1])
+                spec.Scale(1. / spec.Integral(bin - 1, bin + 1)) 
+
         # Transpose
         hists = zip(*hists)
         truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in hists]
