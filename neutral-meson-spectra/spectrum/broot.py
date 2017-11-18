@@ -257,11 +257,10 @@ class BROOT(object):
 
     @classmethod
     def rebin_as(klass, hist1, hist2):
-        # TODO: Change this interface
-        greater = lambda x, y: x.GetNbinsX() > y.GetNbinsX()
+        nbins = lambda x: x.GetNbinsX()
         lbins = lambda x: (x.GetBinLowEdge(i) for i in klass.range(x, start = 0))
 
-        a, b = (hist1, hist2) if greater(hist1, hist2) else (hist2, hist1)
+        a, b = (hist1, hist2) if nbins(hist1) > nbins(hist2) else (hist2, hist1)
         xbin = array.array('d', lbins(b))
         rebinned = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
         klass.setp(rebinned, a)
@@ -394,8 +393,10 @@ class BROOT(object):
         #     keep have clean interface for spmc: weight, (0, 1) - range
         #
         
-        bins = (b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
-        for bin in bins:
+        bins = list(b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
+        # NB: Don't include the last bin, othervise we will count twice the same point
+        #     in BROOT.sum_trimm method
+        for bin in bins[:-1]:
             hist.SetBinContent(bin, 0)
             hist.SetBinError(bin, 0)
 

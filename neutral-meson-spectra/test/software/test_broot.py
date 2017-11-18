@@ -610,10 +610,13 @@ class TestTH(unittest.TestCase):
         hist1.Draw()
         wait(draw = self.mode)
 
+        a, b = bin_range
         for bin in range(1, hist1.GetNbinsX()):
-            if bin_range[0] < bin < bin_range[1]:
+            # TODO: Check this condition range
+            if a - 1 < bin < b:
                 continue
-
+                
+            # print a, bin, b, hist1.GetBinContent(bin)
             self.assertEqual(hist1.GetBinContent(bin), 0)
 
 
@@ -639,13 +642,12 @@ class TestTH(unittest.TestCase):
         hist1.Draw("same")
         hist2.Draw("same")
 
-        # TODO: Figure out what is wrong here
         for hh, rr in zip(hists, ranges):
+            a, b = map(hist.FindBin, rr)
             for bin in range(1, hh.GetNbinsX()):
-                if not rr[0] < bin < rr[1]:
-                    # self.assertEqual(hh.GetBinContent(bin), hist.GetBinContent(bin))
+                if a < bin < b - 1:
+                    self.assertEqual(hh.GetBinContent(bin), hist.GetBinContent(bin))
                     # print hh.GetBinContent(bin), hist.GetBinContent(bin)
-                    pass
 
         wait(draw = self.mode)
 
