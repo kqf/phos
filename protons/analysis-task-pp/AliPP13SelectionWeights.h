@@ -20,69 +20,36 @@
 struct AliPP13SelectionWeights
 {
 	AliPP13SelectionWeights():
-		fSpectrumWeight(0),
-		fNonlinearity(0)
+		fSpectrumWeight(),
+		fNonlinearity()
 	{
-		fSpectrumWeight = new TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
+		fSpectrumWeight = TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
 		
 		// Weights 0
-		// fSpectrumWeight->SetParameters(2.4, 0.139, 6.880);
+		// fSpectrumWeight.SetParameters(2.4, 0.139, 6.880);
 
 		// Weights 1
-	    // fSpectrumWeight->SetParameters(0.014972585670033522, 0.2858040967480923, 9.871553924028612);
+	    // fSpectrumWeight.SetParameters(0.014972585670033522, 0.2858040967480923, 9.871553924028612);
 
 		// Weights 3
-	    fSpectrumWeight->SetParameters(0.014875782846110793, 0.28727403800708634, 9.9198075195331);
+	    fSpectrumWeight.SetParameters(0.014875782846110793, 0.28727403800708634, 9.9198075195331);
 
-		fSpectrumWeight->SetParameter(3, 0.135);
-		fSpectrumWeight->SetParameter(4, 0.135);
+		fSpectrumWeight.SetParameter(3, 0.135);
+		fSpectrumWeight.SetParameter(4, 0.135);
 
-		fNonlinearity = new TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x * x / 2./[1]/[1]))", 0, 100);
-		fNonlinearity->SetParameters(-0.022934923767457753, 1.4188237289034245, 1.0579663356860527);
+		fNonlinearity = TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x * x / 2./[1]/[1]))", 0, 100);
+		fNonlinearity.SetParameters(-0.022934923767457753, 1.4188237289034245, 1.0579663356860527);
+		fNonlinearity.SetParameter(0, 0.);
+		fNonlinearity.SetParameter(2, 1.);
 
 	}
-
-	~AliPP13SelectionWeights()
-	{
-		if(fNonlinearity)
-			delete fNonlinearity;
-
-		if(fSpectrumWeight)
-			delete fSpectrumWeight;
-	}
-
-	AliPP13SelectionWeights(const AliPP13SelectionWeights & other):
-		fSpectrumWeight(0),
-		fNonlinearity(0)
-	{
-		this->Copy(other);
-	}
-
-	AliPP13SelectionWeights & operator=(const AliPP13SelectionWeights & other)
-	{
-		this->Copy(other);
-		return *this;
-	}
-
-
-	static AliPP13SelectionWeights GetWeigtsSPMC();
 
 	Double_t Weight(Double_t x) const;
 	Double_t Nonlinearity(Double_t x) const;
 
 
-	TF1	* fSpectrumWeight; //!
-	TF1	* fNonlinearity; //!
-
-private:
-	void Copy(const AliPP13SelectionWeights & other)
-	{
-		if(other.fSpectrumWeight)
-			this->fSpectrumWeight = dynamic_cast<TF1 *> (other.fSpectrumWeight->Clone());
-
-		if(other.fNonlinearity)
-			this->fNonlinearity = dynamic_cast<TF1 *> (other.fNonlinearity->Clone());
-	}
+	TF1	fSpectrumWeight;
+	TF1	fNonlinearity;
 };
 
 #endif

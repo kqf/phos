@@ -5,13 +5,15 @@
 
 // --- AliRoot header files ---
 
+// NB: Keep these methods for different parametrizations
+//
 
 //________________________________________________________________
 Double_t AliPP13SelectionWeights::Weight(Double_t x) const
 {
 	// if(!fSpectrumWeight) // Not needed
 		// return 1.0;
-	return fSpectrumWeight->Eval(x);
+	return fSpectrumWeight.Eval(x);
 }
 
 
@@ -24,31 +26,5 @@ Double_t AliPP13SelectionWeights::Nonlinearity(Double_t x) const
 
 	// Not implemented
 	// return 1.0;
-	return fNonlinearity->Eval(x);
+	return fNonlinearity.Eval(x);
 }
-
-//________________________________________________________________
-AliPP13SelectionWeights AliPP13SelectionWeights::GetWeigtsSPMC()
-{
-	AliPP13SelectionWeights weights;
-
-	// weights.fSpectrumWeight = new TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
-	
-	// Iteration 0
-	// weights.fSpectrumWeight->SetParameters(2.4, 0.139, 6.880);
-
-	// Iteration 1
-    // weights.fSpectrumWeight->SetParameters(0.014948507575731244, 0.2874438247098432, 9.895472915554668);
-
-	// Iteration 2
- //    weights.fSpectrumWeight->SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755);
-
-
-	// weights.fSpectrumWeight->SetParameter(3, 0.135);
-	// weights.fSpectrumWeight->SetParameter(4, 0.135);
-
-	weights.fNonlinearity = new TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x * x / 2./[1]/[1]))", 0, 100);
-    weights.fNonlinearity->SetParameters(-0.022934923767457753, 1.4188237289034245, 1.0579663356860527);
-	return weights;
-}
-

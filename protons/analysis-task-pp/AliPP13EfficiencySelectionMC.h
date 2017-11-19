@@ -92,7 +92,7 @@ public:
 
 	AliPP13EfficiencySelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
 		AliPP13PhotonSelection(name, title, cuts),
-		fWeights(), // TODO: Fix me
+		fWeights(w), // TODO: Fix me
 		fInvMass()
 	{
 		// Force no timing cut for MC,
