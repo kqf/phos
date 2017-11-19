@@ -2,29 +2,24 @@
 #include <AliPP13SelectionWeights.h>
 
 // --- ROOT system ---
+#include <TMath.h>
 
 // --- AliRoot header files ---
 
-// NB: Keep these methods for different parametrizations
-//
+
 
 //________________________________________________________________
-Double_t AliPP13SelectionWeights::Weight(Double_t x) const
+Double_t AliPP13SelectionWeights::Weight(Double_t pT) const
 {
-	// if(!fSpectrumWeight) // Not needed
-		// return 1.0;
-	return fSpectrumWeight.Eval(x);
+	Double_t w = pT * pT * fW0 / 2. / TMath::Pi();
+	Double_t fraction = (fW2 - 1.) * (fW2 - 2.) / (fW2 * fW1 * (fW2 * fW1 + fW4 * (fW2 - 2.)));
+	Double_t power = TMath::Power(1. + (TMath::Sqrt(pT * pT + fW3 * fW3) - fW4) / (fW2 * fW1), -fW2);
+	return w * fraction * power;
 }
 
 
 //________________________________________________________________
 Double_t AliPP13SelectionWeights::Nonlinearity(Double_t x) const
 {
-	// (void) x;
-	// if(!fNonlinearity) // Not needed
-		// return 1.0;
-
-	// Not implemented
-	// return 1.0;
-	return fNonlinearity.Eval(x);
+	return fNonGlobal * (1. + fNonA * TMath::Exp(-x * x / 2. / fNonSigma / fNonSigma));
 }
