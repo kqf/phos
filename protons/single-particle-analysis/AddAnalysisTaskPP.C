@@ -20,6 +20,7 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
     gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
+    gROOT->LoadMacro("AliPP13NonlinearitySelection.cxx+");
     gROOT->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
@@ -74,7 +75,8 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0));
 	selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, nonlin_a, nonlin_b, ge_scale));
 	
-	AliPP13SelectionWeights spmc_weights;// = AliPP13SelectionWeights::GetWeigtsSPMC();
+	AliPP13SelectionWeights spmc_weights;
+	selections->Add(new AliPP13NonlinearitySelection("PhysNonlinEst", "Physics efficiency for neutral particles", cuts_pi0, spmc_weights));
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles", cuts_pi0, spmc_weights));
 
 	selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0,
@@ -141,6 +143,7 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.cxx " +
+	    "AliPP13NonlinearitySelection.cxx " +
 	    "AliPP13EfficiencySelectionMC.cxx " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
@@ -174,6 +177,8 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	    "AliPP13PhysPhotonSelectionMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
+	    "AliPP13NonlinearitySelection.h " +
+	    "AliPP13NonlinearitySelection.cxx " +
 	    "AliPP13EfficiencySelectionMC.cxx " +
 	    "AliPP13EfficiencySelectionMC.h " +
 	    "AliPP13MesonSelectionMC.cxx " +

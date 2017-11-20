@@ -39,9 +39,15 @@ struct AliPP13SelectionWeights
 
 		// Nonlinearity Naive estimation
 		//
-		fNonGlobal = -0.022934923767457753;
-		fNonA = 1.4188237289034245;
+		// fNonGlobal = -0.022934923767457753;
+		// fNonA = 1.4188237289034245;
+		// fNonSigma = 1.0579663356860527;
+
+		fNonGlobal = 1.0;
+		fNonA = 0;
 		fNonSigma = 1.0579663356860527;
+
+
 	}
 
 	Double_t Weight(Double_t x) const;
