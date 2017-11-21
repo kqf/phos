@@ -21,12 +21,22 @@ class Nonlinearity(object):
         self.nonlinearity_file = 'nonlinearity-{0}.root'.format(mcname)
 
     def _ratio(self, fname):
+        self.data = self._extract_mass(self.data)
+        self.mc = self._extract_mass(self.mc)
         self.data.fitfunc = self.function
         diff = Comparator()
         ratio = diff.compare(self.data, self.mc)
 
         br.io.save(ratio, fname)
         return ratio
+
+    # NB: This way we can pass both mass,
+    #     and estimators to Nonlinearity constructor
+    def _extract_mass(self, estimator):
+        try:
+            return estimator.evaluate().mass
+        except AttributeError:
+            return estimator
 
     def _read(self, fname):
         if not os.path.isfile(fname):
