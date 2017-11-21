@@ -52,7 +52,7 @@ void AliPP13NonlinearitySelection::ConsiderPair(const AliVCluster * c1, const Al
 	c1->GetMomentum(p1, eflags.vtxBest);
 	c2->GetMomentum(p2, eflags.vtxBest);
 	psum = p1 + p2;
-	Float_t energy = p2.E();
+	Float_t pt12 = psum.Pt();
 	Float_t m12 = psum.M();
 
 
@@ -60,8 +60,9 @@ void AliPP13NonlinearitySelection::ConsiderPair(const AliVCluster * c1, const Al
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
 
-	Float_t weight = fWeights.Weight(energy);
-	fMassEnergy[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, energy, weight);
+	Float_t weight = fWeights.Weight(pt12);
+	// NB: Weight by meson spectrum, but fill only for the first photon
+	fMassPt[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, p1.Pt(), weight);
 }
 
 
@@ -69,20 +70,19 @@ void AliPP13NonlinearitySelection::ConsiderPair(const AliVCluster * c1, const Al
 void AliPP13NonlinearitySelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
-	Int_t nM       = 250;
+	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
-	Double_t mMax  = 0.3;
-
-	Int_t nE      = 2000;
-	Double_t eMin = 0;
-	Double_t eMax = 20;
+	Double_t mMax  = 1.5;
+	Int_t nPt      = 400;
+	Double_t ptMin = 0;
+	Double_t ptMax = 20;
 
 
 	for (Int_t i = 0; i < 2; ++i)
 	{
 		const char * sf = (i == 0) ? "" : "Mix";
-		TH2F * hist = new TH2F(Form("h%sMassEnergy_", sf), "(M_{#gamma#gamma}, E_{#gamma}) ; M_{#gamma#gamma}, GeV; E_{#gamma}, GeV", nM, mMin, mMax, nE, eMin, eMax);
-		fMassEnergy[i] = new AliPP13DetectorHistogram(hist, fListOfHistos, AliPP13DetectorHistogram::kModules);
+		TH2F * hist = new TH2F(Form("h%sMassPt_", sf), "(M_{#gamma#gamma}, pT_{#gamma}) ; M_{#gamma#gamma}, GeV; pT_{#gamma}, GeV", nM, mMin, mMax, nPt, ptMin, ptMax);
+		fMassPt[i] = new AliPP13DetectorHistogram(hist, fListOfHistos, AliPP13DetectorHistogram::kModules);
 	}
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)

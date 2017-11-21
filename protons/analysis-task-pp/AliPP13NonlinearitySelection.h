@@ -20,7 +20,7 @@ class AliPP13NonlinearitySelection: public AliPP13PhotonSelection
 public:
 	AliPP13NonlinearitySelection():
 		AliPP13PhotonSelection(),
-		fMassEnergy(),
+		fMassPt(),
 		fWeights()
 	{
 	}
@@ -28,7 +28,7 @@ public:
 	AliPP13NonlinearitySelection(const char * name, const char * title, 
 		AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
 		AliPP13PhotonSelection(name, title, cuts),
-		fMassEnergy(),
+		fMassPt(),
 		fWeights(w)
 	{
 	}
@@ -39,8 +39,8 @@ public:
 	{
 		for(Int_t i = 0; i < 2; ++i)
 		{
-			if(fMassEnergy[i])
-				delete fMassEnergy[i];
+			if(fMassPt[i])
+				delete fMassPt[i];
 		}
 	}
 	
@@ -52,7 +52,7 @@ protected:
 	AliPP13NonlinearitySelection & operator = (const AliPP13NonlinearitySelection &);
 
 private:
-	AliPP13DetectorHistogram * fMassEnergy[2]; //!
+	AliPP13DetectorHistogram * fMassPt[2]; //!
 	AliPP13SelectionWeights fWeights;
 
 	ClassDef(AliPP13NonlinearitySelection, 2)
