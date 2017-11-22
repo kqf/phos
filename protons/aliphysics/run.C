@@ -64,7 +64,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
     Bool_t isTest = TString(pluginmode).Contains("test");
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
+    files += AddAnalysisTaskPP(isMC, AliVEvent::kINT7, period + pref + msg, "OnlyTender", "");
 
     if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
