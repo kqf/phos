@@ -1,4 +1,4 @@
-DATASET = LHC16i-muon-calo-pass1
+DATASET = LHC16i-pass1
 DPART = first
 MC = kFALSE
 
