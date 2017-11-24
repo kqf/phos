@@ -34,7 +34,7 @@ void AliPP13NonlinearitySelection::FillPi0Mass(TObjArray * clusArray, TList * po
 
 		for (Int_t j = 0; j < photonCandidates.GetEntriesFast(); ++j)
 		{
-			if (i == j) // Skip the same clusters
+			if (j >= i) // Skip the same clusters
 				continue;
 
 			AliVCluster * second = dynamic_cast<AliVCluster *> (photonCandidates.At(j));
@@ -62,7 +62,7 @@ void AliPP13NonlinearitySelection::ConsiderPair(const AliVCluster * c1, const Al
 
 	Float_t weight = fWeights.Weight(pt12);
 	// NB: Weight by meson spectrum, but fill only for the first photon
-	fMassPt[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, p1.Pt(), weight);
+	fMassPt[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, pt12, weight);
 }
 
 
