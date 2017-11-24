@@ -1,4 +1,4 @@
-DATASET = LHC16i-pass1
+DATASET = LHC16g-pass1
 DPART = first
 MC = kFALSE
 
@@ -9,24 +9,21 @@ MC = kFALSE
 TEST_SELECTION = PhysTender
 
 grid: 
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' 
 	@echo $(DATASET) $(DPART) >> started_jobs.log
-	@$(call funlink) && echo "Directory is clean"
 	@echo "Started grid analysis" >> .runhistory
 	@echo -e "\a"
 
 	
 terminate: 
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink) 
-	@$(call funlink) && echo "Directory is clean"
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' 
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: 
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' 
 	make upload
-	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
@@ -41,14 +38,13 @@ force-download:
 
 
 test: 
-	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_result,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
 	@# There are problems with python under alienv environment
 	@# Therefore it's necessary to use all these tweaks
 	./compare.py reference.root test-analysis-pp.root $(TEST_SELECTION) 2> /dev/null | grep -v Aborted  || echo 'Finished!' 
-	@$(call funlink) && echo "Directory is clean"
 	@echo -e "\a"
 
 upload:
@@ -56,14 +52,6 @@ upload:
 
 clean:
 	rm *.so *.d *~ Task*
-
-unlink:
-	$(call funlink) 	
-
-	
-define funlink
-	find -type l -delete	
-endef
 
 # output direcotry, filename.root, where to save
 define save_runs
