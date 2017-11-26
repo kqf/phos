@@ -2,7 +2,7 @@
 #define ALIPP13NONLINEARITYSELECTION_H
 
 // --- Custom header files ---
-#include "AliPP13PhotonSelection.h"
+#include "AliPP13PhotonSelectionMC.h"
 #include "AliPP13SelectionWeights.h"
 #include "AliPP13DetectorHistogram.h"
 
@@ -15,21 +15,22 @@
 #include <AliVCluster.h>
 #include <AliLog.h>
 
-class AliPP13NonlinearitySelection: public AliPP13PhotonSelection
+// TODO: Merge nonlinearity selection wiht nonlinearity Study
+//
+
+class AliPP13NonlinearitySelection: public AliPP13PhotonSelectionMC
 {
 public:
 	AliPP13NonlinearitySelection():
-		AliPP13PhotonSelection(),
-		fMassPt(),
-		fWeights()
+		AliPP13PhotonSelectionMC(),
+		fMassPt()
 	{
 	}
 
 	AliPP13NonlinearitySelection(const char * name, const char * title, 
 		AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
-		AliPP13PhotonSelection(name, title, cuts),
-		fMassPt(),
-		fWeights(w)
+		AliPP13PhotonSelectionMC(name, title, cuts, w),
+		fMassPt()
 	{
 	}
 
@@ -53,8 +54,6 @@ protected:
 
 private:
 	AliPP13DetectorHistogram * fMassPt[2]; //!
-	AliPP13SelectionWeights fWeights;
-
 	ClassDef(AliPP13NonlinearitySelection, 2)
 };
 #endif

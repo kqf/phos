@@ -12,6 +12,7 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
     gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
     gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSelection.cxx+");
+    gROOT->LoadMacro("AliPP13PhotonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("AliPP13ParticlesHistogram.cxx+");
@@ -134,6 +135,7 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	    "AliPP13SelectionWeights.cxx " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13PhotonSelection.cxx " +
+	    "AliPP13PhotonSelectionMC.cxx " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
 	    "AliPP13QualityPhotonSelection.cxx " +
 	    "AliPP13ParticlesHistogram.cxx " +
@@ -161,6 +163,8 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	    "AliPP13DetectorHistogram.h " +
 	    "AliPP13PhotonSelection.cxx " +
 	    "AliPP13PhotonSelection.h " +
+	    "AliPP13PhotonSelectionMC.cxx " +
+	    "AliPP13PhotonSelectionMC.h " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
 	    "AliPP13PhotonSpectrumSelection.h " +
 	    "AliPP13QualityPhotonSelection.cxx " +
