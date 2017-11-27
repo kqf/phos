@@ -9,8 +9,10 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	}
 
     gROOT->LoadMacro("AliPP13ClusterCuts.cxx+");
+    gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
     gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSelection.cxx+");
+    gROOT->LoadMacro("AliPP13PhotonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("AliPP13ParticlesHistogram.cxx+");
@@ -19,16 +21,21 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
     gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
+    gROOT->LoadMacro("AliPP13NonlinearitySelection.cxx+");
+    gROOT->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
     gROOT->LoadMacro("AliPP13MixingSample.cxx+");
     gROOT->LoadMacro("AliAnalysisTaskPP13.cxx+");
 
-    // exit(1);
+     // exit(1);
   
 	// Setup Selections
 	TList * selections = new TList();
 
+	// Applying no weights
+	//
+	AliPP13SelectionWeights data_weights;
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
 	cuts_eta.fAsymmetryCut = 0.7;
@@ -45,6 +52,7 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
 		selections->Add(new AliPP13PhotonSpectrumSelection("Photons", "Cluster P_{t} Selection", cuts_pi0));
 		selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsTime", "Cluster P_{t} Selection with timing cut", cuts_pi0, 10., 3.));
+		selections->Add(new AliPP13NonlinearitySelection("PhysNonlinEst", "Physics efficiency for neutral particles", cuts_pi0, data_weights));
 	}	
 
 	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
@@ -77,9 +85,6 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 			weigh_a, weigh_b));
 
 		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0));
-
-		if(suff.Contains("Only") && IsJetJetMC(description, isMC))
-			selections->Add(new AliPP13PythiaInfoSelection("PythiaInfo", "Cross section and ntrials for a pthard bin."));
 	}
 
 	// Setup task
@@ -128,8 +133,10 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	plugin->SetAnalysisSource(
 		sources +
 	    "AliPP13ClusterCuts.cxx " +
+	    "AliPP13SelectionWeights.cxx " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13PhotonSelection.cxx " +
+	    "AliPP13PhotonSelectionMC.cxx " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
 	    "AliPP13QualityPhotonSelection.cxx " +
 	    "AliPP13ParticlesHistogram.cxx " +
@@ -139,6 +146,8 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.cxx " +
+	    "AliPP13NonlinearitySelection.cxx " +
+	    "AliPP13EfficiencySelectionMC.cxx " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
 	    "AliAnalysisTaskPP13.cxx "
@@ -149,10 +158,14 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 		"libPWGGAPHOSTasks.so "	+
 	    "AliPP13ClusterCuts.cxx " +
 	    "AliPP13ClusterCuts.h " +
+	    "AliPP13SelectionWeights.cxx " +
+	    "AliPP13SelectionWeights.h " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13DetectorHistogram.h " +
 	    "AliPP13PhotonSelection.cxx " +
 	    "AliPP13PhotonSelection.h " +
+	    "AliPP13PhotonSelectionMC.cxx " +
+	    "AliPP13PhotonSelectionMC.h " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
 	    "AliPP13PhotonSpectrumSelection.h " +
 	    "AliPP13QualityPhotonSelection.cxx " +
@@ -169,6 +182,10 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliPP13PhysPhotonSelectionMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
+	    "AliPP13NonlinearitySelection.h " +
+	    "AliPP13NonlinearitySelection.cxx " +
+	    "AliPP13EfficiencySelectionMC.cxx " +
+	    "AliPP13EfficiencySelectionMC.h " +
 	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.h " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
@@ -178,21 +195,4 @@ TString AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TStrin
 	    "AliAnalysisTaskPP13.cxx " +
 	    "AliAnalysisTaskPP13.h " 
 	);
-
-	return TString(AliAnalysisManager::GetCommonFileName()) + " ";  // This extra space is important
-}
-
-Bool_t IsJetJetMC(TString description, Bool_t isMC)
-{
-	if(!isMC)
-		return kFALSE;
-
-	if(description.Contains("Jet-Jet"))
-		return kTRUE;
-
-
-	cout << "Not Using PythiaInfo!!! " << endl;
-
-	// Don't include Jet-Jet counters by default
-	return kFALSE;
 }

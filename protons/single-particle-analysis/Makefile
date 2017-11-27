@@ -89,7 +89,7 @@ endef
 
 define upload_result
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)#@ALICE::GSI::SE2
 endef
 
 

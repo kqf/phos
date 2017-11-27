@@ -28,10 +28,16 @@ public:
 	}
 
 	AliPP13NonlinearitySelection(const char * name, const char * title, 
-		AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
+		AliPP13ClusterCuts cuts, AliPP13SelectionWeights w, Bool_t isMC = kTRUE):
 		AliPP13PhotonSelectionMC(name, title, cuts, w),
 		fMassPt()
 	{
+		// TODO: Fix this behaviour, all selections should accept weights and 
+		//       cuts, so this will be a subclass of PhotonSelection class
+		//       and the condition will be the opposite
+
+		if(!isMC)
+			fCuts.fTimingCut = cuts.fTimingCut;
 	}
 
 	virtual void InitSelectionHistograms();
