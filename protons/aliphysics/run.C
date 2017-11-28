@@ -27,7 +27,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    TString files = "";
+    TString files = "AnalysisResults.root";
     TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
@@ -54,7 +54,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
     // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
-    TString msg = "## Updated parameters for nonlinearity, 20 MeV Zero Supression ";
+    TString msg = "## Testing ALIPHYSICS version of the analysis task ";
 
     if (tenderOption)
     {
@@ -64,7 +64,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
     Bool_t isTest = TString(pluginmode).Contains("test");
-    files += AddAnalysisTaskPP(isMC, AliVEvent::kINT7, period + pref + msg, "OnlyTender", "");
+    AddAnalysisTaskPP(isMC, AliVEvent::kINT7, period + pref + msg, "OnlyTender", "");
 
     if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
