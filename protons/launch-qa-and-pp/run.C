@@ -32,7 +32,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
     gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
 
-    TString files = "";
     TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
@@ -55,9 +54,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("../datasets/values_for_dataset.h+");
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
-    // There is no need to download QA when we use don't use JDL
-    // if (useJDL)
-    // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
     TString msg = "## Real data, no TOF cut efficiency.";
 
@@ -68,17 +64,15 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
-    //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 
     if ( !mgr->InitAnalysis( ) ) return;
     mgr->PrintStatus();
 
 
-    cout << "Downloading files " << files << endl;
-    alienHandler->SetOutputFiles(files);
+    alienHandler->SetOutputFiles("AnalysisResults.root");
     mgr->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
