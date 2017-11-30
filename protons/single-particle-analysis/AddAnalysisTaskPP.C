@@ -3,7 +3,14 @@
 void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v)
 {
 	LoadAnalysisLibraries();
-  
+
+ 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
+	if (!mgr) 
+	{
+		cerr << "Fatal: There is no analysis manager" << endl;
+		return;
+	} 
+	
 	// Setup Selections
 	TList * selections = new TList();
 

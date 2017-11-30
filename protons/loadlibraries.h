@@ -9,8 +9,10 @@ void LoadAnalysisLibraries()
 	}
 
     gROOT->LoadMacro("AliPP13ClusterCuts.cxx+");
+    gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
     gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSelection.cxx+");
+    gROOT->LoadMacro("AliPP13PhotonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
     gROOT->LoadMacro("AliPP13ParticlesHistogram.cxx+");
@@ -19,6 +21,8 @@ void LoadAnalysisLibraries()
     gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
+    gROOT->LoadMacro("AliPP13NonlinearitySelection.cxx+");
+    gROOT->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
     gROOT->LoadMacro("AliPP13MixingSample.cxx+");
@@ -30,8 +34,10 @@ void LoadAnalysisLibraries()
 	plugin->SetAnalysisSource(
 		sources +
 	    "AliPP13ClusterCuts.cxx " +
+	    "AliPP13SelectionWeights.cxx " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13PhotonSelection.cxx " +
+	    "AliPP13PhotonSelectionMC.cxx " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
 	    "AliPP13QualityPhotonSelection.cxx " +
 	    "AliPP13ParticlesHistogram.cxx " +
@@ -41,6 +47,8 @@ void LoadAnalysisLibraries()
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.cxx " +
+	    "AliPP13NonlinearitySelection.cxx " +
+	    "AliPP13EfficiencySelectionMC.cxx " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
 	    "AliPP13MixingSample.cxx " +
 	    "AliAnalysisTaskPP13.cxx "
@@ -51,10 +59,14 @@ void LoadAnalysisLibraries()
 		"libPWGGAPHOSTasks.so "	+
 	    "AliPP13ClusterCuts.cxx " +
 	    "AliPP13ClusterCuts.h " +
+	    "AliPP13SelectionWeights.cxx " +
+	    "AliPP13SelectionWeights.h " +
 	    "AliPP13DetectorHistogram.cxx " +
 	    "AliPP13DetectorHistogram.h " +
 	    "AliPP13PhotonSelection.cxx " +
 	    "AliPP13PhotonSelection.h " +
+	    "AliPP13PhotonSelectionMC.cxx " +
+	    "AliPP13PhotonSelectionMC.h " +
 	    "AliPP13PhotonSpectrumSelection.cxx " +
 	    "AliPP13PhotonSpectrumSelection.h " +
 	    "AliPP13QualityPhotonSelection.cxx " +
@@ -71,6 +83,10 @@ void LoadAnalysisLibraries()
 	    "AliPP13PhysPhotonSelectionMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
+	    "AliPP13NonlinearitySelection.h " +
+	    "AliPP13NonlinearitySelection.cxx " +
+	    "AliPP13EfficiencySelectionMC.cxx " +
+	    "AliPP13EfficiencySelectionMC.h " +
 	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13MesonSelectionMC.h " +
 	    "AliPP13NonlinearityScanSelection.cxx " +
