@@ -1,10 +1,12 @@
-DATASET = LHC16m-muon-calo-pass1
+DATASET = LHC16o-muon-calo-pass1
 DPART = first
 MC = kFALSE
+OUTDIR = results/data/no-corrections
 
 #DATASET = LHC17d20a1
 #DPART = second
 #MC = kTRUE
+# OUTDIR = results/mc/pythia
 
 TEST_SELECTION = PhysTender
 
@@ -52,7 +54,7 @@ force-download:
 test: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink) 
 	@echo "Local analysis" >> .runhistory
-	@$(call upload_result,AnalysisResults,test-analysis-pp)
+	@$(call upload_test,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
 	@# There are problems with python under alienv environment
 	@# Therefore it's necessary to use all these tweaks
@@ -91,7 +93,11 @@ endef
 
 define upload_result
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)@ALICE::GSI::SE2
 endef
 
+define upload_test
+	mv $(1).root $(2).root
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
+endef
 
