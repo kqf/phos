@@ -43,6 +43,7 @@ struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeights
 
 	// TODO: Use Shared_ptr
 	static AliPP13SelectionWeights & SinglePi0();
+	static AliPP13SelectionWeights & SingleEta();
 
 	// Parameters for Nonlinearity function
 	Double_t fW0;

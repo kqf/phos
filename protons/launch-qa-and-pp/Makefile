@@ -1,4 +1,4 @@
-DATASET = LHC16o-muon-calo-pass1
+DATASET = LHC16h-muon-calo-pass1
 DPART = first
 MC = kFALSE
 OUTDIR = results/data/no-corrections

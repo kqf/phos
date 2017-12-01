@@ -52,11 +52,36 @@ AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()
     return ws;
 }
 
+
+//________________________________________________________________
+AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SingleEta()
+{
+    AliPP13SelectionWeightsSPMC & ws = * new AliPP13SelectionWeightsSPMC();
+
+    // NB: Note Different Parameters
+    // Weights Initial (form 7 TeV paper)
+    ws.fW0 = 0.201;
+    ws.fW1 = 0.229;
+    ws.fW2 = 7.0;
+
+    ws.fW3 = 0.547;
+    ws.fW4 = 0.547;
+
+    ws.fNonGlobal = 1.0;
+    ws.fNonA = 0;
+    ws.fNonSigma = 1.0579663356860527;
+    return ws;
+}
+
+
 //________________________________________________________________
 AliPP13SelectionWeights & AliPP13SelectionWeights::Init(Mode m)
 {
     if(m == kSinglePi0MC)
         return AliPP13SelectionWeightsSPMC::SinglePi0();
+
+    if(m == kSingleEtaMC)
+        return AliPP13SelectionWeightsSPMC::SingleEta();
     
     return * new AliPP13SelectionWeights();
 }
