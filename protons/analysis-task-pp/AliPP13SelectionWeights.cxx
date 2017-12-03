@@ -7,6 +7,13 @@
 // --- AliRoot header files ---
 
 
+//________________________________________________________________
+Double_t AliPP13SelectionWeightsMC::Nonlinearity(Double_t x) const
+{
+    return fNonGlobal * (1. + fNonA * TMath::Exp(-x * x / 2. / fNonSigma / fNonSigma));
+}
+
+
 
 //________________________________________________________________
 Double_t AliPP13SelectionWeightsSPMC::Weight(Double_t pT) const
@@ -16,15 +23,6 @@ Double_t AliPP13SelectionWeightsSPMC::Weight(Double_t pT) const
 	Double_t power = TMath::Power(1. + (TMath::Sqrt(pT * pT + fW3 * fW3) - fW4) / (fW2 * fW1), -fW2);
 	return w * fraction * power;
 }
-
-
-//________________________________________________________________
-Double_t AliPP13SelectionWeightsSPMC::Nonlinearity(Double_t x) const
-{
-	return fNonGlobal * (1. + fNonA * TMath::Exp(-x * x / 2. / fNonSigma / fNonSigma));
-}
-
-
 
 //________________________________________________________________
 AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()

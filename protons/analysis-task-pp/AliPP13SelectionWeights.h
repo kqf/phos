@@ -36,10 +36,20 @@ struct AliPP13SelectionWeights
 	static AliPP13SelectionWeights & Init(Mode m);
 };
 
-struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeights
+struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
+{
+	Double_t Nonlinearity(Double_t x) const;
+
+	// Parameters for Nonlinearity
+	Double_t fNonGlobal;
+	Double_t fNonA;
+	Double_t fNonSigma;
+
+};
+
+struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 {
 	Double_t Weight(Double_t x) const;
-	Double_t Nonlinearity(Double_t x) const;
 
 	// TODO: Use Shared_ptr
 	static AliPP13SelectionWeights & SinglePi0();
@@ -51,12 +61,6 @@ struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeights
 	Double_t fW2;
 	Double_t fW3;
 	Double_t fW4;
-
-	// Parameters for Nonlinearity
-	Double_t fNonGlobal;
-	Double_t fNonA;
-	Double_t fNonSigma;
-
 };
 
 #endif
