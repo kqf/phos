@@ -17,14 +17,12 @@ class AliPP13PhotonSelectionMC : public AliPP13PhotonSelection
 {
 public:
 	AliPP13PhotonSelectionMC():
-		AliPP13PhotonSelection(),
-		fWeights()
+		AliPP13PhotonSelection()
 	{}
 
 	AliPP13PhotonSelectionMC(const char * name, const char * title, 
 		AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
-		AliPP13PhotonSelection(name, title, cuts),
-		fWeights(w)
+		AliPP13PhotonSelection(name, title, cuts, w)
 	{
 		fCuts.fTimingCut = 99999; // No timing cut in MC
 	}
@@ -34,8 +32,6 @@ public:
 	}
 	
 protected:
-	AliPP13SelectionWeights fWeights;
-
 	TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
 	AliPP13PhotonSelectionMC(const AliPP13PhotonSelectionMC &);
 	AliPP13PhotonSelectionMC & operator = (const AliPP13PhotonSelectionMC &);

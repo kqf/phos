@@ -13,6 +13,8 @@
 #include <AliVCluster.h>
 #include <AliLog.h>
 
+// TODO: Remove Exotic cluster cuts from here
+
 class AliPP13PhotonSpectrumSelection : public AliPP13PhotonSelection
 {
 public:
