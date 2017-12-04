@@ -7,6 +7,11 @@
 // --- AliRoot header files ---
 
 
+ClassImp(AliPP13SelectionWeights);
+ClassImp(AliPP13SelectionWeightsMC);
+ClassImp(AliPP13SelectionWeightsSPMC);
+
+
 //________________________________________________________________
 Double_t AliPP13SelectionWeightsMC::Nonlinearity(Double_t x) const
 {

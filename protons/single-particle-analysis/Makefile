@@ -1,7 +1,7 @@
 DATASET = LHC17j3b2
 DPART = first
 MC = kTRUE
-OUTDIR = results/data/no-corrections
+OUTDIR = results/mc/
 
 TEST_SELECTION = PhysTender
 

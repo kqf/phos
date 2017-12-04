@@ -6,8 +6,7 @@
 
 // --- ROOT system ---
 #include <TLorentzVector.h>
-#include <TObjArray.h>
-#include <TList.h>
+#include <TObject.h>
 #include <TF1.h>
 
 // --- AliRoot header files ---
@@ -16,7 +15,7 @@
 #include <AliStack.h>
 #include <AliLog.h>
 
-struct AliPP13SelectionWeights
+struct AliPP13SelectionWeights: TObject
 {
 	enum Mode {kData, kMC, kSinglePi0MC, kSingleEtaMC};
 
@@ -34,6 +33,8 @@ struct AliPP13SelectionWeights
 
 	// TODO: Use Shared_ptr
 	static AliPP13SelectionWeights & Init(Mode m);
+private:
+	ClassDef(AliPP13SelectionWeights, 2)
 };
 
 struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
@@ -44,6 +45,9 @@ struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
 	Double_t fNonGlobal;
 	Double_t fNonA;
 	Double_t fNonSigma;
+
+private:
+	ClassDef(AliPP13SelectionWeightsMC, 2)
 
 };
 
@@ -61,6 +65,9 @@ struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 	Double_t fW2;
 	Double_t fW3;
 	Double_t fW4;
+
+private:
+	ClassDef(AliPP13SelectionWeightsSPMC, 2)
 };
 
 #endif
