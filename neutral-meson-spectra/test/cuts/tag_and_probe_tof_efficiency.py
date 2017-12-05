@@ -35,31 +35,32 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         return func_nonlin
 
 
-    @unittest.skip('Debug')
+    # @unittest.skip('Debug')
     def test_estimate_tof_efficiency(self):
-        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
-        probe_estimator = TagAndProbe(sinput, 3)
+        sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
+        probe_estimator = TagAndProbe(sinput)
         fitf = self.efficincy_function()
         eff = probe_estimator.eff(True, fitf)
 
 
     @unittest.skip('Debug')
     def test_compare_different_methods(self):
-        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
-        eff1 = TagAndProbe(sinput, 3).eff()
+        sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
+        eff1 = TagAndProbe(sinput).eff()
 
         # Improved version
-        sinput = Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s_SM0')
-        eff2 = TagAndProbe(sinput, 3).eff()
+        sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
+        eff2 = TagAndProbe(sinput).eff()
 
         diff = Comparator()
         diff.compare(eff1, eff2)
 
 
+    @unittest.skip('Debug')
     def test_different_modules(self):
         conf = 'config/test_tagandprobe_modules.json'
 
-        inputs = [Input('LHC16-old', 'TOFStudyTender', 'MassEnergy%s' + '_SM{0}'.format(i)) for i in range(1, 5)] 
+        inputs = [Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s' + '_SM{0}'.format(i)) for i in range(1, 5)] 
         estimators = [TagAndProbe(si, 3).eff() for si in inputs]
         for i, e in enumerate(estimators):
             e.SetTitle('TOF efficiency in different modules; E, GeV; TOF efficiency')
