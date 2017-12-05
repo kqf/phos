@@ -23,7 +23,7 @@ TLorentzVector AliPP13PhotonSelectionMC::ClusterMomentum(const AliVCluster * c1,
 
     // NB: Apply nonlinearity Correction Here
     // Float_t energy = c1->E();
-    // p *= fWeights.Nonlinearity(energy);
+    // p *= fWeights->Nonlinearity(energy);
 	return p;
 }
 	

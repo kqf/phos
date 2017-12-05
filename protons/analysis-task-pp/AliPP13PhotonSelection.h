@@ -67,7 +67,7 @@ public:
 		TNamed(name, title),
 		fListOfHistos(0),
 		fCuts(cuts),
-		fWeights(sw),
+		fWeights(new AliPP13SelectionWeights(sw)),
 		fEventCounter(0)
 
 	{}
@@ -114,7 +114,7 @@ protected:
 	TList  * fListOfHistos;  //! list of histograms
 	AliPP13ClusterCuts fCuts;
 
-	AliPP13SelectionWeights fWeights; //!
+	AliPP13SelectionWeights * fWeights; //!
 	TH1 * fEventCounter;  //!
 private:
 	ClassDef(AliPP13PhotonSelection, 2)

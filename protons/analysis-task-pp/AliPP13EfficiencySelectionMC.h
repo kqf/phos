@@ -82,7 +82,6 @@ public:
 				
 	AliPP13EfficiencySelectionMC():
 		AliPP13PhotonSelection(),
-		fWeights(),
 		fInvMass()
 	{
 		fPartNames[kGamma] = "#gamma";
@@ -91,8 +90,7 @@ public:
 	}
 
 	AliPP13EfficiencySelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
-		AliPP13PhotonSelection(name, title, cuts),
-		fWeights(w), // TODO: Fix me
+		AliPP13PhotonSelection(name, title, cuts, w),
 		fInvMass()
 	{
 		// Force no timing cut for MC,
@@ -142,9 +140,6 @@ protected:
 
 	AliPP13EfficiencySelectionMC(const AliPP13EfficiencySelectionMC &);
 	AliPP13EfficiencySelectionMC & operator = (const AliPP13EfficiencySelectionMC &);
-
-	AliPP13SelectionWeights fWeights;
-
 	// NB: This data structure contains all necesary histograms
 	//     for the particles we want to get
 	typedef std::map<Int_t, ParticleSpectrum * > ParticleSpectrums;

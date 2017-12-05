@@ -170,7 +170,7 @@ AliPP13PhotonSelection::~AliPP13PhotonSelection()
 	// Don't delete fEventCounter and other ROOT objects
 	// root has it's own memory management.
 	// 
-	
+	delete fWeights;
 	delete fListOfHistos;
 }
 

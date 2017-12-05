@@ -60,7 +60,7 @@ void AliPP13NonlinearitySelection::ConsiderPair(const AliVCluster * c1, const Al
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
 
-	Float_t weight = fWeights.Weight(pt12);
+	Float_t weight = fWeights->Weight(pt12);
 	// NB: Weight by meson spectrum, but fill only for the first photon
 	// fMassPt[int(eflags.isMixing)]->FillAll(sm1, sm2, m12, pt12, weight);
 	
