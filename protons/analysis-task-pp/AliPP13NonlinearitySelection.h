@@ -28,7 +28,7 @@ public:
 	}
 
 	AliPP13NonlinearitySelection(const char * name, const char * title, 
-		AliPP13ClusterCuts cuts, AliPP13SelectionWeights w, Bool_t isMC = kTRUE):
+		AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w, Bool_t isMC = kTRUE):
 		AliPP13PhotonSelection(name, title, cuts, w),
 		fMassPt()
 	{

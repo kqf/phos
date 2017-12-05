@@ -7,6 +7,7 @@
 // --- Custom header files ---
 #include "AliPP13PhysPhotonSelectionMC.h"
 #include "AliPP13ParticlesHistogram.h"
+#include "AliPP13SelectionWeights.h"
 
 // --- ROOT system ---
 #include <TClonesArray.h>
@@ -119,19 +120,14 @@ public:
 		fPi0SourcesNames[kSigmaZero] = "#Sigma^{0}";
 	}
 
-	AliPP13MesonSelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, 
-		Float_t nona = 0., Float_t nonsigma = 1., Float_t genergy = 1.,
-		Float_t wa = 0., Float_t wsigma = 1., Float_t wscale = 1.):
-		AliPP13PhysPhotonSelectionMC(name, title, cuts, nona, nonsigma, genergy),
+	AliPP13MesonSelectionMC(const char * name, const char * title, 
+			AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
+		AliPP13PhysPhotonSelectionMC(name, title, cuts, w),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
 		fFeedDownPi0(),
 		fInvMass(),
-		fPi0Sources(),	
-		fWeighA(wa),
-		fWeighSigma(wsigma),
-		fWeighScale(wscale)
-
+		fPi0Sources()
 	{
 		// Force no timing cut for MC,
 		// as there is no photons from different bunches

@@ -19,24 +19,25 @@ class AliPP13NonlinearityScanSelection : public AliPP13PhysPhotonSelectionMC
 public:
 	AliPP13NonlinearityScanSelection(): AliPP13PhysPhotonSelectionMC() {}
 	AliPP13NonlinearityScanSelection(const char * name, const char * title, AliPP13ClusterCuts cuts, 
-			AliPP13SelectionWeightsMC sw = AliPP13SelectionWeightsMC(), Float_t precA = 0.01, Float_t precSigma = 0.1):
-		AliPP13PhysPhotonSelectionMC(name, title, cuts),
+			AliPP13SelectionWeightsMC * sw, Float_t precA = 0.01, Float_t precSigma = 0.1):
+		AliPP13PhysPhotonSelectionMC(name, title, cuts, sw),
 		fInvariantMass(),
 		fMixInvariantMass(),
 		fPrecisionA(precA),
 		fPrecisionSigma(precSigma)
 	{
 
-		Float_t nona = sw.fNonA;
-		Float_t nonSigma = sw.fNonSigma;
+		Float_t nona = sw->fNonA;
+		Float_t nonSigma = sw->fNonSigma;
 
 		for(Int_t ia = 0; ia < kNbinsA; ++ia)
 		{
 			for(Int_t ib = 0; ib < kNbinsSigma; ++ib)
 			{
-				sw.fNonA = nona - fPrecisionA * kNbinsA / 2 + ia * fPrecisionA;
-				sw.fNonSigma = nonSigma - fPrecisionSigma * kNbinsSigma / 2 + ib * fPrecisionSigma;
-				fWeights[ia][ib] = sw;
+				AliPP13SelectionWeightsMC swi;
+				swi.fNonA = nona - fPrecisionA * kNbinsA / 2 + ia * fPrecisionA;
+				swi.fNonSigma = nonSigma - fPrecisionSigma * kNbinsSigma / 2 + ib * fPrecisionSigma;
+				fWeights[ia][ib] = swi;
 			}
 		}
 	}

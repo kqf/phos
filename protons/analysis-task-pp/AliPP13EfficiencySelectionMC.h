@@ -89,7 +89,7 @@ public:
 		fPartNames[kEta] = "#eta";
 	}
 
-	AliPP13EfficiencySelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights w):
+	AliPP13EfficiencySelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
 		AliPP13PhotonSelection(name, title, cuts, w),
 		fInvMass()
 	{

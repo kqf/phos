@@ -167,10 +167,12 @@ void AliPP13PhotonSelection::CountMBEvent()
 //________________________________________________________________
 AliPP13PhotonSelection::~AliPP13PhotonSelection()
 {
+	if (fWeights)
+		delete fWeights;	
+
 	// Don't delete fEventCounter and other ROOT objects
 	// root has it's own memory management.
 	// 
-	delete fWeights;
 	delete fListOfHistos;
 }
 

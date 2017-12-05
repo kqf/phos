@@ -15,6 +15,7 @@ void LoadAnalysisLibraries()
     gROOT->LoadMacro("AliPP13PhotonSelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
     gROOT->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
+    // TODO: Add to particle histogram
     gROOT->LoadMacro("AliPP13ParticlesHistogram.cxx+");
     gROOT->LoadMacro("AliPP13PhotonTimecutStudySelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelection.cxx+");

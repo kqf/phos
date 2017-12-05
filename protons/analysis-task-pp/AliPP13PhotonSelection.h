@@ -62,12 +62,11 @@ public:
 	{}
 
 	AliPP13PhotonSelection(const char * name, const char * title, AliPP13ClusterCuts cuts,
-			AliPP13SelectionWeights sw = AliPP13SelectionWeights()
-		):
+			AliPP13SelectionWeights * sw):
 		TNamed(name, title),
 		fListOfHistos(0),
 		fCuts(cuts),
-		fWeights(new AliPP13SelectionWeights(sw)),
+		fWeights(new AliPP13SelectionWeights(*sw)),
 		fEventCounter(0)
 
 	{}
