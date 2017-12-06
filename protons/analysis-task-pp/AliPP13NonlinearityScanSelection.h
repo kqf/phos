@@ -37,16 +37,17 @@ public:
 				AliPP13SelectionWeightsMC swi;
 				swi.fNonA = nona - fPrecisionA * kNbinsA / 2 + ia * fPrecisionA;
 				swi.fNonSigma = nonSigma - fPrecisionSigma * kNbinsSigma / 2 + ib * fPrecisionSigma;
-				fWeights[ia][ib] = swi;
+				fWeightsScan[ia][ib] = swi;
 			}
 		}
 	}
 
 	virtual void InitSelectionHistograms();
 protected:
-
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
-	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags, Int_t ia = -1, Int_t ib = -1) const;
+
+	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
+	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags, Int_t ia, Int_t ib) const;
 
 	AliPP13NonlinearityScanSelection(const AliPP13NonlinearityScanSelection &);
 	AliPP13NonlinearityScanSelection & operator = (const AliPP13NonlinearityScanSelection &);
@@ -54,7 +55,7 @@ protected:
 private:
 
 	// Set of weights that are need for NonlinearityScan
-	AliPP13SelectionWeightsMC fWeights[kNbinsA][kNbinsSigma];//!
+	AliPP13SelectionWeightsMC fWeightsScan[kNbinsA][kNbinsSigma];//!
 
 	// Parameters of nonlinearity parametrization
 	TH1 * fInvariantMass[kNbinsA][kNbinsSigma];    //!

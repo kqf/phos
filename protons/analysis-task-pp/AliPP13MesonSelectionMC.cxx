@@ -210,9 +210,7 @@ void AliPP13MesonSelectionMC::ConsiderGeneratedParticles(const EventFlags & flag
 			continue;
 		}
 
-		// Scale input distribution
-		pt *= Weigh(particle->E());
-
+		// TODO: Scale input distribution
 		ConsiderGeneratedPi0(i, pt, primary, flags);
 	}
 }
@@ -290,13 +288,7 @@ TLorentzVector AliPP13MesonSelectionMC::ClusterMomentum(const AliVCluster * c1, 
 {
     Float_t energy = c1->E();
 	TLorentzVector p = AliPP13PhysPhotonSelectionMC::ClusterMomentum(c1, eflags);
-    p *= Weigh(energy);
+    // p *= fWeights->Nonlinearity(energy);
 	return p;
-}
-
-//________________________________________________________________
-Float_t AliPP13MesonSelectionMC::Weigh(Float_t x) const
-{
-	return fWeighScale * (1. + fWeighA * TMath::Exp(-x / 2. * x / fWeighSigma / fWeighSigma));
 }
 

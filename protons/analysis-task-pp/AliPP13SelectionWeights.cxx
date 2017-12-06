@@ -44,13 +44,14 @@ AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()
 
     // Nonlinearity Naive estimation
     //
-    // ws.fNonGlobal = -0.022934923767457753;
-    // ws.fNonA = 1.4188237289034245;
-    // ws.fNonSigma = 1.0579663356860527;
-
-    ws.fNonGlobal = 1.0;
-    ws.fNonA = 0;
+    
+    ws.fNonGlobal = -0.022934923767457753;
+    ws.fNonA = 1.4188237289034245;
     ws.fNonSigma = 1.0579663356860527;
+
+    // ws.fNonGlobal = 1.0;
+    // ws.fNonA = 0;
+    // ws.fNonSigma = 1.0579663356860527;
 
     return ws;
 }

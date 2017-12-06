@@ -19,13 +19,13 @@ struct AliPP13SelectionWeights: TObject
 {
 	enum Mode {kData, kMC, kSinglePi0MC, kSingleEtaMC};
 
-	Double_t Weight(Double_t x) const 
+	virtual Double_t Weight(Double_t x) const 
 	{ 
 		(void) x;
 		return 1.0; 
 	}
 
-	Double_t Nonlinearity(Double_t x) const 
+	virtual Double_t Nonlinearity(Double_t x) const 
 	{
 		(void) x;
 		return 1.0; 
@@ -39,7 +39,7 @@ private:
 
 struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
 {
-	Double_t Nonlinearity(Double_t x) const;
+	virtual Double_t Nonlinearity(Double_t x) const;
 
 	// Parameters for Nonlinearity
 	Double_t fNonGlobal;
@@ -53,7 +53,7 @@ private:
 
 struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 {
-	Double_t Weight(Double_t x) const;
+	virtual Double_t Weight(Double_t x) const;
 
 	// TODO: Use Shared_ptr
 	static AliPP13SelectionWeights & SinglePi0();
