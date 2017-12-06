@@ -113,7 +113,7 @@ protected:
 	TList  * fListOfHistos;  //! list of histograms
 	AliPP13ClusterCuts fCuts;
 
-	AliPP13SelectionWeights * fWeights; //!
+	AliPP13SelectionWeights * fWeights; //->
 	TH1 * fEventCounter;  //!
 private:
 	ClassDef(AliPP13PhotonSelection, 2)

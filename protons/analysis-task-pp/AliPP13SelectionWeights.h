@@ -19,6 +19,9 @@ struct AliPP13SelectionWeights: TObject
 {
 	enum Mode {kData, kMC, kSinglePi0MC, kSingleEtaMC};
 
+	// NB: One needs default constructor for IO readsons
+	AliPP13SelectionWeights(): TObject() {}
+
 	virtual Double_t Weight(Double_t x) const 
 	{ 
 		(void) x;
@@ -33,12 +36,21 @@ struct AliPP13SelectionWeights: TObject
 
 	// TODO: Use Shared_ptr
 	static AliPP13SelectionWeights & Init(Mode m);
-private:
+protected:
 	ClassDef(AliPP13SelectionWeights, 2)
 };
 
 struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
 {
+	// NB: One needs default constructor for IO readsons
+	AliPP13SelectionWeightsMC(Double_t g = -0.022934923767457753, Double_t a = 1.4188237289034245, Double_t s = 1.0579663356860527):
+		AliPP13SelectionWeights(), 
+		fNonGlobal(g),
+		fNonA(a),
+		fNonSigma(s)
+	{
+	}
+
 	virtual Double_t Nonlinearity(Double_t x) const;
 
 	// Parameters for Nonlinearity
@@ -46,13 +58,23 @@ struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
 	Double_t fNonA;
 	Double_t fNonSigma;
 
-private:
+protected:
 	ClassDef(AliPP13SelectionWeightsMC, 2)
 
 };
 
 struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 {
+	// NB: One needs default constructor for IO readsons
+	AliPP13SelectionWeightsSPMC(Double_t g = -0.022934923767457753, Double_t a = 1.4188237289034245, Double_t s = 1.0579663356860527):
+		AliPP13SelectionWeightsMC(g, a, s), 
+	    fW0(0.014875782846110793),
+	    fW1(0.28727403800708634),
+	    fW2(9.9198075195331),
+	    fW3(0.135),
+	    fW4(0.135)
+	{
+	}
 	virtual Double_t Weight(Double_t x) const;
 
 	// TODO: Use Shared_ptr
@@ -66,7 +88,7 @@ struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 	Double_t fW3;
 	Double_t fW4;
 
-private:
+protected:
 	ClassDef(AliPP13SelectionWeightsSPMC, 2)
 };
 
