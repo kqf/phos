@@ -22,55 +22,6 @@
 #include <AliLog.h>
 
 
-// NB: This will simplify the code
-//
-
-
-// struct ParticleSpectrum
-// {
-// 	ParticleSpectrum(const char * n, TList * fListOfHistos, Int_t ptsize, Float_t * ptbins, Bool_t full = kTRUE):
-// 		fPtAllRange(0),
-// 		fPtRadius(0),
-// 		fEtaPhi(0),
-// 		fPtLong(0),
-// 		fPt(0),
-// 		fPtPrimaries()
-// 	{
-// 		fPtAllRange = new TH1F(Form("hPt_allrange_%s", n), Form("Generated p_{T} spectrum of %ss in 4 #pi ; p_{T}, GeV/c", n), ptsize, ptbins);
-// 		fPtRadius   = new TH2F(Form("hPt_%s_radius", n), Form("Generated radius, p_{T} spectrum of all %ss; r, cm; p_{T}, GeV/c", n), 500, 0., 500., 400, 0, 20);
-// 		fEtaPhi     = new TH2F(Form("hEtaPhi_%s", n), Form("Generated %ss y vs #phi plot; #phi (rad); y", n), 100, 0, TMath::Pi() * 2, 100, -1, 1);
-// 		fPtLong     = new TH1F(Form("hPtLong_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), 1000, 0, 100);
-// 		fPt         = new TH1F(Form("hPt_%s", n), Form("Generated p_{T} spectrum of %ss; p_{T}, GeV/c", n), ptsize, ptbins);
-
-// 		fListOfHistos->Add(fPtAllRange);
-// 		fListOfHistos->Add(fPtRadius);
-// 		fListOfHistos->Add(fEtaPhi);
-// 		fListOfHistos->Add(fPtLong);
-// 		fListOfHistos->Add(fPt);
-
-// 		if (!full)
-// 			return;
-
-// 		for(Int_t i = 0; i < 2; ++i)
-// 		{
-// 			const char * s = (i == 0) ? "secondary": "primary";
-// 			fPtPrimaries[i] = new TH1F(Form("hPt_%s_%s_", n, s), Form("Generated p_{T} spectrum of %s %ss; p_{T}, GeV/c", s, n), ptsize, ptbins);
-// 			fListOfHistos->Add(fPtPrimaries[i]);
-// 		}
-// 	}
-
-// // private:
-
-// 	TH1F * fPtAllRange; //!
-// 	TH2F * fPtRadius;   //!
-// 	TH2F * fEtaPhi;     //!
-// 	TH1F * fPtLong;     //!
-// 	TH1F * fPt;         //!
-// 	TH1F * fPtPrimaries[2]; //!
-
-// };
-
-
 class AliPP13EfficiencySelectionMC: public AliPP13PhotonSelection
 {
 public:
