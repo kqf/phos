@@ -147,8 +147,6 @@ LHC17i7a2
 LHC17i7a1   
 ```
 
-
-
 ## Single particle production for LHC16
 
 Use these scripts to validate analysis macro
