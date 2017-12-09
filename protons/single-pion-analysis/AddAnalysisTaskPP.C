@@ -15,52 +15,13 @@ void AddAnalysisTaskPP(TString description, TString suff = "", TString badmap = 
 	TList * selections = new TList();
 
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
-	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
-
-
-    // exit(1);
-
-	// This will fix the problem with Single particle MC
-	
 	cuts_pi0.fNContributors = 0;
-	cuts_eta.fNContributors = 0;
-	cuts_eta.fAsymmetryCut = 0.7;
-
-	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
-	// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
-	// Calculated for the updated version for the corrected Data
-	
-	// Float_t nonlin_a = -0.020025549129372242;
-	// Float_t nonlin_b = 1.1154536660217529;
-	// Float_t ge_scale = 1.0493128193171741;
-
-	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
-	// Calculated on single particle MC
-	//
-	
-	Float_t nonlin_a = -0.024603176300721907;
-	Float_t nonlin_b =  1.1443886239082113;
-    Float_t ge_scale =  1.0560164522642017;
-
-
-	// Float_t weigh_a = -1.063;
-	// Float_t weigh_b = 0.855;
-
-	// Float_t nonlin_a = 0;
-	// Float_t nonlin_b = 1.;
-    // Float_t ge_scale = 1.;
-
-    Float_t weigh_a = 0;
-    Float_t weigh_b = 1.;
-
 
 	AliPP13SelectionWeightsMC & spmc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsMC & spmc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
+	
 	spmc_weights_only.fNonGlobal = 1.0;
 	spmc_weights_only.fNonA = 0.0;
-
-	// selections->Add(new AliPP13PhysPhotonSelectionMC("PhysRaw", "Raw Physics Selection", cuts_pi0, &spmc_weights));
-	// selections->Add(new AliPP13PhysPhotonSelectionMC("PhysNonlin", "Corrected for nonlinearity Physics Selection",cuts_pi0, &spmc_weights));
 
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &spmc_weights));
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &spmc_weights_only));

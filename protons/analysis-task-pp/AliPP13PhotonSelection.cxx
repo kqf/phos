@@ -127,7 +127,6 @@ void AliPP13PhotonSelection::InitSummaryHistograms()
 	fListOfHistos->SetOwner(kTRUE);
 	InitSelectionHistograms();
 	
-	fListOfHistos->AddFirst(fWeights);
 	TString cuts = Form(
 		 	            ";\nCuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns", 
 						fCuts.fClusterMinE,
