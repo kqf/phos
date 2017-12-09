@@ -409,6 +409,16 @@ class BROOT(object):
 
         return klass.sum(clones)
 
+    @classmethod
+    def confidence_intervals(klass, hist, func, options = "qR", histbining = None):
+        ci = klass.copy(histbining if histbining else hist)
+        hist.Fit(func, options)
+        ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(ci)
+        ci.SetStats(False)
+        ci.SetOption("E3")
+        ci.SetFillColor(3)
+        return ci
+
 
 
 

@@ -651,3 +651,14 @@ class TestTH(unittest.TestCase):
 
         wait(draw = self.mode)
 
+    def test_calculates_confidence_intervals(self):
+        hist1 = br.BH(ROOT.TH1F, "hFit", "Test BROOT1: Test add Trimm", 100, -4, 4)
+        hist1.FillRandom("gaus")
+        function = ROOT.gROOT.FindObject("gaus")
+
+        ci = br.confidence_intervals(hist1, function)
+
+        self.assertEqual(hist1.GetNbinsX(), ci.GetNbinsX())
+        self.assertNotEqual(hist1.GetEntries(), 0)
+
+
