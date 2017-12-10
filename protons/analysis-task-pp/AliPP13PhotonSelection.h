@@ -66,7 +66,7 @@ public:
 		TNamed(name, title),
 		fListOfHistos(0),
 		fCuts(cuts),
-		fWeights(new AliPP13SelectionWeights(*sw)),
+		fWeights(dynamic_cast<AliPP13SelectionWeights *>(sw->Clone())),
 		fEventCounter(0)
 
 	{}
