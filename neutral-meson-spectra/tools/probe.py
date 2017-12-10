@@ -1,3 +1,4 @@
+import os
 import json
 import ROOT
 
@@ -22,6 +23,30 @@ class TagAndProbe(object):
         self.input = sinput
         self.cut_and_full = map(self._estimator, cut_nocut)
 
+        # IO management
+        self.recalculate = False
+        self.oname = 'input-data/tof-cut.root'
+        self.label = 'tof cut efficiency'
+
+
+    def eff(self, stop=True, fitfunc=None):
+        if self.recalculate:
+            return self.efficiency()
+        try:
+            return self.read_efficiency()
+        except IOError:
+            return self.efficiency()
+
+
+    def read_efficiency(self):
+        if not os.path.isfile(self.oname):
+            raise IOError('No such file: {0}'.format(self.oname))
+
+        infile = ROOT.TFile(self.oname)
+        result = infile.GetListOfKeys().At(0).ReadObj()
+        result.label = self.label
+        return result
+
 
     def _estimator(self, x):
         options = Options(x, 'q', ptconf='config/tag-and-probe-tof.json')
@@ -30,16 +55,24 @@ class TagAndProbe(object):
 
 
 
-    def eff(self, stop=True, fitfunc=None):
+    def efficiency(self, stop=True, fitfunc=None):
         results = map(lambda x: x.evaluate().spectrum, self.cut_and_full)
 
         for r in results:
-
-            r.SetTitle('Energy spectrum of probe photons; E_{#gamma}, GeV')
             br.scalew(r)
 
             if fitfunc:
                 r.fitfunc = fitfunc
 
         diff = Comparator(stop=stop, rrange = (0, 1.01))
-        return diff.compare(results) 
+        result = diff.compare(results) 
+
+        result.SetTitle(
+            'TOF cut efficiency: '
+            '#frac{cluster combinations with TOF cut}{all cluster combinations};'
+            'E_{#gamma}, GeV; #varepsilon, TOF efficiency'
+        )
+        result.logy = False
+        
+        br.io.save(result, self.oname)
+        return result

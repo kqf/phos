@@ -26,13 +26,20 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     @staticmethod
     def efficincy_function():
-        func_nonlin = ROOT.TF1("tof_eff", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]) - pol3(3) * (x > 6))", 0, 100);
-        func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
-        func_nonlin.SetParameter(0, -0.05)
-        func_nonlin.SetParameter(1, 0.6)
-        func_nonlin.SetParLimits(1, 0, 10)
-        func_nonlin.SetParameter(2, 1.04)
-        return func_nonlin
+        tof_eff = ROOT.TF1("tof_eff", 
+            # "[2] * (1.+[0]*TMath::Exp(-TMath::Power(x/[1], 2.) / 2.)) "
+            "1 - [2] / (1 + TMath::Exp(x * [0] + [1]))"
+            " - [3] * TMath::Exp(x * [4])"
+            , 0, 20)
+
+        tof_eff.SetParNames('A', '#sigma', 'Eff_{scale}')
+        tof_eff.SetParameter(0, -1.30534e+00)
+        tof_eff.SetParameter(1, 1.02604e+01)
+        tof_eff.SetParameter(2, 5.70061e-01)
+        tof_eff.SetParameter(3, 1.06068e+00)
+        tof_eff.SetParameter(4, -1.62810e+00)
+
+        return tof_eff 
 
 
     # @unittest.skip('Debug')
@@ -40,7 +47,11 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
         probe_estimator = TagAndProbe(sinput)
         fitf = self.efficincy_function()
+
         eff = probe_estimator.eff(True, fitf)
+        eff.Fit(fitf, 'R')
+        diff = Comparator(crange = (0.2, 1.05))
+        diff.compare(eff)
 
 
     @unittest.skip('Debug')
