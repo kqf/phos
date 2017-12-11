@@ -17,21 +17,21 @@
 
 struct AliPP13SelectionWeights: TObject
 {
-	enum Mode {kData, kMC, kSinglePi0MC, kSingleEtaMC};
+	enum Mode {kData, kMC, kSinglePi0MC, kSingleEtaMC, kPlain};
 
 	// NB: One needs default constructor for IO readsons
 	AliPP13SelectionWeights(): TObject() {}
 
-	virtual Double_t Weight(Double_t x) const 
-	{ 
-		(void) x;
-		return 1.0; 
-	}
-
-	virtual Double_t Nonlinearity(Double_t x) const 
+	virtual Double_t Weight(Double_t x) const
 	{
 		(void) x;
-		return 1.0; 
+		return 1.0;
+	}
+
+	virtual Double_t Nonlinearity(Double_t x) const
+	{
+		(void) x;
+		return 1.0;
 	}
 
 	// TODO: Use Shared_ptr
@@ -40,11 +40,45 @@ protected:
 	ClassDef(AliPP13SelectionWeights, 2)
 };
 
+struct AliPP13SelectionWeightsTOF: public AliPP13SelectionWeights
+{
+	// NB: One needs default constructor for IO readsons
+	AliPP13SelectionWeightsTOF(
+	    Double_t la = -1.30534e+00,
+	    Double_t lb = 1.02604e+01,
+	    Double_t ls = 5.70061e-01,
+	    Double_t ea = 1.06068e+00,
+	    Double_t eal = -1.62810e+00
+	):
+		AliPP13SelectionWeights(),
+		fLogA(la),
+		fLogB(lb),
+		fLogScale(ls),
+		fExpA(ea),
+		fExpAlpha(eal)
+	{
+	}
+
+
+	virtual Double_t Weight(Double_t energy) const;
+
+	// Parameters for TOF cut efficiency
+	Double_t fLogA;
+	Double_t fLogB;
+	Double_t fLogScale;
+	Double_t fExpA;
+	Double_t fExpAlpha;
+
+protected:
+	ClassDef(AliPP13SelectionWeightsTOF, 2)
+
+};
+
 struct AliPP13SelectionWeightsMC: public AliPP13SelectionWeights
 {
 	// NB: One needs default constructor for IO readsons
 	AliPP13SelectionWeightsMC(Double_t g = -0.022934923767457753, Double_t a = 1.4188237289034245, Double_t s = 1.0579663356860527):
-		AliPP13SelectionWeights(), 
+		AliPP13SelectionWeights(),
 		fNonGlobal(g),
 		fNonA(a),
 		fNonSigma(s)
@@ -67,12 +101,12 @@ struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 {
 	// NB: One needs default constructor for IO readsons
 	AliPP13SelectionWeightsSPMC(Double_t g = -0.022934923767457753, Double_t a = 1.4188237289034245, Double_t s = 1.0579663356860527):
-		AliPP13SelectionWeightsMC(g, a, s), 
-	    fW0(0.014875782846110793),
-	    fW1(0.28727403800708634),
-	    fW2(9.9198075195331),
-	    fW3(0.135),
-	    fW4(0.135)
+		AliPP13SelectionWeightsMC(g, a, s),
+		fW0(0.014875782846110793),
+		fW1(0.28727403800708634),
+		fW2(9.9198075195331),
+		fW3(0.135),
+		fW4(0.135)
 	{
 	}
 	virtual Double_t Weight(Double_t x) const;

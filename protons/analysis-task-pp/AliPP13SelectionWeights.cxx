@@ -8,8 +8,20 @@
 
 
 ClassImp(AliPP13SelectionWeights);
+ClassImp(AliPP13SelectionWeightsTOF);
 ClassImp(AliPP13SelectionWeightsMC);
 ClassImp(AliPP13SelectionWeightsSPMC);
+
+//________________________________________________________________
+Double_t AliPP13SelectionWeightsTOF::Weight(Double_t energy) const
+{
+    // TOF efficiency was parametrized as photon energy
+    //
+    Double_t logisitc = fLogScale / (1. + TMath::Exp(energy * fLogA + fLogScale));
+    Double_t expo = fExpA * TMath::Exp(energy * fExpAlpha);
+
+    return 1. - logisitc - expo;
+}
 
 
 //________________________________________________________________
@@ -89,6 +101,9 @@ AliPP13SelectionWeights & AliPP13SelectionWeights::Init(Mode m)
 
     if(m == kMC)
         return * new AliPP13SelectionWeightsMC();
-    
+
+    if(m == kData)
+        return * new AliPP13SelectionWeightsTOF();
+      
     return * new AliPP13SelectionWeights();
 }
