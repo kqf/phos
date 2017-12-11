@@ -86,6 +86,9 @@ AliPP13SelectionWeights & AliPP13SelectionWeights::Init(Mode m)
 
     if(m == kSingleEtaMC)
         return AliPP13SelectionWeightsSPMC::SingleEta();
+
+    if(m == kMC)
+        return * new AliPP13SelectionWeightsMC();
     
     return * new AliPP13SelectionWeights();
 }
