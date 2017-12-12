@@ -396,7 +396,9 @@ class BROOT(object):
         bins = list(b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
         # NB: Don't include the last bin, othervise we will count twice the same point
         #     in BROOT.sum_trimm method
-        for bin in bins[:-1]:
+
+        # TODO: Check this!?
+        for bin in bins:
             hist.SetBinContent(bin, 0)
             hist.SetBinError(bin, 0)
 

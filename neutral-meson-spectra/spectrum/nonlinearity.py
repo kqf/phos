@@ -57,7 +57,7 @@ class Nonlinearity(object):
 
         ratio = self.ratio(self.nonlinearity_file)
         ratio.SetAxisRange(a, b, 'Y')
-        ratio.Fit(self.function)
+        ratio.Fit(self.function, 'qR')
         ratio.Draw()
 
         parameters = map(self.function.GetParameter, range(self.function.GetNpar()))
