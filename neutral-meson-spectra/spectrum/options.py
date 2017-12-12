@@ -45,6 +45,7 @@ class Options(object):
                     spectrumconf = 'config/spectrum.json',
                     ptconf = 'config/pt-analysis.json',
                     invmassconf = 'config/invariant-mass.json',
+                    spmc = False,
                     use_mixed = True):
 
         super(Options, self).__init__()
@@ -64,7 +65,11 @@ class Options(object):
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}
 
-        pconf = 'config/{0}-parameters.json'.format('gaus' if 'gaus' in fitf.lower() else 'cball')
+        if spmc:
+            pconf = 'config/cball-parameters-spmc.json'
+        else:
+            pconf = 'config/{0}-parameters.json'.format('gaus' if 'gaus' in fitf.lower() else 'cball')
+            
         self.param = AnalysisOption('param', pconf, particle)
         self.param.relaxed = relaxedcb
 
@@ -107,11 +112,14 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, mass_fit_range = (0.1, 0.2), label = ''):
+    def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
-        options = Options(name, mode  ='q')
+        options = Options(name,
+                    mode  ='v', 
+                    particle = particle, 
+        )
+
         options.spectrum.fit_range = pt_fit_range
-        options.param.fit_range = mass_fit_range
         options.pt.use_mixed = False
 
         if label:

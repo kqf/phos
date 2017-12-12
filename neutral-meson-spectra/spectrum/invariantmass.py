@@ -105,6 +105,7 @@ class InvariantMassNoMixing(VisualizeMass):
 
         # Setup the fit function
         self.peak_function = PeakParametrisation.get(options.param)
+        print '>>>>>>>>>>>', self.peak_function.opt.fit_range
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
