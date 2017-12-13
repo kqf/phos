@@ -1,7 +1,7 @@
-DATASET = LHC17j3c1
+DATASET = LHC17j3c2
 DPART = first
 MC = kTRUE
-OUTDIR = results/mc/eta
+OUTDIR = results/mc/eta/iteration1/
 
 TEST_SELECTION = PhysTender
 

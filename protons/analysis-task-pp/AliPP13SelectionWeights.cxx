@@ -57,9 +57,13 @@ AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()
     // Nonlinearity Naive estimation
     //
     
-    ws.fNonGlobal = -0.022934923767457753;
-    ws.fNonA = 1.4188237289034245;
-    ws.fNonSigma = 1.0579663356860527;
+    // ws.fNonA = -0.022934923767457753;
+    // ws.fNonSigma = 1.4188237289034245;
+    // ws.fNonGlobal = 1.0579663356860527;
+
+     ws.fNonA = -0.014719244288611932;
+     ws.fNonSigma = 2 * 0.8017501954719543;
+     ws.fNonGlobal = 1.050000000000015;
 
     // ws.fNonGlobal = 1.0;
     // ws.fNonA = 0;
@@ -83,10 +87,10 @@ AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SingleEta()
     ws.fW3 = 0.547;
     ws.fW4 = 0.547;
 
-    ws.fNonGlobal = 1.0;
-    ws.fNonA = 0;
-    ws.fNonSigma = 1.0579663356860527;
-    return ws;
+     ws.fNonA = -0.014719244288611932;
+     ws.fNonSigma = 2 * 0.8017501954719543;
+     ws.fNonGlobal = 1.050000000000015;
+     return ws;
 }
 
 
