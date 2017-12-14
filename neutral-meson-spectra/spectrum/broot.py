@@ -239,7 +239,8 @@ class BROOT(object):
         label = a.label + ' / ' + b.label
 
         at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
-        ratio.GetYaxis().SetTitle(at + '/' + bt)
+        # ratio.GetYaxis().SetTitle(at + '/' + bt)
+        ratio.GetYaxis().SetTitle(label)
 
         title = a.GetTitle() + ' / ' + b.GetTitle()
         ratio.SetTitle(title)

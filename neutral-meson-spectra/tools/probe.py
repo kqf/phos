@@ -25,7 +25,7 @@ class TagAndProbe(object):
 
         # IO management
         self.recalculate = False
-        self.oname = 'input-data/tof-cut.root'
+        self.oname = 'input-data/tof-cut' + (self.hpattern % '') + '.root'
         self.label = 'tof cut efficiency'
 
 

@@ -12,7 +12,7 @@ from spectrum.outputcreator import OutputCreator
 
 from spectrum.broot import BROOT as br
 
-from tools.probe import TagAndProbe, TagAndProbe
+from tools.probe import TagAndProbe
 import numpy as np
 import array as arr
 
@@ -42,7 +42,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         return tof_eff 
 
 
-    # @unittest.skip('Debug')
+    @unittest.skip('Debug')
     def test_estimate_tof_efficiency(self):
         sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
         probe_estimator = TagAndProbe(sinput)
@@ -67,12 +67,12 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         diff.compare(eff1, eff2)
 
 
-    @unittest.skip('Debug')
+    # @unittest.skip('Debug')
     def test_different_modules(self):
         conf = 'config/test_tagandprobe_modules.json'
 
         inputs = [Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s' + '_SM{0}'.format(i)) for i in range(1, 5)] 
-        estimators = [TagAndProbe(si, 3).eff() for si in inputs]
+        estimators = [TagAndProbe(si).eff(False) for si in inputs]
         for i, e in enumerate(estimators):
             e.SetTitle('TOF efficiency in different modules; E, GeV; TOF efficiency')
             e.label = 'SM{0}'.format(i + 1)
