@@ -42,7 +42,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         return tof_eff 
 
 
-    @unittest.skip('Debug')
+    # @unittest.skip('Debug')
     def test_estimate_tof_efficiency(self):
         sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
         probe_estimator = TagAndProbe(sinput)
@@ -67,7 +67,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         diff.compare(eff1, eff2)
 
 
-    # @unittest.skip('Debug')
+    @unittest.skip('Debug')
     def test_different_modules(self):
         conf = 'config/test_tagandprobe_modules.json'
 
