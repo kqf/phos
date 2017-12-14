@@ -23,9 +23,9 @@ class TestNonlinearitySPMC(unittest.TestCase):
         # func_nonlin.SetParameter(1, 1.12)
         # func_nonlin.FixParameter(2, 1.06)
 
-        func_nonlin.SetParLimits(0, -10, -0.001)
-        func_nonlin.SetParLimits(1, 0, 1.12)
-        func_nonlin.SetParLimits(2, 1.05, 1.09)
+        # func_nonlin.SetParLimits(0, -10, -0.001)
+        # func_nonlin.SetParLimits(1, 0, 1.12)
+        # func_nonlin.SetParLimits(2, 1.05, 1.09)
         return func_nonlin
 
 

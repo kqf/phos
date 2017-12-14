@@ -23,7 +23,7 @@ class TestOverlapRegion(unittest.TestCase):
 
         # self.efficiency_overlap(files, 'weight1', 'pi0')
 
-        ddir = 'single/nonlin0/'
+        ddir = 'single/nonlin1/'
         files = {
                     ddir + 'LHC17j3c1': (0, 7),
                     ddir + 'LHC17j3c2': (6, 20)

@@ -115,7 +115,7 @@ class Options(object):
     def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(name,
-                    mode  ='v', 
+                    mode  ='q', 
                     particle = particle, 
         )
 
