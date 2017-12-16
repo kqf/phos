@@ -1,7 +1,12 @@
-DATASET = LHC17j3c1
+# DATASET = LHC16k-pass1
+# DPART = first
+# MC = kFALSE
+# OUTDIR = results/data/no-corrections
+
+DATASET = LHC17d20a1_extra
 DPART = first
 MC = kTRUE
-OUTDIR = results/mc/eta/iteration2/
+OUTDIR = results/mc/pythia
 
 TEST_SELECTION = PhysTender
 
@@ -31,11 +36,7 @@ terminate: | %.cxx
 
 download: | %.cxx
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink) 
-	@# Scale and upload both versions
-	-root -l -q 'scaleAnalysisResult.C("AnalysisResults.root", "scaled-")'
-	$(call upload_result,AnalysisResults,$(DATASET))
-	$(call upload_result,scaled-AnalysisResults,scaled-$(DATASET))
-
+	make upload
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
@@ -61,9 +62,11 @@ test: | %.cxx
 	@$(call funlink) && echo "Directory is clean"
 	@echo -e "\a"
 
+upload:
+	$(call upload_result,AnalysisResults,$(DATASET))
 
 clean:
-	rm *.so *.d *~ Task* *.xml *.root
+	rm *.so *.d *~ Task*
 
 unlink:
 	$(call funlink) 	
@@ -92,7 +95,6 @@ define upload_result
 	mv $(1).root $(2).root
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)@ALICE::GSI::SE2
 endef
-
 
 define upload_test
 	mv $(1).root $(2).root
