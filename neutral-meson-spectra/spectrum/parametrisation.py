@@ -8,6 +8,12 @@ class PeakParametrisation(object):
         super(PeakParametrisation, self).__init__()
         self.opt = options
         ROOT.gStyle.SetOptFit()
+        
+        funcname = self.__class__.__name__
+        # Initiate signal function
+        self.signal = self.form_fitting_function(funcname)
+
+
 
 
     def configure_background(self, fitfun):
@@ -27,16 +33,12 @@ class PeakParametrisation(object):
         if (not hist) or (hist.GetEntries() == 0): 
             return None, None
 
-        funcname = self.__class__.__name__
-        # Initiate signal function
-        signal = self.form_fitting_function(funcname)
-
         # background
         bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
         background = ROOT.TF1("mypol", bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
 
         # signal + background
-        fitfun = ROOT.TF1("fitfun", funcname + " + mypol", *self.opt.fit_range)
+        fitfun = ROOT.TF1("fitfun", self.signal.GetName() + " + mypol", *self.opt.fit_range)
         self.setup_parameters(fitfun, hist)
         self.configure_background(fitfun)
 

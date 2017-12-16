@@ -47,7 +47,7 @@ class Spectrum(object):
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
 
-        print self.opt.fit_range
+        # print self.opt.fit_range
         quant.Fit(fitquant, "q", "", *self.opt.fit_range)
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]

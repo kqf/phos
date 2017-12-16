@@ -105,7 +105,6 @@ class InvariantMassNoMixing(VisualizeMass):
 
         # Setup the fit function
         self.peak_function = PeakParametrisation.get(options.param)
-        print '>>>>>>>>>>>', self.peak_function.opt.fit_range
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
@@ -161,7 +160,6 @@ class InvariantMassNoMixing(VisualizeMass):
     def extract_data(self):
         if not (self.sigf and self.bgrf):
             self.mixed = self.estimate_background(self.mass, self.mixed)
-            print self.mixed
             self.signal = self.subtract_background(self.mass, self.mixed)
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
