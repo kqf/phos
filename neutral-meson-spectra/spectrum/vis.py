@@ -125,6 +125,7 @@ class Visualizer(MultipleVisualizer):
         sl.adjust_labels(ratio, hists[0], scale = 7./3)
         ratio.GetYaxis().CenterTitle(True)
         ratio.SetTitle('')
+        pad.SetLogx(a.logx)
         ratio.Draw()
 
         self.fit_ratio(ratio)
