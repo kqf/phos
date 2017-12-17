@@ -6,31 +6,21 @@ from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 
 
-# TODO: Change pt region for eta mesons
 class TestOverlapRegion(unittest.TestCase):
 
 
     def setUp(self):
-        self.eff_title = '#varepsilon = #Delta #phi #Delta y/ 2 #pi #frac{Number of reconstructed #pi^{0}}{Number of generated primary #pi^{0}}'
+        self.eff_title = '#varepsilon = #Delta #phi #Delta y/ 2 #pi ' \
+                         '#frac{Number of reconstructed #pi^{0}}{Number of generated primary #pi^{0}}'
 
 
+    @unittest.skip('')
     def test_eff_overlap(self):
         ddir = 'single/nonlin0/'
         files = {
                     ddir + 'LHC17j3b1': (0, 5),
                     ddir + 'LHC17j3b2': (9, 20)
                 }
-
-        # self.efficiency_overlap(files, 'weight1', 'pi0')
-
-        ddir = 'single/nonlin1/'
-        files = {
-                    ddir + 'LHC17j3c1': (0, 7),
-                    ddir + 'LHC17j3c2': (6, 20)
-                }
-
-        self.efficiency_overlap(files, 'weight1', 'eta')
-
 
 
     def efficiency_overlap(self, files, pref, particle):
@@ -59,4 +49,22 @@ class TestOverlapRegion(unittest.TestCase):
             e.logy = 0
 
         diff.compare(effs)
+
+# TODO: Change pt region for eta mesons
+class TestOverlapRegionEta(TestOverlapRegion):
+
+
+    def setUp(self):
+        self.eff_title = '#varepsilon = #Delta #phi #Delta y/ 2 #pi '\
+                         '#frac{Number of reconstructed #eta}{Number of generated primary #eta}'
+
+
+    def test_eff_overlap(self):
+        ddir = 'single/nonlin1/'
+        files = {
+                    ddir + 'LHC17j3c1': (0, 7),
+                    ddir + 'LHC17j3c2': (6, 20)
+                }
+
+        self.efficiency_overlap(files, 'weight1', 'eta')
 
