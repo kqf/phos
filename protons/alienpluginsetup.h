@@ -30,7 +30,8 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetExecutableCommand("aliroot");
 	plugin->SetExecutableArgs("-b -q -x");
 
-	plugin->SetCheckCopy(kFALSE);
+	plugin->SetUseCopy(kTRUE);
+	plugin->SetCheckCopy(kTRUE);
 
 
 	if (!isMC)
