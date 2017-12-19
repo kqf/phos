@@ -1,7 +1,7 @@
 DATASET = LHC16l-muon-calo-pass1
 DPART = first
 MC = kFALSE
-OUTDIR = results/data/no-corrections
+OUTDIR = results/data/new-calibration
 
 #DATASET = LHC17d20a1_extra
 #DPART = first
