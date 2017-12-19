@@ -42,9 +42,8 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         return tof_eff 
 
 
-    # @unittest.skip('Debug')
-    def test_estimate_tof_efficiency(self):
-        sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
+    def fit_tof_efficiency(self, dataset):
+        sinput = Input(dataset, 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
         probe_estimator = TagAndProbe(sinput)
         fitf = self.efficincy_function()
 
@@ -52,19 +51,12 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         eff.Fit(fitf, 'R')
         diff = Comparator(crange = (0.2, 1.05))
         diff.compare(eff)
+        return eff
 
 
     @unittest.skip('Debug')
-    def test_compare_different_methods(self):
-        sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
-        eff1 = TagAndProbe(sinput).eff()
-
-        # Improved version
-        sinput = Input('/uncorrected/LHC16', 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
-        eff2 = TagAndProbe(sinput).eff()
-
-        diff = Comparator()
-        diff.compare(eff1, eff2)
+    def test_estimate_tof_efficiency(self):
+        fit_tof_efficiency('/new-calibration/LHC16')
 
 
     @unittest.skip('Debug')
@@ -82,6 +74,19 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         diff = Comparator(crange = (0, 1))
         diff.compare(estimators)
 
+
+    # Test new and old tof calibrations 
+    def test_efficiencies_different(self):
+        paths = {
+            '/new-calibration/LHC16': '2017',
+            '/uncorrected/LHC16': '2016'
+            }
+        efficiencies = map(self.fit_tof_efficiency, paths.keys())
+        for e, l in zip(efficiencies, paths.values()):
+            e.label = l
+
+        diff = Comparator(rrange = (0.2, 1.01))
+        diff.compare(efficiencies)
 
 
 if __name__ == '__main__':
