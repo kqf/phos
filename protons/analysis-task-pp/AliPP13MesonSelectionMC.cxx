@@ -283,12 +283,3 @@ Bool_t AliPP13MesonSelectionMC::IsPrimary(const AliAODMCParticle * particle) con
 	return r2 < rcut * rcut;
 }
 
-//________________________________________________________________
-TLorentzVector AliPP13MesonSelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
-{
-    Float_t energy = c1->E();
-	TLorentzVector p = AliPP13PhysPhotonSelectionMC::ClusterMomentum(c1, eflags);
-    // p *= fWeights->Nonlinearity(energy);
-	return p;
-}
-

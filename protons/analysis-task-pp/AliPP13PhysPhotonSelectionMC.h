@@ -21,15 +21,9 @@ public:
 
 protected:
 	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
-	virtual Float_t Nonlinearity(Float_t x) const;
-
+	
 	AliPP13PhysPhotonSelectionMC(const AliPP13PhysPhotonSelectionMC &);
 	AliPP13PhysPhotonSelectionMC & operator = (const AliPP13PhysPhotonSelectionMC &);
-
-	// Parameters of nonlinearity parametrization
-	Float_t fNonA;
-	Float_t fNonSigma;
-	Float_t fGlobalEnergyScale;
 
 private:
 	ClassDef(AliPP13PhysPhotonSelectionMC, 2)
