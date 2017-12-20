@@ -10,7 +10,7 @@ from tools.feeddown import FeeddownEstimator
 class FedddownTest(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'Pythia-LHC16-a5'
+        self.infile = 'pythia-2017'
         # self.infile = 'scaled-LHC17f8a'
         self.selection = 'MCStudyOnlyTender'
         self.particles = '', 'K^{s}_{0}'#, '#Lambda', '#pi^{+}', '#pi^{-}'
@@ -26,11 +26,6 @@ class FedddownTest(unittest.TestCase):
         diff = Comparator(crange = (0, 0.04), rrange = (-1, -1))#, oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
         diff.compare(feeddown_ratio, feeddown_errors)        
 
-
-    # TODO: calculate error range parameters for feeddown correction
-    #
-    def testExtractParameters(self):
-        pass
 
     # Just compare all contributions, don't use it for error estimation
     # 

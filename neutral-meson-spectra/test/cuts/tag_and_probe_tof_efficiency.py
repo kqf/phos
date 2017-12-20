@@ -81,11 +81,18 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
             '/new-calibration/LHC16': '2017',
             '/uncorrected/LHC16': '2016'
             }
-        efficiencies = map(self.fit_tof_efficiency, paths.keys())
+
+        def tof(dataset):
+            sinput = Input(dataset, 'TagAndProbleTOFOnlyTender', 'MassEnergy%s_SM0')
+            probe_estimator = TagAndProbe(sinput)
+            return probe_estimator.eff()
+
+
+        efficiencies = map(tof, paths.keys())
         for e, l in zip(efficiencies, paths.values()):
             e.label = l
 
-        diff = Comparator(rrange = (0.2, 1.01))
+        diff = Comparator(rrange = (0.2, 1.04))
         diff.compare(efficiencies)
 
 
