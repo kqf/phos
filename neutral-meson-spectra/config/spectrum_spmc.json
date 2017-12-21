@@ -1,0 +1,30 @@
+{
+	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
+	"canvas": [0.001, 0.001],
+    "dead": "",
+    "pi0":
+    {
+        "width_func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
+    	"width_pars": [-18.67051583703201, -2.1079177819958077, 2905883.199349993, 0.00501164599580413],
+    	"width_names": ["a", "b", "c", "d"],
+        "mass_func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
+    	"mass_pars": [-4.43994833245771, -1.9958973408412146, 0.847614142282804, 0.13654300650259044],
+    	"mass_names": ["a", "b", "c", "d"],
+        "nsigmas": 2,
+        "fit_range": [0, 20],
+        "fit_mass_width": "True" 
+
+   },
+  "eta":
+    {
+        "width_func": "[0] + [1] * x",
+        "width_pars": [0.2629952468139744, -2.331651575377617],
+        "width_names": ["a", "b", "c", "d"],
+        "mass_func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
+        "mass_pars": [-0.9383877408174801, -7.313302813528194, -102.88494983600319, 0.5590698449654556],
+        "mass_names": ["a", "b", "c", "d"],
+        "nsigmas": 2,
+        "fit_range": [0, 20],
+        "fit_mass_width": "True" 
+   }
+}

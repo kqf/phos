@@ -92,7 +92,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         for e, l in zip(efficiencies, paths.values()):
             e.label = l
 
-        diff = Comparator(rrange = (0.2, 1.04))
+        diff = Comparator(rrange = (0.5, 1.5))
         diff.compare(efficiencies)
 
 

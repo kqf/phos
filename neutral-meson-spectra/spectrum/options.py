@@ -115,8 +115,9 @@ class Options(object):
     def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(name,
-                    mode  ='q', 
+                    mode = 'q', 
                     particle = particle, 
+                    spectrumconf = 'config/spectrum_spmc.json',
         )
 
         options.spectrum.fit_range = pt_fit_range
