@@ -3,7 +3,7 @@
 # MC = kFALSE
 # OUTDIR = results/data/no-corrections
 
-DATASET = LHC17d20a1
+DATASET = LHC17d20a2_extra
 DPART = first
 MC = kTRUE
 OUTDIR = results/mc/pythia
