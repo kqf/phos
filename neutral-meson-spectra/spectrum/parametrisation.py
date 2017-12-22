@@ -7,14 +7,12 @@ class PeakParametrisation(object):
     def __init__(self, options):
         super(PeakParametrisation, self).__init__()
         self.opt = options
+        # TODO: Change this later
+        self.npar_bkgr = 3
         ROOT.gStyle.SetOptFit()
-        
         funcname = self.__class__.__name__
         # Initiate signal function
         self.signal = self.form_fitting_function(funcname)
-
-
-
 
     def configure_background(self, fitfun):
         if 'pol2' in self.opt.background:
@@ -25,9 +23,9 @@ class PeakParametrisation(object):
             fitfun.FixParameter(npar - 1, 0)
             return
 
-        fitfun.FixParameter(npar - 3, 0)
-        fitfun.FixParameter(npar - 2, 0)
-        fitfun.FixParameter(npar - 1, 0)
+        # We count parameters from 0
+        for i in range(1, self.npar_bkgr):
+            fitfun.FixParameter(npar - i, 0)
 
     def fit(self, hist):
         if (not hist) or (hist.GetEntries() == 0): 
@@ -48,9 +46,11 @@ class PeakParametrisation(object):
         hist.Fit(fitfun,"QR", "")
 
         npar = fitfun.GetNpar()
-        background.SetParameter(0, fitfun.GetParameter(npar - 3))
-        background.SetParameter(1, fitfun.GetParameter(npar - 2))
-        background.SetParameter(2, fitfun.GetParameter(npar - 1))
+
+        for i in range(0, self.npar_bkgr):
+            parameter = fitfun.GetParameter(npar - (self.npar_bkgr - i))
+            background.SetParameter(i, parameter)
+
         return fitfun, background
 
 

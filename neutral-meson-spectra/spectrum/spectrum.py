@@ -87,7 +87,9 @@ class CompositeSpectrum(Spectrum):
             spectra = map(lambda x: x.spectrum, hists)
             for spec in spectra:
                 bin = spec.FindBin(ranges[0][1])
-                spec.Scale(1. / spec.Integral(bin - 1, bin + 1)) 
+                area = spec.Integral(bin - 1, bin + 1)
+                if area:
+                    spec.Scale(1. / area) 
 
         # Transpose
         hists = zip(*hists)
