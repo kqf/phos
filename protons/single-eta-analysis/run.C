@@ -44,7 +44,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
 
-    gROOT->LoadMacro("../datasets/values_for_dataset.h+");
+    gROOT->LoadMacro("../setup/values_for_dataset.h+");
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
