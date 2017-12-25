@@ -1,4 +1,4 @@
-#include "../alienpluginsetup.h"	
+#include "../../setup/alien.h"	
 #include "iostream"
 #include "AliAnalysisManager.h"
 
