@@ -5,76 +5,62 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     SetupEnvironment();
 
     gROOT->LoadMacro("CreatePlugin.cc+");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
+    AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL);
 
-    if (!alienHandler) return;
+    AliAODInputHandler * aod = new AliAODInputHandler();
+    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
 
-    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
-    AliAODInputHandler * aodH = new AliAODInputHandler();
-
-    mgr->SetInputEventHandler(aodH);
-
-    // if ( isMC )
-    // {
-    //     AliMCEventHandler * mchandler = new AliMCEventHandler();
-    //     mchandler->SetReadTR ( kFALSE ); // Don't read track references
-    //     mgr->SetMCtruthEventHandler ( mchandler );
-    // }
-
-    // Connect plug-in to the analysis manager
-    mgr->SetGridHandler(alienHandler);
-
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
+    manager->SetInputEventHandler(aod);
+    manager->SetGridHandler(alien);
 
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
+    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
+    AddTaskPhysicsSelection(
+        kTRUE,             //false for data, true for MC
+        enablePileupCuts
+    );
 
     // NB: This is a local copy of steering macro
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
 
-    TString pref =  isMC ? "MC" : "";
-
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString tenderOption = isMC ? "Run2Default" : "";
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
+    TString decalibration = "Run2Default";
+    AliPHOSTenderTask * tender = AddAODPHOSTender(
+        "PHOSTenderTask",  // Task Name
+        "PHOStender",      // Container Name
+        decalibration,     // Important: de-calibration
+         1,                // Important: reco pass 
+         kTRUE             // Important: is MC?
+    );
 
-    AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
+    AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
+    supply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
-    if (isMC)
-    {
-        // Important: Keep track of this variable
-        // ZS threshold in unit of GeV
-        Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold);
-    }
+    // ZS threshold in unit of GeV
+    Double_t zs_threshold = 0.020;
+    supply->ApplyZeroSuppression(zs_threshold);
 
 
     gROOT->LoadMacro("../setup/values_for_dataset.h+");
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
-    // There is no need to download QA when we use don't use JDL
-    // if (useJDL)
+
 
     TString msg = "Single pion analysis + weights iteration 2";
+    msg += " with tender option ";
+    msg += decalibration;
 
-    if (tenderOption)
-    {
-        msg += " with tender option ";
-        msg += tenderOption;
-    }
-
+    TString pref = "MC";
     AddAnalysisTaskPP(period + pref + msg, "Tender", "", cells);
     AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
-    if ( !mgr->InitAnalysis( ) ) return;
-    mgr->PrintStatus();
-
+    manager->InitAnalysis();
+    manager->PrintStatus();
 
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
-    alienHandler->SetOutputFiles(files);
+    alien->SetOutputFiles(files);
 
-    mgr->StartAnalysis(runmode);
+    manager->StartAnalysis(runmode);
     gObjectTable->Print();
 }

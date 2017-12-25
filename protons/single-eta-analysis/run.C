@@ -5,43 +5,37 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     SetupEnvironment();
 
     gROOT->LoadMacro("CreatePlugin.cc+");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
+    AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL);
 
-    if (!alienHandler) return;
-
-    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
-    AliAODInputHandler * aodH = new AliAODInputHandler();
-
-    mgr->SetInputEventHandler(aodH);
-
-    // Connect plug-in to the analysis manager
-    mgr->SetGridHandler(alienHandler);
-
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
+    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
+    AliAODInputHandler * aod = new AliAODInputHandler();
+    manager->SetInputEventHandler(aod);
+    manager->SetGridHandler(alien);
 
     Bool_t enablePileupCuts = kTRUE;
+    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
 
     // NB: This is a local copy of steering macro
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
-
-    TString pref =  isMC ? "MC" : "";
-
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString tenderOption = isMC ? "Run2Default" : "";
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
-    AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
+    TString decalibration = "Run2Default";
+    AliPHOSTenderTask * tender = AddAODPHOSTender(
+        "PHOSTenderTask",  // Task Name
+        "PHOStender",      // Container Name
+        decalibration,     // Important: de-calibration
+         1,                // Important: reco pass 
+         kTRUE             // Important: is MC?
+    );
 
-    if (isMC)
-    {
-        // Important: Keep track of this variable
-        // ZS threshold in unit of GeV
-        Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold);
-    }
+    // Configure Tender
+    AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
+    supply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
+    
+    Double_t zs_threshold = 0.020; // ZS threshold in unit of GeV
+    supply->ApplyZeroSuppression(zs_threshold);
 
 
     gROOT->LoadMacro("../setup/values_for_dataset.h+");
@@ -51,23 +45,20 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
 
     TString msg = "Single #eta Analysis + weights iteration 0";
+    msg += " with tender option ";
+    msg += decalibration;
 
-    if (tenderOption)
-    {
-        msg += " with tender option ";
-        msg += tenderOption;
-    }
 
     AddAnalysisTaskPP(period + pref + msg, "Tender", "", cells);
     AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
-    if ( !mgr->InitAnalysis( ) ) return;
-    mgr->PrintStatus();
 
+    manager->InitAnalysis();
+    manager->PrintStatus();
 
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
-    alienHandler->SetOutputFiles(files);
+    alien->SetOutputFiles(files);
 
-    mgr->StartAnalysis(runmode);
+    manager->StartAnalysis(runmode);
     gObjectTable->Print();
 }

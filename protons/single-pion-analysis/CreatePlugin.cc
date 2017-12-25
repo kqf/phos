@@ -6,7 +6,7 @@
 using std::cout;
 using std::endl;
 
-AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC = kTRUE)
 {
 	// Maximal size of the dataset that shouldn't be slitted on two halves
 	Int_t msize = 80;

@@ -5,35 +5,28 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     SetupEnvironment();
 
     gROOT->LoadMacro("CreatePlugin.cc+");
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
+    AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
+    AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
+    AliAODInputHandler * aod = new AliAODInputHandler();
 
-    if (!alienHandler) return;
-
-    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
-    AliAODInputHandler * aodH = new AliAODInputHandler();
-
-    mgr->SetInputEventHandler(aodH);
+    manager->SetInputEventHandler(aod);
 
     if ( isMC )
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
         mchandler->SetReadTR ( kFALSE ); // Don't read track references
-        mgr->SetMCtruthEventHandler ( mchandler );
+        manager->SetMCtruthEventHandler ( mchandler );
     }
 
     // Connect plug-in to the analysis manager
-    mgr->SetGridHandler(alienHandler);
+    manager->SetGridHandler(alien);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
-    gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
-    gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
-
     TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
@@ -70,11 +63,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
 
 
-    if ( !mgr->InitAnalysis( ) ) return;
-    mgr->PrintStatus();
+    if ( !manager->InitAnalysis( ) ) return;
+    manager->PrintStatus();
 
 
-    alienHandler->SetOutputFiles("AnalysisResults.root");
-    mgr->StartAnalysis (runmode);
+    alien->SetOutputFiles("AnalysisResults.root");
+    manager->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
