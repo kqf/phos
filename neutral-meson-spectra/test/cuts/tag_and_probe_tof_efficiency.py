@@ -33,11 +33,17 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
             , 0, 20)
 
         tof_eff.SetParNames('A', '#sigma', 'Eff_{scale}')
-        tof_eff.SetParameter(0, -1.30534e+00)
-        tof_eff.SetParameter(1, 1.02604e+01)
-        tof_eff.SetParameter(2, 5.70061e-01)
-        tof_eff.SetParameter(3, 1.06068e+00)
-        tof_eff.SetParameter(4, -1.62810e+00)
+        # tof_eff.SetParameter(0, -1.30534e+00)
+        # tof_eff.SetParameter(1, 1.02604e+01)
+        # tof_eff.SetParameter(2, 5.70061e-01)
+        # tof_eff.SetParameter(3, 1.06068e+00)
+        # tof_eff.SetParameter(4, -1.62810e+00)
+
+        tof_eff.SetParameter(0, -1.02802e+00)
+        tof_eff.SetParameter(1, 8.51857e+00)
+        tof_eff.SetParameter(2, 6.19420e-01)
+        tof_eff.SetParameter(3, 1.30498e+00)
+        tof_eff.SetParameter(4, -1.78716e+00)
 
         return tof_eff 
 
@@ -54,9 +60,8 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         return eff
 
 
-    @unittest.skip('Debug')
     def test_estimate_tof_efficiency(self):
-        fit_tof_efficiency('/new-calibration/LHC16')
+        self.fit_tof_efficiency('/uncorrected/LHC16')
 
 
     @unittest.skip('Debug')
@@ -76,6 +81,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
 
     # Test new and old tof calibrations 
+    @unittest.skip('Debug')
     def test_efficiencies_different(self):
         paths = {
             '/new-calibration/LHC16': '2017',
