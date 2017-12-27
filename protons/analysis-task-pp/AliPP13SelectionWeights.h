@@ -48,7 +48,7 @@ struct AliPP13SelectionWeightsTOF: public AliPP13SelectionWeights
 	    Double_t lb = 8.51857e+00,
 	    Double_t ls = 6.19420e-01,
 	    Double_t ea = 1.30498e+00,
-	    Double_t eal = -1.78716e+00,
+	    Double_t eal = -1.78716e+00
 
 	):
 		AliPP13SelectionWeights(),
