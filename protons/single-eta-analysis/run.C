@@ -49,8 +49,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     msg += decalibration;
 
 
-    AddAnalysisTaskPP(period + pref + msg, "Tender", "", cells);
-    AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
+    AddAnalysisTaskPP(period + "MC" + msg, "Tender", "", cells);
+    AddAnalysisTaskPP(period + "MC" + msg, "OnlyTender", "", std::vector<Int_t>());
 
     manager->InitAnalysis();
     manager->PrintStatus();
