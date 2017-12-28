@@ -1,3 +1,5 @@
+#include "../setup/environment.h"
+
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
@@ -7,42 +9,29 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     if (!alienHandler) return;
 
-    AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_PP");
+    AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
 
-    if (isMC)
-    {
-        esdH->SetReadFriends( isMC );
-        esdH->SetNeedField();
-        // mgr->SetInputEventHandler( esdH );
+    esdH->SetReadFriends(isMC);
+    esdH->SetNeedField();
+    manager->SetInputEventHandler(aodH);
 
-    }
-    // mgr->SetInputEventHandler( esdH );
-    mgr->SetInputEventHandler(aodH);
-
-    if ( isMC )
-    {
-        AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Don't read track references
-        mgr->SetMCtruthEventHandler ( mchandler );
-    }
+    AliMCEventHandler * mchandler = new AliMCEventHandler();
+    mchandler->SetReadTR ( kFALSE ); // Don't read track references
+    manager->SetMCtruthEventHandler ( mchandler );
 
     // Connect plug-in to the analysis manager
-    mgr->SetGridHandler(alienHandler);
+    manager->SetGridHandler(alienHandler);
 
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AliAnalysisTaskCaloCellsQAPt.h+g");
-    gROOT->LoadMacro("AddTaskCaloCellsQAPt.C");
-    gROOT->LoadMacro("../analysis-task-pp/macros/AddAnalysisTaskPP.C");
-    gROOT->LoadMacro("../../qa/qa-track-averages/AddAnalysisTaskTrackAverages.C");
-
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     TString files = "";
-    TString pref =  isMC ? "MC": "";
+    TString pref =  isMC ? "MC" : "";
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
@@ -52,16 +41,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
 
     // TODO: Move bad map outside this directory
-    // 
-    
+    //
+
     PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
 
-    if(isMC)
+    if (isMC)
     {
         // Important: Keep track of this variable
-        // ZS threshold in unit of GeV  
+        // ZS threshold in unit of GeV
         Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold); 
+        PHOSSupply->ApplyZeroSuppression(zs_threshold);
     }
 
 
@@ -70,7 +59,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
-        // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
+    // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
 
     TString msg = "## Jet-Jet MC ## nonlinearity applied, 20 MeV Zero Supression ";
 
@@ -85,48 +74,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
 
 
-    if ( !mgr->InitAnalysis( ) ) return;
-    mgr->PrintStatus();
+    if ( !manager->InitAnalysis( ) ) return;
+    manager->PrintStatus();
 
 
     cout << "Downloading files " << files << endl;
     alienHandler->SetOutputFiles(files);
-    mgr->StartAnalysis (runmode);
+    manager->StartAnalysis (runmode);
     gObjectTable->Print( );
 }
-
-void SetupEnvironment()
-{
-    // ROOT
-    gSystem->Load ( "libCore.so" );
-    gSystem->Load ( "libGeom.so" );
-    gSystem->Load ( "libVMC.so" );
-    gSystem->Load ( "libPhysics.so" );
-    gSystem->Load ( "libTree.so" );
-    gSystem->Load ( "libMinuit.so" );
-
-    // AliROOT
-    gSystem->Load ( "libSTEERBase.so" );
-    gSystem->Load ( "libESD.so" );
-    gSystem->Load ( "libAOD.so" );
-    gSystem->Load ( "libANALYSIS.so" );
-    gSystem->Load ( "libANALYSISalice.so" );
-    gSystem->Load ( "libPWGGAPHOSTasks.so" );
-
-    // Tender
-    gSystem->Load("libTender.so");
-    gSystem->Load("libTenderSupplies.so");
-    gSystem->Load("libPWGGAPHOSTasks.so");
-
-    // for running with root only
-    gSystem->Load( "libTree.so" );
-    gSystem->Load( "libGeom.so" );
-    gSystem->Load( "libVMC.so" );
-    gSystem->Load( "libPhysics.so" );
-
-    //add include path
-    gSystem->AddIncludePath( "-I$ALICE_ROOT/include" );
-    gSystem->AddIncludePath( "-I$ALICE_PHYSICS/include" );
-    gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
-}
-
