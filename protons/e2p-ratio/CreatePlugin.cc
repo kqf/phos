@@ -1,4 +1,4 @@
-#include "../alienpluginsetup.h"	
+#include "../setup/plugin.h"	
 #include "iostream"
 
 using std::cout;
