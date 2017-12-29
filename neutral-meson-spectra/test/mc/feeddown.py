@@ -10,13 +10,14 @@ from tools.feeddown import FeeddownEstimator
 class FedddownTest(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'pythia-2017'
-        # self.infile = 'scaled-LHC17f8a'
+        # self.infile = 'pythia-2017'
+        self.infile = 'scaled-LHC17f8a'
         self.selection = 'MCStudyOnlyTender'
         self.particles = '', 'K^{s}_{0}'#, '#Lambda', '#pi^{+}', '#pi^{-}'
 
 
 
+    @unittest.skip('')
     def test_feeddown_correction(self):
         func = self.fit_function()
         estimator = FeeddownEstimator(self.infile, self.selection, func)
@@ -29,14 +30,15 @@ class FedddownTest(unittest.TestCase):
 
     # Just compare all contributions, don't use it for error estimation
     # 
-    @unittest.skip('')
     def test_feeddown_for_different_particles(self):
-        estimator = FeeddownEstimator(self.infile, self.selection)
+        func = self.fit_function()
+        estimator = FeeddownEstimator(self.infile, self.selection, func)
 
         # Feeddown correction from different particles
         particles = map(estimator.estimate, self.particles)
-        for p in particles:
-            p.logy = False
+        for pp in particles:
+            for p in pp
+                p.logy = False
 
         diff = Comparator(crange = (0, 0.1))#, oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
         diff.compare(particles)
