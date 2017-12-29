@@ -63,9 +63,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
 
 
-    if ( !manager->InitAnalysis( ) ) return;
     manager->PrintStatus();
-
 
     alien->SetOutputFiles("AnalysisResults.root");
     manager->StartAnalysis (runmode);
