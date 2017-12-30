@@ -7,13 +7,13 @@ class PeakParametrisation(object):
     def __init__(self, options):
         super(PeakParametrisation, self).__init__()
         self.opt = options
-        # TODO: Change this later
-        self.npar_bkgr = 3
         ROOT.gStyle.SetOptFit()
         funcname = self.__class__.__name__
         # Initiate signal function
         self.signal = self.form_fitting_function(funcname)
+        self.background = self.form_background()
 
+    # TODO: Remove this later
     def configure_background(self, fitfun):
         if 'pol2' in self.opt.background:
             return
@@ -24,19 +24,15 @@ class PeakParametrisation(object):
             return
 
         # We count parameters from 0
-        for i in range(1, self.npar_bkgr):
+        for i in range(1, self.background.GetNpar()):
             fitfun.FixParameter(npar - i, 0)
 
     def fit(self, hist):
         if (not hist) or (hist.GetEntries() == 0): 
             return None, None
 
-        # background
-        bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
-        background = ROOT.TF1("mypol", bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
-
-        # signal + background
-        fitfun = ROOT.TF1("fitfun", self.signal.GetName() + " + mypol", *self.opt.fit_range)
+        formula = "{0} + {1}".format(self.signal.GetName(), self.background.GetName())
+        fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
         self.setup_parameters(fitfun, hist)
         self.configure_background(fitfun)
 
@@ -45,13 +41,12 @@ class PeakParametrisation(object):
 
         hist.Fit(fitfun,"QR", "")
 
-        npar = fitfun.GetNpar()
+        npar, nparb = fitfun.GetNpar(), self.background.GetNpar()
+        for i in range(0, nparb):
+            parameter = fitfun.GetParameter(npar - (nparb - i))
+            self.background.SetParameter(i, parameter)
 
-        for i in range(0, self.npar_bkgr):
-            parameter = fitfun.GetParameter(npar - (self.npar_bkgr - i))
-            background.SetParameter(i, parameter)
-
-        return fitfun, background
+        return fitfun, self.background
 
 
     def preliminary_fit(self, hist):
@@ -75,6 +70,13 @@ class PeakParametrisation(object):
         pars = self.preliminary_fit(hist) 
         fitfun.SetParameters(*pars)
         return pars
+
+    def form_background(self, fname = "background"):
+        if 'pol2' in self.opt.background:
+            bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
+            return ROOT.TF1(fname, bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
+
+        return ROOT.TF1(fname, self.opt.background + "(0)", *self.opt.fit_range)
 
 
     @staticmethod
