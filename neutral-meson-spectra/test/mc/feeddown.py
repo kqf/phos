@@ -37,7 +37,7 @@ class FedddownTest(unittest.TestCase):
         # Feeddown correction from different particles
         particles = map(estimator.estimate, self.particles)
         for pp in particles:
-            for p in pp
+            for p in pp:
                 p.logy = False
 
         diff = Comparator(crange = (0, 0.1))#, oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
