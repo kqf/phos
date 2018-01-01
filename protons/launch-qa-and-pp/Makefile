@@ -1,12 +1,12 @@
-# DATASET = LHC16k-pass1
-# DPART = first
-# MC = kFALSE
-# OUTDIR = results/data/no-corrections
+DATASET = LHC16i-muon-calo-pass1
+DPART = first
+MC = kFALSE
+OUTDIR = results/data/no-corrections
 
-DATASET = LHC17d20a2_extra
-DPART = second
-MC = kTRUE
-OUTDIR = results/mc/pythia
+#DATASET = LHC17d20a2_extra
+#DPART = second
+#MC = kTRUE
+#OUTDIR = results/mc/pythia
 
 TEST_SELECTION = PhysTender
 

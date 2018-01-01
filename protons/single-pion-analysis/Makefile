@@ -1,12 +1,11 @@
 DATASET = LHC17j3b2
 DPART = first
-MC = kTRUE
 OUTDIR = results/mc/pi0/iteration3
 
 TEST_SELECTION = PhysTender
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", kTRUE)' || $(call funlink) 
 	@echo $(DATASET) $(DPART) >> started_jobs.log
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Started grid analysis" >> .runhistory
@@ -16,21 +15,18 @@ grid: | %.cxx
 %.cxx:
 	@$(call funlink)	
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
-	@# Add all necessary taks
-	@$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
 	@$(call link_sources,../analysis-task-pp, "*.h" "*.cxx")
-	@$(call link_sources,../../qa/qa-track-averages,AddAnalysisTaskTrackAverages.C "*.h" "*.cxx")
 
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", kTRUE)' || $(call funlink) 
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", kTRUE, kFALSE)' || $(call funlink) 
 	$(call upload_result,AnalysisResults,$(DATASET))
 	
 	@$(call funlink) && echo "Directory is clean"
@@ -48,7 +44,7 @@ force-download:
 
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", kTRUE)' || $(call funlink) 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_test,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
