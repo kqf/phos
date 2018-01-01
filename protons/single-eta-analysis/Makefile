@@ -1,12 +1,11 @@
 DATASET = LHC17j3c1
-DPART = first
 OUTDIR = results/mc/eta/iteration2/
 
 TEST_SELECTION = PhysTender
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", kTRUE)' || $(call funlink) 
-	@echo $(DATASET) $(DPART) >> started_jobs.log
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full")' || $(call funlink) 
+	@echo $(DATASET) >> started_jobs.log
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Started grid analysis" >> .runhistory
 	@echo -e "\a"
@@ -18,14 +17,14 @@ grid: | %.cxx
 
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", kTRUE)' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate")' || $(call funlink) 
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", kTRUE, kFALSE)' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "first", kFALSE)' || $(call funlink) 
 	$(call upload_result,AnalysisResults,$(DATASET))
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
@@ -42,7 +41,7 @@ force-download:
 
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", kTRUE)' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "local", "test")' || $(call funlink) 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_test,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .

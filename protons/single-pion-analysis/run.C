@@ -1,6 +1,6 @@
 #include "../setup/environment.h"
 
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 

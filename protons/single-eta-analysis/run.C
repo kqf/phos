@@ -1,6 +1,6 @@
 #include "../setup/environment.h"
 
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
@@ -14,7 +14,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     Bool_t enablePileupCuts = kTRUE;
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
+    
+    AddTaskPhysicsSelection(
+        kTRUE,  //false for data, true for MC
+        enablePileupCuts
+    ); 
 
     // NB: This is a local copy of steering macro
     gROOT->LoadMacro("AddAnalysisTaskPP.C");
