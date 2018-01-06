@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from spectrum.spectrum import Spectrum, CompositeSpectrum
+from spectrum.ptanalyzer import PtAnalyzer
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
@@ -22,26 +22,18 @@ class TestBackgroundShape(unittest.TestCase):
                     ddir + 'LHC17j3c2': (4, 20)
                 }
 
-        inputs = [Input(f, 'PhysEffOnlyTender') for f in files]
-        inputs = map(operator.methodcaller('read'), inputs)
-
+        inputs = [Input(f, 'PhysEffOnlyTender').read() for f in files]
         options = [Options.spmc(rr, particle='eta') for f, rr in files.iteritems()]
-        f = lambda x, y: Spectrum(x, y).evaluate()
+        f = lambda x, y: PtAnalyzer(x, y).plotter
         self.results = map(f, inputs, options)
 
 
+    def test_background_shape(self):
+        for r in self.results:
+            for im in r.masses:
+                im.extract_data()
+            r.opt.show_img = True
+            r.draw([(0.1, 0.2)] * len(r.masses), True)
 
-    def test_different_mc_productions(self):
-        masses, widths = zip(*self.results)[0:2]
 
-        indata, doptions = Input('uncorrected/LHC16', 'EtaTender'), Options('data', particle='eta')
-        dmass, dwidth = Spectrum(indata, doptions).evaluate()[0:2]
 
-        diff = cmpr.Comparator((0.5, 1.), rrange = (0, 2),
-                        # crange=(0.4, 0.5), 
-                        oname = 'compared-spmc-masses')
-        diff.compare(list(masses) + [dmass])
-
-        diff = cmpr.Comparator((0.5, 1.), rrange = (0, 2),
-                        crange=(0.0, 0.02), oname = 'compared-spmc-widths')
-        diff.compare(list(widths) + [dwidth])
