@@ -3,7 +3,7 @@
 import ROOT
 import collections
 
-from sutils import gcanvas, wait
+from ptplotter import PtPlotter
 from outputcreator import OutputCreator
 from invariantmass import InvariantMass, InvariantMassNoMixing
 from options import Options
@@ -27,6 +27,7 @@ class PtAnalyzer(object):
         mass_algorithm = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
         f = lambda x, y: mass_algorithm(self.hists, x, y, options)
         self.masses = map(f, intervals, self.opt.rebins)
+        self.plotter = PtPlotter(self.masses, self.opt)
 
     @staticmethod
     def _hists(hists):
@@ -83,69 +84,6 @@ class PtAnalyzer(object):
         if self.opt.dead_mode: 
             return histos
 
-        if not draw:
-            return histos
-            
-        self.draw_ratio(intgr_ranges)
-        self.draw_mass(intgr_ranges)
-        self.draw_signal(intgr_ranges)
-
+        self.plotter.draw(intgr_ranges, draw)
         return histos
 
-
-    def draw_last_bins(self, f, intgr_ranges, name = ''):
-        canvas = gcanvas(1, 1, True)
-        canvas.Clear()
-        canvas.Divide(*self.opt.lastcanvas)
-        for i, (m, r) in enumerate(zip(self.masses[-4:], intgr_ranges[-4:])):
-            distr = f(m, canvas.cd(i + 1))
-
-            # Draw integration region, when specified
-            if not r: continue
-            m.line_low = self.draw_line(distr, r[0])
-            m.line_up = self.draw_line(distr, r[1])
-
-        wait(name + self.opt.label, self.opt.show_img, save=True)
-
-
-
-    def draw_all_bins(self, f, intgr_ranges, name = ''):
-        canvas = gcanvas(1, 1, True)
-        canvas.Clear()
-        canvas.Divide(*self.opt.multcanvas)
-        for i, (m, r) in enumerate(zip(self.masses, intgr_ranges)):
-            distr = f(m, canvas.cd(i + 1))
-
-            # Draw integration region, when specified
-            if not r: continue
-            m.line_low = self.draw_line(distr, r[0])
-            m.line_up = self.draw_line(distr, r[1])
-
-        wait(name + self.opt.label, self.opt.show_img, save=True)
-
-    def draw_ratio(self, intgr_ranges, name = ''):
-        f = lambda x, y: x.draw_ratio(y)
-        oname = 'multiple-ratio-{0}-{1}'.format(self.opt.particle, name)
-        self.draw_all_bins(f, intgr_ranges, oname)
-
-    def draw_mass(self, intgr_ranges, name = ''):
-        f = lambda x, y: x.draw_mass(y)
-        oname = 'multiple-mass-{0}-{1}'.format(self.opt.particle, name)
-        self.draw_all_bins(f, intgr_ranges, oname)
-
-    def draw_signal(self, intgr_ranges, name = ''):
-        f = lambda x, y: x.draw_signal(y) 
-        oname = 'multiple-signal-{0}-{1}'.format(self.opt.particle, name)
-        self.draw_all_bins(f, intgr_ranges, oname)
-
-        oname = 'multiple-signal-high-pt-{0}-{1}'.format(self.opt.particle, name)
-        self.draw_last_bins(f, intgr_ranges, oname)
-
-    def draw_line(self, distr, position):
-        if not distr:
-            return
-        line = ROOT.TLine(position, distr.GetMinimum(), position, distr.GetMaximum())
-        line.SetLineColor(1)
-        line.SetLineStyle(7)
-        line.Draw()
-        return line

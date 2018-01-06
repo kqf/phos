@@ -22,4 +22,3 @@ class OutputCreator(object):
             hist.SetBinContent(i + 1, d)
             hist.SetBinError(i + 1, e)
         return hist 
-
