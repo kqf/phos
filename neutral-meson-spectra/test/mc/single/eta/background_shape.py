@@ -24,6 +24,9 @@ class TestBackgroundShape(unittest.TestCase):
 
         inputs = [Input(f, 'PhysEffOnlyTender').read() for f in files]
         options = [Options.spmc(rr, particle='eta') for f, rr in files.iteritems()]
+        for opt in options:
+            opt.fitf = "gaus"
+
         f = lambda x, y: PtAnalyzer(x, y).plotter
         self.results = map(f, inputs, options)
 
@@ -32,8 +35,11 @@ class TestBackgroundShape(unittest.TestCase):
         for r in self.results:
             for im in r.masses:
                 im.extract_data()
-            r.opt.show_img = True
-            r.draw([(0.1, 0.2)] * len(r.masses), True)
 
+            intgr_ranges = [(0.1, 0.2)] * len(r.masses)
+
+            r.opt.show_img = True
+            r._draw_mass(intgr_ranges)
+            r._draw_signal(intgr_ranges)
 
 

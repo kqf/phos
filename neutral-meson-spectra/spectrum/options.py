@@ -10,6 +10,7 @@ class AnalysisOption(object):
     def __init__(self, name, config, particle):
         super(AnalysisOption, self).__init__()
         self.name = name
+        self.particle = particle
         with open(config) as f:
             conf = json.load(f)
         self._setup_configurations(conf, particle)
@@ -45,6 +46,7 @@ class Options(object):
                     spectrumconf = 'config/spectrum.json',
                     ptconf = 'config/pt-analysis.json',
                     invmassconf = 'config/invariant-mass.json',
+                    paramconf = 'config/cball-parameters.json',
                     spmc = False,
                     use_mixed = True):
 
@@ -65,12 +67,7 @@ class Options(object):
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}
 
-        if spmc:
-            pconf = 'config/cball-parameters-spmc.json'
-        else:
-            pconf = 'config/{0}-parameters.json'.format('gaus' if 'gaus' in fitf.lower() else 'cball')
-            
-        self.param = AnalysisOption('param', pconf, particle)
+        self.param = AnalysisOption('param', paramconf, particle)
         self.param.relaxed = relaxedcb
 
     @property
@@ -79,11 +76,11 @@ class Options(object):
 
     @fitf.setter
     def fitf(self, fitf):
-        r, p = self.param.relaxed, self.param.ispi0 
-        pconf = 'config/gaus-parameters.json' if 'gaus' in fitf.lower() else 'config/cball-parameters.json'
+        relaxed, particle = self.param.relaxed, self.param.particle 
+        prefix = 'gaus' if 'gaus' in fitf.lower() else 'cball'
+        pconf = 'config/{0}-parameters.json'.format(prefix)
         self.param = AnalysisOption('param', pconf, particle)
-        self.param.relaxed = r
-        self.param.ispi0 = p
+        self.param.relaxed = relaxed
 
     @property
     def label(self):
@@ -118,6 +115,7 @@ class Options(object):
                     mode = 'q', 
                     particle = particle, 
                     spectrumconf = 'config/spectrum_spmc.json',
+                    paramconf = 'config/cball-parameters-spmc.json' 
         )
 
         options.spectrum.fit_range = pt_fit_range
