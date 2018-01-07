@@ -30,19 +30,16 @@ class TestBackgroundShape(unittest.TestCase):
         options = [Options.spmc(rr, 
             particle='eta',
             paramconf = 'config/cball-parameters-spmc-test.json'
-
         ) for (f, rr) in files]
 
         self.arguments = inputs, options
 
-    @unittest.skip('')
     def test_background_shape(self):
         f = lambda x, y: PtAnalyzer(x, y).plotter
         ptranges = map(f, *self.arguments)
 
 
-
-        for r in self.results:
+        for r in ptranges:
             for im in r.masses:
                 im.extract_data()
 
@@ -74,6 +71,7 @@ class TestBackgroundShape(unittest.TestCase):
         diff.compare(low_pt.cball_n)
         su.wait()
 
+    @unittest.skip('')
     def test_new_cb_parameters(self):
        # Try to relax CB parameters 
         for opt in self.arguments[1]:

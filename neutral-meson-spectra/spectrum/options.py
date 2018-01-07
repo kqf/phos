@@ -117,7 +117,8 @@ class Options(object):
                     mode = 'q', 
                     particle = particle, 
                     spectrumconf = 'config/spectrum_spmc.json',
-                    paramconf = paramconf
+                    paramconf = paramconf,
+                    use_mixed = False
         )
 
         options.spectrum.fit_range = pt_fit_range

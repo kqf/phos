@@ -11,10 +11,9 @@ class PeakParametrisation(object):
         funcname = self.__class__.__name__
         # Initiate signal function
         self.signal = self.form_fitting_function(funcname)
-        self.background = self.form_background()
 
     # TODO: Remove this later
-    def configure_background(self, fitfun):
+    def configure_background(self, fitfun, background):
         if 'pol2' in self.opt.background:
             return
 
@@ -24,29 +23,32 @@ class PeakParametrisation(object):
             return
 
         # We count parameters from 0
-        for i in range(1, self.background.GetNpar()):
+        for i in range(1, background.GetNpar()):
             fitfun.FixParameter(npar - i, 0)
 
     def fit(self, hist):
         if (not hist) or (hist.GetEntries() == 0): 
             return None, None
 
-        formula = "{0} + {1}".format(self.signal.GetName(), self.background.GetName())
+        background = self.form_background()
+
+        formula = "{0} + {1}".format(self.signal.GetName(), background.GetName())
         fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
+
         self.setup_parameters(fitfun, hist)
-        self.configure_background(fitfun)
+        self.configure_background(fitfun, background)
 
         if 'mix' in hist.GetName().lower():
             fitfun.FixParameter(0, 0)
 
-        hist.Fit(fitfun,"QR", "")
+        hist.Fit(fitfun,"RQ", "")
 
-        npar, nparb = fitfun.GetNpar(), self.background.GetNpar()
+        npar, nparb = fitfun.GetNpar(), background.GetNpar()
         for i in range(0, nparb):
             parameter = fitfun.GetParameter(npar - (nparb - i))
-            self.background.SetParameter(i, parameter)
+            background.SetParameter(i, parameter)
 
-        return fitfun, self.background
+        return fitfun, background
 
 
     def preliminary_fit(self, hist):
