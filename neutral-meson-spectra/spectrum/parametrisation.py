@@ -6,25 +6,12 @@ class PeakParametrisation(object):
 
     def __init__(self, options):
         super(PeakParametrisation, self).__init__()
-        self.opt = options
         ROOT.gStyle.SetOptFit()
+
+        self.opt = options
         funcname = self.__class__.__name__
         # Initiate signal function
         self.signal = self.form_fitting_function(funcname)
-
-    # TODO: Remove this later
-    def configure_background(self, fitfun, background):
-        if 'pol2' in self.opt.background:
-            return
-
-        npar = fitfun.GetNpar()
-        if 'pol1' in self.opt.background:
-            fitfun.FixParameter(npar - 1, 0)
-            return
-
-        # We count parameters from 0
-        for i in range(1, background.GetNpar()):
-            fitfun.FixParameter(npar - i, 0)
 
     def fit(self, hist):
         if (not hist) or (hist.GetEntries() == 0): 
@@ -36,7 +23,6 @@ class PeakParametrisation(object):
         fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
 
         self.setup_parameters(fitfun, hist)
-        self.configure_background(fitfun, background)
 
         if 'mix' in hist.GetName().lower():
             fitfun.FixParameter(0, 0)
@@ -76,7 +62,12 @@ class PeakParametrisation(object):
     def form_background(self, fname = "background"):
         if 'pol2' in self.opt.background:
             bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
-            return ROOT.TF1(fname, bf % (self.opt.fit_mass, self.opt.fit_mass), *self.opt.fit_range)
+            return ROOT.TF1(fname, tuple(bf % [self.opt.fit_mass] * 2), *self.opt.fit_range)
+
+        if 'pol3' in self.opt.background:
+            bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2 + [3] * x^(x-%.3f)^3"
+            return ROOT.TF1(fname, bf % tuple([self.opt.fit_mass] * 3) , *self.opt.fit_range)
+
 
         return ROOT.TF1(fname, self.opt.background + "(0)", *self.opt.fit_range)
 
@@ -110,6 +101,7 @@ class CrystalBall(PeakParametrisation):
         fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
         fitfun.SetParLimits(4, *self.opt.cb_n_limits)
         fitfun.SetParameters(*(pars[:3] + [self.opt.cb_alpha, self.opt.cb_n] + pars[3:]))
+
         if not self.opt.relaxed:
             fitfun.FixParameter(3, self.opt.cb_alpha)
             fitfun.FixParameter(4, self.opt.cb_n) 

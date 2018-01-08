@@ -34,6 +34,7 @@ class TestBackgroundShape(unittest.TestCase):
 
         self.arguments = inputs, options
 
+    @unittest.skip('')
     def test_background_shape(self):
         f = lambda x, y: PtAnalyzer(x, y).plotter
         ptranges = map(f, *self.arguments)
@@ -71,12 +72,11 @@ class TestBackgroundShape(unittest.TestCase):
         diff.compare(low_pt.cball_n)
         su.wait()
 
-    @unittest.skip('')
     def test_new_cb_parameters(self):
        # Try to relax CB parameters 
         for opt in self.arguments[1]:
             print opt
-            opt.param.relaxed = True  
+            # opt.param.relaxed = True  
 
         estimators = map(Spectrum, *self.arguments)
         histograms = map(lambda x: x.evaluate(), estimators)
