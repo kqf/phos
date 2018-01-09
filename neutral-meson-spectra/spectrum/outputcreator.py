@@ -31,31 +31,37 @@ class SpectrumExtractor(object):
         par_error = mass.sigf.GetParError(position)
         return par, par_error
 
+    @handle_empty_fit
     def mass(self, mass, intgr_ranges):
         return self.parameter(mass, "M")
 
+    @handle_empty_fit
     def width(self, mass, intgr_ranges):
         return self.parameter(mass, "#sigma")
 
+    @handle_empty_fit
     def cball_alpha(self, mass, intgr_ranges):
         return self.parameter(mass, "#alpha")
 
+    @handle_empty_fit
     def cball_n(self, mass, intgr_ranges):
         return self.parameter(mass, "n")
 
+    @handle_empty_fit
     def npi0(self, mass, intgr_ranges):
         return mass.number_of_mesons(intgr_ranges)
 
+    @handle_empty_fit
     def nraw(self, mass, intgr_ranges):
         npi0 = mass.number_of_mesons(intgr_ranges)
         return map(lambda x: x / (2. * ROOT.TMath.Pi()), npi0)
 
+    @handle_empty_fit
     def chi2(self, mass, intgr_ranges):
         ndf = mass.sigf.GetNDF() 
         ndf = ndf if ndf > 0 else 1
         return (mass.sigf.GetChisquare() / ndf, 0) 
 
-    @handle_empty_fit
     def eval(self, mass, intgr_ranges):
         return [f(mass, intgr_ranges) for f in self.quantities]
 
