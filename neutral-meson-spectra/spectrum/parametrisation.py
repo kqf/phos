@@ -62,7 +62,7 @@ class PeakParametrisation(object):
     def form_background(self, fname = "background"):
         if 'pol2' in self.opt.background:
             bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
-            return ROOT.TF1(fname, tuple(bf % [self.opt.fit_mass] * 2), *self.opt.fit_range)
+            return ROOT.TF1(fname, bf % tuple([self.opt.fit_mass] * 2), *self.opt.fit_range)
 
         if 'pol3' in self.opt.background:
             bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2 + [3] * x^(x-%.3f)^3"
