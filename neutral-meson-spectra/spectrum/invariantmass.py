@@ -91,6 +91,9 @@ class VisualizeMass(object):
         canvas.Update()
         return self.mass 
 
+    def fitted(self):
+        return self.bgrf and self.sigf
+
 
 
 
