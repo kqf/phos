@@ -12,18 +12,18 @@ class SpectrumExtractor(object):
             return f(self, mass, intgr_ranges)
         return wrapper
 
-    def __init__(self, arg = None):
+    def __init__(self, order = []):
         super(SpectrumExtractor, self).__init__()
-        # TODO: Setup automatic pipeline
-        self.quantities = [
-            self.mass,
-            self.width,
-            self.nraw,
-            self.chi2,
-            self.npi0,
-            self.cball_alpha,
-            self.cball_n
-        ]
+        rules = {
+            'mass': self.mass,
+            'width': self.width,
+            'spectrum': self.nraw,
+            'chi2': self.chi2,
+            'npi0': self.npi0,
+            'cball_alpha': self.cball_alpha,
+            'cball_n': self.cball_n
+        }
+        self.quantities = [rules[q] for q in order]
 
     def parameter(self, mass, parname):
         position = mass.sigf.GetParNumber(parname)
@@ -63,6 +63,7 @@ class SpectrumExtractor(object):
         return (mass.sigf.GetChisquare() / ndf, 0) 
 
     def eval(self, mass, intgr_ranges):
+        mass.extract_data() 
         return [f(mass, intgr_ranges) for f in self.quantities]
 
 
@@ -87,10 +88,4 @@ class OutputCreator(object):
         for i, (d, e) in enumerate(data):
             hist.SetBinContent(i + 1, d)
             hist.SetBinError(i + 1, e)
-        return hist 
-
-    @staticmethod
-    def eval(mass, intgr_ranges):
-        mass.extract_data() 
-        extractor = SpectrumExtractor()
-        return extractor.eval(mass, intgr_ranges)
+        return hist

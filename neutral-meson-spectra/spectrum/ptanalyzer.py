@@ -4,7 +4,7 @@ import ROOT
 import collections
 
 from ptplotter import PtPlotter
-from outputcreator import OutputCreator
+from outputcreator import OutputCreator, SpectrumExtractor
 from invariantmass import InvariantMass, InvariantMassNoMixing
 from options import Options
 
@@ -20,6 +20,7 @@ class PtAnalyzer(object):
         self.nevents = self.hists[0].nevents
         self.opt = options.pt
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
+        self.extractor = SpectrumExtractor(self.opt.output_order)
 
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), 'Number of intervals is not equal to the number of rebin parameters'
@@ -58,10 +59,9 @@ class PtAnalyzer(object):
         return  result
 
         
-
     # TODO: Move All Serialization logic to OutputCreator
     def quantities(self, draw = True, intgr_ranges = []):
-        values = map(OutputCreator.eval, self.masses, intgr_ranges)
+        values = map(self.extractor.eval, self.masses, intgr_ranges)
 
         # Create hitograms
         histos = self.histograms(values)
