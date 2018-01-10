@@ -109,15 +109,13 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, label = '', particle = 'pi0',
-            paramconf = 'config/cball-parameters-spmc.json' 
-        ):
+    def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(name,
                     mode = 'q', 
                     particle = particle, 
                     spectrumconf = 'config/spectrum_spmc.json',
-                    paramconf = paramconf,
+                    paramconf = 'config/cball-parameters-spmc-test.json',
                     use_mixed = False
         )
 

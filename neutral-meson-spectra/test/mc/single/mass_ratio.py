@@ -26,10 +26,7 @@ class TestPi0EtaMassRatio(unittest.TestCase):
             Input('/single/nonlin1/LHC17j3c2', 'PhysEffOnlyTender'): (10, 20)
         }
 
-        options_eta = Options('eta', 
-            particle='eta',
-            paramconf = 'config/cball-parameters-spmc-test.json'
-        )
+        options_eta = Options('eta', particle='eta')
 
 
         eta = CompositeSpectrum(inputs_eta, options_eta)
