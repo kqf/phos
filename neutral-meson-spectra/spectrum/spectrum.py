@@ -55,23 +55,37 @@ class Spectrum(object):
         wait(pref + "-paramerisation-" + self.label, self.opt.show_img, True)
         return fitquant
 
-        
+    def fit_mass(self, mass):
+        return self._fit_quantity(mass,
+            self.opt.mass_func,
+            self.opt.mass_pars,
+            self.opt.mass_names,
+            'mass'
+        ) 
+
+    def fit_sigma(self, sigma):
+        return self._fit_quantity(sigma, 
+            self.opt.width_func, 
+            self.opt.width_pars, 
+            self.opt.width_names, 
+            'width'
+        )
+
     def _fit_ranges(self, quantities):
         ROOT.gStyle.SetOptStat('')
         mass, sigma = quantities.mass, quantities.width
 
-        fitsigma = self._fit_quantity(sigma, self.opt.width_func, self.opt.width_pars, self.opt.width_names, 'width')
-        fitmass = self._fit_quantity(mass, self.opt.mass_func, self.opt.mass_pars, self.opt.mass_names, 'mass')
+        massf = self.fit_mass(mass)
+        sigmaf = self.fit_sigma(sigma)
 
-        mass_range = lambda pt: (fitmass.Eval(pt) - self.opt.nsigmas * fitsigma.Eval(pt),
-                                 fitmass.Eval(pt) + self.opt.nsigmas * fitsigma.Eval(pt))
+        mass_range = lambda pt: (massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
+                                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt))
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
 
 
 # TODO: Add Options factory for singleParticleMC
-
 class CompositeSpectrum(Spectrum):
 
     def __init__(self, lst, options = Options()):

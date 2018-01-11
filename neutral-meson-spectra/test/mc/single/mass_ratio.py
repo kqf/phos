@@ -19,22 +19,35 @@ class TestPi0EtaMassRatio(unittest.TestCase):
             Input('/single/nonlin0/LHC17j3b2', 'PhysEffOnlyTender'): (5.5, 20)
         }
 
-        pi0 = CompositeSpectrum(inputs_pi0, Options('pi0'))
+        diff = Comparator()
+
+        pi0 = CompositeSpectrum(inputs_pi0, Options.spmc((0, 5.5), 'pi0', 'pi0'))
+        pi0_mass = pi0.evaluate().mass
+        pi0_massf = pi0.fit_mass(pi0_mass)
+        diff.compare(pi0_mass)
 
         inputs_eta = {
             Input('/single/nonlin1/LHC17j3c1', 'PhysEffOnlyTender'): (0, 10), 
             Input('/single/nonlin1/LHC17j3c2', 'PhysEffOnlyTender'): (10, 20)
         }
 
-        options_eta = Options('eta', particle='eta')
+        options_eta = Options.spmc((0, 10), 'eta', particle='eta')
 
 
         eta = CompositeSpectrum(inputs_eta, options_eta)
+        eta_mass = eta.evaluate().mass
+        eta_massf = eta.fit_mass(eta_mass)
+        diff.compare(eta_mass)
+
+        eta_mass_approx = eta_massf.GetHistogram()
+        eta_mass_approx.SetTitle("Fitted masses of neutral mesons")
+        eta_mass_approx.label = 'm_{#eta}'
+        pi0_mass_approx = pi0_massf.GetHistogram()
+        pi0_mass_approx.label = 'm_{#pi^{0}}'
 
         diff = Comparator()
-
         diff.compare(
-            pi0.evaluate().mass, 
-            eta.evaluate().mass
+            eta_massf.GetHistogram(),
+            pi0_massf.GetHistogram()
         )
 
