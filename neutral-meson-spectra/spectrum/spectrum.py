@@ -90,7 +90,13 @@ class CompositeSpectrum(Spectrum):
 
     def __init__(self, lst, options = Options()):
         super(CompositeSpectrum, self).__init__(lst.keys()[0], options)
-        self.spectrums = [Spectrum(l, Options.spmc(rr)) for l, rr in lst.iteritems()]
+        self.spectrums = [
+            Spectrum(l, 
+                Options.spmc(rr, 
+                    particle=options.particle
+                )
+            ) for l, rr in lst.iteritems()
+        ]
 
 
     def evaluate(self):

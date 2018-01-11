@@ -15,8 +15,8 @@ class TestPi0EtaMassRatio(unittest.TestCase):
 
     def test_mass_ratio(self):
         inputs_pi0 = {
-            Input('/single/nonlin0/LHC17j3b1', 'PhysEffOnlyTender'): (0, 5.5), 
-            Input('/single/nonlin0/LHC17j3b2', 'PhysEffOnlyTender'): (5.5, 20)
+            Input('/single/nonlin/LHC17j3b1', 'PhysEffOnlyTender'): (0, 5.5), 
+            Input('/single/nonlin/LHC17j3b2', 'PhysEffOnlyTender'): (5.5, 20)
         }
 
         diff = Comparator()

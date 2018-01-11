@@ -69,6 +69,7 @@ class Options(object):
 
         self.param = AnalysisOption('param', paramconf, particle)
         self.param.relaxed = relaxedcb
+        self.particle = particle
 
     @property
     def fitf(self):
