@@ -89,3 +89,8 @@ class OutputCreator(object):
             hist.SetBinContent(i + 1, d)
             hist.SetBinError(i + 1, e)
         return hist
+
+    @staticmethod
+    def output_histogram(name, title, label, priority, bins, data):
+        output = OutputCreator(name, title, label, priority)
+        return output.get_hist(bins, data)

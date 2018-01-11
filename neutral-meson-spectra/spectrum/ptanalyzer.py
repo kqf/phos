@@ -16,9 +16,9 @@ class PtAnalyzer(object):
 
     def __init__(self, hists, options = Options()):
         super(PtAnalyzer, self).__init__()
+        self.opt = options.pt
         self.hists = self._hists(hists)
         self.nevents = self.hists[0].nevents
-        self.opt = options.pt
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
         self.extractor = SpectrumExtractor(self.opt.output_order)
 
@@ -40,23 +40,34 @@ class PtAnalyzer(object):
 
 
     def histograms(self, data):
-        # Don't use format, as it confuses root/latex syntax
-        f = lambda x, y: OutputCreator(x, y % self.opt.partlabel, self.opt.label, self.opt.priority)
-
-        # Create actual output
-        output = {name: f(name, title) for name, title in self.opt.output.iteritems()}
+        iter_collection = zip(
+            self.opt.output_order, # Ensure ordering of `data`
+            zip(*data)
+        )
 
         # Extract the data
-        output = {quant: output[quant].get_hist(self.opt.ptedges, d) for quant, d in zip(self.opt.output_order, zip(*data))}
+        # Don't use format, as it confuses root/latex syntax
+        output = {quant: 
+            OutputCreator.output_histogram(
+                quant,
+                self.opt.output[quant] % self.opt.partlabel,
+                self.opt.label,
+                self.opt.priority,
+                self.opt.ptedges,
+                d
+            ) for quant, d in iter_collection
+        }
 
-        # Convert to a proper 
-        result = self.OutType(**output)
+        # Convert to a proper datastructure 
+        return self.OutType(**output)
 
+
+    def _decorate_hists(self, histograms):
         # Scale by the number of events 
-        result.spectrum.Scale(1. / self.nevents)
-        result.spectrum.logy = True
-        result.npi0.logy = True
-        return  result
+        histograms.spectrum.Scale(1. / self.nevents)
+        histograms.spectrum.logy = True
+        histograms.npi0.logy = True
+        return histograms 
 
         
     # TODO: Move All Serialization logic to OutputCreator
@@ -65,10 +76,11 @@ class PtAnalyzer(object):
 
         # Create hitograms
         histos = self.histograms(values)
-        
+        decorated = self._decorate_hists(histos)
+
         if self.opt.dead_mode: 
-            return histos
+            return decorated 
 
         self.plotter.draw(intgr_ranges, draw)
-        return histos
+        return decorated 
 
