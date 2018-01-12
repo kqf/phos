@@ -3,7 +3,7 @@
 import ROOT
 import json
 from sutils import gcanvas, wait, adjust_canvas, ticks
-from ptanalyzer import PtAnalyzer
+from kinematic import KinematicTransformer
 from options import Options
 from broot import BROOT as br
 
@@ -14,7 +14,7 @@ class Spectrum(object):
 
     def __init__(self, lst, options = Options()):
         super(Spectrum, self).__init__()
-        self.analyzer = PtAnalyzer(lst, options)
+        self.analyzer = KinematicTransformer(lst, options)
         self.opt = options.spectrum
         self.label = options.pt.label
 

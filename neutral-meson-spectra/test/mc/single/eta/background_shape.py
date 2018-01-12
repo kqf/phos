@@ -2,7 +2,7 @@
 
 import ROOT
 from spectrum.spectrum import Spectrum
-from spectrum.ptanalyzer import PtAnalyzer
+from spectrum.kinematic import KinematicTransformer 
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
@@ -36,7 +36,7 @@ class TestBackgroundShape(unittest.TestCase):
 
     @unittest.skip('')
     def test_background_shape(self):
-        f = lambda x, y: PtAnalyzer(x, y).plotter
+        f = lambda x, y:  KinematicTransformer(x, y).plotter
         ptranges = map(f, *self.arguments)
 
 

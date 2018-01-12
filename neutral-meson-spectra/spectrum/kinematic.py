@@ -12,10 +12,10 @@ from broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)
 
-class PtAnalyzer(object):
+class KinematicTransformer(object):
 
     def __init__(self, hists, options = Options()):
-        super(PtAnalyzer, self).__init__()
+        super(KinematicTransformer, self).__init__()
         self.opt = options.pt
         self.hists = self._hists(hists)
         self.nevents = self.hists[0].nevents

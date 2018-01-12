@@ -5,7 +5,6 @@ import sys
 import json
 import hashlib
 
-from spectrum.spectrum import PtAnalyzer
 from spectrum.spectrum import Spectrum
 from spectrum.options import Options
 from spectrum.input import Input

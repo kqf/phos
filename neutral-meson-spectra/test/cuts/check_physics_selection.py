@@ -1,7 +1,7 @@
 import unittest
 
 from spectrum.sutils import gcanvas, wait, ratio
-from spectrum.spectrum import PtAnalyzer, Spectrum
+from spectrum.spectrum import Spectrum
 from spectrum.input import Input, TimecutInput
 from test.test_check_different_modules import ModuleAnalyzer
 import ROOT

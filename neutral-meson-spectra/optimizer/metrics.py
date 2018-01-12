@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from spectrum.input import TimecutInput
-from spectrum.spectrum import PtAnalyzer, Spectrum 
+from spectrum.spectrum import KinematicTransformer, Spectrum 
 from spectrum.sutils import wait
 from math import exp
 
@@ -54,7 +54,7 @@ class MaximumSignalMetrics(TestMetrics):
 
     def distance(self, par):
         x = par[0] * 1e-9
-        singnal = PtAnalyzer(*self.input.extract(x)).quantities()[-1]
+        singnal = KinematicTransformer(*self.input.extract(x)).quantities()[-1]
         data = [ (singnal.GetBinContent(i) / singnal.GetBinError(i)) ** 2 for i in range(1, singnal.GetNbinsX() + 1) if singnal.GetBinContent(i) > 0 ] 
         return sum(data) ** 2
 
@@ -65,11 +65,11 @@ class MaximumDeviationMetrics(MaximumSignalMetrics):
         self.reference = self.extract_reference(reference)
 
     def extract_reference(self, ref):
-        return PtAnalyzer(ref.read(), 'no cut', 'dead').quantities()
+        return KinematicTransformer(ref.read(), 'no cut', 'dead').quantities()
 
     def distance(self, par):
         x = par[0] * 1e-9
-        spectrum = PtAnalyzer(*self.input.extract(x)).quantities()[2]
+        spectrum = KinematicTransformer(*self.input.extract(x)).quantities()[2]
         bins = self.ratios(spectrum)
         return -sum(map(lambda x: x ** 2, bins))
 

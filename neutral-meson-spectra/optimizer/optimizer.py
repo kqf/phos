@@ -3,7 +3,8 @@
 import ROOT
 from array import array
 
-from spectrum.spectrum import PtAnalyzer, Spectrum
+from spectrum.spectrum import Spectrum
+from spectrum.kinematic import KinematicTransformer
 from spectrum.sutils import wait
 ROOT.TH1.AddDirectory(False)
 
@@ -32,7 +33,7 @@ class Optimizer(object):
 
 
     def compare(self, pmin):
-       res = [PtAnalyzer(*self.metrics.input.extract(pmin)).quantities(), PtAnalyzer(*self.metrics.input.extract(140.e-9)).quantities()]
+       res = [KinematicTransformer(*self.metrics.input.extract(pmin)).quantities(), KinematicTransformer(*self.metrics.input.extract(140.e-9)).quantities()]
        import spectrum.comparator as cmpr
        diff = cmpr.Comparator()
        diff.compare_set_of_histograms(res)
