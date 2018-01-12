@@ -7,6 +7,7 @@ import json
 import copy
 import array
 import urllib2          
+from collections import namedtuple
 
 ROOT.TH1.AddDirectory(False)
 
@@ -365,7 +366,9 @@ class BROOT(object):
             
         pp = [tfunc.GetParameter(i) for i in range(npars)] 
         ep = [tfunc.GetParError(i) for i in range(npars)] 
-        return pp, ep
+
+        FitPars = namedtuple('FitPars', ['pars', 'errors'])
+        return FitPars(pp, ep)
 
     @classmethod
     def empty_bins(klass, hist, tolerance = 1e-10):

@@ -14,6 +14,7 @@ import spectrum.sutils as su
 class TestPi0EtaMassRatio(unittest.TestCase):
 
     def test_mass_ratio(self):
+        compare_range = 0.8, 14
         inputs_pi0 = {
             Input('/single/nonlin/LHC17j3b1', 'PhysEffOnlyTender'): (0, 5.5), 
             Input('/single/nonlin/LHC17j3b2', 'PhysEffOnlyTender'): (5.5, 20)
@@ -26,6 +27,11 @@ class TestPi0EtaMassRatio(unittest.TestCase):
         pi0_massf = pi0.fit_mass(pi0_mass)
         diff.compare(pi0_mass)
 
+        pi0_massf.SetRange(*compare_range)
+        pi0_massf.Draw()
+        su.wait()
+
+
         inputs_eta = {
             Input('/single/nonlin1/LHC17j3c1', 'PhysEffOnlyTender'): (0, 10), 
             Input('/single/nonlin1/LHC17j3c2', 'PhysEffOnlyTender'): (10, 20)
@@ -37,6 +43,7 @@ class TestPi0EtaMassRatio(unittest.TestCase):
         eta = CompositeSpectrum(inputs_eta, options_eta)
         eta_mass = eta.evaluate().mass
         eta_massf = eta.fit_mass(eta_mass)
+        eta_massf.SetRange(*compare_range)
         diff.compare(eta_mass)
 
         eta_mass_approx = eta_massf.GetHistogram()
@@ -45,9 +52,9 @@ class TestPi0EtaMassRatio(unittest.TestCase):
         pi0_mass_approx = pi0_massf.GetHistogram()
         pi0_mass_approx.label = 'm_{#pi^{0}}'
 
-        diff = Comparator()
+        diff = Comparator(crange=(0.1, 0.7))
         diff.compare(
-            eta_massf.GetHistogram(),
-            pi0_massf.GetHistogram()
+            eta_mass,
+            pi0_mass
         )
 
