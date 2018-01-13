@@ -2,6 +2,7 @@
 
 import ROOT
 import json
+from analysis import Analysis
 from sutils import gcanvas, wait, adjust_canvas, ticks
 from kinematic import KinematicTransformer
 from options import Options
@@ -12,90 +13,27 @@ ROOT.TH1.AddDirectory(False)
 
 class Spectrum(object):
 
-    def __init__(self, lst, options = Options()):
+    def __init__(self, data, options = Options()):
         super(Spectrum, self).__init__()
-        self.analyzer = KinematicTransformer(lst, options)
-        self.opt = options.spectrum
-        self.label = lst.label
-
-    def _mass_ranges(self):
-        quantities = self.analyzer.quantities(False)
-        ranges = self._fit_ranges(quantities)
-        return ranges
+        self.data = data
+        self.label = data.label
+        self.model = Analysis(options)
 
     def evaluate(self):
-        ranges = self._mass_ranges()
-        return self.analyzer.quantities(True, ranges)
-
-    def _fit_quantity(self, quant, func, par, names, pref):
-        fitquant = ROOT.TF1("fitquant" + pref, func)
-        fitquant.SetLineColor(46)
-
-
-        if not self.opt.dead:
-            canvas = gcanvas(1./ 2., 1, True)
-            adjust_canvas(canvas)
-            ticks(canvas) 
-            quant.Draw()
-
-        fitquant.SetParameters(*par)
-        fitquant.SetParNames(*names)
-
-        # Doesn't fit and use default parameters for 
-        # width/mass, therefore this will give correct estimation
-        if not self.opt.fit_mass_width:
-            [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
-
-
-        # print self.opt.fit_range
-        quant.Fit(fitquant, "q", "", *self.opt.fit_range)
-
-        # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
-        quant.SetLineColor(37)
-        wait(pref + "-paramerisation-" + self.label, self.opt.show_img, True)
-        return fitquant
-
-    def fit_mass(self, mass):
-        return self._fit_quantity(mass,
-            self.opt.mass_func,
-            self.opt.mass_pars,
-            self.opt.mass_names,
-            'mass'
-        ) 
-
-    def fit_sigma(self, sigma):
-        return self._fit_quantity(sigma, 
-            self.opt.width_func, 
-            self.opt.width_pars, 
-            self.opt.width_names, 
-            'width'
-        )
-
-    def _fit_ranges(self, quantities):
-        ROOT.gStyle.SetOptStat('')
-        mass, sigma = quantities.mass, quantities.width
-
-        massf = self.fit_mass(mass)
-        sigmaf = self.fit_sigma(sigma)
-
-        mass_range = lambda pt: (massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
-                                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt))
-
-        pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
-        return map(mass_range, pt_values) 
+        return self.model.transform(self.data)
 
 
 # TODO: Add Options factory for singleParticleMC
 class CompositeSpectrum(Spectrum):
 
-    def __init__(self, lst, options = Options()):
-        super(CompositeSpectrum, self).__init__(lst.keys()[0], options)
+    def __init__(self, data, options = Options()):
+        super(CompositeSpectrum, self).__init__(data.keys()[0], options)
         self.spectrums = [
             Spectrum(l, 
                 Options.spmc(rr, 
                     particle=options.particle
                 )
-            ) for l, rr in lst.iteritems()
+            ) for l, rr in data.iteritems()
         ]
 
 

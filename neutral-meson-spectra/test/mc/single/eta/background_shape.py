@@ -22,8 +22,8 @@ class TestBackgroundShape(unittest.TestCase):
     def setUp(self):
         ddir = '/single/nonlin1/'
         files = (
-                    (ddir + 'LHC17j3c1', (0, 10)),
-                    (ddir + 'LHC17j3c2', (4, 20))
+            (ddir + 'LHC17j3c1', (0, 10)),
+            (ddir + 'LHC17j3c2', (4, 20))
         )
 
         inputs = [Input(f, 'PhysEffOnlyTender') for (f, _) in files]
