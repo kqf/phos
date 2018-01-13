@@ -28,7 +28,7 @@ def corrected_spectrum(directory, join_point = 5):
         genhist = 'hPt_#pi^{0}_primary_'
 
         # Define inputs and options for different productions
-        dinp, dopt = Input('LHC16', 'PhysOnlyTender'), Options('data', 'd')
+        dinp, dopt = Input('LHC16', 'PhysOnlyTender', label='data'), Options('d')
 
         # SPMC
         inputs = {

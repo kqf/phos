@@ -16,13 +16,13 @@ class TestPi0EtaMassRatio(unittest.TestCase):
     def test_mass_ratio(self):
         compare_range = 0.8, 14
         inputs_pi0 = {
-            Input('/single/nonlin/LHC17j3b1', 'PhysEffOnlyTender'): (0, 5.5), 
-            Input('/single/nonlin/LHC17j3b2', 'PhysEffOnlyTender'): (5.5, 20)
+            Input('/single/nonlin/LHC17j3b1', 'PhysEffOnlyTender', label='#pi^{0}'): (0, 5.5), 
+            Input('/single/nonlin/LHC17j3b2', 'PhysEffOnlyTender', label='#pi^{0}'): (5.5, 20)
         }
 
         diff = Comparator()
 
-        pi0 = CompositeSpectrum(inputs_pi0, Options.spmc((0, 5.5), 'pi0', 'pi0'))
+        pi0 = CompositeSpectrum(inputs_pi0, Options.spmc((0, 5.5), 'pi0'))
         pi0_mass = pi0.evaluate().mass
         pi0_massf = pi0.fit_mass(pi0_mass)
         diff.compare(pi0_mass)
@@ -33,12 +33,11 @@ class TestPi0EtaMassRatio(unittest.TestCase):
 
 
         inputs_eta = {
-            Input('/single/nonlin1/LHC17j3c1', 'PhysEffOnlyTender'): (0, 10), 
-            Input('/single/nonlin1/LHC17j3c2', 'PhysEffOnlyTender'): (10, 20)
+            Input('/single/nonlin1/LHC17j3c1', 'PhysEffOnlyTender', label='#eta'): (0, 10), 
+            Input('/single/nonlin1/LHC17j3c2', 'PhysEffOnlyTender', label='#eta'): (10, 20)
         }
 
-        options_eta = Options.spmc((0, 10), 'eta', particle='eta')
-
+        options_eta = Options.spmc((0, 10), particle='eta')
 
         eta = CompositeSpectrum(inputs_eta, options_eta)
         eta_mass = eta.evaluate().mass

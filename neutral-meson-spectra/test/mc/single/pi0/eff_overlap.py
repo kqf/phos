@@ -1,6 +1,5 @@
 import unittest
 
-from spectrum.options import Options
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br

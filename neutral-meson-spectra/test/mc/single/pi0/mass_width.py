@@ -21,9 +21,7 @@ class TestMassWidthPi0(TestMassWidth):
                     ddir + 'LHC17j3b2': (9, 20)
         }
 
-        inputs = [Input(f, 'PhysEffOnlyTender') for f in files]
-        inputs = map(operator.methodcaller('read'), inputs)
-
+        inputs = [Input(f, 'PhysEffOnlyTender', label='#pi0') for f in files]
         options = [Options.spmc(rr) for f, rr in files.iteritems()]
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)

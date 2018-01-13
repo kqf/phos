@@ -26,10 +26,9 @@ class TestBackgroundShape(unittest.TestCase):
                     (ddir + 'LHC17j3c2', (4, 20))
         )
 
-        inputs = [Input(f, 'PhysEffOnlyTender').read() for (f, _) in files]
+        inputs = [Input(f, 'PhysEffOnlyTender') for (f, _) in files]
         options = [Options.spmc(rr, 
-            particle='eta',
-            paramconf = 'config/cball-parameters-spmc-test.json'
+            particle='eta'
         ) for (f, rr) in files]
 
         self.arguments = inputs, options

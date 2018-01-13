@@ -1,13 +1,7 @@
 import sys
 import unittest
 
-from spectrum.spectrum import Spectrum, CompositeSpectrum
-from spectrum.options import Options
-from spectrum.input import Input
-from spectrum.nonlinearity import Nonlinearity
-
 import ROOT
-
 
 class WeighSingleParticleMC(unittest.TestCase):
 

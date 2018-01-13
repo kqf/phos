@@ -20,7 +20,7 @@ class Input(object):
         self.histname = histname
         self.prefix = '', mixprefix
         self._events = self.events(filename, listname)
-        self.label = histname
+        self.label = label
 
     @staticmethod
     def events(filename, listname):

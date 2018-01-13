@@ -19,7 +19,7 @@ def corrected_spectrum(directory, join_point = 5):
         genhist = 'hPt_#eta_primary_'
 
         # Define inputs and options for different productions
-        dinp, dopt = Input('LHC16', 'PhysOnlyTender'), Options('data', 'd', particle = 'eta')
+        dinp, dopt = Input('LHC16', 'PhysOnlyTender', label='data'), Options('d', particle = 'eta')
 
         # SPMC
         inputs = {
@@ -28,7 +28,8 @@ def corrected_spectrum(directory, join_point = 5):
         }
 
         eff = EfficiencyMultirange(
-            genhist, 'eff', 
+            genhist, 
+            'eff', 
             inputs,
             selection = 'PhysEffOnlyTender'
         )

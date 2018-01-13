@@ -33,18 +33,20 @@ class TestNonlinearitySPMC(unittest.TestCase):
         """
             Estimates nonlinearity parameters for single-particle MC
         """
-        data = Spectrum(Input('uncorrected/LHC16', 'PhysNonlinEstTender', 'MassPt_SM0'), Options('data', 'd'))
+        data = Spectrum(Input('uncorrected/LHC16', 'PhysNonlinEstTender', 'MassPt_SM0', label='data'), 
+                        Options('d'))
 
 
+        mclabel = 'single particle mc'
         inputs = {
-            Input('/single/nonlin0/LHC17j3b1', 'PhysNonlinTender', 'MassPt_SM0'): (0, 5.5), 
-            Input('/single/nonlin0/LHC17j3b2', 'PhysNonlinTender', 'MassPt_SM0'): (5.5, 20)
+            Input('/single/nonlin0/LHC17j3b1', 'PhysNonlinTender', 'MassPt_SM0', label=mclabel): (0, 5.5), 
+            Input('/single/nonlin0/LHC17j3b2', 'PhysNonlinTender', 'MassPt_SM0', label=mclabel): (5.5, 20)
         }
 
         # NB: Mode doesn't apply here. It's overriten by single particle mc
         #
 
-        spmc = CompositeSpectrum(inputs, Options('single particle mc'))
+        spmc = CompositeSpectrum(inputs)
         func = self._nonlinearity_function()
         nonlin = Nonlinearity(data, spmc, func, mcname = 'spmc')
         nonlin.evaluate_parameters()
