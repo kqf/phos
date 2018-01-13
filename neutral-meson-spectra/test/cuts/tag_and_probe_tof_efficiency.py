@@ -7,7 +7,6 @@ from spectrum.input import Input
 from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
 from spectrum.spectrum import Spectrum
-from spectrum.options import Options
 from spectrum.outputcreator import OutputCreator
 
 from spectrum.broot import BROOT as br

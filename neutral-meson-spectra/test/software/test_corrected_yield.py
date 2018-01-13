@@ -13,7 +13,7 @@ from spectrum.broot import BROOT as br
 class TestCorrectedYield(unittest.TestCase):
 
     def test_interface(self):
-        inp, opt = Input('LHC16.root', 'PhysOnlyTender'), Options('data', 'q')
+        inp, opt = Input('LHC16.root', 'PhysOnlyTender', 'data'), Options('q')
         eff = Efficiency('hPt_#pi^{0}_primary_', 'eff', 'Pythia-LHC16-a5').eff()
         cy_estimator = CorrectedYield(inp, opt, eff)
 

@@ -25,7 +25,7 @@ class CorrectedYield(object):
     def create_evaluate(klass, infile = 'LHC16.root', sel = 'PhysOnlyTender', 
                         effile = 'Pythia-LHC16-a5', effhist = 'hPt_#pi^{0}_primary_'):
 
-       inp, opt = Input(infile, sel), Options('data', 'q')
+       inp, opt = Input(infile, sel, label='data'), Options('q')
        eff = Efficiency(effhist, 'eff', effile).eff()
        cy_estimator = klass(inp, opt, eff)
 

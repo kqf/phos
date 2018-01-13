@@ -13,10 +13,10 @@ class TestNonlinearity(unittest.TestCase):
 
     # @unittest.skip('')
     def test_interface(self):
-        data = Spectrum(Input('LHC16', 'PhysOnlyTender'), Options('Data', 'd'))
+        data = Spectrum(Input('LHC16', 'PhysOnlyTender', label='Data'), Options('d'))
         data = data.evaluate()
 
-        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender'), Options('R2D zs 20 MeV nonlin', 'd'))
+        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender', label='R2D zs 20 MeV nonlin'), Options('d'))
         mc = mc.evaluate()
         func = self._nonlinearity_function()
         nonlin = Nonlinearity(data.mass, mc.mass, func, mcname = 'pythia8')

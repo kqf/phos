@@ -51,8 +51,9 @@ class TagAndProbe(object):
 
 
     def _estimator(self, x):
-        options = Options(x, 'q', ptconf='config/tag-and-probe-tof.json')
+        options = Options('q', ptconf='config/tag-and-probe-tof.json')
         self.input.histname = self.hpattern % x
+        self.input.label = x
         return Spectrum(self.input.read(), options)
 
 

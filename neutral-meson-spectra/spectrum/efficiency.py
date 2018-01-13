@@ -20,7 +20,7 @@ import unittest
 class Efficiency(object):
 
     def __init__(self, genname, label, iname, recalculate = False, 
-            selection = 'MCStudyOnlyTender', opt = Options('', mode = 'd')):
+            selection = 'MCStudyOnlyTender', opt = Options(mode = 'd')):
         super(Efficiency, self).__init__()
         self.recalculate = recalculate
         self.selection = selection
@@ -59,7 +59,7 @@ class Efficiency(object):
 
 
     def reco(self):
-        inp = Input(self.iname, self.selection, 'MassPt')
+        inp = Input(self.iname, self.selection, 'MassPt', label=self.label)
         reco = Spectrum(inp, self.opt).evaluate().npi0
         reco.logy = True
         return br.scalew(reco)

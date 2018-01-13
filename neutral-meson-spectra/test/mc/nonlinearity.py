@@ -27,8 +27,8 @@ class TestNonlinearity(unittest.TestCase):
         """
             Estimates nonlinearity parameters for General purpose MC
         """
-        data = Spectrum(Input('LHC16', 'PhysOnlyTender'), Options('Data', 'd'))
-        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender'), Options('R2D zs 20 MeV nonlin', 'd'))
+        data = Spectrum(Input('LHC16', 'PhysOnlyTender', label='Data'), Options('d'))
+        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender', label='R2D zs 20 MeV nonlin'), Options('d'))
         func = self._nonlinearity_function()
 
         nonlin = Nonlinearity(data, mc, func, mcname = 'pythia8')

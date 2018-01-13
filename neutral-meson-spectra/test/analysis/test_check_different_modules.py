@@ -10,7 +10,7 @@ import unittest
 
 def run_analysis(opt, infile, selection):
     def f(x, y): 
-        opt.label = y
+        x.label = y
         return Spectrum(x, opt).evaluate()
 
     results = map(f, *Input(infile, selection, 'MassPt').read_per_module())

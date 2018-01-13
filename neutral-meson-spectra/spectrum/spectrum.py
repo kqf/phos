@@ -16,7 +16,7 @@ class Spectrum(object):
         super(Spectrum, self).__init__()
         self.analyzer = KinematicTransformer(lst, options)
         self.opt = options.spectrum
-        self.label = options.pt.label
+        self.label = lst.label
 
     def _mass_ranges(self):
         quantities = self.analyzer.quantities(False)

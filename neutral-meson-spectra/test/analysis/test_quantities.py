@@ -17,9 +17,12 @@ from spectrum.broot import BROOT as br
 class TestRawQauntities(unittest.TestCase):
 
     def setUp(self):
-        self.inputs = Input('LHC16-old.root', 'PhysTender', 'MassPtN3'), Input('LHC16.root', 'PhysTender', 'MassPt')
-        self.options_pi0 = Options('old', 'q'),  Options('new', 'q')
-        self.options_eta = Options('old', 'q', particle = 'eta'),  Options('new', 'q', particle = 'eta')
+        self.inputs = (
+            Input('LHC16-old.root', 'PhysTender', 'MassPtN3', label='old'), 
+            Input('LHC16.root', 'PhysTender', 'MassPt', label='new')
+        )
+        self.options_pi0 = Options(), Options()
+        self.options_eta = Options(particle = 'eta'), Options(particle = 'eta')
         self.stop = 'discover' not in sys.argv
 
 

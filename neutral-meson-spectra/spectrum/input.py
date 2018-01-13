@@ -13,13 +13,14 @@ def read_histogram(filename, listname, histname, label = '', priority = 999, nor
     return hist
 
 class Input(object):
-    def __init__(self, filename, listname, histname = 'MassPt', mixprefix = 'Mix'):
+    def __init__(self, filename, listname, histname = 'MassPt', label='', mixprefix = 'Mix'):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
         self.prefix = '', mixprefix
         self._events = self.events(filename, listname)
+        self.label = histname
 
     @staticmethod
     def events(filename, listname):

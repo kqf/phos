@@ -22,8 +22,8 @@ class TestDataSetForConsistency(unittest.TestCase):
 
     def setUp(self):
         fname = 'corrected/LHC16i-muon-calo-pass1.root' 
-        inputs = Input(fname, 'PhysTender', 'MassPt')
-        options = Options('old', 'q')
+        inputs = Input(fname, 'PhysTender', 'MassPt', label='old')
+        options = Options()
         self.sp_estimator = Spectrum(inputs, options)
 
 

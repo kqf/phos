@@ -17,6 +17,7 @@ class KinematicTransformer(object):
     def __init__(self, hists, options = Options()):
         super(KinematicTransformer, self).__init__()
         self.opt = options.pt
+        self.label = hists.label
         self.hists = self._hists(hists)
         self.nevents = self.hists[0].nevents
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
@@ -28,7 +29,7 @@ class KinematicTransformer(object):
         mass_algorithm = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
         f = lambda x, y: mass_algorithm(self.hists, x, y, options)
         self.masses = map(f, intervals, self.opt.rebins)
-        self.plotter = PtPlotter(self.masses, self.opt)
+        self.plotter = PtPlotter(self.masses, self.opt, self.label)
 
     @staticmethod
     def _hists(hists):
@@ -51,7 +52,7 @@ class KinematicTransformer(object):
             OutputCreator.output_histogram(
                 quant,
                 self.opt.output[quant] % self.opt.partlabel,
-                self.opt.label,
+                self.label,
                 self.opt.priority,
                 self.opt.ptedges,
                 d

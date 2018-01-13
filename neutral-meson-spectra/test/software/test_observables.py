@@ -51,7 +51,7 @@ class TestSpectrum(unittest.TestCase):
 
 
     def testPi0SpectrumLHC16(self):
-        indata, options = Input(self.infile, 'PhysTender'), Options('testsignal')
+        indata, options = Input(self.infile, 'PhysTender', label='testsignal'), Options()
         second = Spectrum(indata, options).evaluate()
         actual = [ [ h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in second]
 
@@ -61,7 +61,7 @@ class TestSpectrum(unittest.TestCase):
             for aa, bb in zip(a, b): self.assertAlmostEqual(aa, bb, msg=mymsg)
 
     def testEtaSpectrumLHC16(self):
-        indata, options = Input(self.infile, 'EtaTender'), Options('testsignal', particle='eta')
+        indata, options = Input(self.infile, 'EtaTender', label='testsignal'), Options(particle='eta')
         analysis = Spectrum(indata, options)
         histograms = analysis.evaluate()
         

@@ -14,18 +14,16 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
     def setUp(self):
         inputs = (
-                        Input('LHC16', 'PhysOnlyTender')
-                      , Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender')
+                        Input('LHC16', 'PhysOnlyTender', label='Data')
+                      , Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender', label='Pythia8')
                       # , Input('LHC17d20a', 'PhysNonlinOnlyTender')
                       # , Input('pythia-jet-jet', 'PhysNonlinOnlyTender')
                   )
 
 
-
-        inputs = map(operator.methodcaller('read'), inputs)
         options = (
-                      Options('Data', 'q', priority = 999)
-                    , Options('Pythia8', 'q', priority = 1)
+                      Options(priority = 999)
+                    , Options(priority = 1)
                     # , Options('EPOS', 'q', priority = 99) 
                     # , Options('Pythia8 JJ', 'q', priority = 1)
                  )
@@ -34,14 +32,14 @@ class CheckMCDifferentVersions(unittest.TestCase):
         f = lambda x, y: Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)
         datadirs = 'weight2', 'nonlin'
-        inputs = [
-            {
-                Input('/single/{0}/LHC17j3b1'.format(d), 'PhysEffOnlyTender'): (0, 7), 
-                Input('/single/{0}/LHC17j3b2'.format(d), 'PhysEffOnlyTender'): (7, 20)
-            } for d in datadirs]
 
-        f = lambda x, y: CompositeSpectrum(x, Options(y, mode = 'd')).evaluate()
-        spmc = map(f, inputs, datadirs)
+        inputs = lambda lab: [{
+            Input('/single/{0}/LHC17j3b1'.format(d), 'PhysEffOnlyTender', label = lab): (0, 7), 
+            Input('/single/{0}/LHC17j3b2'.format(d), 'PhysEffOnlyTender', label = lab): (7, 20)
+        } for d in datadirs]
+
+        f = lambda x: CompositeSpectrum(inputs(x), Options(mode = 'd')).evaluate()
+        spmc = map(f, datadirs)
         self.results += spmc
 
 

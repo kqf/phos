@@ -92,8 +92,8 @@ class SingleParticleQA(unittest.TestCase):
         part, ptbin = self.particle_ptbin(filename)
         label = '{0} {1}'.format(part, ptbin)
 
-        inp = Input(self.dir + filename, self.selection)
-        opt = Options(label= label, mode = 'd', particle = 'pi0' if 'pi' in part else 'eta')
+        inp = Input(self.dir + filename, self.selection, label=label)
+        opt = Options(mode = 'd', particle = 'pi0' if 'pi' in part else 'eta')
         reco = Spectrum(inp, opt).evaluate().spectrum
         reco.SetTitle(reco.GetTitle() + ', ' + ptbin)
         br.scalew(reco)

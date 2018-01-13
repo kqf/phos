@@ -2,10 +2,11 @@ import ROOT
 import sutils as su
 
 class PtPlotter(object):
-    def __init__(self, masses, options):
+    def __init__(self, masses, options, label):
         super(PtPlotter, self).__init__()
         self.masses = masses
         self.opt = options
+        self.label = label
 
     def draw(self, intgr_ranges, draw):
         if not draw:
@@ -26,7 +27,7 @@ class PtPlotter(object):
             m.line_low = self._draw_line(distr, r[0])
             m.line_up = self._draw_line(distr, r[1])
 
-        su.wait(name + self.opt.label, self.opt.show_img, save=True)
+        su.wait(name + self.label, self.opt.show_img, save=True)
 
     def _draw_all_bins(self, f, intgr_ranges, name = ''):
         canvas = su.gcanvas(1, 1, True)
@@ -40,7 +41,7 @@ class PtPlotter(object):
             m.line_low = self._draw_line(distr, r[0])
             m.line_up = self._draw_line(distr, r[1])
 
-        su.wait(name + self.opt.label, self.opt.show_img, save=True)
+        su.wait(name + self.label, self.opt.show_img, save=True)
 
     def _draw_ratio(self, intgr_ranges, name = ''):
         f = lambda x, y: x.draw_ratio(y)

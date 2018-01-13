@@ -28,7 +28,7 @@ class WeighGeneralPurposeMC(unittest.TestCase):
         self.stop = 'discover' not in sys.argv
 
         # Define inputs and options for different productions
-        dinp, dopt = Input('LHC16', 'PhysOnlyTender'), Options('data', 'q')
+        dinp, dopt = Input('LHC16', 'PhysOnlyTender', label='data'), Options('q')
 
         # 
         inputs = Input('Pythia-LHC16-a5', 'PhysNonlinOnlyTender'), #Input('LHC17d20a', 'PhysNonlinOnlyTender'), \

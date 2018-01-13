@@ -57,8 +57,8 @@ class Jetjet(unittest.TestCase):
 
 
     def reconstructed(self, filename, histname, label, title):
-        inp = Input(filename, self.selection, histname)
-        reco = Spectrum(inp, Options(label= label, mode = 'd')).evaluate().spectrum
+        inp = Input(filename, self.selection, histname, label=label)
+        reco = Spectrum(inp, Options(mode = 'd')).evaluate().spectrum
         reco.logy = 1
         reco.SetTitle('{0} {1}'.format(reco.GetTitle(), title))
         br.scalew(reco, 1e-3 if 'no' in label else 1)
@@ -77,8 +77,8 @@ class Jetjet(unittest.TestCase):
 
 
     def test_full_production(self):
-        inp = Input('pythia-jet-jet', 'PhysNonlinOnlyTender')
-        opt = Options('Pythia8 JJ', 'v', priority = 1)
+        inp = Input('pythia-jet-jet', 'PhysNonlinOnlyTender', label='Pythia8 JJ')
+        opt = Options('v', priority = 1)
         opt.pt.rebins[-1] = 0
         results = Spectrum(inp, opt).evaluate().mass
         diff = Comparator()
