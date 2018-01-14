@@ -114,6 +114,17 @@ class InvariantMassNoMixing(VisualizeMass):
         self.mass, self.mixed = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
         self.area_error = None
+        self._integration_region = self.peak_function.opt.fit_range
+
+    @property
+    def integration_region(self):
+        return self._integration_region
+
+    @integration_region.setter
+    def integration_region(self, value):
+        if not value:
+            return
+        self._integration_region = value
 
 
     def extract_histogram(self, hist):
@@ -133,9 +144,8 @@ class InvariantMassNoMixing(VisualizeMass):
         return mass
 
 
-    def number_of_mesons(self, intgr_ranges):
-        a, b = intgr_ranges if intgr_ranges else self.peak_function.opt.fit_range
-        area, areae = br.area_and_error(self.signal, a, b)
+    def number_of_mesons(self):
+        area, areae = br.area_and_error(self.signal, *self.integration_region)
         self.area_error = area, areae
         return area, areae
 

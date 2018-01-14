@@ -72,8 +72,11 @@ class KinematicTransformer(object):
 
         
     # TODO: Move All Serialization logic to OutputCreator
-    def quantities(self, draw = True, intgr_ranges = []):
-        values = map(self.extractor.eval, self.masses, intgr_ranges)
+    def quantities(self, draw = True, intgr_regions = []):
+        for mass, region in zip(self.masses, intgr_regions):
+            mass.integration_region = region
+
+        values = map(self.extractor.eval, self.masses)
 
         # Create hitograms
         histos = self.histograms(values)
@@ -82,6 +85,6 @@ class KinematicTransformer(object):
         if self.opt.dead_mode: 
             return decorated 
 
-        self.plotter.draw(intgr_ranges, draw)
+        self.plotter.draw(draw)
         return decorated 
 

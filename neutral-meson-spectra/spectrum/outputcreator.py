@@ -6,10 +6,10 @@ from broot import BROOT as br
 class SpectrumExtractor(object):
 
     def handle_empty_fit(f):
-        def wrapper(self, mass, intgr_ranges):
+        def wrapper(self, mass):
             if not mass.fitted():
                 return (0, 0)
-            return f(self, mass, intgr_ranges)
+            return f(self, mass)
         return wrapper
 
     def __init__(self, order = []):
@@ -32,39 +32,39 @@ class SpectrumExtractor(object):
         return par, par_error
 
     @handle_empty_fit
-    def mass(self, mass, intgr_ranges):
+    def mass(self, mass):
         return self.parameter(mass, "M")
 
     @handle_empty_fit
-    def width(self, mass, intgr_ranges):
+    def width(self, mass):
         return self.parameter(mass, "#sigma")
 
     @handle_empty_fit
-    def cball_alpha(self, mass, intgr_ranges):
+    def cball_alpha(self, mass):
         return self.parameter(mass, "#alpha")
 
     @handle_empty_fit
-    def cball_n(self, mass, intgr_ranges):
+    def cball_n(self, mass):
         return self.parameter(mass, "n")
 
     @handle_empty_fit
-    def npi0(self, mass, intgr_ranges):
-        return mass.number_of_mesons(intgr_ranges)
+    def npi0(self, mass):
+        return mass.number_of_mesons()
 
     @handle_empty_fit
-    def nraw(self, mass, intgr_ranges):
-        npi0 = mass.number_of_mesons(intgr_ranges)
+    def nraw(self, mass):
+        npi0 = mass.number_of_mesons()
         return map(lambda x: x / (2. * ROOT.TMath.Pi()), npi0)
 
     @handle_empty_fit
-    def chi2(self, mass, intgr_ranges):
+    def chi2(self, mass):
         ndf = mass.sigf.GetNDF() 
         ndf = ndf if ndf > 0 else 1
         return (mass.sigf.GetChisquare() / ndf, 0) 
 
-    def eval(self, mass, intgr_ranges):
+    def eval(self, mass):
         mass.extract_data() 
-        return [f(mass, intgr_ranges) for f in self.quantities]
+        return [f(mass) for f in self.quantities]
 
 
 class OutputCreator(object):
