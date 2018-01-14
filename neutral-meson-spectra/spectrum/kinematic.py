@@ -72,10 +72,7 @@ class KinematicTransformer(object):
 
         
     # TODO: Move All Serialization logic to OutputCreator
-    def quantities(self, draw = True, intgr_regions = []):
-        for mass, region in zip(self.masses, intgr_regions):
-            mass.integration_region = region
-
+    def quantities(self, draw = True):
         values = map(self.extractor.eval, self.masses)
 
         # Create hitograms

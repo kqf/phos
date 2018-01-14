@@ -1,5 +1,7 @@
 import ROOT
 from broot import BROOT as br
+import sutils as su
+import collections
 
 
 
@@ -94,3 +96,107 @@ class OutputCreator(object):
     def output_histogram(name, title, label, priority, bins, data):
         output = OutputCreator(name, title, label, priority)
         return output.get_hist(bins, data)
+
+
+
+
+
+class RangeTransformer(object):
+
+    _output = 'mass', 'width'
+    def __init__(self, options, ptedges, label):
+        super(RangeTransformer, self).__init__()
+        self.opt = options
+        self.ptedges  = ptedges
+        self.label = label
+        # The fit result
+        self.output = None
+
+    def transform(self, masses):
+        ExtractorOutput = collections.namedtuple('SpectrumAnalysisOutput', self._output)
+        extractor = SpectrumExtractor(self._output)
+        values = map(extractor.eval, masses)
+
+        iter_collection = zip(
+            self._output, # Ensure ordering of `data`
+            zip(*values)
+        )
+        # Extract the data
+        output = {quant: 
+            OutputCreator.output_histogram(
+                quant,
+                quant,
+                quant,
+                999,
+                self.ptedges,
+                d
+            ) for quant, d in iter_collection
+        }
+
+        self.output = ExtractorOutput(**output) 
+        ranges = self._fit_ranges(self.output)
+
+        for mass, region in zip(masses, ranges):
+            mass.integration_region = region
+
+        return masses
+
+    def _fit_quantity(self, quant, func, par, names, pref):
+        fitquant = ROOT.TF1("fitquant" + pref, func)
+        fitquant.SetLineColor(46)
+
+
+        if not self.opt.dead:
+            canvas = su.gcanvas(1./ 2., 1, True)
+            su.adjust_canvas(canvas)
+            su.ticks(canvas) 
+            quant.Draw()
+
+        fitquant.SetParameters(*par)
+        fitquant.SetParNames(*names)
+
+        # Doesn't fit and use default parameters for 
+        # width/mass, therefore this will give correct estimation
+        if not self.opt.fit_mass_width:
+            [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
+
+
+        # print self.opt.fit_range
+        quant.Fit(fitquant, "q", "", *self.opt.fit_range)
+
+        # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
+        quant.SetLineColor(37)
+        su.wait(pref + "-paramerisation-" + self.label, self.opt.show_img, True)
+        return fitquant
+
+    def _fit_ranges(self, quantities):
+        ROOT.gStyle.SetOptStat('')
+        mass, sigma = quantities.mass, quantities.width
+
+        massf = self.fit_mass(mass)
+        sigmaf = self.fit_sigma(sigma)
+
+        mass_range = lambda pt: (massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
+                                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt))
+
+        pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
+        return map(mass_range, pt_values) 
+        
+
+    def fit_mass(self, mass):
+        return self._fit_quantity(mass,
+            self.opt.mass_func,
+            self.opt.mass_pars,
+            self.opt.mass_names,
+            'mass'
+        ) 
+
+    def fit_sigma(self, sigma):
+        return self._fit_quantity(sigma, 
+            self.opt.width_func, 
+            self.opt.width_pars, 
+            self.opt.width_names, 
+            'width'
+        )
+
+
