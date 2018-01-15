@@ -104,12 +104,11 @@ class OutputCreator(object):
 class RangeTransformer(object):
 
     _output = 'mass', 'width'
-    def __init__(self, options, ptedges, label):
+    def __init__(self, options, label):
         super(RangeTransformer, self).__init__()
-        self.opt = options
-        self.ptedges  = ptedges
+        self.opt = options.spectrum
+        self.ptedges  = options.pt.ptedges
         self.label = label
-        # The fit result
         self.output = None
 
     def transform(self, masses):

@@ -16,18 +16,13 @@ class Analysis(object):
     def __init__(self, options = Options()):
         super(Analysis, self).__init__()
         self.options = options
-        self.opt = options.spectrum
 
     def transform(self, inputs):
         label = inputs.label
 
         pipeline = [
             DataSlicer(self.options),
-            RangeTransformer(
-                self.opt,
-                self.options.pt.ptedges,
-                label
-            ),
+            RangeTransformer(self.options, label),
             KinematicTransformer(self.options, label)
         ]
 
