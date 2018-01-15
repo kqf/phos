@@ -132,7 +132,8 @@ class InvariantMassNoMixing(VisualizeMass):
             return None
 
         mass = br.project_range(hist, '_%d_%d', *self.pt_range)
-        mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (hist.nevents / 1e6))         
+        mass.nevents = hist.nevents
+        mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (mass.nevents / 1e6))         
         mass.SetLineColor(37)
 
         if not mass.GetSumw2N():

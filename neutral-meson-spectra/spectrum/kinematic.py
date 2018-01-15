@@ -12,24 +12,14 @@ from broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)
 
-class KinematicTransformer(object):
 
-    def __init__(self, hists, options = Options()):
-        super(KinematicTransformer, self).__init__()
+class DataSlicer(object):
+    def __init__(self, options = Options()):
+        super(DataSlicer, self).__init__()
         self.opt = options.pt
-        self.label = hists.label
-        self.hists = self._hists(hists)
-        self.nevents = self.hists[0].nevents
-        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
-        self.extractor = SpectrumExtractor(self.opt.output_order)
-
-        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
-        assert len(intervals) == len(self.opt.rebins), 'Number of intervals is not equal to the number of rebin parameters'
-
-        mass_algorithm = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
-        f = lambda x, y: mass_algorithm(self.hists, x, y, options)
-        self.masses = map(f, intervals, self.opt.rebins)
-        self.plotter = PtPlotter(self.masses, self.opt, self.label)
+        # TODO: Either replace this with factory method or configure it in pipeline
+        extract = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
+        self.extract_mass = lambda hists, x, y: extract(hists, x, y, options)
 
     @staticmethod
     def _hists(hists):
@@ -38,6 +28,30 @@ class KinematicTransformer(object):
             return hists
         except TypeError:
             return hists.read()
+
+
+    def transform(self, inputs):
+        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
+        assert len(intervals) == len(self.opt.rebins), \
+            'Number of intervals is not equal to the number of rebin parameters'
+
+        return map(
+            lambda x, y: self.extract_mass(
+                self._hists(inputs), x, y
+            ),
+            intervals,
+            self.opt.rebins
+        )
+
+
+class KinematicTransformer(object):
+
+    def __init__(self, options, label):
+        super(KinematicTransformer, self).__init__()
+        self.opt = options.pt
+        self.label = label
+        self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
+        self.extractor = SpectrumExtractor(self.opt.output_order)
 
 
     def histograms(self, data):
@@ -72,8 +86,9 @@ class KinematicTransformer(object):
 
         
     # TODO: Move All Serialization logic to OutputCreator
-    def quantities(self, draw = True):
-        values = map(self.extractor.eval, self.masses)
+    def quantities(self, masses, draw = True):
+        self.nevents = next(iter(masses)).mass.nevents
+        values = map(self.extractor.eval, masses)
 
         # Create hitograms
         histos = self.histograms(values)
@@ -82,6 +97,7 @@ class KinematicTransformer(object):
         if self.opt.dead_mode: 
             return decorated 
 
+        self.plotter = PtPlotter(masses, self.opt, self.label)
         self.plotter.draw(draw)
         return decorated 
 
