@@ -8,9 +8,7 @@ class PtPlotter(object):
         self.opt = options
         self.label = label
 
-    def draw(self, draw):
-        if not draw:
-            return 
+    def draw(self):
         self._draw_ratio()
         self._draw_mass()
         self._draw_signal()

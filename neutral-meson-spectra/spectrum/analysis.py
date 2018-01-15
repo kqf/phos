@@ -21,10 +21,17 @@ class Analysis(object):
     def transform(self, inputs):
         label = inputs.label
 
-        # TODO: add transform method to KinematicTransformer
-        slicer = DataSlicer(self.options)
-        masses = slicer.transform(inputs)
-        rtransformer = RangeTransformer(self.opt, self.options.pt.ptedges, inputs.label)
-        rtransformer.transform(masses)
-        analyzer = KinematicTransformer(self.options, label)
-        return analyzer.quantities(masses, True)
+        pipeline = [
+            DataSlicer(self.options),
+            RangeTransformer(
+                self.opt,
+                self.options.pt.ptedges,
+                label
+            ),
+            KinematicTransformer(self.options, label)
+        ]
+
+        data = inputs
+        for estimator in pipeline:
+            data = estimator.transform(data)
+        return data

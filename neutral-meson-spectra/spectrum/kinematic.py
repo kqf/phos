@@ -86,7 +86,7 @@ class KinematicTransformer(object):
 
         
     # TODO: Move All Serialization logic to OutputCreator
-    def quantities(self, masses, draw = True):
+    def transform(self, masses):
         self.nevents = next(iter(masses)).mass.nevents
         values = map(self.extractor.eval, masses)
 
@@ -98,6 +98,6 @@ class KinematicTransformer(object):
             return decorated 
 
         self.plotter = PtPlotter(masses, self.opt, self.label)
-        self.plotter.draw(draw)
+        self.plotter.draw()
         return decorated 
 
