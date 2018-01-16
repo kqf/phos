@@ -5,7 +5,7 @@ import collections
 
 from ptplotter import PtPlotter
 from outputcreator import OutputCreator, SpectrumExtractor
-from invariantmass import InvariantMass, InvariantMassNoMixing
+from invariantmass import invariant_mass_selector
 from options import Options
 
 from broot import BROOT as br
@@ -18,7 +18,7 @@ class DataSlicer(object):
         super(DataSlicer, self).__init__()
         self.opt = options.pt
         # TODO: Either replace this with factory method or configure it in pipeline
-        extract = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
+        extract = invariant_mass_selector(self.opt.use_mixed)
         self.extract_mass = lambda hists, x, y: extract(hists, x, y, options)
 
 
@@ -45,7 +45,7 @@ class KinematicTransformer(object):
         self.extractor = SpectrumExtractor(self.opt.output_order)
 
 
-    def histograms(self, data):
+    def histograms(self, data, ptedges):
         iter_collection = zip(
             self.opt.output_order, # Ensure ordering of `data`
             zip(*data)
@@ -59,7 +59,7 @@ class KinematicTransformer(object):
                 self.opt.output[quant] % self.opt.partlabel,
                 self.label,
                 self.opt.priority,
-                self.opt.ptedges,
+                ptedges,
                 d
             ) for quant, d in iter_collection
         }
@@ -81,8 +81,13 @@ class KinematicTransformer(object):
         self.nevents = next(iter(masses)).mass.nevents
         values = map(self.extractor.eval, masses)
 
+        edges = sorted(set(
+                sum([list(i.pt_range) for i in masses], [])
+            )
+        )
+
         # Create hitograms
-        histos = self.histograms(values)
+        histos = self.histograms(values, edges)
         decorated = self._decorate_hists(histos)
 
         if self.opt.dead_mode: 

@@ -91,10 +91,16 @@ class VisualizeMass(object):
         canvas.Update()
         return self.mass 
 
+
     def fitted(self):
         return self.bgrf and self.sigf
 
 
+
+def invariant_mass_selector(use_mixed):
+    if not use_mixed:
+        return InvariantMassNoMixing
+    return InvariantMass
 
 
 class InvariantMassNoMixing(VisualizeMass):
