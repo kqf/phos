@@ -37,6 +37,9 @@ class Input(object):
             br.set_nevents(h, self._events)
         return raw_mix
 
+    def transform(self, data = None):
+        return self.read()
+
     def read_per_module(self, threshold = 0.135):
         names = ['SM%dSM%d' % (i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]
         data = map(lambda x: self.read(self.histname + x), names)

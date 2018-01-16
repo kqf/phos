@@ -21,14 +21,6 @@ class DataSlicer(object):
         extract = InvariantMass if self.opt.use_mixed else InvariantMassNoMixing
         self.extract_mass = lambda hists, x, y: extract(hists, x, y, options)
 
-    @staticmethod
-    def _hists(hists):
-        try:
-            iter(hists)
-            return hists
-        except TypeError:
-            return hists.read()
-
 
     def transform(self, inputs):
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
@@ -37,8 +29,7 @@ class DataSlicer(object):
 
         return map(
             lambda x, y: self.extract_mass(
-                self._hists(inputs), x, y
-            ),
+                inputs, x, y ),
             intervals,
             self.opt.rebins
         )

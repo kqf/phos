@@ -21,12 +21,14 @@ class Analysis(object):
         label = inputs.label
 
         pipeline = [
+            inputs,
             DataSlicer(self.options),
             RangeTransformer(self.options, label),
             KinematicTransformer(self.options, label)
         ]
 
-        data = inputs
+        data = None
         for estimator in pipeline:
             data = estimator.transform(data)
+
         return data
