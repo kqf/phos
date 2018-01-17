@@ -44,6 +44,7 @@ class Options(object):
     def __init__(self, label = 'data', mode = 'q', relaxedcb = False, 
                     particle='pi0', priority = 999, fitf = 'cball',
                     spectrumconf = 'config/spectrum.json',
+                    ptrange = 'config/pt.json',
                     ptconf = 'config/pt-analysis.json',
                     invmassconf = 'config/invariant-mass.json',
                     paramconf = 'config/cball-parameters.json',
@@ -56,13 +57,16 @@ class Options(object):
         self.spectrum = AnalysisOption('spectrum', spectrumconf, particle)
         self.spectrum.show_img = show_img
 
-        self.pt = AnalysisOption('ptanalysis', ptconf, particle)
-        self.pt.priority = priority
-        self.pt.label = label
-        self.pt.show_img = show_img
-        self.pt.dead_mode = 'd' in mode
-        self.pt.particle = particle
-        self.pt.use_mixed = use_mixed
+
+        self.pt = AnalysisOption('ptanalysis', ptrange, particle)
+
+        self.output = AnalysisOption('ptanalysis', ptconf, particle)
+        self.output.priority = priority
+        self.output.label = label
+        self.output.show_img = show_img
+        self.output.dead_mode = 'd' in mode
+        self.output.particle = particle
+        self.output.use_mixed = use_mixed
 
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}
@@ -85,11 +89,11 @@ class Options(object):
 
     @property
     def label(self):
-        return self.pt.label
+        return self.output.label
 
     @label.setter
     def label(self, label):
-        self.pt.label = label
+        self.output.label = label
 
     @staticmethod
     def fixed_peak(*args):
@@ -115,6 +119,7 @@ class Options(object):
         options = Options(name,
                     mode = 'q', 
                     particle = particle, 
+                    ptrange = 'config/pt-spmc.json',
                     spectrumconf = 'config/spectrum_spmc.json',
                     paramconf = 'config/cball-parameters-spmc-test.json',
                     use_mixed = False

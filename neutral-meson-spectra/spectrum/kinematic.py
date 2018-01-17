@@ -5,7 +5,7 @@ import collections
 
 from ptplotter import PtPlotter
 from outputcreator import OutputCreator, SpectrumExtractor
-from invariantmass import invariant_mass_selector
+from invariantmass import invariant_mass_selector, InvariantMass
 from options import Options
 
 from broot import BROOT as br
@@ -39,7 +39,7 @@ class KinematicTransformer(object):
 
     def __init__(self, options, label):
         super(KinematicTransformer, self).__init__()
-        self.opt = options.pt
+        self.opt = options.output
         self.label = label
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
         self.extractor = SpectrumExtractor(self.opt.output_order)
@@ -76,15 +76,11 @@ class KinematicTransformer(object):
         return histograms 
 
         
-    # TODO: Move All Serialization logic to OutputCreator
     def transform(self, masses):
         self.nevents = next(iter(masses)).mass.nevents
         values = map(self.extractor.eval, masses)
 
-        edges = sorted(set(
-                sum([list(i.pt_range) for i in masses], [])
-            )
-        )
+        edges = InvariantMass.ptedges(masses)
 
         # Create hitograms
         histos = self.histograms(values, edges)

@@ -3,6 +3,8 @@ from broot import BROOT as br
 import sutils as su
 import collections
 
+from invariantmass import InvariantMass
+
 
 
 class SpectrumExtractor(object):
@@ -98,16 +100,12 @@ class OutputCreator(object):
         return output.get_hist(bins, data)
 
 
-
-
-
 class RangeTransformer(object):
 
     _output = 'mass', 'width'
     def __init__(self, options, label):
         super(RangeTransformer, self).__init__()
         self.opt = options.spectrum
-        self.ptedges  = options.pt.ptedges
         self.label = label
         self.output = None
 
@@ -127,7 +125,7 @@ class RangeTransformer(object):
                 quant,
                 quant,
                 999,
-                self.ptedges,
+                InvariantMass.ptedges(masses),
                 d
             ) for quant, d in iter_collection
         }
@@ -181,7 +179,6 @@ class RangeTransformer(object):
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
         
-
     def fit_mass(self, mass):
         return self._fit_quantity(mass,
             self.opt.mass_func,

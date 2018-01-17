@@ -122,6 +122,15 @@ class InvariantMassNoMixing(VisualizeMass):
         self.area_error = None
         self._integration_region = self.peak_function.opt.fit_range
 
+        
+    @staticmethod
+    def ptedges(masses):
+        return sorted(set(
+                sum([list(i.pt_range) for i in masses], [])
+            )
+        ) 
+
+
     @property
     def integration_region(self):
         return self._integration_region
