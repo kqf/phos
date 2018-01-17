@@ -1,15 +1,10 @@
 #!/usr/bin/python
 
-import ROOT
-import json
-from sutils import gcanvas, wait, adjust_canvas, ticks
-from kinematic import KinematicTransformer, DataSlicer
+from processing import DataSlicer
+from kinematic import KinematicTransformer
 from outputcreator import RangeTransformer
 from options import Options
-from broot import BROOT as br
 
-
-ROOT.TH1.AddDirectory(False)
 
 class Analysis(object):
 
@@ -22,7 +17,7 @@ class Analysis(object):
 
         pipeline = [
             inputs,
-            DataSlicer(self.options),
+            DataSlicer(self.options.pt, self.options),
             RangeTransformer(self.options, label),
             KinematicTransformer(self.options, label)
         ]

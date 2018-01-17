@@ -5,35 +5,11 @@ import collections
 
 from ptplotter import PtPlotter
 from outputcreator import OutputCreator, SpectrumExtractor
-from invariantmass import invariant_mass_selector, InvariantMass
-from options import Options
+from invariantmass import InvariantMass
 
 from broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)
-
-
-class DataSlicer(object):
-    def __init__(self, options = Options()):
-        super(DataSlicer, self).__init__()
-        self.opt = options.pt
-        # TODO: Either replace this with factory method or configure it in pipeline
-        extract = invariant_mass_selector(self.opt.use_mixed)
-        self.extract_mass = lambda hists, x, y: extract(hists, x, y, options)
-
-
-    def transform(self, inputs):
-        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
-        assert len(intervals) == len(self.opt.rebins), \
-            'Number of intervals is not equal to the number of rebin parameters'
-
-        return map(
-            lambda x, y: self.extract_mass(
-                inputs, x, y ),
-            intervals,
-            self.opt.rebins
-        )
-
 
 class KinematicTransformer(object):
 
@@ -42,7 +18,6 @@ class KinematicTransformer(object):
         self.opt = options.output
         self.label = label
         self.OutType = collections.namedtuple('SpectrumAnalysisOutput', self.opt.output_order)
-        self.extractor = SpectrumExtractor(self.opt.output_order)
 
 
     def histograms(self, data, ptedges):
@@ -68,23 +43,26 @@ class KinematicTransformer(object):
         return self.OutType(**output)
 
 
-    def _decorate_hists(self, histograms):
+    def _decorate_hists(self, histograms, nevents):
         # Scale by the number of events 
-        histograms.spectrum.Scale(1. / self.nevents)
+        histograms.spectrum.Scale(1. / nevents)
         histograms.spectrum.logy = True
         histograms.npi0.logy = True
         return histograms 
 
         
     def transform(self, masses):
-        self.nevents = next(iter(masses)).mass.nevents
-        values = map(self.extractor.eval, masses)
+        extractor = SpectrumExtractor(self.opt.output_order)
+        values = map(extractor.eval, masses)
 
         edges = InvariantMass.ptedges(masses)
 
         # Create hitograms
         histos = self.histograms(values, edges)
-        decorated = self._decorate_hists(histos)
+
+        # Decorate the histograms
+        nevents = next(iter(masses)).mass.nevents
+        decorated = self._decorate_hists(histos, nevents)
 
         if self.opt.dead_mode: 
             return decorated 

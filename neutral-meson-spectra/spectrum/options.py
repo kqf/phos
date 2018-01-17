@@ -48,8 +48,7 @@ class Options(object):
                     ptconf = 'config/pt-analysis.json',
                     invmassconf = 'config/invariant-mass.json',
                     paramconf = 'config/cball-parameters.json',
-                    spmc = False,
-                    use_mixed = True):
+                    spmc = False):
 
         super(Options, self).__init__()
         show_img = self.modes.get(mode, True)
@@ -66,7 +65,6 @@ class Options(object):
         self.output.show_img = show_img
         self.output.dead_mode = 'd' in mode
         self.output.particle = particle
-        self.output.use_mixed = use_mixed
 
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}
@@ -121,12 +119,10 @@ class Options(object):
                     particle = particle, 
                     ptrange = 'config/pt-spmc.json',
                     spectrumconf = 'config/spectrum_spmc.json',
-                    paramconf = 'config/cball-parameters-spmc-test.json',
-                    use_mixed = False
+                    paramconf = 'config/cball-parameters-spmc-test.json'
         )
 
         options.spectrum.fit_range = pt_fit_range
-        options.pt.use_mixed = False
 
         if label:
             options.label = label 

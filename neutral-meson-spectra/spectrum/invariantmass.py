@@ -97,10 +97,10 @@ class VisualizeMass(object):
 
 
 
-def invariant_mass_selector(use_mixed):
+def invariant_mass_selector(use_mixed, options):
     if not use_mixed:
-        return InvariantMassNoMixing
-    return InvariantMass
+        return lambda x, y, z: InvariantMassNoMixing(x, y, z, options)
+    return lambda x, y, z: InvariantMass(x, y, z, options)
 
 
 class InvariantMassNoMixing(VisualizeMass):
