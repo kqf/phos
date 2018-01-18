@@ -3,6 +3,7 @@ import ROOT
 
 from spectrum.comparator import Comparator
 from tools.feeddown import FeeddownEstimator
+from vault.datavault import DataVault
 
 
 
@@ -10,7 +11,7 @@ from tools.feeddown import FeeddownEstimator
 class FedddownTest(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'pythia8'
+        self.infile = DataVault().file("pythia8")
         # self.infile = 'scaled-LHC17f8a'
         self.selection = 'MCStudyOnlyTender'
         self.particles = '', 'K^{s}_{0}'#, '#Lambda', '#pi^{+}', '#pi^{-}'

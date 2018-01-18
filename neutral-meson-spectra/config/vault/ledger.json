@@ -1,13 +1,24 @@
 {
 	"data": {
 		"latest": {
-			"file": "uncorrected/LHC16.root",
+			"file": "input-data/uncorrected/LHC16.root",
 			"hsum": 0,
 			"description": "Raw data without TOF correction"
+		},
+		"stable": {
+			"file": "LHC16.root",
+			"hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",
+			"description": "Raw data without TOF correction"
 		}
+
 	},
 
 	"pythia8": {
+		"latest": {
+			"file": "input-data/pythia8.root",
+			"hsum": "deda91c619113a9f7f8364a0f85e0cfabf7cf181adefe69df90654e2bcb9a117",
+			"description": "Pythia8 with all corrections, for feeddown correction"
+		}
 	},
 
 	"epos": {
