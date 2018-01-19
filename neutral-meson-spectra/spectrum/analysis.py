@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
-from processing import DataSlicer
+from processing import DataSlicer, RangeEstimator
 from kinematic import KinematicTransformer
-from outputcreator import RangeTransformer
 from options import Options
 
 
@@ -18,7 +17,7 @@ class Analysis(object):
         pipeline = [
             inputs,
             DataSlicer(self.options.pt, self.options),
-            RangeTransformer(self.options, label),
+            RangeEstimator(self.options, label),
             KinematicTransformer(self.options, label)
         ]
 

@@ -4,7 +4,7 @@ from spectrum.spectrum import CompositeSpectrum
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
-from spectrum.outputcreator import RangeTransformer
+from spectrum.processing import RangeEstimator
 from spectrum.comparator import Comparator
 import spectrum.comparator as cmpr
 import spectrum.sutils as su
@@ -25,7 +25,7 @@ class TestPi0EtaMassRatio(unittest.TestCase):
 
         pi0 = CompositeSpectrum(inputs_pi0, Options.spmc((0, 5.5), 'pi0'))
         pi0_mass = pi0.evaluate().mass
-        pi0_massf = pi0.RangeTransformer(Options(), '#pi^{0}').fit_mass(pi0_mass)
+        pi0_massf = pi0.RangeEstimator(Options(), '#pi^{0}').fit_mass(pi0_mass)
         diff.compare(pi0_mass)
 
         pi0_massf.SetRange(*compare_range)
@@ -42,7 +42,7 @@ class TestPi0EtaMassRatio(unittest.TestCase):
 
         eta = CompositeSpectrum(inputs_eta, options_eta)
         eta_mass = eta.evaluate().mass
-        eta_massf = eta.RangeTransformer(Options(), "#eta").fit_mass(eta_mass)
+        eta_massf = eta.RangeEstimator(Options(), "#eta").fit_mass(eta_mass)
         eta_massf.SetRange(*compare_range)
         diff.compare(eta_mass)
 
