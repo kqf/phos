@@ -28,6 +28,7 @@ class DataSlicer(object):
 class RangeEstimator(object):
 
     _output = 'mass', 'width'
+    _titles = 'particle mass', 'particle width'
     def __init__(self, options, label):
         super(RangeEstimator, self).__init__()
         self.opt = options.spectrum
@@ -35,27 +36,23 @@ class RangeEstimator(object):
         self.output = None
 
     def transform(self, masses):
-        ExtractorOutput = coll.namedtuple('SpectrumAnalysisOutput', self._output)
-        extractor = SpectrumExtractor(self._output)
-        values = map(extractor.eval, masses)
-
-        iter_collection = zip(
-            self._output, # Ensure ordering of `data`
-            zip(*values)
+        values = SpectrumExtractor.extract(
+            self._output,
+            masses
         )
-        # Extract the data
-        output = {quant: 
-            OutputCreator.output_histogram(
-                quant,
-                quant,
-                quant,
-                999,
-                InvariantMass.ptedges(masses),
-                d
-            ) for quant, d in iter_collection
-        }
+        
+        titles = {q: t for q, t in zip(self._output, self._titles)}
 
-        self.output = ExtractorOutput(**output) 
+        self.output = OutputCreator.output(
+           'MassWidthOutput',
+            values, 
+            self._output,
+            InvariantMass.ptedges(masses),
+            titles,
+            self.label,
+            999 
+        )
+
         ranges = self._fit_ranges(self.output)
 
         for mass, region in zip(masses, ranges):
@@ -120,4 +117,60 @@ class RangeEstimator(object):
             'width'
         )
 
+
+from ptplotter import PtPlotter
+
+# TODO: Move this to some __init__.py method?
+ROOT.TH1.AddDirectory(False)
+
+class DataExtractor(object):
+
+    def __init__(self, options, label):
+        super(DataExtractor, self).__init__()
+        self.opt = options.output
+        self.label = label
+
+
+    def _decorate_hists(self, histograms, nevents):
+        # Scale by the number of events 
+        histograms.spectrum.Scale(1. / nevents)
+        histograms.spectrum.logy = True
+        histograms.npi0.logy = True
+        return histograms 
+
+        
+    def transform(self, masses):
+        values = SpectrumExtractor.extract(
+            self.opt.output_order,
+            masses
+        )
+
+        edges = InvariantMass.ptedges(masses)
+
+        titles = {quant:
+            self.opt.output[quant] % self.opt.partlabel 
+            for quant in self.opt.output_order
+        }
+
+        # Create hitograms
+        histos = OutputCreator.output(
+           'SpectrumAnalysisOutput',
+            values, 
+            self.opt.output_order,
+            edges,
+            titles,
+            self.label,
+            self.opt.priority
+        )
+
+        # Decorate the histograms
+        nevents = next(iter(masses)).mass.nevents
+        decorated = self._decorate_hists(histos, nevents)
+
+        if self.opt.dead_mode: 
+            return decorated 
+
+        self.plotter = PtPlotter(masses, self.opt, self.label)
+        self.plotter.draw()
+        return decorated 
 

@@ -1,7 +1,7 @@
 import ROOT
 from broot import BROOT as br
 import sutils as su
-import collections
+import collections as coll
 
 class SpectrumExtractor(object):
 
@@ -66,6 +66,11 @@ class SpectrumExtractor(object):
         mass.extract_data() 
         return [f(mass) for f in self.quantities]
 
+    @classmethod
+    def extract(klass, order, masses):
+        extractor = klass(order)
+        return map(extractor.eval, masses)
+
 
 class OutputCreator(object):
     def __init__(self, name, title, label, priority = 999):
@@ -94,4 +99,41 @@ class OutputCreator(object):
     def output_histogram(name, title, label, priority, bins, data):
         output = OutputCreator(name, title, label, priority)
         return output.get_hist(bins, data)
+
+
+    @classmethod
+    def output(klass, 
+            typename,
+            data,
+            order,
+            ptedges,
+            titles, # self.opt.output[quant] % self.opt.partlabel,
+            label,
+            priority
+        ):
+
+        OutType = coll.namedtuple(typename, order)
+
+        iter_collection = zip(
+            order, # Ensure ordering of `data`
+            zip(*data)
+        )
+
+        # Extract the data
+        # Don't use format, as it confuses root/latex syntax
+        output = {quant: 
+            OutputCreator.output_histogram(
+                quant,
+                titles[quant],
+                label,
+                priority,
+                ptedges,
+                datapoints
+            ) for quant, datapoints in iter_collection
+        }
+
+        # Convert to a proper datastructure 
+        return OutType(**output)
+
+
 

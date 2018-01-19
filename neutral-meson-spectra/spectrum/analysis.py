@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
-from processing import DataSlicer, RangeEstimator
-from kinematic import KinematicTransformer
+from processing import DataSlicer, RangeEstimator, DataExtractor
 from options import Options
 
 
@@ -18,7 +17,7 @@ class Analysis(object):
             inputs,
             DataSlicer(self.options.pt, self.options),
             RangeEstimator(self.options, label),
-            KinematicTransformer(self.options, label)
+            DataExtractor(self.options, label)
         ]
 
         data = None
