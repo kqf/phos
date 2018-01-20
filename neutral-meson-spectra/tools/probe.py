@@ -9,7 +9,6 @@ from spectrum.sutils import gcanvas, wait
 from spectrum.invariantmass import InvariantMass
 from spectrum.outputcreator import OutputCreator
 from spectrum.comparator import Comparator
-
 from spectrum.broot import BROOT as br
 
 ROOT.TH1.AddDirectory(False)

@@ -2,9 +2,16 @@
 	"data": {
 		"latest": {
 			"file": "input-data/uncorrected/LHC16.root",
-			"hsum": 0,
+			"hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",
 			"description": "Raw data without TOF correction"
 		},
+
+		"uncorrected": {
+			"file": "input-data/uncorrected/LHC16.root",
+			"hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",
+			"description": "Raw data without TOF correction"
+		},
+
 		"stable": {
 			"file": "LHC16.root",
 			"hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",

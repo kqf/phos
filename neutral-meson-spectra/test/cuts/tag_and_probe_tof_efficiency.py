@@ -9,6 +9,7 @@ from spectrum.comparator import Comparator
 from spectrum.outputcreator import OutputCreator
 
 from spectrum.broot import BROOT as br
+from vault.datavault import DataVault
 
 from tools.probe import TagAndProbe
 import numpy as np
@@ -56,12 +57,13 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
 
     def test_estimate_tof_efficiency(self):
-        fit_tof_efficiency('/uncorrected/LHC16')
+        datafile = DataVault().file("data", "uncorrected")
+        fit_tof_efficiency(datafile)
 
 
     @unittest.skip('Debug')
     def test_different_modules(self):
-        datafile = '/uncorrected/LHC16' 
+        datafile = DataVault().file("data", "uncorrected")
         hpatterns = ['MassEnergy%s' + '_SM{0}'.format(i) for i in range(1, 5)] 
         estimators = [TagAndProbe(datafile, hpattern=si).eff(False) for si in hpatterns]
         for i, e in enumerate(estimators):
