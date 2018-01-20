@@ -17,18 +17,51 @@ ROOT.TH1.AddDirectory(False)
 # TODO: Draw corrected version with invariant mass
 
 class TagAndProbe(object):
-    def __init__(self, sinput, cut_nocut = ('TOF', 'All')):
+    def __init__(self,
+        dataset,
+        cut_nocut=('TOF', 'All'),
+        selection='TagAndProbleTOFOnlyTender',
+        hpattern='MassEnergy%s_SM0'
+    ):
         super(TagAndProbe, self).__init__()
-        self.hpattern = sinput.histname
-        self.input = sinput
-        self.cut_and_full = map(self._estimator, cut_nocut)
+
+        # Create inputs for cut and nocut hists
+        inputs = map(
+            self._input_creator(
+                dataset,
+                selection,
+                hpattern
+            ),
+            cut_nocut
+        )
+
+        # Create estimators for the different datasets
+        self.cut_and_full = map(
+            self._estimator, 
+            inputs
+        )
 
         # IO management
         self.recalculate = False
         self.oname = 'input-data/tof-cut' + \
-                      sinput.filename + \
-                      (self.hpattern % '') + '.root'
+                      inputs[0].filename + \
+                      (hpattern % '') + '.root'
         self.label = 'tof cut efficiency'
+
+
+    def _estimator(self, inputs):
+        options = Options('q', ptconf='config/tag-and-probe-tof.json')
+        return Spectrum(inputs, options)
+
+
+    def _input_creator(self, data, selection, hpattern):
+        function = lambda x: Input(
+            data, 
+            selection, 
+            hpattern % x, 
+            label=x
+        )
+        return function
 
 
     def eff(self, stop=True, fitfunc=None):
@@ -48,14 +81,6 @@ class TagAndProbe(object):
         result = infile.GetListOfKeys().At(0).ReadObj()
         result.label = self.label
         return result
-
-
-    def _estimator(self, x):
-        options = Options('q', ptconf='config/tag-and-probe-tof.json')
-        self.input.histname = self.hpattern % x
-        self.input.label = x
-        return Spectrum(self.input.read(), options)
-
 
 
     def efficiency(self, stop=True, fitfunc=None):
