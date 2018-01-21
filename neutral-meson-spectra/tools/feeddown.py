@@ -2,7 +2,7 @@ from spectrum.sutils import wait
 from spectrum.options import Options
 from spectrum.spectrum import Spectrum
 from spectrum.comparator import Comparator
-from spectrum.input import NoMixingInput, read_histogram
+from spectrum.input import NoMixingInput, read_histogram, Input
 
 from spectrum.broot import BROOT as br
 
@@ -20,14 +20,28 @@ class FeeddownEstimator(object):
         self.label = 'feeddown'
         self.baseline = self._baseline()
 
-    def spectrum(self, histname, x):
-        inp = NoMixingInput(self.infile, self.selection, histname)
-        # CWR: Check if this is the final parametrization
-        spectrum = Spectrum(inp, Options.fixed_peak(x if x else 'all')).evaluate().spectrum
+    def _spectrum(self, infile, selection, histname, label):
+        inputs_ = NoMixingInput(
+            infile, 
+            selection, 
+            histname
+        )
+
+        # TODO: Use well-defined peak parametrization
+        options = Options.fixed_peak()
+
+        estimator = Spectrum(inputs_, options)
+        spectrum = estimator.evaluate().spectrum
+        spectrum.label = label if label else 'all'
         return br.scalew(spectrum) 
 
     def estimate(self, ptype = '', stop = True):
-        feeddown = self.spectrum(self.hname + ptype, ptype)
+        feeddown = self._spectrum(
+            self.infile,
+            self.selection,
+            self.hname + ptype,
+            ptype
+        )
 
         diff = Comparator((1, 1), stop = stop)
         result = diff.compare(feeddown, self.baseline)
@@ -41,7 +55,17 @@ class FeeddownEstimator(object):
         # generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
         # br.scalew(generated)
         # Estimate this quantity in a following way
-        base = self.spectrum('MassPt', '\pi^{0}_{rec} all')
+
+        inputs = Input(
+            self.infile,
+            self.selection,
+            'MassPt',
+            '\pi^{0}_{rec} all'
+        )
+        options = Options()
+        options.param.background = 'pol3'
+        base = Spectrum(inputs, options).evaluate().spectrum
         base.priority = -1
+        br.scalew(base)
         return base
 

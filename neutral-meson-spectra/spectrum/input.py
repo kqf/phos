@@ -49,8 +49,8 @@ class Input(object):
         return zip(*input_data)
 
 class NoMixingInput(Input):
-    def __init__(self, filename, listname, histname = 'MassPt', mixprefix = 'Mix'):
-        super(NoMixingInput, self).__init__(filename, listname, histname, mixprefix)
+    def __init__(self, filename, listname, histname = 'MassPt', label='', mixprefix = 'Mix'):
+        super(NoMixingInput, self).__init__(filename, listname, histname, label, mixprefix)
 
     def read(self, histo = ''):
         histo = histo if histo else self.histname
