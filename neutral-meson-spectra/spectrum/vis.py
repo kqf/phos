@@ -62,7 +62,7 @@ class MultipleVisualizer(object):
             h.SetFillColor(color)
             h.SetMarkerStyle(marker)
             h.SetMarkerColor(color)
-            h.DrawCopy('colz same')
+            h.DrawCopy('colz same ' + h.GetOption())
             legend.AddEntry(h, h.label)
 
         # Don't draw legend for TH2 histograms

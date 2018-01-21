@@ -12,7 +12,6 @@ class FedddownTest(unittest.TestCase):
 
     def setUp(self):
         self.infile = DataVault().file("pythia8")
-        # self.infile = 'scaled-LHC17f8a'
         self.selection = 'MCStudyOnlyTender'
         self.particles = '', 'K^{s}_{0}'#, '#Lambda', '#pi^{+}', '#pi^{-}'
 
@@ -29,6 +28,7 @@ class FedddownTest(unittest.TestCase):
         feeddown_errors.SetTitle('feeddown correction approximation')
         feeddown_errors.label = 'approx'
         feeddown_errors.SetOption('e3')
+        feeddown_errors.SetFillStyle(3002)
         diff.compare(feeddown_ratio, feeddown_errors)        
 
 

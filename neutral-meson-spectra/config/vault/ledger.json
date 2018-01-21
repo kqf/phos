@@ -22,7 +22,7 @@
 
 	"pythia8": {
 		"latest": {
-			"file": "input-data/pythia8.root",
+			"file": "input-data/mc/pythia8.root",
 			"hsum": "deda91c619113a9f7f8364a0f85e0cfabf7cf181adefe69df90654e2bcb9a117",
 			"description": "Pythia8 with all corrections, for feeddown correction"
 		}

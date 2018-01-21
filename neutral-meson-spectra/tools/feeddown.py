@@ -29,6 +29,7 @@ class FeeddownEstimator(object):
 
         # TODO: Use well-defined peak parametrization
         options = Options.fixed_peak()
+        options.param.background = 'pol3'
 
         estimator = Spectrum(inputs_, options)
         spectrum = estimator.evaluate().spectrum
