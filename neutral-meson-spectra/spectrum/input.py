@@ -40,13 +40,21 @@ class Input(object):
     def transform(self, data = None):
         return self.read()
 
-    def read_per_module(self, threshold = 0.135):
-        names = ['SM%dSM%d' % (i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]
-        data = map(lambda x: self.read(self.histname + x), names)
 
-        good = lambda r: r or r.GetXaxis().GetBinCenter(r.FindFirstBinAbove(0)) > threshold 
-        input_data = ((h, l) for h, l in zip(data, names) if good(h))
-        return zip(*input_data)
+    @classmethod
+    def read_per_module(klass, filename, listname,
+        histname = 'MassPt', label='', mixprefix='Mix'):
+        names = ['SM%dSM%d' % (i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]
+
+        output = [klass(
+            filename,
+            listname,
+            histname + x,
+            label=x,
+            mixprefix=mixprefix
+        ) for x in names]
+
+        return output
 
 class NoMixingInput(Input):
     def __init__(self, filename, listname, histname = 'MassPt', label='', mixprefix = 'Mix'):

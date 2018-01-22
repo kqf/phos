@@ -7,13 +7,28 @@ from spectrum.sutils import gcanvas, adjust_canvas
 
 import test.check_default
 import unittest
+import operator
 
-def run_analysis(opt, infile, selection):
-    def f(x, y): 
-        x.label = y
-        return Spectrum(x, opt).evaluate()
+def run_analysis(options, infile, selection):
 
-    results = map(f, *Input(infile, selection, 'MassPt').read_per_module())
+    inputs = Input.read_per_module(
+        infile,
+        selection,
+        'MassPt',
+        options
+    )
+
+    estimators = map(
+        lambda x: Spectrum(x, options),
+        inputs
+    )
+
+
+    results = map(
+        operator.methodcaller('evaluate'),
+        estimators
+    )
+
     return results
 
 class CheckModules(test.check_default.CheckDefault):
