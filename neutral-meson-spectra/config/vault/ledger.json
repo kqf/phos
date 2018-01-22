@@ -28,6 +28,20 @@
 		}
 	},
 
+	"single #pi^{0}":
+	{
+		"low": {
+			"file": "input-data/single/nonlin/LHC17j3b1.root",
+			"hsum": "1588732b95bbd358ade8c0f0fd093a9428b3d7d4e9f93c4247f4748420590f6a",
+			"description": "Single #pi^{0} simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/single/nonlin/LHC17j3b2.root",
+			"hsum": "4ffb126b409384cf627df688396729e392358d8aff41d6fd489b7e6c1dda0d3b",
+			"description": "Single #pi^{0} simulations with all correctons"
+		}
+	},
+
 	"epos": {
 	},
 

@@ -4,16 +4,16 @@ from spectrum.spectrum import CompositeSpectrum
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 from spectrum.input import Input
+from vault.datavault import DataVault
 
 
 class TestCompositeSpectrum(unittest.TestCase):
 
 
    def test_interface(self):
-        datadir = '/single/weight2/'
         inputs = {
-            Input(datadir + 'LHC17j3b1', 'PhysEffOnlyTender'): (0, 7), 
-            Input(datadir + 'LHC17j3b2', 'PhysEffOnlyTender'): (7, 20)
+            Input(DataVault().file("single #pi^{0}", "low"), 'PhysEffOnlyTender'): (0, 7), 
+            Input(DataVault().file("single #pi^{0}", "high"), 'PhysEffOnlyTender'): (7, 20)
         }
 
         spectrum_estimator = CompositeSpectrum(inputs)

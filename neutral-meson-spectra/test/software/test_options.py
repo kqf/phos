@@ -14,34 +14,31 @@ class TestOptions(unittest.TestCase):
         self.conffile = 'config/test_options.json'
         self.particle = 'pi0'
         data = {
-                    "comment": "This file is needed for testing purpose only, feel free to delete it.",
-                    "pi0": 
-                    { 
-                        "par_1": 1,
-                        "par_2": [2, 7 ,3 ,4 ,5],
-                        "par_3": ["3"],
-                        "par_4": ["4"],
-                        "par_5": 5,
-                        "par_6": 6
-                    }, 
-                    "eta": 
-                    { 
-                        "par_1": 1,
-                        "par_2": [2, 7 ,3 ,4 ,5],
-                        "par_3": ["3"],
-                        "par_4": ["4"],
-                        "par_5": 5,
-                        "par_6": 6
-                    }
-               }
+            "comment": "This file is needed for testing purpose only, feel free to delete it.",
+            "pi0": 
+            { 
+                "par_1": 1,
+                "par_2": [2, 7 ,3 ,4 ,5],
+                "par_3": ["3"],
+                "par_4": ["4"],
+                "par_5": 5,
+                "par_6": 6
+            }, 
+            "eta": 
+            { 
+            "par_1": 1,
+            "par_2": [2, 7 ,3 ,4 ,5],
+            "par_3": ["3"],
+            "par_4": ["4"],
+            "par_5": 5,
+            "par_6": 6
+            }
+       }
 
         self.props = data[self.particle] 
 
         with open(self.conffile, 'w') as outfile:
             json.dump(data, outfile)
-
-        # self.props.update({'par_6': 100})
-        # self.props.update({'par_7': 100})
 
         # Enable debug output in the assertions
         self.longMessage = True
@@ -60,32 +57,34 @@ class TestOptions(unittest.TestCase):
             res = target.__dict__[opt]
             self.assertEquals(res, val, msg = msg.format(opt, res))
 
+
     def test_spectrum(self):
         options = Options(spectrumconf = self.conffile)
         self.check(options.spectrum, 'spectrum')
 
+
     def test_pt(self):
         options = Options(ptconf = self.conffile)
-        self.check(options.pt, 'pt')
+        self.check(options.output, 'output')
+
 
     def test_invmass(self):
         options = Options(invmassconf = self.conffile)
         self.check(options.invmass, 'invmass')
-
 
     def tearDown(self):
         try:
             os.remove(self.conffile)
         except OSError:
             pass
-
             
+
     def test_rebins(self):
         option = Options()
-        print 'ptedges before', option.pt.ptedges 
+        # print 'ptedges before', option.pt.ptedges 
         edg_before = len(option.pt.ptedges)
         Options.coarse_binning(option)
-        print 'ptedges edges', option.pt.ptedges 
+        # print 'ptedges edges', option.pt.ptedges 
 
         edg_after = len(option.pt.ptedges)
         reb_after = len(option.pt.rebins)

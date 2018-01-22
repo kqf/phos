@@ -18,6 +18,7 @@ class Spectrum(object):
         self.data = data
         self.label = data.label
         self.model = Analysis(options)
+        self.opt = options.spectrum
 
     def evaluate(self):
         return self.model.transform(self.data)
@@ -57,5 +58,6 @@ class CompositeSpectrum(Spectrum):
 
         # Use the same container as normal analysis
         # 
+        # TODO: Fix me
         return self.analyzer.OutType(*truncated)
 
