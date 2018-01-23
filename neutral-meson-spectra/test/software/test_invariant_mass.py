@@ -16,10 +16,11 @@ class TestInvariantMass(unittest.TestCase):
     def setUp(self):
         self.wait = 'discover' not in sys.argv 
         self.input = Input('input-data/LHC16.root', 'PhysTender', label='testinvmass')
+
         self.particles = {
-                            'pi0': ((8, 9), 0)
-                           ,'eta': ((0.8, 1.4), 5)
-                         }
+            'pi0': ((8, 9), 0),
+            'eta': ((0.8, 1.4), 5)
+        }
 
     def draw(self, particle, func, title):
         bin, nrebin = self.particles[particle]
@@ -53,10 +54,7 @@ class TestInvariantMass(unittest.TestCase):
 
 
     def draw_multiple(self, particle):
-        option = Options(
-                            particle = particle, 
-                            mode  =  'q'
-                         )
+        option = Options(particle=particle, mode='q')
         analysis = Spectrum(self.input, option)
         analysis.evaluate()
         pt = analysis.analyzer

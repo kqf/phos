@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from vault.datavault import DataVault
 from spectrum.spectrum import Spectrum
 from spectrum.input import Input
 from spectrum.options import Options
@@ -17,14 +18,18 @@ import test.check_default
 class CheckEmptyBins(test.check_default.CheckDefault):
     
     def test(self):
-        sinput = Input('input-data/LHC16.root', 'PhysTender').read()
-        options = []
+        arguments = []
         for l, average in {'func': {}, 'empty': {'empty'}}.iteritems():
-            option = Options(l)
+            option = Options()
             option.invmass.average = average
-            options.append(option)
+	        sinput = Input(
+	        	DataVault().file("data"), 
+	        	'PhysTender',
+	        	label=l
+	        )
+            arguments.append((sinput, option))
 
-        self.results = [Spectrum(sinput, o).evaluate() for o in options]
+        self.results = [Spectrum(*args).evaluate() for args in arguments]
 
 
 if __name__ == '__main__':
