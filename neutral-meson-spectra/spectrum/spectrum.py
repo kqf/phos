@@ -51,13 +51,14 @@ class CompositeSpectrum(Spectrum):
                     spec.Scale(1. / area) 
 
         # Transpose
-        hists = zip(*hists)
-        truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in hists]
+        pairs = zip(*hists)
+        truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in pairs]
         for h in truncated: 
             h.label = self.label 
 
         # Use the same container as normal analysis
         # 
         # TODO: Fix me
-        return self.analyzer.OutType(*truncated)
+        results = hists[0]._make(truncated)
+        return results 
 
