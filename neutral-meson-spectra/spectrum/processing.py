@@ -123,6 +123,19 @@ from ptplotter import PtPlotter
 # TODO: Move this to some __init__.py method?
 ROOT.TH1.AddDirectory(False)
 
+
+class MassFitter(object):
+
+    def __init__(self, options, label):
+        super(MassFitter, self).__init__()
+        self.opt = options
+
+    def transform(self, masses):
+        for mass in masses:
+            mass.extract_data() 
+        return masses
+
+
 class DataExtractor(object):
 
     def __init__(self, options, label):

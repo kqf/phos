@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from processing import DataSlicer, RangeEstimator, DataExtractor
+from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
 from options import Options
 
 
@@ -16,6 +16,7 @@ class Analysis(object):
         pipeline = [
             inputs,
             DataSlicer(self.options.pt, self.options),
+            MassFitter(self.options, label),
             RangeEstimator(self.options, label),
             DataExtractor(self.options, label)
         ]
