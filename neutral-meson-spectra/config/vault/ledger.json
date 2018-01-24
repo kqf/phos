@@ -1,5 +1,12 @@
 {
 	"data": {
+		"validate": {
+			"file": "input-data/corrected/LHC16.root",
+			"hsum": "de7a98fcb5689a41214f5c5da7c1fb3aa19778e65813d3d4c2d5d3fdf29e2548",
+			"description": "Raw data with TOF correction. Needs to be validated"
+		},
+
+
 		"latest": {
 			"file": "input-data/uncorrected/LHC16.root",
 			"hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",

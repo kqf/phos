@@ -12,6 +12,7 @@ from spectrum.options import Options
 import spectrum.comparator as cmpr
 
 from spectrum.broot import BROOT as br
+from vault.datavault import DataVault
 
 
 
@@ -21,8 +22,8 @@ from spectrum.broot import BROOT as br
 class TestDataSetForConsistency(unittest.TestCase):
 
     def setUp(self):
-        fname = 'corrected/LHC16i-muon-calo-pass1.root' 
-        inputs = Input(fname, 'PhysTender', 'MassPt', label='old')
+        fname = DataVault().file('data', 'validate')
+        inputs = Input(fname, 'PhysTender', label='old')
         options = Options()
         self.sp_estimator = Spectrum(inputs, options)
 
