@@ -22,11 +22,11 @@ class CheckEmptyBins(test.check_default.CheckDefault):
         for l, average in {'func': {}, 'empty': {'empty'}}.iteritems():
             option = Options()
             option.invmass.average = average
-	        sinput = Input(
-	        	DataVault().file("data"), 
-	        	'PhysTender',
-	        	label=l
-	        )
+            sinput = Input(
+                DataVault().file("data"), 
+                'PhysTender',
+                label=l
+            )
             arguments.append((sinput, option))
 
         self.results = [Spectrum(*args).evaluate() for args in arguments]

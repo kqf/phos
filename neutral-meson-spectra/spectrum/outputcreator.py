@@ -63,6 +63,7 @@ class SpectrumExtractor(object):
         return (mass.sigf.GetChisquare() / ndf, 0) 
 
     def eval(self, mass):
+        # TODO: Move me to a separate Transformer
         mass.extract_data() 
         return [f(mass) for f in self.quantities]
 
