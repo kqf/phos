@@ -26,7 +26,12 @@ class TestBackgroundShape(unittest.TestCase):
             (ddir + 'LHC17j3c2', (4, 20))
         )
 
-        inputs = [Input(f, 'PhysEffOnlyTender') for (f, _) in files]
+        labels = ('0 < p_{T} < 10', '4 < p_{T} < 10')
+
+        inputs = [
+            Input(f, 'PhysEffOnlyTender', label=l) 
+            for l, (f, _) in zip(labels, files)
+        ]
         options = [Options.spmc(rr, 
             particle='eta'
         ) for (f, rr) in files]
