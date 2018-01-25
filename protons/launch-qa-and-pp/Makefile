@@ -1,7 +1,7 @@
 DATASET = LHC16i-muon-calo-pass1
-DPART = first
+DPART = second
 MC = kFALSE
-OUTDIR = results/data/no-corrections
+OUTDIR = results/data/corrected/
 
 #DATASET = LHC17d20a2_extra
 #DPART = second
@@ -14,7 +14,7 @@ grid: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink) 
 	@echo $(DATASET) $(DPART) >> started_jobs.log
 	@$(call funlink) && echo "Directory is clean"
-	@echo "Started grid analysis" >> .runhistory
+	@echo "Started grid analysis on $(DPART) part of $(DATASET)" >> .runhistory
 	@echo -e "\a"
 
 

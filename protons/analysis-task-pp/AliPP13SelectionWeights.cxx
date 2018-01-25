@@ -17,7 +17,7 @@ Double_t AliPP13SelectionWeightsTOF::Weight(Double_t energy) const
 {
     // TOF efficiency was parametrized as photon energy
     //
-    Double_t logisitc = fLogScale / (1. + TMath::Exp(energy * fLogA + fLogScale));
+    Double_t logisitc = fLogScale / (1. + TMath::Exp(energy * fLogA + fLogB));
     Double_t expo = fExpA * TMath::Exp(energy * fExpAlpha);
 
     return 1. - logisitc - expo;
