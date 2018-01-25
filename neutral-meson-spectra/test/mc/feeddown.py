@@ -1,6 +1,7 @@
 import unittest
 import ROOT
 
+from spectrum.options import Options
 from spectrum.comparator import Comparator
 from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
@@ -18,8 +19,15 @@ class FedddownTest(unittest.TestCase):
 
 
     def test_feeddown_correction(self):
-        func = self.fit_function()
-        estimator = FeeddownEstimator(self.infile, self.selection, func)
+        func, options = self.fit_function(), Options()
+        options.param.background = 'pol3'
+
+        estimator = FeeddownEstimator(
+            self.infile,
+            self.selection,
+            func
+        )
+
         feeddown_ratio, feeddown_errors = estimator.estimate('K^{s}_{0}')
         feeddown_ratio.logy = False
 

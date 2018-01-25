@@ -11,13 +11,21 @@ import ROOT
 
 class FeeddownEstimator(object):
 
-    def __init__(self, infile, selection, fit_function):
+    _hname = 'MassPt_#pi^{0}_feeddown_'
+    _label = 'feeddown'
+
+    def __init__(self,
+            infile,
+            selection,
+            fit_function,
+            options=Options()
+        ):
         super(FeeddownEstimator, self).__init__()
         self.infile = infile
-        self.fit_function = fit_function
+        # NB: Options should be shared globally to fix the parameters
+        self.options = options
         self.selection = selection
-        self.hname = 'MassPt_#pi^{0}_feeddown_'
-        self.label = 'feeddown'
+        self.fit_function = fit_function
         self.baseline = self._baseline()
 
     def _spectrum(self, infile, selection, histname, label):
@@ -26,12 +34,7 @@ class FeeddownEstimator(object):
             selection, 
             histname
         )
-
-        # TODO: Use well-defined peak parametrization
-        options = Options.fixed_peak()
-        options.param.background = 'pol3'
-
-        estimator = Spectrum(inputs_, options)
+        estimator = Spectrum(inputs_, self.options)
         spectrum = estimator.evaluate().spectrum
         spectrum.label = label if label else 'all'
         return br.scalew(spectrum) 
@@ -40,7 +43,7 @@ class FeeddownEstimator(object):
         feeddown = self._spectrum(
             self.infile,
             self.selection,
-            self.hname + ptype,
+            self._hname + ptype,
             ptype
         )
 
@@ -48,25 +51,20 @@ class FeeddownEstimator(object):
         result = diff.compare(feeddown, self.baseline)
         result.label = ptype if ptype else 'all secondary'
 
-        # TODO: Is this the right way to estimate Feeddown?
         return result, br.confidence_intervals(result, self.fit_function)
 
 
     def _baseline(self):
-        # generated = read_histogram(self.infile, self.selection, 'hPt_#pi^{0}', 'generated')
-        # br.scalew(generated)
-        # Estimate this quantity in a following way
-
         inputs = Input(
             self.infile,
             self.selection,
             'MassPt',
             '\pi^{0}_{rec} all'
         )
-        options = Options()
-        options.param.background = 'pol3'
-        base = Spectrum(inputs, options).evaluate().spectrum
+
+        base = Spectrum(inputs, self.options).evaluate().spectrum
         base.priority = -1
         br.scalew(base)
+        self.options.spectrum.fit_mass_width = False
         return base
 
