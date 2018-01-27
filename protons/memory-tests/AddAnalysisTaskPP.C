@@ -15,7 +15,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	// Applying no weights
 	//
-	AliPP13SelectionWeights data_weights;
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
 	cuts_eta.fAsymmetryCut = 0.7;
@@ -44,6 +43,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		selections->Add(new AliPP13PhotonSpectrumSelection("Photons", "Cluster p_{T} Selection", cuts_pi0, &data_weights));
 		selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsPlain", "Cluster p_{T} Selection", cuts_pi0, &data_weights_plain));
 
+		delete &data_weights;
+		delete &data_weights_plain;
 	}	
 
 
@@ -70,6 +71,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));	
+
+		delete & mc_weights;
+		delete & mc_weights_only;
 	}
 
 	// Setup task

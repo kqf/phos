@@ -1,7 +1,7 @@
 DATASET = LHC16i-muon-calo-pass1
 DPART = second
 MC = kFALSE
-PROFILING_TARGET = 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
+PROFILING_TARGET = root -l 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
 
 TEST_SELECTION = PhysTender
 
@@ -13,6 +13,7 @@ profiling: | %.cxx
 	--num-callers=40 \
 	--log-file=./profiling_result.log \
 	${PROFILING_TARGET}
+	@$(call funlink) && echo "Directory is clean"
 
 
 %.cxx:
