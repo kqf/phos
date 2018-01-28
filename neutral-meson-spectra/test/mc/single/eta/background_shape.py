@@ -26,7 +26,7 @@ class TestBackgroundShape(unittest.TestCase):
             (ddir + 'LHC17j3c2', (4, 20))
         )
 
-        labels = ('0 < p_{T} < 10', '4 < p_{T} < 10')
+        labels = ('0 < p_{T} < 10', '4 < p_{T} < 100')
 
         inputs = [
             Input(f, 'PhysEffOnlyTender', label=l) 
