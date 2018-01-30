@@ -1,11 +1,11 @@
 #!/bin/bash
 
 INFILE=$1
-YEAR=2016
+YEAR=2017
 PERIOD=${INFILE%%.*}
-DATATYPE=data
-PREFIX='000'
-PASS='pass1'
+DATATYPE=sim
+PREFIX=''
+PASS=''
 
 # For merged Aod
 FILEPATH="AOD/*"
@@ -20,16 +20,17 @@ function dump_run()
     echo $lines
 }
 
-# Here is how we find bad and/or good runs
+# Here is how we find band and/or good runs
 function check_pthard_bins()
 {
+	for pthard in $(seq 1 1 20); do
 		echo -n $pthard " "
 	    if (($(dump_run $name $pthard) == 1)); then
 	    	echo $1 $pthard >> bad-runs-$PERIOD.log
 	    	echo "[Fail] "
 	    	return 1
-	    else return
 		fi
+	done
 	echo "[OK] "
 	return 0
 }
@@ -40,13 +41,11 @@ function main()
 	while read name
 	do
 		echo -n $name " "
-		if dump_run $name; then
+		if check_pthard_bins $name; then
 			echo $name >> good-runs-$PERIOD.log
 		fi
 	done < $INFILE
 	echo "Done" $INFILE
-	echo "Size of original dataset" `wc -l $INFILE`
-	echo "Size of chiecked dataset" `wc -l good-runs-$PERIOD.log`
 }
 
 main
