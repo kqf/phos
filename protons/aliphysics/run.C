@@ -22,7 +22,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
 
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
+    gROOT->LoadMacro("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
@@ -46,7 +46,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
 
-    gROOT->LoadMacro("../datasets/values_for_dataset.h+");
+    gROOT->LoadMacro("../setup/values_for_dataset.h+");
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
 
