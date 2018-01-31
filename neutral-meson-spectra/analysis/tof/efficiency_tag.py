@@ -2,11 +2,11 @@ import unittest
 import sys
 
 import ROOT
-from spectrum.sutils import gcanvas, wait, adjust_canvas
 from spectrum.input import Input
-from spectrum.invariantmass import InvariantMass
 from spectrum.comparator import Comparator
 from spectrum.outputcreator import OutputCreator
+from spectrum.sutils import gcanvas, wait, adjust_canvas
+from spectrum.invariantmass import InvariantMass
 
 from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
@@ -82,7 +82,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         paths = {
             '/new-calibration/LHC16': '2017',
             '/uncorrected/LHC16': '2016'
-            }
+        }
 
         def tof(dataset):
             probe_estimator = TagAndProbe(dataset)
