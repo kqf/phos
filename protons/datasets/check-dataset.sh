@@ -2,7 +2,8 @@
 
 INFILE=$1
 YEAR=2016
-PERIOD=${INFILE%%.*}
+RPERIOD=${INFILE%%.*}
+PERIOD=${RPERIOD%%-*}
 DATATYPE=data
 PREFIX='000'
 PASS='pass1'
@@ -13,27 +14,22 @@ FILEPATH="AOD/*"
 # For non-merged Aod
 # FILEPATH="*.*"
 
+function show_run()
+{
+    echo /alice/$DATATYPE/$YEAR/$PERIOD/$PREFIX$1/$PASS/$FILEPATH
+}
+
 
 function dump_run()
 {
-    lines=$(alien_find /alice/$DATATYPE/$YEAR/$PERIOD/$2/$PREFIX$1/$PASS/$FILEPATH/ -z  -name AliAOD.root | wc -l)
-    echo $lines
-}
+    lines=$(alien_find /alice/$DATATYPE/$YEAR/$PERIOD/$PREFIX$1/$PASS/$FILEPATH/ -z  -name AliAOD.root | wc -l)
 
-# Here is how we find bad and/or good runs
-function check_pthard_bins()
-{
-		echo -n $pthard " "
-	    if (($(dump_run $name $pthard) == 1)); then
-	    	echo $1 $pthard >> bad-runs-$PERIOD.log
-	    	echo "[Fail] "
-	    	return 1
-	    else return
-		fi
-	echo "[OK] "
-	return 0
-}
+    if [[ $lines -ne 1 ]]; then
+    	return 0
+    fi
 
+    return 1
+}
 
 function main()
 {
@@ -41,12 +37,13 @@ function main()
 	do
 		echo -n $name " "
 		if dump_run $name; then
-			echo $name >> good-runs-$PERIOD.log
+			echo $name"," >> $INFILE.verified.txt
 		fi
+		show_run $name
 	done < $INFILE
 	echo "Done" $INFILE
 	echo "Size of original dataset" `wc -l $INFILE`
-	echo "Size of chiecked dataset" `wc -l good-runs-$PERIOD.log`
+	echo "Size of chiecked dataset" `wc -l $INFILE.verified.txt`
 }
 
 main
