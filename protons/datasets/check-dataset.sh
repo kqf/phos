@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INFILE=$1
-YEAR=2016
+YEAR=2017
 RPERIOD=${INFILE%%.*}
 PERIOD=${RPERIOD%%-*}
 DATATYPE=data
@@ -33,17 +33,20 @@ function dump_run()
 
 function main()
 {
+	cp $INFILE backup-$INFILE
+	rm $INFILE
 	while read name
 	do
 		echo -n $name " "
 		if dump_run $name; then
-			echo $name"," >> $INFILE.verified.txt
+			echo $name >> $INFILE
 		fi
 		show_run $name
-	done < $INFILE
+	done < backup-$INFILE
+
 	echo "Done" $INFILE
-	echo "Size of original dataset" `wc -l $INFILE`
-	echo "Size of chiecked dataset" `wc -l $INFILE.verified.txt`
+	echo "Size of original dataset" `wc -l backup-$INFILE`
+	echo "Size of chiecked dataset" `wc -l $INFILE`
 }
 
 main
