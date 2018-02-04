@@ -8,6 +8,11 @@ MC = kFALSE
 
 TEST_SELECTION = PhysTender
 
+%.cxx:
+	@$(call funlink)	
+	@$(call link_sources,../analysis-task-pp, "*.h" "*.cxx")
+	ln -s ../analysis-task-pp/macros/AddAnalysisTaskPP.C .
+
 grid: 
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' 
 	@echo $(DATASET) $(DPART) >> started_jobs.log
@@ -37,7 +42,7 @@ force-download:
 	@echo -e "\x07"
 
 
-test: 
+test:
 	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' 
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_result,AnalysisResults,test-analysis-pp)
@@ -51,7 +56,9 @@ upload:
 	$(call upload_result,AnalysisResults,$(DATASET))
 
 clean:
-	rm *.so *.d *~ Task*
+	@-rm *.so *.d *~ Task*
+	@-$(call funlink)
+	@-unlink AddAnalysisTaskPP
 
 # output direcotry, filename.root, where to save
 define save_runs
@@ -71,6 +78,11 @@ endef
 define upload_result
 	mv $(1).root $(2).root
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
+endef
+
+
+define funlink
+	find -type l -delete	
 endef
 
 
