@@ -15,10 +15,11 @@ class Analysis(object):
 
         pipeline = [
             inputs,
+            # TODO: Clean this part in pipeline
             DataSlicer(self.options.pt, self.options),
             MassFitter(self.options, label),
-            RangeEstimator(self.options, label),
-            DataExtractor(self.options, label)
+            RangeEstimator(self.options.spectrum, label),
+            DataExtractor(self.options.output, label)
         ]
 
         data = None

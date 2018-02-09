@@ -31,7 +31,7 @@ class RangeEstimator(object):
     _titles = 'particle mass', 'particle width'
     def __init__(self, options, label):
         super(RangeEstimator, self).__init__()
-        self.opt = options.spectrum
+        self.opt = options
         self.label = label
         self.output = None
 
@@ -146,7 +146,7 @@ class DataExtractor(object):
 
     def __init__(self, options, label):
         super(DataExtractor, self).__init__()
-        self.opt = options.output
+        self.opt = options
         self.label = label
 
 
