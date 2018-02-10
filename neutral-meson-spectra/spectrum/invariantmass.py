@@ -82,9 +82,9 @@ class VisualizeMass(object):
         self.mass.Draw()
         legend.AddEntry(self.mass, 'data')
 
-        if self.mixed:
-            self.mixed.Draw('same')
-            legend.AddEntry(self.mixed, 'background')
+        if self.background:
+            self.background.Draw('same')
+            legend.AddEntry(self.background, 'background')
 
         legend.Draw('same')
         self.draw_text(self.mass, self.pt_label + ', GeV/c')
@@ -117,7 +117,7 @@ class InvariantMassNoMixing(VisualizeMass):
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
-        self.mass, self.mixed = map(self.extract_histogram, inhists)
+        self.mass, self.background = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
         self.area_error = None
         self._integration_region = self.peak_function.opt.fit_range
@@ -166,7 +166,7 @@ class InvariantMassNoMixing(VisualizeMass):
         return area, areae
 
 
-    def estimate_background(self, mass, mixed):
+    def estimate_background(self, mass, background):
         if not mass.GetEntries():
             return mass
 
@@ -177,19 +177,19 @@ class InvariantMassNoMixing(VisualizeMass):
         return bgrf
 
 
-    def subtract_background(self, mass, mixed):
+    def subtract_background(self, mass, background):
         if not mass.GetEntries():
             return mass
 
         signal = mass.Clone()
-        signal.Add(mixed, -1)
+        signal.Add(background, -1)
         return signal
 
 
     def extract_data(self):
         if not (self.sigf and self.bgrf):
-            self.mixed = self.estimate_background(self.mass, self.mixed)
-            self.signal = self.subtract_background(self.mass, self.mixed)
+            self.background = self.estimate_background(self.mass, self.background)
+            self.signal = self.subtract_background(self.mass, self.background)
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
 
@@ -233,23 +233,23 @@ class InvariantMass(InvariantMassNoMixing):
         return h
 
 
-    def estimate_background(self, mass, mixed):
+    def estimate_background(self, mass, background):
         if not mass.GetEntries():
             return mass
 
-        if not mixed:
+        if not background:
             return mass
 
-        # Divide real/mixed
-        ratio = br.ratio(mass, mixed, '')
-        ratio.GetYaxis().SetTitle("Real/ Mixed")
+        # Divide realbackground/
+        ratio = br.ratio(mass, background, '')
+        ratio.GetYaxis().SetTitle("Real/ background")
 
         if ratio.GetEntries() == 0:
             return ratio
         fitf, bckgrnd = self.peak_function.fit(ratio)
 
-        mixed.Multiply(bckgrnd)
-        mixed.SetLineColor(46)
+        background.Multiply(bckgrnd)
+        background.SetLineColor(46)
         return ratio
 
 
@@ -265,11 +265,11 @@ class InvariantMass(InvariantMassNoMixing):
         return pars
 
 
-    def subtract_background(self, mass, mixed):
+    def subtract_background(self, mass, background):
         if not mass.GetEntries():
             return mass
 
-        if not mixed:
+        if not background:
             return mass
 
         # Subtraction
@@ -277,7 +277,7 @@ class InvariantMass(InvariantMassNoMixing):
         zeros = set()
 
         zsig = br.empty_bins(signal, self.opt.tol)
-        zmix = br.empty_bins(mixed, self.opt.tol)
+        zmix = br.empty_bins(background, self.opt.tol)
 
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
@@ -287,17 +287,17 @@ class InvariantMass(InvariantMassNoMixing):
         #
 
         signal = self.remove_zeros(signal, zeros)
-        mixed  = self.remove_zeros(mixed, zeros)
+        background  = self.remove_zeros(background, zeros)
 
-        signal.Add(signal, mixed, 1., -1.)
+        signal.Add(signal, background, 1., -1.)
         signal.SetAxisRange(*self.xaxis_range)
-        signal.GetYaxis().SetTitle("Real - Mixed")
+        signal.GetYaxis().SetTitle("Real - background")
         return signal
 
 
     def extract_data(self):
         if not (self.sigf and self.bgrf):
-            self.ratio = self.estimate_background(self.mass, self.mixed)
-            self.signal = self.subtract_background(self.mass, self.mixed)
+            self.ratio = self.estimate_background(self.mass, self.background)
+            self.signal = self.subtract_background(self.mass, self.background)
             self.sigf, self.bgrf = self.peak_function.fit(self.signal)
         return self.sigf, self.bgrf
