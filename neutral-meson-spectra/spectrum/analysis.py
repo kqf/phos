@@ -6,7 +6,7 @@ from options import Options
 
 class Analysis(object):
 
-    def __init__(self, options = Options()):
+    def __init__(self, options=Options()):
         super(Analysis, self).__init__()
         self.options = options
 
@@ -16,7 +16,8 @@ class Analysis(object):
         pipeline = [
             inputs,
             # TODO: Clean this part in pipeline
-            DataSlicer(self.options.pt, self.options),
+            # TODO: Add parametrization configuration here
+            DataSlicer(self.options.pt, self.options), 
             MassFitter(self.options, label),
             RangeEstimator(self.options.spectrum, label),
             DataExtractor(self.options.output, label)

@@ -1,10 +1,11 @@
 
-from spectrum.mass import MassFitter
 from spectrum.processing import DataSlicer
+from spectrum.processing import MassFitter
+from spectrum.ptplotter import PtPlotter
+
 from spectrum.options import Options
 from spectrum.input import Input
 from vault.datavault import DataVault
-from spectrum.ptplotter import PtPlotter
 
 import unittest
 
@@ -50,7 +51,7 @@ class TestMassFitter(unittest.TestCase):
         self.run_analysis(mixed=False)
 
     def test_fits_the_analysis_mixed(self):
-        self.run_analysis(mixed=False)
+        self.run_analysis(mixed=True)
 
 
 

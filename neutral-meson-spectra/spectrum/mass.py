@@ -1,34 +1,8 @@
 from broot import BROOT as br
 import sutils as su
 
-class MassFitter(object):
 
-    def __init__(self, options, label):
-        super(MassFitter, self).__init__()
-        self.opt = options
-
-    def transform(self, masses):
-        pipeline = self.pipeline(self.opt.pt.use_mixed)
-
-        for mass in masses:
-            for estimator in pipeline:
-                estimator.transform(mass)
-
-        return masses
-
-    def pipeline(self, use_mixed):
-        if not use_mixed:
-            return [
-                BackgroundEstimator(),
-                SignalExtractor(),
-                SignalFitter()
-            ]
-        return [
-                MixingBackgroundEstimator(),
-                ZeroBinsCleaner(),
-                SignalExtractor(),
-                SignalFitter()
-        ]
+# TODO: Remove all checks if not: return 
 
 class BackgroundEstimator(object):
 
