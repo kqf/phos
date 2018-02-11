@@ -31,13 +31,27 @@ class UpdatedAnalysis(object):
 
         return data
 
+
 class TestMassFitter(unittest.TestCase):
 
-	def test_fits_the_analysis(self):
-		analysis = UpdatedAnalysis()
-		masses = analysis.transform(
-			Input(DataVault().file("data"), "PhysTender", label='Test')	
-		)
+    def run_analysis(self, mixed):
+        options = Options()
+        options.pt.use_mixed = mixed
+        analysis = UpdatedAnalysis(options)
+        masses = analysis.transform(
+            Input(DataVault().file("data"), "PhysTender", label='Test') 
+        )
 
-		plotter = PtPlotter(masses, analysis.options.output, 'test invarinat mass pipeline')
-		plotter.draw()
+        plotter = PtPlotter(masses, analysis.options.output, 'test invarinat mass pipeline')
+        plotter.draw()
+
+
+    def test_fits_the_analysis(self):
+        self.run_analysis(mixed=False)
+
+    def test_fits_the_analysis_mixed(self):
+        self.run_analysis(mixed=False)
+
+
+
+
