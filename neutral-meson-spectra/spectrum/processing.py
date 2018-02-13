@@ -16,7 +16,7 @@ class DataSlicer(object):
         self.opt = options
         self.all_options = all_options
 
-    def transform(self, inputs):
+    def transform(self, inputs, outputs):
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
@@ -30,11 +30,11 @@ class DataSlicer(object):
 
 class MassFitter(object):
 
-    def __init__(self, options, label):
+    def __init__(self, options):
         super(MassFitter, self).__init__()
         self.opt = options
 
-    def transform(self, masses):
+    def transform(self, masses, outputs):
         pipeline = self.pipeline(self.opt.pt.use_mixed)
 
         for mass in masses:
@@ -62,13 +62,12 @@ class RangeEstimator(object):
 
     _output = 'mass', 'width'
     _titles = 'particle mass', 'particle width'
-    def __init__(self, options, label):
+    def __init__(self, options):
         super(RangeEstimator, self).__init__()
         self.opt = options
-        self.label = label
         self.output = None
 
-    def transform(self, masses):
+    def transform(self, masses, outputs):
         values = SpectrumExtractor.extract(
             self._output,
             masses
@@ -82,7 +81,7 @@ class RangeEstimator(object):
             self._output,
             InvariantMass.ptedges(masses),
             titles,
-            self.label,
+            outputs.label,
             999 
         )
 
@@ -124,7 +123,9 @@ class RangeEstimator(object):
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
-        su.wait(pref + "-paramerisation-" + self.label, self.opt.show_img, True)
+
+        # TODO: Move this to the output
+        su.wait(pref + "-paramerisation-", self.opt.show_img, True)
         return fitquant
 
     def _fit_ranges(self, quantities):
@@ -134,8 +135,10 @@ class RangeEstimator(object):
         massf = self.fit_mass(mass)
         sigmaf = self.fit_sigma(sigma)
 
-        mass_range = lambda pt: (massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
-                                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt))
+        mass_range = lambda pt: (
+            massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
+            massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
+        )
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
@@ -159,10 +162,9 @@ class RangeEstimator(object):
         
 class DataExtractor(object):
 
-    def __init__(self, options, label):
+    def __init__(self, options):
         super(DataExtractor, self).__init__()
         self.opt = options
-        self.label = label
 
     def _decorate_hists(self, histograms, nevents):
         # Scale by the number of events 
@@ -171,7 +173,7 @@ class DataExtractor(object):
         histograms.npi0.logy = True
         return histograms 
 
-    def transform(self, masses):
+    def transform(self, masses, outputs):
         values = SpectrumExtractor.extract(
             self.opt.output_order,
             masses
@@ -191,7 +193,7 @@ class DataExtractor(object):
             self.opt.output_order,
             edges,
             titles,
-            self.label,
+            outputs.label,
             self.opt.priority
         )
 
@@ -202,7 +204,7 @@ class DataExtractor(object):
         if self.opt.dead_mode: 
             return decorated 
 
-        self.plotter = PtPlotter(masses, self.opt, self.label)
+        self.plotter = PtPlotter(masses, self.opt, outputs.label)
         self.plotter.draw()
         return decorated 
 
