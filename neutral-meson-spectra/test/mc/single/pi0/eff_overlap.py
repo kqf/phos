@@ -4,6 +4,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 from test.mc.single.eff_overlap import TestOverlapRegion
+from vault.datavault import DataVault
 
 
 class TestOverlapRegionPi0(TestOverlapRegion):
@@ -15,10 +16,8 @@ class TestOverlapRegionPi0(TestOverlapRegion):
 
 
     def test_eff_overlap(self):
-        ddir = 'single/nonlin0/'
         files = {
-                    ddir + 'LHC17j3b1': (0, 5),
-                    ddir + 'LHC17j3b2': (9, 20)
-                }
-
+            DataVault().file("single #pi^{0}", "low"): (0, 5),
+            DataVault().file("single #pi^{0}", "high"): (9, 20)
+        }
         self.efficiency_overlap(files, 'weight1', 'pi0')

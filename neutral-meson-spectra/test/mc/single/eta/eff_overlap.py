@@ -16,11 +16,10 @@ class TestOverlapRegionEta(TestOverlapRegion):
 
 
     def test_eff_overlap(self):
-        ddir = 'single/nonlin1/'
         files = {
-                    ddir + 'LHC17j3c1': (0, 7),
-                    ddir + 'LHC17j3c2': (6, 20)
-                }
-
+            DataVault().file("single #eta", "low"): (0, 5),
+            DataVault().file("single #eta", "high"): (9, 20)
+        }
+        
         self.efficiency_overlap(files, 'weight1', 'eta')
 
