@@ -38,13 +38,13 @@
 	"single #pi^{0}":
 	{
 		"low": {
-			"file": "input-data/single/nonlin/LHC17j3b1.root",
-			"hsum": "1588732b95bbd358ade8c0f0fd093a9428b3d7d4e9f93c4247f4748420590f6a",
+			"file": "input-data/mc/single/pi0/nonlin/LHC17j3b1.root",
+			"hsum": "ad5da1d057000c2bdb0797f2fe372b521aa264e0ff4385890b6741134dd8c166",
 			"description": "Single #pi^{0} simulations with all correctons"
 		},
 		"high": {
-			"file": "input-data/single/nonlin/LHC17j3b2.root",
-			"hsum": "4ffb126b409384cf627df688396729e392358d8aff41d6fd489b7e6c1dda0d3b",
+			"file": "input-data/mc/single/pi0/nonlin/LHC17j3b2.root",
+			"hsum": "84298ce23183a9ab7837ad779422e397dfa465f793e45ae8482a4d4820575c1a",
 			"description": "Single #pi^{0} simulations with all correctons"
 		}
 	},
@@ -52,13 +52,13 @@
 	"single #eta":
 	{
 		"low": {
-			"file": "input-data/single/nonlin/LHC17j3c1.root",
-			"hsum": "1588732b95bbd358ade8c0f0fd093a9428b3d7d4e9f93c4247f4748420590f6a",
+			"file": "input-data/mc/single/eta/nonlin/LHC17j3c1.root",
+			"hsum": "900c71652c67ba7e536671c7323203372346732400fe3ece2e667b9ba62b7d8d",
 			"description": "Single #eta simulations with all correctons"
 		},
 		"high": {
-			"file": "input-data/single/nonlin/LHC17j3c2.root",
-			"hsum": "4ffb126b409384cf627df688396729e392358d8aff41d6fd489b7e6c1dda0d3b",
+			"file": "input-data/mc/single/eta/nonlin/LHC17j3c2.root",
+			"hsum": "7324006e8f2f9a95e8a06c06cdd270672e9815f5e733dca40fce5ee5a2f5d8b8",
 			"description": "Single #eta simulations with all correctons"
 		}
 	},

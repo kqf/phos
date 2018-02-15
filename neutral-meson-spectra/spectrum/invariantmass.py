@@ -48,6 +48,10 @@ class VisualizeMass(object):
 
 
     def draw_signal(self, pad = 0):
+        
+        if not self.signal:
+            return
+
         canvas = pad if pad else gcanvas()
 
         ticks(canvas)

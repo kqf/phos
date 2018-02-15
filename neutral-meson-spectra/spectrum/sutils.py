@@ -7,10 +7,11 @@ def wait(name = '', draw = True, save = False, suffix = ''):
     outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()
-    name = (name.replace(' ', '-')
-                .replace('_', '-')
-                .replace('/', '-')
-            )
+    name = (name
+        .replace(' ', '-')
+        .replace('_', '-')
+        .replace('/', '-')
+    )
     try:
         if save:
             canvas.SaveAs(outdir + name + '.pdf')

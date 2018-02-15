@@ -62,6 +62,7 @@ class PtPlotter(object):
     def _draw_line(self, distr, position):
         if not distr:
             return
+            
         line = ROOT.TLine(position, distr.GetMinimum(), position, distr.GetMaximum())
         line.SetLineColor(1)
         line.SetLineStyle(7)

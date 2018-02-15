@@ -79,7 +79,7 @@ class Efficiency(object):
 
 class EfficiencyMultirange(Efficiency):
 
-    def __init__(self, genname, label, inames, recalculate = False, selection = 'MCStudyOnlyTender'):
+    def __init__(self, genname, label, inames, recalculate=False, selection='PhysEffPlainOnlyTender'):
         super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate, selection)
         self.single_estimators = [Efficiency(genname, label, n, recalculate, selection) for n in inames]
         self.rranges = inames.values()

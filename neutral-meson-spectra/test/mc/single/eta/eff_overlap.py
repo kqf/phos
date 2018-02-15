@@ -5,6 +5,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 from test.mc.single.eff_overlap import TestOverlapRegion
+from vault.datavault import DataVault
 
 # TODO: Change pt region for eta mesons
 class TestOverlapRegionEta(TestOverlapRegion):
