@@ -38,7 +38,8 @@ class FitEfficiency(object):
                 % (self.particle, self.particle) 
         )
         diff = Comparator()
-        return diff.compare(efficiency)
+        diff.compare(efficiency)
+        return efficiency
 
     def estimate(self, fileranges):
         pipeline = [
