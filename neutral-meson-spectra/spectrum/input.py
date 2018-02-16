@@ -37,7 +37,7 @@ class Input(object):
             br.set_nevents(h, self._events)
         return raw_mix
 
-    def transform(self, data = None):
+    def transform(self, data=None, outputs=None):
         return self.read()
 
 

@@ -3,39 +3,71 @@
 import ROOT
 import sutils as su
 
-from invariantmass import invariant_mass_selector, InvariantMass
+from invariantmass import InvariantMass
 from outputcreator import OutputCreator, SpectrumExtractor
 import collections as coll
+from ptplotter import PtPlotter
+from mass import BackgroundEstimator, MixingBackgroundEstimator, SignalExtractor, SignalFitter, ZeroBinsCleaner
+
 
 class DataSlicer(object):
     def __init__(self, options, all_options):
         super(DataSlicer, self).__init__()
         self.opt = options
-        self.extract = invariant_mass_selector(self.opt.use_mixed, all_options)
+        self.all_options = all_options
 
-
-    def transform(self, inputs):
+    def transform(self, inputs, outputs):
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
 
-        common_inputs = lambda x, y: self.extract(inputs, x, y)
+        common_inputs = lambda x, y: InvariantMass(inputs, x, y, self.all_options)
         return map(common_inputs,
             intervals,
             self.opt.rebins
         )
 
+
+class MassFitter(object):
+
+    def __init__(self, options):
+        super(MassFitter, self).__init__()
+        self.opt = options
+
+    def transform(self, masses, outputs):
+        pipeline = self.pipeline(self.opt.pt.use_mixed)
+
+        for mass in masses:
+            for estimator in pipeline:
+                estimator.transform(mass)
+
+        return masses
+
+    def pipeline(self, use_mixed):
+        if not use_mixed:
+            return [
+                BackgroundEstimator(),
+                SignalExtractor(),
+                SignalFitter()
+            ]
+        return [
+                MixingBackgroundEstimator(),
+                ZeroBinsCleaner(),
+                SignalExtractor(),
+                SignalFitter()
+        ]
+
+
 class RangeEstimator(object):
 
     _output = 'mass', 'width'
     _titles = 'particle mass', 'particle width'
-    def __init__(self, options, label):
+    def __init__(self, options):
         super(RangeEstimator, self).__init__()
-        self.opt = options.spectrum
-        self.label = label
+        self.opt = options
         self.output = None
 
-    def transform(self, masses):
+    def transform(self, masses, outputs):
         values = SpectrumExtractor.extract(
             self._output,
             masses
@@ -49,7 +81,7 @@ class RangeEstimator(object):
             self._output,
             InvariantMass.ptedges(masses),
             titles,
-            self.label,
+            outputs.label,
             999 
         )
 
@@ -91,7 +123,9 @@ class RangeEstimator(object):
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
-        su.wait(pref + "-paramerisation-" + self.label, self.opt.show_img, True)
+
+        # TODO: Move this to the output
+        su.wait(pref + "-paramerisation-", self.opt.show_img, True)
         return fitquant
 
     def _fit_ranges(self, quantities):
@@ -101,8 +135,10 @@ class RangeEstimator(object):
         massf = self.fit_mass(mass)
         sigmaf = self.fit_sigma(sigma)
 
-        mass_range = lambda pt: (massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
-                                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt))
+        mass_range = lambda pt: (
+            massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
+            massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
+        )
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
@@ -123,32 +159,12 @@ class RangeEstimator(object):
             'width'
         )
 
-
-from ptplotter import PtPlotter
-
-# TODO: Move this to some __init__.py method?
-ROOT.TH1.AddDirectory(False)
-
-
-class MassFitter(object):
-
-    def __init__(self, options, label):
-        super(MassFitter, self).__init__()
-        self.opt = options
-
-    def transform(self, masses):
-        for mass in masses:
-            mass.extract_data() 
-        return masses
-
-
+        
 class DataExtractor(object):
 
-    def __init__(self, options, label):
+    def __init__(self, options):
         super(DataExtractor, self).__init__()
-        self.opt = options.output
-        self.label = label
-
+        self.opt = options
 
     def _decorate_hists(self, histograms, nevents):
         # Scale by the number of events 
@@ -157,8 +173,7 @@ class DataExtractor(object):
         histograms.npi0.logy = True
         return histograms 
 
-        
-    def transform(self, masses):
+    def transform(self, masses, outputs):
         values = SpectrumExtractor.extract(
             self.opt.output_order,
             masses
@@ -178,7 +193,7 @@ class DataExtractor(object):
             self.opt.output_order,
             edges,
             titles,
-            self.label,
+            outputs.label,
             self.opt.priority
         )
 
@@ -189,7 +204,7 @@ class DataExtractor(object):
         if self.opt.dead_mode: 
             return decorated 
 
-        self.plotter = PtPlotter(masses, self.opt, self.label)
+        self.plotter = PtPlotter(masses, self.opt, outputs.label)
         self.plotter.draw()
         return decorated 
 

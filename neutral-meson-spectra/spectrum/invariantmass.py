@@ -6,7 +6,7 @@ from parametrisation import PeakParametrisation
 from sutils import gcanvas, ticks, in_range
 from broot import BROOT as br
 
-# TODO: Move VisualizeMass to separate object
+# TODO: Move VisualizeMass to separate object ptplotter
 
 
 class VisualizeMass(object):
@@ -48,6 +48,10 @@ class VisualizeMass(object):
 
 
     def draw_signal(self, pad = 0):
+        
+        if not self.signal:
+            return
+
         canvas = pad if pad else gcanvas()
 
         ticks(canvas)
@@ -82,9 +86,9 @@ class VisualizeMass(object):
         self.mass.Draw()
         legend.AddEntry(self.mass, 'data')
 
-        if self.mixed:
-            self.mixed.Draw('same')
-            legend.AddEntry(self.mixed, 'background')
+        if self.background:
+            self.background.Draw('same')
+            legend.AddEntry(self.background, 'background')
 
         legend.Draw('same')
         self.draw_text(self.mass, self.pt_label + ', GeV/c')
@@ -97,16 +101,10 @@ class VisualizeMass(object):
 
 
 
-def invariant_mass_selector(use_mixed, options):
-    if not use_mixed:
-        return lambda x, y, z: InvariantMassNoMixing(x, y, z, options)
-    return lambda x, y, z: InvariantMass(x, y, z, options)
-
-
-class InvariantMassNoMixing(VisualizeMass):
+class InvariantMass(VisualizeMass):
    
     def __init__(self, inhists, pt_range, nrebin, options):
-        super(InvariantMassNoMixing, self).__init__()
+        super(InvariantMass, self).__init__()
         self.pt_range = pt_range 
         self.nrebin = nrebin
         self.opt = options.invmass
@@ -117,10 +115,12 @@ class InvariantMassNoMixing(VisualizeMass):
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
-        self.mass, self.mixed = map(self.extract_histogram, inhists)
+        self.mass, self.background = map(self.extract_histogram, inhists)
         self.sigf, self.bgrf = None, None
         self.area_error = None
         self._integration_region = self.peak_function.opt.fit_range
+        self.ratio = None
+        self.signal = None
 
         
     @staticmethod
@@ -134,6 +134,7 @@ class InvariantMassNoMixing(VisualizeMass):
     @property
     def integration_region(self):
         return self._integration_region
+
 
     @integration_region.setter
     def integration_region(self, value):
@@ -156,7 +157,6 @@ class InvariantMassNoMixing(VisualizeMass):
 
         if self.nrebin: 
             mass.Rebin(self.nrebin)
-            
         return mass
 
 
@@ -164,140 +164,3 @@ class InvariantMassNoMixing(VisualizeMass):
         area, areae = br.area_and_error(self.signal, *self.integration_region)
         self.area_error = area, areae
         return area, areae
-
-
-    def estimate_background(self, mass, mixed):
-        if not mass.GetEntries():
-            return mass
-
-        sigf, bgrf = self.peak_function.fit(mass)
-        bgrf.SetLineColor(8)
-        bgrf.SetFillColor(8)
-        bgrf.SetFillStyle(3436)
-        return bgrf
-
-
-    def subtract_background(self, mass, mixed):
-        if not mass.GetEntries():
-            return mass
-
-        signal = mass.Clone()
-        signal.Add(mixed, -1)
-        return signal
-
-
-    def extract_data(self):
-        if not (self.sigf and self.bgrf):
-            self.mixed = self.estimate_background(self.mass, self.mixed)
-            self.signal = self.subtract_background(self.mass, self.mixed)
-            self.sigf, self.bgrf = self.peak_function.fit(self.signal)
-        return self.sigf, self.bgrf
-
-
-    def draw_ratio(self, pad = 0):
-        pass
-
- 
-
-
-class InvariantMass(InvariantMassNoMixing):
-   
-    def __init__(self, inhists, pt_range, nrebin, options):
-        super(InvariantMass, self).__init__(inhists, pt_range, nrebin, options)
-
-
-    def remove_zeros(self, h, zeros):
-        if 'empty' in self.opt.average:
-            return h
-
-        if not zeros:
-            return h
-
-        fitf, bckgrnd = self.peak_function.fit(h)
-
-        # If we failed to fit: do nothing
-        if not (fitf and bckgrnd):
-            return 
-
-        # Delete bin only if it's empty
-        valid = lambda i: h.GetBinContent(i) < self.opt.tol and \
-             in_range(h.GetBinCenter(i), self.xaxis_range)
-
-        centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
-        for i, c in centers.iteritems():
-            res = fitf.Eval(c)
-            if res < 0:
-                print 'Warning zero bin found at ', self.pt_label, ', mass: ', c
-                res = 0
-            h.SetBinError(i, res ** 0.5 )
-        return h
-
-
-    def estimate_background(self, mass, mixed):
-        if not mass.GetEntries():
-            return mass
-
-        if not mixed:
-            return mass
-
-        # Divide real/mixed
-        ratio = br.ratio(mass, mixed, '')
-        ratio.GetYaxis().SetTitle("Real/ Mixed")
-
-        if ratio.GetEntries() == 0:
-            return ratio
-        fitf, bckgrnd = self.peak_function.fit(ratio)
-
-        mixed.Multiply(bckgrnd)
-        mixed.SetLineColor(46)
-        return ratio
-
-
-    def noisy_peak_parameters(self):
-        """
-            This methods estimates peak and background parameters using only 
-            effective mass distribution and without background substraction.
-
-            It's needed for tag and probe analysis.
-        """
-        peak_and_bkrnd = self.peak_function.fit(self.mass)
-        pars, _ = br.pars(peak_and_bkrnd)
-        return pars
-
-
-    def subtract_background(self, mass, mixed):
-        if not mass.GetEntries():
-            return mass
-
-        if not mixed:
-            return mass
-
-        # Subtraction
-        signal = mass.Clone()
-        zeros = set()
-
-        zsig = br.empty_bins(signal, self.opt.tol)
-        zmix = br.empty_bins(mixed, self.opt.tol)
-
-        zeros.symmetric_difference_update(zsig)
-        zeros.symmetric_difference_update(zmix)
-
-        # Remove all zero bins and don't 
-        # touch bins that are zeros in both cases.
-        #
-
-        signal = self.remove_zeros(signal, zeros)
-        mixed  = self.remove_zeros(mixed, zeros)
-
-        signal.Add(signal, mixed, 1., -1.)
-        signal.SetAxisRange(*self.xaxis_range)
-        signal.GetYaxis().SetTitle("Real - Mixed")
-        return signal
-
-
-    def extract_data(self):
-        if not (self.sigf and self.bgrf):
-            self.ratio = self.estimate_background(self.mass, self.mixed)
-            self.signal = self.subtract_background(self.mass, self.mixed)
-            self.sigf, self.bgrf = self.peak_function.fit(self.signal)
-        return self.sigf, self.bgrf

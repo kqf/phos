@@ -319,7 +319,7 @@ class BROOT(object):
         return f
 
     @staticmethod
-    def define_colors(ci = 1000):
+    def define_colors(ci = 10000):
         with open("config/colors.json") as f:
             conf = json.load(f)
             
