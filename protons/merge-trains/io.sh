@@ -15,7 +15,8 @@ function show_dir() {
 
 
 function download() {
-	for i in {1..10}; do
+	# NB: Always check runlists awailable for merge
+	for i in {2..9}; do
 		echo "_________________"
 		echo "                 "
 		echo $train$run$i/$runlist

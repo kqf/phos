@@ -23,7 +23,7 @@ class TestDataSetForConsistency(unittest.TestCase):
 
     def setUp(self):
         fname = DataVault().file('data', 'validate')
-        inputs = Input(fname, 'PhysTender', label='old')
+        inputs = Input(fname, 'Phys', label='old')
         options = Options()
         self.sp_estimator = Spectrum(inputs, options)
 
