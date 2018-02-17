@@ -79,12 +79,12 @@ class Efficiency(object):
 
 class EfficiencyMultirange(Efficiency):
 
-    def __init__(self, genname, label, inames, recalculate=False, selection='PhysEffPlainOnlyTender'):
+    def __init__(self, genname, label, inames, recalculate=False, selection='PhysEffPlainOnlyTender', particle="#pi^{0}"):
         super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate, selection)
         self.single_estimators = [Efficiency(genname, label, n, recalculate, selection) for n in inames]
         self.rranges = inames.values()
         for est, rr in zip(self.single_estimators, self.rranges):
-            est.opt = Options.spmc(rr)
+            est.opt = Options.spmc(rr, particle=particle)
 
         self.recalculate = recalculate
 

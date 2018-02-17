@@ -25,10 +25,8 @@ class FitEfficiency(object):
         efficiency_estimator = EfficiencyMultirange(
             'hPt_{0}_primary_'.format(self.particle),
             'eff',
-            {
-                DataVault().file("single #pi^{0}", "low"): (0, 7),
-                DataVault().file("single #pi^{0}", "high"): (7, 20)
-            }
+            fileranges,
+            particle=self.particle
         )
 
         efficiency = efficiency_estimator.eff()

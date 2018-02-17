@@ -6,14 +6,15 @@ import json
 
 class AnalysisOption(object):
     ignore_attributes = 'eta', 'pi0', 'comment'
+    _particles = {"#pi^{0}": "pi0", "#eta": "eta"}
 
     def __init__(self, name, config, particle):
         super(AnalysisOption, self).__init__()
         self.name = name
-        self.particle = particle
+        self.particle = self._convert_name(particle)
         with open(config) as f:
             conf = json.load(f)
-        self._setup_configurations(conf, particle)
+        self._setup_configurations(conf, self.particle)
 
 
     def _setup_configurations(self, conf, particle):
@@ -29,8 +30,16 @@ class AnalysisOption(object):
     def _update_variables(self, vardict):
         items = (k for k in vardict if not k in self.ignore_attributes)
         for n in items:
-            # print n, vardict[n]
             setattr(self, n, vardict[n])
+
+    @classmethod
+    def _convert_name(klass, name):
+        if name not in klass._particles:
+            return name
+
+        cleaned = klass._particles.get(name)
+        return cleaned
+
 
 
 

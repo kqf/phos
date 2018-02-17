@@ -11,7 +11,7 @@ import operator
 class TestMassWidth(unittest.TestCase):
 
 
-	def setUp(self):
+    def setUp(self):
         self.results = []
         datadir = '/single/weight2/'
         self.shape_inputs = {
