@@ -9,25 +9,23 @@ import spectrum.comparator as cmpr
 import unittest
 import operator
 
-from test.mc.single.mass_width import TestMassWidth
+from test.mc.single.mass_width import MassWidthVerification 
+from vault.datavault import DataVault
+import unittest
 
 
-class TestMassWidthPi0(TestMassWidth):
+class TestMassWidthPi0(MassWidthVerification, unittest.TestCase):
 
     def setUp(self):
-        ddir = '/single/weight2/'
-        files = {
-                    ddir + 'LHC17j3b1': (0, 6),
-                    ddir + 'LHC17j3b2': (9, 20)
-        }
-
-        inputs = [Input(f, 'PhysEffOnlyTender', label='#pi0') for f in files]
-        options = [Options.spmc(rr) for f, rr in files.iteritems()]
-        f = lambda x, y: Spectrum(x, y).evaluate()
-        self.results = map(f, inputs, options)
-
+        files_inputs = {
+            DataVault().file("single #pi^{0}", "low"): (0, 7),
+            DataVault().file("single #pi^{0}", "high"): (7, 20)
+        } 
         self.shape_inputs = {
-            Input(ddir + 'LHC17j3b1', 'PhysEffOnlyTender'): (0, 7), 
-            Input(ddir + 'LHC17j3b2', 'PhysEffOnlyTender'): (7, 20)
+            Input(f, "PhysEffPlainOnlyTender", label="mc"): v 
+            for f, v in files_inputs.iteritems()
         }
+
+    def test_spectrum_shape(self):
+        self.spectrum_shape(self.shape_inputs)
 

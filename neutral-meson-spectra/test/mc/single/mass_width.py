@@ -8,32 +8,9 @@ import unittest
 import operator
 
 
-class TestMassWidth(unittest.TestCase):
+class MassWidthVerification(object):
 
-
-    def setUp(self):
-        self.results = []
-        datadir = '/single/weight2/'
-        self.shape_inputs = {
-            Input(datadir + 'LHC17j3b1', 'PhysEffOnlyTender'): (0, 7), 
-            Input(datadir + 'LHC17j3b2', 'PhysEffOnlyTender'): (7, 20)
-        }
-
-
-    @unittest.skip('')
-    def test_different_mc_productions(self):
-        masses, widths = zip(*self.results)[0:2]
-
-        diff = cmpr.Comparator((0.5, 1.), rrange = (0, 2),
-                        crange=(0.1, 0.15), oname = 'compared-spmc-masses')
-        diff.compare(masses)
-
-        diff = cmpr.Comparator((0.5, 1.), rrange = (0, 2),
-                        crange=(0.0, 0.02), oname = 'compared-spmc-widths')
-        diff.compare(widths)
-
-
-    def test_spectrum_shape(self):
+    def spectrum_shape(self, shape_input):
         spectrum_estimator = CompositeSpectrum(self.shape_inputs)
         spmc = spectrum_estimator.evaluate()
         br.scalew(spmc.spectrum, 1. / spmc.spectrum.Integral())
