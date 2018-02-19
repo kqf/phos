@@ -20,8 +20,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         enablePileupCuts
     );
 
-    // NB: This is a local copy of steering macro
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
+
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
@@ -52,8 +51,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     msg += decalibration;
 
     TString pref = "MC";
-    AddAnalysisTaskPP(period + pref + msg, "Tender", "", cells);
-    AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
+
+    // NB: This is a local copy of steering macro
+    gROOT->LoadMacro("AddAnalysisTaskPP.C"); 
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "");
+    // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
     manager->InitAnalysis();
     manager->PrintStatus();
 
