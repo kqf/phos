@@ -18,7 +18,7 @@ class YieldEvaluator(object):
 
     def __init__(self, particle):
         super(YieldEvaluator, self).__init__()
-        self.particle= particle
+        self.particle = particle
 
 
     def efficiency(self, fileranges):
@@ -41,21 +41,41 @@ class YieldEvaluator(object):
 
 
     def transform(self, inp, eff_files):
-        eff = self.efficiency(eff_files)
-        cy_estimator = CorrectedYield(inp, Options(), eff)
+        efficiency = self.efficiency(eff_files)
+        cy_estimator = CorrectedYield(
+            inp, 
+            Options(particle=self.particle),
+            efficiency
+        )
+        
         corrected_spectrum = cy_estimator.evaluate() 
         return corrected_spectrum
 
 
 class TestCorrectedYield(unittest.TestCase):
 
-    def test_interface(self):
+
+    @unittest.skip('')
+    def test_corrected_yield_for_pi0(self):
         inp = Input(DataVault().file("data"), 'Phys', label='data')
         estimator = YieldEvaluator("#pi^{0}")
 
         files = {
             DataVault().file("single #pi^{0}", "low"): (0, 7),
             DataVault().file("single #pi^{0}", "high"): (7, 20)
+        } 
+        corrected = estimator.transform(inp, files)
+
+        diff = Comparator()
+        diff.compare(corrected)
+
+    def test_corrected_yield_for_eta(self):
+        inp = Input(DataVault().file("data"), 'Phys', label='data')
+        estimator = YieldEvaluator("#eta")
+
+        files = {
+            DataVault().file("single #eta", "low"): (0, 9),
+            DataVault().file("single #eta", "high"): (9, 10)
         } 
         corrected = estimator.transform(inp, files)
 

@@ -260,12 +260,16 @@ class BROOT(object):
     @classmethod
     def rebin_as(klass, hist1, hist2):
         nbins = lambda x: x.GetNbinsX()
-        lbins = lambda x: (x.GetBinLowEdge(i) for i in klass.range(x, start = 0))
+        lbins = lambda x: (
+            x.GetBinLowEdge(i) for i in klass.range(x, start=0)
+        )
 
         a, b = (hist1, hist2) if nbins(hist1) > nbins(hist2) else (hist2, hist1)
         xbin = array.array('d', lbins(b))
         rebinned = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
-        klass.setp(rebinned, a)
+        if klass.prop.has_properties(a):
+            klass.setp(rebinned, a)
+
         return (rebinned, b) if a == hist1 else (b, rebinned)
 
     @classmethod
