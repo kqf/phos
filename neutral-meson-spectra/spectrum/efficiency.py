@@ -55,20 +55,22 @@ class Efficiency(object):
     def true(self, label = 'Generated'):
         true = read_histogram(self.iname, self.selection, self.genname, label = label, priority = 0)
         true.logy = True
-        return br.scalew(true)
+        return true 
 
 
     def reco(self):
         inp = Input(self.iname, self.selection, 'MassPt', label=self.label)
         reco = Spectrum(inp, self.opt).evaluate().npi0
         reco.logy = True
-        return br.scalew(reco)
-
+        return reco
 
     def efficiency(self):
         reco, true = self.reco(), self.true()
-
         diff = Comparator()
+        
+        # true, reco = br.rebin_as(true, reco)
+        br.scalew(true)
+        br.scalew(reco)
         ratio = diff.compare(reco, true)
         ratio.label = self.label
 

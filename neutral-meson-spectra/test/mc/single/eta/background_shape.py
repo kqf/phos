@@ -9,6 +9,7 @@ from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 import spectrum.comparator as cmpr
 import spectrum.sutils as su
+from vault.datavault import DataVault
 
 import unittest
 import operator
@@ -20,21 +21,20 @@ import operator
 class TestBackgroundShape(unittest.TestCase):
 
     def setUp(self):
-        ddir = '/single/nonlin1/'
-        files = (
-            (ddir + 'LHC17j3c1', (0, 10)),
-            (ddir + 'LHC17j3c2', (4, 20))
-        )
+        files = {
+            DataVault().file("single #eta", "low"): (2.2, 10),
+            DataVault().file("single #eta", "high"): (10, 20)
+        }
 
         labels = ('0 < p_{T} < 10', '4 < p_{T} < 100')
 
         inputs = [
             Input(f, 'PhysEffOnlyTender', label=l) 
-            for l, (f, _) in zip(labels, files)
+            for l, f in zip(labels, files)
         ]
         options = [Options.spmc(rr, 
             particle='eta'
-        ) for (f, rr) in files]
+        ) for (f, rr) in files.iteritems()]
 
         self.arguments = inputs, options
 
