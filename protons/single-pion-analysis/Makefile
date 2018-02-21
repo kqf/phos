@@ -1,5 +1,5 @@
 DATASET = LHC17j3b2
-OUTDIR = results/mc/pi0/iteration3
+OUTDIR = results/mc/single/pi0/weighed
 
 TEST_SELECTION = PhysTender
 
@@ -82,7 +82,7 @@ endef
 
 define upload_result
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)@ALICE::Trieste::SE	
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)@ALICE::GSI::SE2
 endef
 
 

@@ -18,10 +18,13 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeights data_weights;
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
+	
+	cuts_pi0.fNContributors = 0;
+	cuts_eta.fNContributors = 0;
 	cuts_eta.fAsymmetryCut = 0.7;
 
-	AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
-	AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
+	AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
+	AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 
 	// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 	// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
@@ -47,7 +50,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	if ( !badmap.IsNull() ) 
 		task->SetBadMap(badmap);
-	
+
 	// task->GetSelections()->Add
 	// task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
