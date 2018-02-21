@@ -1,4 +1,4 @@
-DATASET = LHC17j3c1
+DATASET = LHC17j3c2
 OUTDIR = results/mc/eta/iteration2/
 
 TEST_SELECTION = PhysTender

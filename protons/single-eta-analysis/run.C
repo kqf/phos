@@ -20,8 +20,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         enablePileupCuts
     ); 
 
-    // NB: This is a local copy of steering macro
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
 
@@ -51,10 +49,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString msg = "Single #eta Analysis + weights iteration 0";
     msg += " with tender option ";
     msg += decalibration;
+    
+    TString pref = "MC";
 
-
-    AddAnalysisTaskPP(period + "MC" + msg, "Tender", "", cells);
-    AddAnalysisTaskPP(period + "MC" + msg, "OnlyTender", "", std::vector<Int_t>());
+    // NB: This is a local copy of steering macro
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "");
 
     manager->InitAnalysis();
     manager->PrintStatus();
