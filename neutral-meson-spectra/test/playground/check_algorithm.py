@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import unittest
 
 from spectrum.spectrum import Spectrum
 from spectrum.options import Options
@@ -14,29 +15,39 @@ import test.check_default
 class CheckAlgorithm(test.check_default.CheckDefault):
     def setUp(self):
         super(CheckAlgorithm, self).setUp()
-
-        self.mode = 'd'
-        self.genfilename = 'LHC16-fake.root'
-        infile, conf = 'input-data/LHC16.root', 'config/test_algorithm.json'
-        self.generator = InclusiveGenerator(infile, conf, genfilename = self.genfilename, flat = True)
         self.clean = False
 
+    @unittest.skip('')
+    def test_recreates_the_same_shape(self):
+        genfilename = 'LHC16-fake.root'
+        infile, conf = 'input-data/LHC16.root', 'config/test_algorithm.json'
+        generator = InclusiveGenerator(
+            infile,
+            conf, 
+            genfilename=genfilename, 
+            flat=True
+        )
 
-
-    def test(self):
         f = lambda x, y, z: Spectrum(x, options=Options(y, z)).evaluate()
-        generated = self.generator.generate(100000)
+        generated = generator.generate(1000)
         generated.logy = 1
         generated.priority = 1
-
-        reconstructed = f(Input(self.genfilename, self.generator.selname), 'reconstructed', self.mode).npi0
-
-
+        reconstructed = f(Input(genfilename, generator.selname), 'reconstructed', 'd').npi0
         self.results = map(br.scalew, [reconstructed, generated])
+        # os.remove(genfilename)
 
+class GenerateEfficiency(unittest.TestCase):
 
+    def test_generate_mc(self):
+        genfilename = 'LHC16-single.root'
+        infile, conf = 'input-data/mc/single/pi0/nonlin/LHC17j3b1.root', 'config/test_algorithm.json'
+        generator = InclusiveGenerator(
+            infile,
+            conf, 
+            selname='PhysEffPlainOnlyTender', 
+            genfilename=genfilename, 
+            flat=True
+        )
 
-    def tearDown(self):
-        super(CheckAlgorithm, self).tearDown()
-        if self.clean:
-            os.remove(self.genfilename)
+        f = lambda x, y, z: Spectrum(x, options=Options(y, z)).evaluate()
+        generated = generator.generate(10000)

@@ -38,10 +38,12 @@ class BackgroundGenerator(object):
 
         
 class SignalGenerator(object):
-    def __init__(self, config):
+    def __init__(self, config, genhistname, generated=None):
         super(SignalGenerator, self).__init__()
         ptbins = self._configure(config)
-        self.generated = OutputCreator("hGenerated", "Generated spectrum", "Generated").get_hist(ptbins, [])
+        self.generated = generated if generated else (
+            OutputCreator(genhistname, "Generated spectrum", "").get_hist(ptbins, [])
+        )
 
 
     def _configure(self, conffile):
@@ -94,8 +96,8 @@ class SignalGenerator(object):
 
 
 class FlatGenerator(SignalGenerator):
-    def __init__(self, config):
-        super(FlatGenerator, self).__init__(config)
+    def __init__(self, config, genhistname, generated=None):
+        super(FlatGenerator, self).__init__(config, genhistname, generated)
 
 
     def _random_mass(self, pt):
@@ -109,14 +111,25 @@ class FlatGenerator(SignalGenerator):
 
 
 class InclusiveGenerator(object):
-    def __init__(self, fname, signalconf, selname = 'PhysOnlyTender', 
-                 hnames = ['hMassPt', 'hMixMassPt', 'EventCounter'], hpdistr='hClusterPt_SM0', genfilename = 'LHC16-fake.root', meanphotons = 0, flat = False):
+    def __init__(self,
+            fname,
+            signalconf,
+            selname='PhysOnlyTender',
+            hnames=['hMassPt', 'hMixMassPt', 'EventCounter'], 
+            hpdistr='hClusterPt_SM0',
+            genfilename='LHC16-fake.root',
+            genhistname='hPt_#pi^{0}_primary',
+            meanphotons=0, 
+            flat=False
+        ):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
         self.genfilename = genfilename
-        self.signal = SignalGenerator(signalconf) if not flat else FlatGenerator(signalconf)
         self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr), meanphotons = meanphotons)
         self.data, self.mixed, self.nevents = map(lambda y: self.read(fname, y, True), hnames)
+        generated = self.read(fname, genhistname + '_', True) if genhistname else None
+
+        self.signal = SignalGenerator(signalconf, genhistname, generated) if not flat else FlatGenerator(signalconf, genhistname, generated)
         self.out = [self.data, self.mixed, self.nevents, self.signal.generated]
         self.update_hists()
 
