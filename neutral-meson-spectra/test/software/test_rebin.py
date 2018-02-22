@@ -9,7 +9,7 @@ from spectrum.options import Options
 class TestRebin(unittest.TestCase):
 
     def test(self):
-        infile = DataVault().file("single #pi^{0} validate", "low")
+        infile = DataVault().file("single #pi^{0} validate", "high")
 
         hist = lambda x, y: read_histogram(infile, "PhysEff", x, label=y)
 

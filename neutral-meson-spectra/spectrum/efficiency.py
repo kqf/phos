@@ -67,10 +67,12 @@ class Efficiency(object):
     def efficiency(self):
         reco, true = self.reco(), self.true()
         diff = Comparator()
-        
-        # true, reco = br.rebin_as(true, reco)
-        br.scalew(true)
+
+        # This is the correct pattern
+        true, reco = br.rebin_as(true, reco)
         br.scalew(reco)
+        br.scalew(true)
+
         ratio = diff.compare(reco, true)
         ratio.label = self.label
 
@@ -81,9 +83,18 @@ class Efficiency(object):
 
 class EfficiencyMultirange(Efficiency):
 
-    def __init__(self, genname, label, inames, recalculate=False, selection='PhysEffPlainOnlyTender', particle="#pi^{0}"):
+    def __init__(self, genname, label, inames, recalculate=False, selection='PhysEff', particle="#pi^{0}"):
         super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate, selection)
-        self.single_estimators = [Efficiency(genname, label, n, recalculate, selection) for n in inames]
+        self.single_estimators = [
+            Efficiency(
+                genname, 
+                '{0}_{1}_{2}'.format(label, low, upp), 
+                filename, 
+                recalculate, 
+                selection
+            ) 
+            for filename, (low, upp) in inames.iteritems()
+        ]
         self.rranges = inames.values()
         for est, rr in zip(self.single_estimators, self.rranges):
             est.opt = Options.spmc(rr, particle=particle)
@@ -103,4 +114,3 @@ class EfficiencyMultirange(Efficiency):
             t.Scale(1. / t.Integral(bin - 1, bin + 1))
 
         return br.sum_trimm(true, self.rranges)
-

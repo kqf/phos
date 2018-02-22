@@ -21,8 +21,8 @@ class TestEfficiencyPi0(unittest.TestCase):
     def test_eff_overlap(self):
     	func_eff = eff_function()
         files = {
-            DataVault().file("single #eta", "low"): (0, 10),
-            DataVault().file("single #eta", "high"): (10, 20)
+            DataVault().file("single #eta validate", "low"): (0, 8),
+            DataVault().file("single #eta validate", "high"): (8, 20)
         }
 
         estimator = FitEfficiency("#eta", func_eff)

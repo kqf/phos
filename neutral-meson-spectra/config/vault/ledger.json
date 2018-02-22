@@ -46,12 +46,12 @@
 	{
 		"low": {
 			"file": "input-data/mc/single/pi0/validate/LHC17j3b1.root",
-			"hsum": "fbd91f40d3548570bcd98b0cac38282c9193ea1f0b25f1a9dfcec75faaae607f",
+			"hsum": "10429c20e3a474e1fb40e3f01e09f8622f0df6c7867c7507c04784580c1042ad",
 			"description": "Single #pi^{0} simulations with all correctons"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/validate/LHC17j3b2.root",
-			"hsum": "37a2dd7a2fff43d48839c082cc7e3cf29c1886bf54c3ac0ef5af6fa33c57e995",
+			"hsum": "eb7cfef0ec62e81b6f5c91ab5466195e55b95e1cd9b5a78a2fea53f02865b342",
 			"description": "Single #pi^{0} simulations with all correctons"
 		}
 	},
