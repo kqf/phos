@@ -499,7 +499,7 @@ class TestTH(unittest.TestCase):
             self.assertEqual(hist.GetBinContent(i + 1), b)
 
         for b, e in zip(bins, errors):
-            self.assertEqual(e, b ** 0.5)
+            self.assertEqual(e, b)
 
 
         for i, b in enumerate(errors):

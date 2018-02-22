@@ -233,8 +233,8 @@ class BROOT(object):
         ratio = a.Clone('ratio' + a.GetName())
         klass.prop.copy_everything(ratio, a)
 
-        if ratio.GetNbinsX() != b.GetNbinsX():
-            ratio, b = klass.rebin_as(ratio, b)
+        # if ratio.GetNbinsX() != b.GetNbinsX():
+            # ratio, b = klass.rebin_as(ratio, b)
 
         ratio.Divide(a, b, 1, 1, option)
         label = a.label + ' / ' + b.label
@@ -264,16 +264,22 @@ class BROOT(object):
             
         nbins = lambda x: x.GetNbinsX()
         lbins = lambda x: (
-            x.GetBinLowEdge(i) for i in klass.range(x, start=0)
+            x.GetBinLowEdge(i) for i in klass.range(x, edges=True)
         )
 
         a, b = (hist1, hist2) if nbins(hist1) > nbins(hist2) else (hist2, hist1)
-        xbin = array.array('d', lbins(b))
-        rebinned = a.Rebin(len(xbin) - 1, a.GetName() + "_binned", xbin)
-        if klass.prop.has_properties(a):
-            klass.setp(rebinned, a)
-
+        rebinned = klass.rebin(a, lbins(b))
         return (rebinned, b) if a == hist1 else (b, rebinned)
+
+
+    @classmethod
+    def rebin(klass, hist, edges, name = "_rebinned"):
+        edges = array.array('d', edges)
+        rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
+        if klass.prop.has_properties(hist):
+            klass.setp(rebin, hist, force = True)
+        return rebin
+
 
     @classmethod
     def sum(klass, histograms, label = None):
@@ -310,12 +316,6 @@ class BROOT(object):
         area = hist.IntegralAndError(bin(a), bin(b), areae)
         return area, areae
 
-    @classmethod
-    def rebin(klass, hist, edges, name = "_rebinned"):
-        edges = array.array('d', edges)
-        rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
-        klass.setp(rebin, hist, force = True)
-        return rebin
   
     @classmethod
     def init_inputs(klass, func):
@@ -360,11 +360,11 @@ class BROOT(object):
         return syst, rms, mean
 
     @classmethod
-    def range(klass, hist, axis = 'x', start = 1):
+    def range(klass, hist, axis='x', start=1, edges=False):
         nbins = hist.GetNbinsX() if 'x' in axis.lower() else hist.GetNbinsY()
         # NB: Default value should be 1
         #     one should use 0 if bin edges are needed
-        return range(start, nbins + 1)
+        return range(start, nbins + 1 + int(edges))
 
     @classmethod
     def pars(klass, tfunc, npars = None):
