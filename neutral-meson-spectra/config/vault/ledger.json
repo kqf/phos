@@ -42,6 +42,20 @@
 		}
 	},
 
+	"single #pi^{0} validate":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/validate/LHC17j3b1.root",
+			"hsum": "fbd91f40d3548570bcd98b0cac38282c9193ea1f0b25f1a9dfcec75faaae607f",
+			"description": "Single #pi^{0} simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/validate/LHC17j3b2.root",
+			"hsum": "37a2dd7a2fff43d48839c082cc7e3cf29c1886bf54c3ac0ef5af6fa33c57e995",
+			"description": "Single #pi^{0} simulations with all correctons"
+		}
+	},
+
 	"single #eta":
 	{
 		"low": {
@@ -56,6 +70,19 @@
 		}
 	},
 	
+	"single #eta validate":
+	{
+		"low": {
+			"file": "input-data/mc/single/eta/validate/LHC17j3c1.root",
+			"hsum": "925354aaafae5db2efc4acb2a39bdcad36f9c5c3b7b23fe6f24738c96884f562",
+			"description": "Single #eta simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/mc/single/eta/validate/LHC17j3c2.root",
+			"hsum": "b59816b3eccb9414d31ccfbc342ad9bb740109569dc94140be5dbe97e1e3862d",
+			"description": "Single #eta simulations with all correctons"
+		}
+	},	
 	"epos": {
 	},
 

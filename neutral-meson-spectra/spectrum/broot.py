@@ -259,6 +259,9 @@ class BROOT(object):
 
     @classmethod
     def rebin_as(klass, hist1, hist2):
+        if hist1.GetNbinsX() == hist2.GetNbinsY():
+            return hist1, hist2
+            
         nbins = lambda x: x.GetNbinsX()
         lbins = lambda x: (
             x.GetBinLowEdge(i) for i in klass.range(x, start=0)
