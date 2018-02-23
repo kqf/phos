@@ -9,6 +9,10 @@ class AnalysisOutput(object):
 		self.signal = None
 		self.ptwidth = None
 		self.ptmass = None
+		self.pool = []
+
+	def update(self, hists):
+		self.pool.append(hists)
 
 	def plot(self):
 		pass

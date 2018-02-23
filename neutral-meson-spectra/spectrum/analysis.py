@@ -19,7 +19,7 @@ class Analysis(object):
             # TODO: Clean this part in pipeline
             # TODO: Add parametrization configuration here
             DataSlicer(self.options.pt, self.options), 
-            MassFitter(self.options),
+            MassFitter(self.options.pt),
             RangeEstimator(self.options.spectrum),
             DataExtractor(self.options.output)
         ]

@@ -35,12 +35,18 @@ class MassFitter(object):
         self.opt = options
 
     def transform(self, masses, outputs):
-        pipeline = self.pipeline(self.opt.pt.use_mixed)
+        pipeline = self.pipeline(self.opt.use_mixed)
 
-        for mass in masses:
-            for estimator in pipeline:
-                estimator.transform(mass)
+        for estimator in pipeline:
+            output = map(
+                estimator.transform, 
+                masses
+            )
 
+            outputs.update({
+                estimator.__class__.__name__:
+                output
+            })
         return masses
 
     def pipeline(self, use_mixed):
@@ -51,10 +57,10 @@ class MassFitter(object):
                 SignalFitter()
             ]
         return [
-                MixingBackgroundEstimator(),
-                ZeroBinsCleaner(),
-                SignalExtractor(),
-                SignalFitter()
+            MixingBackgroundEstimator(),
+            ZeroBinsCleaner(),
+            SignalExtractor(),
+            SignalFitter()
         ]
 
 
