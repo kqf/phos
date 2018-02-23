@@ -68,6 +68,8 @@ class Efficiency(object):
         reco, true = self.reco(), self.true()
         diff = Comparator()
 
+        true.label = "generated primary"
+        reco.label = "reconstructed"
         # This is the correct pattern
         true, reco = br.rebin_as(true, reco)
         br.scalew(reco)

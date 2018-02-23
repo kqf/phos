@@ -35,6 +35,7 @@ class YieldEvaluator(object):
             '#frac{Number of reconstructed %s}{Number of generated primary %s}' \
             % (self.particle, self.particle) 
         )
+        efficiency.label = "efficiency {0}".format(self.particle)
         diff = Comparator()
         diff.compare(efficiency)
         return efficiency
@@ -55,27 +56,27 @@ class YieldEvaluator(object):
 class TestCorrectedYield(unittest.TestCase):
 
 
-    @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         inp = Input(DataVault().file("data"), 'Phys', label='data')
         estimator = YieldEvaluator("#pi^{0}")
 
         files = {
-            DataVault().file("single #pi^{0}", "low"): (0, 7),
-            DataVault().file("single #pi^{0}", "high"): (7, 20)
+            DataVault().file("single #pi^{0} validate", "low"): (0, 7),
+            DataVault().file("single #pi^{0} validate", "high"): (7, 20)
         } 
         corrected = estimator.transform(inp, files)
 
         diff = Comparator()
         diff.compare(corrected)
 
+    @unittest.skip('')
     def test_corrected_yield_for_eta(self):
         inp = Input(DataVault().file("data"), 'Phys', label='data')
         estimator = YieldEvaluator("#eta")
 
         files = {
-            DataVault().file("single #eta", "low"): (0, 9),
-            DataVault().file("single #eta", "high"): (9, 10)
+            DataVault().file("single #eta validate", "low"): (0, 6),
+            DataVault().file("single #eta validate", "high"): (6, 15)
         } 
         corrected = estimator.transform(inp, files)
 

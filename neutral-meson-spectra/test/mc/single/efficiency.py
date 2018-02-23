@@ -35,6 +35,8 @@ class FitEfficiency(object):
             '#frac{Number of reconstructed %s}{Number of generated primary %s}' \
                 % (self.particle, self.particle) 
         )
+        efficiency.GetYaxis().SetTitle("efficiency #times acceptance")
+        efficiency.label = "efficiency {0}".format(self.particle)
         diff = Comparator()
         diff.compare(efficiency)
         return efficiency

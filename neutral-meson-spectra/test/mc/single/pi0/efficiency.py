@@ -24,10 +24,5 @@ class TestEfficiencyPi0(unittest.TestCase):
             DataVault().file("single #pi^{0} validate", "low"): (0, 7),
             DataVault().file("single #pi^{0} validate", "high"): (7, 20)
         }
-
-        # files = {
-        #     "LHC16-single.root": (0, 7),
-        #     "LHC16-single.root": (7, 20)
-        # }
         estimator = FitEfficiency("#pi^{0}", func_eff)
         estimator.estimate(files)
