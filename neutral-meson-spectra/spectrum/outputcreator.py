@@ -72,7 +72,7 @@ class SpectrumExtractor(object):
 
 
 class OutputCreator(object):
-    def __init__(self, name, title, label, priority = 999):
+    def __init__(self, name, title, label, priority=999):
         super(OutputCreator, self).__init__()
         self.title = title
         self.label = label
@@ -95,8 +95,8 @@ class OutputCreator(object):
         return hist
 
     @staticmethod
-    def output_histogram(name, title, label, priority, bins, data):
-        output = OutputCreator(name, title, label, priority)
+    def output_histogram(name, title, label, bins, data):
+        output = OutputCreator(name, title, label)
         return output.get_hist(bins, data)
 
 
@@ -107,8 +107,7 @@ class OutputCreator(object):
             order,
             ptedges,
             titles, # self.opt.output[quant] % self.opt.partlabel,
-            label,
-            priority
+            label
         ):
 
         OutType = coll.namedtuple(typename, order)
@@ -125,7 +124,6 @@ class OutputCreator(object):
                 quant,
                 titles[quant],
                 label,
-                priority,
                 ptedges,
                 datapoints
             ) for quant, datapoints in iter_collection

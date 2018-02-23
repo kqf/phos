@@ -41,39 +41,31 @@ class AnalysisOption(object):
         return cleaned
 
 
-
-
 class Options(object):
-    """
-        This is class should handle all possible variable! options 
-        that i need to compare in my analysis.
-    """
     modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
 
-    def __init__(self, label = 'data', mode = 'q', relaxedcb = False, 
-                    particle='pi0', priority = 999, fitf = 'cball',
-                    spectrumconf = 'config/spectrum.json',
-                    ptrange = 'config/pt.json',
-                    ptconf = 'config/pt-analysis.json',
-                    invmassconf = 'config/invariant-mass.json',
-                    paramconf = 'config/cball-parameters.json',
-                    spmc = False):
-
+    def __init__(self, 
+            mode='q', 
+            relaxedcb=False, 
+            particle='pi0',
+            fitf='cball',
+            spectrumconf='config/spectrum.json',
+            ptrange='config/pt.json',
+            ptconf='config/pt-analysis.json',
+            invmassconf='config/invariant-mass.json',
+            paramconf='config/cball-parameters.json',
+            spmc=False
+        ):
         super(Options, self).__init__()
         show_img = self.modes.get(mode, True)
 
-        self.spectrum = AnalysisOption('spectrum', spectrumconf, particle)
+        self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
         self.spectrum.show_img = show_img
 
+        self.pt = AnalysisOption('DataSlicer', ptrange, particle)
 
-        self.pt = AnalysisOption('ptanalysis', ptrange, particle)
-
-        self.output = AnalysisOption('ptanalysis', ptconf, particle)
-        self.output.priority = priority
-        self.output.label = label
+        self.output = AnalysisOption('DataExtractor', ptconf, particle)
         self.output.show_img = show_img
-        self.output.dead_mode = 'd' in mode
-        self.output.particle = particle
 
         self.invmass = AnalysisOption('invmass', invmassconf, particle)
         self.invmass.average = {}
@@ -94,13 +86,6 @@ class Options(object):
         self.param = AnalysisOption('param', pconf, particle)
         self.param.relaxed = relaxed
 
-    @property
-    def label(self):
-        return self.output.label
-
-    @label.setter
-    def label(self, label):
-        self.output.label = label
 
     @staticmethod
     def fixed_peak(*args):
@@ -123,17 +108,14 @@ class Options(object):
     @staticmethod
     def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
-        options = Options(name,
-                    mode = 'q', 
-                    particle = particle, 
-                    ptrange = 'config/pt-spmc.json',
-                    spectrumconf = 'config/spectrum_spmc.json',
-                    paramconf = 'config/cball-parameters-spmc-test.json'
+        options = Options(
+            name,
+            mode = 'q', 
+            particle = particle, 
+            ptrange = 'config/pt-spmc.json',
+            spectrumconf = 'config/spectrum_spmc.json',
+            paramconf = 'config/cball-parameters-spmc-test.json'
         )
 
         options.spectrum.fit_range = pt_fit_range
-
-        if label:
-            options.label = label 
-
         return options

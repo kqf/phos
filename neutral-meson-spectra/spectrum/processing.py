@@ -81,8 +81,7 @@ class RangeEstimator(object):
             self._output,
             InvariantMass.ptedges(masses),
             titles,
-            outputs.label,
-            999 
+            outputs.label
         )
 
         ranges = self._fit_ranges(self.output)
@@ -193,16 +192,12 @@ class DataExtractor(object):
             self.opt.output_order,
             edges,
             titles,
-            outputs.label,
-            self.opt.priority
+            outputs.label
         )
 
         # Decorate the histograms
         nevents = next(iter(masses)).mass.nevents
         decorated = self._decorate_hists(histos, nevents)
-
-        if self.opt.dead_mode: 
-            return decorated 
 
         self.plotter = PtPlotter(masses, self.opt, outputs.label)
         self.plotter.draw()
