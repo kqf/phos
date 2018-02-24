@@ -103,13 +103,6 @@ class RangeEstimator(object):
         fitquant = ROOT.TF1("fitquant" + pref, func)
         fitquant.SetLineColor(46)
 
-
-        if not self.opt.dead:
-            canvas = su.gcanvas(1./ 2., 1, True)
-            su.adjust_canvas(canvas)
-            su.ticks(canvas) 
-            quant.Draw()
-
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
@@ -117,8 +110,6 @@ class RangeEstimator(object):
         # width/mass, therefore this will give correct estimation
         if not self.opt.fit_mass_width:
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
-
-
 
         # print self.opt.fit_range
         quant.Fit(fitquant, "q", "", *self.opt.fit_range)
@@ -130,9 +121,6 @@ class RangeEstimator(object):
 
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
-
-        # TODO: Move this to the output
-        su.wait(pref + "-paramerisation-", self.opt.show_img, True)
         return fitquant
 
     def _fit_ranges(self, quantities, loggs):

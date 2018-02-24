@@ -32,3 +32,17 @@ class AnalysisOutput(object):
 			for hist in item.histograms:
 				diff = Comparator()
 				diff.compare(hist)
+
+	def save(self):
+		for item in self.pool:
+			print 'Drawing', item.name
+			if item.multirange:
+				PtPlotter(item.histograms, self.label, self.particle).save()
+				continue
+				
+			for hist in item.histograms:
+				diff = Comparator(
+					stop=False, 
+					oname="{0}/{1}/{2}".format(self.label, item.name, hist.GetName())
+				)
+				diff.compare(hist)

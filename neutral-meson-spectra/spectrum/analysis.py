@@ -28,5 +28,5 @@ class Analysis(object):
         for estimator in pipeline:
             data = estimator.transform(data, loggs)
 
-        # loggs.plot()
+        loggs.save()
         return data
