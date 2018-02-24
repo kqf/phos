@@ -3,7 +3,7 @@ from math import sqrt
 from collections import Iterable
 import array
 
-def wait(name = '', draw = True, save = False, suffix = ''):
+def wait(name='', draw=True, save=False, suffix=''):
     outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()

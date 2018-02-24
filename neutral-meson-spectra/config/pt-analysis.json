@@ -1,18 +1,5 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
-    "pi0": 
-    {
-        "multcanvas": [6, 6, 0, 0.01],
-        "lastcanvas": [2, 2, 0.001, 0.01],
-        "partlabel": "#pi^{0}"
-    },
-    "eta": 
-    {
-        "multcanvas": [4, 3, 0.001, 0.01],
-        "lastcanvas": [2, 2, 0.001, 0.01],
-        "partlabel": "#eta"
-    },
-
     "output_order": ["mass", "width", "spectrum", "chi2", "npi0", "cball_alpha", "cball_n"],
     "output":
     {

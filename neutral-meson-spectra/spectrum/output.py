@@ -1,3 +1,6 @@
+from comparator import Comparator
+from ptplotter import PtPlotter
+
 class LogItem(object):
 	def __init__(self, name, histograms, multirange=False):
 		super(LogItem, self).__init__()
@@ -8,8 +11,9 @@ class LogItem(object):
 
 
 class AnalysisOutput(object):
-	def __init__(self, label):
+	def __init__(self, label, particle):
 		super(AnalysisOutput, self).__init__()
+		self.particle = particle
 		self.label = label
 		self.pool = []
 
@@ -19,4 +23,12 @@ class AnalysisOutput(object):
 		)
 
 	def plot(self):
-		pass
+		for item in self.pool:
+			print 'Drawing', item.name
+			if item.multirange:
+				PtPlotter(item.histograms, self.label, self.particle).draw()
+				continue
+
+			for hist in item.histograms:
+				diff = Comparator()
+				diff.compare(hist)

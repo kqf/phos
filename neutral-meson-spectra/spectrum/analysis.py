@@ -10,10 +10,10 @@ class Analysis(object):
     def __init__(self, options=Options()):
         super(Analysis, self).__init__()
         self.options = options
-        self._outputs = None
+        self._loggs = None
 
     def transform(self, inputs):
-        outputs = AnalysisOutput(inputs.label)
+        loggs = AnalysisOutput(inputs.label, self.options.particle)
         pipeline = [
             inputs,
             # TODO: Clean this part in pipeline
@@ -26,6 +26,7 @@ class Analysis(object):
 
         data = None
         for estimator in pipeline:
-            data = estimator.transform(data, outputs)
+            data = estimator.transform(data, loggs)
 
+        # loggs.plot()
         return data

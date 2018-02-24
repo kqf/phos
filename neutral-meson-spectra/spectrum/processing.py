@@ -43,11 +43,12 @@ class MassFitter(object):
                 masses
             )
 
-            loggs.update(
-                estimator.__class__.__name__,
-                output,
-                multirange=True
-            )
+            # TODO: Should I use this method or rely on invariant mass?
+            # loggs.update(
+            #     estimator.__class__.__name__,
+            #     output,
+            #     multirange=True
+            # )
         return masses
 
     def pipeline(self, use_mixed):
@@ -190,7 +191,7 @@ class DataExtractor(object):
         edges = InvariantMass.ptedges(masses)
 
         titles = {quant:
-            self.opt.output[quant] % self.opt.partlabel 
+            self.opt.output[quant] % self.opt.particle 
             for quant in self.opt.output_order
         }
 
@@ -208,9 +209,8 @@ class DataExtractor(object):
         # Decorate the histograms
         nevents = next(iter(masses)).mass.nevents
         decorated = self._decorate_hists(histos, nevents)
-        self.plotter = PtPlotter(masses, self.opt, loggs.label)
-        self.plotter.draw()
 
+        loggs.update("invariant_masses", masses, multirange=True)
         loggs.update("analysis_output", decorated)
         return decorated 
 
