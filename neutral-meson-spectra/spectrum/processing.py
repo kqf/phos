@@ -16,7 +16,7 @@ class DataSlicer(object):
         self.opt = options
         self.all_options = all_options
 
-    def transform(self, inputs, outputs):
+    def transform(self, inputs, loggs):
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
@@ -34,7 +34,7 @@ class MassFitter(object):
         super(MassFitter, self).__init__()
         self.opt = options
 
-    def transform(self, masses, outputs):
+    def transform(self, masses, loggs):
         pipeline = self.pipeline(self.opt.use_mixed)
 
         for estimator in pipeline:
@@ -43,10 +43,11 @@ class MassFitter(object):
                 masses
             )
 
-            outputs.update({
-                estimator.__class__.__name__:
-                output
-            })
+            loggs.update(
+                estimator.__class__.__name__,
+                output,
+                multirange=True
+            )
         return masses
 
     def pipeline(self, use_mixed):
@@ -73,7 +74,7 @@ class RangeEstimator(object):
         self.opt = options
         self.output = None
 
-    def transform(self, masses, outputs):
+    def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(
             self._output,
             masses
@@ -87,10 +88,10 @@ class RangeEstimator(object):
             self._output,
             InvariantMass.ptedges(masses),
             titles,
-            outputs.label
+            loggs.label
         )
 
-        ranges = self._fit_ranges(self.output)
+        ranges = self._fit_ranges(self.output, loggs)
 
         for mass, region in zip(masses, ranges):
             mass.integration_region = region
@@ -133,7 +134,7 @@ class RangeEstimator(object):
         su.wait(pref + "-paramerisation-", self.opt.show_img, True)
         return fitquant
 
-    def _fit_ranges(self, quantities):
+    def _fit_ranges(self, quantities, loggs):
         ROOT.gStyle.SetOptStat('')
         mass, sigma = quantities.mass, quantities.width
 
@@ -144,6 +145,8 @@ class RangeEstimator(object):
             massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
             massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
         )
+
+        loggs.update("range_estimator", [mass, sigma])
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values) 
@@ -178,7 +181,7 @@ class DataExtractor(object):
         histograms.npi0.logy = True
         return histograms 
 
-    def transform(self, masses, outputs):
+    def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(
             self.opt.output_order,
             masses
@@ -198,14 +201,16 @@ class DataExtractor(object):
             self.opt.output_order,
             edges,
             titles,
-            outputs.label
+            loggs.label
         )
+
 
         # Decorate the histograms
         nevents = next(iter(masses)).mass.nevents
         decorated = self._decorate_hists(histos, nevents)
-
-        self.plotter = PtPlotter(masses, self.opt, outputs.label)
+        self.plotter = PtPlotter(masses, self.opt, loggs.label)
         self.plotter.draw()
+
+        loggs.update("analysis_output", decorated)
         return decorated 
 
