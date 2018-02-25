@@ -3,7 +3,7 @@
 import ROOT
 import sutils as su
 
-from invariantmass import InvariantMass
+from invariantmass import InvariantMass, RawMass
 from outputcreator import OutputCreator, SpectrumExtractor
 import collections as coll
 from ptplotter import PtPlotter
@@ -11,17 +11,17 @@ from mass import BackgroundEstimator, MixingBackgroundEstimator, SignalExtractor
 
 
 class DataSlicer(object):
-    def __init__(self, options, all_options):
+    def __init__(self, options):
         super(DataSlicer, self).__init__()
         self.opt = options
-        self.all_options = all_options
 
     def transform(self, inputs, loggs):
+
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
 
-        common_inputs = lambda x, y: InvariantMass(inputs, x, y, self.all_options)
+        common_inputs = lambda x, y: RawMass(inputs, x, y)
         return map(common_inputs,
             intervals,
             self.opt.rebins
@@ -34,21 +34,20 @@ class MassFitter(object):
         super(MassFitter, self).__init__()
         self.opt = options
 
-    def transform(self, masses, loggs):
+    def transform(self, rmasses, loggs):
         pipeline = self.pipeline(self.opt.use_mixed)
+
+        # Extract invariant masses
+        masses = map(
+            lambda x: InvariantMass(x, self.opt),
+            rmasses
+        )
 
         for estimator in pipeline:
             output = map(
                 estimator.transform, 
                 masses
             )
-
-            # TODO: Should I use this method or rely on invariant mass?
-            # loggs.update(
-            #     estimator.__class__.__name__,
-            #     output,
-            #     multirange=True
-            # )
         return masses
 
     def pipeline(self, use_mixed):
@@ -87,7 +86,7 @@ class RangeEstimator(object):
            'MassWidthOutput',
             values, 
             self._output,
-            InvariantMass.ptedges(masses),
+            RawMass.ptedges(masses),
             titles,
             loggs.label
         )
@@ -176,7 +175,7 @@ class DataExtractor(object):
             masses
         )
 
-        edges = InvariantMass.ptedges(masses)
+        edges = RawMass.ptedges(masses)
 
         titles = {quant:
             self.opt.output[quant] % self.opt.particle 

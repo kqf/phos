@@ -100,53 +100,17 @@ class VisualizeMass(object):
         return self.bgrf and self.sigf
 
 
+class RawMass(object):
 
-class InvariantMass(VisualizeMass):
-   
-    def __init__(self, inhists, pt_range, nrebin, options):
-        super(InvariantMass, self).__init__()
-        self.pt_range = pt_range 
+    def __init__(self, inhists, pt_range, nrebin):
+        self.pt_range = pt_range
         self.nrebin = nrebin
-        self.opt = options.invmass
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
-
-        # Setup the fit function
-        self.peak_function = PeakParametrisation.get(options.param)
-        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
-
-        # Extract the data
-        self.mass, self.background = map(self.extract_histogram, inhists)
-        self.sigf, self.bgrf = None, None
-        self.area_error = None
-        self._integration_region = self.peak_function.opt.fit_range
-        self.ratio = None
-        self.signal = None
-
-        
-    @staticmethod
-    def ptedges(masses):
-        return sorted(set(
-                sum([list(i.pt_range) for i in masses], [])
-            )
-        ) 
-
-
-    @property
-    def integration_region(self):
-        return self._integration_region
-
-
-    @integration_region.setter
-    def integration_region(self, value):
-        if not value:
-            return
-        self._integration_region = value
-
-
-    def extract_histogram(self, hist):
+        self.mass, self.background = map(self._extract_histogram, inhists)
+  
+    def _extract_histogram(self, hist):
         if not hist:
             return None
-
         mass = br.project_range(hist, '_%d_%d', *self.pt_range)
         mass.nevents = hist.nevents
         mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (mass.nevents / 1e6))         
@@ -159,6 +123,46 @@ class InvariantMass(VisualizeMass):
             mass.Rebin(self.nrebin)
         return mass
 
+    @staticmethod
+    def ptedges(masses):
+        return sorted(set(
+                sum([list(i.pt_range) for i in masses], [])
+            )
+        ) 
+
+class InvariantMass(VisualizeMass):
+   
+    def __init__(self, rmass, options):
+        super(InvariantMass, self).__init__()
+        self.pt_range = rmass.pt_range
+        self.mass = rmass.mass
+        self.background = rmass.background
+        self.pt_label = rmass.pt_label
+
+        self.opt = options
+
+        # Setup the fit function
+        self.peak_function = PeakParametrisation.get(options.param)
+        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
+
+        # Extract the data
+        self.sigf, self.bgrf = None, None
+        self.area_error = None
+        self._integration_region = self.peak_function.opt.fit_range
+        self.ratio = None
+        self.signal = None
+
+
+    @property
+    def integration_region(self):
+        return self._integration_region
+
+
+    @integration_region.setter
+    def integration_region(self, value):
+        if not value:
+            return
+        self._integration_region = value
 
     def number_of_mesons(self):
         area, areae = br.area_and_error(self.signal, *self.integration_region)

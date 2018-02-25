@@ -67,12 +67,14 @@ class Options(object):
         self.output = AnalysisOption('DataExtractor', ptconf, particle)
         self.output.show_img = show_img
 
-        self.invmass = AnalysisOption('invmass', invmassconf, particle)
-        self.invmass.average = {}
-
         self.param = AnalysisOption('param', paramconf, particle)
         self.param.relaxed = relaxedcb
         self.particle = particle
+
+        self.invmass = AnalysisOption('invmass', invmassconf, particle)
+        self.invmass.average = {}
+        self.invmass.param = self.param
+
 
     @property
     def fitf(self):

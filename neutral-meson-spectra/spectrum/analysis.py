@@ -18,8 +18,8 @@ class Analysis(object):
             inputs,
             # TODO: Clean this part in pipeline
             # TODO: Add parametrization configuration here
-            DataSlicer(self.options.pt, self.options), 
-            MassFitter(self.options.pt),
+            DataSlicer(self.options.pt), 
+            MassFitter(self.options.invmass),
             RangeEstimator(self.options.spectrum),
             DataExtractor(self.options.output)
         ]
