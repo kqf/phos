@@ -2,43 +2,56 @@ import ROOT
 from math import sqrt
 from collections import Iterable
 import array
+import os
+
+
+def prepare_directory(name):
+    path = "/".join(
+        name.split('/')[0:-1] # remove filename
+    )
+
+    if not os.path.isdir(path):
+        os.makedirs(path, 0755)
+    return name
+
 
 def wait(name='', draw=True, save=False, suffix=''):
+    if save and not draw:
+        ROOT.gROOT.SetBatch(True)
+        
     outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()
     name = (name
         .replace(' ', '-')
         .replace('_', '-')
-        .replace('/', '-')
     )
-    try:
-        if save:
-            canvas.SaveAs(outdir + name + '.pdf')
-    except Exception:
-        print "ERROR: In sutils.wait. Can't save the image."
+    if save:
+        canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
 
     canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-
     if draw: 
         ROOT.gApplication.Run(True)
-        
-def gcanvas(x = 1., y = 1, resize = False, scale = 6):
-    canvas = ROOT.gROOT.FindObject('c1')
-    if canvas: 
-        if not resize:
-            canvas.cd()
-            return canvas 
 
-        cx, cy = map(int, [128 * x * scale, 96 * y * scale])
-        canvas.SetWindowSize(cx, cy)
-        canvas.SetCanvasSize(cx, cy)
-        return adjust_canvas(canvas)
-
-
+def canvas(name, x=1., y=1., scale=6):
     canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
     ticks(canvas)
     return adjust_canvas(canvas)
+
+def gcanvas(x = 1., y = 1, resize = False, scale = 6):
+    ccanvas = ROOT.gROOT.FindObject('c1')
+    if ccanvas: 
+        if not resize:
+            ccanvas.cd()
+            return ccanvas 
+
+        cx, cy = map(int, [128 * x * scale, 96 * y * scale])
+        ccanvas.SetWindowSize(cx, cy)
+        ccanvas.SetCanvasSize(cx, cy)
+        return adjust_canvas(ccanvas)
+    return canvas("c1", x, y, scale)
+
+
 
 
 def adjust_labels(hist1, hist2, scale = 1):

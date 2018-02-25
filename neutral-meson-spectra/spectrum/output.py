@@ -1,5 +1,6 @@
 from comparator import Comparator
 from ptplotter import PtPlotter
+import ROOT
 
 class LogItem(object):
 	def __init__(self, name, histograms, multirange=False):
@@ -22,27 +23,20 @@ class AnalysisOutput(object):
 			LogItem(stepname, histograms, multirange)
 		)
 
-	def plot(self):
+	def plot(self, stop=False):
 		for item in self.pool:
 			print 'Drawing', item.name
 			if item.multirange:
-				PtPlotter(item.histograms, self.label, self.particle).draw()
+				PtPlotter(
+					item.histograms, 
+					self.label, 
+					self.particle
+				).draw(stop, "{0}/{1}".format(self.label, item.name))
 				continue
 
-			for hist in item.histograms:
-				diff = Comparator()
-				diff.compare(hist)
-
-	def save(self):
-		for item in self.pool:
-			print 'Drawing', item.name
-			if item.multirange:
-				PtPlotter(item.histograms, self.label, self.particle).save()
-				continue
-				
-			for hist in item.histograms:
+		for hist in item.histograms:
 				diff = Comparator(
-					stop=False, 
-					oname="{0}/{1}/{2}".format(self.label, item.name, hist.GetName())
+					stop=stop, 
+					oname="{0}/{1}/{2}-{3}".format(self.label, item.name, hist.GetName(), self.particle)
 				)
 				diff.compare(hist)

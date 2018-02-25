@@ -32,17 +32,12 @@ class PtPlotter(PtPlotterConfig):
         self.masses = masses
         self.label = label
 
-    def draw(self):
-        self._draw_ratio(True)
-        self._draw_mass(True)
-        self._draw_signal(True)
+    def draw(self, stop, directory):
+        self._draw_ratio(stop, directory)
+        self._draw_mass(stop, directory)
+        self._draw_signal(stop, directory)
 
-    def save(self):
-        self._draw_ratio(False)
-        self._draw_mass(False)
-        self._draw_signal(False)
-
-    def _draw_last_bins(self, f, show, name = ''):
+    def _draw_last_bins(self, f, show, name):
         canvas = su.gcanvas(1, 1, True)
         canvas.Clear()
         canvas.Divide(*self.lastcanvas)
@@ -54,9 +49,9 @@ class PtPlotter(PtPlotterConfig):
             m.line_low = self._draw_line(distr, lower)
             m.line_upper = self._draw_line(distr, upper)
 
-        su.wait(name + self.label, draw=show, save=True)
+        su.wait(name, draw=show, save=True)
 
-    def _draw_all_bins(self, f, show, name = ''):
+    def _draw_all_bins(self, f, show, name):
         canvas = su.gcanvas(1, 1, True)
         canvas.Clear()
         canvas.Divide(*self.multcanvas)
@@ -68,24 +63,24 @@ class PtPlotter(PtPlotterConfig):
             m.line_low = self._draw_line(distr, lower)
             m.line_upper = self._draw_line(distr, upper)
 
-        su.wait(name + self.label, draw=show, save=True)
+        su.wait(name, draw=show, save=True)
 
-    def _draw_ratio(self, show, name = ''):
+    def _draw_ratio(self, show, directory):
         f = lambda x, y: x.draw_ratio(y)
-        oname = 'multiple-ratio-{0}-{1}'.format(self.particle, name)
+        oname = '{1}/multiple-ratio-{0}'.format(self.particle, directory)
         self._draw_all_bins(f, show, oname)
 
-    def _draw_mass(self, show, name = ''):
+    def _draw_mass(self, show, directory):
         f = lambda x, y: x.draw_mass(y)
-        oname = 'multiple-mass-{0}-{1}'.format(self.particle, name)
+        oname = '{1}/multiple-mass-{0}'.format(self.particle, directory)
         self._draw_all_bins(f, show, oname)
 
-    def _draw_signal(self, show, name = ''):
+    def _draw_signal(self, show, directory):
         f = lambda x, y: x.draw_signal(y) 
-        oname = 'multiple-signal-{0}-{1}'.format(self.particle, name)
+        oname = '{1}/multiple-signal-{0}'.format(self.particle, directory)
         self._draw_all_bins(f, show, oname)
 
-        oname = 'multiple-signal-high-pt-{0}-{1}'.format(self.particle, name)
+        oname = '{1}/multiple-signal-high-pt-{0}'.format(self.particle, directory)
         self._draw_last_bins(f, show, oname)
 
     def _draw_line(self, distr, position):
