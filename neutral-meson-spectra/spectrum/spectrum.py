@@ -20,8 +20,8 @@ class Spectrum(object):
         self.model = Analysis(options)
         self.opt = options.spectrum
 
-    def evaluate(self):
-        return self.model.transform(self.data)
+    def evaluate(self, loggs=None):
+        return self.model.transform(self.data, loggs)
 
 
 # TODO: Add Options factory for singleParticleMC

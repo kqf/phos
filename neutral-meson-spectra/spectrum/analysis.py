@@ -12,8 +12,8 @@ class Analysis(object):
         self.options = options
         self._loggs = None
 
-    def transform(self, inputs):
-        loggs = AnalysisOutput(inputs.label, self.options.particle)
+    def transform(self, inputs, loggs=None):
+        loggs = loggs if loggs else AnalysisOutput(inputs.label, self.options.particle)
         pipeline = [
             inputs,
             # TODO: Clean this part in pipeline

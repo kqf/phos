@@ -95,7 +95,6 @@ class VisualizeMass(object):
         canvas.Update()
         return self.mass 
 
-
     def fitted(self):
         return self.bgrf and self.sigf
 
@@ -134,24 +133,23 @@ class InvariantMass(VisualizeMass):
    
     def __init__(self, rmass, options):
         super(InvariantMass, self).__init__()
-        self.pt_range = rmass.pt_range
+        self.opt = options
         self.mass = rmass.mass
         self.background = rmass.background
+        self.pt_range = rmass.pt_range
         self.pt_label = rmass.pt_label
-
-        self.opt = options
 
         # Setup the fit function
         self.peak_function = PeakParametrisation.get(options.param)
         self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
-        self.sigf, self.bgrf = None, None
+        self.sigf = None
+        self.bgrf = None
         self.area_error = None
         self._integration_region = self.peak_function.opt.fit_range
         self.ratio = None
         self.signal = None
-
 
     @property
     def integration_region(self):

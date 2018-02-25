@@ -42,12 +42,9 @@ class AnalysisOption(object):
 
 
 class Options(object):
-    modes = {'quiet': False, 'q': False , 'silent': False, 's': False, 'dead': False, 'd': False}
-
     def __init__(self, 
-            mode='q', 
+            particle='#pi^{0}',
             relaxedcb=False, 
-            particle='pi0',
             fitf='cball',
             spectrumconf='config/spectrum.json',
             ptrange='config/pt.json',
@@ -57,23 +54,17 @@ class Options(object):
             spmc=False
         ):
         super(Options, self).__init__()
-        show_img = self.modes.get(mode, True)
-
         self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
-        self.spectrum.show_img = show_img
-
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
-
         self.output = AnalysisOption('DataExtractor', ptconf, particle)
-        self.output.show_img = show_img
 
         self.param = AnalysisOption('param', paramconf, particle)
         self.param.relaxed = relaxedcb
-        self.particle = particle
 
-        self.invmass = AnalysisOption('invmass', invmassconf, particle)
+        self.invmass = AnalysisOption('MassFitter', invmassconf, particle)
         self.invmass.average = {}
         self.invmass.param = self.param
+        self.particle = particle
 
 
     @property
