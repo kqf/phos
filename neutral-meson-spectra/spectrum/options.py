@@ -54,6 +54,7 @@ class Options(object):
             spmc=False
         ):
         super(Options, self).__init__()
+        
         self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', ptconf, particle)
@@ -64,6 +65,7 @@ class Options(object):
         self.invmass = AnalysisOption('MassFitter', invmassconf, particle)
         self.invmass.average = {}
         self.invmass.param = self.param
+
         self.particle = particle
 
 

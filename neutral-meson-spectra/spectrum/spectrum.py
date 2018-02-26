@@ -7,6 +7,7 @@ from sutils import gcanvas, wait, adjust_canvas, ticks
 from kinematic import KinematicTransformer
 from options import Options
 from broot import BROOT as br
+from output import AnalysisOutput
 
 
 ROOT.TH1.AddDirectory(False)
@@ -16,12 +17,13 @@ class Spectrum(object):
     def __init__(self, data, options = Options()):
         super(Spectrum, self).__init__()
         self.data = data
-        self.label = data.label
         self.model = Analysis(options)
-        self.opt = options.spectrum
 
     def evaluate(self, loggs=None):
-        return self.model.transform(self.data, loggs)
+        loggs = AnalysisOutput(self.data.label, self.model.options.particle)
+        output = self.model.transform(self.data, loggs)
+        loggs.plot(stop=False)
+        return output
 
 
 # TODO: Add Options factory for singleParticleMC

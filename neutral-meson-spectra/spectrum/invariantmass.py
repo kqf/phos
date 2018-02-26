@@ -73,6 +73,9 @@ class VisualizeMass(object):
 
 
     def draw_mass(self, pad = 0):
+        if not self.mass:
+            return 
+            
         canvas = pad if pad else gcanvas()
         ticks(canvas)
         canvas.SetTicky(False) 
@@ -81,7 +84,8 @@ class VisualizeMass(object):
         legend = ROOT.TLegend(*self.opt.legend_pos)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
-        
+
+
         self.mass.SetTitle(self.mass.GetTitle() + " " + str(self.mass.Integral()))
         self.mass.Draw()
         legend.AddEntry(self.mass, 'data')

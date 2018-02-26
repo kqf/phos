@@ -4,7 +4,6 @@ from collections import Iterable
 import array
 import os
 
-
 def prepare_directory(name):
     path = "/".join(
         name.split('/')[0:-1] # remove filename

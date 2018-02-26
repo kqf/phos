@@ -12,6 +12,27 @@ def read_histogram(filename, listname, histname, label = '', priority = 999, nor
     hist.label = label
     return hist
 
+class SingleHistInput(object):
+
+    def __init__(self, histname, priority=999, norm=False):
+        super(SingleHistInput, self).__init__()
+        self.histname = histname
+        self.priority = priority
+        self.norm = norm
+
+    def transform(self, inputs, loggs):
+        hist = br.io.read(
+            inputs.filename,
+            inputs.listname,
+            self.histname
+        )
+
+        br.set_nevents(hist, inputs.events(inputs.filename, inputs.listname), self.norm)
+        hist.priority = self.priority
+        hist.label = inputs.label
+        return hist
+
+
 class Input(object):
     def __init__(self, filename, listname, histname = 'MassPt', label='', mixprefix = 'Mix'):
         super(Input, self).__init__()

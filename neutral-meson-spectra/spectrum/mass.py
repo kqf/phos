@@ -20,7 +20,7 @@ class BackgroundEstimator(object):
 class SignalExtractor(object):
 
     def transform(self, mass):
-        if not mass.mass.GetEntries():
+        if not mass.mass or not mass.mass.GetEntries():
             return mass
 
         if not mass.background:

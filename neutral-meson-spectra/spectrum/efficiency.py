@@ -2,8 +2,10 @@
 
 from spectrum import Spectrum
 from options import Options
-from .input import Input, read_histogram
+from .input import Input, read_histogram, SingleHistInput
 from comparator import Comparator
+from analysis import Analysis
+from pipeline import Pipeline, RatioUnion, HistogramSelector
 
 from broot import BROOT as br
 
@@ -19,68 +21,43 @@ import unittest
 
 class Efficiency(object):
 
-    def __init__(self, genname, label, iname, recalculate = False, 
-            selection = 'MCStudyOnlyTender', opt = Options(mode = 'd')):
+
+    def __init__(self, genname, recalculate=False, options=Options()):
         super(Efficiency, self).__init__()
+        self.runion = RatioUnion(
+            Pipeline([
+                Analysis(options), 
+                HistogramSelector("npi0")
+            ]),
+            SingleHistInput(genname)
+        )
         self.recalculate = recalculate
-        self.selection = selection
-        self.genname = genname
-        self.label = label
-        self.iname = iname
-        self.oname = 'input-data/efficiency-{0}-{1}.root'.format(self.iname, label)
-        self.opt = opt
-        self.opt.label = label
+        self.oname = 'fixmelater.root'
 
 
-    def eff(self):
+    def transform(self, inputs, loggs):
         if self.recalculate:
-            return self.efficiency()
-
+            return self.efficiency(inputs, loggs)
         try:
-            return self.read_efficiency()
+            return self.read_efficiency(inputs)
         except IOError:
-            return self.efficiency()
+            return self.efficiency(inputs, loggs)
 
 
-    def read_efficiency(self):
+    def read_efficiency(self, inputs):
         if not os.path.isfile(self.oname):
             raise IOError('No such file: {0}'.format(self.oname))
 
         infile = ROOT.TFile(self.oname)
         result = infile.GetListOfKeys().At(0).ReadObj()
-        result.label = self.label
+        result.label = inputs.label
         return result
 
-
-    def true(self, label = 'Generated'):
-        true = read_histogram(self.iname, self.selection, self.genname, label = label, priority = 0)
-        true.logy = True
-        return true 
-
-
-    def reco(self):
-        inp = Input(self.iname, self.selection, 'MassPt', label=self.label)
-        reco = Spectrum(inp, self.opt).evaluate().npi0
-        reco.logy = True
-        return reco
-
-    def efficiency(self):
-        reco, true = self.reco(), self.true()
-        diff = Comparator()
-
-        true.label = "generated primary"
-        reco.label = "reconstructed"
-        # This is the correct pattern
-        true, reco = br.rebin_as(true, reco)
-        br.scalew(reco)
-        br.scalew(true)
-
-        ratio = diff.compare(reco, true)
-        ratio.label = self.label
-
-        if self.oname: 
-            br.io.save(ratio, self.oname)
+    def efficiency(self, inputs, loggs=None):
+        ratio = self.runion.transform(inputs, loggs)
         return ratio
+
+
 
 
 class EfficiencyMultirange(Efficiency):

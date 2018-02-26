@@ -40,3 +40,6 @@ class AnalysisOutput(object):
 					oname="{0}/{1}/{2}-{3}".format(self.label, item.name, hist.GetName(), self.particle)
 				)
 				diff.compare(hist)
+
+	def append(self, other):
+		self.pool.append(other.pool)
