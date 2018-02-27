@@ -26,15 +26,39 @@ class Pipeline(object):
         return updated
 
 
+class ParallelPipeline(object):
+
+    def __init__(self, steps):
+        super(ParallelPipeline, self).__init__()
+        self.steps = steps
+
+    def transform(self, inputs, loggs):
+        assert len(inputs) == len(self.steps), "Input shape doesn't match the shape of estimators"
+
+        outputs = [ step.transform(inp, loggs)
+            for inp, step in zip(inputs, self.steps)
+        ]
+        return outputs
+
+
+class ReducePipeline(object):
+
+    def __init__(self, parallel, function):
+        super(ReducePipeline, self).__init__()
+        self.parallel = parallel
+        self.function = function 
+
+    def transform(self, inputs, loggs):
+        updated = self.parallel.transform(inputs, loggs)
+        return self.function(updated) 
+
+
 class RatioUnion(object):
 
     def __init__(self, numerator, denominator, error="B"):
         super(RatioUnion, self).__init__()
-        print "ratio", numerator, denominator
         self.numerator = numerator
         self.denominator = denominator
-
-        print self.numerator, self.denominator
         self.error = error
 
     def transform(self, inputs, loggs):

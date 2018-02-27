@@ -5,7 +5,7 @@ from options import Options
 from .input import Input, read_histogram, SingleHistInput
 from comparator import Comparator
 from analysis import Analysis
-from pipeline import Pipeline, RatioUnion, HistogramSelector
+from pipeline import Pipeline, RatioUnion, HistogramSelector, ReducePipeline, ParallelPipeline
 
 from broot import BROOT as br
 
@@ -58,38 +58,17 @@ class Efficiency(object):
         return ratio
 
 
+class EfficiencyMultirange(object):
 
+    def __init__(self, options, recalculate=True):
+        super(EfficiencyMultirange, self).__init__()
 
-class EfficiencyMultirange(Efficiency):
+        self.pipeline = ReducePipeline(
+            ParallelPipeline(
+                [Efficiency(opt, recalculate) for opt in options.suboptions]
+            ),
+            lambda x: br.sum_trimm(x, options.mergeranges)
+        )
 
-    def __init__(self, genname, label, inames, recalculate=False, selection='PhysEff', particle="#pi^{0}"):
-        super(EfficiencyMultirange, self).__init__(genname, label, '', recalculate, selection)
-        self.single_estimators = [
-            Efficiency(
-                genname, 
-                '{0}_{1}_{2}'.format(label, low, upp), 
-                filename, 
-                recalculate, 
-                selection
-            ) 
-            for filename, (low, upp) in inames.iteritems()
-        ]
-        self.rranges = inames.values()
-        for est, rr in zip(self.single_estimators, self.rranges):
-            est.opt = Options.spmc(rr, particle=particle)
-
-        self.recalculate = recalculate
-
-    def efficiency(self):
-        effs = [e.eff() for e in self.single_estimators]
-        return br.sum_trimm(effs, self.rranges)
-
-
-    def true(self):
-        true = [e.true() for e in self.single_estimators]
-
-        for t in true:
-            bin = true[0].FindBin(self.rranges[0][1])
-            t.Scale(1. / t.Integral(bin - 1, bin + 1))
-
-        return br.sum_trimm(true, self.rranges)
+    def transform(self, inputs, loggs):
+        return self.pipeline.transform(inputs, loggs)

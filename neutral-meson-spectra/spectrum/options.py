@@ -123,3 +123,16 @@ class EfficiencyOptions(object):
         self.genname = genname 
 
 
+
+class MultirangeEfficiencyOptions(object):
+
+    def __init__(self, effoptions, mergeranges):
+        super(MultirangeEfficiencyOptions, self).__init__()
+        self.suboptions = effoptions
+        self.mergeranges = mergeranges
+
+    @classmethod
+    def spmc(klass, unified_input):
+        options = [EfficiencyOptions() for _ in unified_input]
+        return klass(options, unified_input.values()) 
+
