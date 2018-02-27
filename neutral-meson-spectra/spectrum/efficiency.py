@@ -22,14 +22,14 @@ import unittest
 class Efficiency(object):
 
 
-    def __init__(self, genname, recalculate=False, options=Options()):
+    def __init__(self, options=Options(), recalculate=False):
         super(Efficiency, self).__init__()
         self.runion = RatioUnion(
             Pipeline([
-                Analysis(options), 
+                Analysis(options.analysis), 
                 HistogramSelector("npi0")
             ]),
-            SingleHistInput(genname)
+            SingleHistInput(options.genname)
         )
         self.recalculate = recalculate
         self.oname = 'fixmelater.root'

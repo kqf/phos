@@ -6,6 +6,7 @@ from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
 from spectrum.input import Input
 from spectrum.output import AnalysisOutput
+from spectrum.options import EfficiencyOptions
 
 
 class TestEfficiency(unittest.TestCase):
@@ -17,12 +18,14 @@ class TestEfficiency(unittest.TestCase):
             DataVault().file("single #pi^{0} validate", "low"), 
             "PhysEff"
         )
+        options = EfficiencyOptions()
 
         loggs = AnalysisOutput("test_efficiency", "#pi^{0}")
 
-        efficiency_estimator = Efficiency('hPt_#pi^{0}_primary_')
+        efficiency_estimator = Efficiency(options)
         efficiency = efficiency_estimator.transform(inputs, loggs)
         efficiency.SetTitle('Testing the interface')
+        
         diff = Comparator()
         diff.compare(efficiency)    
 
