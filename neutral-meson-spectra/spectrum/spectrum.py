@@ -20,9 +20,13 @@ class Spectrum(object):
         self.model = Analysis(options)
 
     def evaluate(self, loggs=None):
-        loggs = AnalysisOutput(self.data.label, self.model.options.particle)
-        output = self.model.transform(self.data, loggs)
-        loggs.plot(stop=False)
+        local_loggs = AnalysisOutput(self.data.label, self.model.options.particle)
+        output = self.model.transform(self.data, local_loggs)
+        local_loggs.plot(stop=False)
+
+        if loggs:
+            loggs.update(local_loggs)
+            
         return output
 
 

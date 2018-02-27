@@ -1,5 +1,6 @@
 from comparator import Comparator
 from broot import BROOT as br
+from output import AnalysisOutput
 
 
 class HistogramSelector(object):
@@ -21,8 +22,10 @@ class Pipeline(object):
 
     def transform(self, inputs, loggs):
         updated = inputs
-        for step in self.steps:
+        for name, step in self.steps:
+            local_logs = AnalysisOutput(name)
             updated = step.transform(updated, loggs)
+            loggs.append(local_logs)
         return updated
 
 
@@ -35,8 +38,15 @@ class ParallelPipeline(object):
     def transform(self, inputs, loggs):
         assert len(inputs) == len(self.steps), "Input shape doesn't match the shape of estimators"
 
-        outputs = [ step.transform(inp, loggs)
-            for inp, step in zip(inputs, self.steps)
+        def tr(x, name, step, loggs):
+            local_logs = AnalysisOutput(name)
+            output = step.transform(x, local_logs) 
+            print "Printing local logs", local_logs
+            loggs.append(local_logs)
+            return output
+
+        outputs = [ tr(inp, name, step, loggs)
+            for inp, (name, step) in zip(inputs, self.steps)
         ]
         return outputs
 
@@ -68,7 +78,5 @@ class RatioUnion(object):
         numerator, denominator = br.rebin_as(numerator, denominator)
         br.scalew(denominator)
         br.scalew(numerator)
-
-        diff = Comparator()
         return br.ratio(numerator, denominator, self.error)
 

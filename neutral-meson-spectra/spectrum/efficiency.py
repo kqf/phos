@@ -26,8 +26,8 @@ class Efficiency(object):
         super(Efficiency, self).__init__()
         self.runion = RatioUnion(
             Pipeline([
-                Analysis(options.analysis), 
-                HistogramSelector("npi0")
+                ("ReconstructMesons", Analysis(options.analysis)), 
+                ("NumberOfMesons", HistogramSelector("npi0"))
             ]),
             SingleHistInput(options.genname)
         )
@@ -64,8 +64,10 @@ class EfficiencyMultirange(object):
         super(EfficiencyMultirange, self).__init__()
 
         self.pipeline = ReducePipeline(
-            ParallelPipeline(
-                [Efficiency(opt, recalculate) for opt in options.suboptions]
+            ParallelPipeline([
+                    ("efficiency-{0}".format(ranges), Efficiency(opt, recalculate))
+                     for (opt, ranges) in zip(options.suboptions, options.mergeranges)
+                ]
             ),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
