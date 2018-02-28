@@ -1,13 +1,14 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC14j4f
+PERIOD=LHC17o
 # NAME=iteration2
 NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
-FILE_NAME=CaloCellsQA2.root
+FILE_NAME=CaloCellsQA.root
 DIRECTORY=../results/$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
+TRAIN=
 
 allplots: | $(DIRECTORY)/CaloCellsQA.root 
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root")'
@@ -23,7 +24,7 @@ $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
-	./download.sh pp-phos-$(NAME) $(FILE_NAME) $(DIRECTORY)
+	./download_trains.sh $(PERIOD) $(DIRECTORY)
 	@echo -e "\x07"
 
 trigger: | $(DIRECTORY)
