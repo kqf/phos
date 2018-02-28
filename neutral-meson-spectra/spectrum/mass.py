@@ -106,7 +106,7 @@ class ZeroBinsCleaner(object):
         for i, c in centers.iteritems():
             res = fitf.Eval(c)
             if res < 0:
-                print 'Warning zero bin found at ', mass.pt_label, ', mass: ', c
+                # print 'Warning zero bin found at ', mass.pt_label, ', mass: ', c
                 res = 0
             h.SetBinError(i, res ** 0.5 )
         return h

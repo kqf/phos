@@ -38,14 +38,17 @@ class AnalysisOutput(object):
             if item == []:
                 continue
 
-            print 'Drawing', item.name
-            if item.multirange:
-                PtPlotter(
-                    item.histograms, 
-                    self.label, 
-                    self.particle
-                ).draw(stop, "{0}/{1}".format(self.label, item.name))
-                continue
+            try:
+                # print 'Drawing', item.name
+                if item.multirange:
+                    PtPlotter(
+                        item.histograms, 
+                        self.label, 
+                        self.particle
+                    ).draw(stop, "{0}/{1}".format(self.label, item.name))
+                    continue
+            except Exception as e:
+                print e, self.pool
 
         for hist in item.histograms:
                 diff = Comparator(
@@ -55,11 +58,14 @@ class AnalysisOutput(object):
                 diff.compare(hist)
 
     def append(self, other):
+        if not other.pool:
+            return
+
         for item in other.pool:
             if item == []:
-                print other.label
+                print other.label, other.pool
                 continue
-            print item
+            # print item
             item.name = "{0}/{1}".format(other.label, item.name)
 
-        self.pool.append(other.pool)
+        self.pool.extend(filter(lambda x: x != [], other.pool))

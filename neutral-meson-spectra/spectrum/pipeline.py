@@ -41,7 +41,7 @@ class ParallelPipeline(object):
         def tr(x, name, step, loggs):
             local_logs = AnalysisOutput(name)
             output = step.transform(x, local_logs) 
-            print "Printing local logs", local_logs
+            # print "Printing local logs", local_logs
             loggs.append(local_logs)
             return output
 
