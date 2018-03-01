@@ -3,7 +3,7 @@ function download_from_grid()
 {
     counter=1
 	MHOME=/alice/data/2017/$1/
-	TRAIN=/pass1/PWGGA/GA_pp_AOD/334_20180217-1427_child_10/
+	TRAIN=/pass1/PWGGA/GA_pp_AOD/334_20180217-1427_child_$3/
     for run in $(alien_ls $MHOME/); do
     	filepath=$MHOME/$run/$TRAIN/CaloCellsQA.root
     	output=$(alien_ls "$filepath") 
@@ -16,4 +16,4 @@ function download_from_grid()
     done
 }
 
-download_from_grid $1 $2 
+download_from_grid $1 $2 $3

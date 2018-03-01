@@ -8,7 +8,7 @@ void saveBadMap(const char * period = "", TString filename = "")
 	gROOT->SetBatch();
 	// gStyle->SetOptStat(0);
 
-	gROOT->LoadMacro("../../protons/datasets/values_for_dataset.h+");
+	gROOT->LoadMacro("../../protons/setup/values_for_dataset.h+");
 
 	std::vector<Int_t> v;
 	values_for_dataset(v, TString(period).Contains("16") ? "BadCells_LHC16" : "", "../../protons/datasets/");
