@@ -3,6 +3,7 @@
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
 from output import AnalysisOutput
 from options import Options
+from pipeline import Pipeline
 
 
 class Analysis(object):
@@ -13,18 +14,13 @@ class Analysis(object):
         self._loggs = None
 
     def transform(self, inputs, loggs):
-        pipeline = [
-            inputs,
-            # TODO: Clean this part in pipeline
-            # TODO: Add parametrization configuration here
-            DataSlicer(self.options.pt), 
-            MassFitter(self.options.invmass),
-            RangeEstimator(self.options.spectrum),
-            DataExtractor(self.options.output)
-        ]
+        pipeline = Pipeline([
+            ("input", inputs),
+            ("slice", DataSlicer(self.options.pt)),
+            ("fitmasses", MassFitter(self.options.invmass)),
+            ("ranges", RangeEstimator(self.options.spectrum)),
+            ("data", DataExtractor(self.options.output))
+        ])
 
-        data = None
-        for estimator in pipeline:
-            data = estimator.transform(data, loggs)
-            
-        return data
+        output = pipeline.transform(None, loggs)
+        return output
