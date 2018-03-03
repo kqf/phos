@@ -2,6 +2,11 @@ from comparator import Comparator
 from ptplotter import PtPlotter
 import ROOT
 
+
+
+# TODO: Introduce more log items for compare etc
+# 
+
 class LogItem(object):
     def __init__(self, name, histograms, multirange=False):
         super(LogItem, self).__init__()
@@ -16,6 +21,14 @@ class LogItem(object):
             self.histograms,
             self.multirange
         )   
+
+    def save(self, label, particle, stop):
+        for hist in self.histograms:
+            diff = Comparator(
+                stop=stop, 
+                oname="{0}/{1}/{2}-{3}".format(label, self.name, hist.GetName(), particle)
+            )
+            diff.compare(hist)
 
 
 class AnalysisOutput(object):
@@ -49,13 +62,7 @@ class AnalysisOutput(object):
                     continue
             except Exception as e:
                 print e, self.pool
-
-        for hist in item.histograms:
-                diff = Comparator(
-                    stop=stop, 
-                    oname="{0}/{1}/{2}-{3}".format(self.label, item.name, hist.GetName(), self.particle)
-                )
-                diff.compare(hist)
+            item.save(self.label, self.particle, stop)
 
     def append(self, other):
         if not other.pool:

@@ -24,6 +24,9 @@ def wait(name='', draw=True, save=False, suffix=''):
     name = (name
         .replace(' ', '-')
         .replace('_', '-')
+        .replace(',', '-')
+        .replace('(', '')
+        .replace(')', '')
     )
     if save:
         canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
