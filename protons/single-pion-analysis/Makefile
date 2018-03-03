@@ -1,5 +1,5 @@
-DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/weighed
+DATASET = LHC17j3b2
+OUTDIR = results/mc/single/pi0/final
 
 TEST_SELECTION = PhysTender
 
