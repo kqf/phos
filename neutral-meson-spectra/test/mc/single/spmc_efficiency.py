@@ -16,7 +16,7 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
        MultirangeEfficiencyOptions.spmc(unified_inputs, particle) 
     )
 
-    loggs = AnalysisOutput("test_multirange_efficiency", particle)
+    loggs = AnalysisOutput("multirange_efficiency_spmc_{}".format(particle), particle)
 
     efficiency = estimator.transform(
        [Input(filename, "PhysEff") for filename in unified_inputs],

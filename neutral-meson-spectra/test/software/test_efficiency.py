@@ -15,7 +15,7 @@ class TestEfficiency(unittest.TestCase):
     def test_interface(self):
 
         inputs = Input(
-            DataVault().file("single #pi^{0} validate", "low"), 
+            DataVault().file("single #pi^{0}", "low"), 
             "PhysEff"
         )
         options = EfficiencyOptions()
@@ -36,8 +36,8 @@ class TestMultirangeEfficiency(unittest.TestCase):
 
     def test_interface(self):
         unified_inputs = {
-            DataVault().file("single #pi^{0} validate", "low"): (0, 7),
-            DataVault().file("single #pi^{0} validate", "high"): (7, 20)
+            DataVault().file("single #pi^{0}", "low"): (0, 7),
+            DataVault().file("single #pi^{0}", "high"): (7, 20)
         }
 
         estimator = EfficiencyMultirange(

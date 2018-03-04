@@ -22,8 +22,8 @@ class TestBackgroundShape(unittest.TestCase):
 
     def setUp(self):
         files = {
-            DataVault().file("single #pi^{0} validate", "low"): (0, 7),
-            DataVault().file("single #pi^{0} validate", "high"): (7, 20)
+            DataVault().file("single #pi^{0}", "low"): (0, 7),
+            DataVault().file("single #pi^{0}", "high"): (7, 20)
         }
 
         labels = ('0 < p_{T} < 10', '4 < p_{T} < 100')

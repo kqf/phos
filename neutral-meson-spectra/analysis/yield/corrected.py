@@ -61,8 +61,8 @@ class TestCorrectedYield(unittest.TestCase):
         estimator = YieldEvaluator("#pi^{0}")
 
         files = {
-            DataVault().file("single #pi^{0} validate", "low"): (0, 7),
-            DataVault().file("single #pi^{0} validate", "high"): (7, 20)
+            DataVault().file("single #pi^{0}", "low"): (0, 7),
+            DataVault().file("single #pi^{0}", "high"): (7, 20)
         } 
         corrected = estimator.transform(inp, files)
 
@@ -75,8 +75,8 @@ class TestCorrectedYield(unittest.TestCase):
         estimator = YieldEvaluator("#eta")
 
         files = {
-            DataVault().file("single #eta validate", "low"): (0, 6),
-            DataVault().file("single #eta validate", "high"): (6, 15)
+            DataVault().file("single #eta", "low"): (0, 6),
+            DataVault().file("single #eta", "high"): (6, 15)
         } 
         corrected = estimator.transform(inp, files)
 

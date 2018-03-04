@@ -3,7 +3,7 @@
 		"latest": {
 			"file": "input-data/data/corrected/LHC16.root",
 			"hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
-			"description": "Raw data with TOF correction. Needs to be validated"
+			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
 		},
 
 		"uncorrected": {
@@ -32,25 +32,11 @@
 	{
 		"low": {
 			"file": "input-data/mc/single/pi0/nonlin/LHC17j3b1.root",
-			"hsum": "ad5da1d057000c2bdb0797f2fe372b521aa264e0ff4385890b6741134dd8c166",
-			"description": "Single #pi^{0} simulations with all correctons"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/nonlin/LHC17j3b2.root",
-			"hsum": "84298ce23183a9ab7837ad779422e397dfa465f793e45ae8482a4d4820575c1a",
-			"description": "Single #pi^{0} simulations with all correctons"
-		}
-	},
-
-	"single #pi^{0} validate":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/validate/LHC17j3b1.root",
 			"hsum": "10429c20e3a474e1fb40e3f01e09f8622f0df6c7867c7507c04784580c1042ad",
 			"description": "Single #pi^{0} simulations with all correctons"
 		},
 		"high": {
-			"file": "input-data/mc/single/pi0/validate/LHC17j3b2.root",
+			"file": "input-data/mc/single/pi0/nonlin/LHC17j3b2.root",
 			"hsum": "eb7cfef0ec62e81b6f5c91ab5466195e55b95e1cd9b5a78a2fea53f02865b342",
 			"description": "Single #pi^{0} simulations with all correctons"
 		}
@@ -60,32 +46,18 @@
 	{
 		"low": {
 			"file": "input-data/mc/single/eta/nonlin/LHC17j3c1.root",
-			"hsum": "900c71652c67ba7e536671c7323203372346732400fe3ece2e667b9ba62b7d8d",
-			"description": "Single #eta simulations with all correctons"
-		},
-		"high": {
-			"file": "input-data/mc/single/eta/nonlin/LHC17j3c2.root",
-			"hsum": "7324006e8f2f9a95e8a06c06cdd270672e9815f5e733dca40fce5ee5a2f5d8b8",
-			"description": "Single #eta simulations with all correctons"
-		}
-	},
-	
-	"single #eta validate":
-	{
-		"low": {
-			"file": "input-data/mc/single/eta/validate/LHC17j3c1.root",
 			"hsum": "925354aaafae5db2efc4acb2a39bdcad36f9c5c3b7b23fe6f24738c96884f562",
 			"description": "Single #eta simulations with all correctons"
 		},
 		"high": {
-			"file": "input-data/mc/single/eta/validate/LHC17j3c2.root",
+			"file": "input-data/mc/single/eta/nonlin/LHC17j3c2.root",
 			"hsum": "b59816b3eccb9414d31ccfbc342ad9bb740109569dc94140be5dbe97e1e3862d",
 			"description": "Single #eta simulations with all correctons"
 		}
 	},	
 	"epos": {
 	},
-
+	
 	"test": {
 		"latest": {
 			"file": "input-data/test_vault.root",
