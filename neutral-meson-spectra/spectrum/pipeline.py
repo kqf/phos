@@ -1,6 +1,6 @@
 from comparator import Comparator
 from broot import BROOT as br
-from output import AnalysisOutput
+from output import AnalysisOutput, MergedLogItem
 
 
 class HistogramSelector(object):
@@ -43,12 +43,23 @@ class ParallelPipeline(object):
             output = step.transform(x, local_logs) 
             # print "Printing local logs", local_logs
             loggs.append(local_logs)
-            return output
+            return output, local_logs.mergelist()
 
-        outputs = [ tr(inp, name, step, loggs)
+        output_with_logs = [ tr(inp, name, step, loggs)
             for inp, (name, step) in zip(inputs, self.steps)
         ]
+
+        outputs, local_logs = zip(*output_with_logs)
+
+        merged_loggs = AnalysisOutput(loggs.label)
+        merged_loggs.pool = [MergedLogItem("merged", local)
+            for local in zip(*local_logs)
+        ]
+
+        loggs.append(merged_loggs)
         return outputs
+
+
 
 
 class ReducePipeline(object):
