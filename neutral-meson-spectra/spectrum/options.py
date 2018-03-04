@@ -104,13 +104,11 @@ class Options(object):
     def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(
-            mode = 'q', 
             particle = particle, 
             ptrange = 'config/pt-spmc.json',
             spectrumconf = 'config/spectrum_spmc.json',
             paramconf = 'config/cball-parameters-spmc-test.json'
         )
-
         options.spectrum.fit_range = pt_fit_range
         return options
 
@@ -122,6 +120,11 @@ class EfficiencyOptions(object):
         self.analysis = Options()
         self.genname = genname 
 
+    @classmethod
+    def spmc(klass, pt_range, particle="#pi^{0}"):
+        efficiency_options = klass()
+        efficiency_options.analysis = Options().spmc(pt_range, particle=particle)
+        return efficiency_options
 
 
 class MultirangeEfficiencyOptions(object):
@@ -132,7 +135,7 @@ class MultirangeEfficiencyOptions(object):
         self.mergeranges = mergeranges
 
     @classmethod
-    def spmc(klass, unified_input):
-        options = [EfficiencyOptions() for _ in unified_input]
+    def spmc(klass, unified_input, particle):
+        options = [EfficiencyOptions.spmc(rr, particle) for _, rr in unified_input.iteritems()]
         return klass(options, unified_input.values()) 
 

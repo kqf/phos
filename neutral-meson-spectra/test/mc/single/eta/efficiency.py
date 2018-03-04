@@ -1,29 +1,14 @@
 import unittest
-import ROOT
-
-from spectrum.efficiency import Efficiency
-from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
-from test.mc.single.efficiency import FitEfficiency
 from vault.datavault import DataVault
+from test.mc.single.spmc_efficiency import evaluate_spmc_efficiency
 
+class TestEfficiencyEta(unittest.TestCase):
 
-def eff_function():
-    func_eff = ROOT.TF1("func_efficiency", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
-    func_eff.SetParNames('A', '#sigma', 'E_{scale}')
-    func_eff.SetParameter(0, -0.05)
-    func_eff.SetParameter(1, 0.6)
-    func_eff.SetParameter(2, 1.04)
-    return func_eff
-
-class TestEfficiencyPi0(unittest.TestCase):
-
-    def test_eff_overlap(self):
-    	func_eff = eff_function()
-        files = {
+    def test_pi0_efficiency(self):
+        unified_inputs = {
             DataVault().file("single #eta validate", "low"): (0, 6),
             DataVault().file("single #eta validate", "high"): (6, 20)
         }
+        evaluate_spmc_efficiency(unified_inputs, "#eta")
+  
 
-        estimator = FitEfficiency("#eta", func_eff)
-        estimator.estimate(files)

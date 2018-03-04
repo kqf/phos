@@ -41,7 +41,7 @@ class TestMultirangeEfficiency(unittest.TestCase):
         }
 
         estimator = EfficiencyMultirange(
-           MultirangeEfficiencyOptions.spmc(unified_inputs) 
+           MultirangeEfficiencyOptions.spmc(unified_inputs, "#pi^{0}") 
         )
 
         loggs = AnalysisOutput("test_multirange_efficiency", "#pi^{0}")
