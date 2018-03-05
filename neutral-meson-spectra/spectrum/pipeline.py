@@ -55,7 +55,6 @@ class ParallelPipeline(object):
         merged_loggs.pool = [MergedLogItem("merged", local)
             for local in zip(*local_logs)
         ]
-
         loggs.append(merged_loggs)
         return outputs
 
@@ -71,6 +70,7 @@ class ReducePipeline(object):
 
     def transform(self, inputs, loggs):
         updated = self.parallel.transform(inputs, loggs)
+        loggs.update("reduced_output", [updated])
         return self.function(updated) 
 
 
@@ -89,6 +89,6 @@ class RatioUnion(object):
         numerator, denominator = br.rebin_as(numerator, denominator)
         br.scalew(denominator)
         br.scalew(numerator)
-        # loggs.update("ratio", [[numerator, denominator]])
+        loggs.update("ratio_union", [[numerator, denominator]])
         return br.ratio(numerator, denominator, self.error)
 

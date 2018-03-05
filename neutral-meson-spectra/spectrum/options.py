@@ -58,7 +58,7 @@ class Options(object):
         self.output = AnalysisOption('DataExtractor', ptconf, particle)
 
         self.backgroundp = AnalysisOption('backgroundp', backgroudpconf, particle)
-        self.backgroundp.relaxed = relaxedcb
+        self.backgroundp.relaxed = True
 
         self.signalp = AnalysisOption('signalp', signalp, particle)
         self.signalp.relaxed = relaxedcb
@@ -106,12 +106,14 @@ class Options(object):
     def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(
-            particle = particle, 
-            ptrange = 'config/pt-spmc.json',
-            spectrumconf = 'config/spectrum_spmc.json',
-            backgroudpconf = 'config/cball-parameters-spmc-test.json'
+            particle=particle, 
+            ptrange='config/pt-spmc.json',
+            spectrumconf='config/spectrum_spmc.json',
+            backgroudpconf='config/cball-parameters-spmc-test.json',
+            signalp='config/cball-parameters-spmc-test.json'
         )
         options.spectrum.fit_range = pt_fit_range
+        options.invmass.use_mixed = False
         return options
 
 

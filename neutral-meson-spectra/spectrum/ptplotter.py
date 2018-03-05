@@ -7,9 +7,8 @@ class PtPlotterConfig(object):
     def __init__(self, particle):
         super(PtPlotterConfig, self).__init__()
         self.particle = particle
-        if self.is_pi0(particle):
-            self._init_pi0()
-        self._init_eta()
+        init = self._init_pi0 if self.is_pi0(particle) else self._init_eta
+        init()
 
     def _init_pi0(self):
         self.multcanvas = [6, 6, 0, 0.01]
@@ -22,7 +21,8 @@ class PtPlotterConfig(object):
         self.partlabel = "#eta"
 
     def is_pi0(self, particle):
-        return particle == "#pi0" or particle == "pi0"
+        pi0 = "#pi^{0}", "pi0"
+        return particle in pi0
 
 
 class PtPlotter(PtPlotterConfig):

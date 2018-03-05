@@ -23,9 +23,15 @@ class LogItem(object):
         for hist in self.data:
             diff = Comparator(
                 stop=stop, 
-                oname="{0}/{1}-{2}".format(self.name, hist.GetName(), particle)
+                oname="{0}/{1}-{2}".format(self.name, self.oname(hist), particle)
             )
             diff.compare(hist)
+
+    def oname(self, hist):
+        try:
+            return hist.GetName()
+        except AttributeError:
+            return self.name.split('/')[-1]
 
 
 class MultirangeLogItem(LogItem):
