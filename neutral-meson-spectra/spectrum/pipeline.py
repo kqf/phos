@@ -89,5 +89,6 @@ class RatioUnion(object):
         numerator, denominator = br.rebin_as(numerator, denominator)
         br.scalew(denominator)
         br.scalew(numerator)
+        # loggs.update("ratio", [[numerator, denominator]])
         return br.ratio(numerator, denominator, self.error)
 

@@ -16,7 +16,7 @@ class VisualizeMass(object):
 
     def draw_text(self, hist, text, color = 46, bias = 0):
         # Estimate coordinate
-        mass = self.peak_function.opt.fit_mass
+        mass = self.signalp.opt.fit_mass
         x = mass * self.opt.pt_label_pos[0]
 
         bins = (hist.GetMaximumBin(), hist.GetMinimumBin())
@@ -144,14 +144,15 @@ class InvariantMass(VisualizeMass):
         self.pt_label = rmass.pt_label
 
         # Setup the fit function
-        self.peak_function = PeakParametrisation.get(options.param)
-        self.xaxis_range  = [i * j for i, j in zip(self.peak_function.opt.fit_range, self.opt.xaxis_offsets)]
+        self.signalp = PeakParametrisation.get(options.signalp)
+        self.backgroundp = PeakParametrisation.get(options.backgroundp)
+        self.xaxis_range  = [i * j for i, j in zip(self.signalp.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data
         self.sigf = None
         self.bgrf = None
         self.area_error = None
-        self._integration_region = self.peak_function.opt.fit_range
+        self._integration_region = self.signalp.opt.fit_range
         self.ratio = None
         self.signal = None
 

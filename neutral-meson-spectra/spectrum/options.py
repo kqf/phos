@@ -48,8 +48,8 @@ class Options(object):
             ptrange='config/pt.json',
             ptconf='config/pt-analysis.json',
             invmassconf='config/invariant-mass.json',
-            paramconf='config/cball-parameters.json',
-            spmc=False
+            backgroudpconf='config/cball-parameters.json',
+            signalp='config/cball-parameters.json',
         ):
         super(Options, self).__init__()
         
@@ -57,12 +57,16 @@ class Options(object):
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', ptconf, particle)
 
-        self.param = AnalysisOption('param', paramconf, particle)
-        self.param.relaxed = relaxedcb
+        self.backgroundp = AnalysisOption('backgroundp', backgroudpconf, particle)
+        self.backgroundp.relaxed = relaxedcb
+
+        self.signalp = AnalysisOption('signalp', signalp, particle)
+        self.signalp.relaxed = relaxedcb
 
         self.invmass = AnalysisOption('MassFitter', invmassconf, particle)
         self.invmass.average = {}
-        self.invmass.param = self.param
+        self.invmass.signalp = self.signalp
+        self.invmass.backgroundp = self.backgroundp
 
         self.particle = particle
 
@@ -105,7 +109,7 @@ class Options(object):
             particle = particle, 
             ptrange = 'config/pt-spmc.json',
             spectrumconf = 'config/spectrum_spmc.json',
-            paramconf = 'config/cball-parameters-spmc-test.json'
+            backgroudpconf = 'config/cball-parameters-spmc-test.json'
         )
         options.spectrum.fit_range = pt_fit_range
         return options
