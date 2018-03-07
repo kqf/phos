@@ -15,6 +15,7 @@ class BackgroundEstimator(object):
         bgrf.SetFillColor(8)
         bgrf.SetFillStyle(3436)
         mass.background = bgrf
+        mass.background_fitted = sigf
         return mass
 
 class SignalExtractor(object):

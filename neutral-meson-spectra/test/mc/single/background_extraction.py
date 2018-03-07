@@ -9,6 +9,7 @@ from spectrum.options import Options
 from spectrum.pipeline import Pipeline
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
+from spectrum.ptplotter import MassesPlot
 
 
 class MassExtractor(object):
@@ -30,23 +31,19 @@ class MassExtractor(object):
 
 class TestBackgroundSubtraction(unittest.TestCase):
 
-	def test_background_fitting(self):
-		loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
+    def test_background_fitting(self):
+        loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
 
-		estimator = MassExtractor(Options.spmc((7, 20)))
-		masses = estimator.transform(
-			Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-			loggs
-		)
+        estimator = MassExtractor(Options.spmc((7, 20)))
+        masses = estimator.transform(
+            Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+            loggs
+        )
 
-		for i, ptbin in enumerate(masses):
-			# print i
-			# ptbin = masses[21]
-			ptbin.signal.GetXaxis().SetRangeUser(
-				*ptbin.integration_region
-			)
-			ptbin.signal.Draw()
-			su.wait()
+        for i, ptbin in enumerate(masses[10:]):
+            canvas = su.canvas("test")
+            MassesPlot().transform(ptbin, canvas)
+            su.wait()
 
 
 

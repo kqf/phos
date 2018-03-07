@@ -1,5 +1,57 @@
 import ROOT
 import sutils as su
+from broot import BROOT as br
+
+
+
+class MassesPlot(object):
+
+    def transform(self, imass, pad):
+
+        ci, _ = br.define_colors()
+        pad.cd()
+
+        self.set_axis_limits(imass)
+        self.draw(imass.mass, "histe")
+        self.draw(imass.background, color=ci)
+
+        if imass.ratio:
+            self.draw(imass.ratio, color=ci + 4)
+
+        self.draw(imass.signal, color=ci + 2)
+        pad.Update()
+
+    def draw(self, hist, option="same", color=1):
+        hist.Draw(option)
+        hist.SetMarkerColor(color)
+        hist.SetLineColor(color)
+        hist.SetFillColor(color)
+        hist.SetFillStyle(0)
+        return hist
+
+    def set_axis_limits(self, imass):
+        imass.mass.GetXaxis().SetRangeUser(
+            *imass.integration_region
+        )
+
+        a, b = imass.integration_region
+
+        def bins_errors(hist):
+            bins, berrors, centers  = br.bins(hist)
+            roi = (centers > a) & (centers < b)
+            bins = bins[roi]
+            berrors = berrors[roi]
+            return bins, berrors
+
+        mbins, merrors = bins_errors(imass.mass)
+        sbins, serrors = bins_errors(imass.signal)
+
+        imass.mass.GetYaxis().SetRangeUser(
+            min(sbins) - 2 * max(serrors),
+            max(mbins) + 3 * max(merrors)
+        )
+
+
 
 
 class PtPlotterConfig(object):

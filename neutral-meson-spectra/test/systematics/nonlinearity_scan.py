@@ -43,8 +43,8 @@ class Chi2Entry(object):
 
     @staticmethod
     def chi2(mean, nonlin):
-        mean, sigma = br.bins(mean)
-        xi, _ = br.bins(nonlin.ratio)
+        mean, sigma, _ = br.bins(mean)
+        xi, _, _ = br.bins(nonlin.ratio)
         result = sum((mean - xi) ** 2 / sigma)
         print result
         return result

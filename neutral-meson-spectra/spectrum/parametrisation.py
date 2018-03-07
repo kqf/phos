@@ -27,13 +27,13 @@ class PeakParametrisation(object):
         if 'mix' in hist.GetName().lower():
             fitfun.FixParameter(0, 0)
 
+        fitfun.SetNpx(1000)
         hist.Fit(fitfun,"RQ", "")
 
         npar, nparb = fitfun.GetNpar(), background.GetNpar()
         for i in range(0, nparb):
             parameter = fitfun.GetParameter(npar - (nparb - i))
             background.SetParameter(i, parameter)
-
         return fitfun, background
 
 

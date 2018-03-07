@@ -491,7 +491,7 @@ class TestTH(unittest.TestCase):
         for i in br.range(hist):
             hist.Fill(i - 0.5, i), hist.GetBinContent(i)
 
-        bins, errors = br.bins(hist)
+        bins, errors, centers = br.bins(hist)
         self.assertEqual(len(bins), hist.GetNbinsX())
         self.assertEqual(len(errors), hist.GetNbinsX())
 

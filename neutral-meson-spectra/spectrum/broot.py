@@ -340,7 +340,8 @@ class BROOT(object):
         import numpy as np
         content = np.array([hist.GetBinContent(i) for i in klass.range(hist)])
         errors = np.array([hist.GetBinError(i) for i in klass.range(hist)])
-        return content, errors
+        centers = np.array([hist.GetBinCenter(i) for i in klass.range(hist)])
+        return content, errors, centers
 
     @classmethod
     def systematic_deviation(klass, histograms):
