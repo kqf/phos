@@ -46,7 +46,7 @@ class Options(object):
             fitf='cball',
             spectrumconf='config/spectrum.json',
             ptrange='config/pt.json',
-            ptconf='config/pt-analysis.json',
+            outconf='config/spectrum-output.json',
             invmassconf='config/invariant-mass.json',
             backgroudpconf='config/cball-parameters.json',
             signalp='config/cball-parameters.json',
@@ -55,10 +55,10 @@ class Options(object):
         
         self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
-        self.output = AnalysisOption('DataExtractor', ptconf, particle)
+        self.output = AnalysisOption('DataExtractor', outconf, particle)
 
         self.backgroundp = AnalysisOption('backgroundp', backgroudpconf, particle)
-        self.backgroundp.relaxed = True
+        self.backgroundp.relaxed = relaxedcb
 
         self.signalp = AnalysisOption('signalp', signalp, particle)
         self.signalp.relaxed = relaxedcb

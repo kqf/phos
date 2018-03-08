@@ -21,14 +21,19 @@ class SpectrumExtractor(object):
             'chi2': self.chi2,
             'npi0': self.npi0,
             'cball_alpha': self.cball_alpha,
-            'cball_n': self.cball_n
+            'cball_n': self.cball_n, 
+            'background_chi2': self.background_chi2,
+            'background_chi2_cball_alpha': self.background_cball_alpha,
+            'background_chi2_cball_n': self.background_cball_n
+
         }
         self.quantities = [rules[q] for q in order]
 
-    def parameter(self, mass, parname):
+    def parameter(self, mass, parname, signal=True):
         position = mass.sigf.GetParNumber(parname)
-        par = mass.sigf.GetParameter(position)
-        par_error = mass.sigf.GetParError(position)
+        hist = mass.sigf if signal else mass.background_fitted
+        par = hist.GetParameter(position)
+        par_error = hist.GetParError(position)
         return par, par_error
 
     @handle_empty_fit
@@ -61,6 +66,20 @@ class SpectrumExtractor(object):
         ndf = mass.sigf.GetNDF() 
         ndf = ndf if ndf > 0 else 1
         return (mass.sigf.GetChisquare() / ndf, 0) 
+
+    @handle_empty_fit
+    def background_cball_alpha(self, mass):
+        return self.parameter(mass, "#alpha", signal=False)
+
+    @handle_empty_fit
+    def background_cball_n(self, mass):
+        return self.parameter(mass, "n", signal=False)
+
+    @handle_empty_fit
+    def background_chi2(self, mass):
+        ndf = mass.background_fitted.GetNDF() 
+        ndf = ndf if ndf > 0 else 1
+        return (mass.background_fitted.GetChisquare() / ndf, 0) 
 
     def eval(self, mass):
         return [f(mass) for f in self.quantities]

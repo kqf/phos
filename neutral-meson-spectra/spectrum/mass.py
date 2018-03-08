@@ -59,6 +59,9 @@ class MixingBackgroundEstimator(object):
         mass.background.Multiply(bckgrnd)
         mass.background.SetLineColor(46)
         mass.ratio = ratio
+
+        # mass.background = bckgrnd
+        mass.background_fitted = fitf
         return mass
 
 class ZeroBinsCleaner(object):
