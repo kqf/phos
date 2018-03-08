@@ -10,6 +10,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
 from spectrum.ptplotter import MassesPlot
+from spectrum.analysis import Analysis
 
 
 class MassExtractor(object):
@@ -32,18 +33,34 @@ class MassExtractor(object):
 class TestBackgroundSubtraction(unittest.TestCase):
 
     def test_background_fitting(self):
-        loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
+        loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
+        options = Options.spmc((7, 20))
 
-        estimator = MassExtractor(Options.spmc((7, 20)))
-        masses = estimator.transform(
+
+        estimator = Analysis(options)
+        outputs1 = estimator.transform(
             Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
             loggs
         )
 
-        for i, ptbin in enumerate(masses[14:]):
-            canvas = su.canvas("test")
-            MassesPlot().transform(ptbin, canvas)
-            su.wait()
+        loggs = AnalysisOutput("relaxed cb parameters", "#pi^{0}")
+        options = Options.spmc((7, 20))
+        options.backgroundp.relaxed = True
+
+
+        estimator = Analysis(options)
+        outputs2 = estimator.transform(
+            Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+            loggs
+        )
+
+        diff = Comparator()
+        for parameter in zip(outputs1, outputs2):
+            diff.compare(*parameter)
+
+
+
+
 
 
 

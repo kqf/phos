@@ -23,10 +23,11 @@ class SpectrumExtractor(object):
             'cball_alpha': self.cball_alpha,
             'cball_n': self.cball_n, 
             'background_chi2': self.background_chi2,
-            'background_chi2_cball_alpha': self.background_cball_alpha,
-            'background_chi2_cball_n': self.background_cball_n
+            'background_cball_alpha': self.background_cball_alpha,
+            'background_cball_n': self.background_cball_n
 
         }
+
         self.quantities = [rules[q] for q in order]
 
     def parameter(self, mass, parname, signal=True):

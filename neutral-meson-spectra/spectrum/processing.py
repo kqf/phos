@@ -177,6 +177,7 @@ class DataExtractor(object):
 
         edges = RawMass.ptedges(masses)
 
+        # TODO: Move this logic to the option creation
         titles = {quant:
             self.opt.output[quant] % self.opt.particle 
             for quant in self.opt.output_order
