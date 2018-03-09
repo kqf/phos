@@ -10,7 +10,9 @@ function main(){
 	# Add comas at the end of each file
 	for file in $(ls $pattern); do
 		echo $file
-		sed '$!s/$/,/' $file > $prefix$file
+		sed '$!s/$/,/' $file > tmp-$prefix$file
+		(tr -d '\n' < tmp-$prefix$file)>>$prefix$file
+		rm tmp-$prefix$file
 	done
 
 	tar czvf $archive $prefix*
