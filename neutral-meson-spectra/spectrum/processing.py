@@ -6,7 +6,6 @@ import sutils as su
 from invariantmass import InvariantMass, RawMass
 from outputcreator import OutputCreator, SpectrumExtractor
 import collections as coll
-from ptplotter import PtPlotter
 from mass import BackgroundEstimator, MixingBackgroundEstimator, SignalExtractor, SignalFitter, ZeroBinsCleaner
 
 
@@ -45,7 +44,7 @@ class MassFitter(object):
 
         for estimator in pipeline:
             output = map(
-                estimator.transform, 
+                estimator.transform,
                 masses
             )
         return masses
@@ -111,7 +110,7 @@ class RangeEstimator(object):
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
         # print self.opt.fit_range
-        quant.Fit(fitquant, "q", "", *self.opt.fit_range)
+        quant.Fit(fitquant, "q0", "", *self.opt.fit_range)
 
         # TODO: Now we mutate options. Should we do it in future?
         # Update the parameters

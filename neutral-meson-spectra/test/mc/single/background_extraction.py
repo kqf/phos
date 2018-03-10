@@ -10,6 +10,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
 from spectrum.ptplotter import MassesPlot
+from spectrum.ptplotter import MultiplePlotter
 
 
 class MassExtractor(object):
@@ -40,10 +41,13 @@ class TestBackgroundSubtraction(unittest.TestCase):
             loggs
         )
 
-        for i, ptbin in enumerate(masses[14:]):
-            canvas = su.canvas("test")
-            MassesPlot().transform(ptbin, canvas)
-            su.wait()
+        plotter = MultiplePlotter("test-multiple-plots")
+        plotter.transform(masses, show=True)
+
+        # for i, ptbin in enumerate(masses[14:]):
+        #     canvas = su.canvas("test")
+        #     MassesPlot().transform(ptbin, canvas)
+        #     su.wait()
 
 
 

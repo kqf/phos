@@ -1,9 +1,9 @@
 from comparator import Comparator
-from ptplotter import PtPlotter
+from ptplotter import MultiplePlotter
 import ROOT
 
 # TODO: Introduce more log items for compare etc
-# 
+#
 class LogItem(object):
     def __init__(self, name, data, mergable=False):
         super(LogItem, self).__init__()
@@ -11,18 +11,18 @@ class LogItem(object):
         self.data = data
         self.mergable = mergable
         # print "Created log item", name
-        
+
     def __repr__(self):
         return "LogItem({0}, {1}, {2})".format(
             self.name,
             self.data,
             self.mergable
-        )   
+        )
 
     def save(self, particle, stop):
         for hist in self.data:
             diff = Comparator(
-                stop=stop, 
+                stop=stop,
                 oname="{0}/{1}-{2}".format(self.name, self.oname(hist), particle)
             )
             diff.compare(hist)
@@ -37,12 +37,8 @@ class LogItem(object):
 class MultirangeLogItem(LogItem):
 
     def save(self, particle, stop):
-        plotter = PtPlotter(
-            self.data, 
-            self.name, 
-            particle
-        )
-        plotter.draw(stop, self.name)
+        plotter = MultiplePlotter(self.name)
+        plotter.transform(self.data, stop)
 
 
 class MergedLogItem(object):
@@ -78,7 +74,7 @@ class AnalysisOutput(object):
         self.particle = particle
         self.label = label
         self.pool = []
-    
+
     def update(self, stepname, histograms, multirange=False, mergable=False):
         logtype = MultirangeLogItem if multirange else LogItem
 

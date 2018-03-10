@@ -26,7 +26,7 @@ class Spectrum(object):
 
         if loggs:
             loggs.update(local_loggs)
-            
+
         return output
 
 
@@ -36,8 +36,8 @@ class CompositeSpectrum(Spectrum):
     def __init__(self, data, options = Options()):
         super(CompositeSpectrum, self).__init__(data.keys()[0], options)
         self.spectrums = [
-            Spectrum(l, 
-                Options.spmc(rr, 
+            Spectrum(l,
+                Options.spmc(rr,
                     particle=options.particle
                 )
             ) for l, rr in data.iteritems()
@@ -54,17 +54,17 @@ class CompositeSpectrum(Spectrum):
                 bin = spec.FindBin(ranges[0][1])
                 area = spec.Integral(bin - 1, bin + 1)
                 if area:
-                    spec.Scale(1. / area) 
+                    spec.Scale(1. / area)
 
         # Transpose
         pairs = zip(*hists)
         truncated = [br.sum_trimm(obs_pt, ranges) for obs_pt in pairs]
-        for h in truncated: 
-            h.label = self.label 
+        for h in truncated:
+            h.label = self.label
 
         # Use the same container as normal analysis
-        # 
+        #
         # TODO: Fix me
         results = hists[0]._make(truncated)
-        return results 
+        return results
 
