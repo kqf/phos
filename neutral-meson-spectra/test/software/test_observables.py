@@ -21,7 +21,6 @@ class TestSpectrum(unittest.TestCase):
         # This one should be set explicitely otherwise the test will fail
         # Because this global variable is set to Minuit2 in other tests
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit')
-        
         # NB: test Spectrum class, not Pt-dependent as it produces negative values due to wide integration range
         # Expected values for $\pi^0$ extraction
 
@@ -32,8 +31,8 @@ class TestSpectrum(unittest.TestCase):
         system = conf[sys.platform]
         self.nominal_pi0 = system['pi0']
         self.nominal_eta = system['eta']
-        # Make sure that you have the same copy of LHC16.root file. 
-        # sha 256 sum: 
+        # Make sure that you have the same copy of LHC16.root file.
+        # sha 256 sum:
         hsum = conf['hsum256']
         self.checkInputFile(hsum)
         self.longMessage = True
@@ -64,7 +63,7 @@ class TestSpectrum(unittest.TestCase):
         indata, options = Input(self.infile, 'EtaTender', label='testsignal'), Options(particle='eta')
         analysis = Spectrum(indata, options)
         histograms = analysis.evaluate()
-        
+
         actual = [[h.GetBinContent(i) for i in range(1, h.GetNbinsX())] for h in histograms]
         mymsg = '\n\nActual values:\n' + str(actual)
 

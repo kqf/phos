@@ -1,7 +1,6 @@
 
 from spectrum.processing import DataSlicer
 from spectrum.processing import MassFitter
-from spectrum.ptplotter import PtPlotter
 
 from spectrum.options import Options
 from spectrum.input import Input
@@ -40,12 +39,8 @@ class TestMassFitter(unittest.TestCase):
         options.pt.use_mixed = mixed
         analysis = UpdatedAnalysis(options)
         masses = analysis.transform(
-            Input(DataVault().file("data"), "PhysTender", label='Test') 
+            Input(DataVault().file("data"), "PhysTender", label='Test')
         )
-
-        plotter = PtPlotter(masses, analysis.options.output, 'test invarinat mass pipeline')
-        plotter.draw()
-
 
     def test_fits_the_analysis(self):
         self.run_analysis(mixed=False)
