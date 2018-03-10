@@ -27,7 +27,7 @@ class TestInvariantMass(unittest.TestCase):
 
         self.particles = {
             'pi0': ((8, 9), 0)
-            # 'eta': ((0.8, 1.4), 5)
+            'eta': ((0.8, 1.4), 5)
         }
 
     def draw(self, particle, func, title):
@@ -57,31 +57,3 @@ class TestInvariantMass(unittest.TestCase):
     def test_multiple_plots(self):
         for p in self.particles:
             self.draw_multiple(p)
-
-
-# TODO: Fix this later
-# class ATestInvariantMassNoMixing(TestInvariantMass):
-
-#     def setUp(self):
-#         self.wait = 'discover' not in sys.argv 
-
-#         self.input = Input(
-#             'single/weight0/LHC17j3b2.root',
-#             'PhysEffTender',
-#             label="testinvmass"
-#         ).read()
-
-#         self.particles = {'pi0': ((8, 9), 0) }
-
-#     def draw(self, particle, func, title):
-#         bin, nrebin = self.particles[particle]
-
-#         options = Options(particle=particle)
-
-#         mass = InvariantMassNoMixing(self.input, bin, nrebin, options)
-#         mass.extract_data()
-#         # NB: Add this to be able to see the significance
-#         mass.area_error = 10, 0.05
-#         func(mass)
-#         wait('test-inmass-%s-' % particle + title , self.wait, True)
-

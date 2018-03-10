@@ -81,6 +81,6 @@ class MultiplePlotter(object):
             canvas.Clear()
             canvas.Divide(*self.multcanvas)
             plotter = MassesPlot()
-            for i, mass in enumerate(masses[i:i + n_plots]):
-                plotter.transform(mass, canvas.cd(i + 1))
+            for j, mass in enumerate(masses[i:i + n_plots]):
+                plotter.transform(mass, canvas.cd(j + 1))
             su.wait("{0}/multiple-{1}".format(self.label, i), draw=show, save=True)

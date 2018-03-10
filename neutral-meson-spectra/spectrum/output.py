@@ -19,11 +19,11 @@ class LogItem(object):
             self.mergable
         )
 
-    def save(self, particle, stop):
+    def save(self, stop):
         for hist in self.data:
             diff = Comparator(
                 stop=stop,
-                oname="{0}/{1}-{2}".format(self.name, self.oname(hist), particle)
+                oname="{0}/{1}".format(self.name, self.oname(hist))
             )
             diff.compare(hist)
 
@@ -36,7 +36,7 @@ class LogItem(object):
 
 class MultirangeLogItem(LogItem):
 
-    def save(self, particle, stop):
+    def save(self, stop):
         plotter = MultiplePlotter(self.name)
         plotter.transform(self.data, stop)
 
@@ -46,15 +46,15 @@ class MergedLogItem(object):
         super(MergedLogItem, self).__init__()
         self.name = name
         self.loggs = zip(*[logg.data for logg in loggs])
-        
+
     def __repr__(self):
         return "LogItem({0}, {1}, {2})".format(
             self.name,
             self.loggs,
             self.mergable
-        )   
+        )
 
-    def save(self, particle, stop):
+    def save(self, stop):
         for logg in self.loggs:
             try:
                 name = logg[0].GetName()
@@ -63,17 +63,18 @@ class MergedLogItem(object):
 
             diff = Comparator(
                 stop=stop, 
-                oname="{0}/{1}-{2}".format(self.name, name, particle)
+                oname="{0}/{1}".format(self.name, name)
             )
             diff.compare(logg)
 
 
 class AnalysisOutput(object):
-    def __init__(self, label, particle="#pi^{0}"):
+    def __init__(self, label, particle=""):
         super(AnalysisOutput, self).__init__()
-        self.particle = particle
         self.label = label
         self.pool = []
+        if particle:
+            self.label = "{0}-{1}".format(self.label, particle)
 
     def update(self, stepname, histograms, multirange=False, mergable=False):
         logtype = MultirangeLogItem if multirange else LogItem
@@ -83,8 +84,11 @@ class AnalysisOutput(object):
         )
 
     def plot(self, stop=False):
+        # default = ROOT.gROOT.IsBatch()
+        # ROOT.gROOT.SetBatch(not stop)
         for item in self.pool:
-            item.save(self.particle, stop)
+            item.save(stop)
+        # ROOT.gROOT.SetBatch(default)
 
     def append(self, other):
         if not other.pool:

@@ -2,7 +2,6 @@
 
 import ROOT
 from spectrum.spectrum import Spectrum
-from spectrum.kinematic import KinematicTransformer 
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
@@ -37,22 +36,6 @@ class TestBackgroundShape(unittest.TestCase):
         ) for (f, rr) in files.iteritems()]
 
         self.arguments = inputs, options
-
-    @unittest.skip('')
-    def test_background_shape(self):
-        f = lambda x, y:  KinematicTransformer(x, y).plotter
-        ptranges = map(f, *self.arguments)
-
-
-        for r in ptranges:
-            for im in r.masses:
-                im.extract_data()
-
-            intgr_ranges = [(0.1, 0.2)] * len(r.masses)
-
-            r.opt.show_img = True
-            r._draw_mass(intgr_ranges)
-            r._draw_signal(intgr_ranges)
 
 
     @unittest.skip('')

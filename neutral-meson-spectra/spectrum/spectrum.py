@@ -4,7 +4,6 @@ import ROOT
 import json
 from analysis import Analysis
 from sutils import gcanvas, wait, adjust_canvas, ticks
-from kinematic import KinematicTransformer
 from options import Options
 from broot import BROOT as br
 from output import AnalysisOutput

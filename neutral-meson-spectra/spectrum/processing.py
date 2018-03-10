@@ -110,7 +110,8 @@ class RangeEstimator(object):
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
         # print self.opt.fit_range
-        quant.Fit(fitquant, "q0", "", *self.opt.fit_range)
+        quant.Fit(fitquant, "q", "", *self.opt.fit_range)
+        quant.GetListOfFunctions().Add(fitquant)
 
         # TODO: Now we mutate options. Should we do it in future?
         # Update the parameters
