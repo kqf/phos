@@ -67,8 +67,8 @@ AliAnalysisTaskCaloCellsQA* AddTaskCaloCellsPhysQA(Int_t nmods = 10, Int_t det =
 
   AliAnalysisTaskCaloCellsQA* task;
 
-  if ((fname.Length() != 0) && (contname.Length() == 0)) task = new AliAnalysisTaskCaloCellsQA("AliAnalysisTaskCaloCellsQA", nmods, det2, fname.Data());
-  else                    task = new AliAnalysisTaskCaloCellsQA("AliAnalysisTaskCaloCellsQA", nmods, det2);
+  if ((fname.Length() != 0) && (contname.Length() == 0)) task = new AliAnalysisTaskCaloCellsPhysQA("AliAnalysisTaskCaloCellsQA", nmods, det2, fname.Data());
+  else                    task = new AliAnalysisTaskCaloCellsPhysQA("AliAnalysisTaskCaloCellsQA", nmods, det2);
   mgr->AddTask(task);
 
   mgr->ConnectInput(task, 0, mgr->GetCommonInputContainer());

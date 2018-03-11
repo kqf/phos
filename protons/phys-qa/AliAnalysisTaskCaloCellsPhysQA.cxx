@@ -4,8 +4,8 @@
 ClassImp(AliAnalysisTaskCaloCellsPhysQA);
 
 //________________________________________________________________
-void AliAnalysisTaskCaloCellsPhysQA::AliAnalysisTaskCaloCellsPhysQA(
-	const char * name, Int_t nmods = 10, Int_t det = AliAnalysisTaskCaloCellsQA::kPHOS, char * outfile = 0
+AliAnalysisTaskCaloCellsPhysQA::AliAnalysisTaskCaloCellsPhysQA(
+	const char * name, Int_t nmods, Int_t det, char * outfile
 ):
 	AliAnalysisTaskCaloCellsQA(name, nmods, det, outfile)
 

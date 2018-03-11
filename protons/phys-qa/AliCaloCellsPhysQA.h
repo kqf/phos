@@ -32,11 +32,12 @@ public:
 protected:
 	virtual Int_t CheckClusterGetSM(AliVCluster * clus);
 
-	Double_t fTimingCut;
 	Double_t fEmin;
-
 	Int_t fNCells;
+	Double_t fTimingCut;
 
 private:
 	ClassDef(AliCaloCellsPhysQA, 1);
 };
+
+#endif
