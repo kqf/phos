@@ -4,9 +4,6 @@
 
 #include <AliAnalysisTaskCaloCellsQA.h>
 
-#include <AliCaloCellsQA.h>
-#include <AliAnalysisManager.h>
-#include <AliInputEventHandler.h>
 
 class AliAnalysisTaskCaloCellsPhysQA: public AliAnalysisTaskCaloCellsQA
 {
