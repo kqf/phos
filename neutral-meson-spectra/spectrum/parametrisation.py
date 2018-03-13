@@ -14,7 +14,7 @@ class PeakParametrisation(object):
         self.signal = self.form_fitting_function(funcname)
 
     def fit(self, hist):
-        if (not hist) or (hist.GetEntries() == 0): 
+        if (not hist) or (hist.GetEntries() == 0):
             return None, None
 
         background = self.form_background()
@@ -28,7 +28,7 @@ class PeakParametrisation(object):
             fitfun.FixParameter(0, 0)
 
         fitfun.SetNpx(1000)
-        hist.Fit(fitfun,"RQ", "")
+        hist.Fit(fitfun,"RQM", "")
 
         npar, nparb = fitfun.GetNpar(), background.GetNpar()
         for i in range(0, nparb):
@@ -79,7 +79,7 @@ class PeakParametrisation(object):
             raise AttributeError('There is no such parametrization as {}'.format(options.fitf))
         obj = par(options)
         return obj
-        
+
 
 class CrystalBall(PeakParametrisation):
 
@@ -104,7 +104,7 @@ class CrystalBall(PeakParametrisation):
 
         if not self.opt.relaxed:
             fitfun.FixParameter(3, self.opt.cb_alpha)
-            fitfun.FixParameter(4, self.opt.cb_n) 
+            fitfun.FixParameter(4, self.opt.cb_n)
 
 
 

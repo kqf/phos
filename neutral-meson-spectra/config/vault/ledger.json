@@ -1,13 +1,13 @@
 {
 	"data": {
 		"latest": {
-			"file": "input-data/data/LHC17/corrected/LHC16.root",
+			"file": "input-data/data/LHC16/corrected/LHC16.root",
 			"hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
 			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
 		},
 
 		"uncorrected": {
-			"file": "input-data/data/LHC17/uncorrected/LHC16.root",
+			"file": "input-data/data/LHC16/uncorrected/LHC16.root",
 			"hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",
 			"description": "Raw data without TOF correction"
 		},

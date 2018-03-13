@@ -73,15 +73,15 @@ class Options(object):
 
     @property
     def fitf(self):
-        return self.param.fitf
+        return self.backgroundp.fitf
 
     @fitf.setter
     def fitf(self, fitf):
-        relaxed, particle = self.param.relaxed, self.param.particle 
+        relaxed, particle = self.backgroundp.relaxed, self.backgroundp.particle
         prefix = 'gaus' if 'gaus' in fitf.lower() else 'cball'
         pconf = 'config/{0}-parameters.json'.format(prefix)
-        self.param = AnalysisOption('param', pconf, particle)
-        self.param.relaxed = relaxed
+        self.backgroundp = AnalysisOption('backgroundp', pconf, particle)
+        self.backgroundp.relaxed = relaxed
 
 
     @staticmethod

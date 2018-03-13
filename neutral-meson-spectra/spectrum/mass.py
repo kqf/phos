@@ -2,7 +2,7 @@ from broot import BROOT as br
 import sutils as su
 
 
-# TODO: Remove all checks if not: return 
+# TODO: Remove all checks if not: return
 
 class BackgroundEstimator(object):
 
@@ -30,6 +30,7 @@ class SignalExtractor(object):
         # Subtraction
         mass.signal = mass.mass.Clone()
         mass.signal.Add(mass.background, -1.)
+        # TODO: SetAxisRange aswell
         mass.signal.SetAxisRange(*mass.xaxis_range)
         mass.signal.GetYaxis().SetTitle("Real - background")
         return mass.signal

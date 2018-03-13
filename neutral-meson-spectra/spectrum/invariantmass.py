@@ -51,6 +51,7 @@ class InvariantMass(object):
         # Setup the fit function
         self.signalp = PeakParametrisation.get(options.signalp)
         self.backgroundp = PeakParametrisation.get(options.backgroundp)
+        # TODO: Remove offsets
         self.xaxis_range  = [i * j for i, j in zip(self.signalp.opt.fit_range, self.opt.xaxis_offsets)]
 
         # Extract the data

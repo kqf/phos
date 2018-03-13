@@ -49,15 +49,15 @@ class TagAndProbe(object):
 
 
     def _estimator(self, inputs):
-        options = Options('q', ptconf='config/tag-and-probe-tof.json')
+        options = Options('q', ptrange='config/tag-and-probe-tof.json')
         return Spectrum(inputs, options)
 
 
     def _input_creator(self, data, selection, hpattern):
         function = lambda x: Input(
-            data, 
-            selection, 
-            hpattern % x, 
+            data,
+            selection,
+            hpattern % x,
             label=x
         )
         return function
@@ -100,6 +100,6 @@ class TagAndProbe(object):
             'E_{#gamma}, GeV; #varepsilon, TOF efficiency'
         )
         result.logy = False
-        
+
         br.io.save(result, self.oname)
         return result

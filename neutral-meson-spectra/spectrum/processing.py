@@ -16,6 +16,8 @@ class DataSlicer(object):
 
     def transform(self, inputs, loggs):
 
+        for o in dir(self.opt):
+            print o, " "
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
@@ -78,7 +80,7 @@ class RangeEstimator(object):
             self._output,
             masses
         )
-        
+
         titles = {q: t for q, t in zip(self._output, self._titles)}
 
         self.output = OutputCreator.output(
@@ -104,7 +106,7 @@ class RangeEstimator(object):
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
-        # Doesn't fit and use default parameters for 
+        # Doesn't fit and use default parameters for
         # width/mass, therefore this will give correct estimation
         if not self.opt.fit_mass_width:
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
@@ -145,17 +147,17 @@ class RangeEstimator(object):
             self.opt.mass_pars,
             self.opt.mass_names,
             'mass'
-        ) 
+        )
 
     def fit_sigma(self, sigma):
-        return self._fit_quantity(sigma, 
-            self.opt.width_func, 
-            self.opt.width_pars, 
-            self.opt.width_names, 
+        return self._fit_quantity(sigma,
+            self.opt.width_func,
+            self.opt.width_pars,
+            self.opt.width_names,
             'width'
         )
 
-        
+
 class DataExtractor(object):
 
     def __init__(self, options):
@@ -163,11 +165,11 @@ class DataExtractor(object):
         self.opt = options
 
     def _decorate_hists(self, histograms, nevents):
-        # Scale by the number of events 
+        # Scale by the number of events
         histograms.spectrum.Scale(1. / nevents)
         histograms.spectrum.logy = True
         histograms.npi0.logy = True
-        return histograms 
+        return histograms
 
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(
@@ -179,7 +181,7 @@ class DataExtractor(object):
 
         # TODO: Move this logic to the option creation
         titles = {quant:
-            self.opt.output[quant] % self.opt.particle 
+            self.opt.output[quant] % self.opt.particle
             for quant in self.opt.output_order
         }
 
