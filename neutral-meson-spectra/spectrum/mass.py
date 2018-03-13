@@ -83,25 +83,25 @@ class ZeroBinsCleaner(object):
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
 
-        # Remove all zero bins and don't 
+        # Remove all zero bins and don't
         # touch bins that are zeros in both cases.
         #
         mass.mass = self._clean_histogram(mass.mass, zeros, mass)
-        mass.background = self._clean_histogram(mass.background, zeros, mass)
+        mass.background = self._clean_histogram(mass.background, zeros, mass, True)
         return mass
 
-    def _clean_histogram(self, h, zeros, mass):
+    def _clean_histogram(self, h, zeros, mass, is_background=False):
         if 'empty' in mass.opt.average:
             return h
 
         if not zeros:
             return h
 
-        fitf, bckgrnd = mass.backgroundp.fit(h)
+        fitf, bckgrnd = mass.backgroundp.fit(h, is_mixing=is_background)
 
         # If we failed to fit: do nothing
         if not (fitf and bckgrnd):
-            return 
+            return
 
         # Delete bin only if it's empty
         valid = lambda i: h.GetBinContent(i) < mass.opt.tol and \

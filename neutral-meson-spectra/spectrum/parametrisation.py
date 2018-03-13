@@ -12,29 +12,31 @@ class PeakParametrisation(object):
         funcname = self.__class__.__name__
         # Initiate signal function
         self.signal = self.form_fitting_function(funcname)
+        self.background = self.form_background()
+        formula = "{0} + {1}".format(self.signal.GetName(), self.background.GetName())
+        self.fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
+        self.fitfun.SetNpx(1000)
 
-    def fit(self, hist):
-        if (not hist) or (hist.GetEntries() == 0):
-            return None, None
-
-        background = self.form_background()
-
-        formula = "{0} + {1}".format(self.signal.GetName(), background.GetName())
-        fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
-
-        self.setup_parameters(fitfun, hist)
-
-        if 'mix' in hist.GetName().lower():
-            fitfun.FixParameter(0, 0)
-
-        fitfun.SetNpx(1000)
-        hist.Fit(fitfun,"RQM", "")
-
+    def _set_background_parameters(self, fitfun, background):
         npar, nparb = fitfun.GetNpar(), background.GetNpar()
         for i in range(0, nparb):
             parameter = fitfun.GetParameter(npar - (nparb - i))
             background.SetParameter(i, parameter)
-        return fitfun, background
+
+    def _set_only_background(self, fitfun, is_mixing=False):
+        if not is_mixing:
+            return
+        self.fitfun.FixParameter(0, 0)
+
+    def fit(self, hist, is_mixing=False):
+        if (not hist) or (hist.GetEntries() == 0):
+            return None, None
+
+        self._setup_parameters(self.fitfun, hist)
+        self._set_only_background(self.fitfun, is_mixing)
+        hist.Fit(self.fitfun, "RQM", "")
+        self._set_background_parameters(self.fitfun, self.background)
+        return self.fitfun, self.background
 
 
     def preliminary_fit(self, hist):
@@ -48,14 +50,14 @@ class PeakParametrisation(object):
         return [ff.GetParameter(i) if i != 1 else self.opt.fit_mass for i in range(4)]
 
 
-    def setup_parameters(self, fitfun, hist):
+    def _setup_parameters(self, fitfun, hist):
         fitfun.SetParNames(*self.opt.par_names)
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
         fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
         fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
         fitfun.SetParLimits(2, *self.opt.fit_width_limits)
-        pars = self.preliminary_fit(hist) 
+        pars = self.preliminary_fit(hist)
         fitfun.SetParameters(*pars)
         return pars
 
@@ -96,8 +98,8 @@ class CrystalBall(PeakParametrisation):
         return signal
 
 
-    def setup_parameters(self, fitfun, hist):
-        pars = super(CrystalBall, self).setup_parameters(fitfun, hist)
+    def _setup_parameters(self, fitfun, hist):
+        pars = super(CrystalBall, self)._setup_parameters(fitfun, hist)
         fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
         fitfun.SetParLimits(4, *self.opt.cb_n_limits)
         fitfun.SetParameters(*(pars[:3] + [self.opt.cb_alpha, self.opt.cb_n] + pars[3:]))

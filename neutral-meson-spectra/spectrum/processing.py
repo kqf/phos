@@ -16,8 +16,6 @@ class DataSlicer(object):
 
     def transform(self, inputs, loggs):
 
-        for o in dir(self.opt):
-            print o, " "
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
@@ -188,7 +186,7 @@ class DataExtractor(object):
         # Create hitograms
         histos = OutputCreator.output(
            'SpectrumAnalysisOutput',
-            values, 
+            values,
             self.opt.output_order,
             edges,
             titles,
@@ -202,5 +200,5 @@ class DataExtractor(object):
 
         loggs.update("invariant_masses", masses, multirange=True)
         loggs.update("analysis_output", decorated, mergable=True)
-        return decorated 
+        return decorated
 
