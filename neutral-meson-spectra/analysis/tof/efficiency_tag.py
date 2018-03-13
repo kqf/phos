@@ -37,7 +37,7 @@ def efficincy_function():
     tof_eff.SetParameter(3, 1.30498e+00)
     tof_eff.SetParameter(4, -1.78716e+00)
 
-    return tof_eff 
+    return tof_eff
 
 
 def fit_tof_efficiency(dataset):

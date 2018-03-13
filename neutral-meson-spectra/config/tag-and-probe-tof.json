@@ -1,32 +1,13 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
-    "pi0": 
+    "pi0":
     {
         "ptedges": [0.2, 0.4, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 9.0, 10.0, 12.0, 15.0, 20.0],
-        "rebins": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5],
-        "multcanvas": [5, 6, 0, 0.01],
-        "lastcanvas": [2, 2, 0.001, 0.01],
-        "partlabel": "#pi^{0}"
+        "rebins": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5]
     },
-    "eta": 
+    "eta":
     {
         "ptedges": [1.0, 1.4, 1.8, 2.2, 2.6, 3.0, 3.5, 4.0, 6.0, 8.0, 10.0, 15.0],
-        "rebins": [5, 10, 5, 5, 3, 3, 3, 3, 3, 3, 5],
-        "multcanvas": [2, 2, 0.001, 0.01],
-        "lastcanvas": [4, 3, 0.001, 0.01],
-        "partlabel": "#eta"
-    },
-
-    "output_order": ["mass", "width", "spectrum", "chi2", "npi0", "cball_alpha", "cball_n"],
-    "output":
-    {
-        "mass": "Reconstructed %s mass position; E_{#gamma}, GeV; m, GeV/c^{2}",
-        "width": "Reconstructed %s peak width ; E_{#gamma}, GeV; #sigma, GeV/c^{2}",
-        "spectrum": "Reconstructed %s spectrum ; p_{E_{#gamma}}, GeV; #frac{1}{2 #pi #Delta p_{E_{#gamma}} } #frac{dN_{rec} }{dp_{E_{#gamma}}}",  
-        "chi2": "#chi^{2} / N_{dof} for %s spectrum; p_{E_{#gamma}}, GeV; #chi^{2} / N_{dof}",
-        "npi0": "Number of %ss in each p_{E_{#gamma}} bin; p_{E_{#gamma}}, GeV; #frac{dN}{dp_{E_{#gamma}}}",  
-        "cball_alpha": "Crystal ball parameter #alpha for %s peak; p_{E_{#gamma}}, GeV; #alpha",
-        "cball_n": "Crystal ball parameter n for %s peak; p_{E_{#gamma}}, GeV; n"
-    },
-    "use_mixed": 1
+        "rebins": [5, 10, 5, 5, 3, 3, 3, 3, 3, 3, 5]
+    }
 }

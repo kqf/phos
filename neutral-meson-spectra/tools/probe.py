@@ -49,7 +49,7 @@ class TagAndProbe(object):
 
 
     def _estimator(self, inputs):
-        options = Options('q', ptrange='config/tag-and-probe-tof.json')
+        options = Options(ptrange='config/tag-and-probe-tof.json')
         return Spectrum(inputs, options)
 
 
