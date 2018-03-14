@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import ROOT
+from broot import BROOT as br
 
 class PeakParametrisation(object):
 
@@ -76,11 +77,12 @@ class PeakParametrisation(object):
 
     @staticmethod
     def get(options):
-        par = {'CrystalBall': CrystalBall, 'Gaus': Gaus}.get(options.fitf, None)
-        if not par:
-            raise AttributeError('There is no such parametrization as {}'.format(options.fitf))
-        obj = par(options)
-        return obj
+        function = {
+            'CrystalBall': CrystalBall,
+            'Gaus': Gaus,
+            'CrystalBallEnhanced': CrystalBallEnhanced
+        }.get(options.fitf, None)
+        return function(options)
 
 
 class CrystalBall(PeakParametrisation):
@@ -118,4 +120,38 @@ class Gaus(PeakParametrisation):
     def form_fitting_function(self, name = 'cball'):
         signal = ROOT.TF1(name, "gaus(0)")
         return signal
+
+from random import randrange
+class CrystalBallEnhanced(CrystalBall):
+    def __init__(self, options):
+        super(CrystalBallEnhanced, self).__init__(options)
+
+    def fit(self, hist, is_mixing=False):
+        if (not hist) or (hist.GetEntries() == 0):
+            return None, None
+
+        self._setup_parameters(self.fitfun, hist)
+        chi2 = {}
+        for (a, b) in [[0.05, 0.3], [0.04, 0.3], [0.03, 0.3], [0.025, 0.3]]:
+            self._set_only_background(self.fitfun, is_mixing)
+            # a, b = self.fitfun.GetXmin(), self.fitfun.GetXmax()
+            # self.fitfun.SetRange(a - 0.01 * i, b - 0.1 * i)
+            self.fitfun.SetRange(a, b)
+
+            hist.Fit(self.fitfun, "RQM", "")
+            # pars, _ = br.pars(self.fitfun)
+            # index = randrange(0, len(pars))
+            # pars[index] = pars[index] * 0.99
+            # self.fitfun.SetParameters(*pars)
+
+            pars, _ = br.pars(self.fitfun)
+            chi2[self.fitfun.GetChisquare()] = pars
+
+        self.fitfun.SetParameters(
+            *chi2[min(chi2)]
+        )
+        print min(chi2) / self.fitfun.GetNDF(), max(chi2) / self.fitfun.GetNDF()
+
+        self._set_background_parameters(self.fitfun, self.background)
+        return self.fitfun, self.background
 

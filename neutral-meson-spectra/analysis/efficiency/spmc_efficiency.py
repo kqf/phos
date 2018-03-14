@@ -24,18 +24,19 @@ class TestEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyEta(unittest.TestCase):
 
+    @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
             DataVault().file("single #eta", "low"): (0, 6),
             DataVault().file("single #eta", "high"): (6, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#eta")
-  
+
 
 def evaluate_spmc_efficiency(unified_inputs, particle):
-    
+
     estimator = EfficiencyMultirange(
-       MultirangeEfficiencyOptions.spmc(unified_inputs, particle) 
+       MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
     )
 
     loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle), particle)
@@ -53,4 +54,4 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
     diff = Comparator()
     diff.compare(efficiency)
     loggs.plot(False)
-    
+

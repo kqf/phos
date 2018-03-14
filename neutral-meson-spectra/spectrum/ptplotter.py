@@ -9,6 +9,8 @@ from operator import mul
 class MassesPlot(object):
 
     def transform(self, imass, pad):
+        if not imass.signal:
+            return
 
         ci, _ = br.define_colors()
         pad.cd()

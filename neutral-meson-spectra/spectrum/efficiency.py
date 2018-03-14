@@ -15,7 +15,7 @@ import os.path
 import unittest
 
 
-# NB: This test is to compare different efficiencies 
+# NB: This test is to compare different efficiencies
 #     estimated from different productions
 #
 
@@ -26,7 +26,7 @@ class Efficiency(object):
         super(Efficiency, self).__init__()
         self.runion = RatioUnion(
             Pipeline([
-                ("ReconstructMesons", Analysis(options.analysis)), 
+                ("ReconstructMesons", Analysis(options.analysis)),
                 ("NumberOfMesons", HistogramSelector("npi0"))
             ]),
             SingleHistInput(options.genname)
