@@ -235,8 +235,10 @@ class BROOT(object):
 
         # if ratio.GetNbinsX() != b.GetNbinsX():
             # ratio, b = klass.rebin_as(ratio, b)
-
-        ratio.Divide(a, b, 1, 1, option)
+        if type(b) == ROOT.TF1:
+            ratio.Divide(b)
+        else:
+            ratio.Divide(a, b, 1, 1, option)
         label = a.label + ' / ' + b.label
 
         at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
@@ -245,7 +247,7 @@ class BROOT(object):
 
         title = a.GetTitle() + ' / ' + b.GetTitle()
         ratio.SetTitle(title)
-        
+
         if not ratio.GetSumw2N():
             ratio.Sumw2()
 
@@ -259,9 +261,12 @@ class BROOT(object):
 
     @classmethod
     def rebin_as(klass, hist1, hist2):
+        if type(hist2) == ROOT.TF1:
+            return hist1, hist2
+
         if hist1.GetNbinsX() == hist2.GetNbinsY():
             return hist1, hist2
-            
+
         nbins = lambda x: x.GetNbinsX()
         lbins = lambda x: (
             x.GetBinLowEdge(i) for i in klass.range(x, edges=True)
@@ -301,6 +306,8 @@ class BROOT(object):
 
     @classmethod
     def scalew(klass, hist, factor = 1.):
+        if type(hist) == ROOT.TF1:
+            return
         hist.Scale(factor, "width")
         return hist
 
