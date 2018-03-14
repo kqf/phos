@@ -40,9 +40,9 @@ class AnalysisOption(object):
 
 
 class Options(object):
-    def __init__(self, 
+    def __init__(self,
             particle='#pi^{0}',
-            relaxedcb=False, 
+            relaxedcb=False,
             fitf='cball',
             spectrumconf='config/spectrum.json',
             ptrange='config/pt.json',
@@ -52,7 +52,7 @@ class Options(object):
             signalp='config/cball-parameters.json',
         ):
         super(Options, self).__init__()
-        
+
         self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', outconf, particle)
@@ -77,6 +77,8 @@ class Options(object):
 
     @fitf.setter
     def fitf(self, fitf):
+        # This one is needed only for. systematic error estimation
+        #
         relaxed, particle = self.backgroundp.relaxed, self.backgroundp.particle
         prefix = 'gaus' if 'gaus' in fitf.lower() else 'cball'
         pconf = 'config/{0}-parameters.json'.format(prefix)
@@ -106,11 +108,11 @@ class Options(object):
     def spmc(pt_fit_range, label = '', particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(
-            particle=particle, 
+            particle=particle,
             ptrange='config/pt-spmc.json',
             spectrumconf='config/spectrum_spmc.json',
-            backgroudpconf='config/cball-parameters-spmc-test.json',
-            signalp='config/cball-parameters-spmc-test.json'
+            backgroudpconf='config/cball-parameters-spmc-enhanced.json',
+            signalp='config/cball-parameters-spmc-enhanced.json'
         )
         options.spectrum.fit_range = pt_fit_range
         options.invmass.use_mixed = False
@@ -119,10 +121,10 @@ class Options(object):
 
 class EfficiencyOptions(object):
 
-    def __init__(self, genname='hPt_#pi^{0}_primary_'):
+    def __init__(self, genname='hPt_#pi^{0}_primary_standard'):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options()
-        self.genname = genname 
+        self.genname = genname
 
     @classmethod
     def spmc(klass, pt_range, particle="#pi^{0}"):
@@ -141,5 +143,5 @@ class MultirangeEfficiencyOptions(object):
     @classmethod
     def spmc(klass, unified_input, particle):
         options = [EfficiencyOptions.spmc(rr, particle) for _, rr in unified_input.iteritems()]
-        return klass(options, unified_input.values()) 
+        return klass(options, unified_input.values())
 

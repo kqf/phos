@@ -16,9 +16,7 @@
                 "cb_alpha":          1.493,
                 "cb_n_limits":       [1.0, 3.5],
                 "cb_alpha_limits":   [0, 2],
-                "background": "pol2"
-
-
+                "background": "pol3"
 	},
 
 	"eta":
@@ -30,11 +28,11 @@
                 "prel_paremeters":   [0.547, 0.010, 0.0],
                 "fit_mass":          0.547,
                 "fit_mass_limits":   [0.520, 0.570],
-                "fit_width_limits":  [0.004,0.050],
-                "cb_n":              2.66953198492,
-                "cb_alpha":          1.17942374245,
-                "cb_n_limits":       [1.0, 3.5],
+                "fit_width_limits":  [0.004,0.060],
+                "cb_n":              0.92,
+                "cb_alpha":          1.17161,
+                "cb_n_limits":       [0.1, 4.5],
                 "cb_alpha_limits":   [0, 2],
-                "background": "pol2"
+                "background": "pol3"
 	}
 }
