@@ -64,7 +64,7 @@ class SignalGenerator(object):
 
 
     def generate(self):
-        nmesons = 4 #int(ROOT.gRandom.Exp(1. / self.average_nmesons))
+        nmesons = 1 #int(ROOT.gRandom.Exp(1. / self.average_nmesons))
         mesons = [self._generate_meson() for i in range(nmesons)]
         return sum(mesons, [])
 
@@ -115,17 +115,17 @@ class InclusiveGenerator(object):
             fname,
             signalconf,
             selname='PhysOnlyTender',
-            hnames=['hMassPt', 'hMixMassPt', 'EventCounter'], 
+            hnames=['hMassPt', 'hMixMassPt', 'EventCounter'],
             hpdistr='hClusterPt_SM0',
             genfilename='LHC16-fake.root',
             genhistname='hPt_#pi^{0}_primary',
-            meanphotons=0, 
+            meanphotons=0,
             flat=False
         ):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
         self.genfilename = genfilename
-        self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr), meanphotons = meanphotons)
+        self.backgrnd = BackgroundGenerator(self.read(fname, hpdistr), meanphotons=meanphotons)
         self.data, self.mixed, self.nevents = map(lambda y: self.read(fname, y, True), hnames)
         generated = self.read(fname, genhistname + '_', True) if genhistname else None
 
@@ -135,6 +135,7 @@ class InclusiveGenerator(object):
 
 
     def read(self, fname, name, reset = False):
+        print fname, name, reset
         lst = ROOT.TFile(fname).Get(self.selname)
         obj = lst.FindObject(name)
         if reset: obj.Reset()
@@ -150,7 +151,7 @@ class InclusiveGenerator(object):
 
         print 'WARNING: You are trying to update the old histograms.'
         def process(hist):
-            ohist = olist.FindObject(hist.GetName()) 
+            ohist = olist.FindObject(hist.GetName())
             hist.Add(ohist)
 
         map(process, self.out)

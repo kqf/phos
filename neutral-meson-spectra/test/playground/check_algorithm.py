@@ -20,11 +20,11 @@ class CheckAlgorithm(test.check_default.CheckDefault):
     @unittest.skip('')
     def test_recreates_the_same_shape(self):
         genfilename = 'LHC16-fake.root'
-        infile, conf = 'input-data/LHC16.root', 'config/test_algorithm.json'
+        infile, conf = 'input-data/data/LHC16.root', 'config/test_algorithm.json'
         generator = InclusiveGenerator(
             infile,
-            conf, 
-            genfilename=genfilename, 
+            conf,
+            genfilename=genfilename,
             flat=True
         )
 
@@ -43,9 +43,9 @@ class GenerateEfficiency(unittest.TestCase):
         infile, conf = 'input-data/mc/single/pi0/nonlin/LHC17j3b1.root', 'config/test_algorithm.json'
         generator = InclusiveGenerator(
             infile,
-            conf, 
-            selname='PhysEffPlainOnlyTender', 
-            genfilename=genfilename, 
+            conf,
+            selname='PhysEff',
+            genfilename=genfilename,
             flat=True
         )
 
