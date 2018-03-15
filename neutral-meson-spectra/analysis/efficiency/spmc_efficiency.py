@@ -18,6 +18,8 @@ class TestEfficiencyPi0(unittest.TestCase):
         unified_inputs = {
             DataVault().file("single #pi^{0}", "low"): (0, 7),
             DataVault().file("single #pi^{0}", "high"): (7, 20)
+            # "LHC16-single-low.root": (0, 7),
+            # "LHC16-single.root": (7, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
@@ -25,7 +27,7 @@ class TestEfficiencyPi0(unittest.TestCase):
 class TestEfficiencyEta(unittest.TestCase):
 
     @unittest.skip('')
-    def test_pi0_efficiency(self):
+    def test_eta_efficiency(self):
         unified_inputs = {
             DataVault().file("single #eta", "low"): (0, 6),
             DataVault().file("single #eta", "high"): (6, 20)

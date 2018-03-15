@@ -121,7 +121,7 @@ class Options(object):
 
 class EfficiencyOptions(object):
 
-    def __init__(self, genname='hPt_#pi^{0}_primary_standard'):
+    def __init__(self, genname='hPt_#pi^{0}_primary_'):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options()
         self.genname = genname

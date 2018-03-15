@@ -24,7 +24,7 @@ class PeakParametrisation(object):
             parameter = fitfun.GetParameter(npar - (nparb - i))
             background.SetParameter(i, parameter)
 
-    def _set_only_background(self, fitfun, is_mixing=False):
+    def _set_no_signal(self, fitfun, is_mixing=False):
         if not is_mixing:
             return
         self.fitfun.FixParameter(0, 0)
@@ -34,13 +34,13 @@ class PeakParametrisation(object):
             return None, None
 
         self._setup_parameters(self.fitfun, hist)
-        self._set_only_background(self.fitfun, is_mixing)
+        self._set_no_signal(self.fitfun, is_mixing)
         hist.Fit(self.fitfun, "RQM", "")
         self._set_background_parameters(self.fitfun, self.background)
         return self.fitfun, self.background
 
 
-    def preliminary_fit(self, hist):
+    def preliminary_fit(self, hist, fitfun):
         # make a preliminary fit to estimate parameters
         ff = ROOT.TF1("fastfit", "gaus(0) + [3]")
         ff.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
@@ -48,7 +48,9 @@ class PeakParametrisation(object):
         ff.SetParLimits(2, *self.opt.prel_width_limits)
         ff.SetParameters(hist.GetMaximum()/3., *self.opt.prel_paremeters)
         hist.Fit(ff, "0QL", "", *self.opt.prel_range)
-        return [ff.GetParameter(i) if i != 1 else self.opt.fit_mass for i in range(4)]
+        par = [ff.GetParameter(i) if i != 1 else self.opt.fit_mass for i in range(4)]
+        fitfun.SetParameters(*par)
+        return par
 
 
     def _setup_parameters(self, fitfun, hist):
@@ -58,9 +60,7 @@ class PeakParametrisation(object):
         fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
         fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
         fitfun.SetParLimits(2, *self.opt.fit_width_limits)
-        pars = self.preliminary_fit(hist)
-        fitfun.SetParameters(*pars)
-        return pars
+        return self.preliminary_fit(hist, fitfun)
 
     def form_background(self, fname = "background"):
         if 'pol2' in self.opt.background:
@@ -131,27 +131,52 @@ class CrystalBallEnhanced(CrystalBall):
             return None, None
 
         self._setup_parameters(self.fitfun, hist)
-        chi2 = {}
-        for (a, b) in [[0.05, 0.3], [0.04, 0.3], [0.03, 0.3], [0.025, 0.3]]:
-            self._set_only_background(self.fitfun, is_mixing)
-            # a, b = self.fitfun.GetXmin(), self.fitfun.GetXmax()
-            # self.fitfun.SetRange(a - 0.01 * i, b - 0.1 * i)
-            self.fitfun.SetRange(a, b)
-
-            hist.Fit(self.fitfun, "RQM", "")
-            # pars, _ = br.pars(self.fitfun)
-            # index = randrange(0, len(pars))
-            # pars[index] = pars[index] * 0.99
-            # self.fitfun.SetParameters(*pars)
-
-            pars, _ = br.pars(self.fitfun)
-            chi2[self.fitfun.GetChisquare()] = pars
-
-        self.fitfun.SetParameters(
-            *chi2[min(chi2)]
-        )
-        print min(chi2) / self.fitfun.GetNDF(), max(chi2) / self.fitfun.GetNDF()
-
+        self._set_no_signal(self.fitfun, is_mixing)
+        hist.Fit(self.fitfun, "RQM", "")
         self._set_background_parameters(self.fitfun, self.background)
         return self.fitfun, self.background
 
+    def _fix_parameters_except_background(self, fitfun, background):
+        npar, nparb = fitfun.GetNpar(), background.GetNpar()
+        for i in range(0, npar - nparb):
+            fitfun.FixParameter(i,
+                fitfun.GetParameter(i)
+            )
+
+    def form_background(self, fname="background"):
+        if 'pol2' in self.opt.background:
+            bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
+            bfunc = ROOT.TF1(fname, bf % tuple([self.opt.fit_mass] * 2), *self.opt.fit_range)
+            # bfunc.SetParameters(0, 0, 0)
+            bfunc.FixParameter(0, 0)
+            bfunc.FixParameter(1, 0)
+            bfunc.FixParameter(2, 0)
+            return bfunc
+
+        if 'pol3' in self.opt.background:
+            bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2 + [3] * x^(x-%.3f)^3"
+            bfunc = ROOT.TF1(fname, bf % tuple([self.opt.fit_mass] * 3) , *self.opt.fit_range)
+            bfunc.SetParameters(0, 0, 0, 0)
+            return bfunc
+
+
+        bfunc = ROOT.TF1(fname, "pol1(0)", *self.opt.fit_range)
+        bfunc.SetParameters(0, 0, 0)
+        return bfunc
+
+    def _setup_parameters(self, fitfun, hist):
+        fitfun.SetParNames(*self.opt.par_names)
+        fitfun.SetLineColor(46)
+        fitfun.SetLineWidth(2)
+        fitfun.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
+        fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
+        fitfun.SetParLimits(4, *self.opt.cb_n_limits)
+
+        # if not self.opt.relaxed:
+        fitfun.FixParameter(3, self.opt.cb_alpha)
+        fitfun.FixParameter(4, self.opt.cb_n)
+
+        for i in range(fitfun.GetNpar() - self.background.GetNpar(), fitfun.GetNpar()):
+            fitfun.SetParameter(i, 0)

@@ -17,7 +17,8 @@ class MassesPlot(object):
 
         self._set_axis_limits(imass)
         self.draw(imass.mass, "histe")
-        self.draw(imass.background, color=ci)
+        self.draw(imass.sigf, color=ci + 1)
+        self.draw(imass.background, color=ci + 1)
 
         if imass.ratio:
             self.draw(imass.ratio, color=ci + 4)

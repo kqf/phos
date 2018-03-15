@@ -27,7 +27,6 @@ class SingleHistInput(object):
             self.histname
         )
 
-        print self.histname
         br.set_nevents(hist, inputs.events(inputs.filename, inputs.listname), self.norm)
         hist.priority = self.priority
         hist.label = inputs.label

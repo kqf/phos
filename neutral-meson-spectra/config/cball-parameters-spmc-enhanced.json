@@ -1,5 +1,5 @@
 {
-        "fitf": "CrystalBall",
+        "fitf": "CrystalBallEnhanced",
         "par_names": ["A", "M", "#sigma", "#alpha", "n", "a_{0}", "a_{1}", "a_{2}"],
 	"pi0":
 	{
@@ -15,7 +15,7 @@
                 "cb_n":              1.596,
                 "cb_alpha":          1.493,
                 "cb_n_limits":       [1.0, 3.5],
-                "cb_alpha_limits":   [0, 2],
+                "cb_alpha_limits":   [0, 1],
                 "background": "pol2"
 	},
 
