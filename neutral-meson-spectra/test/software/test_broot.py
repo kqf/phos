@@ -662,3 +662,13 @@ class TestTH(unittest.TestCase):
         self.assertNotEqual(hist1.GetEntries(), 0)
 
 
+    def test_subtracts_histogram(self):
+        hist = br.BH(ROOT.TH1F, "TestHistSubraction", "Test BROOT: Function to hist", 100, -4, 4)
+        for b in br.range(hist):
+            hist.Fill(hist.GetBinCenter(b), 5)
+        func = ROOT.TF1("testFunc", "5", -4, 4)
+        output = br.function2histogram(func, hist)
+        output.Add(hist, -1)
+        self.assertEqual(output.Integral(), 0)
+
+

@@ -165,7 +165,7 @@ class BROOT(object):
                 raise IOError('URL error {0}\nInvalid record {1}\n{2}'
                     .format(e.code, record, download.format(record)))
 
-            
+
     def __init__(self):
         super(BROOT, self).__init__()
 
@@ -408,10 +408,10 @@ class BROOT(object):
     def set_to_zero(klass, hist, rrange):
         a, bb = rrange
 
-        # NB: It should be reversed indicating that we want to 
+        # NB: It should be reversed indicating that we want to
         #     keep have clean interface for spmc: weight, (0, 1) - range
         #
-        
+
         bins = list(b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
         # NB: Don't include the last bin, othervise we will count twice the same point
         #     in BROOT.sum_trimm method
@@ -441,6 +441,13 @@ class BROOT(object):
         return ci
 
 
-
-
+    @classmethod
+    def function2histogram(klass, func, hist):
+        newhist = klass.copy(hist)
+        for b in klass.range(hist):
+            newhist.SetBinContent(
+                b,
+                func.Eval(hist.GetBinCenter(b))
+            )
+        return newhist
 
