@@ -21,7 +21,7 @@ class SpectrumExtractor(object):
             'chi2': self.chi2,
             'npi0': self.npi0,
             'cball_alpha': self.cball_alpha,
-            'cball_n': self.cball_n, 
+            'cball_n': self.cball_n,
             'background_chi2': self.background_chi2,
             'background_cball_alpha': self.background_cball_alpha,
             'background_cball_n': self.background_cball_n
@@ -64,9 +64,9 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def chi2(self, mass):
-        ndf = mass.sigf.GetNDF() 
+        ndf = mass.sigf.GetNDF()
         ndf = ndf if ndf > 0 else 1
-        return (mass.sigf.GetChisquare() / ndf, 0) 
+        return (mass.sigf.GetChisquare() / ndf, 0)
 
     @handle_empty_fit
     def background_cball_alpha(self, mass):
@@ -78,9 +78,9 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def background_chi2(self, mass):
-        ndf = mass.background_fitted.GetNDF() 
+        ndf = mass.background_fitted.GetNDF()
         ndf = ndf if ndf > 0 else 1
-        return (mass.background_fitted.GetChisquare() / ndf, 0) 
+        return (mass.background_fitted.GetChisquare() / ndf, 0)
 
     def eval(self, mass):
         return [f(mass) for f in self.quantities]
@@ -103,7 +103,7 @@ class OutputCreator(object):
         from array import array
         hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
 
-        if not hist.GetSumw2N(): 
+        if not hist.GetSumw2N():
             hist.Sumw2()
 
         hist.label = self.label
@@ -121,7 +121,7 @@ class OutputCreator(object):
 
 
     @classmethod
-    def output(klass, 
+    def output(klass,
             typename,
             data,
             order,
@@ -139,7 +139,7 @@ class OutputCreator(object):
 
         # Extract the data
         # Don't use format, as it confuses root/latex syntax
-        output = {quant: 
+        output = {quant:
             OutputCreator.output_histogram(
                 quant,
                 titles[quant],
@@ -149,7 +149,7 @@ class OutputCreator(object):
             ) for quant, datapoints in iter_collection
         }
 
-        # Convert to a proper datastructure 
+        # Convert to a proper datastructure
         return OutType(**output)
 
 

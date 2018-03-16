@@ -13,6 +13,7 @@ from vault.datavault import DataVault
 
 class TestFakeEfficiencyPi0(unittest.TestCase):
 
+    @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
             "LHC16-single-low.root": (0, 7),
@@ -23,7 +24,6 @@ class TestFakeEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
             DataVault().file("single #pi^{0}", "low"): (0, 7),

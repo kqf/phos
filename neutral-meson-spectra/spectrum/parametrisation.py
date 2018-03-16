@@ -259,6 +259,7 @@ class CrystalBallOnly(CrystalBall):
         self._setup_parameters(self.fitfun, hist)
         hist.Fit(self.fitfun, "RQM", "")
         self._set_background_parameters(self.fitfun, self.background)
+        self.background.SetParameters(0, 0, 0)
         return self.fitfun, self.background
 
     def _fix_parameters_except_background(self, fitfun, background):

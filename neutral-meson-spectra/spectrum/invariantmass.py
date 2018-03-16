@@ -72,6 +72,8 @@ class InvariantMass(object):
     def integration_region(self, value):
         if not value:
             return
+        # assert value[0] > 0, "Trying to set negative values {0}".format(value)
+
         self._integration_region = value
 
     def number_of_mesons(self):

@@ -83,7 +83,7 @@ class RangeEstimator(object):
 
         self.output = OutputCreator.output(
            'MassWidthOutput',
-            values, 
+            values,
             self._output,
             RawMass.ptedges(masses),
             titles,
@@ -91,7 +91,6 @@ class RangeEstimator(object):
         )
 
         ranges = self._fit_ranges(self.output, loggs)
-
         for mass, region in zip(masses, ranges):
             mass.integration_region = region
 
@@ -137,8 +136,8 @@ class RangeEstimator(object):
         loggs.update("range_estimator", [mass, sigma], mergable=True)
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
-        return map(mass_range, pt_values) 
-        
+        return map(mass_range, pt_values)
+
     def fit_mass(self, mass):
         return self._fit_quantity(mass,
             self.opt.mass_func,

@@ -66,12 +66,12 @@ class ReducePipeline(object):
     def __init__(self, parallel, function):
         super(ReducePipeline, self).__init__()
         self.parallel = parallel
-        self.function = function 
+        self.function = function
 
     def transform(self, inputs, loggs):
         updated = self.parallel.transform(inputs, loggs)
         loggs.update("reduced_output", [updated])
-        return self.function(updated) 
+        return self.function(updated)
 
 
 class RatioUnion(object):

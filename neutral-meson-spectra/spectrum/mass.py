@@ -14,7 +14,7 @@ class BackgroundEstimator(object):
         bgrf.SetLineColor(8)
         bgrf.SetFillColor(8)
         bgrf.SetFillStyle(3436)
-        # mass.background = bgrf.GetHistogram()
+        # mass.background = br.function2histogram(bgrf, mass.mass)
         mass.background = bgrf
         mass.background_fitted = sigf
         return mass
