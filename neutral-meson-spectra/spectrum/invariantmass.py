@@ -75,10 +75,11 @@ class InvariantMass(object):
         self._integration_region = value
 
     def number_of_mesons(self):
+        # print self.integration_region
         area, areae = br.area_and_error(self.signal, *self.integration_region)
         # self.area_error = area, areae
-        print self.signal.Integral(), self.signal.GetEntries() ** 0.5
-        return self.signal.Integral(), self.signal.GetEntries() ** 0.5
+        # print self.signal.Integral(), self.signal.GetEntries() ** 0.5
+        # return self.signal.Integral(), self.signal.GetEntries() ** 0.5
         return area, areae
 
     def fitted(self):

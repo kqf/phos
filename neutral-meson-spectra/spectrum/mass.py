@@ -14,6 +14,7 @@ class BackgroundEstimator(object):
         bgrf.SetLineColor(8)
         bgrf.SetFillColor(8)
         bgrf.SetFillStyle(3436)
+        # mass.background = bgrf.GetHistogram()
         mass.background = bgrf
         mass.background_fitted = sigf
         return mass
@@ -30,6 +31,11 @@ class SignalExtractor(object):
         # Subtraction
         mass.signal = mass.mass.Clone()
         mass.signal.Add(mass.background, -1.)
+
+
+        # mass.signal = mass.mass.Clone()
+        # mass.signal.Sumw2(True)
+        # mass.signal.Add(mass.mass, mass.background.GetHistogram(), 1,  -1.)
         # TODO: SetAxisRange aswell
         mass.signal.SetAxisRange(*mass.xaxis_range)
         mass.signal.GetYaxis().SetTitle("Real - background")
