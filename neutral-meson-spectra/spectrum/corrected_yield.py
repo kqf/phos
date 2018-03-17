@@ -15,6 +15,7 @@ class CorrectedYield(object):
 
     def evaluate(self):
         scomputor = Spectrum(self.input, self.options)
+        # TODO: Add loggs here
         spectrum = scomputor.evaluate().spectrum
 
         corrected_yield = br.ratio(spectrum, self.efficiency)

@@ -1,6 +1,8 @@
 import sys
 import unittest
 
+import spectrum.sutils as su
+
 import ROOT
 
 class WeighSingleParticleMC(unittest.TestCase):
@@ -15,7 +17,7 @@ class WeighSingleParticleMC(unittest.TestCase):
         fitf.SetLineColor(46)
 
         cyield = cspectrum.evaluate()
-        canvas = adjust_canvas(gcanvas(1, 1, True))
+        canvas = su.adjust_canvas(su.gcanvas(1, 1, True))
         cyield.Fit(fitf)
         cyield.Draw()
 
@@ -23,7 +25,7 @@ class WeighSingleParticleMC(unittest.TestCase):
         ROOT.gPad.SetLogy()
         parameters = map(fitf.GetParameter, range(fitf.GetNpar()))
         print parameters
-        wait(save=True)
+        su.wait(save=True)
 
 
     @unittest.skip('')
@@ -36,5 +38,3 @@ class WeighSingleParticleMC(unittest.TestCase):
 
         diff = cmpr.Comparator()
         w1w0 = diff.compare(w1, w0)
-
-        
