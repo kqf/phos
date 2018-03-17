@@ -110,7 +110,7 @@ class Options(object):
         options = Options(
             particle=particle,
             ptrange='config/pt-spmc.json',
-            spectrumconf='config/spectrum_spmc.json',
+            spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
             signalp='config/cball-parameters-spmc-enhanced.json'
         )
