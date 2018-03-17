@@ -112,10 +112,10 @@ class Options(object):
             ptrange='config/pt-spmc.json',
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
-            signalp='config/cball-parameters-spmc-enhanced.json'
+            signalp='config/cball-parameters-spmc-signal.json'
         )
         options.spectrum.fit_range = pt_fit_range
-        options.invmass.use_mixed = False
+        options.invmass.use_mixed = True
         return options
 
 

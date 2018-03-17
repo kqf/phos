@@ -24,6 +24,7 @@ class MassesPlot(object):
             self.draw(imass.ratio, color=ci + 4)
 
         self.draw(imass.signal, color=ci + 2)
+        self.draw(imass.bgrf, color=ci + 5)
         self._draw_line(imass)
         pad.Update()
 

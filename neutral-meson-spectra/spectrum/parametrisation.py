@@ -245,7 +245,7 @@ class CrystalBallOnly(CrystalBall):
         fitfun.FixParameter(4, self.opt.cb_n)
 
         for i in range(fitfun.GetNpar() - self.background.GetNpar(), fitfun.GetNpar()):
-            fitfun.SetParameter(i, 0) 
+            fitfun.SetParameter(i, 0)
 
 class CrystalBallOnly(CrystalBall):
     def __init__(self, options):
