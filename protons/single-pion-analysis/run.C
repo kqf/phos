@@ -46,7 +46,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
 
 
-    TString msg = "Single pion analysis + weights iteration 2";
+    TString msg = "Single pion analysis + weights iteration 0 - no nonlinearity";
     msg += " with tender option ";
     msg += decalibration;
 
