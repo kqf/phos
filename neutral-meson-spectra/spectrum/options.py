@@ -119,6 +119,22 @@ class Options(object):
         return options
 
 
+class CompositeOptions(object):
+
+    def __init__(self, steps, mergeranges):
+        super(CompositeOptions, self).__init__()
+        self.steps = steps
+        self.mergeranges = mergeranges
+
+    @classmethod
+    def spmc(klass, unified_input, particle):
+        ranges = [rr for rr in unified_input.values()]
+        options = [Options.spmc(rr, particle) for rr in ranges]
+        names = ["{0}-{1}".format(*rr) for rr in ranges]
+        return klass(zip(names, options), ranges)
+
+
+
 class EfficiencyOptions(object):
 
     def __init__(self, genname='hPt_#pi^{0}_primary_'):

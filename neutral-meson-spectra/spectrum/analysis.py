@@ -2,25 +2,51 @@
 
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
 from output import AnalysisOutput
-from options import Options
-from pipeline import Pipeline
+from options import Options, CompositeOptions
+from pipeline import Pipeline, ParallelPipeline, ReducePipeline
+from transformer import TransformerBase
+from broot import BROOT as br
 
 
-class Analysis(object):
+class Analysis(TransformerBase):
 
     def __init__(self, options=Options()):
         super(Analysis, self).__init__()
         self.options = options
-        self._loggs = None
-
-    def transform(self, inputs, loggs):
-        pipeline = Pipeline([
-            ("input", inputs),
-            ("slice", DataSlicer(self.options.pt)),
-            ("fitmasses", MassFitter(self.options.invmass)),
-            ("ranges", RangeEstimator(self.options.spectrum)),
-            ("data", DataExtractor(self.options.output))
+        self.pipeline = Pipeline([
+            ("slice", DataSlicer(options.pt)),
+            ("fitmasses", MassFitter(options.invmass)),
+            ("ranges", RangeEstimator(options.spectrum)),
+            ("data", DataExtractor(options.output))
         ])
 
-        output = pipeline.transform(None, loggs)
-        return output
+
+class CompositeAnalysis(TransformerBase):
+
+    def __init__(self, options):
+        super(CompositeAnalysis, self).__init__()
+        self.mergeranges = options.mergeranges
+        self.pipeline = ReducePipeline(
+            ParallelPipeline([
+                ("analysis-{0}".format(title), Analysis(opt)) for title, opt in options.steps
+            ]),
+            self.merge
+        )
+
+    def merge(self, hists):
+        if len(hists) == 2:
+            spectra = map(lambda x: x.spectrum, hists)
+            for spec in spectra:
+                bin = spec.FindBin(self.mergeranges[0][1])
+                area = spec.Integral(bin - 1, bin + 1)
+                if area:
+                    spec.Scale(1. / area)
+
+        # Transpose
+        pairs = zip(*hists)
+        truncated = [br.sum_trimm(obs_pt, self.mergeranges) for obs_pt in pairs]
+
+        # Use the same container as normal analysis
+        # TODO: Fix me?
+        results = hists[0]._make(truncated)
+        return results

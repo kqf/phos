@@ -15,12 +15,13 @@ class DataSlicer(object):
         self.opt = options
 
     def transform(self, inputs, loggs):
+        input_data = inputs.transform()
 
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
 
-        common_inputs = lambda x, y: RawMass(inputs, x, y)
+        common_inputs = lambda x, y: RawMass(input_data, x, y)
         return map(common_inputs,
             intervals,
             self.opt.rebins
