@@ -12,8 +12,8 @@ class TestCompositeSpectrum(unittest.TestCase):
 
    def test_interface(self):
         inputs = {
-            Input(DataVault().file("single #pi^{0}", "low"), 'PhysEffOnlyTender'): (0, 7), 
-            Input(DataVault().file("single #pi^{0}", "high"), 'PhysEffOnlyTender'): (7, 20)
+            DataVault().input("single #pi^{0}", "low"): (0, 7),
+            DataVault().input("single #pi^{0}", "high"): (7, 20)
         }
 
         spectrum_estimator = CompositeSpectrum(inputs)
@@ -28,4 +28,3 @@ class TestCompositeSpectrum(unittest.TestCase):
         diff = Comparator()
         for hist in histograms:
             diff.compare(hist)
-   

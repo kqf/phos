@@ -34,7 +34,7 @@ class SingleHistInput(object):
 
 
 class Input(object):
-    def __init__(self, filename, listname, histname = 'MassPt', label='', mixprefix = 'Mix'):
+    def __init__(self, filename, listname, histname='MassPt', label='', mixprefix = 'Mix'):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname

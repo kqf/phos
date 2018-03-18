@@ -1,5 +1,6 @@
 import json
 import hashlib
+from spectrum.input import Input
 
 class DataVault(object):
     def __init__(self):
@@ -24,7 +25,7 @@ class DataVault(object):
         if hsum_real != hsum_nominal:
             raise IOError(msg)
 
-            
+
     def dataset(self, production, version="latest"):
         return self._ledger[production][version]
 
@@ -34,3 +35,9 @@ class DataVault(object):
         filename = data["file"]
         self._validate_dataset(filename, data["hsum"])
         return filename
+
+    def input(self, production, version="latest", listname=None, histname='MassPt'):
+        filename = self.file(production, version)
+        if not listname:
+            listname = self.dataset(production, version)['default_selection']
+        return Input(filename, str(listname), histname)
