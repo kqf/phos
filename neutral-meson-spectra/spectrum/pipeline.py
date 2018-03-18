@@ -59,8 +59,6 @@ class ParallelPipeline(object):
         return outputs
 
 
-
-
 class ReducePipeline(object):
 
     def __init__(self, parallel, function):

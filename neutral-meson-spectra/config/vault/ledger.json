@@ -7,6 +7,13 @@
 			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
 		},
 
+		"LHC17 qa1": {
+			"file": "input-data/data/LHC17/qa1/LHC17.root",
+			"default_selection": "Phys",
+			"hsum": "816349a7246b6e6d8f348151882d64dc88887fad03331c0a23647464a8e4b7e4",
+			"description": "Raw data without any corrections. Runs are not selected yet"
+		},
+
 		"uncorrected": {
 			"file": "input-data/data/LHC16/uncorrected/LHC16.root",
 			"default_selection": "Phys",
