@@ -1,9 +1,42 @@
 # Order-only prerequisite is marked by "|" character
 
-PERIOD=LHC17m
-TRAIN_CHILD=9
 
-NAME=iteration0
+TRAIN=345_20180305-1550_child
+# TRAIN_CHILD=1
+# PERIOD=LHC17c
+
+# TRAIN_CHILD=2
+# PERIOD=LHC17e
+
+# TRAIN_CHILD=3
+# PERIOD=LHC17f
+
+# TRAIN_CHILD=4
+# PERIOD=LHC17g
+
+# TRAIN_CHILD=5
+# PERIOD=LHC17i
+
+# TRAIN_CHILD=6
+# PERIOD=LHC17j
+
+# TRAIN_CHILD=7
+# PERIOD=LHC17k
+
+# TRAIN_CHILD=8
+# PERIOD=LHC17l
+
+# TRAIN_CHILD=9
+# PERIOD=LHC17m
+
+# TRAIN_CHILD=10
+# PERIOD=LHC17o
+
+TRAIN_CHILD=11
+PERIOD=LHC17r
+
+
+NAME=iteration1
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
@@ -11,7 +44,7 @@ FILE_NAME=CaloCellsQA.root
 DIRECTORY=../results/$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
-allplots: | $(DIRECTORY)/CaloCellsQA.root 
+allplots: | $(DIRECTORY)/CaloCellsQA.root
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root")'
 	@ mkdir -p $(IM)
 	@ mv *.pdf $(IM)
@@ -25,7 +58,7 @@ $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
-	./download_trains.sh $(PERIOD) $(DIRECTORY) $(TRAIN_CHILD)
+	./download_trains.sh $(PERIOD) $(DIRECTORY) $(TRAIN)_$(TRAIN_CHILD)
 	@echo -e "\x07"
 
 trigger: | $(DIRECTORY)
