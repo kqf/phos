@@ -68,7 +68,8 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 		selections->Add(new AliPP13NonlinearitySelection("PhysNonlinRaw", "Raw nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
 
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));	
+		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
+		selections->Add(new AliPP13PionToKaonRatio("PionToKaonRatio", "MC Selection for pion/kaon ratio", cuts_pi0, &mc_weights));
 
 		delete & mc_weights;
 		delete & mc_weights_only;
