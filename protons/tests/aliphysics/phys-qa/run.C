@@ -38,7 +38,7 @@ void run(
         return;
 
     manager->PrintStatus();
-    alienHandler->SetOutputFiles("AnalysisResults.root");
+    alienHandler->SetOutputFiles("CaloCellsQA.root");
     manager->StartAnalysis (runmode);
     gObjectTable->Print( );
 }

@@ -1,12 +1,12 @@
-DATASET = LHC16i-muon-calo-pass1
-DPART = second
-MC = kFALSE
-OUTDIR = results/data/corrected/
+# DATASET = LHC16i-muon-calo-pass1
+# DPART = second
+# MC = kFALSE
+# OUTDIR = results/data/corrected/
 
-#DATASET = LHC17d20a2_extra
-#DPART = second
-#MC = kTRUE
-#OUTDIR = results/mc/pythia
+DATASET = LHC17d20a2_extra
+DPART = first
+MC = kTRUE
+OUTDIR = results/mc/pythia
 
 TEST_SELECTION = PhysTender
 
@@ -19,7 +19,7 @@ grid: | %.cxx
 
 
 %.cxx:
-	@$(call funlink)	
+	@$(call funlink)
 	@# Dirty?!? hack to avoid grid(plugin) limitations.
 	@# Add all necessary taks
 	@$(call link_sources,../../qa/qa-task,AddTaskCaloCellsQAPt.C "*.h")
@@ -43,11 +43,11 @@ download: | %.cxx
 
 # Ignore problems with ALICE::RRC-KI::SE
 force-download:
-	@mkdir -p tmp 
+	@mkdir -p tmp
 	@rm -rf LHC16o.root
 	@$(call save_runs,$(ALIEN_HOME)/pp-phos-$(DATASET),AnalysisResults.root,tmp)
 	hadd LHC16o.root tmp/*.root
-	@rm -rf tmp 
+	@rm -rf tmp
 	@echo -e "\x07"
 
 
@@ -69,11 +69,11 @@ clean:
 	rm *.so *.d *~ Task*
 
 unlink:
-	$(call funlink) 	
+	$(call funlink)
 
-	
+
 define funlink
-	find -type l -delete	
+	find -type l -delete
 endef
 
 # output direcotry, filename.root, where to save

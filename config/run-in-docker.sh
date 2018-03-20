@@ -1,4 +1,4 @@
-local_path=$HOME/Study/phos/protons/analysis-task-pp/
+local_path=$HOME/Study/phos/protons/tasks/analysis-task-pp/
 docker_path=/alice/AliPhysics/PWGGA/PHOSTasks/PHOS_LHC16_pp
 image=aliworker:physics
 

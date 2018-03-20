@@ -22,7 +22,7 @@ void LoadAnalysisLibraries()
     gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
     gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
     gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
-    gROOT->LoadMacro("AliPP13PionToKaonRatio.cxx+");
+    gROOT->LoadMacro("AliPP13PionToKaonRatioMC.cxx+");
     gROOT->LoadMacro("AliPP13NonlinearitySelection.cxx+");
     gROOT->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
     gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
@@ -48,7 +48,7 @@ void LoadAnalysisLibraries()
 	    "AliPP13TagAndProbeSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
-	    "AliPP13PionToKaonRatio.cxx " +
+	    "AliPP13PionToKaonRatioMC.cxx " +
 	    "AliPP13MesonSelectionMC.cxx " +
 	    "AliPP13NonlinearitySelection.cxx " +
 	    "AliPP13EfficiencySelectionMC.cxx " +
@@ -84,8 +84,8 @@ void LoadAnalysisLibraries()
 	    "AliPP13TagAndProbeSelection.h " +
 	    "AliPP13PhysPhotonSelectionMC.cxx " +
 	    "AliPP13PhysPhotonSelectionMC.h " +
-	    "AliPP13PionToKaonRatio.cxx " +
-	    "AliPP13PionToKaonRatio.h " +
+	    "AliPP13PionToKaonRatioMC.cxx " +
+	    "AliPP13PionToKaonRatioMC.h " +
 	    "AliPP13PythiaInfoSelection.cxx " +
 	    "AliPP13PythiaInfoSelection.h " +
 	    "AliPP13NonlinearitySelection.h " +
@@ -99,6 +99,6 @@ void LoadAnalysisLibraries()
 	    "AliPP13MixingSample.cxx " +
 	    "AliPP13MixingSample.h " +
 	    "AliAnalysisTaskPP13.cxx " +
-	    "AliAnalysisTaskPP13.h " 
+	    "AliAnalysisTaskPP13.h "
 	);
 }
