@@ -70,7 +70,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13PionToKaonRatio("PionToKaonRatio", "MC Selection for pion/kaon ratio", cuts_pi0, &mc_weights));
+		selections->Add(new AliPP13PionToKaonRatioMC("PionToKaonRatio", "MC Selection for pion/kaon ratio", cuts_pi0, &mc_weights));
 	}
 
 	// Setup task

@@ -2,7 +2,7 @@
 // #include "iterator"
 
 // --- Custom header files ---
-#include "AliPP13PionToKaonRatio.h"
+#include "AliPP13PionToKaonRatioMC.h"
 
 // --- ROOT system ---
 #include <TParticle.h>
@@ -22,16 +22,19 @@
 using namespace std;
 
 
-ClassImp(AliPP13PionToKaonRatio);
+ClassImp(AliPP13PionToKaonRatioMC);
 
 
 //________________________________________________________________
-void AliPP13PionToKaonRatio::InitSelectionHistograms()
+void AliPP13PionToKaonRatioMC::InitSelectionHistograms()
 {
 	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
 	{
 		fAll[i->first] = new TH1F(Form("hPt_%s_", i->second.Data()), Form("Generated Spectrum of %s; p_{T}, GeV/c", i->second.Data()), 200, 0, 20);
+		fListOfHistos->Add(fAll[i->first]);
+
 		fPrimary[i->first] = new TH1F(Form("hPt_%s_primary", i->second.Data()), Form("Generated Spectrum of primary %s; p_{T}, GeV/c", i->second.Data()), 200, 0, 20);
+		fListOfHistos->Add(fPrimary[i->first]);
 	}
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
@@ -43,7 +46,7 @@ void AliPP13PionToKaonRatio::InitSelectionHistograms()
 }
 
 
-void AliPP13PionToKaonRatio::ConsiderGeneratedParticles(const EventFlags & flags)
+void AliPP13PionToKaonRatioMC::ConsiderGeneratedParticles(const EventFlags & flags)
 {
 	if (!flags.fMcParticles)
 		return;
@@ -68,7 +71,7 @@ void AliPP13PionToKaonRatio::ConsiderGeneratedParticles(const EventFlags & flags
 
 
 //________________________________________________________________
-Bool_t AliPP13PionToKaonRatio::IsPrimary(const AliAODMCParticle * particle) const
+Bool_t AliPP13PionToKaonRatioMC::IsPrimary(const AliAODMCParticle * particle) const
 {
 	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
 	Double_t rcut = 1.;
