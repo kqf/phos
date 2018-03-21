@@ -1,6 +1,6 @@
-#include "../setup/environment.h"
+#include "../../setup/environment.h"
 
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
@@ -20,8 +20,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         enablePileupCuts
     );
 
-
-
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     TString decalibration = "Run2Default";
@@ -29,19 +27,19 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         "PHOSTenderTask",  // Task Name
         "PHOStender",      // Container Name
         decalibration,     // Important: de-calibration
-         1,                // Important: reco pass 
+         1,                // Important: reco pass
          kTRUE             // Important: is MC?
     );
 
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
-    supply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
+    supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
     // ZS threshold in unit of GeV
     Double_t zs_threshold = 0.020;
     supply->ApplyZeroSuppression(zs_threshold);
 
 
-    gROOT->LoadMacro("../setup/values_for_dataset.h+");
+    gROOT->LoadMacro("../../setup/values_for_dataset.h+");
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
 

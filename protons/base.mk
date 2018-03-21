@@ -11,7 +11,7 @@
 # TEST_SELECTION = PhysTender
 
 grid: | %.cxx
-	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink)
 	@echo $(DATASET) $(DPART) >> started_jobs.log
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Started grid analysis on $(DPART) part of $(DATASET)" >> .runhistory
@@ -19,14 +19,14 @@ grid: | %.cxx
 
 
 terminate: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink)
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
 	@echo -e "\a"
 
 
 download: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink)
 	make upload
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
@@ -46,13 +46,13 @@ force-download:
 
 
 test: | %.cxx
-	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink) 
+	root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink)
 	@echo "Local analysis" >> .runhistory
 	@$(call upload_test,AnalysisResults,test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
 	@# There are problems with python under alienv environment
 	@# Therefore it's necessary to use all these tweaks
-	./compare.py reference.root test-analysis-pp.root $(TEST_SELECTION) 2> /dev/null | grep -v Aborted  || echo 'Finished!' 
+	./compare.py reference.root test-analysis-pp.root $(TEST_SELECTION) 2> /dev/null | grep -v Aborted  || echo 'Finished!'
 	@$(call funlink) && echo "Directory is clean"
 	@echo -e "\a"
 
@@ -60,7 +60,8 @@ upload:
 	$(call upload_result,AnalysisResults,$(DATASET))
 
 clean:
-	rm *.so *.d *~ Task*
+	$(call funlink)
+	rm -f *.so *.d *~ Task*
 
 unlink:
 	$(call funlink)
@@ -87,7 +88,8 @@ endef
 
 define upload_result
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)@ALICE::GSI::SE2
+	-alien_mkdir -p $(ALIEN_HOME)/$(OUTDIR)/
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)/@ALICE::GSI::SE2
 endef
 
 define upload_test
