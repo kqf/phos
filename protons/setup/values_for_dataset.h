@@ -9,7 +9,7 @@
 #include "iterator"
 
 
-void values_for_dataset(std::vector<Int_t> & v, TString period = "LHC10b", TString datsetspath = "../datasets/")
+void values_for_dataset(std::vector<Int_t> & v, TString period = "LHC10b", TString datsetspath = "../../datasets/")
 {
 	cout << datsetspath + period << endl;
 	std::ifstream file(datsetspath + period + ".txt");

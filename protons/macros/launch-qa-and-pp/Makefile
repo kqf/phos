@@ -2,7 +2,7 @@ include ../../base.mk
 
 PROTONS_PATH=../../
 
-DATASET = LHC17d20a2_extras
+DATASET = LHC17d20a2_extra
 DPART = first
 MC = kTRUE
 OUTDIR = results/mc/pythia
