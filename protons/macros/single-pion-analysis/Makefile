@@ -3,6 +3,7 @@ include ../../base.mk
 #  >>>>>>>>  Don't change this <<<<<<<<<<<<
 DPART = first
 MC = kTRUE
+PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 DATASET = LHC17j3b1

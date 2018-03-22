@@ -10,7 +10,11 @@
 
 # TEST_SELECTION = PhysTender
 
+# PROTONS_PATH=../../
+
+
 grid: | %.cxx
+	@rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink)
 	@echo $(DATASET) $(DPART) >> started_jobs.log
 	@$(call funlink) && echo "Directory is clean"
@@ -19,6 +23,7 @@ grid: | %.cxx
 
 
 terminate: | %.cxx
+	@rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink)
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
@@ -26,6 +31,7 @@ terminate: | %.cxx
 
 
 download: | %.cxx
+	@rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink)
 	make upload
 	@$(call funlink) && echo "Directory is clean"
@@ -91,6 +97,7 @@ define upload_result
 	-alien_mkdir -p $(ALIEN_HOME)/$(OUTDIR)/
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)/@ALICE::GSI::SE2
 endef
+
 
 define upload_test
 	mv $(1).root $(2).root
