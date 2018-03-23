@@ -7,9 +7,12 @@ class SpectrumExtractor(object):
 
     def handle_empty_fit(f):
         def wrapper(self, mass):
-            if not mass.fitted():
+            if not mass.fitted(): # TODO: This should be removed?
                 return (0, 0)
-            return f(self, mass)
+            try:
+                return f(self, mass)
+            except AttributeError:
+                return (0, 0)
         return wrapper
 
     def __init__(self, order = []):
@@ -78,6 +81,9 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def background_chi2(self, mass):
+        if not mass.background_fitted:
+            return (0, 0)
+
         ndf = mass.background_fitted.GetNDF()
         ndf = ndf if ndf > 0 else 1
         return (mass.background_fitted.GetChisquare() / ndf, 0)
@@ -151,6 +157,3 @@ class OutputCreator(object):
 
         # Convert to a proper datastructure
         return OutType(**output)
-
-
-

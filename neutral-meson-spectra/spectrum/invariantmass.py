@@ -6,8 +6,6 @@ from parametrisation import PeakParametrisation
 from sutils import gcanvas, ticks, in_range
 from broot import BROOT as br
 
-# TODO: Move VisualizeMass to separate object ptplotter
-
 class RawMass(object):
 
     def __init__(self, inhists, pt_range, nrebin):
@@ -62,6 +60,7 @@ class InvariantMass(object):
         self._integration_region = self.signalp.opt.fit_range
         self.ratio = None
         self.signal = None
+        self.background_fitted = None
 
     @property
     def integration_region(self):

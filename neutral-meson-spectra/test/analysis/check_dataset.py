@@ -16,7 +16,7 @@ from vault.datavault import DataVault
 
 
 
-# This test is needed to check if the dataset does contain 
+# This test is needed to check if the dataset does contain
 # correct spectrum, invariant mass distribution is ok, etc.
 
 class TestDataSetForConsistency(unittest.TestCase):

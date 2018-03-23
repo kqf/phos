@@ -4,6 +4,7 @@ from spectrum.spectrum import Spectrum
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.sutils import gcanvas, adjust_canvas
+from vault.datavault import DataVault
 
 import test.check_default
 import unittest
@@ -34,15 +35,15 @@ def run_analysis(options, infile, selection):
 class CheckModules(test.check_default.CheckDefault):
 
     def testPi0(self):
-        opt = Options(mode='d')
+        opt = Options()
         opt.pt.config = 'config/test_different_modules.json'
-        self.results = run_analysis(opt, 'input-data/LHC16.root', 'PhysTender')
+        self.results = run_analysis(opt, DataVault().file("data"), 'Phys')
         self.c1 = adjust_canvas(gcanvas())
 
     def testEta(self):
-        opt = Options(particle='eta', mode='d')
+        opt = Options(particle='eta')
         opt.pt.config = 'config/test_different_modules.json'
-        self.results = run_analysis(opt, 'input-data/LHC16.root', 'EtaTender')
+        self.results = run_analysis(opt, DataVault().file("data"), 'Eta')
         self.c1 = adjust_canvas(gcanvas())
 
 
