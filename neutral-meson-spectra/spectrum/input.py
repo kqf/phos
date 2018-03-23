@@ -63,9 +63,13 @@ class Input(object):
 
 
     @classmethod
-    def read_per_module(klass, filename, listname,
-        histname = 'MassPt', label='', mixprefix='Mix'):
-        names = ['SM%dSM%d' % (i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]
+    def read_per_module(klass, filename, listname, histname='MassPt',
+        label='', mixprefix='Mix', same_module=False):
+        pairs = [(i, j) for i in range(1, 5) for j in range(i, 5) if abs(i - j) < 2]
+        if same_module:
+            pairs = [pair for pair in pairs if pair[0] == pair[1]]
+
+        names = ['SM{0}SM{1}'.format(*pair) for pair in pairs]
 
         output = [klass(
             filename,

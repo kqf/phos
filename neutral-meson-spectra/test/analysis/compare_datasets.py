@@ -7,7 +7,7 @@ from spectrum.broot import BROOT as br
 
 from vault.datavault import DataVault
 
-# TODO: Use parallel pipeline?
+# TODO: Use parallel pipeline
 def compare_for_particle(particle):
     new_data = Spectrum(
         DataVault().input("data", "LHC17 qa1"),
