@@ -5,7 +5,8 @@ PROTONS_PATH=../../
 DATASET = LHC17d20a2_extra
 DPART = first
 MC = kTRUE
-OUTDIR = results/mc/pythia
+OUTDIR = results/mc/pythia/test_pion_to_kaon_ratio
+
 
 TEST_SELECTION = PhysTender
 

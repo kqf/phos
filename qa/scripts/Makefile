@@ -1,7 +1,8 @@
 # Order-only prerequisite is marked by "|" character
 
 
-TRAIN=345_20180305-1550_child
+# TRAIN=345_20180305-1550_child
+TRAIN=354_20180320-1238_child
 # TRAIN_CHILD=1
 # PERIOD=LHC17c
 
@@ -36,7 +37,7 @@ TRAIN_CHILD=11
 PERIOD=LHC17r
 
 
-NAME=iteration1
+NAME=iteration2
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
@@ -100,9 +101,9 @@ save-iteration:
 
 # this one requires alienv
 # it's not default tasks as it needs to be run only once
-images:  
+images:
 	# clean the directory befor starting
-	# don't merge multiple times 
+	# don't merge multiple times
 	make clean
 
 	# Run QA in full mode
@@ -141,6 +142,6 @@ images:
 
 	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
 	@convert $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/pi0.png
-	
+
 	@if [ -z $$ALICE_ENV ]; then pdfunite $(IM)/hNEventsPerRunIndex.pdf $(IM)/ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf $(IM)/hPi0NumRuns.pdf $(IM)/hPi0MassSigmaRuns.pdf $(IM)/$(NAME).pdf ;fi	
-	@echo -e "\x07"
+	@echo -e "\a"
