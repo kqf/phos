@@ -25,14 +25,15 @@ class VisHub(object):
 class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
-    def __init__(self, size, rrange, crange, stop, oname):
+    def __init__(self, size, rrange, crange, stop, oname, labels):
         super(MultipleVisualizer, self).__init__()
         self.size = size
         self.cache = []
         self.crange = crange
         self.oname = oname
         self.stop = stop
-        
+        self.labels = labels
+
     @br.init_inputs
     def compare_visually(self, hists, ci, pad = None):
         canvas = sl.gcanvas(self.size[0], self.size[1], resize = True)
@@ -40,6 +41,10 @@ class MultipleVisualizer(object):
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         legend.SetTextSize(0.04)
+
+        if self.labels:
+            for h, l in zip(hists, self.labels):
+                h.label = l
 
         first_hist = sorted(hists, key=lambda x: x.priority)[0]
         try:
@@ -74,7 +79,7 @@ class MultipleVisualizer(object):
         if pad:
             return None
 
-        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
+        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
         sl.wait(oname, save=True, draw=self.stop)
         return None
@@ -93,10 +98,10 @@ class MultipleVisualizer(object):
         oname = self.output_prefix + name
         return oname
 
-        
+
 class Visualizer(MultipleVisualizer):
-    def __init__(self, size, rrange, crange, stop, oname):
-        super(Visualizer, self).__init__(size, rrange, crange, stop, oname)
+    def __init__(self, size, rrange, crange, stop, oname, labels):
+        super(Visualizer, self).__init__(size, rrange, crange, stop, oname, labels)
         self.rrange = rrange
 
     def _canvas(self, hists):

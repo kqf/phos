@@ -10,27 +10,27 @@ class Comparator(object):
 
     ci, colors = br.define_colors()
 
-    def __init__(self, size = (1, 1), rrange = (), crange = (), stop = True, oname = ''):
+    def __init__(self, size=(1, 1), rrange=(), crange=(), stop=True, oname='', labels=None):
         super(Comparator, self).__init__()
-        self.vi = VisHub(size, rrange, crange, stop, oname)
+        self.vi = VisHub(size, rrange, crange, stop, oname, labels)
 
 
     def compare(self, *args):
         contains_objs = lambda x: all(not '__iter__' in dir(i) for i in x)
 
-        # Halndle coma separated histograms 
+        # Halndle coma separated histograms
         #
         if contains_objs(args):
             return self.vi.compare_visually(args, self.ci)
 
-        # Halndle single list of histograms 
+        # Halndle single list of histograms
         #
         if len(args) == 1 and contains_objs(args[0]):
             return self.vi.compare_visually(args[0], self.ci)
 
 
-        # Halndle two lists of histograms 
-        # 
+        # Halndle two lists of histograms
+        #
         if len(args) == 2 and  all(map(contains_objs, args)):
             return self.compare_set_of_histograms(args)
 

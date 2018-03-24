@@ -36,8 +36,10 @@ class DataVault(object):
         self._validate_dataset(filename, data["hsum"])
         return filename
 
-    def input(self, production, version="latest", listname=None, histname='MassPt'):
+    # TODO: Use *args and **kwargs here
+    #
+    def input(self, production, version="latest", listname=None, histname='MassPt', label=''):
         filename = self.file(production, version)
         if not listname:
             listname = self.dataset(production, version)['default_selection']
-        return Input(filename, str(listname), histname)
+        return Input(filename, str(listname), histname, label=label)
