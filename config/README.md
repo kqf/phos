@@ -34,7 +34,7 @@ aliBuild build AliPhysics
 
 The last step is to save changes
 ```bash
-# In running docker container 
+# In running docker container
 hostname
 
 # copy the output of this command, it's a container ID
@@ -54,4 +54,17 @@ docker run -v $HOME/path/to/workdir/:/alice/AliPhysics/PWGGA/PHOSTasks/workdir -
 
 # For this repo run the script
 ./run-in-docker.sh
+```
+
+# Development
+To modify the library structure do the following
+
+```bash
+# Add source files here in alphabetical order
+#
+vim $ALICE_PHYSICS/PWGGA/PHOSTasks/CMakeLists.txt
+
+# Link sources in the hierarchical order
+#
+vim $ALICE_PHYSICS/PWGGA/PHOSTasks/PWGGAPHOSTasksLinkDef.h
 ```
