@@ -6,7 +6,7 @@ import os
 import json
 import copy
 import array
-import urllib2          
+import urllib2
 from collections import namedtuple
 
 ROOT.TH1.AddDirectory(False)
