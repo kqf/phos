@@ -36,9 +36,14 @@
 			"default_selection": "Phys",
 			"hsum": "deda91c619113a9f7f8364a0f85e0cfabf7cf181adefe69df90654e2bcb9a117",
 			"description": "Pythia8 with all corrections, for feeddown correction"
+		},
+		"kaon2pion": {
+			"file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
+			"default_selection": "PionToKaonRatioOnlyTender",
+			"hsum": "b0b8a2935494c7d99d3008e8ff05311bf46b725934b6e3b1f0fc3292d26aac1b",
+			"description": "Pythia8 with all corrections, for feeddown correction"
 		}
 	},
-
 	"single #pi^{0}":
 	{
 		"low": {
