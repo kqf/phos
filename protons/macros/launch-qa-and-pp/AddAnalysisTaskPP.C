@@ -3,13 +3,13 @@
 void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	LoadAnalysisLibraries();
-	
+
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
-	if (!mgr) 
+	if (!mgr)
 	{
 		cerr << "Fatal: There is no analysis manager" << endl;
 		return;
-	}	
+	}
 	// Setup Selections
 	TList * selections = new TList();
 
@@ -40,11 +40,11 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 		// selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0, &data_weights));
 		selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsTime", "Cluster p_{T} Selection with timing cut", cuts_pi0, &data_weights, 10., 3.));
-		
+
 		selections->Add(new AliPP13PhotonSpectrumSelection("Photons", "Cluster p_{T} Selection", cuts_pi0, &data_weights));
 		// selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsPlain", "Cluster p_{T} Selection", cuts_pi0, &data_weights_plain));
 
-	}	
+	}
 
 
 	if (isTest || isMC)
@@ -70,7 +70,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13PionToKaonRatioMC("PionToKaonRatio", "MC Selection for pion/kaon ratio", cuts_pi0, &mc_weights));
+		selections->Add(new AliPP13KaonToPionRatioMC("KaonToPionRatio", "MC Selection for kaon/pion ratio", cuts_pi0, &mc_weights));
 	}
 
 	// Setup task
