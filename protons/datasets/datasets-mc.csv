@@ -1,0 +1,204 @@
+# No Test productions
+
+# General-purpose
+LHC17i4_2,         p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC15i, extra statistics
+LHC18a9,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17o
+LHC18a8,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17l
+LHC18a1,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17r
+LHC17l5,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17m
+LHC17k4,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17i
+LHC17i4,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC15i
+LHC17h11,          p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17j
+
+
+# EPOS LHC
+LHC17d20b2,       p-p, 13 TeV, updated EPOS-LHC general-purpose Monte Carlo production, LHC16l
+LHC17d20b1,       p-p, 13 TeV, updated EPOS-LHC general-purpose Monte Carlo production, LHC16k
+LHC16d3,          p-p, 13 TeV, General-purpose Monte Carlo production anchored to p-p 13 TeV runs (LHC15f, EPOS-LHC)
+LHC16a2d2_plus,   p-p, 13 TeV, EPOS-LHC for runs near the VdM scan (AD hits), LHC15h anchor
+LHC16a2d2,        p-p, 13 TeV, EPOS-LHC for runs near the VdM scan (new), LHC15h anchor
+
+# Single particle productions
+LHC17j3c2,        p-p, 13 TeV, Single particle generator for PHOS anchored to LHC15g-p, eta high pt
+LHC17j3c1,        p-p, 13 TeV, Single particle generator for PHOS anchored to LHC15g-p, eta low pt
+LHC17j3b2,        p-p, 13 TeV, Single particle generator for PHOS anchored to LHC15g-p, pi0 high pt
+LHC17j3b1,        p-p, 13 TeV, Single particle generator for PHOS anchored to LHC15g-p, pi0 low pt
+LHC17j3a2,        p-p, 13 TeV, Single particle generator for PHOS anchored to LHC15g-p, gamma high pt
+LHC17j3a1,        p-p, 13 TeV, Single particle generator for PHOS anchored to LHC15g-p, gamma low pt
+LHC17g2a,         p-p, 13 TeV, Single muon MC anchored to LHC16k, new
+LHC17g1a,         p-p, 13 TeV, Single muon MC anchored to LHC16o
+LHC18c1,          p-p, 13 TeV, single muon MC anchored to LHC16fghijkop
+
+
+# Jet-Jet
+LHC17f8f,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16k
+LHC17f8k,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16p
+LHC17f8j,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16h
+LHC17f8i,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16e
+LHC17f8h,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16d
+LHC17f8g,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16i
+LHC17f8e,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16o
+LHC17f8d,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16j
+LHC17f8c,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16g
+LHC17f8b,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16f
+LHC17f8a,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16l
+LHC17i3c2,        p-p, 13 TeV, JJ events triggered by decay photons with at least 7 GeV/c in DCal+PHOS, 2016 anchors
+LHC17i3c1,        p-p, 13 TeV, JJ events triggered by decay photons with at least 7 GeV/c in EMCal, 2016 anchors
+LHC17i3b2,        p-p, 13 TeV, JJ events triggered by decay photons with at least 3.5 GeV/c in DCal+PHOS, 2016 anchors
+LHC17i3b1,        p-p, 13 TeV, JJ events triggered by decay photons with at least 3.5 GeV/c in EMCal, 2016 anchors
+
+
+# Monash
+LHC17d20a2_extra, p-p, 13 TeV, Pythia8(Monash2013) new general-purpose Monte Carlo production, LHC16l, extra statistics
+LHC17d20a1_extra, p-p, 13 TeV, Pythia8(Monash2013) new general-purpose Monte Carlo production, LHC16k, extra statistics
+LHC17d20a2,       p-p, 13 TeV, Pythia8(Monash2013) new general-purpose Monte Carlo production, LHC16l
+LHC17d20a1,       p-p, 13 TeV, Pythia8(Monash2013) new general-purpose Monte Carlo production, LHC16k
+LHC16i4b,         p-p, 13 TeV, Pythia8(Monash2013) strangeness enhanced Monte Carlo production, LHC16l
+LHC16i4a,         p-p, 13 TeV, Pythia8(Monash2013) strangeness enhanced Monte Carlo production, LHC16k
+LHC16a2b2_plus,   p-p, 13 TeV, Pythia8(Monash2013) for runs near the VdM scan (new) plus AD, VZERO hits, LHC15h anchor
+LHC16a2b2,        p-p, 13 TeV, Pythia8(Monash2013) for runs near the VdM scan (new), LHC15h anchor
+LHC16b3d,         p-p, 13 TeV, Tracklets-Muon Monte Carlo, PYTHIA8 Monash2013, LHC15h anchors
+LHC16b3c,         p-p, 13 TeV, Tracklets-Muon Monte Carlo, PYTHIA8 Monash2013, LHC15l anchors
+LHC16b3b,         p-p, 13 TeV, Tracklets-Muon Monte Carlo, PYTHIA8 Monash2013, LHC15j anchors
+LHC16b3a,         p-p, 13 TeV, Tracklets-Muon Monte Carlo, PYTHIA8 Monash2013, LHC15i anchors
+LHC15g3a3,        p-p, 13 TeV, again PYTHIA8 Monash2013, LHC15f anchors
+LHC15g3a2,        p-p, 13 TeV, 2nd PYTHIA8 Monash2013, LHC15f anchors
+
+# General-purpose with nominal B
+LHC17d18,          p-p, 13 TeV, General-purpose Monte Carlo productions anchored to LHC16p (nominal B field, p-p 13 TeV)
+LHC17d17,          p-p, 13 TeV, General-purpose Monte Carlo productions anchored to LHC16g (nominal B field, p-p 13 TeV)
+LHC17d16,          p-p, 13 TeV, General-purpose Monte Carlo productions anchored to LHC16o (nominal B field, p-p 13 TeV)
+LHC17d3,           p-p, 13 TeV, General-purpose Monte Carlo productions anchored to LHC16i (nominal B field, p-p 13 TeV)
+LHC17d18_extra,    p-p, 13 TeV, General-purpose Monte Carlo productions - extra statistics - anchored to LHC16p (nominal B field, p-p 13 TeV)
+LHC17d17_extra,    p-p, 13 TeV, General-purpose Monte Carlo productions - extra statistics - anchored to LHC16g (nominal B field, p-p 13 TeV)
+LHC17d16_extra,    p-p, 13 TeV, General-purpose Monte Carlo productions - extra statistics - anchored to LHC16o (nominal B field, p-p 13 TeV)
+LHC17d3_extra,     p-p, 13 TeV, General-purpose Monte Carlo productions - extra statistics - anchored to LHC16i (nominal B field, p-p 13 TeV)
+LHC17e5_extra,     p-p, 13 TeV, General-purpose Monte Carlo productions - extra statistics - anchored to LHC16j (nominal B+ field)
+LHC17f5_extra,     p-p, 13 TeV, General-purpose Monte Carlo productions - extra statistics - anchored to LHC16h (nominal B++/B-- field)
+LHC17h1,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17c (B-- nominal field), e (B-- nominal field), f (B++ nominal field)
+LHC17g7,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC15h (nominal B++ field, but for 6 runs)
+LHC17f5,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC16h (nominal B++/B-- field)
+LHC17e5,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC16j (nominal B+ field)
+LHC17f9_extra,     p-p, 13 TeV, General-purpose Monte Carlo production - extra statistics - anchored to LHC16e (nominal B-- field)
+LHC17f6_extra,     p-p, 13 TeV, General-purpose Monte Carlo production - extra statistics - anchored to LHC16d (nominal B-- field)
+LHC17f9,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC16e (nominal B-- field)
+LHC17f6,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC16d (nominal B-- field)
+LHC17h3,           p-p, 13 TeV, General-purpose Monte Carlo production anchored to LHC17g (low-B)
+LHC17d1,           p-p, 13 TeV, General-purpose Monte Carlo productions anchored to LHC16f (low and nominal B field)
+
+# Strangeness
+LHC17j5d,          p-p, 13 TeV, Strangeness enhanced Monte Carlo production anchored to p-p 13 TeV runs - LHC17p
+LHC17j5c,          p-p, 13 TeV, Strangeness enhanced Monte Carlo production anchored to p-p 13 TeV runs - LHC17o
+LHC17j5b,          p-p, 13 TeV, Strangeness enhanced Monte Carlo production anchored to p-p 13 TeV runs - LHC17l
+LHC17j5a,          p-p, 13 TeV, Strangeness enhanced Monte Carlo production anchored to p-p 13 TeV runs - LHC17k
+
+
+# Injected signal
+LHC17f7b,          p-p, 13 TeV, MC sample with injected signal for PWG-LF NUCLEX PAG, anchored to LHC16l
+LHC17f7a,          p-p, 13 TeV, MC sample with injected signal for PWG-LF NUCLEX PAG, anchored to LHC16
+LHC18c6a,          p-p, 13 TeV, MC production p-p 13 TeV with injected resonances anchored to 2017 periods
+LHC18c6b3,         p-p, 13 TeV, MC production p-p 13 TeV with injected resonances anchored to 16l
+LHC18c6b2,         p-p, 13 TeV, MC production p-p 13 TeV with injected resonances anchored to 16k
+LHC18a2b3,         p-p, 13 TeV, MC production p-p 13 TeV with injected nuclei anchored to 16l
+LHC18a2b2,         p-p, 13 TeV, MC production p-p 13 TeV with injected nuclei anchored to 16k
+LHC18a2b,          p-p, 13 TeV, MC production p-p 13 TeV with injected nuclei and resonances anchored to 2016 data
+LHC18a2a,          p-p, 13 TeV, MC production p-p 13 TeV with injected nuclei anchored to 2017 data
+LHC18a2a2,         p-p, 13 TeV, MC production p-p 13 TeV with injected nuclei and resonances anchored to 2017 data, Xi(1820) width fix
+LHC16h6,           p-p, 13 TeV, Production of MC sample with injected signal for PWG-LF NUCLEX PAG, anchored to LHC15f
+LHC18b1b,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to 2015 periods
+LHC18b1a,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to 2017 periods
+LHC17h2k,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16p
+LHC17h2j,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16o
+LHC17h2i,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16l
+LHC17h2h,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16k
+LHC17h2g,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16j
+LHC17h2f,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16i
+LHC17h2e,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16h
+LHC17h2d,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16g
+LHC17h2c,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16f
+LHC17h2b,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16e
+LHC17h2a,          p-p, 13 TeV, Central barrel simulation with injected J/psi, anchored to LHC16d
+LHC17l2,           p-p, 13 TeV, Central diffraction with DRgen generator anchored to p-p2016
+LHC16j4k,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16h anchor
+LHC16j4j,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16g anchor
+LHC16j4i,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16e anchor
+LHC16j4h,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16d anchor
+LHC17g4i,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16p
+LHC17g4h,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16o
+LHC17g4g,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16l
+LHC17g4f,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16k
+LHC17g4e,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16j
+LHC17g4d,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16i
+LHC17g4c,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16h
+LHC17g4b,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16e
+LHC17g4a,          p-p, 13 TeV, Central diffraction with DIME anchored to LHC16d
+LHC16j4e,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16p anchor
+LHC16j4d,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16o anchor
+LHC16j4c,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16j anchor
+LHC16j4b,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16i anchor
+LHC16j4a,          p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16l anchor
+LHC16j4,           p-p, 13 TeV, Central barrel simulations with dielectrons from heavy flavor decays, LHC16k anchor
+
+
+# Heavy Flavour
+LHC17k1,          p-p, 13 TeV, Central barrel simulation for low B field (LHC17g) with dielectrons from heavy flavor decays
+LHC17j4b2,        p-p, 13 TeV, Lambdac -> pK0s MC production anchored to p-p @ 13 TeV, ported, LHC16d,e,g,h,j,k,l,o,p
+LHC17j4a2,        p-p, 13 TeV, Lambdac -> pKpi MC production anchored to p-p @ 13 TeV, ported, LHC16d,e,g,h,j,k,l,o,p
+LHC17j4b,         p-p, 13 TeV, Lambdac -> pK0s MC production anchored to p-p @ 13 TeV, LHC16d,e,g,h,j,k,l,o,p
+LHC17j4a,         p-p, 13 TeV, Lambdac -> pKpi MC production anchored to p-p @ 13 TeV, LHC16d,e,g,h,j,k,l,o,p
+LHC17i3a2,        p-p, 13 TeV, Pythia GJ events with gammas in DCal+PHOS, 2016 anchors
+LHC17i3a1,        p-p, 13 TeV, Pythia GJ events with gammas in EMCal, 2016 anchors
+LHC17i1c,         p-p, 13 TeV, VDT math lib / Fast Magnetic Field validation productions, VDT math
+LHC17i1b,         p-p, 13 TeV, VDT math lib / Fast Magnetic Field validation productions, fast field
+LHC17i1a,         p-p, 13 TeV, VDT math lib / Fast Magnetic Field validation productions, baseline
+LHC17h10b,        p-p, 13 TeV, MC production anchored to LHC16l (LHC17d20a2) with ITSrecopoints included
+LHC17h10a,        p-p, 13 TeV, MC production anchored to LHC15f with ITSrecopoints included
+LHC17h8c,         p-p, 13 TeV, HF production anchored to p-p2016(LHC16i,j,o,p), HF2ELE-EMCALtriggers
+LHC17h8b,         p-p, 13 TeV, HF production anchored to p-p2016(LHC16d,e,g,h,j,o,p), HF2ELE-MB
+LHC17h8a,         p-p, 13 TeV, HF production anchored to p-p2016(LHC16d,e,g,h,j,o,p), HF2HAD
+LHC17g3i,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16p
+LHC17g3h,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16o
+LHC17g3g,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16l
+LHC17g3f,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16k
+LHC17g3e,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16j
+LHC17g3d,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16i
+LHC17g3c,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16h
+LHC17g3b,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16e
+LHC17g3a,         p-p, 13 TeV, Rho photoproduction with STARLIGHT anchored to LHC16d
+LHC16j4g,         p-p, 13 TeV, updated Central barrel simulations with dielectrons from heavy flavor decays, LHC16l anchor
+LHC16j4f,         p-p, 13 TeV, updated Central barrel simulations with dielectrons from heavy flavor decays, LHC16k anchor
+LHC17d12,         p-p, 13 TeV, central barrel simulations for low B field (LHC16f) with dielectrons from heavy flavor decays
+LHC17c3b1,        p-p, 13 TeV, HF MC production for 13 TeV p-p central barrel analyses, 16k anchoring, HF2ELE
+LHC17c3b2,        p-p, 13 TeV, HF MC production for 13 TeV p-p central barrel analyses, 16l anchoring, HF2ELE
+LHC17c3a2,        p-p, 13 TeV, HF MC production for 13 TeV p-p central barrel analyses, 16l anchoring, HF2HAD
+LHC17c3a1,        p-p, 13 TeV, HF MC production for 13 TeV p-p central barrel analyses, 16k anchoring, HF2HAD
+LHC15j1,          p-p, 13 TeV, Production to check pileup tagging performance, LHC15i anchors,
+LHC16b4,          p-p, 13 TeV, PYTHIA Perugia-2011 J/psi enhanced, 0.5T, LHC15f anchors
+LHC15j1a,         p-p, 13 TeV, additional Production to check pileup tagging performance, LHC15i anchors
+LHC15k5c2,        p-p, 13 TeV, HF-forced MC for HFCJ analyses anchored to LHC15f pass2, noSDD
+LHC15k5b2,        p-p, 13 TeV, HF-forced MC for HFE analyses anchored to LHC15f pass2, noSDD
+LHC15k5a2,        p-p, 13 TeV, HF-forced MC for D2H analyses anchored to LHC15f pass2, noSDD
+LHC15k5c,         p-p, 13 TeV, HF-forced MC for HFCJ analyses anchored to LHC15f pass2
+LHC15k5b,         p-p, 13 TeV, HF-forced MC for HFE analyses anchored to LHC15f pass2
+LHC15k5a,         p-p, 13 TeV, HF-forced MC for D2H analyses anchored to LHC15f pass2
+
+
+# Pythia6
+LHC17h7a,         p-p, 13 TeV, Pythia6_Perugia2011 production anchored to LHC17j
+LHC17h7a_extra,   p-p, 13 TeV, Pythia6_Perugia2011 production anchored to LHC17j, extra statistics
+LHC16a2a2_plus2,  p-p, 13 TeV, Pythia6 for runs near the VdM scan (new) plus AD, VZERO hits, LHC15h anchor
+LHC16a2a2_plus,   p-p, 13 TeV, Pythia6 (Perugia-2011) for runs near the VdM scan (new) plus AD, VZERO hits, LHC15h anchor
+LHC16a2a2,        p-p, 13 TeV, Pythia6 (Perugia-2011) for runs near the VdM scan (new), LHC15h anchor
+LHC15g3c3,        p-p, 13 TeV, again PYTHIA6(Perugia-2011) min.bias, LHC15f anchors
+LHC15g3c2,        p-p, 13 TeV, 2nd PYTHIA6(Perugia-2011) min.bias, LHC15f anchors
+LHC15g3b2,        p-p, 13 TeV, Strangeness enhanced - Omega, Pythia6(Perugia2011), LHC15f anchors
+LHC15g3b1,        p-p, 13 TeV, Strangeness enhanced - Xi, Pythia6(Perugia2011), LHC15f anchors
+LHC15f4,          p-p, 13 TeV, PYTHIA6-Perugia2011 min.bias, AD+V0 response, 2015 OCDB
+
+
+# Phojet
+LHC17h7b_extra,   p-p, 13 TeV, Phojet production anchored to LHC17j, extra statistics
+LHC17h7b,         p-p, 13 TeV, Phojet production anchored to LHC17j
+LHC16a2c2_plus,   p-p, 13 TeV, PHOJET for runs near the VdM scan (new) plus AD, VZERO hits, LHC15h anchor
+LHC16a2c2,        p-p, 13 TeV, PHOJET for runs near the VdM scan (new), LHC15h anchor
+LHC15e1d,         p-p, 13 TeV, PHOJET, 2015 OCDB
