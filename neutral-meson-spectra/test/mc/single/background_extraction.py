@@ -38,13 +38,12 @@ class MassExtractor(object):
 
     def transform(self, inputs, loggs):
         pipeline = Pipeline([
-            ("input", inputs),
             ("slice", DataSlicer(self.options.pt)),
             ("background", BackgroundTransformer()),
             ("fitmasses", MassFitter(self.options.invmass)),
         ])
 
-        output = pipeline.transform(None, loggs)
+        output = pipeline.transform(inputs, loggs)
         return output
 
 class TestBackgroundSubtraction(unittest.TestCase):
@@ -56,7 +55,7 @@ class TestBackgroundSubtraction(unittest.TestCase):
         # options.fitf = 'gaus'
         masses = MassExtractor(options).transform(
             # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-            Input("LHC16-single.root", "PhysEff"),
+            # Input("LHC16-single.root", "PhysEff"),
             loggs
         )
 

@@ -13,7 +13,7 @@ from vault.datavault import DataVault
 import unittest
 import operator
 
-# This test is used to determine the best background function for 
+# This test is used to determine the best background function for
 # eta meson invariant mass distribution
 #
 
@@ -28,10 +28,10 @@ class TestBackgroundShape(unittest.TestCase):
         labels = ('0 < p_{T} < 10', '4 < p_{T} < 100')
 
         inputs = [
-            Input(f, 'PhysEffOnlyTender', label=l) 
+            Input(f, 'PhysEffOnlyTender', label=l)
             for l, f in zip(labels, files)
         ]
-        options = [Options.spmc(rr, 
+        options = [Options.spmc(rr,
             particle='eta'
         ) for (f, rr) in files.iteritems()]
 
@@ -60,10 +60,10 @@ class TestBackgroundShape(unittest.TestCase):
         su.wait()
 
     def test_new_cb_parameters(self):
-       # Try to relax CB parameters 
+       # Try to relax CB parameters
         for opt in self.arguments[1]:
             print opt
-            # opt.param.relaxed = True  
+            # opt.param.relaxed = True
 
         estimators = map(Spectrum, *self.arguments)
         histograms = map(lambda x: x.evaluate(), estimators)
