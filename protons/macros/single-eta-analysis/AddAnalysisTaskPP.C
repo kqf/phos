@@ -3,13 +3,13 @@
 void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "")
 {
 	LoadAnalysisLibraries();
-	
+
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
-	if (!mgr) 
+	if (!mgr)
 	{
 		cerr << "Fatal: There is no analysis manager" << endl;
 		return;
-	}	
+	}
 	// Setup Selections
 	TList * selections = new TList();
 
@@ -18,7 +18,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeights data_weights;
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
-	
+
 	cuts_pi0.fNContributors = 0;
 	cuts_eta.fNContributors = 0;
 	cuts_eta.fAsymmetryCut = 0.7;
@@ -39,7 +39,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
 
-	if ( !badmap.IsNull() ) 
+	if (!badmap.IsNull())
 		task->SetBadMap(badmap);
 
 	// task->SelectCollisionCandidates(offlineTriggerMask);
