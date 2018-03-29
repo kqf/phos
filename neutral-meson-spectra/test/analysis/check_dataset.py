@@ -5,10 +5,11 @@ import unittest
 import operator as op
 
 import ROOT
-from spectrum.spectrum import Spectrum
+from spectrum.analysis import Analysis
 from spectrum.input import Input
 from spectrum.sutils import gcanvas
 from spectrum.options import Options
+from spectrum.output import AnalysisOutput
 import spectrum.comparator as cmpr
 
 from spectrum.broot import BROOT as br
@@ -21,18 +22,17 @@ from vault.datavault import DataVault
 
 class TestDataSetForConsistency(unittest.TestCase):
 
-    def setUp(self):
-        fname = DataVault().file('data', 'validate')
-        inputs = Input(fname, 'Phys', label='old')
-        options = Options()
-        self.sp_estimator = Spectrum(inputs, options)
-
-
     def test_dataset(self):
-        observables = self.sp_estimator.evaluate()
+        # Configure the analysis
+        options = Options()
+        options.output.scalew_spectrum = True
+        estimator = Analysis(options)
 
-        br.scalew(observables.spectrum)
-        br.scalew(observables.npi0)
+        # Analyze the data
+        observables = estimator.transform(
+           DataVault().input('data', 'LHC17 qa1', 'Phys', label='old'),
+           AnalysisOutput("consistency check", "\pi^{0}")
+        )
 
         c1 = gcanvas(1./2, resize=True)
         diff = cmpr.Comparator()

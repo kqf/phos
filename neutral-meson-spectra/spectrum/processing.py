@@ -7,6 +7,7 @@ from invariantmass import InvariantMass, RawMass
 from outputcreator import OutputCreator, SpectrumExtractor
 import collections as coll
 from mass import BackgroundEstimator, MixingBackgroundEstimator, SignalExtractor, SignalFitter, ZeroBinsCleaner
+from broot import BROOT as br
 
 
 class DataSlicer(object):
@@ -164,6 +165,10 @@ class DataExtractor(object):
 
     def _decorate_hists(self, histograms, nevents):
         # Scale by the number of events
+        if self.opt.scalew_spectrum:
+            br.scalew(histograms.spectrum)
+            br.scalew(histograms.npi0)
+
         histograms.spectrum.Scale(1. / nevents)
         histograms.spectrum.logy = True
         histograms.npi0.logy = True

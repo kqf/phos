@@ -56,6 +56,7 @@ class Options(object):
         self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', outconf, particle)
+        self.output.scalew_spectrum = False
 
         self.backgroundp = AnalysisOption('backgroundp', backgroudpconf, particle)
         self.backgroundp.relaxed = relaxedcb

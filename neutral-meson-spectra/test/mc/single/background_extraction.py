@@ -55,7 +55,7 @@ class TestBackgroundSubtraction(unittest.TestCase):
         # options.fitf = 'gaus'
         masses = MassExtractor(options).transform(
             # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-            # Input("LHC16-single.root", "PhysEff"),
+            Input("LHC16-single.root", "PhysEff"),
             loggs
         )
 
