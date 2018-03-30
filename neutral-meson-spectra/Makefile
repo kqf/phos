@@ -1,7 +1,7 @@
 .PHONY: integrity-test graphs clean
 
 integrity-test:
-	python -m unittest -q test.software.test_observables
+	python -m unittest -q analysis.yield.test_observables
 
 graphs:
 	python -m unittest test.analysis.test_quantities
