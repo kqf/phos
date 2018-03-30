@@ -15,6 +15,7 @@ class CompareAnalysis(TransformerBase):
     def __init__(self, steps, particle):
         super(CompareAnalysis, self).__init__()
         options = Options(particle=particle)
+        options.output.scalew_spectrum = True
         self.pipeline = ReducePipeline(
             ParallelPipeline([(step, Analysis(options)) for step in steps]),
             Comparator(labels=steps).compare
@@ -26,6 +27,7 @@ def compare_for_particle(particle):
         DataVault().input("data", label="2016"),
     )
 
+
     estimator = CompareAnalysis(
         steps=[d.label for d in data],
         particle=particle
@@ -33,6 +35,7 @@ def compare_for_particle(particle):
 
     loggs = AnalysisOutput("compare different datasets", particle=particle)
     estimator.transform(data, loggs)
+    loggs.plot()
 
 
 class TestCompareDatasets(unittest.TestCase):

@@ -22,21 +22,6 @@ class UpdatedAnalysis(TransformerBase):
             ('mass_fitter', MassFitter(self.options.invmass))
         ])
 
-    # def transform(self, inputs, loggs):
-    #     label = inputs.label
-
-    #     pipeline = [
-    #         # TODO: Clean this part in pipeline
-    #         DataSlicer(self.options.pt),
-    #         MassFitter(self.options.invmass)
-    #     ]
-
-    #     for estimator in pipeline:
-    #         data = estimator.transform(inputs, loggs)
-
-    #     return data
-
-
 class TestMassFitter(unittest.TestCase):
 
     def run_analysis(self, mixed):
