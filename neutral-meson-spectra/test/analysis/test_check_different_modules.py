@@ -16,7 +16,10 @@ import operator
 
 
 def analyze(inputs, particle="#pi^{0}"):
-    options = Options(particle=particle)
+    options = Options(
+        particle=particle,
+        ptrange="config/test_different_modules.json"
+    )
     estimator = ReducePipeline(
         ParallelPipeline([
             ('module{0}'.format(i), Analysis(options)) for i, _ in enumerate(inputs)
