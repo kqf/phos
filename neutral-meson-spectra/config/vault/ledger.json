@@ -101,5 +101,21 @@
 			"hsum": "32a2f2c9d91bd33649bd12a068d28fee0f7884c8cb94b166992083f727cf0e51",
 			"description": "This one is needed for testing purposes"
 		}
+	},
+
+	"debug efficiency":
+	{
+		"low": {
+			"file": "input-data/debug/efficiency/20180331_single_pi0_efficiency_low.root",
+			"default_selection": "",
+			"hsum": "2eebf53c43a7162ea6069d790ee503b198697eff7f94cf0f6445d5cf3a06a3af",
+			"description": "Single #eta simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/debug/efficiency/20180331_single_pi0_efficiency_high.root",
+			"default_selection": "",
+			"hsum": "1b4975bf824aadb0a0305d128a029e1d1817b697b97d7af1bbf1a7791f6ca4fe",
+			"description": "Single #eta simulations with all correctons"
+		}
 	}
 }

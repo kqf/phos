@@ -106,7 +106,7 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, label = '', particle = 'pi0'):
+    def spmc(pt_fit_range, particle = 'pi0'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(
             particle=particle,
@@ -116,7 +116,7 @@ class Options(object):
             signalp='config/cball-parameters-spmc-signal.json'
         )
         options.spectrum.fit_range = pt_fit_range
-        options.invmass.use_mixed = True
+        options.invmass.use_mixed = False
         return options
 
 

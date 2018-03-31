@@ -34,13 +34,14 @@ class SingleHistInput(object):
 
 
 class Input(object):
-    def __init__(self, filename, listname, histname='MassPt', label='', mixprefix = 'Mix'):
+    def __init__(self, filename, listname, histname='MassPt', label='', mixprefix='Mix', histnames=None, nevents=None):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
+        self.histnames = histnames
         self.prefix = '', mixprefix
-        self._events = self.events(filename, listname)
+        self._events = nevents if nevents else self.events(filename, listname)
         self.label = label
 
     @staticmethod
@@ -51,6 +52,10 @@ class Input(object):
         # NB: Use histo to support per module histogram
         histo = histo if histo else self.histname
         raw_mix = ['h' + p + histo for p in self.prefix]
+        # Override the default histograms
+        if self.histnames:
+            raw_mix = self.histnames
+
         raw_mix = br.io.read_multiple(self.filename, self.listname, raw_mix)
 
         for h in raw_mix:

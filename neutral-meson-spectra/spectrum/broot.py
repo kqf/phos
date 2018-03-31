@@ -91,6 +91,10 @@ class BROOT(object):
         @classmethod
         def _read_list(klass, filename, selection):
             infile = klass._read_file(filename)
+
+            if not selection:
+                return klass._dir_to_list(infile)
+
             lst = infile.Get(selection)
 
             if not lst:
@@ -123,6 +127,10 @@ class BROOT(object):
 
             histograms = []
             for histname in histnames:
+                if not histname:
+                    histograms.append(None)
+                    continue
+
                 hist = lst.FindObject(histname)
                 if not hist:
                     raise IOError('No such histogram {2} for selection {1} in file: {0}'
