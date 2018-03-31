@@ -144,8 +144,8 @@ class EfficiencyOptions(object):
         self.genname = genname
 
     @classmethod
-    def spmc(klass, pt_range, particle="#pi^{0}"):
-        efficiency_options = klass()
+    def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_'):
+        efficiency_options = klass(genname)
         efficiency_options.analysis = Options().spmc(pt_range, particle=particle)
         return efficiency_options
 

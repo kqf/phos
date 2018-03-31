@@ -3,17 +3,29 @@ import unittest
 from vault.datavault import DataVault
 from spectrum.analysis import Analysis
 from spectrum.output import AnalysisOutput
-from spectrum.options import Options
+from spectrum.options import EfficiencyOptions
+from spectrum.efficiency import Efficiency
+from spectrum.comparator import Comparator
+from spectrum.transformer import TransformerBase
+from spectrum.pipeline import Pipeline
+from spectrum.input import SingleHistInput
 
 
 class DebugTheEfficiency(unittest.TestCase):
 
 	def test_spectrum_extraction(self):
-		estimator = Analysis(Options.spmc((7, 20)))
+		estimator = Efficiency(EfficiencyOptions.spmc((7, 20), genname='hGenPi0Pt_clone'))
 		loggs = AnalysisOutput("debug_efficiency", "#pi^{0}")
-		output = estimator.transform(
-			DataVault().input("debug efficiency", "high", nevents=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', '')),
-			loggs
+		inputs = DataVault().input("debug efficiency", "high", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+
+		# Define the transformations
+		output = estimator.transform(inputs, loggs)
+
+		diff = Comparator(stop=True)
+		diff.compare(
+			output,
+			SingleHistInput("h1efficiency").transform(inputs, loggs)
 		)
+
 		loggs.plot()
 

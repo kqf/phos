@@ -34,18 +34,20 @@ class SingleHistInput(object):
 
 
 class Input(object):
-    def __init__(self, filename, listname, histname='MassPt', label='', mixprefix='Mix', histnames=None, nevents=None):
+    def __init__(self, filename, listname, histname='MassPt', label='', mixprefix='Mix', histnames=None, n_events=None):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
         self.histnames = histnames
         self.prefix = '', mixprefix
-        self._events = nevents if nevents else self.events(filename, listname)
+        self._n_events = n_events
+        self._events = self.events(filename, listname)
         self.label = label
 
-    @staticmethod
-    def events(filename, listname):
+    def events(self, filename, listname):
+        if self._n_events:
+            return self._n_events
         return br.io.read(filename, listname, 'EventCounter').GetBinContent(2)
 
     def read(self, histo = ''):
