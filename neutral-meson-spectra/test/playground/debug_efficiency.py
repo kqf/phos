@@ -14,18 +14,25 @@ from spectrum.input import SingleHistInput
 class DebugTheEfficiency(unittest.TestCase):
 
 	def test_spectrum_extraction(self):
-		estimator = Efficiency(EfficiencyOptions.spmc((7, 20), genname='hGenPi0Pt_clone'))
+		estimator = Efficiency(
+			EfficiencyOptions.spmc(
+				(7, 20),
+				genname='hGenPi0Pt_clone',
+				ptrange='config/pt-debug.json'
+			)
+		)
+
 		loggs = AnalysisOutput("debug_efficiency", "#pi^{0}")
 		inputs = DataVault().input("debug efficiency", "high", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
 
 		# Define the transformations
 		output = estimator.transform(inputs, loggs)
 
+		nominal = SingleHistInput("h1efficiency").transform(inputs, loggs)
+		nominal.label = 'nominal efficiency'
+
 		diff = Comparator(stop=True)
-		diff.compare(
-			output,
-			SingleHistInput("h1efficiency").transform(inputs, loggs)
-		)
+		diff.compare(output, nominal)
 
 		loggs.plot()
 

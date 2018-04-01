@@ -106,11 +106,11 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, particle = 'pi0'):
+    def spmc(pt_fit_range, particle = 'pi0', ptrange='config/pt-spmc.json'):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(
             particle=particle,
-            ptrange='config/pt-spmc.json',
+            ptrange=ptrange,
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
             signalp='config/cball-parameters-spmc-signal.json'
@@ -144,9 +144,9 @@ class EfficiencyOptions(object):
         self.genname = genname
 
     @classmethod
-    def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_'):
+    def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_', *args, **kwargs):
         efficiency_options = klass(genname)
-        efficiency_options.analysis = Options().spmc(pt_range, particle=particle)
+        efficiency_options.analysis = Options().spmc(pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
 
 
