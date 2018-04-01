@@ -32,7 +32,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     );
 
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
-    supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
+    // supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
     // ZS threshold in unit of GeV
     Double_t zs_threshold = 0.020;
@@ -40,18 +40,15 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
 
-
-    TString msg = "Single pion analysis + weights iteration 0 - no nonlinearity";
+    TString msg = "Single pion analysis + weights iteration 0 - no nonlinearity, use the original badmap";
     msg += " with tender option ";
     msg += decalibration;
 
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro
-    gROOT->LoadMacro("AddAnalysisTaskPP.C"); 
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "");
     // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
     manager->InitAnalysis();

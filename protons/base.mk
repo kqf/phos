@@ -14,7 +14,6 @@
 
 
 grid: | %.cxx
-	@rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 	root -l -b -q 'run.C("$(DATASET)", "grid", "full", "$(DPART)", $(MC))' || $(call funlink)
 	@echo $(DATASET) $(DPART) >> started_jobs.log
 	@$(call funlink) && echo "Directory is clean"
@@ -23,7 +22,6 @@ grid: | %.cxx
 
 
 terminate: | %.cxx
-	@rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC))' || $(call funlink)
 	@$(call funlink) && echo "Directory is clean"
 	@echo "Terminated grid analysis" >> .runhistory
@@ -31,7 +29,6 @@ terminate: | %.cxx
 
 
 download: | %.cxx
-	@rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 	root -l -q 'run.C("$(DATASET)", "grid", "terminate", "$(DPART)", $(MC), kFALSE)' || $(call funlink)
 	make upload
 	@$(call funlink) && echo "Directory is clean"
@@ -68,6 +65,7 @@ upload:
 clean:
 	$(call funlink)
 	rm -f *.so *.d *~ Task*
+	rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 
 unlink:
 	$(call funlink)
