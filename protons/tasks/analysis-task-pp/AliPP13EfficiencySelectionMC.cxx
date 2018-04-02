@@ -37,7 +37,8 @@ void AliPP13EfficiencySelectionMC::ConsiderPair(const AliVCluster * c1, const Al
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	Double_t w = fWeights->Weight(pt12);
+    AliAODMCParticle * origin = (AliAODMCParticle*)eflags.fMcParticles->At(0);//0 is always generated particle by AliGenBox.
+	Double_t w = fWeights->Weight(origin->Pt());
 	TH2 * hist = dynamic_cast<TH2 *> (fInvMass[eflags.isMixing]);
 	hist->Fill(ma12, pt12, w);
 
