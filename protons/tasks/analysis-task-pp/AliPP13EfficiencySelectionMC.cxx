@@ -43,8 +43,6 @@ void AliPP13EfficiencySelectionMC::ConsiderPair(const AliVCluster * c1, const Al
 
 	if (eflags.isMixing)
 		return;
-
-	ConsiderReconstructedParticle(c1, c2, eflags);
 }
 
 
