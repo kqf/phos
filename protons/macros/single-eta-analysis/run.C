@@ -1,6 +1,6 @@
-#include "../setup/environment.h"
+#include "../../setup/environment.h"
 
-void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t useJDL = kTRUE)
+void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
@@ -14,11 +14,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     Bool_t enablePileupCuts = kTRUE;
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-    
+
     AddTaskPhysicsSelection(
         kTRUE,  //false for data, true for MC
         enablePileupCuts
-    ); 
+    );
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
@@ -28,28 +28,28 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         "PHOSTenderTask",  // Task Name
         "PHOStender",      // Container Name
         decalibration,     // Important: de-calibration
-         1,                // Important: reco pass 
+         1,                // Important: reco pass
          kTRUE             // Important: is MC?
     );
 
     // Configure Tender
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
-    
+
     Double_t zs_threshold = 0.020; // ZS threshold in unit of GeV
     supply->ApplyZeroSuppression(zs_threshold);
 
 
     gROOT->LoadMacro("../setup/values_for_dataset.h+");
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
+    // std::vector<Int_t> cells;
+    // values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
 
     TString msg = "Single #eta Analysis + weights iteration 0";
     msg += " with tender option ";
     msg += decalibration;
-    
+
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro
