@@ -75,6 +75,23 @@
 			"description": "Single #pi^{0} simulations only weights no nonlinearity, test"
 		}
 	},
+	"single #pi^{0} iteration1 new weights":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iteration1_new_weights/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "eb00fdc74c4e5752280d79a26426e12346a6b792c8b5419ca7ad55880dbc1eb0",
+			"description": "Single #pi^{0} simulations only weights no nonlinearity, test new way of weighting the reconstructed spectrum."
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iteration1_new_weights/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "6858b7149cf73d2624ba07e536a3ab80d630224c8c36f659f8c2068bbf907a76",
+			"description": "Single #pi^{0} simulations only weights no nonlinearity, test new way of weighting the reconstructed spectrum."
+		}
+	},
+
+
 
 
 	"single #eta":
