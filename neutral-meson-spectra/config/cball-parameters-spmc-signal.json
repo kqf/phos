@@ -16,7 +16,7 @@
                 "cb_alpha":          1.493,
                 "cb_n_limits":       [1.0, 3.5],
                 "cb_alpha_limits":   [0, 1],
-                "background": "pol0"
+                "background": "pol1"
 	},
 
 	"eta":

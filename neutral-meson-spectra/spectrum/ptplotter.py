@@ -9,6 +9,7 @@ from operator import mul
 class MassesPlot(object):
 
     def transform(self, imass, pad):
+        su.ticks(pad)
         if not imass.signal:
             return
 

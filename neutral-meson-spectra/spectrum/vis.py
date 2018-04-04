@@ -3,7 +3,7 @@ import json
 import numpy as np
 
 from broot import BROOT as br
-import sutils as sl
+import sutils as su
 
 
 class VisHub(object):
@@ -36,7 +36,8 @@ class MultipleVisualizer(object):
 
     @br.init_inputs
     def compare_visually(self, hists, ci, pad = None):
-        canvas = sl.gcanvas(self.size[0], self.size[1], resize = True)
+        canvas = su.gcanvas(self.size[0], self.size[1], resize = True)
+        su.ticks(canvas)
         legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
@@ -52,7 +53,7 @@ class MultipleVisualizer(object):
         except AttributeError:
             pass
 
-        mainpad = pad if pad else sl.gcanvas()
+        mainpad = pad if pad else su.gcanvas()
         mainpad.cd()
         mainpad.SetLogx(first_hist.logx)
         mainpad.SetLogy(first_hist.logy)
@@ -81,7 +82,7 @@ class MultipleVisualizer(object):
 
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        sl.wait(oname, save=True, draw=self.stop)
+        su.wait(oname, save=True, draw=self.stop)
         return None
 
     def _color_marker(self, ci, i, h):
@@ -105,12 +106,12 @@ class Visualizer(MultipleVisualizer):
         self.rrange = rrange
 
     def _canvas(self, hists):
-        c1 = sl.gcanvas(self.size[0], self.size[1], resize = True)
+        c1 = su.gcanvas(self.size[0], self.size[1], resize = True)
         c1.Clear()
 
         mainpad = ROOT.TPad("mainpad","main plot", 0, 0.3, 1, 1)
         mainpad.SetBottomMargin(0)
-        sl.ticks(mainpad)
+        su.ticks(mainpad)
         mainpad.Draw()
         c1.cd()
 
@@ -118,7 +119,7 @@ class Visualizer(MultipleVisualizer):
         ratiopad.SetTopMargin(0)
         ratiopad.SetBottomMargin(0.2)
         ratiopad.Draw()
-        sl.ticks(ratiopad)
+        su.ticks(ratiopad)
         return c1, mainpad, ratiopad 
 
     def draw_ratio(self, hists, pad):
@@ -127,7 +128,7 @@ class Visualizer(MultipleVisualizer):
         self.cache.append(ratio)
 
         pad.cd()
-        sl.adjust_labels(ratio, hists[0], scale = 7./3)
+        su.adjust_labels(ratio, hists[0], scale = 7./3)
         ratio.GetYaxis().CenterTitle(True)
         ratio.SetTitle('')
         pad.SetLogx(a.logx)
@@ -185,6 +186,6 @@ class Visualizer(MultipleVisualizer):
         canvas.cd()
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
         oname = self._oname(fname.lower())
-        sl.wait(oname, save=True, draw=self.stop)
-        return sl.adjust_labels(ratio, hists[0])
+        su.wait(oname, save=True, draw=self.stop)
+        return su.adjust_labels(ratio, hists[0])
 
