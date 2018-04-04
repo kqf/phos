@@ -38,7 +38,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
 
-	// Don't set map of bad channels on task level. 
+	// Don't set map of bad channels on task level.
 	// Always apply tender
 	// if ( !badmap.IsNull() )
 	// 	task->SetBadMap(badmap);

@@ -6,7 +6,7 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DATASET = LHC17j3b1
+DATASET = LHC17j3b2
 OUTDIR = results/mc/single/pi0/iteration1_new_weights
 TEST_SELECTION = PhysTender
 
