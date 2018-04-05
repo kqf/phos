@@ -72,8 +72,8 @@ class AnalysisOutput(object):
         super(AnalysisOutput, self).__init__()
         self.label = label
         self.pool = []
-        if particle:
-            self.label = "{0}-{1}".format(self.label, particle)
+        # if particle:
+            # self.label = "{0}-{1}".format(self.label, particle)
 
     def update(self, stepname, histograms, multirange=False, mergable=False):
         logtype = MultirangeLogItem if multirange else LogItem

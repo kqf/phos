@@ -54,16 +54,17 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
         # options.analysis.signalp.relaxed = True
         # options.analysis.backgroundp.relaxed = True
 
-    estimator = EfficiencyMultirange(moptions)
-    loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle), particle)
-    efficiency = estimator.transform(unified_inputs.keys(), loggs)
+    efficiency = EfficiencyMultirange(moptions).transform(
+        unified_inputs.keys(),
+        ("composite_efficiency_spmc_{}".format(particle), False)
+    )
 
     efficiency.SetTitle(
         "#varepsilon = #Delta #phi #Delta y/ 2 #pi " \
         "#frac{Number of reconstructed %s}{Number of generated primary %s}" \
         % (particle, particle)
     )
+
     diff = Comparator()
     diff.compare(efficiency)
-    loggs.plot(False)
 
