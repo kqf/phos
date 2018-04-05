@@ -60,21 +60,22 @@
 		}
 	},
 
-	"single #pi^{0} iteration1":
+	"single #pi^{0} corrected weights":
 	{
 		"low": {
-			"file": "input-data/mc/single/pi0/iteration1/LHC17j3b1.root",
-			"default_selection": "PhysEff",
-			"hsum": "72af9cac200623039967321a9405e77f21454c988d5ee467a274a636673706c9",
-			"description": "Single #pi^{0} simulations only weights no nonlinearity, test"
+			"file": "input-data/mc/single/pi0/corrected_weights/LHC17j3b1.root",
+			"default_selection": "PhysPlain",
+			"hsum": "ada3d40d412338bdff026358ee2f24348fb70654e6a2ad2e280d5888e677c265",
+			"description": "Single #pi^{0} simulations with all correctons with updated weights"
 		},
 		"high": {
-			"file": "input-data/mc/single/pi0/iteration1/LHC17j3b2.root",
-			"default_selection": "PhysEff",
-			"hsum": "da49a8a744560766e6d21a87e67a7437031f742e05a6c6766c5327d56b583e24",
-			"description": "Single #pi^{0} simulations only weights no nonlinearity, test"
+			"file": "input-data/mc/single/pi0/corrected_weights/LHC17j3b2.root",
+			"default_selection": "PhysPlain",
+			"hsum": "272e96c1a81a5e408e1532d8faf7ca35825d6f0161ea5b106cfaf06e8d8dd26f",
+			"description": "Single #pi^{0} simulations with all correctons with updated weights"
 		}
 	},
+
 	"single #pi^{0} iteration1 new weights":
 	{
 		"low": {

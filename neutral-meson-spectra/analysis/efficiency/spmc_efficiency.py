@@ -27,8 +27,8 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
-            DataVault().file("single #pi^{0} iteration1 new weights", "low"): (0, 7),
-            DataVault().file("single #pi^{0} iteration1 new weights", "high"): (7, 20)
+            DataVault().file("single #pi^{0} corrected weights", "low"):  (0, 7),
+            DataVault().file("single #pi^{0} corrected weights", "high"): (7, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
@@ -45,9 +45,14 @@ class TestEfficiencyEta(unittest.TestCase):
 
 
 def evaluate_spmc_efficiency(unified_inputs, particle):
+    moptions = MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+    # for options in moptions.suboptions:
+        # options.analysis.signalp.relaxed = True
+        # options.analysis.backgroundp.relaxed = True
 
     estimator = EfficiencyMultirange(
-       MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+        moptions
+       # MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
     )
 
     loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle), particle)
