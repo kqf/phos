@@ -158,7 +158,7 @@ class MultirangeEfficiencyOptions(object):
         self.mergeranges = mergeranges
 
     @classmethod
-    def spmc(klass, unified_input, particle):
-        options = [EfficiencyOptions.spmc(rr, particle) for _, rr in unified_input.iteritems()]
+    def spmc(klass, unified_input, particle, genname):
+        options = [EfficiencyOptions.spmc(rr, particle, genname) for _, rr in unified_input.iteritems()]
         return klass(options, unified_input.values())
 

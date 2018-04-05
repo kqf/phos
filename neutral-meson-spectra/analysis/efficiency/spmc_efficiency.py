@@ -27,8 +27,8 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
-            DataVault().file("single #pi^{0} corrected weights", "low"):  (0, 7),
-            DataVault().file("single #pi^{0} corrected weights", "high"): (7, 20)
+            DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.6),
+            DataVault().input("single #pi^{0} corrected weights", "high"): (7.5, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
@@ -38,29 +38,25 @@ class TestEfficiencyEta(unittest.TestCase):
     @unittest.skip('')
     def test_eta_efficiency(self):
         unified_inputs = {
-            DataVault().file("single #eta", "low"): (0, 6),
-            DataVault().file("single #eta", "high"): (6, 20)
+            DataVault().input("single #eta updated", "low"): (0, 6),
+            DataVault().input("single #eta updated", "high"): (6, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#eta")
 
 
 def evaluate_spmc_efficiency(unified_inputs, particle):
-    moptions = MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+    moptions = MultirangeEfficiencyOptions.spmc(
+        unified_inputs,
+        particle,
+        genname='hPt_{0}_primary_standard'.format(particle)
+    )
     # for options in moptions.suboptions:
         # options.analysis.signalp.relaxed = True
         # options.analysis.backgroundp.relaxed = True
 
-    estimator = EfficiencyMultirange(
-        moptions
-       # MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
-    )
-
+    estimator = EfficiencyMultirange(moptions)
     loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle), particle)
-
-    efficiency = estimator.transform(
-       [Input(filename, "PhysEff") for filename in unified_inputs],
-       loggs
-    )
+    efficiency = estimator.transform(unified_inputs.keys(), loggs)
 
     efficiency.SetTitle(
         "#varepsilon = #Delta #phi #Delta y/ 2 #pi " \

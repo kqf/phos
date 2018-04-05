@@ -10,7 +10,6 @@ class LogItem(object):
         self.name = name
         self.data = data
         self.mergable = mergable
-        # print "Created log item", name
 
     def __repr__(self):
         return "LogItem({0}, {1}, {2})".format(
@@ -62,7 +61,7 @@ class MergedLogItem(object):
                 name = logg[0][0].GetName()
 
             diff = Comparator(
-                stop=stop, 
+                stop=stop,
                 oname="{0}/{1}".format(self.name, name)
             )
             diff.compare(logg)
@@ -96,9 +95,7 @@ class AnalysisOutput(object):
 
         for item in other.pool:
             if item == []:
-                print other.label, other.pool
                 continue
-            # print item
             item.name = "{0}/{1}".format(self.label, item.name)
 
         self.pool.extend(filter(lambda x: x != [], other.pool))

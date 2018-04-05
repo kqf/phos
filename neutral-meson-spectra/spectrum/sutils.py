@@ -17,7 +17,7 @@ def prepare_directory(name):
 def wait(name='', draw=True, save=False, suffix=''):
     if save and not draw:
         ROOT.gROOT.SetBatch(True)
-        
+
     outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()

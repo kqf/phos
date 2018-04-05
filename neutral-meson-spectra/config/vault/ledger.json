@@ -64,13 +64,13 @@
 	{
 		"low": {
 			"file": "input-data/mc/single/pi0/corrected_weights/LHC17j3b1.root",
-			"default_selection": "PhysPlain",
+			"default_selection": "PhysEff",
 			"hsum": "ada3d40d412338bdff026358ee2f24348fb70654e6a2ad2e280d5888e677c265",
 			"description": "Single #pi^{0} simulations with all correctons with updated weights"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/corrected_weights/LHC17j3b2.root",
-			"default_selection": "PhysPlain",
+			"default_selection": "PhysEff",
 			"hsum": "272e96c1a81a5e408e1532d8faf7ca35825d6f0161ea5b106cfaf06e8d8dd26f",
 			"description": "Single #pi^{0} simulations with all correctons with updated weights"
 		}
@@ -92,9 +92,6 @@
 		}
 	},
 
-
-
-
 	"single #eta":
 	{
 		"low": {
@@ -110,6 +107,22 @@
 			"description": "Single #eta simulations with all correctons"
 		}
 	},
+	"single #eta updated":
+	{
+		"low": {
+			"file": "input-data/mc/single/eta/iteration1_updated_weights/LHC17j3c1.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "0e8452aca6f4b6434d4707cc2e156bbe08bbe48b68d24f98d4992ed52d6a58d9",
+			"description": "Single #eta simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/mc/single/eta/iteration1_updated_weights/LHC17j3c2.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "d8bcf52853dfb0b24cfd56e5edd6b8fa97d909879fcb7bd45a0fb4160c9a6322",
+			"description": "Single #eta simulations with all correctons"
+		}
+	},
+
 	"epos": {
 	},
 	"test": {

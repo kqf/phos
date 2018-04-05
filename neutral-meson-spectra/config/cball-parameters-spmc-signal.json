@@ -33,6 +33,6 @@
                 "cb_alpha":          1.17161,
                 "cb_n_limits":       [0.1, 4.5],
                 "cb_alpha_limits":   [0, 2],
-                "background": "pol3"
+                "background": "pol2"
 	}
 }
