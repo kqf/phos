@@ -33,26 +33,18 @@ class MassExtractor(object):
 class TestBackgroundSubtraction(unittest.TestCase):
 
     def test_background_fitting(self):
+        inputs = Input(DataVault().file("single #pi^{0} iteration1 new weights", "high"), "PhysEff")
+
         loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
         options = Options.spmc((7, 20))
 
-
-        estimator = Analysis(options)
-        outputs1 = estimator.transform(
-            Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-            loggs
-        )
+        outputs1 = Analysis(options).transform(inputs, loggs)
 
         loggs = AnalysisOutput("relaxed cb parameters", "#pi^{0}")
         options = Options.spmc((7, 20))
-        options.backgroundp.relaxed = True
+        options.signalp.relaxed = True
 
-
-        estimator = Analysis(options)
-        outputs2 = estimator.transform(
-            Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-            loggs
-        )
+        outputs2 = Analysis(options).transform(inputs, loggs)
 
         diff = Comparator()
         for parameter in zip(outputs1, outputs2):

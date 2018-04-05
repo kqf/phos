@@ -12,10 +12,10 @@
                 "fit_mass":          0.135,
                 "fit_mass_limits":   [0.1, 0.2],
                 "fit_width_limits":  [0.001, 0.080],
-                "cb_n":              1.596,
-                "cb_alpha":          1.493,
-                "cb_n_limits":       [1.0, 3.5],
-                "cb_alpha_limits":   [0, 1],
+                "cb_n":              3.5,
+                "cb_alpha":          1.25,
+                "cb_n_limits":       [1.0, 10.5],
+                "cb_alpha_limits":   [0, 10],
                 "background": "pol1"
 	},
 
@@ -33,6 +33,6 @@
                 "cb_alpha":          1.17161,
                 "cb_n_limits":       [0.1, 4.5],
                 "cb_alpha_limits":   [0, 2],
-                "background": "pol0"
+                "background": "pol3"
 	}
 }
