@@ -47,9 +47,15 @@ AliPP13SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()
     AliPP13SelectionWeightsSPMC & ws = * new AliPP13SelectionWeightsSPMC();
 
     // Weights 3
-    ws.fW0 = 0.014875782846110793;
-    ws.fW1 = 0.28727403800708634;
-    ws.fW2 = 9.9198075195331;
+    // ws.fW0 = 0.014875782846110793;
+    // ws.fW1 = 0.28727403800708634;
+    // ws.fW2 = 9.9198075195331;
+
+
+    // Debug
+    ws.fW0 = 21.339890553914014;
+    ws.fW1 = 0.08359755308503322;
+    ws.fW2 = 7.334946541612603;
 
     // Weights 0 (new efficiency)
     // ws.fW0 = 0.10325998438001027;

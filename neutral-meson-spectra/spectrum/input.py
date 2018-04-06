@@ -20,7 +20,7 @@ class SingleHistInput(object):
         self.priority = priority
         self.norm = norm
 
-    def transform(self, inputs, loggs):
+    def transform(self, inputs, loggs=None):
         hist = br.io.read(
             inputs.filename,
             inputs.listname,

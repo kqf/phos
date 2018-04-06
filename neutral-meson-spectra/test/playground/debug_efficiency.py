@@ -149,18 +149,19 @@ class DebugTheEfficiency(unittest.TestCase):
         diff.compare(efficiency)
 
 
+    @unittest.skip('')
     def test_trained_ef(self):
         particle = "#pi^{0}"
         debug_inputs = {
             DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="low"): (0, 6),
             DataVault().input("debug efficiency", "high", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="high"): (6, 20)
         }
+
         moptions = MultirangeEfficiencyOptions.spmc(
             debug_inputs,
             particle,
             genname='hGenPi0Pt_clone'
         )
-
 
         # unified_inputs = {
         #     DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
@@ -177,3 +178,25 @@ class DebugTheEfficiency(unittest.TestCase):
             [debug_inputs, debug_inputs],
             ("compare the debug efficiency", True)
         )
+
+    def test_weight_like_debug(self):
+        input_low = DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+
+        # Define the transformations
+        nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)
+
+        rrange = 0, 10
+        tsallis = ROOT.TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", *rrange);
+        tsallis.SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755)
+        tsallis.FixParameter(3, 0.135);
+        tsallis.FixParameter(4, 0.135);
+        tsallis.SetLineColor(46)
+
+        br.scalew(nominal_low, 1. / nominal_low.Integral())
+        nominal_low.Fit(tsallis)
+        print br.pars(tsallis)
+        Comparator().compare(nominal_low)
+
+
+
+
