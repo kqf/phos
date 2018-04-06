@@ -1,14 +1,60 @@
 import unittest
+import ROOT
 
 from vault.datavault import DataVault
 from spectrum.analysis import Analysis
 from spectrum.output import AnalysisOutput
-from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions
+from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions, Options
 from spectrum.efficiency import Efficiency, EfficiencyMultirange
 from spectrum.comparator import Comparator
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline, ReducePipeline, ParallelPipeline
 from spectrum.input import SingleHistInput
+
+from spectrum.broot import BROOT as br
+from array import array
+
+from spectrum import sutils as su
+
+class StanadrtizeOutput(TransformerBase):
+    def __init__(self):
+        super(StanadrtizeOutput, self).__init__()
+        self.ptedges = Options(ptrange="config/pt-debug-full.json").pt.ptedges
+
+    def transform(self, histogram, loggs):
+        ohist = ROOT.TH1F(
+            histogram.GetName() + histogram.label,
+            histogram.GetTitle(),
+            len(self.ptedges) - 1,
+            array('d', self.ptedges)
+        )
+        for (content, error, center) in zip(*br.bins(histogram)):
+            ibin = ohist.FindBin(center)
+            ohist.SetBinContent(ibin, content)
+            ohist.SetBinError(ibin, error)
+        ohist.Sumw2()
+        ohist.label = histogram.label
+        return ohist
+
+
+
+class ReadCompositeEfficiency(TransformerBase):
+    def __init__(self, options):
+        super(ReadCompositeEfficiency, self).__init__()
+        self.pipeline = ReducePipeline(
+            ParallelPipeline([
+                    ("efficiency-{0}".format(ranges),
+                        Pipeline([
+                           ("raw_efficiency", SingleHistInput("h1efficiency")),
+                           ("standard-output", StanadrtizeOutput())
+                        ])
+                    )
+                    for ranges in zip(options.mergeranges)
+                ]
+            ),
+            lambda x: br.sum_trimm(x, options.mergeranges)
+        )
+
 
 class DebugTheEfficiency(unittest.TestCase):
 
@@ -42,6 +88,7 @@ class DebugTheEfficiency(unittest.TestCase):
         nominal_high.label = 'high p_{T}'
         diff.compare(nominal_low, nominal_high)
 
+    @unittest.skip('')
     def test_calculates_full_efficiency(self):
         particle = "#pi^{0}"
         unified_inputs = {
@@ -69,3 +116,27 @@ class DebugTheEfficiency(unittest.TestCase):
         diff.compare(efficiency)
         loggs.plot(False)
 
+
+    def test_total_efficiency(self):
+        input_low = DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        nominal_low = SingleHistInput("h1efficiency").transform(input_low, ("debug", False))
+
+
+        particle = "#pi^{0}"
+        unified_inputs = {
+            DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="low"): (0, 6),
+            DataVault().input("debug efficiency", "high", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="high"): (6, 20)
+        }
+
+        moptions = MultirangeEfficiencyOptions.spmc(
+            unified_inputs,
+            particle
+        )
+
+        efficiency = ReadCompositeEfficiency(moptions).transform(
+            unified_inputs,
+            ("Testing the debug efficiency", True)
+        )
+
+        diff = Comparator()
+        diff.compare(efficiency)

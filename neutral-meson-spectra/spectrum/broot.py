@@ -331,7 +331,7 @@ class BROOT(object):
         area = hist.IntegralAndError(bin(a), bin(b), areae)
         return area, areae
 
-  
+
     @classmethod
     def init_inputs(klass, func):
         def f(self, hists, *args, **kwargs):
@@ -344,7 +344,7 @@ class BROOT(object):
     def define_colors(ci = 10000):
         with open("config/colors.json") as f:
             conf = json.load(f)
-            
+
         colors = conf["colors"]
         rcolors = [[b / 255. for b in c] for c in colors]
         rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
