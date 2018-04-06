@@ -41,10 +41,11 @@ class MultirangeLogItem(LogItem):
 
 
 class MergedLogItem(object):
-    def __init__(self, name, loggs):
+    def __init__(self, name, loggs, mergable=False):
         super(MergedLogItem, self).__init__()
         self.name = name
         self.loggs = zip(*[logg.data for logg in loggs])
+        self.mergable = mergable
 
     def __repr__(self):
         return "LogItem({0}, {1}, {2})".format(

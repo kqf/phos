@@ -1,6 +1,10 @@
 from output import AnalysisOutput
 class TransformerBase(object):
 
+    def __init__(self, plot=False):
+        super(TransformerBase, self).__init__()
+        self.plot = plot
+
     def transform(self, inputs, loggs):
     	try:
     		title, stop = loggs
@@ -11,7 +15,10 @@ class TransformerBase(object):
 
         output = self.pipeline.transform(inputs, loggs)
 
-        if plot:
-	        loggs.plot(stop)
+        try:
+            if self.plot:
+    	        loggs.plot(stop)
+        except AttributeError:
+            pass
 
         return output

@@ -1,6 +1,7 @@
 from comparator import Comparator
 from broot import BROOT as br
 from output import AnalysisOutput, MergedLogItem
+from transformer import TransformerBase
 
 
 class HistogramSelector(object):
@@ -36,7 +37,10 @@ class ParallelPipeline(object):
         self.steps = steps
 
     def transform(self, inputs, loggs):
-        assert len(inputs) == len(self.steps), "Input shape doesn't match the shape of estimators"
+        assert len(inputs) == len(self.steps), "Input shape doesn't match the shape of estimators, got {0}, {1}".format(
+            len(inputs),
+            len(self.steps)
+        )
 
         def tr(x, name, step, loggs):
             local_logs = AnalysisOutput(name)
@@ -89,4 +93,3 @@ class RatioUnion(object):
         br.scalew(numerator)
         loggs.update("ratio_union", [[numerator, denominator]])
         return br.ratio(numerator, denominator, self.error)
-

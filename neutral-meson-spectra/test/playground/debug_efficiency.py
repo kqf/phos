@@ -14,7 +14,7 @@ from spectrum.input import SingleHistInput
 from spectrum.broot import BROOT as br
 from array import array
 
-from spectrum import sutils as su
+import spectrum.sutils as su
 
 class StanadrtizeOutput(TransformerBase):
     def __init__(self):
@@ -37,7 +37,6 @@ class StanadrtizeOutput(TransformerBase):
         return ohist
 
 
-
 class ReadCompositeEfficiency(TransformerBase):
     def __init__(self, options):
         super(ReadCompositeEfficiency, self).__init__()
@@ -54,6 +53,17 @@ class ReadCompositeEfficiency(TransformerBase):
             ),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
+
+
+class CompareEfficiencies(TransformerBase):
+    def __init__(self, options):
+        self.pipeline = ReducePipeline(
+                ParallelPipeline([
+                    ("calculated_efficiency", EfficiencyMultirange(options)),
+                    ("read_debug_efficiency", ReadCompositeEfficiency(options))
+                ]),
+                Comparator().compare
+            )
 
 
 class DebugTheEfficiency(unittest.TestCase):
@@ -117,11 +127,8 @@ class DebugTheEfficiency(unittest.TestCase):
         loggs.plot(False)
 
 
+    @unittest.skip('')
     def test_total_efficiency(self):
-        input_low = DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
-        nominal_low = SingleHistInput("h1efficiency").transform(input_low, ("debug", False))
-
-
         particle = "#pi^{0}"
         unified_inputs = {
             DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="low"): (0, 6),
@@ -140,3 +147,33 @@ class DebugTheEfficiency(unittest.TestCase):
 
         diff = Comparator()
         diff.compare(efficiency)
+
+
+    def test_trained_ef(self):
+        particle = "#pi^{0}"
+        debug_inputs = {
+            DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="low"): (0, 6),
+            DataVault().input("debug efficiency", "high", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="high"): (6, 20)
+        }
+        moptions = MultirangeEfficiencyOptions.spmc(
+            debug_inputs,
+            particle,
+            genname='hGenPi0Pt_clone'
+        )
+
+
+        # unified_inputs = {
+        #     DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
+        #     DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
+        # }
+
+        # moptions = MultirangeEfficiencyOptions.spmc(
+        #     unified_inputs,
+        #     particle,
+        #     genname='hPt_{0}_primary_standard'.format(particle)
+        # )
+
+        compared = CompareEfficiencies(moptions).transform(
+            [debug_inputs, debug_inputs],
+            ("compare the debug efficiency", True)
+        )
