@@ -1,7 +1,7 @@
 from output import AnalysisOutput
 class TransformerBase(object):
 
-    def __init__(self, plot=False):
+    def __init__(self, plot=True):
         super(TransformerBase, self).__init__()
         self.plot = plot
 
@@ -18,7 +18,7 @@ class TransformerBase(object):
         try:
             if self.plot:
     	        loggs.plot(stop)
-        except AttributeError:
+        except UnboundLocalError:
             pass
 
         return output

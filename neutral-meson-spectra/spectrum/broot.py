@@ -32,7 +32,7 @@ class BROOT(object):
         @classmethod
         def same_as(klass, a, b):
             assert klass.has_properties(b), "There is no properties in b histogram"
-            return all(a.__dict__[prop] == b.__dict__[prop] for prop in klass._properties) 
+            return all(a.__dict__[prop] == b.__dict__[prop] for prop in klass._properties)
 
         @classmethod
         def init(klass, hist, force = True):
@@ -55,7 +55,7 @@ class BROOT(object):
 
         @classmethod
         def has_properties(klass, hist):
-            return all(prop in dir(hist) for prop in klass._properties) 
+            return all(prop in dir(hist) for prop in klass._properties)
 
     class io(object):
         def __init__(self):
@@ -64,7 +64,7 @@ class BROOT(object):
         @classmethod
         def _read_file(klass, filename, directory = 'input-data/'):
             if os.path.isfile(filename):
-                return ROOT.TFile(filename) 
+                return ROOT.TFile(filename)
 
             if not directory in filename:
                 return klass._read_file(directory + filename, directory)
@@ -160,7 +160,7 @@ class BROOT(object):
         @classmethod
         def hepdata(klass, record, ofilename):
             try:
-                download = 'https://www.hepdata.net/download/table/{0}/Table1/1/root' 
+                download = 'https://www.hepdata.net/download/table/{0}/Table1/1/root'
                 response = urllib2.urlopen(download.format(record))
 
                 with open(ofilename, 'wb') as f:
@@ -190,7 +190,7 @@ class BROOT(object):
 
     @classmethod
     def clone(klass, hist, name = '_copied', replace = False):
-        name = name if replace else hist.GetName() + name 
+        name = name if replace else hist.GetName() + name
         cloned = hist.Clone(name)
         prop = hist if klass.prop.has_properties(hist) else klass.prop()
         klass.setp(cloned, prop)
@@ -209,7 +209,7 @@ class BROOT(object):
         if '%d_%d' in name:
             name = name % (a, b)
 
-        # NB:  By default ProjectionX takes the last bin as well. 
+        # NB:  By default ProjectionX takes the last bin as well.
         #      We don't want to take last bin as it contains the
         #      beginning of the next bin. Therefore use "b - 1" here!
         #
@@ -387,9 +387,9 @@ class BROOT(object):
     def pars(klass, tfunc, npars = None):
         if not npars:
             npars = tfunc.GetNpar()
-            
-        pp = [tfunc.GetParameter(i) for i in range(npars)] 
-        ep = [tfunc.GetParError(i) for i in range(npars)] 
+
+        pp = [tfunc.GetParameter(i) for i in range(npars)]
+        ep = [tfunc.GetParError(i) for i in range(npars)]
 
         FitPars = namedtuple('FitPars', ['pars', 'errors'])
         return FitPars(pp, ep)
@@ -401,8 +401,8 @@ class BROOT(object):
 
     @classmethod
     def diff(klass, hist1, hist2, tol = 1e-10):
-        bins1, errors1 = klass.bins(hist1)
-        bins2, errors2 = klass.bins(hist2)
+        bins1, errors1, centers = klass.bins(hist1)
+        bins2, errors2, centers = klass.bins(hist2)
 
         kernel = lambda x, y: abs(x - y) < tol
 

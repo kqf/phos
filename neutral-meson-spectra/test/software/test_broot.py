@@ -12,7 +12,7 @@ from spectrum.sutils import wait
 
 # NB: Don't use broot in write functions
 #     as it's important to test without broot
-# 
+#
 
 def write_histogram(filename, selection, histname):
     hist = br.BH(ROOT.TH1F, histname, 'Testing reading ' + \
@@ -28,8 +28,8 @@ def write_histogram(filename, selection, histname):
     return br.clone(hist)
 
 def write_histograms(filename, selection, histnames):
-    hists = [br.BH(ROOT.TH1F, histname, 'Testing reading ' + 
-                'histograms from a rootfile', 10, -3, 3) 
+    hists = [br.BH(ROOT.TH1F, histname, 'Testing reading ' +
+                'histograms from a rootfile', 10, -3, 3)
                 for histname in histnames]
 
     for hist in hists:
@@ -51,7 +51,7 @@ class TestTH(unittest.TestCase):
     def setUp(self):
         # self.mode = 'discover' not in sys.argv
         self.mode = 'discover' in sys.argv
-        self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)), 
+        self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)),
             "Testing creating of the histogram", 100, -10, 10,
             label = 'test')
         self.hist.FillRandom("gaus")
@@ -80,7 +80,7 @@ class TestTH(unittest.TestCase):
 
 
     def test_clone_from_root(self):
-        hist = br.BH(ROOT.TH1F, "refhistROOT", "Testing set_property method", 
+        hist = br.BH(ROOT.TH1F, "refhistROOT", "Testing set_property method",
             100, -10, 10)
 
         hist2 = br.BH(ROOT.TH1F, hist)
@@ -92,7 +92,7 @@ class TestTH(unittest.TestCase):
 
 
     def test_clone(self):
-        hist = br.BH(ROOT.TH1F, 
+        hist = br.BH(ROOT.TH1F,
             "refhistClone", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
@@ -109,7 +109,7 @@ class TestTH(unittest.TestCase):
 
 
     def test_copy(self):
-        hist = br.BH(ROOT.TH1F, 
+        hist = br.BH(ROOT.TH1F,
             "refhistCopy", "Testing updated Clone method", 100, -10, 10,
             label = "test prop", logy=True, logx=False, priority = 3)
 
@@ -121,7 +121,7 @@ class TestTH(unittest.TestCase):
 
         ## Copy differs clone
         ## These should not equal
-        self.assertFalse(hist.GetEntries() == hist2.GetEntries()) 
+        self.assertFalse(hist.GetEntries() == hist2.GetEntries())
 
         ## Now copy the properties
         self.assertTrue(br.same(hist2, hist))
@@ -135,19 +135,20 @@ class TestTH(unittest.TestCase):
         wait(draw = self.mode)
 
     def test_bh2_draws_projection_range(self):
-        hist = br.BH(ROOT.TH2F, "refhistProj",                  # Name
-                    "Testing updated ProjectX method for BH2F", # Title
-                    100, 20, 30, 100, -10, 10,                 # Xbins, Ybins
-                    label = "test prop",                        # Label
-                    logy = 1, logx = 0, priority = 3            # Misc properties
-                   )
+        hist = br.BH(
+            ROOT.TH2F, "refhistProj",                  # Name
+            "Testing updated ProjectX method for BH2F", # Title
+            100, 20, 30, 100, -10, 10,                 # Xbins, Ybins
+            label = "test prop",                        # Label
+            logy = 1, logx = 0, priority = 3            # Misc properties
+        )
 
         # Fill random values
         for i in br.range(hist):
             for j in br.range(hist, 'y'):
                 hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
- 
+
         hist.Draw('colz')
         wait(draw = self.mode)
 
@@ -161,7 +162,7 @@ class TestTH(unittest.TestCase):
         self.assertTrue(br.same(hist2, hist))
 
     def test_projection_saves_area(self):
-        # NB: Bin according to this sequence https://oeis.org/A000124 
+        # NB: Bin according to this sequence https://oeis.org/A000124
         #     so the bin width of a projection hist always increases
         #
         carter, ncarter = lambda n: n * (n + 1) / 2 + 1, 16
@@ -189,12 +190,12 @@ class TestTH(unittest.TestCase):
 
         projections = [br.projection(hist, "%d_%d", *bin) for bin in bins]
 
-        # print 
+        # print
         # for b, p in zip(bins, projections):
             # print b, p.Integral()
         # print sum(p.Integral() for p in projections), hist.Integral()
 
-        total = sum(p.Integral() for p in projections) 
+        total = sum(p.Integral() for p in projections)
         self.assertEqual(total, hist.Integral())
 
     def test_read(self):
@@ -202,7 +203,7 @@ class TestTH(unittest.TestCase):
         write_histogram(*data)
         self.assertIsNotNone(br.io.read(*data))
 
-        # Now raise exceptions when reading 
+        # Now raise exceptions when reading
         # the root file with wrong names
         self.assertRaises(IOError, br.io.read, 'junk' + data[0], data[1], data[2])
         self.assertRaises(IOError, br.io.read, data[0], 'junk' + data[1], data[2])
@@ -223,18 +224,18 @@ class TestTH(unittest.TestCase):
         self.assertIsNotNone(histograms[0])
 
 
-        # Now feed it with wrong name 
+        # Now feed it with wrong name
         histnames.append('junk')
-        self.assertRaises(IOError, br.io.read_multiple, 
+        self.assertRaises(IOError, br.io.read_multiple,
             ofilename, selection, histnames)
         os.remove(ofilename)
 
     def test_ratio(self):
-        hist1 = br.BH(ROOT.TH1F, 
+        hist1 = br.BH(ROOT.TH1F,
             "refhistRatio1", "Testing the ratio method", 100, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
-        hist2 = br.BH(ROOT.TH1F, 
+        hist2 = br.BH(ROOT.TH1F,
             "refhistRatio2", "Testing the ratio method", 100, -10, 10,
             label = "test ratio b", logy=True, logx=False, priority = 3)
 
@@ -249,7 +250,7 @@ class TestTH(unittest.TestCase):
         self.assertFalse(br.same(hist2, ratio))
 
     def test_sets_events(self):
-        hist1 = br.BH(ROOT.TH1F, 
+        hist1 = br.BH(ROOT.TH1F,
             "refhistSetEvents", "Testing set events", 100, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
@@ -274,11 +275,11 @@ class TestTH(unittest.TestCase):
 
 
     def test_rebins(self):
-        hist1 = br.BH(ROOT.TH1F, 
+        hist1 = br.BH(ROOT.TH1F,
             "refhistRebin1", "Testing rebins", 200, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
-        hist2 = br.BH(ROOT.TH1F, 
+        hist2 = br.BH(ROOT.TH1F,
             "refhistRebin2", "Testing rebins", 100, -10, 10,
             label = "test ratio", logy=True, logx=False, priority = 3)
 
@@ -297,7 +298,7 @@ class TestTH(unittest.TestCase):
 
 
     def test_sum(self):
-        hists = [ br.BH(ROOT.TH1F, 
+        hists = [ br.BH(ROOT.TH1F,
             "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
             label = "%dth histogram" % i, logy=True, logx=False, priority = 3)
             for i in range(10)]
@@ -317,7 +318,7 @@ class TestTH(unittest.TestCase):
     def test_scales_histogram(self):
         nbins, start, stop =  200, -10, 10
 
-        hist = br.BH(ROOT.TH1F, 
+        hist = br.BH(ROOT.TH1F,
             "refhistScale", "Testing scalew", nbins, start, stop,
             label = "scale", logy=True, logx=False, priority = 3)
 
@@ -343,7 +344,7 @@ class TestTH(unittest.TestCase):
 
     def test_calculates_area_and_error(self):
         nbins, start, stop = 10, 0, 10
-        hist = br.BH(ROOT.TH1F, 
+        hist = br.BH(ROOT.TH1F,
             "refhistAreaError", "Testing area and error", nbins, start, stop,
             label = "scale", logy=True, logx=False, priority = 3)
 
@@ -353,6 +354,8 @@ class TestTH(unittest.TestCase):
 
         triangle = lambda n: n * (n - 1) / 2
         farea = lambda a, b: triangle(b) - triangle(a)
+        pyramid = lambda n: n ** 3 / 3 + n ** 2 / 2 + n / 6
+        efarea = lambda a, b: pyramid(b) - pyramid(a)
 
         # These areas work according to the formula
         test_areas = (0, 10), (5, 10), (0, 0)
@@ -362,8 +365,8 @@ class TestTH(unittest.TestCase):
             true = farea(*interval)
 
             self.assertEqual(area, true)
-            self.assertEqual(error, true ** 0.5)
-
+            # print error
+            self.assertEqual(error, efarea(*interval) ** 0.5)
         # NB: ROOT behaviour
         # But these areas don't work according agree with expectations
         # because ROOT takes into account both ends of the interval
@@ -381,7 +384,7 @@ class TestTH(unittest.TestCase):
         new_edges = [-10, -3, -2, 0, 1, 4, 6, 10]
         newbins = zip(new_edges[:-1], new_edges[1:])
 
-        hist = br.BH(ROOT.TH1F, 
+        hist = br.BH(ROOT.TH1F,
             "refhistEdges", "Testing scalew", nbins, start, stop,
             label = "scale", logy=True, logx=False, priority = 3)
         hist.FillRandom('gaus')
@@ -399,7 +402,7 @@ class TestTH(unittest.TestCase):
 
     def test_saves_histogram(self):
         oname, selection, histname = 'testSave.root', 'testSelection', 'refhistSave'
-        hist = br.BH(ROOT.TH1F, 
+        hist = br.BH(ROOT.TH1F,
             histname, "Testing scalew", 200, -10, 10,
             label = "scale", logy=True, logx=False, priority = 3)
         hist.FillRandom('gaus')
@@ -408,8 +411,8 @@ class TestTH(unittest.TestCase):
 
 
         br.io.save(hist, oname, selection)
-        
-        # It's important to check if we don't delete 
+       
+        # It's important to check if we don't delete
         # the hist accidentally
         self.assertIsNotNone(hist)
 
@@ -423,7 +426,7 @@ class TestTH(unittest.TestCase):
 
 
     # Just to check if init decorator works as expected
-    # 
+    #
     def test_initializes_inputs(self):
         class Empty(object):
 
@@ -615,7 +618,7 @@ class TestTH(unittest.TestCase):
             # TODO: Check this condition range
             if a - 1 < bin < b:
                 continue
-                
+
             # print a, bin, b, hist1.GetBinContent(bin)
             self.assertEqual(hist1.GetBinContent(bin), 0)
 
