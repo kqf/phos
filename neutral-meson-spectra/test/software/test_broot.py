@@ -347,33 +347,27 @@ class TestTH(unittest.TestCase):
         hist = br.BH(ROOT.TH1F,
             "refhistAreaError", "Testing area and error", nbins, start, stop,
             label = "scale", logy=True, logx=False, priority = 3)
+        hist.Sumw2()
 
         for i in range(nbins):
-            hist.Fill(i, i)
+            hist.Fill(i, 1)
 
-
-        triangle = lambda n: n * (n - 1) / 2
-        farea = lambda a, b: triangle(b) - triangle(a)
-        pyramid = lambda n: n ** 3 / 3 + n ** 2 / 2 + n / 6
-        efarea = lambda a, b: pyramid(b) - pyramid(a)
-
+        histarea = lambda a, b: b - a
         # These areas work according to the formula
         test_areas = (0, 10), (5, 10), (0, 0)
         for interval in test_areas:
             area, error = br.area_and_error(hist, *interval)
-
-            true = farea(*interval)
-
+            true = histarea(*interval)
             self.assertEqual(area, true)
-            # print error
-            self.assertEqual(error, efarea(*interval) ** 0.5)
+            self.assertEqual(error, true ** 0.5)
+
         # NB: ROOT behaviour
         # But these areas don't work according agree with expectations
         # because ROOT takes into account both ends of the interval
         fail_areas =  (5, 6), (0, 1), (1, 8)
         for interval in fail_areas:
             area, error = br.area_and_error(hist, *interval)
-            true = farea(*interval)
+            true = histarea(*interval)
 
             self.assertNotEqual(area, true)
             # There is no need to compare errors

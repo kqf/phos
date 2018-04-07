@@ -326,6 +326,8 @@ class BROOT(object):
 
     @classmethod
     def area_and_error(klass, hist, a, b):
+        if a == b:
+            return 0, 0
         area, areae = ROOT.Double(), ROOT.Double()
         bin = klass.bincenterf(hist)
         area = hist.IntegralAndError(bin(a), bin(b), areae)
