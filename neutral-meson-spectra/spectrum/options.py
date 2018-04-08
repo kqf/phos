@@ -162,3 +162,11 @@ class MultirangeEfficiencyOptions(object):
         options = [EfficiencyOptions.spmc(rr, particle, genname) for _, rr in unified_input.iteritems()]
         return klass(options, unified_input.values())
 
+
+class CorrectedYieldOptions(object):
+    def __init__(self):
+        super(CorrectedYieldOptions, self).__init__()
+        self.analysis = Options()
+        self.analysis.output.scalew_spectrum = True
+        self.efficiency = EfficiencyOptions()
+        self.spectrum = "spectrum"

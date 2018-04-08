@@ -2,8 +2,8 @@
 
 from spectrum import Spectrum
 from transformer import TransformerBase
-from options import Options
-from .input import Input, read_histogram, SingleHistInput
+from options import EfficiencyOptions
+from .input import SingleHistInput
 from comparator import Comparator
 from analysis import Analysis
 from pipeline import Pipeline, RatioUnion, HistogramSelector, ReducePipeline, ParallelPipeline
@@ -23,7 +23,7 @@ import unittest
 class Efficiency(TransformerBase):
 
 
-    def __init__(self, options=Options(), recalculate=False):
+    def __init__(self, options=EfficiencyOptions(), recalculate=False):
         super(Efficiency, self).__init__()
         self.pipeline = RatioUnion(
             Pipeline([

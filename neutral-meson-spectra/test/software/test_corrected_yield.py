@@ -1,17 +1,29 @@
 import unittest
 
-# from spectrum.spectrum import Spectrum 
-from spectrum.input import Input 
-from spectrum.options import Options 
+# from spectrum.spectrum import Spectrum
+from spectrum.input import Input
+from spectrum.options import Options
 from spectrum.efficiency import Efficiency
 from spectrum.corrected_yield import CorrectedYield
 
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
+from vault.datavault import DataVault
 
 
 class TestCorrectedYield(unittest.TestCase):
 
+
+    def test_interface_simple(self):
+        data = [
+            DataVault().input("data"),
+            DataVault().input("pythia8")
+        ]
+
+        estimator = CorrectedYield()
+        estimator.transform(data, ("Test corr yield interface", False))
+
+    @unittest.skip('')
     def test_interface(self):
         inp, opt = Input('LHC16.root', 'PhysOnlyTender', 'data'), Options('q')
         eff = Efficiency('hPt_#pi^{0}_primary_', 'eff', 'Pythia-LHC16-a5').eff()
@@ -29,5 +41,5 @@ class TestCorrectedYield(unittest.TestCase):
         diff = Comparator()
         diff.compare(corrected_spectrum1,
             corrected_spectrum2)
-        
+
 
