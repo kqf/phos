@@ -11,50 +11,36 @@ from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions
 
 class TestEfficiency(unittest.TestCase):
 
-    # @unittest.skip("use the latest vault version")
+    @unittest.skip("use the latest vault version")
     def test_interface(self):
-
-        inputs = Input(
-            DataVault().file("single #pi^{0}", "low"), 
-            "PhysEff"
+        estimator = Efficiency(plot=False)
+        efficiency = estimator.transform(
+            DataVault().input("pythia8"),
+            "test_efficeincy"
         )
-        options = EfficiencyOptions()
-
-        loggs = AnalysisOutput("test_efficiency", "#pi^{0}")
-
-        estimator = Efficiency(options)
-        efficiency = estimator.transform(inputs, loggs)
-        efficiency.SetTitle('Testing the interface')
 
         diff = Comparator()
-        diff.compare(efficiency)    
-
-        loggs.plot(False)
+        efficiency.SetTitle('Testing the interface')
+        diff.compare(efficiency)
 
 
 class TestMultirangeEfficiency(unittest.TestCase):
 
     def test_interface(self):
         unified_inputs = {
-            DataVault().file("single #pi^{0}", "low"): (0, 7),
-            DataVault().file("single #pi^{0}", "high"): (7, 20)
+            DataVault().input("single #pi^{0}", "low"): (0, 7),
+            DataVault().input("single #pi^{0}", "high"): (7, 20)
         }
 
         estimator = EfficiencyMultirange(
-           MultirangeEfficiencyOptions.spmc(unified_inputs, "#pi^{0}") 
+           MultirangeEfficiencyOptions.spmc(unified_inputs, "#pi^{0}")
         )
-
-        loggs = AnalysisOutput("test_multirange_efficiency", "#pi^{0}")
 
         efficiency = estimator.transform(
-           [Input(filename, "PhysEff") for filename in unified_inputs],
-           loggs
+           unified_inputs,
+           "testin composite efficiency"
         )
 
-        efficiency.SetTitle('Testing the interface')
+        efficiency.SetTitle('Testing the interface for composite efficency')
         diff = Comparator()
         diff.compare(efficiency)
-        loggs.plot(False)
-        
-
-  

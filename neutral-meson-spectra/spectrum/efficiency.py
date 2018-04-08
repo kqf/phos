@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-from spectrum import Spectrum
 from transformer import TransformerBase
 from options import EfficiencyOptions
 from .input import SingleHistInput
@@ -22,9 +21,8 @@ import unittest
 
 class Efficiency(TransformerBase):
 
-
-    def __init__(self, options=EfficiencyOptions(), recalculate=False):
-        super(Efficiency, self).__init__()
+    def __init__(self, options=EfficiencyOptions(), plot=False):
+        super(Efficiency, self).__init__(plot)
         self.pipeline = RatioUnion(
             Pipeline([
                 ("ReconstructMesons", Analysis(options.analysis)),
@@ -36,12 +34,12 @@ class Efficiency(TransformerBase):
 
 class EfficiencyMultirange(TransformerBase):
 
-    def __init__(self, options, recalculate=True):
-        super(EfficiencyMultirange, self).__init__()
+    def __init__(self, options, plot=False):
+        super(EfficiencyMultirange, self).__init__(plot)
 
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                    ("efficiency-{0}".format(ranges), Efficiency(opt, recalculate))
+                    ("efficiency-{0}".format(ranges), Efficiency(opt, plot))
                      for (opt, ranges) in zip(options.suboptions, options.mergeranges)
                 ]
             ),

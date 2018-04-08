@@ -1,4 +1,5 @@
 from output import AnalysisOutput
+
 class TransformerBase(object):
 
     def __init__(self, plot=True):
@@ -6,19 +7,14 @@ class TransformerBase(object):
         self.plot = plot
 
     def transform(self, inputs, loggs):
-    	try:
-    		title, stop = loggs
-    		loggs = AnalysisOutput(title)
-    		plot = True
-    	except TypeError:
-    		plot = False
+        lazy_logs = isinstance(loggs, basestring)
+
+    	if lazy_logs:
+    		loggs = AnalysisOutput(loggs)
 
         output = self.pipeline.transform(inputs, loggs)
 
-        try:
-            if self.plot:
-    	        loggs.plot(stop)
-        except UnboundLocalError:
-            pass
+        if lazy_logs:
+            loggs.plot(self.plot)
 
         return output
