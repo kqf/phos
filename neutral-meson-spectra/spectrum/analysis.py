@@ -10,8 +10,8 @@ from broot import BROOT as br
 
 class Analysis(TransformerBase):
 
-    def __init__(self, options=Options()):
-        super(Analysis, self).__init__()
+    def __init__(self, options=Options(), plot=False):
+        super(Analysis, self).__init__(plot)
         self.options = options
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.pt)),
@@ -23,7 +23,7 @@ class Analysis(TransformerBase):
 
 class CompositeAnalysis(TransformerBase):
 
-    def __init__(self, options):
+    def __init__(self, options, plot=False):
         super(CompositeAnalysis, self).__init__()
         self.mergeranges = options.mergeranges
         self.pipeline = ReducePipeline(

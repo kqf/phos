@@ -1,13 +1,9 @@
 import unittest
 
 # from spectrum.spectrum import Spectrum
-from spectrum.input import Input
-from spectrum.options import Options
-from spectrum.efficiency import Efficiency
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.options import CorrectedYieldOptions
 
-from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
 
 
@@ -21,25 +17,23 @@ class TestCorrectedYield(unittest.TestCase):
         ]
 
         estimator = CorrectedYield()
-        estimator.transform(data, ("Test corr yield interface", False))
+        estimator.transform(data, "test simple corr. yield interface")
 
-    @unittest.skip('')
-    def test_interface(self):
-        inp, opt = Input('LHC16.root', 'PhysOnlyTender', 'data'), Options('q')
-        eff = Efficiency('hPt_#pi^{0}_primary_', 'eff', 'Pythia-LHC16-a5').eff()
-        cy_estimator = CorrectedYield(inp, opt, eff)
+    def test_interface_composite(self):
+        unified_inputs = {
+            DataVault().input("single #pi^{0}", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0}", "high"): (7.0, 20)
+        }
 
-        corrected_spectrum1 = cy_estimator.evaluate()
+        data = [
+            DataVault().input("data"),
+            unified_inputs
+        ]
 
-        corrected_spectrum2 = CorrectedYield.create_evaluate('LHC16.root',\
-                 'PhysOnlyTender', 'Pythia-LHC16-a5', 'hPt_#pi^{0}_primary_')
-
-
-        # This method is better as it compares errors as well
-        br.diff(corrected_spectrum1, corrected_spectrum2)
-
-        diff = Comparator()
-        diff.compare(corrected_spectrum1,
-            corrected_spectrum2)
-
-
+        estimator = CorrectedYield(
+            CorrectedYieldOptions(
+                particle="#pi^{0}",
+                unified_inputs=unified_inputs
+            )
+        )
+        estimator.transform(data, "test composite corr. yield interface")

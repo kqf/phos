@@ -158,15 +158,16 @@ class MultirangeEfficiencyOptions(object):
         self.mergeranges = mergeranges
 
     @classmethod
-    def spmc(klass, unified_input, particle, genname='hPt_#pi^{0}_primary_'):
-        options = [EfficiencyOptions.spmc(rr, particle, genname) for _, rr in unified_input.iteritems()]
+    def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_'):
+        options = [EfficiencyOptions.spmc(rr, particle, genname.format(particle)) for _, rr in unified_input.iteritems()]
         return klass(options, unified_input.values())
 
 
 class CorrectedYieldOptions(object):
-    def __init__(self):
+    def __init__(self, particle="", unified_inputs=None):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options()
         self.analysis.output.scalew_spectrum = True
-        self.efficiency = EfficiencyOptions()
         self.spectrum = "spectrum"
+        self.issimple = not unified_inputs
+        self.efficiency = EfficiencyOptions() if self.issimple else MultirangeEfficiencyOptions.spmc(unified_inputs, particle)

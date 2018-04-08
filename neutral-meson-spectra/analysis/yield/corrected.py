@@ -1,8 +1,8 @@
 import unittest
 
-# from spectrum.spectrum import Spectrum 
-from spectrum.input import Input 
-from spectrum.options import Options 
+# from spectrum.spectrum import Spectrum
+from spectrum.input import Input
+from spectrum.options import Options
 from spectrum.efficiency import Efficiency
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.efficiency import EfficiencyMultirange
@@ -33,7 +33,7 @@ class YieldEvaluator(object):
         efficiency.SetTitle(
             '#varepsilon = #Delta #phi #Delta y/ 2 #pi ' \
             '#frac{Number of reconstructed %s}{Number of generated primary %s}' \
-            % (self.particle, self.particle) 
+            % (self.particle, self.particle)
         )
         efficiency.label = "efficiency {0}".format(self.particle)
         diff = Comparator()
@@ -44,12 +44,12 @@ class YieldEvaluator(object):
     def transform(self, inp, eff_files):
         efficiency = self.efficiency(eff_files)
         cy_estimator = CorrectedYield(
-            inp, 
+            inp,
             Options(particle=self.particle),
             efficiency
         )
-        
-        corrected_spectrum = cy_estimator.evaluate() 
+
+        corrected_spectrum = cy_estimator.evaluate()
         return corrected_spectrum
 
 
@@ -63,7 +63,7 @@ class TestCorrectedYield(unittest.TestCase):
         files = {
             DataVault().file("single #pi^{0}", "low"): (0, 7),
             DataVault().file("single #pi^{0}", "high"): (7, 20)
-        } 
+        }
         corrected = estimator.transform(inp, files)
 
         diff = Comparator()
@@ -77,7 +77,7 @@ class TestCorrectedYield(unittest.TestCase):
         files = {
             DataVault().file("single #eta", "low"): (0, 6),
             DataVault().file("single #eta", "high"): (6, 15)
-        } 
+        }
         corrected = estimator.transform(inp, files)
 
         diff = Comparator()

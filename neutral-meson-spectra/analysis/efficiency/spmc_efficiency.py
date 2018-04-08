@@ -47,8 +47,7 @@ class TestEfficiencyEta(unittest.TestCase):
 def evaluate_spmc_efficiency(unified_inputs, particle):
     moptions = MultirangeEfficiencyOptions.spmc(
         unified_inputs,
-        particle,
-        genname='hPt_{0}_primary_standard'.format(particle)
+        particle
     )
     # for options in moptions.suboptions:
         # options.analysis.signalp.relaxed = True
@@ -56,7 +55,7 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
 
     efficiency = EfficiencyMultirange(moptions).transform(
         unified_inputs.keys(),
-        ("composite_efficiency_spmc_{}".format(particle), False)
+        "composite_efficiency_spmc_{}".format(particle)
     )
 
     efficiency.SetTitle(

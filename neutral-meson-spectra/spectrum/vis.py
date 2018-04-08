@@ -12,6 +12,7 @@ class VisHub(object):
         super(VisHub, self).__init__()
         self._double = Visualizer(*args, **kwargs)
         self._regular = MultipleVisualizer(*args, **kwargs)
+        su.gcanvas().Clear()
 
     def compare_visually(self, hists, ci):
         neglimits = any(i < 0 for i in self._double.rrange)
