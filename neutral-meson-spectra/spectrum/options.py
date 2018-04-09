@@ -106,14 +106,16 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, particle = 'pi0', ptrange='config/pt-spmc.json'):
+    def spmc(pt_fit_range, particle = 'pi0', ptrange='config/pt-spmc.json', *args, **kwargs):
         name = '%.4g < p_{T} < %.4g' % pt_fit_range
         options = Options(
             particle=particle,
             ptrange=ptrange,
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
-            signalp='config/cball-parameters-spmc-signal.json'
+            signalp='config/cball-parameters-spmc-signal.json',
+            *args,
+            **kwargs
         )
         options.spectrum.fit_range = pt_fit_range
         options.invmass.use_mixed = False
@@ -151,7 +153,7 @@ class EfficiencyOptions(object):
 
     @classmethod
     def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_', *args, **kwargs):
-        efficiency_options = klass(genname)
+        efficiency_options = klass(genname=genname)
         efficiency_options.analysis = Options().spmc(pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
 
@@ -170,8 +172,10 @@ class MultirangeEfficiencyOptions(object):
             eff_options.analysis.pt.rebins = rebins
 
     @classmethod
-    def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_'):
-        options = [EfficiencyOptions.spmc(rr, particle, genname.format(particle)) for _, rr in unified_input.iteritems()]
+    def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_', use_particle=True, *args, **kwargs):
+        if use_particle:
+            genname = genname.format(particle)
+        options = [EfficiencyOptions.spmc(rr, particle, genname, *args, **kwargs) for _, rr in unified_input.iteritems()]
         return klass(options, unified_input.values())
 
 

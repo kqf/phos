@@ -38,7 +38,7 @@ class StanadrtizeOutput(TransformerBase):
 
 
 class ReadCompositeEfficiency(TransformerBase):
-    def __init__(self, options):
+    def __init__(self, options, plot=False):
         super(ReadCompositeEfficiency, self).__init__()
         self.pipeline = ReducePipeline(
             ParallelPipeline([
@@ -56,7 +56,8 @@ class ReadCompositeEfficiency(TransformerBase):
 
 
 class CompareEfficiencies(TransformerBase):
-    def __init__(self, options):
+    def __init__(self, options, plot=False):
+        super(CompareEfficiencies, self).__init__(plot)
         self.pipeline = ReducePipeline(
                 ParallelPipeline([
                     ("calculated_efficiency", EfficiencyMultirange(options)),
@@ -149,7 +150,6 @@ class DebugTheEfficiency(unittest.TestCase):
         diff.compare(efficiency)
 
 
-    @unittest.skip('')
     def test_trained_ef(self):
         particle = "#pi^{0}"
         debug_inputs = {
@@ -160,7 +160,9 @@ class DebugTheEfficiency(unittest.TestCase):
         moptions = MultirangeEfficiencyOptions.spmc(
             debug_inputs,
             particle,
-            genname='hGenPi0Pt_clone'
+            genname='hGenPi0Pt_clone',
+            use_particle=False,
+            ptrange="config/pt-debug-full.json"
         )
 
         # unified_inputs = {
@@ -176,9 +178,10 @@ class DebugTheEfficiency(unittest.TestCase):
 
         compared = CompareEfficiencies(moptions).transform(
             [debug_inputs, debug_inputs],
-            ("compare the debug efficiency", True)
+            "compare the debug efficiency"
         )
 
+    @unittest.skip('')
     def test_weight_like_debug(self):
         input_low = DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
 
