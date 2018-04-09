@@ -143,6 +143,12 @@ class EfficiencyOptions(object):
         self.analysis = Options(particle=particle)
         self.genname = genname
 
+
+    def set_binning(self, ptedges, rebins):
+        self.analysis.pt.ptedges = ptedges
+        self.analysis.pt.rebins = rebins
+
+
     @classmethod
     def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_', *args, **kwargs):
         efficiency_options = klass(genname)
@@ -156,6 +162,12 @@ class MultirangeEfficiencyOptions(object):
         super(MultirangeEfficiencyOptions, self).__init__()
         self.suboptions = effoptions
         self.mergeranges = mergeranges
+
+
+    def set_binning(self, ptedges, rebins):
+        for eff_options in self.suboptions:
+            eff_options.analysis.pt.ptedges = ptedges
+            eff_options.analysis.pt.rebins = rebins
 
     @classmethod
     def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_'):
@@ -171,3 +183,8 @@ class CorrectedYieldOptions(object):
         self.spectrum = "spectrum"
         self.issimple = not unified_inputs
         self.efficiency = EfficiencyOptions() if self.issimple else MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+
+    def set_binning(self, ptedges, rebins):
+        self.analysis.pt.ptedges = ptedges
+        self.analysis.pt.rebins = rebins
+        self.efficiency.set_binning(ptedges, rebins)

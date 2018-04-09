@@ -1,16 +1,9 @@
 import unittest
 
-# from spectrum.spectrum import Spectrum
-from spectrum.input import Input
 from spectrum.options import CorrectedYieldOptions
-from spectrum.efficiency import Efficiency
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.efficiency import EfficiencyMultirange
 
-from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
-
 
 class TestCorrectedYield(unittest.TestCase):
 

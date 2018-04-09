@@ -1,7 +1,5 @@
 from broot import BROOT as br
-from spectrum import Spectrum
 from analysis import Analysis
-from .input import Input
 from options import CorrectedYieldOptions
 from efficiency import Efficiency, EfficiencyMultirange
 from comparator import Comparator
@@ -24,3 +22,16 @@ class CorrectedYield(TransformerBase):
             ]),
             Comparator().compare
         )
+
+
+class YieldRatio(TransformerBase):
+    def __init__(self, options_eta, options_pi0, plot=False):
+        super(YieldRatio, self).__init__(plot)
+        self.pipeline = ReducePipeline(
+            ParallelPipeline([
+                ('#eta', CorrectedYield(options_eta, plot)),
+                ('#pi^{0}', CorrectedYield(options_pi0, plot)),
+            ]),
+            Comparator().compare
+        )
+
