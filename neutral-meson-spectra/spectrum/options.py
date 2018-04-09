@@ -138,9 +138,9 @@ class CompositeOptions(object):
 
 class EfficiencyOptions(object):
 
-    def __init__(self, genname='hPt_#pi^{0}_primary_'):
+    def __init__(self, particle='#pi^{0}', genname='hPt_#pi^{0}_primary_'):
         super(EfficiencyOptions, self).__init__()
-        self.analysis = Options()
+        self.analysis = Options(particle=particle)
         self.genname = genname
 
     @classmethod
@@ -166,7 +166,7 @@ class MultirangeEfficiencyOptions(object):
 class CorrectedYieldOptions(object):
     def __init__(self, particle="", unified_inputs=None):
         super(CorrectedYieldOptions, self).__init__()
-        self.analysis = Options()
+        self.analysis = Options(particle=particle)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
         self.issimple = not unified_inputs
