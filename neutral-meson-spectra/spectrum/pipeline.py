@@ -14,6 +14,16 @@ class HistogramSelector(object):
         output = inputs._asdict()[self.histname]
         return output
 
+class FunctionTransformer(object):
+
+    def __init__(self, func):
+        super(FunctionTransformer, self).__init__()
+        self.func = func
+
+    def transform(self, inputs, loggs):
+        output = self.func(inputs)
+        return output
+
 
 class Pipeline(object):
 

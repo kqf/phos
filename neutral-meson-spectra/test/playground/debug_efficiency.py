@@ -8,7 +8,7 @@ from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions, Opt
 from spectrum.efficiency import Efficiency, EfficiencyMultirange
 from spectrum.comparator import Comparator
 from spectrum.transformer import TransformerBase
-from spectrum.pipeline import Pipeline, ReducePipeline, ParallelPipeline
+from spectrum.pipeline import Pipeline, ReducePipeline, ParallelPipeline, FunctionTransformer
 from spectrum.input import SingleHistInput
 
 from spectrum.broot import BROOT as br
@@ -66,6 +66,24 @@ class CompareEfficiencies(TransformerBase):
                 Comparator().compare
             )
 
+class CompareGeneratedSpectra(TransformerBase):
+    def __init__(self, options, names, plot=False):
+        super(CompareGeneratedSpectra, self).__init__(plot)
+        self.pipeline = ReducePipeline(
+                ParallelPipeline([
+                    # ("custom_spectrum", ReadCompositeDistribution(options, name=names[0])),
+                    # ("debug_spectrum", ReadCompositeDistribution(options, name=names[1]))
+                    ("custom_spectrum", SingleHistInput(names[0])),
+                    ("debug_spectrum", Pipeline([
+                            ("single", SingleHistInput(names[1])),
+                            ("scale", FunctionTransformer(br.scalew))
+                        ])
+                    )
+                ]),
+                Comparator().compare
+            )
+
+
 class DebugTheEfficiency(unittest.TestCase):
 
     def test_efficiency_evaluation(self):
@@ -99,6 +117,30 @@ class DebugTheEfficiency(unittest.TestCase):
             [unified_inputs, debug_inputs],
             "compare the debug efficiency"
         )
+
+
+    @unittest.skip('')
+    def test_generated_spectrum(self):
+        particle = "#pi^{0}"
+        debug_inputs = {
+            DataVault().input("debug efficiency", "low", n_events=1, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="low"): (0, 6),
+            DataVault().input("debug efficiency", "high", n_events=1, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="high"): (6, 20)
+        }
+
+        unified_inputs = {
+            DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
+        }
+
+        moptions = MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+
+        names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
+
+        compared = CompareGeneratedSpectra(moptions, names=names).transform(
+            [unified_inputs.keys()[0], debug_inputs.keys()[0]],
+            "compare the debug efficiency"
+        )
+
 
     @unittest.skip('')
     def test_weight_like_debug(self):
