@@ -27,8 +27,8 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
-            DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
+            DataVault().input("single #pi^{0} iteration1 new weights", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0} iteration1 new weights", "high"): (7.0, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
