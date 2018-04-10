@@ -42,3 +42,19 @@ class DataVault(object):
         if not listname:
             listname = self.dataset(production, version)['default_selection']
         return Input(filename, str(listname), *args, **kwargs)
+
+
+    def validate_all_datasets(self):
+        not_valid = []
+        for productionion in self._ledger:
+            for version in self._ledger[productionion]:
+                dataset = self._ledger[productionion][version]
+                try:
+                    self.validate_all_datasets(dataset['file'], data['hsum'])
+                except:
+                    not_valid.append(
+                        (productionion, version)
+                    )
+        return not_valid
+
+
