@@ -101,7 +101,10 @@ void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags &
 
 
 		Double_t pt = particle->Pt();
-		Double_t w = fWeights->Weight(pt);
+		
+	    AliAODMCParticle * origin = (AliAODMCParticle*)eflags.fMcParticles->At(0);//0 is always generated particle by AliGenBox.
+		Double_t w = fWeights->Weight(origin->Pt());
+		// Double_t w = fWeights->Weight(pt);
 
 
 		// Use this to remove forward photons that can modify our true efficiency
