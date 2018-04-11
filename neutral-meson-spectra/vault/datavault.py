@@ -50,10 +50,10 @@ class DataVault(object):
             for version in self._ledger[productionion]:
                 dataset = self._ledger[productionion][version]
                 try:
-                    self.validate_all_datasets(dataset['file'], data['hsum'])
-                except:
+                    self._validate_dataset(dataset['file'], dataset['hsum'])
+                except IOError as e:
                     not_valid.append(
-                        (productionion, version)
+                        (productionion, version, str(e).split()[-1])
                     )
         return not_valid
 
