@@ -103,7 +103,7 @@ class TestInputMemoryPerformance(unittest.TestCase):
 
         cache = []
         msize = 11 * 11
-        bar = progressbar.ProgressBar() 
+        bar = progressbar.ProgressBar()
         for i in bar(range(msize)):
             hists = raw.Clone(), mixed.Clone()
             cache.append(hists)
