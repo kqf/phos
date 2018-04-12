@@ -90,6 +90,21 @@
 			"description": "Single #pi^{0} all correctons with updated weights"
 		}
 	},
+	"single #pi^{0} iteration3 corrected weights":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iteration3_corrected_weights/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "c90337c73c108bdd5b15c14a1d81aa38f5e96cbc33ace1537c0e6398c069bc78",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iteration3_corrected_weights/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "b6a1afb1be78d9bb86ee7397d990667dd64db88f404ab2aac46c39f5f10bd6d0",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
