@@ -84,14 +84,14 @@ void AliPP13EfficiencySelectionMC::InitSelectionHistograms()
 }
 
 
-void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags & flags)
+void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags & eflags)
 {
-	if (!flags.fMcParticles)
+	if (!eflags.fMcParticles)
 		return;
 
-	for (Int_t i = 0; i < flags.fMcParticles->GetEntriesFast(); i++)
+	for (Int_t i = 0; i < eflags.fMcParticles->GetEntriesFast(); i++)
 	{
-		AliAODMCParticle * particle = ( AliAODMCParticle *) flags.fMcParticles->At(i);
+		AliAODMCParticle * particle = ( AliAODMCParticle *) eflags.fMcParticles->At(i);
 		Int_t code = TMath::Abs(particle->GetPdgCode());
 
 		// NB: replace this condition by find, if the number of particles will grow
@@ -129,7 +129,7 @@ void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags &
 
 		fSpectrums[code]->fPtPrimaries[Int_t(primary)]->Fill(pt, w);
 		fSpectrums[code]->fPtPrimariesStandard[Int_t(primary)]->Fill(pt, w);
-		ConsiderGeneratedParticle(i, pt, primary, flags);
+		ConsiderGeneratedParticle(i, pt, primary, eflags);
 	}
 }
 
