@@ -12,6 +12,7 @@ from spectrum.processing import DataSlicer, MassFitter, RangeEstimator
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
 
+from vault.datavault import DataVault
 
 
 
@@ -19,15 +20,15 @@ class TestInvariantMass(unittest.TestCase):
 
     def setUp(self):
         self.wait = 'discover' not in sys.argv
-        self.input = Input(
-            'input-data/data/LHC16.root',
-            'PhysTender',
+        self.input = DataVault().input(
+            "data",
+            "stable"
             label='testinvmass'
-        ).read()
+        )
 
         self.particles = {
-            'pi0': ((8, 9), 0)
-            'eta': ((0.8, 1.4), 5)
+            'pi0': (8, 9), 0)
+            'eta': (0.8, 1.4), 5)
         }
 
     def draw(self, particle, func, title):
