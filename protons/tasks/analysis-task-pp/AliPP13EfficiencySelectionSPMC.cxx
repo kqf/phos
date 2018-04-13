@@ -46,44 +46,6 @@ void AliPP13EfficiencySelectionSPMC::ConsiderPair(const AliVCluster * c1, const 
 		return;
 }
 
-
-
-//________________________________________________________________
-void AliPP13EfficiencySelectionSPMC::InitSelectionHistograms()
-{
-	Int_t nM       = 750;
-	Double_t mMin  = 0.0;
-	Double_t mMax  = 1.5;
-	Int_t nPt      = 400;
-	Double_t ptMin = 0;
-	Double_t ptMax = 20;
-
-	const char * rtitle = "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}";
-	for (Int_t i = 0; i < 2; ++i)
-	{
-		const char * rname = Form("h%sMassPt", i == 0 ? "" : "Mix");
-		fInvMass[i] = new TH2F(rname, rtitle, nM, mMin, mMax, nPt, ptMin, ptMax);
-		fListOfHistos->Add(fInvMass[i]);
-	}
-
-	Float_t ptbins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
-	Int_t ptsize = sizeof(ptbins) / sizeof(Float_t);
-
-	for (EnumNames::iterator i = fPartNames.begin(); i != fPartNames.end(); ++i)
-	{
-		const char * n = (const char *) i->second.Data();
-		fSpectrums[i->first] = new ParticleSpectrum(n, fListOfHistos, ptsize - 1, ptbins);
-	}
-
-	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
-	{
-		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
-		if (!hist) continue;
-		hist->Sumw2();
-	}
-}
-
-
 void AliPP13EfficiencySelectionSPMC::ConsiderGeneratedParticles(const EventFlags & eflags)
 {
 	if (!eflags.fMcParticles)
@@ -101,7 +63,7 @@ void AliPP13EfficiencySelectionSPMC::ConsiderGeneratedParticles(const EventFlags
 
 
 		Double_t pt = particle->Pt();
-		
+
 	    AliAODMCParticle * origin = (AliAODMCParticle*)eflags.fMcParticles->At(0);//0 is always generated particle by AliGenBox.
 		Double_t w = fWeights->Weight(origin->Pt());
 		// Double_t w = fWeights->Weight(pt);
@@ -131,24 +93,4 @@ void AliPP13EfficiencySelectionSPMC::ConsiderGeneratedParticles(const EventFlags
 		fSpectrums[code]->fPtPrimariesStandard[Int_t(primary)]->Fill(pt, w);
 		ConsiderGeneratedParticle(i, pt, primary, eflags);
 	}
-}
-
-//________________________________________________________________
-Bool_t AliPP13EfficiencySelectionSPMC::IsPrimary(const AliAODMCParticle * particle) const
-{
-	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
-	Double_t rcut = 1.;
-	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
-	return r2 < rcut * rcut;
-}
-
-//________________________________________________________________
-TLorentzVector AliPP13EfficiencySelectionSPMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
-{
-    Float_t energy = c1->E();
-
-    TLorentzVector p;
-    c1->GetMomentum(p, eflags.vtxBest);
-    p *= fWeights->Nonlinearity(energy);
-	return p;
 }
