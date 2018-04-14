@@ -31,9 +31,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights_only.fNonA = 0.0;
 
 	// NB: Don't use all other selections as they are not needed for the analysis
-	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_eta, &mc_weights));
-	selections->Add(new AliPP13EfficiencySelectionMC("PhysEffNoA", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
-	selections->Add(new AliPP13EfficiencySelectionMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_eta, &mc_weights_only));
+	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_eta, &mc_weights));
+	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffNoA", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
+	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_eta, &mc_weights_only));
 
 
 	// Setup task
