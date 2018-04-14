@@ -5,7 +5,6 @@
 #include <map>
 
 // --- Custom header files ---
-#include "AliPP13PhotonSelectionMC.h"
 #include "AliPP13SelectionWeights.h"
 #include "AliPP13EfficiencySelectionMC.h"
 
@@ -25,9 +24,9 @@
 class AliPP13EfficiencySelectionSPMC: public AliPP13EfficiencySelectionMC
 {
 public:
-	AliPP13EfficiencySelectionSPMC(): AliPP13PhotonSelectionMC() {}
+	AliPP13EfficiencySelectionSPMC(): AliPP13EfficiencySelectionMC() {}
 	AliPP13EfficiencySelectionSPMC(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
-		AliPP13PhotonSelectionMC(name, title, cuts, w)
+		AliPP13EfficiencySelectionMC(name, title, cuts, w)
 	{
 	}
 
