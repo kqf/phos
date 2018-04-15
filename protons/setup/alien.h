@@ -1,3 +1,4 @@
+#include "TSystem.h"
 #include "AliAnalysisAlien.h"
 
 #include "iostream"
@@ -25,8 +26,12 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetRunMode(pluginmode);
 
 	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20170620-1");
-
+	const char * aliphysics = gSystem->Getenv("ALIPHYSICS_VERSION");
+	cout << "********************************************************************" << endl;
+	cout << "Warning starting the analysis with the following aliphysics version:" << endl;
+	cout << "\t\t" << aliphysics << endl;
+	cout << "********************************************************************" << endl;
+	plugin->SetAliPhysicsVersion(aliphysics);
 
 	plugin->SetExecutableCommand("aliroot");
 	plugin->SetExecutableArgs("-b -q -x");
