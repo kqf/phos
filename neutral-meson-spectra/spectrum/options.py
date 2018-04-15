@@ -140,7 +140,7 @@ class CompositeOptions(object):
 
 class EfficiencyOptions(object):
 
-    def __init__(self, particle='#pi^{0}', genname='hPt_#pi^{0}_primary_'):
+    def __init__(self, particle='#pi^{0}', genname='hPt_#pi^{0}_primary_standard'):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options(particle=particle)
         self.genname = genname
@@ -152,7 +152,7 @@ class EfficiencyOptions(object):
 
 
     @classmethod
-    def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_', *args, **kwargs):
+    def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_standard', *args, **kwargs):
         efficiency_options = klass(genname=genname)
         efficiency_options.analysis = Options().spmc(pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
@@ -172,7 +172,7 @@ class MultirangeEfficiencyOptions(object):
             eff_options.analysis.pt.rebins = rebins
 
     @classmethod
-    def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_', use_particle=True, *args, **kwargs):
+    def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_standard', use_particle=True, *args, **kwargs):
         if use_particle:
             genname = genname.format(particle)
         options = [EfficiencyOptions.spmc(rr, particle, genname, *args, **kwargs) for _, rr in unified_input.iteritems()]

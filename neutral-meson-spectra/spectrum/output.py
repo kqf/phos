@@ -79,7 +79,7 @@ class AnalysisOutput(object):
     def update(self, stepname, histograms, multirange=False, mergable=False):
         logtype = MultirangeLogItem if multirange else LogItem
 
-        self.pool.append(
+        self.pool.insert(0,
             logtype("{0}/{1}".format(self.label, stepname), histograms, mergable)
         )
 
