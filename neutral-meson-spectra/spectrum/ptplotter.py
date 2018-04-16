@@ -40,6 +40,13 @@ class MassesPlot(object):
     def _set_axis_limits(self, imass):
         a, b = imass.initial_fitting_region
         imass.mass.GetXaxis().SetRangeUser(a, b)
+        ytitle = imass.mass.GetYaxis().GetTitle()
+        imass.mass.GetYaxis().SetTitle(
+            "{0}/{1} MeV".format(
+                ytitle,
+                imass.mass.GetBinWidth(1) * 1000
+            )
+        )
 
         def bins_errors(hist):
             bins, berrors, centers  = br.bins(hist)
