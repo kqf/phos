@@ -105,6 +105,21 @@
 			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also"
 		}
 	},
+	"single #pi^{0} iteration3 new tender":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iteration3_new_tender/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "210d13590e4f39f53e531a34d353d5476e85b97b021249c2cd84eac33f373e16",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, Newest tender"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iteration3_new_tender/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "998ab5ff7f91144849109f556c1da9889109345dca039431efce408deea9a2ba",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, Newest tender"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
