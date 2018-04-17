@@ -38,8 +38,8 @@ class TestEfficiencyEta(unittest.TestCase):
     # @unittest.skip('')
     def test_eta_efficiency(self):
         unified_inputs = {
-            DataVault().input("single #eta updated", "low"): (0, 6),
-            DataVault().input("single #eta updated", "high"): (6, 20)
+            DataVault().input("single #eta new tender", "low"): (0, 6),
+            DataVault().input("single #eta new tender", "high"): (6, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#eta")
 

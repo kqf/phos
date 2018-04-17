@@ -150,6 +150,21 @@
 			"description": "Single #eta simulations with all correctons"
 		}
 	},
+	"single #eta new tender":
+	{
+		"low": {
+			"file": "input-data/mc/single/eta/iteration1_new_tender/LHC17j3c1.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "462bedf4f518b3ab9afb63cbc934f0253764531507ac97b1ef3af8b1473522f9",
+			"description": "Single #eta simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/mc/single/eta/iteration1_new_tender/LHC17j3c2.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "1fb6e9d2b42ec80bf41a4f4a93b8b026cd06936a34be10dfbb74744a2607b620",
+			"description": "Single #eta simulations with all correctons"
+		}
+	},
 
 	"epos": {
 	},
