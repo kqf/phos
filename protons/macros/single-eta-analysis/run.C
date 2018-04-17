@@ -47,9 +47,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // if (useJDL)
 
     TString msg = "Single #eta Analysis + weights iteration 0";
-    msg += " with tender option ";
+    msg += " with tender option: ";
     msg += decalibration;
-
+    msg += " AliPhysics version:";
+    msg += gSystem->Getenv("ALIPHYSICS_VERSION");
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro

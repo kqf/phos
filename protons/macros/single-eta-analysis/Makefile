@@ -8,7 +8,7 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 DATASET = LHC17j3c2
-OUTDIR = results/mc/single/eta/iteration1_updated_weights
+OUTDIR = results/mc/single/eta/iteration1_new_tender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks
