@@ -2,7 +2,7 @@ import unittest
 
 # from spectrum.spectrum import Spectrum
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.options import CorrectedYieldOptions
+from spectrum.options import CorrectedYieldOptions, CompositeCorrectedYieldOptions
 
 from vault.datavault import DataVault
 
@@ -16,7 +16,10 @@ class TestCorrectedYield(unittest.TestCase):
             DataVault().input("pythia8")
         ]
 
-        estimator = CorrectedYield()
+        estimator = CorrectedYield(
+            CorrectedYieldOptions(particle="#pi^{0}"),
+            plot=False
+        )
         estimator.transform(data, "test simple corr. yield interface")
 
     def test_interface_composite(self):
@@ -31,9 +34,10 @@ class TestCorrectedYield(unittest.TestCase):
         ]
 
         estimator = CorrectedYield(
-            CorrectedYieldOptions(
+            CompositeCorrectedYieldOptions(
                 particle="#pi^{0}",
                 unified_inputs=unified_inputs
-            )
+            ),
+            plot=False
         )
         estimator.transform(data, "test composite corr. yield interface")

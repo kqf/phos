@@ -180,13 +180,26 @@ class MultirangeEfficiencyOptions(object):
 
 
 class CorrectedYieldOptions(object):
-    def __init__(self, particle="", unified_inputs=None):
+    def __init__(self, particle=""):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.issimple = not unified_inputs
-        self.efficiency = EfficiencyOptions() if self.issimple else MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+        self.efficiency = EfficiencyOptions(genname='hPt_{0}_primary_'.format(particle))
+
+    def set_binning(self, ptedges, rebins):
+        self.analysis.pt.ptedges = ptedges
+        self.analysis.pt.rebins = rebins
+        self.efficiency.set_binning(ptedges, rebins)
+
+
+class CompositeCorrectedYieldOptions(object):
+    def __init__(self, particle="", unified_inputs=None):
+        super(CompositeCorrectedYieldOptions, self).__init__()
+        self.analysis = Options(particle=particle)
+        self.analysis.output.scalew_spectrum = True
+        self.spectrum = "spectrum"
+        self.efficiency = MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges

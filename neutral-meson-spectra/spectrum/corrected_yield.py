@@ -9,7 +9,6 @@ from pipeline import ReducePipeline, ParallelPipeline, Pipeline, HistogramSelect
 class CorrectedYield(TransformerBase):
     def __init__(self, options=CorrectedYieldOptions(), plot=False):
         super(CorrectedYield, self).__init__(plot)
-        efficiency = Efficiency if options.issimple else EfficiencyMultirange
         self.pipeline = ReducePipeline(
             ParallelPipeline([
                 ('raw-yield',
@@ -18,7 +17,7 @@ class CorrectedYield(TransformerBase):
                         ('spectrum', HistogramSelector(options.spectrum))
                     ])
                 ),
-                ('efficiency', efficiency(options.efficiency, plot))
+                ('efficiency', Efficiency(options.efficiency, plot))
             ]),
             Comparator().compare
         )

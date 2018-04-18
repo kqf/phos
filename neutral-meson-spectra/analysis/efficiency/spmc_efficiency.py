@@ -6,7 +6,7 @@ from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 
-from spectrum.efficiency import Efficiency, EfficiencyMultirange
+from spectrum.efficiency import Efficiency
 from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions
 
 from vault.datavault import DataVault
@@ -45,15 +45,15 @@ class TestEfficiencyEta(unittest.TestCase):
 
 
 def evaluate_spmc_efficiency(unified_inputs, particle):
-    moptions = MultirangeEfficiencyOptions.spmc(
+    options = MultirangeEfficiencyOptions.spmc(
         unified_inputs,
         particle
     )
-    # for options in moptions.suboptions:
+    # for options in options.suboptions:
         # options.analysis.signalp.relaxed = True
         # options.analysis.backgroundp.relaxed = True
 
-    efficiency = EfficiencyMultirange(moptions).transform(
+    efficiency = Efficiency(options).transform(
         unified_inputs.keys(),
         "composite_efficiency_spmc_{}".format(particle)
     )

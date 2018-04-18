@@ -1,6 +1,6 @@
 import unittest
 
-from spectrum.efficiency import Efficiency, EfficiencyMultirange
+from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
@@ -11,8 +11,13 @@ from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions
 
 class TestEfficiency(unittest.TestCase):
 
+    @unittest.skip('')
     def test_interface(self):
-        estimator = Efficiency(plot=False)
+        estimator = Efficiency(
+            EfficiencyOptions(genname='hPt_#pi^{0}_primary_'),
+            plot=False
+        )
+
         efficiency = estimator.transform(
             DataVault().input("pythia8"),
             "test_efficeincy"
@@ -26,7 +31,7 @@ class TestMultirangeEfficiency(unittest.TestCase):
             DataVault().input("single #pi^{0}", "high"): (7, 20)
         }
 
-        estimator = EfficiencyMultirange(
+        estimator = Efficiency(
            MultirangeEfficiencyOptions.spmc(unified_inputs, "#pi^{0}")
         )
 
