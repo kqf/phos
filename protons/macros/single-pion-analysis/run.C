@@ -41,7 +41,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
 
-    TString msg = "Single pion analysis + weights iteration 3 - no nonlinearity, normal badmap, latest aliphysics";
+    TString msg = "Single pion analysis + weights iteration 3 - no nonlinearity, normal badmap, latest aliphysics, yield instead of invariant yield";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";
