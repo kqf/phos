@@ -5,7 +5,7 @@ from options import EfficiencyOptions, MultirangeEfficiencyOptions
 from .input import SingleHistInput
 from comparator import Comparator
 from analysis import Analysis
-from pipeline import Pipeline, RatioUnion, HistogramSelector, ReducePipeline, ParallelPipeline
+from pipeline import Pipeline, RatioUnion, HistogramSelector, ReducePipeline, ParallelPipeline, HistogramScaler
 
 from broot import BROOT as br
 
@@ -26,7 +26,8 @@ class EfficiencySimple(TransformerBase):
         self.pipeline = RatioUnion(
             Pipeline([
                 ("ReconstructMesons", Analysis(options.analysis)),
-                ("NumberOfMesons", HistogramSelector("npi0"))
+                ("NumberOfMesons", HistogramSelector("npi0")),
+                ("ScaleForAcceptance", HistogramScaler(options.scale))
             ]),
             SingleHistInput(options.genname)
         )

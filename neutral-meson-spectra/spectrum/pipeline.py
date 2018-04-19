@@ -14,6 +14,17 @@ class HistogramSelector(object):
         output = inputs._asdict()[self.histname]
         return output
 
+class HistogramScaler(object):
+
+    def __init__(self, factor):
+        super(HistogramScaler, self).__init__()
+        self.factor = factor
+
+    def transform(self, inputs, loggs):
+        inputs.Scale(self.factor)
+        return inputs
+
+
 class FunctionTransformer(object):
 
     def __init__(self, func):

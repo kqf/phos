@@ -144,6 +144,7 @@ class EfficiencyOptions(object):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options(particle=particle)
         self.genname = genname
+        self.scale = 0.075
 
 
     def set_binning(self, ptedges, rebins):
