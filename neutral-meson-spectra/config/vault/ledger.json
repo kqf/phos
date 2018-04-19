@@ -120,6 +120,21 @@
 			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, Newest tender"
 		}
 	},
+	"single #pi^{0} iteration3 yield":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iteration3_yield/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "b2c756094d17c1b69b1d5d18c9bd15871a507b5f8ddebf29ceb135b5c3d6d928",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, old tender. Scale for raw yield"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iteration3_yield/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "2e194099fbafd805f370ea75df30582ddf80ffb6e78c812a8eef016fa8da053c",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, old tender. Scale for raw yield"
+		}
+	},
 	"single #eta":
 	{
 		"low": {

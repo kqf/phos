@@ -27,8 +27,8 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration3 new tender", "low"):  (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 new tender", "high"): (7.0, 20)
+            DataVault().input("single #pi^{0} iteration3 yield", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0} iteration3 yield", "high"): (7.0, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
