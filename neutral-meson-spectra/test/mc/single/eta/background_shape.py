@@ -6,12 +6,10 @@ from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
-import spectrum.comparator as cmpr
 import spectrum.sutils as su
 from vault.datavault import DataVault
 
 import unittest
-import operator
 
 # This test is used to determine the best background function for
 # eta meson invariant mass distribution
@@ -70,4 +68,3 @@ class TestBackgroundShape(unittest.TestCase):
 
         diff = Comparator()
         diff.compare(histograms)
-

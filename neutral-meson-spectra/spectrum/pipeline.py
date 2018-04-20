@@ -4,8 +4,8 @@ from output import AnalysisOutput, MergedLogItem
 from transformer import TransformerBase
 
 
-
 class ComparePipeline(TransformerBase):
+
     def __init__(self, estimators, plot=False):
         super(ComparePipeline, self).__init__(plot)
         self.pipeline = ReducePipeline(
@@ -24,8 +24,8 @@ class HistogramSelector(object):
         output = inputs._asdict()[self.histname]
         return output
 
-class HistogramScaler(object):
 
+class HistogramScaler(object):
     def __init__(self, factor):
         super(HistogramScaler, self).__init__()
         self.factor = factor
@@ -68,7 +68,9 @@ class ParallelPipeline(object):
         self.steps = steps
 
     def transform(self, inputs, loggs):
-        assert len(inputs) == len(self.steps), "Input shape doesn't match the shape of estimators, got {0}, {1}".format(
+        assert len(inputs) == len(self.steps), \
+            "Input shape doesn't match the shape" \
+            " of estimators, got {0}, {1}".format(
             len(inputs),
             len(self.steps)
         )
@@ -80,14 +82,16 @@ class ParallelPipeline(object):
             loggs.append(local_logs)
             return output, local_logs.mergelist()
 
-        output_with_logs = [ tr(inp, name, step, loggs)
+        output_with_logs = [
+            tr(inp, name, step, loggs)
             for inp, (name, step) in zip(inputs, self.steps)
         ]
 
         outputs, local_logs = zip(*output_with_logs)
 
         merged_loggs = AnalysisOutput(loggs.label)
-        merged_loggs.pool = [MergedLogItem("merged", local)
+        merged_loggs.pool = [
+            MergedLogItem("merged", local)
             for local in zip(*local_logs)
         ]
         loggs.append(merged_loggs)

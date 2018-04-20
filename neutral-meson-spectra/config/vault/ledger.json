@@ -135,6 +135,21 @@
 			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, old tender. Scale for raw yield"
 		}
 	},
+	"single #pi^{0} iteration3 yield aliphysics":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iteration3_yield_aliphysics/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "698b572b21bfe4bdbc727c3f9468db7a6fca52e485cf261143db653af22f188c",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, the newest tender. Scale for raw yield"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iteration3_yield_aliphysics/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "998ab5ff7f91144849109f556c1da9889109345dca039431efce408deea9a2ba",
+			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, the newest tender. Scale for raw yield"
+		}
+	},
 	"single #eta":
 	{
 		"low": {

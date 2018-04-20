@@ -4,9 +4,6 @@ from spectrum.options import Options
 from spectrum.broot import BROOT as br
 import spectrum.comparator as cmpr
 
-import unittest
-import operator
-
 
 class MassWidthVerification(object):
 
@@ -16,7 +13,11 @@ class MassWidthVerification(object):
         br.scalew(spmc.spectrum, 1. / spmc.spectrum.Integral())
         spmc.spectrum.label = 'mc'
 
-        dinp, dopt = Input('LHC16', 'PhysOnlyTender', label='data'), Options('d')
+        dinp, dopt = Input(
+            'LHC16',
+            'PhysOnlyTender',
+            label='data'), Options('d')
+
         data = Spectrum(dinp, dopt).evaluate()
         br.scalew(data.spectrum, 1. / data.spectrum.Integral())
 
