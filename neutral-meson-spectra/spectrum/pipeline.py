@@ -4,6 +4,16 @@ from output import AnalysisOutput, MergedLogItem
 from transformer import TransformerBase
 
 
+
+class ComparePipeline(TransformerBase):
+    def __init__(self, estimators, plot=False):
+        super(ComparePipeline, self).__init__(plot)
+        self.pipeline = ReducePipeline(
+            ParallelPipeline(estimators),
+            Comparator().compare
+        )
+
+
 class HistogramSelector(object):
 
     def __init__(self, histname):
