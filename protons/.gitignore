@@ -1,0 +1,18 @@
+# This is the list of all files that should be excluded from the versioning
+# NB: One can use this list to add "file_exclude_patterns" in project configurations
+#
+
+*.2
+*.aliphysics
+*.cfg
+*.csv
+*.d
+*.gz
+*.jdl
+*.log
+*.mc
+*.md
+*.root
+*.runhistory
+*.so
+*.xml
