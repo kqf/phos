@@ -6,8 +6,8 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/iteration3_new_tender
+DATASET = LHC17j3b2
+OUTDIR = results/mc/single/pi0/iteration3_yield_aliphysics
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.

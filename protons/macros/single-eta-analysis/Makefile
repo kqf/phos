@@ -7,7 +7,7 @@ DPART = first
 MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-DATASET = LHC17j3c2
+DATASET = LHC17j3c1
 OUTDIR = results/mc/single/eta/iteration1_new_tender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
