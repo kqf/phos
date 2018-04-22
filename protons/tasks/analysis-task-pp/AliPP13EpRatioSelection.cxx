@@ -1,4 +1,7 @@
 //________________________________________________________________
+#include <AliPP13EpRatioSelection.h>
+#include <AliAODTrack.h>
+
 void AliPP13EpRatioSelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
@@ -52,17 +55,15 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		if (!hist) continue;
 		hist->Sumw2();
 	}
-
-	// These histograms are needed only to check the performance
-	// Don't do any analysis with these histograms.
-	//
-
-	fClusters = new TH1F("hClusterPt_SM0", "Cluster p_{T} spectrum with default cuts, all modules; p_{T}, GeV/c", nPt, ptMin, ptMax);	
-	fListOfHistos->Add(fClusters);
 }
 
 void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster, const EventFlags & eflags)
 {
+
+	// Don't do anything if pidresponse wasn't defined
+	if(!eflags.fPIDResponse)
+		return;
+
 	// No tracks
 	if( !(cluster->GetNTracksMatched() > 0) )
 		return;
@@ -79,7 +80,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	if(!isHybridTrack)
 		return;
 
-	Double_t energy = cluster->Energy();
+	Double_t energy = cluster->E();
 	Double_t trackP = track->P();
 	Double_t trackPt = track->Pt();
 	Double_t dEdx = track->GetTPCsignal();
@@ -96,17 +97,20 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	fTPCSignal[0]->Fill(EpRatio, nSigma);
 	Bool_t isElectron = (-2 < nSigma && nSigma < 3) ;
 
+	Int_t sm1, x1, z1;
+	if ((sm1 = CheckClusterGetSM(cluster, x1, z1)) < 0) 
+		return; //  To be sure that everything is Ok
 
 	if(isElectron)
 	{
-		fEpP[0]->Fill(EpRatio, energy);
-		fEpPt[0]->Fill(EpRatio, trackPt);
+		fEpP[0]->FillAll(sm1, sm1, EpRatio, energy);
+		fEpPt[0]->FillAll(sm1, sm1, EpRatio, trackPt);
 		fTPCSignal[2]->Fill(trackP, dEdx);
 	}
 	else if(nSigma < -3 || 5 < nSigma)
 	{
-		fEpP[1]->Fill(EpRatio, energy);
-		fEpPt[1]->Fill(EpRatio, trackPt);
+		fEpP[1]->FillAll(sm1, sm1, EpRatio, energy);
+		fEpPt[1]->FillAll(sm1, sm1, EpRatio, trackPt);
 		fTPCSignal[3]->Fill(trackP, dEdx);
 	}
 }

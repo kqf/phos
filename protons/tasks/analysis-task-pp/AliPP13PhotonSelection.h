@@ -15,6 +15,7 @@
 #include <TH3F.h>
 
 // --- AliRoot header files ---
+#include <AliPIDResponse.h>
 #include <AliPHOSGeometry.h>
 #include <AliVCluster.h>
 #include <AliLog.h>
@@ -31,7 +32,8 @@ struct EventFlags
 		eventPileup(p),
 		eventVtxExists(vtx),
 		ncontributors(0),
-		fMcParticles(0)
+		fMcParticles(0),
+		fPIDResponse(0)
 		//, eventV0AND(v0)
 	{}
 
@@ -44,7 +46,7 @@ struct EventFlags
 	Bool_t eventVtxExists;
 	Int_t ncontributors;
 	TClonesArray * fMcParticles;
-
+	AliPIDResponse * fPIDResponse;
 	// Bool_t eventV0AND;
 };
 
