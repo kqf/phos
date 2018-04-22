@@ -1,15 +1,12 @@
 import unittest
-import ROOT
 
-from spectrum.input import Input
-from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
 
 from spectrum.efficiency import Efficiency
-from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions
+from spectrum.options import MultirangeEfficiencyOptions
 
 from vault.datavault import DataVault
+
 
 class TestFakeEfficiencyPi0(unittest.TestCase):
 
@@ -27,8 +24,14 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration3 yield", "low"):  (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield", "high"): (7.0, 20)
+            DataVault().input(
+                "single #pi^{0} iteration3 yield",
+                "low"
+            ): (0, 7.0),
+            DataVault().input(
+                "single #pi^{0} iteration3 yield",
+                "high"
+            ): (7.0, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
@@ -50,8 +53,8 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
         particle
     )
     # for options in options.suboptions:
-        # options.analysis.signalp.relaxed = True
-        # options.analysis.backgroundp.relaxed = True
+    # options.analysis.signalp.relaxed = True
+    # options.analysis.backgroundp.relaxed = True
 
     efficiency = Efficiency(options).transform(
         unified_inputs.keys(),
@@ -59,11 +62,10 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
     )
 
     efficiency.SetTitle(
-        "#varepsilon = #Delta #phi #Delta y/ 2 #pi " \
-        "#frac{Number of reconstructed %s}{Number of generated primary %s}" \
+        "#varepsilon = #Delta #phi #Delta y/ 2 #pi "
+        "#frac{Number of reconstructed %s}{Number of generated primary %s}"
         % (particle, particle)
     )
 
     diff = Comparator()
     diff.compare(efficiency)
-

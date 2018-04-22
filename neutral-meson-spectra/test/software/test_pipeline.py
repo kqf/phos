@@ -3,6 +3,8 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.input import SingleHistInput
 
 from vault.datavault import DataVault
+
+
 class TestPipeline(unittest.TestCase):
 
     def test_comparator(self):
