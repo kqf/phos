@@ -89,8 +89,8 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		return;
 	}
 
-	// Count MB event before event cuts for every selection 
-	for (int i = 0; i < fSelections->GetEntries(); ++i) 
+	// Count MB event before event cuts for every selection
+	for (int i = 0; i < fSelections->GetEntries(); ++i)
 	{
 		AliPP13PhotonSelection * selection = dynamic_cast<AliPP13PhotonSelection *> (fSelections->At(i));
 		selection->CountMBEvent();
@@ -110,6 +110,14 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 	if (!EventSelected(event, evtProperties))
 		return;
 
+	// Set the Event handler if it's available
+	AliAnalysisManager * manager = AliAnalysisManager::GetAnalysisManager();
+	if (manager) 
+	{
+		AliInputEventHandler * inputHandler = dynamic_cast<AliInputEventHandler * >(manager->GetInputEventHandler());
+		if (inputHandler)
+			evtProperties.fPIDResponse = inputHandler->GetPIDResponse();
+	}
 
 	// NB: Use don't use TClonesArray as you don't want to copy the clusters
 	// just use pointers

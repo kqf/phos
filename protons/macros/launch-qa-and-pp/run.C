@@ -37,6 +37,19 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
+    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
+    AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
+        isMC, 
+        kTRUE,
+        kTRUE, 
+        1,          // reco pass
+        kFALSE, 
+        "",
+        kTRUE,
+        kFALSE,
+        1           // reco pass
+    );
+
     if (isMC)
     {
         // Important: Keep track of this variable

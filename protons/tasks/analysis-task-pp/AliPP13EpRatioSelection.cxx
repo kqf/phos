@@ -1,7 +1,16 @@
-//________________________________________________________________
+// --- Custom header files ---
+#include "AliPP13EpRatioSelection.h"
+
+// --- ROOT system ---
+
+// --- AliRoot header files ---
 #include <AliPP13EpRatioSelection.h>
 #include <AliAODTrack.h>
 
+
+ClassImp(AliPP13EpRatioSelection);
+
+//________________________________________________________________
 void AliPP13EpRatioSelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
@@ -18,7 +27,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 
 		TH2 * patternP = new TH2F(
 			Form("hEp%sP", species), 
-			"E/p ratio vs. E_{cluster} M%d; E/p; E^{track} ,GeV", 
+			"E/p ratio vs. E_{cluster} ; E/p; E^{track} ,GeV", 
 			nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
@@ -30,7 +39,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 
 		TH2 * patternPt = new TH2F(
 			Form("hEp%sP", species), 
-			"E/p ratio vs. E_{cluster} M%d; E/p; p_{T}^{track} ,GeV/c", 
+			"E/p ratio vs. E_{cluster} ; E/p; p_{T}^{track} ,GeV/c", 
 			nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
@@ -57,6 +66,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	}
 }
 
+//________________________________________________________________
 void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster, const EventFlags & eflags)
 {
 
@@ -89,7 +99,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	fTPCSignal[1]->Fill(trackP, dEdx);
 
 	// TODO: Accept electron cuts
-	// TODO: Ensure not neutra particles
+	// TODO: Ensure not neutra particles ? 
 	//
 
 	Double_t nSigma = eflags.fPIDResponse->NumberOfSigmasTPC(track, AliPID::kElectron);
@@ -114,7 +124,6 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 		fTPCSignal[3]->Fill(trackP, dEdx);
 	}
 }
-
 
 //________________________________________________________________
 void AliPP13EpRatioSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
