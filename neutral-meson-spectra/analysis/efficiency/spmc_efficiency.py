@@ -25,11 +25,11 @@ class TestEfficiencyPi0(unittest.TestCase):
     def test_pi0_efficiency(self):
         unified_inputs = {
             DataVault().input(
-                "single #pi^{0} iteration3 yield",
+                "single #pi^{0} iteration3 yield aliphysics",
                 "low"
             ): (0, 7.0),
             DataVault().input(
-                "single #pi^{0} iteration3 yield",
+                "single #pi^{0} iteration3 yield aliphysics",
                 "high"
             ): (7.0, 20)
         }

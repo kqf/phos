@@ -1,12 +1,9 @@
-from spectrum.sutils import wait
 from spectrum.options import Options
 from spectrum.spectrum import Spectrum
 from spectrum.comparator import Comparator
-from spectrum.input import NoMixingInput, read_histogram, Input
+from spectrum.input import NoMixingInput, Input
 
 from spectrum.broot import BROOT as br
-
-import ROOT
 
 
 class FeeddownEstimator(object):
@@ -15,11 +12,11 @@ class FeeddownEstimator(object):
     _label = 'feeddown'
 
     def __init__(self,
-            infile,
-            selection,
-            fit_function,
-            options=Options()
-        ):
+                 infile,
+                 selection,
+                 fit_function,
+                 options=Options()
+                 ):
         super(FeeddownEstimator, self).__init__()
         self.infile = infile
         # NB: Options should be shared globally to fix the parameters
@@ -30,16 +27,16 @@ class FeeddownEstimator(object):
 
     def _spectrum(self, infile, selection, histname, label):
         inputs_ = NoMixingInput(
-            infile, 
-            selection, 
+            infile,
+            selection,
             histname
         )
         estimator = Spectrum(inputs_, self.options)
         spectrum = estimator.evaluate().spectrum
         spectrum.label = label if label else 'all'
-        return br.scalew(spectrum) 
+        return br.scalew(spectrum)
 
-    def estimate(self, ptype = '', stop = True):
+    def estimate(self, ptype='', stop=True):
         feeddown = self._spectrum(
             self.infile,
             self.selection,
@@ -47,12 +44,11 @@ class FeeddownEstimator(object):
             ptype
         )
 
-        diff = Comparator((1, 1), stop = stop)
+        diff = Comparator((1, 1), stop=stop)
         result = diff.compare(feeddown, self.baseline)
         result.label = ptype if ptype else 'all secondary'
 
         return result, br.confidence_intervals(result, self.fit_function)
-
 
     def _baseline(self):
         inputs = Input(
@@ -67,4 +63,3 @@ class FeeddownEstimator(object):
         br.scalew(base)
         self.options.spectrum.fit_mass_width = False
         return base
-

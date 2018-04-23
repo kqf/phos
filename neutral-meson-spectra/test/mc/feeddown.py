@@ -7,20 +7,16 @@ from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
 
 
-
-
 class FedddownTest(unittest.TestCase):
 
     def setUp(self):
         self.infile = DataVault().file("pythia8")
         self.selection = 'MCStudyOnlyTender'
-        self.particles = '', 'K^{s}_{0}'#, '#Lambda', '#pi^{+}', '#pi^{-}'
-
-
+        self.particles = '', 'K^{s}_{0}'  # , '#Lambda', '#pi^{+}', '#pi^{-}'
 
     def test_feeddown_correction(self):
         func, options = self.fit_function(), Options()
-        options.param.background = 'pol3'
+        # options.param.background = 'pol3'
 
         estimator = FeeddownEstimator(
             self.infile,
@@ -31,17 +27,17 @@ class FedddownTest(unittest.TestCase):
         feeddown_ratio, feeddown_errors = estimator.estimate('K^{s}_{0}')
         feeddown_ratio.logy = False
 
-        diff = Comparator(crange = (0, 0.04), rrange = (-1, -1))#, oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
+        # , oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
+        diff = Comparator(crange=(0, 0.04), rrange=(-1, -1))
 
         feeddown_errors.SetTitle('feeddown correction approximation')
         feeddown_errors.label = 'approx'
         feeddown_errors.SetOption('e3')
         feeddown_errors.SetFillStyle(3002)
-        diff.compare(feeddown_ratio, feeddown_errors)        
-
+        diff.compare(feeddown_ratio, feeddown_errors)
 
     # Just compare all contributions, don't use it for error estimation
-    # 
+    #
     @unittest.skip('')
     def test_feeddown_for_different_particles(self):
         func = self.fit_function()
@@ -53,12 +49,14 @@ class FedddownTest(unittest.TestCase):
             for p in pp:
                 p.logy = False
 
-        diff = Comparator(crange = (0, 0.1))#, oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
+        # , oname = '{0}_spectrum_{1}'.format(self.infile, ptype))
+        diff = Comparator(crange=(0, 0.1))
         diff.compare(particles)
 
     @staticmethod
     def fit_function():
-        func_feeddown = ROOT.TF1("func_feeddown", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
+        func_feeddown = ROOT.TF1(
+            "func_feeddown", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
         func_feeddown.SetParNames('A', '#sigma', 'E_{scale}')
         func_feeddown.SetParameter(0, -1.4)
         func_feeddown.SetParameter(1, 0.33)
