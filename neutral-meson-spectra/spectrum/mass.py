@@ -19,6 +19,7 @@ class BackgroundEstimator(object):
         mass.background_fitted = sigf
         return mass
 
+
 class SignalExtractor(object):
 
     def transform(self, mass):
@@ -32,7 +33,6 @@ class SignalExtractor(object):
         mass.signal = mass.mass.Clone()
         mass.signal.Add(mass.background, -1.)
 
-
         # mass.signal = mass.mass.Clone()
         # mass.signal.Sumw2(True)
         # mass.signal.Add(mass.mass, mass.background.GetHistogram(), 1,  -1.)
@@ -41,11 +41,13 @@ class SignalExtractor(object):
         mass.signal.GetYaxis().SetTitle("Real - background")
         return mass.signal
 
+
 class SignalFitter(object):
 
     def transform(self, mass):
         mass.sigf, mass.bgrf = mass.signalp.fit(mass.signal)
         return mass
+
 
 class MixingBackgroundEstimator(object):
 
@@ -71,6 +73,7 @@ class MixingBackgroundEstimator(object):
         mass.background_fitted = fitf
         return mass
 
+
 class ZeroBinsCleaner(object):
     """
         Warning: this estimator mutates masses and backgrounds
@@ -84,8 +87,9 @@ class ZeroBinsCleaner(object):
         zeros = set()
 
         zsig = br.empty_bins(mass.mass, mass.opt.tol)
-        zmix = br.empty_bins(mass.background, mass.opt.tol)
 
+        zmix = br.empty_bins(
+            mass.background, mass.opt.tol) if mass.background else []
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
 
@@ -93,7 +97,8 @@ class ZeroBinsCleaner(object):
         # touch bins that are zeros in both cases.
         #
         mass.mass = self._clean_histogram(mass.mass, zeros, mass)
-        mass.background = self._clean_histogram(mass.background, zeros, mass, True)
+        mass.background = self._clean_histogram(
+            mass.background, zeros, mass, True)
         return mass
 
     def _clean_histogram(self, h, zeros, mass, is_background=False):
@@ -110,8 +115,8 @@ class ZeroBinsCleaner(object):
             return
 
         # Delete bin only if it's empty
-        valid = lambda i: h.GetBinContent(i) < mass.opt.tol and \
-             su.in_range(h.GetBinCenter(i), mass.xaxis_range)
+        def valid(i): return h.GetBinContent(i) < mass.opt.tol and \
+            su.in_range(h.GetBinCenter(i), mass.xaxis_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
         for i, c in centers.iteritems():
@@ -119,5 +124,5 @@ class ZeroBinsCleaner(object):
             if res < 0:
                 # print 'Warning zero bin found at ', mass.pt_label, ', mass: ', c
                 res = 0
-            h.SetBinError(i, res ** 0.5 )
+            h.SetBinError(i, res ** 0.5)
         return h

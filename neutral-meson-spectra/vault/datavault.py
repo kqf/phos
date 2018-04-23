@@ -1,6 +1,7 @@
 import json
 import hashlib
-from spectrum.input import Input
+from spectrum.input import Input, NoMixingInput
+
 
 class DataVault(object):
     def __init__(self):
@@ -25,10 +26,8 @@ class DataVault(object):
         if hsum_real != hsum_nominal:
             raise IOError(msg)
 
-
     def dataset(self, production, version="latest"):
         return self._ledger[production][version]
-
 
     def file(self, production, version="latest"):
         data = self.dataset(production, version)
@@ -36,13 +35,14 @@ class DataVault(object):
         self._validate_dataset(filename, data["hsum"])
         return filename
 
-
-    def input(self, production, version="latest", listname=None, *args, **kwargs):
+    def input(self, production, version="latest",
+              listname=None, use_mixing=True, *args, **kwargs):
         filename = self.file(production, version)
         if not listname:
             listname = self.dataset(production, version)['default_selection']
-        return Input(filename, str(listname), *args, **kwargs)
 
+        transformer = Input if use_mixing else NoMixingInput
+        return transformer(filename, str(listname), *args, **kwargs)
 
     def validate_all_datasets(self):
         not_valid = []
@@ -56,5 +56,3 @@ class DataVault(object):
                         (productionion, version, str(e).split()[-1])
                     )
         return not_valid
-
-

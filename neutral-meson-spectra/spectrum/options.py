@@ -213,3 +213,10 @@ class CompositeCorrectedYieldOptions(object):
         self.analysis.pt.ptedges = ptedges
         self.analysis.pt.rebins = rebins
         self.efficiency.set_binning(ptedges, rebins)
+
+
+class FeeddownOptions(object):
+    def __init__(self):
+        super(FeeddownOptions, self).__init__()
+        self.feeddown = Options()
+        self.regular = Options()

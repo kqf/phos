@@ -22,11 +22,11 @@ class DataSlicer(object):
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
 
-        common_inputs = lambda x, y: RawMass(input_data, x, y)
+        def common_inputs(x, y): return RawMass(input_data, x, y)
         return map(common_inputs,
-            intervals,
-            self.opt.rebins
-        )
+                   intervals,
+                   self.opt.rebins
+                   )
 
 
 class MassFitter(object):
@@ -70,6 +70,7 @@ class RangeEstimator(object):
 
     _output = 'mass', 'width'
     _titles = 'particle mass', 'particle width'
+
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
         self.opt = options
@@ -84,7 +85,7 @@ class RangeEstimator(object):
         titles = {q: t for q, t in zip(self._output, self._titles)}
 
         self.output = OutputCreator.output(
-           'MassWidthOutput',
+            'MassWidthOutput',
             values,
             self._output,
             RawMass.ptedges(masses),
@@ -130,10 +131,11 @@ class RangeEstimator(object):
         massf = self.fit_mass(mass)
         sigmaf = self.fit_sigma(sigma)
 
-        mass_range = lambda pt: (
-            massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
-            massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
-        )
+        def mass_range(pt):
+            return (
+                massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
+                massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
+            )
 
         loggs.update("range_estimator", [mass, sigma], mergable=True)
 
@@ -142,19 +144,19 @@ class RangeEstimator(object):
 
     def fit_mass(self, mass):
         return self._fit_quantity(mass,
-            self.opt.mass_func,
-            self.opt.mass_pars,
-            self.opt.mass_names,
-            'mass'
-        )
+                                  self.opt.mass_func,
+                                  self.opt.mass_pars,
+                                  self.opt.mass_names,
+                                  'mass'
+                                  )
 
     def fit_sigma(self, sigma):
         return self._fit_quantity(sigma,
-            self.opt.width_func,
-            self.opt.width_pars,
-            self.opt.width_names,
-            'width'
-        )
+                                  self.opt.width_func,
+                                  self.opt.width_pars,
+                                  self.opt.width_names,
+                                  'width'
+                                  )
 
 
 class DataExtractor(object):
@@ -184,20 +186,19 @@ class DataExtractor(object):
 
         # TODO: Move this logic to the option creation
         titles = {quant:
-            self.opt.output[quant] % self.opt.particle
-            for quant in self.opt.output_order
-        }
+                  self.opt.output[quant] % self.opt.particle
+                  for quant in self.opt.output_order
+                  }
 
         # Create hitograms
         histos = OutputCreator.output(
-           'SpectrumAnalysisOutput',
+            'SpectrumAnalysisOutput',
             values,
             self.opt.output_order,
             edges,
             titles,
             loggs.label
         )
-
 
         # Decorate the histograms
         nevents = next(iter(masses)).mass.nevents
@@ -206,4 +207,3 @@ class DataExtractor(object):
         loggs.update("invariant_masses", masses, multirange=True)
         loggs.update("analysis_output", decorated, mergable=True)
         return decorated
-
