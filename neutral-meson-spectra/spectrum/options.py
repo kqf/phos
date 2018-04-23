@@ -14,19 +14,17 @@ class AnalysisOption(object):
             conf = json.load(f)
         self._setup_configurations(conf, self.particle)
 
-
     def _setup_configurations(self, conf, particle):
         self._update_variables(conf)
 
-        if not particle in conf:
+        if particle not in conf:
             return
 
         conf = conf[particle]
         self._update_variables(conf)
 
-
     def _update_variables(self, vardict):
-        items = (k for k in vardict if not k in self.ignore_attributes)
+        items = (k for k in vardict if k not in self.ignore_attributes)
         for n in items:
             setattr(self, n, vardict[n])
 
@@ -41,24 +39,26 @@ class AnalysisOption(object):
 
 class Options(object):
     def __init__(self,
-            particle='#pi^{0}',
-            relaxedcb=False,
-            fitf='cball',
-            spectrumconf='config/spectrum.json',
-            ptrange='config/pt.json',
-            outconf='config/spectrum-output.json',
-            invmassconf='config/invariant-mass.json',
-            backgroudpconf='config/cball-parameters.json',
-            signalp='config/cball-parameters.json',
-        ):
+                 particle='#pi^{0}',
+                 relaxedcb=False,
+                 fitf='cball',
+                 spectrumconf='config/spectrum.json',
+                 ptrange='config/pt.json',
+                 outconf='config/spectrum-output.json',
+                 invmassconf='config/invariant-mass.json',
+                 backgroudpconf='config/cball-parameters.json',
+                 signalp='config/cball-parameters.json',
+                 ):
         super(Options, self).__init__()
 
-        self.spectrum = AnalysisOption('RangeEstimator', spectrumconf, particle)
+        self.spectrum = AnalysisOption(
+            'RangeEstimator', spectrumconf, particle)
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', outconf, particle)
         self.output.scalew_spectrum = False
 
-        self.backgroundp = AnalysisOption('backgroundp', backgroudpconf, particle)
+        self.backgroundp = AnalysisOption(
+            'backgroundp', backgroudpconf, particle)
         self.backgroundp.relaxed = relaxedcb
 
         self.signalp = AnalysisOption('signalp', signalp, particle)
@@ -70,7 +70,6 @@ class Options(object):
         self.invmass.backgroundp = self.backgroundp
 
         self.particle = particle
-
 
     @property
     def fitf(self):
@@ -86,7 +85,6 @@ class Options(object):
         self.backgroundp = AnalysisOption('backgroundp', pconf, particle)
         self.backgroundp.relaxed = relaxed
 
-
     @staticmethod
     def fixed_peak(*args):
         options = Options(*args)
@@ -98,7 +96,7 @@ class Options(object):
     def coarse_binning(options):
         edges = options.pt.ptedges
         edges = [e for e in edges if int(10 * e) % 10 != 5]
-        rebins = [0 for i in range(len(edges) -1)]
+        rebins = [0 for i in range(len(edges) - 1)]
         rebins[-1] = 3
         rebins[-2] = 3
         options.pt.ptedges = edges
@@ -106,8 +104,8 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, particle = 'pi0', ptrange='config/pt-spmc.json', *args, **kwargs):
-        name = '%.4g < p_{T} < %.4g' % pt_fit_range
+    def spmc(pt_fit_range, particle='pi0',
+             ptrange='config/pt-spmc.json', *args, **kwargs):
         options = Options(
             particle=particle,
             ptrange=ptrange,
@@ -137,25 +135,25 @@ class CompositeOptions(object):
         return klass(zip(names, options), ranges)
 
 
-
 class EfficiencyOptions(object):
 
-    def __init__(self, particle='#pi^{0}', genname='hPt_#pi^{0}_primary_standard'):
+    def __init__(self, particle='#pi^{0}',
+                 genname='hPt_#pi^{0}_primary_standard'):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options(particle=particle)
         self.genname = genname
         self.scale = 0.075
 
-
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
         self.analysis.pt.rebins = rebins
 
-
     @classmethod
-    def spmc(klass, pt_range, particle="#pi^{0}", genname='hPt_#pi^{0}_primary_standard', *args, **kwargs):
+    def spmc(klass, pt_range, particle="#pi^{0}",
+             genname='hPt_#pi^{0}_primary_standard', *args, **kwargs):
         efficiency_options = klass(genname=genname)
-        efficiency_options.analysis = Options().spmc(pt_range, particle=particle, *args, **kwargs)
+        efficiency_options.analysis = Options().spmc(
+            pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
 
 
@@ -166,17 +164,21 @@ class MultirangeEfficiencyOptions(object):
         self.suboptions = effoptions
         self.mergeranges = mergeranges
 
-
     def set_binning(self, ptedges, rebins):
         for eff_options in self.suboptions:
             eff_options.analysis.pt.ptedges = ptedges
             eff_options.analysis.pt.rebins = rebins
 
     @classmethod
-    def spmc(klass, unified_input, particle, genname='hPt_{0}_primary_standard', use_particle=True, *args, **kwargs):
+    def spmc(klass, unified_input, particle,
+             genname='hPt_{0}_primary_standard',
+             use_particle=True, *args, **kwargs):
         if use_particle:
             genname = genname.format(particle)
-        options = [EfficiencyOptions.spmc(rr, particle, genname, *args, **kwargs) for _, rr in unified_input.iteritems()]
+        options = [EfficiencyOptions.spmc(
+            rr, particle, genname, *args, **kwargs)
+            for _, rr in unified_input.iteritems()
+        ]
         return klass(options, unified_input.values())
 
 
@@ -186,7 +188,8 @@ class CorrectedYieldOptions(object):
         self.analysis = Options(particle=particle)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = EfficiencyOptions(genname='hPt_{0}_primary_'.format(particle))
+        self.efficiency = EfficiencyOptions(
+            genname='hPt_{0}_primary_'.format(particle))
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
@@ -197,10 +200,14 @@ class CorrectedYieldOptions(object):
 class CompositeCorrectedYieldOptions(object):
     def __init__(self, particle="", unified_inputs=None):
         super(CompositeCorrectedYieldOptions, self).__init__()
-        self.analysis = Options(particle=particle)
+        self.analysis = Options(
+            particle=particle,
+            ptrange="config/pt-corrected.json"
+        )
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+        self.efficiency = MultirangeEfficiencyOptions.spmc(
+            unified_inputs, particle)
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges

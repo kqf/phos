@@ -1,17 +1,17 @@
 import unittest
 
-from spectrum.options import CorrectedYieldOptions
+from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 
 from vault.datavault import DataVault
 
-class TestCorrectedYield(unittest.TestCase):
 
+class TestCorrectedYield(unittest.TestCase):
 
     @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0} corrected weights", "low"): (0, 7.0),
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
@@ -21,18 +21,17 @@ class TestCorrectedYield(unittest.TestCase):
         ]
 
         estimator = CorrectedYield(
-            CorrectedYieldOptions(
+            CompositeCorrectedYieldOptions(
                 particle="#pi^{0}",
                 unified_inputs=unified_inputs
             )
         )
         estimator.transform(data, "corrected yield #pi^{0}")
 
-
     # @unittest.skip('')
     def test_corrected_yield_for_eta(self):
         unified_inputs = {
-            DataVault().input("single #eta updated", "low"):  (0, 6.0),
+            DataVault().input("single #eta updated", "low"): (0, 6.0),
             DataVault().input("single #eta updated", "high"): (6.0, 20)
         }
 
@@ -42,7 +41,7 @@ class TestCorrectedYield(unittest.TestCase):
         ]
 
         estimator = CorrectedYield(
-            CorrectedYieldOptions(
+            CompositeCorrectedYieldOptions(
                 particle="#eta",
                 unified_inputs=unified_inputs
             )

@@ -57,3 +57,6 @@ gphysi.dat
 id_rsa
 Dockerfile.slc
 */test_pp_task/*
+
+# SFTP configuration
+sftp-config.json
