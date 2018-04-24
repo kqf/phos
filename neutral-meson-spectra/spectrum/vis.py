@@ -1,5 +1,4 @@
 import ROOT
-import json
 import numpy as np
 
 from broot import BROOT as br
@@ -26,6 +25,7 @@ class VisHub(object):
 class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
+
     def __init__(self, size, rrange, crange, stop, oname, labels):
         super(MultipleVisualizer, self).__init__()
         self.size = size
@@ -36,8 +36,8 @@ class MultipleVisualizer(object):
         self.labels = labels
 
     @br.init_inputs
-    def compare_visually(self, hists, ci, pad = None):
-        canvas = su.gcanvas(self.size[0], self.size[1], resize = True)
+    def compare_visually(self, hists, ci, pad=None):
+        canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
         su.ticks(canvas)
         legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
         legend.SetBorderSize(0)
@@ -60,10 +60,10 @@ class MultipleVisualizer(object):
         mainpad.SetLogy(first_hist.logy)
 
         if self.crange:
-            first_hist.SetAxisRange(self.crange[0], self.crange[1] , 'Y')
+            first_hist.SetAxisRange(self.crange[0], self.crange[1], 'Y')
         first_hist.DrawCopy()
 
-        for i, h in enumerate(hists): 
+        for i, h in enumerate(hists):
             color, marker = self._color_marker(ci, i, h)
             h.SetLineColor(color)
             h.SetFillColor(color)
@@ -103,25 +103,26 @@ class MultipleVisualizer(object):
 
 class Visualizer(MultipleVisualizer):
     def __init__(self, size, rrange, crange, stop, oname, labels):
-        super(Visualizer, self).__init__(size, rrange, crange, stop, oname, labels)
+        super(Visualizer, self).__init__(
+            size, rrange, crange, stop, oname, labels)
         self.rrange = rrange
 
     def _canvas(self, hists):
-        c1 = su.gcanvas(self.size[0], self.size[1], resize = True)
+        c1 = su.gcanvas(self.size[0], self.size[1], resize=True)
         c1.Clear()
 
-        mainpad = ROOT.TPad("mainpad","main plot", 0, 0.3, 1, 1)
+        mainpad = ROOT.TPad("mainpad", "main plot", 0, 0.3, 1, 1)
         mainpad.SetBottomMargin(0)
         su.ticks(mainpad)
         mainpad.Draw()
         c1.cd()
 
-        ratiopad = ROOT.TPad("ratiopad","ratio", 0, 0, 1, 0.3)
+        ratiopad = ROOT.TPad("ratiopad", "ratio", 0, 0, 1, 0.3)
         ratiopad.SetTopMargin(0)
         ratiopad.SetBottomMargin(0.2)
         ratiopad.Draw()
         su.ticks(ratiopad)
-        return c1, mainpad, ratiopad 
+        return c1, mainpad, ratiopad
 
     def draw_ratio(self, hists, pad):
         a, b = hists
@@ -129,7 +130,7 @@ class Visualizer(MultipleVisualizer):
         self.cache.append(ratio)
 
         pad.cd()
-        su.adjust_labels(ratio, hists[0], scale = 7./3)
+        su.adjust_labels(ratio, hists[0], scale=7. / 3)
         ratio.GetYaxis().CenterTitle(True)
         ratio.SetTitle('')
         pad.SetLogx(a.logx)
@@ -137,14 +138,15 @@ class Visualizer(MultipleVisualizer):
 
         self.fit_ratio(ratio)
         self.set_ratio_yaxis(ratio)
-        return ratio 
+        return ratio
 
-    def set_ratio_yaxis(self, ratio, n = 3):
-        if self.rrange: 
-            ratio.SetAxisRange(self.rrange[0], self.rrange[1] , 'Y')
+    def set_ratio_yaxis(self, ratio, n=3):
+        if self.rrange:
+            ratio.SetAxisRange(self.rrange[0], self.rrange[1], 'Y')
             return
 
-        bins = np.array([ratio.GetBinContent(i) for i in range(1, ratio.GetXaxis().GetNbins())])
+        bins = np.array([ratio.GetBinContent(i)
+                         for i in range(1, ratio.GetXaxis().GetNbins())])
         mean, std = np.mean(bins), np.std(bins)
         no_outliers = [b for b in bins if abs(b - mean) < n * std]
 
@@ -152,8 +154,7 @@ class Visualizer(MultipleVisualizer):
             return
 
         a, b = min(no_outliers), max(no_outliers)
-        ratio.SetAxisRange(a, b , 'Y')
-
+        ratio.SetAxisRange(a, b, 'Y')
 
     def _fit(self, ratio):
         # NB: Add fitfunc as an attribute to
@@ -165,7 +166,7 @@ class Visualizer(MultipleVisualizer):
     def fit_ratio(self, ratio):
         try:
             self._fit(ratio)
-        except AttributeError: # there is no fitfunc defined
+        except AttributeError:  # there is no fitfunc defined
             return
 
         ROOT.gStyle.SetStatFontSize(0.1)
@@ -176,7 +177,6 @@ class Visualizer(MultipleVisualizer):
         ROOT.gStyle.SetStatBorderSize(0)
         ROOT.gStyle.SetOptFit(1)
 
-
     def compare_visually(self, hists, ci):
         canvas, mainpad, ratiopad = self._canvas(hists)
 
@@ -185,8 +185,7 @@ class Visualizer(MultipleVisualizer):
 
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists) 
+        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
         su.wait(oname, save=True, draw=self.stop)
         return su.adjust_labels(ratio, hists[0])
-

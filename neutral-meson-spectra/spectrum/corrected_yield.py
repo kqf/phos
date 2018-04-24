@@ -1,10 +1,11 @@
-from broot import BROOT as br
 from analysis import Analysis
 from options import CorrectedYieldOptions
-from efficiency import Efficiency, EfficiencyMultirange
+from efficiency import Efficiency
 from comparator import Comparator
 from transformer import TransformerBase
-from pipeline import ReducePipeline, ParallelPipeline, Pipeline, HistogramSelector
+from pipeline import ReducePipeline, ParallelPipeline
+from pipeline import Pipeline, HistogramSelector
+
 
 class CorrectedYield(TransformerBase):
     def __init__(self, options=CorrectedYieldOptions(), plot=False):
@@ -16,7 +17,7 @@ class CorrectedYield(TransformerBase):
                         ('analysis', Analysis(options.analysis, plot)),
                         ('spectrum', HistogramSelector(options.spectrum))
                     ])
-                ),
+                 ),
                 ('efficiency', Efficiency(options.efficiency, plot))
             ]),
             Comparator().compare
@@ -33,4 +34,3 @@ class YieldRatio(TransformerBase):
             ]),
             Comparator().compare
         )
-

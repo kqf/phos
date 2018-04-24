@@ -205,7 +205,7 @@ class CompositeCorrectedYieldOptions(object):
             ptrange="config/pt-corrected.json"
         )
         self.analysis.output.scalew_spectrum = True
-        self.spectrum = "spectrum"
+        self.spectrum = "npi0"
         self.efficiency = MultirangeEfficiencyOptions.spmc(
             unified_inputs, particle)
 
