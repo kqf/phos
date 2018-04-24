@@ -30,6 +30,8 @@ class MassesPlot(object):
         pad.Update()
 
     def draw(self, hist, option="same", color=1):
+        if not hist:
+            return
         hist.Draw(option)
         hist.SetMarkerColor(color)
         hist.SetLineColor(color)

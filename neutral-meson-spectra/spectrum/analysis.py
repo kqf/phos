@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
-from output import AnalysisOutput
-from options import Options, CompositeOptions
+from options import Options
 from pipeline import Pipeline, ParallelPipeline, ReducePipeline
 from transformer import TransformerBase
 from broot import BROOT as br
@@ -28,7 +27,8 @@ class CompositeAnalysis(TransformerBase):
         self.mergeranges = options.mergeranges
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("analysis-{0}".format(title), Analysis(opt)) for title, opt in options.steps
+                ("analysis-{0}".format(title), Analysis(opt))
+                for title, opt in options.steps
             ]),
             self.merge
         )
@@ -44,7 +44,8 @@ class CompositeAnalysis(TransformerBase):
 
         # Transpose
         pairs = zip(*hists)
-        truncated = [br.sum_trimm(obs_pt, self.mergeranges) for obs_pt in pairs]
+        truncated = [br.sum_trimm(obs_pt, self.mergeranges)
+                     for obs_pt in pairs]
 
         # Use the same container as normal analysis
         # TODO: Fix me?

@@ -1,7 +1,9 @@
 import unittest
+import ROOT
 
 from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
+from spectrum.options import Options
 
 from spectrum.options import FeeddownOptions
 from spectrum.comparator import Comparator
@@ -9,16 +11,19 @@ from spectrum.comparator import Comparator
 
 class FeddownTest(unittest.TestCase):
     def test_feeddown_correction(self):
-        estimator = FeeddownEstimator(FeeddownOptions())
+        estimator = FeeddownEstimator(
+            FeeddownOptions()
+        )
+
         output = estimator.transform(
             [
-                DataVault().input("pythia8", listname="MCStudyOnlyTender"),
                 DataVault().input(
                     "pythia8",
                     listname="MCStudyOnlyTender",
                     use_mixing=False,
                     histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}"
                 ),
+                DataVault().input("pythia8", listname="MCStudyOnlyTender"),
             ],
             "test the feeddown correction"
         )

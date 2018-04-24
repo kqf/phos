@@ -76,20 +76,22 @@ class MixingBackgroundEstimator(object):
 
 class ZeroBinsCleaner(object):
     """
-        Warning: this estimator mutates masses and backgrounds
-
-        The problem: there are empty bins in same-event and in mixed-event distributions
-                     it's not a well determined operation when subtracting empty - nonempty
-                     replace empty bins with interpolations
+    Warning: this estimator mutates masses and backgrounds
+    The problem:
+        there are empty bins in same-event and in mixed-event distributions
+        it's not a well determined operation when subtracting empty - nonempty
+        replace empty bins with interpolations
     """
 
     def transform(self, mass):
+        if not mass.background:
+            return mass
+
         zeros = set()
 
         zsig = br.empty_bins(mass.mass, mass.opt.tol)
 
-        zmix = br.empty_bins(
-            mass.background, mass.opt.tol) if mass.background else []
+        zmix = br.empty_bins(mass.background, mass.opt.tol)#if mass.background else []
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
 

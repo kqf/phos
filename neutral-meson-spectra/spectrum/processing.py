@@ -201,9 +201,12 @@ class DataExtractor(object):
         )
 
         # Decorate the histograms
-        nevents = next(iter(masses)).mass.nevents
+        try:
+            nevents = next(iter(masses)).mass.nevents
+        except AttributeError:
+            nevents = 1
+            
         decorated = self._decorate_hists(histos, nevents)
-
         loggs.update("invariant_masses", masses, multirange=True)
         loggs.update("analysis_output", decorated, mergable=True)
         return decorated
