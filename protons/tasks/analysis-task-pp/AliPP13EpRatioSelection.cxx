@@ -53,7 +53,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	fTPCSignal[0] = new TH2F("hEpRatioNSigmaElectron", "E/p ratio vs. N_{#sigma}^{e}; E/p; n#sigma^{e}",nM, mMin, mMax, 20, -5, 5); 
     fTPCSignal[1] = new TH2F("hTPCSignal_Electron", "TPC dE/dx vs. electron momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200); 
 	fTPCSignal[2] = new TH2F("hTPCSignal_Non-Electron", "TPC dE/dx vs. non-electron momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200);
-	fTPCSignal[3] = new TH2F("hTPCSignal_Non-Electron", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200);
+	fTPCSignal[3] = new TH2F("hTPCSignal_All", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200);
 
 	for (int i = 0; i < 4; ++i)
 		fListOfHistos->Add(fTPCSignal[i]);
