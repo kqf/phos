@@ -27,6 +27,7 @@ class SignalExtractor(object):
             return mass
 
         if not mass.background:
+            mass.signal = mass.mass
             return mass
 
         # Subtraction

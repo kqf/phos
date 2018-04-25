@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
 import ROOT
-import sutils as su
 
 from invariantmass import InvariantMass, RawMass
 from outputcreator import OutputCreator, SpectrumExtractor
-import collections as coll
-from mass import BackgroundEstimator, MixingBackgroundEstimator, SignalExtractor, SignalFitter, ZeroBinsCleaner
+
+from mass import BackgroundEstimator, MixingBackgroundEstimator
+from mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
 from broot import BROOT as br
 
 
@@ -22,7 +22,9 @@ class DataSlicer(object):
         assert len(intervals) == len(self.opt.rebins), \
             'Number of intervals is not equal to the number of rebin parameters'
 
-        def common_inputs(x, y): return RawMass(input_data, x, y)
+        def common_inputs(x, y):
+            return RawMass(input_data, x, y)
+
         return map(common_inputs,
                    intervals,
                    self.opt.rebins
@@ -205,7 +207,7 @@ class DataExtractor(object):
             nevents = next(iter(masses)).mass.nevents
         except AttributeError:
             nevents = 1
-            
+
         decorated = self._decorate_hists(histos, nevents)
         loggs.update("invariant_masses", masses, multirange=True)
         loggs.update("analysis_output", decorated, mergable=True)

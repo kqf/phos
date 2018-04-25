@@ -37,6 +37,13 @@
 			"hsum": "3c804e068fe7a653063d8566fc73891b9630fed730029786ef7948b5c1f5fbca",
 			"description": "Pythia8 with all corrections, for feeddown correction. Calculated on LHC17 production. TODO: Recalculate this on trains"
 		},
+		"stable": {
+			"file": "input-data/mc/pythia/pythia8-feeddown.root",
+			"default_selection": "PhysEffTender",
+			"hsum": "deda91c619113a9f7f8364a0f85e0cfabf7cf181adefe69df90654e2bcb9a117",
+			"description": "Pythia8 with all corrections, for feeddown correction. Calculated on LHC17 production. TODO: Recalculate this on trains"
+		},
+
 		"kaon2pion": {
 			"file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
 			"default_selection": "PionToKaonRatioOnlyTender",

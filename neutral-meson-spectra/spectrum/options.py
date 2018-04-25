@@ -205,7 +205,7 @@ class CompositeCorrectedYieldOptions(object):
             ptrange="config/pt-corrected.json"
         )
         self.analysis.output.scalew_spectrum = True
-        self.spectrum = "npi0"
+        self.spectrum = "spectrum"
         self.efficiency = MultirangeEfficiencyOptions.spmc(
             unified_inputs, particle)
 
@@ -219,4 +219,9 @@ class FeeddownOptions(object):
     def __init__(self):
         super(FeeddownOptions, self).__init__()
         self.feeddown = Options()
+        # NB: Don't fit the mass and width and
+        #     use the same values from the data
+        self.feeddown.spectrum.fit_mass_width = False
         self.regular = Options()
+        # NB: Make sure to define and assign the feeddown parametrization
+        self.fitf = None
