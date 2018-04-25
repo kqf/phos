@@ -15,15 +15,16 @@ from vault.datavault import DataVault
 
 class TestSpectrum(unittest.TestCase):
 
-
     def setUp(self):
-        # Different values in some pt-bins can be explained by limited statistics in those bins.
+        # Different values in some pt-bins can be explained
+        # by limited statistics in those bins.
         #
         # Important:
         # This one should be set explicitely otherwise the test will fail
         # Because this global variable is set to Minuit2 in other tests
         ROOT.TVirtualFitter.SetDefaultFitter('Minuit')
-        # NB: test Spectrum class, not Pt-dependent as it produces negative values due to wide integration range
+        # NB: test Spectrum class, not Pt-dependent as it produces n
+        # egative values due to wide integration range
         # Expected values for $\pi^0$ extraction
         with open('config/test_observables.json') as f:
             conf = json.load(f)
@@ -52,4 +53,3 @@ class TestSpectrum(unittest.TestCase):
 
     def test_extracts_eta_spectrum(self):
         self.validate_particle("#eta", "EtaTender")
-

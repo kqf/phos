@@ -1,6 +1,8 @@
 import unittest
 
 import ROOT
+import json
+from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.sutils import gcanvas, adjust_canvas
 from vault.datavault import DataVault
@@ -48,10 +50,17 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def setUp(self):
         self.canvas = gcanvas()
+        with open("config/tag-and-probe-tof.json") as f:
+            self.nominal_bins = json.load(f)["test_bins"]
 
     def test_estimate_tof_efficiency(self):
         datafile = DataVault().file("data", "uncorrected")
-        fit_tof_efficiency(datafile)
+        efficiency = fit_tof_efficiency(datafile)
+        bins = br.bins(efficiency)
+        for actual, nominal in zip(bins, self.nominal_bins):
+            message = "\nNominal {0}\nActual: {1}".format(actual, nominal)
+            for vactual, vnominal in zip(actual, nominal):
+                self.assertAlmostEqual(vactual, vnominal, msg=message)
 
     @unittest.skip('Debug')
     def test_different_modules(self):
