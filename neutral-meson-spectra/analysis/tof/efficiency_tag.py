@@ -3,6 +3,7 @@ import unittest
 import ROOT
 import json
 from spectrum.broot import BROOT as br
+from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
 from spectrum.sutils import gcanvas, adjust_canvas
 from vault.datavault import DataVault
@@ -19,7 +20,7 @@ def efficincy_function():
         " - [3] * TMath::Exp(x * [4])", 0, 20
     )
 
-    tof_eff.SetParNames('A', '#sigma', 'Eff_{scale}')
+    tof_eff.SetParNames("A", "#sigma", "Eff_{scale}")
     # tof_eff.SetParameter(0, -1.30534e+00)
     # tof_eff.SetParameter(1, 1.02604e+01)
     # tof_eff.SetParameter(2, 5.70061e-01)
@@ -35,15 +36,25 @@ def efficincy_function():
     return tof_eff
 
 
-def fit_tof_efficiency(dataset):
-    probe_estimator = TagAndProbe(dataset)
-    fitf = efficincy_function()
-
-    eff = probe_estimator.eff(True, fitf)
-    eff.Fit(fitf, 'R')
+def fit_tof_efficiency():
+    options = ProbeTofOptions()
+    options.fitfunc = efficincy_function()
+    probe_estimator = TagAndProbe(options)
+    efficiency = probe_estimator.transform(
+        [
+            DataVault().input("data", "uncorrected",
+                              "TagAndProbleTOFOnlyTender",
+                              histname="MassEnergyTOF_SM0"),
+            DataVault().input("data", "uncorrected",
+                              "TagAndProbleTOFOnlyTender",
+                              histname="MassEnergyAll_SM0"),
+        ],
+        "tof efficiency"
+    )
+    efficiency.Fit(options.fitfunc, "R")
     diff = Comparator(crange=(0.2, 1.05))
-    diff.compare(eff)
-    return eff
+    diff.compare(efficiency)
+    return efficiency
 
 
 class TagAndProbeEfficiencyTOF(unittest.TestCase):
@@ -54,24 +65,24 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
             self.nominal_bins = json.load(f)["test_bins"]
 
     def test_estimate_tof_efficiency(self):
-        datafile = DataVault().file("data", "uncorrected")
-        efficiency = fit_tof_efficiency(datafile)
+        efficiency = fit_tof_efficiency()
         bins = br.bins(efficiency)
+
         for actual, nominal in zip(bins, self.nominal_bins):
-            message = "\nNominal {0}\nActual: {1}".format(actual, nominal)
+            message = "\nNominal {0}\nActual: {1}".format(nominal, actual)
             for vactual, vnominal in zip(actual, nominal):
                 self.assertAlmostEqual(vactual, vnominal, msg=message)
 
-    @unittest.skip('Debug')
+    @unittest.skip("Debug")
     def test_different_modules(self):
         datafile = DataVault().file("data", "uncorrected")
-        hpatterns = ['MassEnergy%s' + '_SM{0}'.format(i) for i in range(1, 5)]
+        hpatterns = ["MassEnergy%s" + "_SM{0}".format(i) for i in range(1, 5)]
         estimators = [TagAndProbe(datafile, hpattern=si).eff(False)
                       for si in hpatterns]
         for i, e in enumerate(estimators):
             e.SetTitle(
-                'TOF efficiency in different modules; E, GeV; TOF efficiency')
-            e.label = 'SM{0}'.format(i + 1)
+                "TOF efficiency in different modules; E, GeV; TOF efficiency")
+            e.label = "SM{0}".format(i + 1)
             e.logy = 0
 
         canvas = adjust_canvas(gcanvas())
@@ -79,11 +90,11 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
         diff.compare(estimators)
 
     # Test new and old tof calibrations
-    @unittest.skip('Debug')
+    @unittest.skip("Debug")
     def test_efficiencies_different(self):
         paths = {
-            '/new-calibration/LHC16': '2017',
-            '/uncorrected/LHC16': '2016'
+            "/new-calibration/LHC16": "2017",
+            "/uncorrected/LHC16": "2016"
         }
 
         def tof(dataset):

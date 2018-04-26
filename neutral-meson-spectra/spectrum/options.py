@@ -225,3 +225,10 @@ class FeeddownOptions(object):
         self.regular = Options()
         # NB: Make sure to define and assign the feeddown parametrization
         self.fitf = None
+
+
+class ProbeTofOptions(object):
+    def __init__(self):
+        self.analysis = Options(ptrange='config/tag-and-probe-tof.json')
+        # NB: Make sure to define it later
+        self.fitfunc = None
