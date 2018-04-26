@@ -49,4 +49,4 @@ class FeddownTest(unittest.TestCase):
         errors.SetOption('e3')
         output.logy = False
         errors.SetFillStyle(3002)
-        Comparator().compare(output, errors)
+        Comparator(rrange=(-1, -1)).compare(output, errors)
