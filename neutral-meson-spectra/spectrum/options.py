@@ -138,11 +138,13 @@ class CompositeOptions(object):
 class EfficiencyOptions(object):
 
     def __init__(self, particle='#pi^{0}',
-                 genname='hPt_#pi^{0}_primary_standard'):
+                 genname='hPt_#pi^{0}_primary_standard',
+                 scale=0.075,
+                 ptrange="config/pt.json"):
         super(EfficiencyOptions, self).__init__()
-        self.analysis = Options(particle=particle)
+        self.analysis = Options(particle=particle, ptrange=ptrange)
         self.genname = genname
-        self.scale = 0.075
+        self.scale = scale
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges

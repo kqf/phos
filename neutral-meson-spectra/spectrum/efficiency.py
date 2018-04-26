@@ -3,21 +3,16 @@
 from transformer import TransformerBase
 from options import EfficiencyOptions, MultirangeEfficiencyOptions
 from .input import SingleHistInput
-from comparator import Comparator
 from analysis import Analysis
-from pipeline import Pipeline, RatioUnion, HistogramSelector, ReducePipeline, ParallelPipeline, HistogramScaler
+from pipeline import Pipeline, RatioUnion, HistogramSelector
+from pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
 
 from broot import BROOT as br
-
-import ROOT
-
-import os.path
-import unittest
-
 
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
 #
+
 
 class EfficiencySimple(TransformerBase):
 
@@ -40,12 +35,13 @@ class EfficiencyMultirange(TransformerBase):
 
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                    ("efficiency-{0}".format(ranges), Efficiency(opt, plot))
-                     for (opt, ranges) in zip(options.suboptions, options.mergeranges)
-                ]
-            ),
+                ("efficiency-{0}".format(ranges), Efficiency(opt, plot))
+                for (opt, ranges) in zip(options.suboptions,
+                                         options.mergeranges)
+            ]),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
+
 
 class Efficiency(TransformerBase):
 
@@ -59,4 +55,3 @@ class Efficiency(TransformerBase):
         EfficiencyType = self._efficiency_types.get(type(options))
         efficiency = EfficiencyType(options, plot)
         self.pipeline = efficiency.pipeline
-

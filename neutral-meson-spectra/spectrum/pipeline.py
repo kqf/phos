@@ -26,12 +26,16 @@ class HistogramSelector(object):
 
 
 class HistogramScaler(object):
-    def __init__(self, factor=1.):
+    def __init__(self, factor=1., width=False):
         super(HistogramScaler, self).__init__()
         self.factor = factor
+        self.width = width
 
     def transform(self, inputs, loggs):
-        br.scalew(inputs, self.factor)
+        if self.width:
+            br.scalew(inputs, self.factor)
+        else:
+            inputs.Scale(self.factor)
         return inputs
 
 
