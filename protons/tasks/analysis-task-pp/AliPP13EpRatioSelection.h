@@ -9,6 +9,7 @@
 
 // --- ROOT system ---
 #include <TObjArray.h>
+#include <TVector3.h>
 #include <TList.h>
 
 // --- AliRoot header files ---
@@ -55,6 +56,7 @@ public:
 	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); 
 
 protected:
+	TVector3 LocalPosition(const AliVCluster * clus) const;
 	virtual void FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags);
 
 	AliPP13EpRatioSelection(const AliPP13EpRatioSelection &);

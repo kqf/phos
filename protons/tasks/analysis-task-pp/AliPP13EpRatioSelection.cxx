@@ -26,20 +26,20 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		const char * species = (i == 0) ? "Electrons" : "Non-Electron";
 
 		TH2 * patternP = new TH2F(
-			Form("hEp%sP", species), 
-			"E/p ratio vs. E_{cluster} ; E/p; E^{track} ,GeV", 
+			Form("hEp%sP", species),
+			"E/p ratio vs. E_{cluster} ; E/p; E^{track} ,GeV",
 			nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
 		fEpP[i] = new AliPP13DetectorHistogram(
 			patternP,
-			fListOfHistos, 
+			fListOfHistos,
 			AliPP13DetectorHistogram::kModules
 		);
 
 		TH2 * patternPt = new TH2F(
-			Form("hEp%sP", species), 
-			"E/p ratio vs. E_{cluster} ; E/p; p_{T}^{track} ,GeV/c", 
+			Form("hEp%sP", species),
+			"E/p ratio vs. E_{cluster} ; E/p; p_{T}^{track} ,GeV/c",
 			nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
@@ -50,10 +50,10 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		);
 	}
 
-	fTPCSignal[0] = new TH2F("hEpRatioNSigmaElectron", "E/p ratio vs. N_{#sigma}^{e}; E/p; n#sigma^{e}",nM, mMin, mMax, 20, -5, 5); 
-    fTPCSignal[1] = new TH2F("hTPCSignal_Electron", "TPC dE/dx vs. electron momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200); 
-	fTPCSignal[2] = new TH2F("hTPCSignal_Non-Electron", "TPC dE/dx vs. non-electron momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200);
-	fTPCSignal[3] = new TH2F("hTPCSignal_All", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.",40, 0, 20, 200, 0, 200);
+	fTPCSignal[0] = new TH2F("hEpRatioNSigmaElectron", "E/p ratio vs. N_{#sigma}^{e}; E/p; n#sigma^{e}", nM, mMin, mMax, 20, -5, 5);
+	fTPCSignal[1] = new TH2F("hTPCSignal_Electron", "TPC dE/dx vs. electron momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
+	fTPCSignal[2] = new TH2F("hTPCSignal_Non-Electron", "TPC dE/dx vs. non-electron momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
+	fTPCSignal[3] = new TH2F("hTPCSignal_All", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
 
 	for (int i = 0; i < 4; ++i)
 		fListOfHistos->Add(fTPCSignal[i]);
@@ -61,8 +61,8 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
-		if (!hist) continue;
-		hist->Sumw2();
+			if (!hist) continue;
+			hist->Sumw2();
 	}
 }
 
@@ -71,24 +71,30 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 {
 
 	// Don't do anything if pidresponse wasn't defined
-	if(!eflags.fPIDResponse)
+	if (!eflags.fPIDResponse)
 		return;
 
 	// No tracks
-	if( !(cluster->GetNTracksMatched() > 0) )
+	if ( !(cluster->GetNTracksMatched() > 0) )
 		return;
 
 	AliVTrack * track = dynamic_cast<AliVTrack*>(cluster->GetTrackMatched(0));
 
 	// The track wasn't found
-	if(!track)
+	if (!track)
 		return;
 
 	Bool_t isHybridTrack = dynamic_cast<AliAODTrack*>(track)->IsHybridGlobalConstrainedGlobal();//hybrid track
 
 	// Take only hybrid tracks
-	if(!isHybridTrack)
+	if (!isHybridTrack)
 		return;
+
+	Int_t charge = track->Charge();
+	Double_t dx = cluster->GetTrackDx();
+	Double_t dz = cluster->GetTrackDz();
+	TVector3 local = LocalPosition(cluster);
+
 
 	Double_t energy = cluster->E();
 	Double_t trackP = track->P();
@@ -99,7 +105,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	fTPCSignal[1]->Fill(trackP, dEdx);
 
 	// TODO: Accept electron cuts
-	// TODO: Ensure not neutra particles ? 
+	// TODO: Ensure not neutra particles ?
 	//
 
 	Double_t nSigma = eflags.fPIDResponse->NumberOfSigmasTPC(track, AliPID::kElectron);
@@ -108,16 +114,16 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Bool_t isElectron = (-2 < nSigma && nSigma < 3) ;
 
 	Int_t sm1, x1, z1;
-	if ((sm1 = CheckClusterGetSM(cluster, x1, z1)) < 0) 
+	if ((sm1 = CheckClusterGetSM(cluster, x1, z1)) < 0)
 		return; //  To be sure that everything is Ok
 
-	if(isElectron)
+	if (isElectron)
 	{
 		fEpP[0]->FillAll(sm1, sm1, EpRatio, energy);
 		fEpPt[0]->FillAll(sm1, sm1, EpRatio, trackPt);
 		fTPCSignal[2]->Fill(trackP, dEdx);
 	}
-	else if(nSigma < -3 || 5 < nSigma)
+	else if (nSigma < -3 || 5 < nSigma)
 	{
 		fEpP[1]->FillAll(sm1, sm1, EpRatio, energy);
 		fEpPt[1]->FillAll(sm1, sm1, EpRatio, trackPt);
@@ -135,4 +141,25 @@ void AliPP13EpRatioSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, c
 	// Select photons
 	TObjArray photonCandidates;
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
+}
+
+//________________________________________________________________
+TVector3 AliPP13EpRatioSelection::LocalPosition(const AliVCluster * cluster) const
+{
+	// Fill the global cluster position
+	Float_t  position[3];
+	cluster->GetPosition(position);
+	TVector3 global(position);
+
+	// Find the module
+	Int_t x, z;
+	Int_t sm = this->CheckClusterGetSM(cluster, x, z);
+
+	TVector3 local;
+
+	// Allow errors, don't check this pointer
+	AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance();
+	phosGeometry->Global2Local(local, global, sm);
+
+	return local;
 }
