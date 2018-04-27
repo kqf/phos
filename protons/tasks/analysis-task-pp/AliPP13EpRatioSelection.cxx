@@ -26,27 +26,27 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		const char * species = (i == 0) ? "Electrons" : "Non-Electron";
 
 		TH2 * patternP = new TH2F(
-			Form("hEp%sP", species),
-			"E/p ratio vs. E_{cluster} ; E/p; E^{track} ,GeV",
-			nM, mMin, mMax, nPt, ptMin, ptMax
+		    Form("hEp%sP", species),
+		    "E/p ratio vs. E_{cluster} ; E/p; E^{track} ,GeV",
+		    nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
 		fEpP[i] = new AliPP13DetectorHistogram(
-			patternP,
-			fListOfHistos,
-			AliPP13DetectorHistogram::kModules
+		    patternP,
+		    fListOfHistos,
+		    AliPP13DetectorHistogram::kModules
 		);
 
 		TH2 * patternPt = new TH2F(
-			Form("hEp%sP", species),
-			"E/p ratio vs. E_{cluster} ; E/p; p_{T}^{track} ,GeV/c",
-			nM, mMin, mMax, nPt, ptMin, ptMax
+		    Form("hEp%sP", species),
+		    "E/p ratio vs. E_{cluster} ; E/p; p_{T}^{track} ,GeV/c",
+		    nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
 		fEpPt[i] = new AliPP13DetectorHistogram(
-			patternPt,
-			fListOfHistos,
-			AliPP13DetectorHistogram::kModules
+		    patternPt,
+		    fListOfHistos,
+		    AliPP13DetectorHistogram::kModules
 		);
 	}
 
@@ -55,14 +55,40 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	fTPCSignal[2] = new TH2F("hTPCSignal_Non-Electron", "TPC dE/dx vs. non-electron momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
 	fTPCSignal[3] = new TH2F("hTPCSignal_All", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
 
+	fPosition[0] = new AliPP13DetectorHistogram(
+	    new TH3F("hdXvsXvsPt_plus", "dX vs. X positive; X (cm); dX (cm); p_{T}^{track +} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    fListOfHistos,
+	    AliPP13DetectorHistogram::kModules
+	);
+
+	fPosition[1] = new AliPP13DetectorHistogram(
+	    new TH3F("hdXvsXvsPt_minus", "dX vs. X negative; X (cm); dX (cm); p_{T}^{track -} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    fListOfHistos,
+	    AliPP13DetectorHistogram::kModules
+	);
+
+	fPosition[2] = new AliPP13DetectorHistogram(
+	    new TH3F("hdZvsZvsPt", "dZ vs. Z; Z (cm); dZ (cm); p_{T}^{track} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    fListOfHistos,
+	    AliPP13DetectorHistogram::kModules
+	);
+
+
+	fPosition[3] = new AliPP13DetectorHistogram(
+	    new TH3F("hdZvsZvsPtElectron", "dZ vs. Z of e^{#pm}; Z (cm); dZ (cm); p_{T}^{track} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    fListOfHistos,
+	    AliPP13DetectorHistogram::kModules
+	);//for radial displacement
+
+
 	for (int i = 0; i < 4; ++i)
 		fListOfHistos->Add(fTPCSignal[i]);
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
-			if (!hist) continue;
-			hist->Sumw2();
+		if (!hist) continue;
+		hist->Sumw2();
 	}
 }
 
@@ -90,15 +116,22 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	if (!isHybridTrack)
 		return;
 
+	Int_t sm, x1, z1;
+	if ((sm = CheckClusterGetSM(cluster, x1, z1)) < 0)
+		return; //  To be sure that everything is Ok	
+
+	Double_t trackPt = track->Pt();
+
 	Int_t charge = track->Charge();
 	Double_t dx = cluster->GetTrackDx();
 	Double_t dz = cluster->GetTrackDz();
 	TVector3 local = LocalPosition(cluster);
 
+	fPosition[Int_t(charge > 0)]->FillAll(sm, sm, local.X(), dx, trackPt);
+	fPosition[1]->FillAll(sm, sm, local.Z(), dz, trackPt);
 
 	Double_t energy = cluster->E();
 	Double_t trackP = track->P();
-	Double_t trackPt = track->Pt();
 	Double_t dEdx = track->GetTPCsignal();
 	Double_t EpRatio = energy / trackP;
 
@@ -113,20 +146,20 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	fTPCSignal[0]->Fill(EpRatio, nSigma);
 	Bool_t isElectron = (-2 < nSigma && nSigma < 3) ;
 
-	Int_t sm1, x1, z1;
-	if ((sm1 = CheckClusterGetSM(cluster, x1, z1)) < 0)
-		return; //  To be sure that everything is Ok
+
 
 	if (isElectron)
 	{
-		fEpP[0]->FillAll(sm1, sm1, EpRatio, energy);
-		fEpPt[0]->FillAll(sm1, sm1, EpRatio, trackPt);
+		fEpP[0]->FillAll(sm, sm, EpRatio, energy);
+		fEpPt[0]->FillAll(sm, sm, EpRatio, trackPt);
 		fTPCSignal[2]->Fill(trackP, dEdx);
+        if(0.8 < energy / trackP && energy / trackP < 1.2) 
+			fPosition[3]->FillAll(sm, sm, local.Z(), dz, trackPt);
 	}
 	else if (nSigma < -3 || 5 < nSigma)
 	{
-		fEpP[1]->FillAll(sm1, sm1, EpRatio, energy);
-		fEpPt[1]->FillAll(sm1, sm1, EpRatio, trackPt);
+		fEpP[1]->FillAll(sm, sm, EpRatio, energy);
+		fEpPt[1]->FillAll(sm, sm, EpRatio, trackPt);
 		fTPCSignal[3]->Fill(trackP, dEdx);
 	}
 }

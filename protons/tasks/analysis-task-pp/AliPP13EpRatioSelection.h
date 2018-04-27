@@ -22,6 +22,7 @@ public:
 		AliPP13PhotonSelection(),
 		fEpP(),
 		fEpPt(),
+		fPosition(),
 		fTPCSignal()
 	{}
 
@@ -30,6 +31,7 @@ public:
 		AliPP13PhotonSelection(name, title, cuts, w),
 		fEpP(),
 		fEpPt(),
+		fPosition(),
 		fTPCSignal()
 	{}
 
@@ -46,6 +48,12 @@ public:
 				delete fEpPt[i];
 		}
 
+		for(Int_t i = 0; i < 4; ++i)
+		{
+			if(fPosition[i])
+				delete fPosition[i];
+		}	
+		
 		// Don't delete fClusters, as ROOT will take 
 		// care of it.
 	}
@@ -64,6 +72,7 @@ protected:
 private:
 	AliPP13DetectorHistogram * fEpP[2]; //!
 	AliPP13DetectorHistogram * fEpPt[2]; //!
+	AliPP13DetectorHistogram * fPosition[4]; //!
 	TH2 * fTPCSignal[4]; //!
 	ClassDef(AliPP13EpRatioSelection, 2)
 };
