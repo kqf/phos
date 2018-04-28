@@ -16,7 +16,7 @@ ClassImp(AliPP13TagAndProbeSelection);
 
 
 //________________________________________________________________
-void AliPP13TagAndProbeSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void AliPP13TagAndProbeSelection::FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	(void) pool;
 	// Ensure that we are not doing mixing

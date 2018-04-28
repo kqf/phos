@@ -81,7 +81,7 @@ public:
 
 	// This is a dummy method to count number of Triggered Events.
 	virtual void CountMBEvent();
-	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
+	virtual void FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
     virtual void ConsiderGeneratedParticles(const EventFlags & eflags)
     {
     	(void) eflags;

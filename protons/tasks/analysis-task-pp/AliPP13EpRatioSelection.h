@@ -61,7 +61,7 @@ public:
 	virtual void InitSelectionHistograms();
 
 	// NB: It actually doesn't fill Pi0Mass
-	virtual void FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags); 
+	virtual void FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags); 
 
 protected:
 	TVector3 LocalPosition(const AliVCluster * clus) const;

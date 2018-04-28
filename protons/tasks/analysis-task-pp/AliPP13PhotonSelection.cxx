@@ -15,8 +15,9 @@ using namespace std;
 
 
 ClassImp(AliPP13PhotonSelection);
+
 //________________________________________________________________
-void AliPP13PhotonSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void AliPP13PhotonSelection::FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	// Ensure that we are not doing mixing
 	EventFlags flags = eflags;
@@ -199,37 +200,6 @@ Bool_t AliPP13PhotonSelection::SelectEvent(const EventFlags & flgs)
 
 	// Physical Events
 	return kTRUE;
-}
-
-
-//________________________________________________________________
-void AliPP13PhotonSelection::FillHistogram(const char * key, Double_t x, Double_t y, Double_t z)
-{
-	//FillHistogram
-	TObject * obj = fListOfHistos->FindObject(key);
-
-	TH3 * th3 = dynamic_cast<TH3 *> (obj);
-	if (th3)
-	{
-		th3->Fill(x, y, z);
-		return;
-	}
-
-	TH2 * th2 = dynamic_cast<TH2 *> (obj);
-	if (th2)
-	{
-		th2->Fill(x, y, z);
-		return;
-	}
-
-	TH1 * th1 = dynamic_cast<TH1 *> (obj);
-	if (th1)
-	{
-		th1->Fill(x, y);
-		return;
-	}
-
-	AliError(Form("Can't find histogram (instance of TH*) <%s> ", key));
 }
 
 //________________________________________________________________

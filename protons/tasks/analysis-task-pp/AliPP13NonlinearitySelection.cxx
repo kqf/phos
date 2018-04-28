@@ -16,7 +16,7 @@ ClassImp(AliPP13NonlinearitySelection);
 
 
 //________________________________________________________________
-void AliPP13NonlinearitySelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void AliPP13NonlinearitySelection::FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	(void) pool;
 	// Ensure that we are not doing mixing

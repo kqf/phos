@@ -165,7 +165,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 }
 
 //________________________________________________________________
-void AliPP13EpRatioSelection::FillPi0Mass(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+void AliPP13EpRatioSelection::FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
 {
 	// Ensure that we are not doing mixing
 	EventFlags flags = eflags;

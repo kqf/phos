@@ -149,7 +149,7 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		if (!selection->SelectEvent(evtProperties))
 			continue;
 
-		selection->FillPi0Mass(&clusArray, pool, evtProperties);
+		selection->FillHistograms(&clusArray, pool, evtProperties);
 		selection->ConsiderGeneratedParticles(evtProperties);
 
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
