@@ -35,7 +35,7 @@ AliPP13DetectorHistogram::AliPP13DetectorHistogram(TH1 * hist, TList * owner, Al
 
 	for (Int_t sm = 0; sm < (kLastModule + 1); ++sm)
 	{
-		if (sm > 1 && (fMode == kSingleHist || fMode == kInterModules))
+		if (sm >= 1 && (fMode == kSingleHist || fMode == kInterModules))
 			continue;
 
 		fHistograms[sm] = (sm == 0) ? hist : dynamic_cast<TH1 *>( hist->Clone(name + Form("SM%d", sm)) );
