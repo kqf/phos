@@ -92,6 +92,7 @@ public:
 
 protected:
 	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
+	virtual void SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & flags);
 	virtual void FillClusterHistograms(const AliVCluster * c, const EventFlags & eflags)
 	{
 		(void) c;
@@ -111,7 +112,6 @@ protected:
 	AliPP13PhotonSelection(const AliPP13PhotonSelection &);
 	AliPP13PhotonSelection & operator = (const AliPP13PhotonSelection &);
 
-	void FillHistogram(const char * key, Double_t x, Double_t y = 1, Double_t z = 1); //Fill 3D histogram witn name key
 	TList  * fListOfHistos;  //! list of histograms
 	AliPP13ClusterCuts fCuts;
 

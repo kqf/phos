@@ -11,6 +11,17 @@
 ClassImp(AliPP13EpRatioSelection);
 
 //________________________________________________________________
+void AliPP13EpRatioSelection::FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
+{
+	// NB: This selection doesn't fill 2-particle distributions
+	(void) pool;
+	
+	// Select photons
+	TObjArray photonCandidates;
+	SelectPhotonCandidates(clusArray, &photonCandidates, eflags);
+}
+
+//________________________________________________________________
 void AliPP13EpRatioSelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
@@ -162,18 +173,6 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 		fEpPt[1]->FillAll(sm, sm, EpRatio, trackPt);
 		fTPCSignal[3]->Fill(trackP, dEdx);
 	}
-}
-
-//________________________________________________________________
-void AliPP13EpRatioSelection::FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags)
-{
-	// Ensure that we are not doing mixing
-	EventFlags flags = eflags;
-	flags.isMixing = kFALSE;
-
-	// Select photons
-	TObjArray photonCandidates;
-	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
 }
 
 //________________________________________________________________

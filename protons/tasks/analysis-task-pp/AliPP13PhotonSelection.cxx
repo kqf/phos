@@ -25,8 +25,20 @@ void AliPP13PhotonSelection::FillHistograms(TObjArray * clusArray, TList * pool,
 
 	// Select photons
 	TObjArray photonCandidates;
+
+	// Select particles and fill single-particle distributions
 	SelectPhotonCandidates(clusArray, &photonCandidates, flags);
 
+	// Fill two-particle distributions (e.g. invariant masses)
+	SelectTwoParticleCombinations(photonCandidates, flags);
+
+	// Fill all mixing combinations
+	MixPhotons(photonCandidates, pool, flags);
+}
+
+//________________________________________________________________
+void AliPP13PhotonSelection::SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & flags)
+{
 	// All possible combinations on photon candadates
 	// Int_t counter = 0;
 	for (Int_t i = 0; i < photonCandidates.GetEntriesFast(); i++)
@@ -44,8 +56,6 @@ void AliPP13PhotonSelection::FillHistograms(TObjArray * clusArray, TList * pool,
 
 	// Int_t Nn = photonCandidates.GetEntriesFast();
 	// std::cout << "Number of combinations: " << counter << " should be " << Nn * (Nn - 1.) / 2. << std::endl;
-
-	MixPhotons(photonCandidates, pool, flags);
 }
 
 //________________________________________________________________
@@ -176,7 +186,6 @@ AliPP13PhotonSelection::~AliPP13PhotonSelection()
 	// 
 	delete fListOfHistos;
 }
-
 
 //________________________________________________________________
 Bool_t AliPP13PhotonSelection::SelectEvent(const EventFlags & flgs)
