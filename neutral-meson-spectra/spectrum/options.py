@@ -236,3 +236,11 @@ class ProbeTofOptions(object):
         self.analysis = Options(ptrange='config/tag-and-probe-tof.json')
         # NB: Make sure to define it later
         self.fitfunc = None
+
+
+class EpRatioOptions(object):
+    def __init__(self):
+        # We need only pT similar to the original analysis
+        self.pt = Options().pt
+        # NB: Make sure to define it later
+        self.histname = 'hEpElectronsPSM0'

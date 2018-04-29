@@ -47,10 +47,8 @@ class MassFitter(object):
         )
 
         for estimator in pipeline:
-            output = map(
-                estimator.transform,
-                masses
-            )
+            map(estimator.transform, masses)
+
         return masses
 
     def pipeline(self, use_mixed):

@@ -1,13 +1,13 @@
 import ROOT
-from broot import BROOT as br
-import sutils as su
 import collections as coll
+from array import array
+
 
 class SpectrumExtractor(object):
 
     def handle_empty_fit(f):
         def wrapper(self, mass):
-            if not mass.fitted(): # TODO: This should be removed?
+            if not mass.fitted():  # TODO: This should be removed?
                 return (0, 0)
             try:
                 return f(self, mass)
@@ -15,7 +15,7 @@ class SpectrumExtractor(object):
                 return (0, 0)
         return wrapper
 
-    def __init__(self, order = []):
+    def __init__(self, order=[]):
         super(SpectrumExtractor, self).__init__()
         rules = {
             'mass': self.mass,
@@ -106,8 +106,8 @@ class OutputCreator(object):
         self.priority = priority
 
     def get_hist(self, bins, data):
-        from array import array
-        hist = ROOT.TH1F(self.name, self.title, len(bins) - 1, array('d', bins))
+        hist = ROOT.TH1F(self.name, self.title,
+                         len(bins) - 1, array('d', bins))
 
         if not hist.GetSumw2N():
             hist.Sumw2()
@@ -125,35 +125,34 @@ class OutputCreator(object):
         output = OutputCreator(name, title, label)
         return output.get_hist(bins, data)
 
-
     @classmethod
     def output(klass,
-            typename,
-            data,
-            order,
-            ptedges,
-            titles, # self.opt.output[quant] % self.opt.partlabel,
-            label
-        ):
+               typename,
+               data,
+               order,
+               ptedges,
+               titles,  # self.opt.output[quant] % self.opt.partlabel,
+               label
+               ):
 
         OutType = coll.namedtuple(typename, order)
 
         iter_collection = zip(
-            order, # Ensure ordering of `data`
+            order,  # Ensure ordering of `data`
             zip(*data)
         )
 
         # Extract the data
         # Don't use format, as it confuses root/latex syntax
         output = {quant:
-            OutputCreator.output_histogram(
-                quant,
-                titles[quant],
-                label,
-                ptedges,
-                datapoints
-            ) for quant, datapoints in iter_collection
-        }
+                  OutputCreator.output_histogram(
+                      quant,
+                      titles[quant],
+                      label,
+                      ptedges,
+                      datapoints
+                  ) for quant, datapoints in iter_collection
+                  }
 
         # Convert to a proper datastructure
         return OutType(**output)
