@@ -103,32 +103,11 @@ void AliPP13DetectorHistogram::FillAll(Int_t sm1, Int_t sm2, Float_t x, Float_t 
 		return;
 	}
 
-	// Fill histograms for all the modules
-	TH2 * hist2d = dynamic_cast<TH2 *>(fHistograms[0]);
-	if (hist2d)
-	{
-		hist2d->Fill(x, y, z);
+	FillHist(fHistograms[0], x, y, z);
 
-		// Fill histograms without specific Module
-		if (sm1 != 4 &&  sm2 != 4)
-		{
-			hist2d = dynamic_cast<TH2 *>(fHistogram123);
-			hist2d->Fill(x, y, z);
-		}
-	}
-
-	TH3 * hist3d = dynamic_cast<TH3 *>(fHistograms[0]);
-	if (hist3d)
-	{
-		hist3d->Fill(x, y, z);
-
-		// Fill histograms without specific Module
-		if (sm1 != 4 &&  sm2 != 4)
-		{
-			hist3d = dynamic_cast<TH3 *>(fHistogram123);
-			hist3d->Fill(x, y, z);
-		}
-	}
+	if (sm1 != 4 &&  sm2 != 4)
+		FillHist(fHistogram123, x, y, z);
+	
 	FillModules(sm1, sm2, x, y, z);
 }
 
@@ -137,25 +116,10 @@ void AliPP13DetectorHistogram::FillModules(Int_t sm1, Int_t sm2, Float_t x, Floa
 {
 
 	if (sm1 == sm2 && fMode == kModules)
-	{
-		TH2 * hist2d = dynamic_cast<TH2 *>(fHistograms[sm1]);
-		if (hist2d)
-			hist2d->Fill(x, y, z);
-
-		TH3 * hist3d = dynamic_cast<TH3 *>(fHistograms[sm1]);
-		if (hist3d)
-			hist3d->Fill(x, y, z);
-	}
+		FillHist(fHistograms[sm1], x, y, z);
 
 	if (fMode == kInterModules)
-	{
-		TH2 * hist2d = dynamic_cast<TH2 *>(fInterModuleHistograms[Index(sm1, sm2)]);
-		hist2d->Fill(x, y, z);
-
-		TH3 * hist3d = dynamic_cast<TH3 *>(fHistograms[sm1]);
-		if (hist3d)
-			hist3d->Fill(x, y, z);
-	}
+		FillHist(fInterModuleHistograms[Index(sm1, sm2)], x, y, z);
 }
 
 
@@ -195,4 +159,17 @@ Int_t AliPP13DetectorHistogram::Index(Int_t sm1, Int_t sm2) const
 		swap(sm1, sm2);
 
 	return sm2 * (sm2 + 1) / 2 + sm1;
+}
+
+//________________________________________________________________
+void AliPP13DetectorHistogram::FillHist(TH1 * hist, Float_t x, Float_t y, Float_t z)
+{
+	TH2 * hist2d = dynamic_cast<TH2 *>(hist);
+	if (hist2d)
+		hist2d->Fill(x, y, z);
+
+	TH3 * hist3d = dynamic_cast<TH3 *>(hist);
+	if (hist3d)
+		hist3d->Fill(x, y, z);
+
 }

@@ -38,7 +38,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 
 		TH2 * patternP = new TH2F(
 		    Form("hEp%sP", species),
-		    "E/p ratio vs. E_{cluster} ; E/p; E^{track} ,GeV",
+		    "E/p ratio vs. E_{cluster}, ; E/p; E^{track} ,GeV",
 		    nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
@@ -50,7 +50,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 
 		TH2 * patternPt = new TH2F(
 		    Form("hEp%sP", species),
-		    "E/p ratio vs. E_{cluster} ; E/p; p_{T}^{track} ,GeV/c",
+		    "E/p ratio vs. E_{cluster}, ; E/p; p_{T}^{track} ,GeV/c",
 		    nM, mMin, mMax, nPt, ptMin, ptMax
 		);
 
@@ -67,26 +67,26 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	fTPCSignal[3] = new TH2F("hTPCSignal_All", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
 
 	fPosition[0] = new AliPP13DetectorHistogram(
-	    new TH3F("hdXvsXvsPt_plus", "dX vs. X positive; X (cm); dX (cm); p_{T}^{track +} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    new TH3F("hdXvsXvsPt_plus", "dX vs. X positive, ; X (cm); dX (cm); p_{T}^{track +} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
 	    fListOfHistos,
 	    AliPP13DetectorHistogram::kModules
 	);
 
 	fPosition[1] = new AliPP13DetectorHistogram(
-	    new TH3F("hdXvsXvsPt_minus", "dX vs. X negative; X (cm); dX (cm); p_{T}^{track -} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    new TH3F("hdXvsXvsPt_minus", "dX vs. X negative, ; X (cm); dX (cm); p_{T}^{track -} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
 	    fListOfHistos,
 	    AliPP13DetectorHistogram::kModules
 	);
 
 	fPosition[2] = new AliPP13DetectorHistogram(
-	    new TH3F("hdZvsZvsPt", "dZ vs. Z; Z (cm); dZ (cm); p_{T}^{track} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    new TH3F("hdZvsZvsPt", "dZ vs. Z; Z (cm); dZ (cm), ; p_{T}^{track} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
 	    fListOfHistos,
 	    AliPP13DetectorHistogram::kModules
 	);
 
 
 	fPosition[3] = new AliPP13DetectorHistogram(
-	    new TH3F("hdZvsZvsPtElectron", "dZ vs. Z of e^{#pm}; Z (cm); dZ (cm); p_{T}^{track} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
+	    new TH3F("hdZvsZvsPtElectron", "dZ vs. Z of e^{#pm}, ; Z (cm); dZ (cm); p_{T}^{track} (GeV/c)", 160, -80, 80, 80, -20, 20, 40, 0, 20),
 	    fListOfHistos,
 	    AliPP13DetectorHistogram::kModules
 	);//for radial displacement
