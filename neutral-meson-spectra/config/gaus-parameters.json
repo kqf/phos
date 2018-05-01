@@ -1,7 +1,7 @@
 {
         "fitf": "Gaus",
         "par_names": ["A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}"],
-	"pi0":
+	"#pi^{0}":
 	{
 
                 "fit_range":         [0.05, 0.3],
@@ -16,7 +16,7 @@
 
 	},
 
-	"eta":
+	"#eta":
 	{
                 "fit_range":         [0.4, 0.8],
                 "prel_mass_limits":  [0.5, 0.6],

@@ -20,13 +20,13 @@ class FeeddownEstimator(TransformerBase):
             ("feeddown",
                 Pipeline([
                     ("analysis", Analysis(options.feeddown, plot)),
-                    ("npi0", HistogramSelector("npi0"))
+                    ("nmesons", HistogramSelector("nmesons"))
                 ])
              ),
             ("regular",
                 Pipeline([
                     ("analysis", Analysis(options.regular, plot)),
-                    ("npi0", HistogramSelector("npi0"))
+                    ("nmesons", HistogramSelector("nmesons"))
                 ])
              ),
         ], plot)

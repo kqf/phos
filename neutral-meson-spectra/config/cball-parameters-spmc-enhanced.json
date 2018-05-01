@@ -1,7 +1,7 @@
 {
         "fitf": "CrystalBall",
         "par_names": ["A", "M", "#sigma", "#alpha", "n", "a_{0}", "a_{1}", "a_{2}"],
-	"pi0":
+	"#pi^{0}":
 	{
 
                 "fit_range":         [0.08, 0.2],
@@ -19,7 +19,7 @@
                 "background": "pol2"
 	},
 
-	"eta":
+	"#eta":
 	{
                 "fit_range":         [0.4, 0.8],
                 "prel_mass_limits":  [0.5, 0.6],

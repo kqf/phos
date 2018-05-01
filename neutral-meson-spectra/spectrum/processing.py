@@ -175,11 +175,11 @@ class DataExtractor(object):
         # Scale by the number of events
         if self.opt.scalew_spectrum:
             br.scalew(histograms.spectrum)
-            br.scalew(histograms.npi0)
+            br.scalew(histograms.nmesons)
 
         histograms.spectrum.Scale(1. / nevents)
         histograms.spectrum.logy = True
-        histograms.npi0.logy = True
+        histograms.nmesons.logy = True
         return histograms
 
     def transform(self, masses, loggs):

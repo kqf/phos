@@ -11,14 +11,14 @@ class TagAndProbe(TransformerBase):
             ("tof cut",
                 Pipeline([
                     ("analysis", Analysis(options.analysis, plot)),
-                    ("npi0", HistogramSelector("npi0")),
+                    ("nmesons", HistogramSelector("nmesons")),
                     ('scale', HistogramScaler())
                 ])
              ),
             ("no cut",
                 Pipeline([
                     ("analysis", Analysis(options.analysis, plot)),
-                    ("npi0", HistogramSelector("npi0")),
+                    ("nmesons", HistogramSelector("nmesons")),
                     ('scale', HistogramScaler())
                 ])
              ),

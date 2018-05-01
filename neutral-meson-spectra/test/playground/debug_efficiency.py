@@ -2,19 +2,17 @@ import unittest
 import ROOT
 
 from vault.datavault import DataVault
-from spectrum.analysis import Analysis
-from spectrum.output import AnalysisOutput
-from spectrum.options import EfficiencyOptions, MultirangeEfficiencyOptions, Options
+from spectrum.options import MultirangeEfficiencyOptions, Options
 from spectrum.efficiency import Efficiency, EfficiencyMultirange
 from spectrum.comparator import Comparator
 from spectrum.transformer import TransformerBase
-from spectrum.pipeline import Pipeline, ReducePipeline, ParallelPipeline, FunctionTransformer
+from spectrum.pipeline import Pipeline, ReducePipeline,
+from spectrum.pipeline import ParallelPipeline, FunctionTransformer
 from spectrum.input import SingleHistInput
 
 from spectrum.broot import BROOT as br
 from array import array
 
-import spectrum.sutils as su
 
 class StanadrtizeOutput(TransformerBase):
     def __init__(self):
@@ -42,14 +40,14 @@ class ReadCompositeDistribution(TransformerBase):
         super(ReadCompositeDistribution, self).__init__()
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                    ("efficiency-{0}".format(ranges),
-                        Pipeline([
-                           ("raw_efficiency", SingleHistInput(name)),
-                           ("standard-output", StanadrtizeOutput())
-                        ])
-                    )
-                    for ranges in zip(options.mergeranges)
-                ]
+                ("efficiency-{0}".format(ranges),
+                 Pipeline([
+                            ("raw_efficiency", SingleHistInput(name)),
+                            ("standard-output", StanadrtizeOutput())
+                 ])
+                 )
+                for ranges in zip(options.mergeranges)
+            ]
             ),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
@@ -59,29 +57,30 @@ class CompareEfficiencies(TransformerBase):
     def __init__(self, options, plot=False):
         super(CompareEfficiencies, self).__init__(plot)
         self.pipeline = ReducePipeline(
-                ParallelPipeline([
-                    ("calculated_efficiency", EfficiencyMultirange(options)),
-                    ("read_debug_efficiency", ReadCompositeDistribution(options))
-                ]),
-                Comparator().compare
-            )
+            ParallelPipeline([
+                ("calculated_efficiency", EfficiencyMultirange(options)),
+                ("read_debug_efficiency", ReadCompositeDistribution(options))
+            ]),
+            Comparator().compare
+        )
+
 
 class CompareGeneratedSpectra(TransformerBase):
     def __init__(self, options, names, plot=False):
         super(CompareGeneratedSpectra, self).__init__(plot)
         self.pipeline = ReducePipeline(
-                ParallelPipeline([
-                    # ("custom_spectrum", ReadCompositeDistribution(options, name=names[0])),
-                    # ("debug_spectrum", ReadCompositeDistribution(options, name=names[1]))
-                    ("custom_spectrum", SingleHistInput(names[0])),
-                    ("debug_spectrum", Pipeline([
-                            ("single", SingleHistInput(names[1])),
-                            ("scale", FunctionTransformer(br.scalew))
-                        ])
-                    )
-                ]),
-                Comparator().compare
-            )
+            ParallelPipeline([
+                # ("custom_spectrum", ReadCompositeDistribution(options, name=names[0])),
+                # ("debug_spectrum", ReadCompositeDistribution(options, name=names[1]))
+                ("custom_spectrum", SingleHistInput(names[0])),
+                ("debug_spectrum", Pipeline([
+                    ("single", SingleHistInput(names[1])),
+                    ("scale", FunctionTransformer(br.scalew))
+                ])
+                )
+            ]),
+            Comparator().compare
+        )
 
 
 class DebugTheEfficiency(unittest.TestCase):
@@ -102,7 +101,7 @@ class DebugTheEfficiency(unittest.TestCase):
         # )
 
         unified_inputs = {
-            DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0} corrected weights", "low"): (0, 7.0),
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
@@ -118,7 +117,6 @@ class DebugTheEfficiency(unittest.TestCase):
             "compare the debug efficiency"
         )
 
-
     @unittest.skip('')
     def test_generated_spectrum(self):
         particle = "#pi^{0}"
@@ -128,7 +126,7 @@ class DebugTheEfficiency(unittest.TestCase):
         }
 
         unified_inputs = {
-            DataVault().input("single #pi^{0} corrected weights", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0} corrected weights", "low"): (0, 7.0),
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
@@ -141,26 +139,24 @@ class DebugTheEfficiency(unittest.TestCase):
             "compare the debug efficiency"
         )
 
-
     @unittest.skip('')
     def test_weight_like_debug(self):
-        input_low = DataVault().input("debug efficiency", "low", n_events=1e6, histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        input_low = DataVault().input("debug efficiency", "low", n_events=1e6,
+                                      histnames=('hSparseMgg_proj_0_1_3_yx', ''))
 
         # Define the transformations
         nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)
 
         rrange = 0, 10
-        tsallis = ROOT.TF1("f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", *rrange);
-        tsallis.SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755)
-        tsallis.FixParameter(3, 0.135);
-        tsallis.FixParameter(4, 0.135);
+        tsallis = ROOT.TF1(
+            "f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", *rrange)
+        tsallis.SetParameters(0.014960701090585591,
+                              0.287830380417601, 9.921003040859755)
+        tsallis.FixParameter(3, 0.135)
+        tsallis.FixParameter(4, 0.135)
         tsallis.SetLineColor(46)
 
         br.scalew(nominal_low, 1. / nominal_low.Integral())
         nominal_low.Fit(tsallis)
         print br.pars(tsallis)
         Comparator().compare(nominal_low)
-
-
-
-

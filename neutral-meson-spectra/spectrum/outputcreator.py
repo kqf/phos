@@ -22,7 +22,7 @@ class SpectrumExtractor(object):
             'width': self.width,
             'spectrum': self.nraw,
             'chi2': self.chi2,
-            'npi0': self.npi0,
+            'nmesons': self.nmesons,
             'cball_alpha': self.cball_alpha,
             'cball_n': self.cball_n,
             'background_chi2': self.background_chi2,
@@ -57,13 +57,13 @@ class SpectrumExtractor(object):
         return self.parameter(mass, "n")
 
     @handle_empty_fit
-    def npi0(self, mass):
+    def nmesons(self, mass):
         return mass.number_of_mesons()
 
     @handle_empty_fit
     def nraw(self, mass):
-        npi0 = mass.number_of_mesons()
-        return map(lambda x: x / (2. * ROOT.TMath.Pi()), npi0)
+        nmesons = mass.number_of_mesons()
+        return map(lambda x: x / (2. * ROOT.TMath.Pi()), nmesons)
 
     @handle_empty_fit
     def chi2(self, mass):

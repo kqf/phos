@@ -4,7 +4,6 @@ import ROOT
 from spectrum.input import Input, SingleHistInput
 from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
 from spectrum.pipeline import RatioUnion, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
 
@@ -29,7 +28,7 @@ class ReconstructedValidator(object):
         self.runion = RatioUnion(
             Pipeline([
                 ("ReconstructMesons", Analysis(options)),
-                ("NumberOfMesons", HistogramSelector("npi0"))
+                ("NumberOfMesons", HistogramSelector("nmesons"))
             ]),
             FunctionOutput(func)
         )
@@ -41,13 +40,15 @@ class ReconstructedValidator(object):
 
 def tsallis():
     tsallis = ROOT.TF1(
-        "f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100);
-    tsallis.SetParameters(0.014960701090585591, 0.287830380417601, 9.921003040859755)
-                         # [0.014850211992453644, 0.28695967166609104, 9.90060126848571
+        "f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100)
+    tsallis.SetParameters(0.014960701090585591,
+                          0.287830380417601, 9.921003040859755)
+    # [0.014850211992453644, 0.28695967166609104, 9.90060126848571
     tsallis.FixParameter(3, 0.135)
     tsallis.FixParameter(4, 0.135)
     tsallis.label = "tsallis"
     return tsallis
+
 
 class ValidateReconstructedPi0(unittest.TestCase):
 
@@ -57,7 +58,8 @@ class ValidateReconstructedPi0(unittest.TestCase):
             Options.spmc((7, 20), particle="#pi^{0}")
         )
 
-        loggs = AnalysisOutput("test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
+        loggs = AnalysisOutput(
+            "test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
         output = estimator.transform(
             Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
             loggs
@@ -67,6 +69,7 @@ class ValidateReconstructedPi0(unittest.TestCase):
         output.logy = False
         diff = Comparator(stop=True, crange=(0, 8000))
         diff.compare(output)
+
 
 class GeneratedValidator(object):
     def __init__(self, func, histname):
@@ -89,7 +92,8 @@ class ValidateGeneratedPi0(unittest.TestCase):
             "hPt_#pi^{0}_primary_standard"
         )
 
-        loggs = AnalysisOutput("generated_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
+        loggs = AnalysisOutput(
+            "generated_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
         output = estimator.transform(
             Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
             loggs

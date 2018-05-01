@@ -3,8 +3,8 @@ import json
 
 
 class AnalysisOption(object):
-    ignore_attributes = 'eta', 'pi0', 'comment'
-    _particles = {"#pi^{0}": "pi0", "#eta": "eta"}
+    ignore_attributes = '#eta', '#pi^{0}', 'comment'
+    _particles = {"pi0": "#pi^{0}", "eta": "#eta"}
 
     def __init__(self, name, config, particle):
         super(AnalysisOption, self).__init__()

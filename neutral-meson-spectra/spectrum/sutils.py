@@ -14,18 +14,33 @@ def prepare_directory(name):
     return name
 
 
-def wait(name='', draw=True, save=False, suffix=''):
-    outdir = 'results/'
-    canvas = gcanvas()
-    canvas.Update()
+def clean_name(name):
+    if name[-1] == '-':
+        name = name[:-1]
+
     name = (
-        name
-        .replace(' ', '-')
+        name.strip()
+        .replace(' GeV/c', '')
+        .replace('p_{T}', 'pT')
+        .replace('<', '')
+        .replace('>', '')
         .replace('_', '-')
         .replace(',', '-')
         .replace('(', '')
         .replace(')', '')
+        .replace('   ', ' ')
+        .replace('  ', ' ')
+        .replace(' ', '-')
     )
+    print name
+    return name
+
+
+def wait(name='', draw=True, save=False, suffix=''):
+    outdir = 'results/'
+    canvas = gcanvas()
+    canvas.Update()
+    name = clean_name(name)
     if save:
         canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
 
@@ -51,8 +66,6 @@ def gcanvas(x = 1., y = 1, resize = False, scale = 6):
         ccanvas.SetCanvasSize(cx, cy)
         return adjust_canvas(ccanvas)
     return canvas("c1", x, y, scale)
-
-
 
 
 def adjust_labels(hist1, hist2, scale = 1):

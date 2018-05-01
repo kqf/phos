@@ -21,7 +21,7 @@ class EfficiencySimple(TransformerBase):
         self.pipeline = RatioUnion(
             Pipeline([
                 ("ReconstructMesons", Analysis(options.analysis)),
-                ("NumberOfMesons", HistogramSelector("npi0")),
+                ("NumberOfMesons", HistogramSelector("nmesons")),
                 ("ScaleForAcceptance", HistogramScaler(options.scale))
             ]),
             SingleHistInput(options.genname)
@@ -35,12 +35,15 @@ class EfficiencyMultirange(TransformerBase):
 
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("efficiency-{0}".format(ranges), Efficiency(opt, plot))
+                (self._stepname(ranges), Efficiency(opt, plot))
                 for (opt, ranges) in zip(options.suboptions,
                                          options.mergeranges)
             ]),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
+
+    def _stepname(self, ranges):
+        return "#varepsilon {0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
 
 
 class Efficiency(TransformerBase):
