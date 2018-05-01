@@ -5,6 +5,17 @@ from broot import BROOT as br
 import sutils as su
 
 
+def info(hist):
+    pave = ROOT.TPaveText(.3, .6, .4, .8 , "NBNDC")
+    pave.AddText("ALICE, PHOS")
+    pave.AddText("pp at #sqrt{s}=13 TeV")
+    pave.SetFillStyle(0)
+    pave.SetLineColor(0)
+    # pave.SetTextSize(12)
+    pave.Draw()
+    return pave
+
+
 def set_pad_logx(hist, pad):
     if hist.logx:
         pad.SetLogx(hist.logx)
@@ -73,6 +84,7 @@ class MultipleVisualizer(object):
         if self.crange:
             first_hist.SetAxisRange(self.crange[0], self.crange[1], 'Y')
         first_hist.DrawCopy()
+        self.cache.append(info(first_hist))
 
         for i, h in enumerate(hists):
             color, marker = self._color_marker(ci, i, h)
