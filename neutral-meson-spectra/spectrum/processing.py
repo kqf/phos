@@ -120,6 +120,12 @@ class RangeEstimator(object):
         for i in range(fitquant.GetNpar()):
             par[i] = fitquant.GetParameter(i)
 
+        quant.SetTitle(
+            quant.GetTitle() + ", #chi^{2}/ndf" + " = {chi2:0.4g}".format(
+                chi2=fitquant.GetChisquare() / fitquant.GetNDF()
+            )
+        )
+
         # print [fitquant.GetParameter(i) for i, p in enumerate(par)]
         quant.SetLineColor(37)
         return fitquant

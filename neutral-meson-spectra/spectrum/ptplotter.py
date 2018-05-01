@@ -1,9 +1,7 @@
 import ROOT
-import numpy as np
 import sutils as su
 from broot import BROOT as br
 from operator import mul
-
 
 
 class MassesPlot(object):
@@ -21,8 +19,8 @@ class MassesPlot(object):
         self.draw(imass.sigf, color=ci + 1)
         self.draw(imass.background, color=ci + 1)
 
-        if imass.ratio:
-            self.draw(imass.ratio, color=ci + 4)
+        # if imass.ratio:
+        #     self.draw(imass.ratio, color=ci + 4)
 
         self.draw(imass.signal, color=ci + 2)
         self.draw(imass.bgrf, color=ci + 5)
@@ -51,7 +49,7 @@ class MassesPlot(object):
         )
 
         def bins_errors(hist):
-            bins, berrors, centers  = br.bins(hist)
+            bins, berrors, centers = br.bins(hist)
             roi = (centers > a) & (centers < b)
             bins = bins[roi]
             berrors = berrors[roi]
@@ -67,12 +65,13 @@ class MassesPlot(object):
 
     def _draw_line(self, imass):
         def lline(position):
-            line = ROOT.TLine(position, imass.mass.GetMinimum(), position, imass.mass.GetMaximum())
+            line = ROOT.TLine(position, imass.mass.GetMinimum(),
+                              position, imass.mass.GetMaximum())
             line.SetLineColor(1)
             line.SetLineStyle(7)
             line.Draw()
             return line
-                # Draw integration region, when specified
+            # Draw integration region, when specified
         lower, upper = imass.integration_region
         imass.line_low = lline(lower)
         imass.line_upper = lline(upper)
@@ -97,4 +96,5 @@ class MultiplePlotter(object):
             plotter = MassesPlot()
             for j, mass in enumerate(masses[i:i + n_plots]):
                 plotter.transform(mass, canvas.cd(j + 1))
-            su.wait("{0}/multiple-{1}".format(self.label, i), draw=show, save=True)
+            su.wait("{0}/multiple-{1}".format(self.label, i),
+                    draw=show, save=True)

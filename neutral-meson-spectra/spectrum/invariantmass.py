@@ -1,10 +1,8 @@
 #!/usr/bin/python
 
-import ROOT
-import json
 from parametrisation import PeakParametrisation
-from sutils import gcanvas, ticks, in_range
 from broot import BROOT as br
+
 
 class RawMass(object):
 
@@ -19,7 +17,8 @@ class RawMass(object):
             return None
         mass = br.project_range(hist, '_%d_%d', *self.pt_range)
         mass.nevents = hist.nevents
-        mass.SetTitle(self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (mass.nevents / 1e6))
+        mass.SetTitle(
+            self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (mass.nevents / 1e6))
         mass.SetLineColor(37)
 
         if not mass.GetSumw2N():
@@ -32,9 +31,9 @@ class RawMass(object):
     @staticmethod
     def ptedges(masses):
         return sorted(set(
-                sum([list(i.pt_range) for i in masses], [])
-            )
-        )
+            sum([list(i.pt_range) for i in masses], [])
+        ))
+
 
 class InvariantMass(object):
 
@@ -50,7 +49,11 @@ class InvariantMass(object):
         self.signalp = PeakParametrisation.get(options.signalp)
         self.backgroundp = PeakParametrisation.get(options.backgroundp)
         # TODO: Remove offsets
-        self.xaxis_range  = [i * j for i, j in zip(self.signalp.opt.fit_range, self.opt.xaxis_offsets)]
+        self.xaxis_range = [
+            i * j for i, j in zip(
+                self.signalp.opt.fit_range,
+                self.opt.xaxis_offsets)
+        ]
 
         # Extract the data
         self.sigf = None
@@ -65,7 +68,6 @@ class InvariantMass(object):
     @property
     def integration_region(self):
         return self._integration_region
-
 
     @integration_region.setter
     def integration_region(self, value):

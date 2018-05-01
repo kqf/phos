@@ -1,9 +1,11 @@
 from comparator import Comparator
 from ptplotter import MultiplePlotter
-import ROOT
+# import ROOT
 
 # TODO: Introduce more log items for compare etc
 #
+
+
 class LogItem(object):
     def __init__(self, name, data, mergable=False):
         super(LogItem, self).__init__()
@@ -74,13 +76,16 @@ class AnalysisOutput(object):
         self.label = label
         self.pool = []
         # if particle:
-            # self.label = "{0}-{1}".format(self.label, particle)
+        # self.label = "{0}-{1}".format(self.label, particle)
 
     def update(self, stepname, histograms, multirange=False, mergable=False):
         logtype = MultirangeLogItem if multirange else LogItem
 
-        self.pool.insert(0,
-            logtype("{0}/{1}".format(self.label, stepname), histograms, mergable)
+        self.pool.insert(
+            0,
+            logtype("{0}/{1}".format(
+                self.label,
+                stepname), histograms, mergable)
         )
 
     def plot(self, stop=False):
@@ -100,7 +105,6 @@ class AnalysisOutput(object):
             item.name = "{0}/{1}".format(self.label, item.name)
 
         self.pool.extend(filter(lambda x: x != [], other.pool))
-
 
     def mergelist(self):
         return [item for item in self.pool if item.mergable]

@@ -1,12 +1,12 @@
 import ROOT
 from math import sqrt
 from collections import Iterable
-import array
 import os
+
 
 def prepare_directory(name):
     path = "/".join(
-        name.split('/')[0:-1] # remove filename
+        name.split('/')[0:-1]  # remove filename
     )
 
     if not os.path.isdir(path):
@@ -15,13 +15,11 @@ def prepare_directory(name):
 
 
 def wait(name='', draw=True, save=False, suffix=''):
-    if save and not draw:
-        ROOT.gROOT.SetBatch(True)
-
     outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()
-    name = (name
+    name = (
+        name
         .replace(' ', '-')
         .replace('_', '-')
         .replace(',', '-')
@@ -31,8 +29,9 @@ def wait(name='', draw=True, save=False, suffix=''):
     if save:
         canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
 
-    canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-    if draw: 
+    canvas.Connect("Closed()", "TApplication",
+            ROOT.gApplication, "Terminate()")
+    if draw:
         ROOT.gApplication.Run(True)
 
 def canvas(name, x=1., y=1., scale=6):
@@ -60,7 +59,7 @@ def adjust_labels(hist1, hist2, scale = 1):
     if not hist1 or not hist2:
         return None
 
-    hist1.SetTitleOffset(hist2.GetTitleOffset('X')        , 'X')
+    hist1.SetTitleOffset(hist2.GetTitleOffset('X'), 'X')
     hist1.SetTitleOffset(hist2.GetTitleOffset('Y') / scale, 'Y')
     hist1.SetTitleSize(hist2.GetTitleSize('X') * scale, 'X')
     hist1.SetTitleSize(hist2.GetTitleSize('Y') * scale, 'Y')
@@ -71,15 +70,15 @@ def adjust_labels(hist1, hist2, scale = 1):
 
 def ticks(pad):
     ROOT.gPad.SetGridx()
-    ROOT.gPad.SetGridy() 
+    ROOT.gPad.SetGridy()
     ROOT.gPad.SetTickx()
-    ROOT.gPad.SetTicky() 
+    ROOT.gPad.SetTicky()
     pad.SetTickx()
-    pad.SetTicky() 
+    pad.SetTicky()
     pad.SetGridx()
     pad.SetGridy()
     return pad
-       
+
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()
     canvas.SetBottomMargin(0.02 * height)
@@ -89,8 +88,8 @@ def adjust_canvas(canvas):
     canvas.SetRightMargin(0.01 * width)
     canvas.SetLeftMargin(0.01 * width)
     return canvas
-    
-    
+
+
 def tsallis(x, p, a = 0.135, b = 0.135, bias = 0):
     return (x[0] + x[0] * bias)*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt((x[0] +x[0] * bias)*(x[0] +x[0] * bias)+a*a)-b)/(p[2]*p[1])) ** (-p[2])
 

@@ -5,6 +5,17 @@ from broot import BROOT as br
 import sutils as su
 
 
+def set_pad_logx(hist, pad):
+    if hist.logx:
+        pad.SetLogx(hist.logx)
+        return
+    # Draw logx for increasing bin width
+    start_width = hist.GetBinWidth(1)
+    stop_width = hist.GetBinWidth(hist.GetNbinsX() - 1)
+    pad.SetLogx(start_width < stop_width)
+    hist.GetXaxis().SetMoreLogLabels(start_width < stop_width)
+
+
 class VisHub(object):
 
     def __init__(self, *args, **kwargs):
@@ -56,7 +67,7 @@ class MultipleVisualizer(object):
 
         mainpad = pad if pad else su.gcanvas()
         mainpad.cd()
-        mainpad.SetLogx(first_hist.logx)
+        set_pad_logx(first_hist, mainpad)
         mainpad.SetLogy(first_hist.logy)
 
         if self.crange:
@@ -133,7 +144,7 @@ class Visualizer(MultipleVisualizer):
         su.adjust_labels(ratio, hists[0], scale=7. / 3)
         ratio.GetYaxis().CenterTitle(True)
         ratio.SetTitle('')
-        pad.SetLogx(a.logx)
+        set_pad_logx(ratio, pad)
         ratio.Draw()
 
         self.fit_ratio(ratio)
