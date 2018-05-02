@@ -21,7 +21,7 @@
 
 	"#eta":
 	{
-                "fit_range":         [0.4, 0.8],
+                "fit_range":         [0.45, 0.7],
                 "prel_mass_limits":  [0.5, 0.6],
                 "prel_width_limits": [0.004, 0.030],
                 "prel_range":        [0.49, 0.6],
