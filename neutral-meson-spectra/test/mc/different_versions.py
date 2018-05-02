@@ -1,13 +1,12 @@
 #!/usr/bin/python
 
+from spectrum.input import Input
 from spectrum.spectrum import Spectrum, CompositeSpectrum
-from spectrum.input import Input, TimecutInput
 from spectrum.sutils import gcanvas, adjust_canvas
 from spectrum.options import Options
 from spectrum.broot import BROOT as br
 
 import unittest
-import operator
 
 
 class CheckMCDifferentVersions(unittest.TestCase):
@@ -26,7 +25,8 @@ class CheckMCDifferentVersions(unittest.TestCase):
             # , Options('Pythia8 JJ', 'q', priority = 1)
         )
 
-        def f(x, y): return Spectrum(x, y).evaluate()
+        def f(x, y):
+            return Spectrum(x, y).evaluate()
         self.results = map(f, inputs, options)
         datadirs = 'weight2', 'nonlin'
 
@@ -35,8 +35,9 @@ class CheckMCDifferentVersions(unittest.TestCase):
             Input('/single/{0}/LHC17j3b2'.format(d), 'PhysEffOnlyTender', label=lab): (7, 20)
         } for d in datadirs]
 
-        def f(x): return CompositeSpectrum(
-            inputs(x), Options(mode='d')).evaluate()
+        def f(x):
+            return CompositeSpectrum(
+                inputs(x), Options(mode='d')).evaluate()
         spmc = map(f, datadirs)
         self.results += spmc
 
@@ -68,7 +69,3 @@ class CheckMCDifferentVersions(unittest.TestCase):
 
         diff = cmpr.Comparator((1., 1.), oname='compared-mc-spectrums')
         diff.compare(spectrums)
-
-
-if __name__ == '__main__':
-    main()

@@ -20,7 +20,8 @@ class DataSlicer(object):
 
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
-            'Number of intervals is not equal to the number of rebin parameters'
+            "Number of intervals is not equal " \
+            "to the number of rebin parameters"
 
         def common_inputs(x, y):
             return RawMass(input_data, x, y)
@@ -68,8 +69,8 @@ class MassFitter(object):
 
 class RangeEstimator(object):
 
-    _output = 'mass', 'width'
-    _titles = 'particle mass', 'particle width'
+    _output = "mass", "width"
+    _titles = "particle mass", "particle width"
 
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
@@ -85,7 +86,7 @@ class RangeEstimator(object):
         titles = {q: t for q, t in zip(self._output, self._titles)}
 
         self.output = OutputCreator.output(
-            'MassWidthOutput',
+            "MassWidthOutput",
             values,
             self._output,
             RawMass.ptedges(masses),
@@ -106,7 +107,7 @@ class RangeEstimator(object):
         fitquant.SetParameters(*par)
         fitquant.SetParNames(*names)
 
-        # Doesn't fit and use default parameters for
+        # Doesn"t fit and use default parameters for
         # width/mass, therefore this will give correct estimation
         if not self.opt.fit_mass_width:
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
@@ -120,9 +121,11 @@ class RangeEstimator(object):
         for i in range(fitquant.GetNpar()):
             par[i] = fitquant.GetParameter(i)
 
+        ndf = fitquant.GetNDF()
+        chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.
         quant.SetTitle(
             quant.GetTitle() + ", #chi^{2}/ndf" + " = {chi2:0.4g}".format(
-                chi2=fitquant.GetChisquare() / fitquant.GetNDF()
+                chi2=chi2_ndf
             )
         )
 
@@ -131,7 +134,7 @@ class RangeEstimator(object):
         return fitquant
 
     def _fit_ranges(self, quantities, loggs):
-        ROOT.gStyle.SetOptStat('')
+        ROOT.gStyle.SetOptStat("")
         mass, sigma = quantities.mass, quantities.width
 
         massf = self.fit_mass(mass)
@@ -153,7 +156,7 @@ class RangeEstimator(object):
                                   self.opt.mass_func,
                                   self.opt.mass_pars,
                                   self.opt.mass_names,
-                                  'mass'
+                                  "mass"
                                   )
 
     def fit_sigma(self, sigma):
@@ -161,7 +164,7 @@ class RangeEstimator(object):
                                   self.opt.width_func,
                                   self.opt.width_pars,
                                   self.opt.width_names,
-                                  'width'
+                                  "width"
                                   )
 
 
@@ -198,7 +201,7 @@ class DataExtractor(object):
 
         # Create hitograms
         histos = OutputCreator.output(
-            'SpectrumAnalysisOutput',
+            "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
             edges,
