@@ -84,7 +84,7 @@ class MultipleVisualizer(object):
         if self.crange:
             first_hist.SetAxisRange(self.crange[0], self.crange[1], 'Y')
         first_hist.DrawCopy()
-        self.cache.append(info(first_hist))
+        # self.cache.append(info(first_hist))
 
         for i, h in enumerate(hists):
             color, marker = self._color_marker(ci, i, h)
