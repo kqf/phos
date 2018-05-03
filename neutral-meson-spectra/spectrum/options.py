@@ -244,3 +244,12 @@ class EpRatioOptions(object):
         self.pt = Options().pt
         # NB: Make sure to define it later
         self.histname = 'hEpElectronsPSM0'
+
+
+class NonlinearityOptions(object):
+
+    def __init__(self):
+        super(NonlinearityOptions, self).__init__()
+        self.data = Options()
+        self.mc = Options()
+

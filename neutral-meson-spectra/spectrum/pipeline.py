@@ -14,10 +14,22 @@ class ComparePipeline(TransformerBase):
         )
 
 
-class HistogramSelector(object):
+class FitfunctionAssigner(TransformerBase):
+    def __init__(self, fitf, plot=False):
+        super(FitfunctionAssigner, self).__init__(plot)
+        self.fitf = fitf
 
-    def __init__(self, histname):
-        super(HistogramSelector, self).__init__()
+    def transform(self, histogram, loggs):
+        if not self.fitf:
+            return histogram
+        histogram.fitfunc = self.fitf
+        return histogram
+
+
+class HistogramSelector(TransformerBase):
+
+    def __init__(self, histname, plot=False):
+        super(HistogramSelector, self).__init__(plot)
         self.histname = histname
 
     def transform(self, inputs, loggs):

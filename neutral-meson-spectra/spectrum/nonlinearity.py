@@ -12,7 +12,8 @@ import os.path
 
 
 class Nonlinearity(object):
-    def __init__(self, data, mc, function, rrange = (0.90, 1.08), mcname = ''):
+    def __init__(self, data, mc,
+                 function, rrange=(0.90, 1.08), mcname=''):
         super(Nonlinearity, self).__init__()
         self.data = data
         self.mc = mc
@@ -60,6 +61,7 @@ class Nonlinearity(object):
         ratio.Fit(self.function, 'qR')
         ratio.Draw()
 
-        parameters = map(self.function.GetParameter, range(self.function.GetNpar()))
+        parameters = map(self.function.GetParameter,
+                         range(self.function.GetNpar()))
         print 'Nonlinearity parameters: {}'.format(parameters)
         wait(ratio.GetName())

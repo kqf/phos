@@ -32,7 +32,6 @@ def clean_name(name):
         .replace('  ', ' ')
         .replace(' ', '-')
     )
-    print name
     return name
 
 
