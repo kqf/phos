@@ -1,7 +1,7 @@
 import unittest
 from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
-from spectrum.options import MultirangeEfficiencyOptions
+from spectrum.options import CompositeEfficiencyOptions
 
 from vault.datavault import DataVault
 
@@ -27,7 +27,9 @@ class CompareDifferentEfficiencies(unittest.TestCase):
         names, datasets = define_datasets()
         particle = "#pi^{0}"
         estimator = ComparePipeline([
-            (name, Efficiency(MultirangeEfficiencyOptions.spmc(uinput, particle))) for name, uinput in zip(names, datasets)
+            (name,
+                Efficiency(CompositeEfficiencyOptions.spmc(uinput, particle)))
+            for name, uinput in zip(names, datasets)
         ])
 
         estimator.transform(

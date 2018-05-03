@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from transformer import TransformerBase
-from options import EfficiencyOptions, MultirangeEfficiencyOptions
+from options import EfficiencyOptions, CompositeEfficiencyOptions
 from .input import SingleHistInput
 from analysis import Analysis
 from pipeline import Pipeline, RatioUnion, HistogramSelector
@@ -16,10 +16,10 @@ from broot import BROOT as br
 #
 
 
-class EfficiencySimple(TransformerBase):
+class SimpleEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):
-        super(EfficiencySimple, self).__init__(plot)
+        super(SimpleEfficiency, self).__init__(plot)
         self.pipeline = RatioUnion(
             Pipeline([
                 ("ReconstructMesons", Analysis(options.analysis)),
@@ -30,10 +30,10 @@ class EfficiencySimple(TransformerBase):
         )
 
 
-class EfficiencyMultirange(TransformerBase):
+class CompositeEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):
-        super(EfficiencyMultirange, self).__init__(plot)
+        super(CompositeEfficiency, self).__init__(plot)
 
         self.pipeline = ReducePipeline(
             ParallelPipeline([
@@ -51,8 +51,8 @@ class EfficiencyMultirange(TransformerBase):
 class Efficiency(TransformerBase):
 
     _efficiency_types = {
-        EfficiencyOptions: EfficiencySimple,
-        MultirangeEfficiencyOptions: EfficiencyMultirange
+        EfficiencyOptions: SimpleEfficiency,
+        CompositeEfficiencyOptions: CompositeEfficiency
     }
 
     def __init__(self, options=EfficiencyOptions(), plot=False):

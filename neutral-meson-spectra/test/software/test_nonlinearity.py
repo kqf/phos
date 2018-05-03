@@ -1,10 +1,8 @@
 import unittest
 import ROOT
 
-from spectrum.spectrum import Spectrum
-# from spectrum.nonlinearity import Nonlinearity
 from vault.datavault import DataVault
-from spectrum.options import NonlinearityOptions
+from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
 from spectrum.efficiency import Nonlinearity
 
 
@@ -24,32 +22,40 @@ def nonlinearity_function():
 
 class TestNonlinearityEstimator(unittest.TestCase):
 
-    def test_interace(self):
+    @unittest.skip('')
+    def test_simple(self):
         options = NonlinearityOptions()
         options.fitf = nonlinearity_function()
 
         estimator = Nonlinearity(options)
         estimator.transform(
             [
-                DataVault().input('data'),
-                DataVault().input('pythia8')
+                DataVault().input('data', listname="PhysNonlinEst",
+                                  histname='MassPt_SM0'),
+                DataVault().input('pythia8', listname="PhysNonlinTender",
+                                  histname='MassPt_SM0'),
             ],
             "Testing the interface"
         )
 
+    def test_composite(self):
+        unified_inputs = {
+            DataVault().input("single #pi^{0}", "low",
+                              listname="PhysNonlin",
+                              histname="MassPt_SM0"): (0, 7),
+            DataVault().input("single #pi^{0}", "high",
+                              listname="PhysNonlin",
+                              histname="MassPt_SM0"): (7, 20)
+        }
+        options = CompositeNonlinearityOptions(unified_inputs)
+        options.fitf = nonlinearity_function()
 
-class TestNonlinearity(unittest.TestCase):
-
-    @unittest.skip('')
-    def test_interface(self):
-        data = Spectrum(
-            DataVault().input('data', 'stable', 'PhysOnlyTender', label='Data')
+        estimator = Nonlinearity(options)
+        estimator.transform(
+            [
+                DataVault().input('data', listname="PhysNonlinEst",
+                                  histname='MassPt_SM0'),
+                unified_inputs
+            ],
+            "Testing the composite interface"
         )
-        data = data.evaluate()
-        mc = Spectrum(
-            DataVault().input('data', 'stable', label='R2D zs 20 MeV nonlin')
-        )
-        mc = mc.evaluate()
-        func = nonlinearity_function()
-        nonlin = Nonlinearity(data.mass, mc.mass, func, mcname='pythia8')
-        nonlin.evaluate_parameters()

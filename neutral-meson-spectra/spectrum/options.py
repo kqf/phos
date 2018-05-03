@@ -159,10 +159,10 @@ class EfficiencyOptions(object):
         return efficiency_options
 
 
-class MultirangeEfficiencyOptions(object):
+class CompositeEfficiencyOptions(object):
 
     def __init__(self, effoptions, mergeranges):
-        super(MultirangeEfficiencyOptions, self).__init__()
+        super(CompositeEfficiencyOptions, self).__init__()
         self.suboptions = effoptions
         self.mergeranges = mergeranges
 
@@ -208,7 +208,7 @@ class CompositeCorrectedYieldOptions(object):
         )
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = MultirangeEfficiencyOptions.spmc(
+        self.efficiency = CompositeEfficiencyOptions.spmc(
             unified_inputs, particle)
 
     def set_binning(self, ptedges, rebins):
@@ -252,4 +252,15 @@ class NonlinearityOptions(object):
         super(NonlinearityOptions, self).__init__()
         self.data = Options()
         self.mc = Options()
+        # NB: Don't assingn to get an exception
+        # self.fitf = None
 
+
+class CompositeNonlinearityOptions(object):
+
+    def __init__(self, unified_input, particle="#pi^{0}"):
+        super(CompositeNonlinearityOptions, self).__init__()
+        self.data = Options()
+        self.mc = CompositeOptions.spmc(unified_input, particle)
+        # NB: Don't assingn to get an exception
+        # self.fitf = None

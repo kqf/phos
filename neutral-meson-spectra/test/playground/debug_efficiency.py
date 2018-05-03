@@ -2,8 +2,8 @@ import unittest
 import ROOT
 
 from vault.datavault import DataVault
-from spectrum.options import MultirangeEfficiencyOptions, Options
-from spectrum.efficiency import Efficiency, EfficiencyMultirange
+from spectrum.options import CompositeEfficiencyOptions, Options
+from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline, ReducePipeline,
@@ -58,7 +58,7 @@ class CompareEfficiencies(TransformerBase):
         super(CompareEfficiencies, self).__init__(plot)
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("calculated_efficiency", EfficiencyMultirange(options)),
+                ("calculated_efficiency", Efficiency(options)),
                 ("read_debug_efficiency", ReadCompositeDistribution(options))
             ]),
             Comparator().compare
@@ -92,7 +92,7 @@ class DebugTheEfficiency(unittest.TestCase):
             DataVault().input("debug efficiency", "high", n_events=1, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="high"): (6, 20)
         }
 
-        # moptions = MultirangeEfficiencyOptions.spmc(
+        # moptions = CompositeEfficiencyOptions.spmc(
         #     debug_inputs,
         #     particle,
         #     genname='hGenPi0Pt_clone',
@@ -105,7 +105,7 @@ class DebugTheEfficiency(unittest.TestCase):
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
-        moptions = MultirangeEfficiencyOptions.spmc(
+        moptions = CompositeEfficiencyOptions.spmc(
             unified_inputs,
             particle,
             genname='hPt_{0}_primary_standard',
@@ -130,7 +130,7 @@ class DebugTheEfficiency(unittest.TestCase):
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
-        moptions = MultirangeEfficiencyOptions.spmc(unified_inputs, particle)
+        moptions = CompositeEfficiencyOptions.spmc(unified_inputs, particle)
 
         names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
 
@@ -141,8 +141,9 @@ class DebugTheEfficiency(unittest.TestCase):
 
     @unittest.skip('')
     def test_weight_like_debug(self):
-        input_low = DataVault().input("debug efficiency", "low", n_events=1e6,
-                                      histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        input_low = DataVault().input(
+            "debug efficiency", "low", n_events=1e6,
+            histnames=('hSparseMgg_proj_0_1_3_yx', ''))
 
         # Define the transformations
         nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)

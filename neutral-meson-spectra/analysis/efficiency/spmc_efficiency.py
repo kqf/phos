@@ -3,7 +3,7 @@ import unittest
 from spectrum.comparator import Comparator
 
 from spectrum.efficiency import Efficiency
-from spectrum.options import MultirangeEfficiencyOptions
+from spectrum.options import CompositeEfficiencyOptions
 
 from vault.datavault import DataVault
 
@@ -48,7 +48,7 @@ class TestEfficiencyEta(unittest.TestCase):
 
 
 def evaluate_spmc_efficiency(unified_inputs, particle):
-    options = MultirangeEfficiencyOptions.spmc(
+    options = CompositeEfficiencyOptions.spmc(
         unified_inputs,
         particle
     )
