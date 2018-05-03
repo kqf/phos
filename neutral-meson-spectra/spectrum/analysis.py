@@ -1,16 +1,16 @@
 #!/usr/bin/python
 
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
-from options import Options
+from options import Options, CompositeOptions
 from pipeline import Pipeline, ParallelPipeline, ReducePipeline
 from transformer import TransformerBase
 from broot import BROOT as br
 
 
-class Analysis(TransformerBase):
+class SimpleAnalysis(TransformerBase):
 
     def __init__(self, options=Options(), plot=False):
-        super(Analysis, self).__init__(plot)
+        super(SimpleAnalysis, self).__init__(plot)
         self.options = options
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.pt)),
@@ -51,3 +51,16 @@ class CompositeAnalysis(TransformerBase):
         # TODO: Fix me?
         results = hists[0]._make(truncated)
         return results
+
+
+class Analysis(TransformerBase):
+
+    _types = {
+        Options: SimpleAnalysis,
+        CompositeOptions: CompositeAnalysis
+    }
+
+    def __init__(self, options, plot=False):
+        super(Analysis, self).__init__(plot)
+        Type = self._types.get(type(options))
+        self.pipeline = Type(options, plot).pipeline
