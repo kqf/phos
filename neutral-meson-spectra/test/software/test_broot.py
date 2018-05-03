@@ -14,9 +14,12 @@ from spectrum.sutils import wait
 #     as it's important to test without broot
 #
 
+
 def write_histogram(filename, selection, histname):
-    hist = br.BH(ROOT.TH1F, histname, 'Testing reading ' + \
-         'histograms from a rootfile', 10, -3, 3)
+    hist = br.BH(
+        ROOT.TH1F, histname,
+        'Testing reading histograms from a rootfile',
+        10, -3, 3)
     hist.FillRandom('gaus')
     tlist = ROOT.TList()
     tlist.SetOwner(True)
@@ -27,10 +30,14 @@ def write_histogram(filename, selection, histname):
     ofile.Close()
     return br.clone(hist)
 
+
 def write_histograms(filename, selection, histnames):
-    hists = [br.BH(ROOT.TH1F, histname, 'Testing reading ' +
-                'histograms from a rootfile', 10, -3, 3)
-                for histname in histnames]
+    hists = [br.BH(
+        ROOT.TH1F, histname,
+        'Testing reading histograms from a rootfile',
+        10, -3, 3)
+        for histname in histnames
+    ]
 
     for hist in hists:
         hist.FillRandom('gaus')
@@ -45,32 +52,31 @@ def write_histograms(filename, selection, histnames):
     return map(br.clone, hists)
 
 
-
 class TestTH(unittest.TestCase):
 
     def setUp(self):
-        # self.mode = 'discover' not in sys.argv
-        self.mode = 'discover' in sys.argv
-        self.hist = br.BH(ROOT.TH1F, "hist" + str(random.randint(0, 1e9)),
+        self.mode = 'discover' not in sys.argv
+        # self.mode = 'discover' in sys.argv
+        self.hist = br.BH(
+            ROOT.TH1F, "hist" + str(random.randint(0, 1e9)),
             "Testing creating of the histogram", 100, -10, 10,
-            label = 'test')
+            label='test')
         self.hist.FillRandom("gaus")
         self.properties = br.prop._properties.keys()
-
 
     def test_properties(self):
         for p in self.properties:
             self.assertTrue(p in dir(self.hist))
 
-
     def test_draw(self):
         self.assertIsNotNone(self.hist)
         self.hist.Draw()
-        wait(draw = self.mode)
-
+        wait(draw=self.mode)
 
     def test_setp(self):
-        hist = ROOT.TH1F("refhistSet", "Testing set_property method",
+        hist = ROOT.TH1F(
+            "refhistSet",
+            "Testing set_property method",
             100, -10, 10)
 
         # Set properties of root object
@@ -78,9 +84,9 @@ class TestTH(unittest.TestCase):
 
         self.assertTrue(br.same(hist, self.hist))
 
-
     def test_clone_from_root(self):
-        hist = br.BH(ROOT.TH1F, "refhistROOT", "Testing set_property method",
+        hist = br.BH(
+            ROOT.TH1F, "refhistROOT", "Testing set_property method",
             100, -10, 10)
 
         hist2 = br.BH(ROOT.TH1F, hist)
@@ -88,8 +94,6 @@ class TestTH(unittest.TestCase):
         # Properties should not copy when using copy constructor
         #
         self.assertTrue(br.prop.has_properties(hist2))
-
-
 
     def test_clone(self):
         hist = br.BH(ROOT.TH1F,
@@ -106,7 +110,6 @@ class TestTH(unittest.TestCase):
 
         ## Now copy the properties
         self.assertTrue(br.same(hist2, hist))
-
 
     def test_copy(self):
         hist = br.BH(ROOT.TH1F,
@@ -126,13 +129,12 @@ class TestTH(unittest.TestCase):
         ## Now copy the properties
         self.assertTrue(br.same(hist2, hist))
 
-
     def test_clone_visual(self):
         histcopy = br.clone(self.hist, '')
-        histcopy.SetBinContent(5,  1000)
+        histcopy.SetBinContent(5, 1000)
         histcopy.Draw()
         self.hist.Draw('same')
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
     def test_bh2_draws_projection_range(self):
         hist = br.BH(
@@ -150,13 +152,13 @@ class TestTH(unittest.TestCase):
 
 
         hist.Draw('colz')
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
         ## NB: There is no need to manually set properties
         hist2 = br.project_range(hist, 'newname', -5, 5)
 
         hist2.Draw()
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
         ## Now copy the properties
         self.assertTrue(br.same(hist2, hist))
@@ -265,14 +267,12 @@ class TestTH(unittest.TestCase):
         # Check if we don't mess with area
         self.assertNotEqual(hist1.Integral(), integral / events)
 
-
         # Now with normalization
         br.set_nevents(hist1, events, True)
         # Check if .nevents attribute is OK
         self.assertEqual(hist1.nevents, events)
         # Check if we don't mess with area
         self.assertTrue(abs(hist1.Integral() - integral / events) < 0.001)
-
 
     def test_rebins(self):
         hist1 = br.BH(ROOT.TH1F,
@@ -296,7 +296,6 @@ class TestTH(unittest.TestCase):
         ratio = br.ratio(rebinned, hist2)
         self.assertTrue(br.same(rebinned, hist1))
 
-
     def test_sum(self):
         hists = [ br.BH(ROOT.TH1F,
             "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
@@ -313,7 +312,6 @@ class TestTH(unittest.TestCase):
 
         self.assertEqual(total.GetEntries(), entries)
         self.assertEqual(total.label, newlabel)
-
 
     def test_scales_histogram(self):
         nbins, start, stop =  200, -10, 10
@@ -462,7 +460,7 @@ class TestTH(unittest.TestCase):
         hist.SetMarkerColor(ci + 2)
         hist.SetMarkerStyle(20)
         hist.Draw()
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
     def test_caclulates_syst_deviation(self):
         hists = [ROOT.TH1F("hDev_%d" % i, "%d; x, GeV; y, N" % i, 20, 0, 20) for i in range(10)]
@@ -481,7 +479,7 @@ class TestTH(unittest.TestCase):
 
         hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
         hist.Draw()
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
     def test_extracts_bins(self):
         hist = ROOT.TH1F("hGetBins", "Test BROOT: Retuns binvalues", 40, 0, 40)
@@ -519,7 +517,6 @@ class TestTH(unittest.TestCase):
 
         os.remove(ofile)
 
-
     @unittest.skip("Some Problems with Hepdata The site is not reachable")
     def test_reads_from_tdir(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
@@ -528,9 +525,8 @@ class TestTH(unittest.TestCase):
         hist = br.io.read(ofile, 'Table 1', 'Hist1D_y1')
         hist.SetTitle('TEST BROOT: Test read from TDirectory')
         hist.Draw()
-        wait(draw = self.mode)
+        wait(draw=self.mode)
         os.remove(ofile)
-
 
     def test_iterates_over_bins(self):
         # If fill returns bin number, then it's ok
@@ -598,14 +594,13 @@ class TestTH(unittest.TestCase):
         zero_range = (-1, 4)
         bin_range = map(hist1.FindBin, zero_range)
 
-
         hist1.Sumw2()
         hist1.Draw()
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
         br.set_to_zero(hist1, zero_range)
         hist1.Draw()
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
         a, b = bin_range
         for bin in range(1, hist1.GetNbinsX()):
@@ -646,7 +641,7 @@ class TestTH(unittest.TestCase):
                     self.assertEqual(hh.GetBinContent(bin), hist.GetBinContent(bin))
                     # print hh.GetBinContent(bin), hist.GetBinContent(bin)
 
-        wait(draw = self.mode)
+        wait(draw=self.mode)
 
     def test_calculates_confidence_intervals(self):
         hist1 = br.BH(ROOT.TH1F, "hFit", "Test BROOT1: Test add Trimm", 100, -4, 4)
@@ -667,5 +662,3 @@ class TestTH(unittest.TestCase):
         output = br.function2histogram(func, hist)
         output.Add(hist, -1)
         self.assertEqual(output.Integral(), 0)
-
-

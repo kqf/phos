@@ -15,9 +15,6 @@ def prepare_directory(name):
 
 
 def clean_name(name):
-    if name[-1] == '-':
-        name = name[:-1]
-
     name = (
         name.strip()
         .replace(' GeV/c', '')

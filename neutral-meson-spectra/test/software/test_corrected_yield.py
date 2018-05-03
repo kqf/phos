@@ -2,13 +2,14 @@ import unittest
 
 # from spectrum.spectrum import Spectrum
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.options import CorrectedYieldOptions, CompositeCorrectedYieldOptions
+from spectrum.options import CorrectedYieldOptions
+from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 
 
 class TestCorrectedYield(unittest.TestCase):
-
 
     def test_interface_simple(self):
         data = [
@@ -20,11 +21,15 @@ class TestCorrectedYield(unittest.TestCase):
             CorrectedYieldOptions(particle="#pi^{0}"),
             plot=False
         )
-        estimator.transform(data, "test simple corr. yield interface")
+        cyield = estimator.transform(
+            data,
+            loggs=AnalysisOutput("test simple corr. yield interface")
+        )
+        self.assertGreater(cyield.GetEntries(), 0)
 
     def test_interface_composite(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0}", "low"):  (0, 7.0),
+            DataVault().input("single #pi^{0}", "low"): (0, 7.0),
             DataVault().input("single #pi^{0}", "high"): (7.0, 20)
         }
 
@@ -40,4 +45,8 @@ class TestCorrectedYield(unittest.TestCase):
             ),
             plot=False
         )
-        estimator.transform(data, "test composite corr. yield interface")
+        cyield = estimator.transform(
+            data,
+            loggs=AnalysisOutput("test composite corr. yield interface")
+        )
+        self.assertGreater(cyield.GetEntries(), 0)

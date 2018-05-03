@@ -41,7 +41,9 @@ class CompareDifferentEfficiencies(unittest.TestCase):
                         )
                     )
                     )
-                   for name in names[1:]]
+                   for name in names[1:]
+                   ],
+            plot=False
         )
 
         estimator.transform(

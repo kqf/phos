@@ -10,7 +10,7 @@ class ComparePipeline(TransformerBase):
         super(ComparePipeline, self).__init__(plot)
         self.pipeline = ReducePipeline(
             ParallelPipeline(estimators),
-            Comparator().compare
+            Comparator(stop=plot).compare
         )
 
 

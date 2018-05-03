@@ -20,7 +20,7 @@ class CorrectedYield(TransformerBase):
                  ),
                 ('efficiency', Efficiency(options.efficiency, plot))
             ]),
-            Comparator().compare
+            Comparator(stop=plot).compare
         )
 
 
@@ -32,5 +32,5 @@ class YieldRatio(TransformerBase):
                 ('#eta', CorrectedYield(options_eta, plot)),
                 ('#pi^{0}', CorrectedYield(options_pi0, plot)),
             ]),
-            Comparator().compare
+            Comparator(stop=plot).compare
         )

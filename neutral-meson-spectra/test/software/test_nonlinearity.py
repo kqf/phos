@@ -4,6 +4,7 @@ import ROOT
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
 from spectrum.efficiency import Nonlinearity
+from spectrum.output import AnalysisOutput
 
 
 def nonlinearity_function():
@@ -22,21 +23,21 @@ def nonlinearity_function():
 
 class TestNonlinearityEstimator(unittest.TestCase):
 
-    @unittest.skip('')
     def test_simple(self):
         options = NonlinearityOptions()
         options.fitf = nonlinearity_function()
 
         estimator = Nonlinearity(options)
-        estimator.transform(
+        nonlinearity = estimator.transform(
             [
                 DataVault().input('data', listname="PhysNonlinEst",
                                   histname='MassPt_SM0'),
                 DataVault().input('pythia8', listname="PhysNonlinTender",
                                   histname='MassPt_SM0'),
             ],
-            "Testing the interface"
+            loggs=AnalysisOutput("Testing the interface")
         )
+        self.assertGreater(nonlinearity.GetEntries(), 0)
 
     def test_composite(self):
         unified_inputs = {
@@ -51,11 +52,12 @@ class TestNonlinearityEstimator(unittest.TestCase):
         options.fitf = nonlinearity_function()
 
         estimator = Nonlinearity(options)
-        estimator.transform(
+        nonlinearity = estimator.transform(
             [
                 DataVault().input('data', listname="PhysNonlinEst",
                                   histname='MassPt_SM0'),
                 unified_inputs
             ],
-            "Testing the composite interface"
+            loggs=AnalysisOutput("Testing the composite interface")
         )
+        self.assertGreater(nonlinearity.GetEntries(), 0)

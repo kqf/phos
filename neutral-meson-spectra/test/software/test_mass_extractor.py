@@ -6,7 +6,6 @@ from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline
 
 from spectrum.options import Options
-from spectrum.input import Input
 from vault.datavault import DataVault
 
 import unittest
@@ -22,6 +21,7 @@ class UpdatedAnalysis(TransformerBase):
             ('mass_fitter', MassFitter(self.options.invmass))
         ])
 
+
 class TestMassFitter(unittest.TestCase):
 
     def run_analysis(self, mixed):
@@ -32,15 +32,11 @@ class TestMassFitter(unittest.TestCase):
         masses = analysis.transform(
             DataVault().input("data", label='Test'),
             loggs
-
         )
+        self.assertGreater(len(masses), 0)
 
     def test_fits_the_analysis(self):
         self.run_analysis(mixed=False)
 
     def test_fits_the_analysis_mixed(self):
         self.run_analysis(mixed=True)
-
-
-
-

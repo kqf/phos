@@ -76,4 +76,4 @@ class Nonlinearity(TransformerBase):
                 ("ReconstructMesons", Analysis(options.mc, plot)),
                 ("Mass", HistogramSelector("mass", plot)),
             ])),
-        ])
+        ], plot)

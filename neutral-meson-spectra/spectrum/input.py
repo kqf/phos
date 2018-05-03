@@ -6,7 +6,12 @@ from broot import BROOT as br
 def read_histogram(filename, listname, histname,
                    label='', priority=999, norm=False):
     hist = br.io.read(filename, listname, histname)
-    br.set_nevents(hist, Input.events(filename, listname), norm)
+    br.set_nevents(hist,
+                   Input(filename,
+                         listname,
+                         histname,
+                         label).events(filename, listname),
+                   norm)
     hist.priority = priority
     hist.label = label
     return hist
