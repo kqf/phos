@@ -30,7 +30,6 @@ class CompareDifferentEfficiencies(unittest.TestCase):
                     CompositeEfficiencyOptions.spmc(
                         datasets[0],
                         particle,
-                        ptrange='config/pt-same.json'
                     )
             ))] + [(name,
                     Efficiency(

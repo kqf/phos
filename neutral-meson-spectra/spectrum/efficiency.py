@@ -6,9 +6,6 @@ from .input import SingleHistInput
 from analysis import Analysis
 from pipeline import Pipeline, RatioUnion, HistogramSelector
 from pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
-from pipeline import FitfunctionAssigner
-from pipeline import ComparePipeline
-
 from broot import BROOT as br
 
 # NB: This test is to compare different efficiencies
@@ -60,20 +57,3 @@ class Efficiency(TransformerBase):
         EfficiencyType = self._efficiency_types.get(type(options))
         efficiency = EfficiencyType(options, plot)
         self.pipeline = efficiency.pipeline
-
-
-class Nonlinearity(TransformerBase):
-
-    def __init__(self, options, plot=False):
-        super(Nonlinearity, self).__init__(plot)
-        self.pipeline = ComparePipeline([
-            ('data', Pipeline([
-                ("ReconstructMesons", Analysis(options.data, plot)),
-                ("Mass", HistogramSelector("mass", plot)),
-                ("FitF", FitfunctionAssigner(options.fitf, plot)),
-            ])),
-            ('mc', Pipeline([
-                ("ReconstructMesons", Analysis(options.mc, plot)),
-                ("Mass", HistogramSelector("mass", plot)),
-            ])),
-        ], plot)

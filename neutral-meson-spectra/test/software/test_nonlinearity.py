@@ -3,8 +3,8 @@ import ROOT
 
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
-from spectrum.efficiency import Nonlinearity
 from spectrum.output import AnalysisOutput
+from tools.mc import Nonlinearity
 
 
 def nonlinearity_function():
