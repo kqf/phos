@@ -7,7 +7,7 @@ PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 DATASET = LHC17j3b2
-OUTDIR = results/mc/single/pi0/iteration3_yield_aliphysics
+OUTDIR = results/mc/single/pi0/iterationd1
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
