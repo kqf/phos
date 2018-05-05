@@ -41,8 +41,13 @@ class OutputFitter(TransformerBase):
 
         histogram.Fit(self.fitf, "Rq")
         histogram.SetStats(True)
-        st.set_stat_style()
-        Comparator(stop=self.plot).compare(histogram)
+        st.fitstat_style()
+        # Comparator(stop=self.plot).compare(histogram)
+        Comparator().compare(histogram)
+        ndf = self.fitf.GetNDF()
+        chi2_ndf = self.fitf.GetChisquare() / ndf if ndf else 0.
+        print "The chi2:", chi2_ndf
+        print "The parameters", br.pars(self.fitf)
         return histogram
 
 

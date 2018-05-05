@@ -1,40 +1,43 @@
-import sys
+import ROOT
 import unittest
 
-import spectrum.sutils as su
+from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.corrected_yield import CorrectedYield
+# from spectrum.comparator import Comparator
+# from spectrum.broot import BROOT as br
 
-import ROOT
-
-class WeighSingleParticleMC(unittest.TestCase):
-
-    def setUp(self):
-        self.stop = 'discover' not in sys.argv
-
-
-    def test_calculate_weights_parameters(self):
-        cspectrum = self.corrected_spectrum('nonlin', 5)
-        fitf = self.fit_function()
-        fitf.SetLineColor(46)
-
-        cyield = cspectrum.evaluate()
-        canvas = su.adjust_canvas(su.gcanvas(1, 1, True))
-        cyield.Fit(fitf)
-        cyield.Draw()
-
-        ROOT.gPad.SetLogx()
-        ROOT.gPad.SetLogy()
-        parameters = map(fitf.GetParameter, range(fitf.GetNpar()))
-        print parameters
-        su.wait(save=True)
+from vault.datavault import DataVault
+from vault.formulas import FVault
 
 
-    @unittest.skip('')
-    def test_different_iterations(self):
-        w0 = self.corrected_spectrum('nonlin0').evaluate()
-        w0.label = 'w0'
+class TestCorrectedYield(unittest.TestCase):
 
-        w1 = self.corrected_spectrum('nonlin1').evaluate()
-        w1.label = 'w1'
+    # @unittest.skip('')
+    def test_corrected_yield_for_pi0(self):
+        unified_inputs = {
+            DataVault().input(
+                "single #pi^{0} iteration3 yield aliphysics", "low"):
+            (0, 7.0),
+            DataVault().input(
+                "single #pi^{0} iteration3 yield aliphysics", "high"):
+            (7.0, 20)
+        }
 
-        diff = cmpr.Comparator()
-        w1w0 = diff.compare(w1, w0)
+        data = [
+            DataVault().input("data"),
+            unified_inputs
+        ]
+
+        tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 20)
+
+        tsallis.SetParameters(0.014960701090585591,
+                              0.287830380417601, 9.921003040859755)
+        tsallis.FixParameter(3, 0.135)
+        tsallis.FixParameter(4, 0.135)
+
+        options = CompositeCorrectedYieldOptions(
+            particle="#pi^{0}",
+            unified_inputs=unified_inputs
+        )
+        options.fitfunc = tsallis
+        CorrectedYield(options).transform(data, "corrected yield #pi^{0}")

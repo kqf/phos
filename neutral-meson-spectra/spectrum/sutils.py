@@ -64,7 +64,7 @@ def gcanvas(x = 1., y = 1, resize = False, scale = 6):
     return canvas("c1", x, y, scale)
 
 
-def fit_stat_style():
+def fitstat_style():
     ROOT.gStyle.SetStatFontSize(0.1)
     ROOT.gStyle.SetOptStat('')
     ROOT.gStyle.SetStatX(0.35)
