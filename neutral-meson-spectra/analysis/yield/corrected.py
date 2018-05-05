@@ -2,6 +2,7 @@ import unittest
 
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 
@@ -26,7 +27,8 @@ class TestCorrectedYield(unittest.TestCase):
                 unified_inputs=unified_inputs
             )
         )
-        estimator.transform(data, "corrected yield #pi^{0}")
+        estimator.transform(data, loggs=AnalysisOutput(
+            "corrected yield #pi^{0}"))
 
     @unittest.skip('')
     def test_corrected_yield_for_eta(self):

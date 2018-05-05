@@ -2,6 +2,7 @@ from comparator import Comparator
 from broot import BROOT as br
 from output import AnalysisOutput, MergedLogItem
 from transformer import TransformerBase
+import sutils as st
 
 
 class ComparePipeline(TransformerBase):
@@ -23,6 +24,25 @@ class FitfunctionAssigner(TransformerBase):
         if not self.fitf:
             return histogram
         histogram.fitfunc = self.fitf
+        return histogram
+
+
+class OutputFitter(TransformerBase):
+    def __init__(self, options, plot=False):
+        super(OutputFitter, self).__init__(plot)
+        try:
+            self.fitf = options.fitfunc
+        except AttributeError:
+            self.fitf = None
+
+    def transform(self, histogram, loggs):
+        if not self.fitf:
+            return histogram
+
+        histogram.Fit(self.fitf, "Rq")
+        histogram.SetStats(True)
+        st.set_stat_style()
+        Comparator(stop=self.plot).compare(histogram)
         return histogram
 
 

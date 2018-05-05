@@ -6,7 +6,7 @@ import sutils as su
 
 
 def info(hist):
-    pave = ROOT.TPaveText(.3, .6, .4, .8 , "NBNDC")
+    pave = ROOT.TPaveText(.3, .6, .4, .8, "NBNDC")
     pave.AddText("ALICE, PHOS")
     pave.AddText("pp at #sqrt{s}=13 TeV")
     pave.SetFillStyle(0)
