@@ -41,6 +41,26 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only));
 	selections->Add(new AliPP13NonlinearitySelection("PhysNonlin", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights, kTRUE));
+
+
+	// Iteration d2
+	AliPP13SelectionWeightsSPMC & mc_weights2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
+	AliPP13SelectionWeightsSPMC & mc_weights_only2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
+
+    mc_weights2.fW0 = 1.5502651563423713;
+    mc_weights2.fW1 = 0.1501143223817212;
+    mc_weights2.fW2 = 8.156749093659146;
+
+	mc_weights_only2.fNonGlobal = 1.0;
+	mc_weights_only2.fNonA = 0.0;
+    mc_weights_only2.fW0 = 1.5502651563423713;
+    mc_weights_only2.fW1 = 0.1501143223817212;
+    mc_weights_only2.fW2 = 8.156749093659146;
+
+	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff1", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights2));
+	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain1", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only2));
+	selections->Add(new AliPP13NonlinearitySelection("PhysNonlin1", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights2, kTRUE));
+
 	// selections->Add(new AliPP13NonlinearitySelection("PhysNonlinRaw", "Raw nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
 
 	// selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
