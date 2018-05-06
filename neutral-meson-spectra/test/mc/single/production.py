@@ -27,7 +27,7 @@ def inputs(production, is_nonlin=False):
 class TestNonlinearityEstimator(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration3 yield aliphysics"
+        self.production_name = "single #pi^{0} iteration d1"
 
     @unittest.skip('')
     def test_nonlinearity(self):
