@@ -11,25 +11,21 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "high"): (7.0, 20)
-        },
-        {
-            DataVault().input("single #pi^{0} iteration d1", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d1", "high"): (7.0, 20)
-        },
-        {
-            DataVault().input("single #pi^{0} iteration d2", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d2", "high"): (7.0, 20)
-        },
+            DataVault().input("single #pi^{0} iteration d3",
+                              "low",
+                              listname="PhysEff" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3",
+                              "high",
+                              listname="PhysEff" + i): (7.0, 20)
+        }
+        for i in ["", "1", "2", "3"]
     ]
-    names = "w0", "w1", "w2"
+    names = "w0", "w1", "w2", "w3"
     return names, datasets
 
 
 class CompareDifferentEfficiencies(unittest.TestCase):
 
-    @unittest.skip('')
     def test_efficiencies(self):
         names, datasets = define_datasets()
         particle = "#pi^{0}"
@@ -45,6 +41,7 @@ class CompareDifferentEfficiencies(unittest.TestCase):
         )
 
 
+@unittest.skip('')
 class CompareRawYields(unittest.TestCase):
 
     def test_yields(self):

@@ -28,7 +28,7 @@ class TestCorrectedYield(unittest.TestCase):
             unified_inputs
         ]
 
-        tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 20)
+        tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 10)
 
         tsallis.SetParameters(0.014960701090585591,
                               0.287830380417601, 9.921003040859755)

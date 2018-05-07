@@ -43,11 +43,11 @@ class OutputFitter(TransformerBase):
         histogram.SetStats(True)
         st.fitstat_style()
         # Comparator(stop=self.plot).compare(histogram)
-        Comparator().compare(histogram)
         ndf = self.fitf.GetNDF()
         chi2_ndf = self.fitf.GetChisquare() / ndf if ndf else 0.
         print "The chi2:", chi2_ndf
         print "The parameters", br.pars(self.fitf)
+        Comparator().compare(histogram)
         return histogram
 
 

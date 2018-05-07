@@ -24,12 +24,12 @@ def inputs(production, is_nonlin=False):
     return unified_inputs
 
 
-class TestNonlinearityEstimator(unittest.TestCase):
+class TestProductions(unittest.TestCase):
 
     def setUp(self):
         self.production_name = "single #pi^{0} iteration d1"
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_nonlinearity(self):
         unified_inputs = inputs(self.production_name, is_nonlin=True)
         options = CompositeNonlinearityOptions(unified_inputs)
