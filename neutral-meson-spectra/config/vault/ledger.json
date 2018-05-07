@@ -185,13 +185,13 @@
 	{
 		"low": {
 			"file": "input-data/mc/single/pi0/iterationd2/LHC17j3b1.root",
-			"default_selection": "PhysEff",
+			"default_selection": "PhysEff1",
 			"hsum": "f312752286b21696451e19edf7c9ed658367e8716049337520985691041f4768",
 			"description": "Iteration 2 (checking the weights)"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/iterationd2/LHC17j3b2.root",
-			"default_selection": "PhysEff",
+			"default_selection": "PhysEff1",
 			"hsum": "8f9be471d32bc143991ba9ee52ae27e7594640f5683954dc8a7667a3c0abde05",
 			"description": "Iteration 2 (checking the weights)"
 		}
