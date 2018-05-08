@@ -166,49 +166,19 @@
 			"description": "Single #pi^{0} all correctons with updated weights. Weight generated also, the newest tender. Scale for raw yield"
 		}
 	},
-	"single #pi^{0} iteration d1":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/iterationd1/LHC17j3b1.root",
-			"default_selection": "PhysEff",
-			"hsum": "c181dee7ce23dcfdc199bed6fabe4812e163a4705f4a18229c9fae3e3c667ed8",
-			"description": "Iteration 1 (checking the weights)"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/iterationd1/LHC17j3b2.root",
-			"default_selection": "PhysEff",
-			"hsum": "1880a3fe3bab15b91a2742a2915fa85d3d68e652a13192fbeedfd3949e520089",
-			"description": "Iteration 1 (checking the weights)"
-		}
-	},
-	"single #pi^{0} iteration d2":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/iterationd2/LHC17j3b1.root",
-			"default_selection": "PhysEff1",
-			"hsum": "f312752286b21696451e19edf7c9ed658367e8716049337520985691041f4768",
-			"description": "Iteration 2 (checking the weights)"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/iterationd2/LHC17j3b2.root",
-			"default_selection": "PhysEff1",
-			"hsum": "8f9be471d32bc143991ba9ee52ae27e7594640f5683954dc8a7667a3c0abde05",
-			"description": "Iteration 2 (checking the weights)"
-		}
-	},
 	"single #pi^{0} iteration d3":
 	{
 		"low": {
 			"file": "input-data/mc/single/pi0/iterationd3/LHC17j3b1.root",
-			"default_selection": "PhysEff1",
+			"default_selection": "PhysEff3",
 			"hsum": "014bd8c0857a8f2e42765bef442c15a1847c359a0f2470074c2479ffea878953",
-			"description": "Iteration 3 (checking the weights)"
+			"description": "Iterations 1,2,3 (checking the weights)"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/iterationd3/LHC17j3b2.root",
-			"default_selection": "PhysEff1",
+			"default_selection": "PhysEff3",
 			"hsum": "6877720621b4688013f7f1c6cde44840a1aef2e0abe27f4b8f4339356c3092a9",
-			"description": "Iteration 3 (checking the weights)"
+			"description": "Iterations 1,2,3 (checking the weights)"
 		}
 	},
 	"single #eta":

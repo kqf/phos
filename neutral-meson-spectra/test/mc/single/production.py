@@ -27,7 +27,7 @@ def inputs(production, is_nonlin=False):
 class TestProductions(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration d1"
+        self.production_name = "single #pi^{0} iteration d3"
 
     # @unittest.skip('')
     def test_nonlinearity(self):

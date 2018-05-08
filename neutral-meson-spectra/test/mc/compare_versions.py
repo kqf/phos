@@ -20,7 +20,21 @@ def define_datasets():
         }
         for i in ["", "1", "2", "3"]
     ]
-    names = "w0", "w1", "w2", "w3"
+    datasets = datasets + [
+        {
+            DataVault().input("single #pi^{0} iteration3 yield",
+                              "low"): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration3 yield",
+                              "high"): (7.0, 20)
+        },
+        {
+            DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+                              "low"): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+                              "high"): (7.0, 20)
+        },
+    ]
+    names = "w0", "w1", "w2", "w3", "old", "aliphysics"
     return names, datasets
 
 
