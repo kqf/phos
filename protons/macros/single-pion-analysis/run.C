@@ -41,7 +41,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
 
-    TString msg = "Single pion analysis: testing the nonlinearity with weights";
+    TString msg = "Testing the aliphysics versions";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";

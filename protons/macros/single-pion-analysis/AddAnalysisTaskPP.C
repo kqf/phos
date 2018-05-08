@@ -41,15 +41,15 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Iteration d1
 	AliPP13SelectionWeightsSPMC & mc_weights1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-    mc_weights1.fW0 = 1.4424726043375593;
-    mc_weights1.fW1 = 0.15126295815022361;
-    mc_weights1.fW2 = 8.108172429708121;
+	mc_weights1.fW0 = 1.4424726043375593;
+	mc_weights1.fW1 = 0.15126295815022361;
+	mc_weights1.fW2 = 8.108172429708121;
 
 	mc_weights_only1.fNonGlobal = 1.0;
 	mc_weights_only1.fNonA = 0.0;
-    mc_weights_only1.fW0 = 1.4424726043375593;
-    mc_weights_only1.fW1 = 0.15126295815022361;
-    mc_weights_only1.fW2 = 8.108172429708121;
+	mc_weights_only1.fW0 = 1.4424726043375593;
+	mc_weights_only1.fW1 = 0.15126295815022361;
+	mc_weights_only1.fW2 = 8.108172429708121;
 
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff1", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights1));
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain1", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only1));
@@ -61,15 +61,15 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeightsSPMC & mc_weights2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 
-    mc_weights2.fW0 = 1.5502651563423713;
-    mc_weights2.fW1 = 0.1501143223817212;
-    mc_weights2.fW2 = 8.156749093659146;
+	mc_weights2.fW0 = 1.5502651563423713;
+	mc_weights2.fW1 = 0.1501143223817212;
+	mc_weights2.fW2 = 8.156749093659146;
 
 	mc_weights_only2.fNonGlobal = 1.0;
 	mc_weights_only2.fNonA = 0.0;
-    mc_weights_only2.fW0 = 1.5502651563423713;
-    mc_weights_only2.fW1 = 0.1501143223817212;
-    mc_weights_only2.fW2 = 8.156749093659146;
+	mc_weights_only2.fW0 = 1.5502651563423713;
+	mc_weights_only2.fW1 = 0.1501143223817212;
+	mc_weights_only2.fW2 = 8.156749093659146;
 
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff2", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights2));
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain2", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only2));
@@ -80,15 +80,15 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeightsSPMC & mc_weights3 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only3 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 
-    mc_weights3.fW0 = 1.490487117730805;
-    mc_weights3.fW1 = 0.15303013222262335;
-    mc_weights3.fW2 = 8.241894695494016;
+	mc_weights3.fW0 = 1.490487117730805;
+	mc_weights3.fW1 = 0.15303013222262335;
+	mc_weights3.fW2 = 8.241894695494016;
 
 	mc_weights_only3.fNonGlobal = 1.0;
 	mc_weights_only3.fNonA = 0.0;
-    mc_weights_only3.fW0 = 1.490487117730805;
-    mc_weights_only3.fW1 = 0.15303013222262335;
-    mc_weights_only3.fW2 = 8.241894695494016;
+	mc_weights_only3.fW0 = 1.490487117730805;
+	mc_weights_only3.fW1 = 0.15303013222262335;
+	mc_weights_only3.fW2 = 8.241894695494016;
 
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff3", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights3));
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain3", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only3));
@@ -119,9 +119,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		cout << fSel->GetTitle() << endl;
 
 		coutput = mgr->CreateContainer(fSel->GetName() + suff,
-		                               TList::Class(),
-		                               AliAnalysisManager::kOutputContainer,
-		                               AliAnalysisManager::GetCommonFileName());
+									   TList::Class(),
+									   AliAnalysisManager::kOutputContainer,
+									   AliAnalysisManager::GetCommonFileName());
 		mgr->ConnectOutput(task, i + 1, coutput);
 	}
 }
