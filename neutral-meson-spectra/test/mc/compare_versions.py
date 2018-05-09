@@ -11,15 +11,26 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3",
+            DataVault().input("single #pi^{0} iteration d3 test",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3",
+            DataVault().input("single #pi^{0} iteration d3 test",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
-        for i in ["", "1", "2", "3"]
+        for i in ["1", "2", "3"]
     ]
+    # datasets = datasets + [
+    #     {
+    #         DataVault().input("single #pi^{0} iteration d3",
+    #                           "low",
+    #                           listname="PhysEff" + i): (0, 7.0),
+    #         DataVault().input("single #pi^{0} iteration d3",
+    #                           "high",
+    #                           listname="PhysEff" + i): (7.0, 20)
+    #     }
+    #     for i in [""]
+    # ]
     datasets = datasets + [
         {
             DataVault().input("single #pi^{0} iteration3 yield",
@@ -34,7 +45,7 @@ def define_datasets():
                               "high"): (7.0, 20)
         },
     ]
-    names = "w0", "w1", "w2", "w3", "old", "aliphysics"
+    names = "w1", "w2", "w3", "old", "initial param"
     return names, datasets
 
 
@@ -45,7 +56,11 @@ class CompareDifferentEfficiencies(unittest.TestCase):
         particle = "#pi^{0}"
         estimator = ComparePipeline([
             (name,
-                Efficiency(CompositeEfficiencyOptions.spmc(uinput, particle)))
+                Efficiency(
+                    CompositeEfficiencyOptions.spmc(uinput,
+                                                    particle,
+                                                    ptrange='config/pt-dummy.json'
+                                                    )))
             for name, uinput in zip(names, datasets)
         ])
 

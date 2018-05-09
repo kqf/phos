@@ -181,6 +181,22 @@
 			"description": "Iterations 1,2,3 (checking the weights)"
 		}
 	},
+	"single #pi^{0} iteration d3 test":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iterationd3_test/LHC17j3b1.root",
+			"default_selection": "PhysEff3",
+			"hsum": "412e245ffe5b4967bf7f222ee32735a219da8563a94123ac7e6d8ac9cc255d7d",
+			"description": "Iterations 1,2,3 (checking the weights)"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iterationd3_test/LHC17j3b2.root",
+			"default_selection": "PhysEff3",
+			"hsum": "7dd7897411ed980c589b2c7fc7b4aea2d3d823e1d643df590f20a7144d145be7",
+			"description": "Iterations 1,2,3 (checking the weights)"
+		}
+	},
+
 	"single #eta":
 	{
 		"low": {
