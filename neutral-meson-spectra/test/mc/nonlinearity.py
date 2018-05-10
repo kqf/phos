@@ -1,35 +1,40 @@
-#!/usr/bin/python
-
 import unittest
-
-from spectrum.spectrum import Spectrum, CompositeSpectrum
-from spectrum.options import Options
-from spectrum.input import Input
-from spectrum.nonlinearity import Nonlinearity
-
 import ROOT
+
+from vault.datavault import DataVault
+from spectrum.options import NonlinearityOptions
+from spectrum.output import AnalysisOutput
+from tools.mc import Nonlinearity
+
+
+def nonlinearity_function():
+    func_nonlin = ROOT.TF1(
+        "func_nonlin",
+        "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
+        0, 100
+    )
+    func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
+    func_nonlin.SetParameter(0, -0.05)
+    func_nonlin.SetParameter(1, 0.6)
+    func_nonlin.SetParLimits(1, 0, 10)
+    func_nonlin.SetParameter(2, 1.04)
+    return func_nonlin
 
 
 class TestNonlinearity(unittest.TestCase):
 
+    def test_calculate_nonlinearity(self):
+        options = NonlinearityOptions()
+        options.fitf = nonlinearity_function()
 
-    def _nonlinearity_function(self):
-        func_nonlin = ROOT.TF1("func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100);
-        func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
-        func_nonlin.SetParameter(0, -0.05)
-        func_nonlin.SetParameter(1, 0.6)
-        func_nonlin.SetParLimits(1, 0, 10)
-        func_nonlin.SetParameter(2, 1.04)
-        return func_nonlin
-
-
-    def test_nonlin_general(self):
-        """
-            Estimates nonlinearity parameters for General purpose MC
-        """
-        data = Spectrum(Input('LHC16', 'PhysOnlyTender', label='Data'), Options('d'))
-        mc = Spectrum(Input('Pythia-LHC16-a5', 'PhysRawOnlyTender', label='R2D zs 20 MeV nonlin'), Options('d'))
-        func = self._nonlinearity_function()
-
-        nonlin = Nonlinearity(data, mc, func, mcname = 'pythia8')
-        nonlin.evaluate_parameters()
+        estimator = Nonlinearity(options)
+        nonlinearity = estimator.transform(
+            [
+                DataVault().input('data', listname="PhysNonlinEst",
+                                  histname='MassPt_SM0'),
+                DataVault().input('pythia8', listname="PhysNonlinTender",
+                                  histname='MassPt_SM0'),
+            ],
+            loggs=AnalysisOutput("Testing the interface")
+        )
+        self.assertGreater(nonlinearity.GetEntries(), 0)

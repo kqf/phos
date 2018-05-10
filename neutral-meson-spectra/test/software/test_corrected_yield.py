@@ -1,6 +1,5 @@
 import unittest
 
-# from spectrum.spectrum import Spectrum
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CorrectedYieldOptions
 from spectrum.options import CompositeCorrectedYieldOptions
