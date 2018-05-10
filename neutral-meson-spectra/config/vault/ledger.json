@@ -196,7 +196,6 @@
 			"description": "Iterations 1,2,3 (checking the weights)"
 		}
 	},
-
 	"single #pi^{0} iteration d3 test1":
 	{
 		"low": {
@@ -212,7 +211,21 @@
 			"description": "Iterations 1,2,3 (checking the weights)"
 		}
 	},
-
+	"single #pi^{0} iteration d3 nonlin":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin/LHC17j3b1.root",
+			"default_selection": "PhysEff3",
+			"hsum": "4034ee32be2bd89593e693a7977c3d3136bd74f7630710f318a31556667d0dfb",
+			"description": "Iterations 1,2,3 (checking the weigts and nonlinearity)"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin/LHC17j3b2.root",
+			"default_selection": "PhysEff3",
+			"hsum": "1293b18d91a7908f0a1176fd967f4dd6fc0cb62d5644f51b176f3cda967b6882",
+			"description": "Iterations 1,2,3 (checking the weigts and nonlinearity)"
+		}
+	},
 	"single #eta":
 	{
 		"low": {

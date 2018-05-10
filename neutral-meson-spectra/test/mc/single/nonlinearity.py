@@ -34,11 +34,11 @@ class TestNonlinearitySPMC(unittest.TestCase):
 
     def test_composite(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration d3 test1", "low",
-                              listname="PhysEffPlain",
+            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "low",
+                              listname="PhysEff",
                               histname="MassPt"): (0, 7),
-            DataVault().input("single #pi^{0} iteration d3 test1", "high",
-                              listname="PhysEffPlain",
+            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "high",
+                              listname="PhysEff",
                               histname="MassPt"): (7, 20)
         }
         options = CompositeNonlinearityOptions(unified_inputs)

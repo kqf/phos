@@ -11,12 +11,12 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3",
+            DataVault().input("single #pi^{0} iteration d3 nonlin",
                               "low",
-                              listname="PhysEffPlain" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3",
+                              listname="PhysEff" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3 nonlin",
                               "high",
-                              listname="PhysEffPlain" + i): (7.0, 20)
+                              listname="PhysEff" + i): (7.0, 20)
         }
         for i in ["", "1", "2", "3"]
     ]
@@ -41,11 +41,11 @@ def define_datasets():
         {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "low",
-                              listname="PhysEffPlain",
+                              listname="PhysEff",
                               ): (0, 7.0),
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "high",
-                              listname="PhysEffPlain",
+                              listname="PhysEff",
                               ): (7.0, 20)
         },
     ]
