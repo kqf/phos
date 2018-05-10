@@ -41,7 +41,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
 
-    TString msg = "Testing the aliphysics versions";
+    TString msg = "Test new interface for weights";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";
