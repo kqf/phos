@@ -11,14 +11,14 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 test",
+            DataVault().input("single #pi^{0} iteration d3",
                               "low",
-                              listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 test",
+                              listname="PhysEffPlain" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3",
                               "high",
-                              listname="PhysEff" + i): (7.0, 20)
+                              listname="PhysEffPlain" + i): (7.0, 20)
         }
-        for i in ["1", "2", "3"]
+        for i in ["", "1", "2", "3"]
     ]
     # datasets = datasets + [
     #     {
@@ -32,20 +32,24 @@ def define_datasets():
     #     for i in [""]
     # ]
     datasets = datasets + [
-        {
-            DataVault().input("single #pi^{0} iteration3 yield",
-                              "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield",
-                              "high"): (7.0, 20)
-        },
+        # {
+        #     DataVault().input("single #pi^{0} iteration3 yield",
+        #                       "low"): (0, 7.0),
+        #     DataVault().input("single #pi^{0} iteration3 yield",
+        #                       "high"): (7.0, 20)
+        # },
         {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-                              "low"): (0, 7.0),
+                              "low",
+                              listname="PhysEffPlain",
+                              ): (0, 7.0),
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-                              "high"): (7.0, 20)
+                              "high",
+                              listname="PhysEffPlain",
+                              ): (7.0, 20)
         },
     ]
-    names = "w1", "w2", "w3", "old", "initial param"
+    names = "w0", "w1", "w2", "w3", "initial param"
     return names, datasets
 
 
@@ -59,7 +63,7 @@ class CompareDifferentEfficiencies(unittest.TestCase):
                 Efficiency(
                     CompositeEfficiencyOptions.spmc(uinput,
                                                     particle,
-                                                    ptrange='config/pt-dummy.json'
+                                                    # ptrange='config/pt-dummy.json'
                                                     )))
             for name, uinput in zip(names, datasets)
         ])
