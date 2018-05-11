@@ -13,7 +13,7 @@ ClassImp(AliPP13SelectionWeightsMC);
 ClassImp(AliPP13SelectionWeightsSPMC);
 
 //________________________________________________________________
-Double_t AliPP13SelectionWeightsTOF::Weight(Double_t energy) const
+Double_t AliPP13SelectionWeightsTOF::TofEfficiency(Double_t energy) const
 {
     // TOF efficiency was parametrized as photon energy
     //

@@ -59,7 +59,7 @@ struct AliPP13SelectionWeights: TObject
 	// NB: One needs default constructor for IO readsons
 	AliPP13SelectionWeights(): TObject() {}
 
-	virtual Double_t Weight(Double_t x) const
+	virtual Double_t TofEfficiency(Double_t x) const
 	{
 		(void) x;
 		return 1.0;
@@ -105,7 +105,7 @@ struct AliPP13SelectionWeightsTOF: public AliPP13SelectionWeights
 	}
 
 
-	virtual Double_t Weight(Double_t energy) const;
+	virtual Double_t TofEfficiency(Double_t energy) const;
 
 	// Parameters for TOF cut efficiency
 	Double_t fLogA;
