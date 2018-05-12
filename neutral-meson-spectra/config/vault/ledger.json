@@ -226,6 +226,21 @@
 			"description": "Iterations 1,2,3 (checking the weigts and nonlinearity)"
 		}
 	},
+	"single #pi^{0} iteration d3 debug":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iterationd3_debug/LHC17j3b1.root",
+			"default_selection": "PhysEff3",
+			"hsum": "32e5ebd4bf1bb5f100f9735df04a17983ade5bf5682b610366d0b3ecb70ee399",
+			"description": "Iterations 1,2,3 (checking the weigts and nonlinearity)"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iterationd3_debug/LHC17j3b2.root",
+			"default_selection": "PhysEff3",
+			"hsum": "09e4b83605cbf10501f3160eb0d306b665130dfd761c8c99bf63e2c342017e12",
+			"description": "Iterations 1,2,3 (checking the weigts and nonlinearity)"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
