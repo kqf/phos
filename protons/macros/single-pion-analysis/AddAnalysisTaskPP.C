@@ -29,9 +29,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Iteration d0
 	AliPP13SelectionWeightsSPMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights.fNonGlobal = 1.0186240979299674;
-	mc_weights.fNonA = -0.023781846106389934;
-	mc_weights.fNonSigma = 2.257300145031725;
+	mc_weights.fNonGlobal = 1.0222305517917534;
+	mc_weights.fNonA = -0.00847958820741291;
+	mc_weights.fNonSigma = 1.0644033741013799;
 
 	mc_weights_only.fNonGlobal = 1.0;
 	mc_weights_only.fNonA = 0.0;
@@ -47,9 +47,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights1.fW0 = 1.4424726043375593;
 	mc_weights1.fW1 = 0.15126295815022361;
 	mc_weights1.fW2 = 8.108172429708121;
-	mc_weights1.fNonGlobal = 1.0186240979299674;
-	mc_weights1.fNonA = -0.023781846106389934;
-	mc_weights1.fNonSigma = 2.257300145031725;
+	mc_weights1.fNonGlobal = 1.0222305517917534;
+	mc_weights1.fNonA = -0.00847958820741291;
+	mc_weights1.fNonSigma = 1.0644033741013799;
 
 	mc_weights_only1.fNonGlobal = 1.0;
 	mc_weights_only1.fNonA = 0.0;
@@ -70,9 +70,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights2.fW0 = 1.5502651563423713;
 	mc_weights2.fW1 = 0.1501143223817212;
 	mc_weights2.fW2 = 8.156749093659146;
-	mc_weights2.fNonGlobal = 1.0186240979299674;
-	mc_weights2.fNonA = -0.023781846106389934;
-	mc_weights2.fNonSigma = 2.257300145031725;
+	mc_weights2.fNonGlobal = 1.0222305517917534;
+	mc_weights2.fNonA = -0.00847958820741291;
+	mc_weights2.fNonSigma = 1.0644033741013799;
 
 	mc_weights_only2.fNonGlobal = 1.0;
 	mc_weights_only2.fNonA = 0.0;
@@ -92,9 +92,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights3.fW0 = 1.490487117730805;
 	mc_weights3.fW1 = 0.15303013222262335;
 	mc_weights3.fW2 = 8.241894695494016;
-	mc_weights3.fNonGlobal = 1.0186240979299674;
-	mc_weights3.fNonA = -0.023781846106389934;
-	mc_weights3.fNonSigma = 2.257300145031725;
+	mc_weights3.fNonGlobal = 1.0222305517917534;
+	mc_weights3.fNonA = -0.00847958820741291;
+	mc_weights3.fNonSigma = 1.0644033741013799;
 
 
 	mc_weights_only3.fNonGlobal = 1.0;
