@@ -1,16 +1,13 @@
 import unittest
 
-import spectrum.sutils as su
-
-from spectrum.processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
-from spectrum.output import AnalysisOutput
+from spectrum.analysis import Analysis
+from spectrum.comparator import Comparator
 from spectrum.input import Input
 from spectrum.options import Options
+from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
-from spectrum.comparator import Comparator
+from spectrum.processing import DataSlicer, MassFitter
 from vault.datavault import DataVault
-from spectrum.ptplotter import MassesPlot
-from spectrum.analysis import Analysis
 
 
 class MassExtractor(object):
@@ -30,10 +27,17 @@ class MassExtractor(object):
         output = pipeline.transform(None, loggs)
         return output
 
+
 class TestBackgroundSubtraction(unittest.TestCase):
 
     def test_background_fitting(self):
-        inputs = Input(DataVault().file("single #pi^{0} iteration1 new weights", "high"), "PhysEff")
+        inputs = Input(
+            DataVault().file(
+                "single #pi^{0} iteration1 new weights",
+                "high"
+            ),
+            "PhysEff"
+        )
 
         loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
         options = Options.spmc((7, 20))
@@ -49,10 +53,3 @@ class TestBackgroundSubtraction(unittest.TestCase):
         diff = Comparator()
         for parameter in zip(outputs1, outputs2):
             diff.compare(*parameter)
-
-
-
-
-
-
-

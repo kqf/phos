@@ -9,9 +9,6 @@ from spectrum.output import AnalysisOutput
 def inputs(production, is_nonlin=False):
     listname = "PhysEff"
     histname = "MassPt"
-    if is_nonlin:
-        listname = "PhysNonlin"
-        histname = "MassPt_SM0"
 
     unified_inputs = {
         DataVault().input(production, "low",
@@ -27,7 +24,7 @@ def inputs(production, is_nonlin=False):
 class TestProductions(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration d3 nonlin"
+        self.production_name = "single #pi^{0} iteration d3 debug1"
 
     # @unittest.skip('')
     def test_nonlinearity(self):
@@ -37,8 +34,8 @@ class TestProductions(unittest.TestCase):
         estimator = Nonlinearity(options)
         nonlinearity = estimator.transform(
             [
-                DataVault().input("data", listname="PhysNonlinEst",
-                                  histname="MassPt_SM0"),
+                DataVault().input("data", listname="Phys",
+                                  histname="MassPt"),
                 unified_inputs
             ],
             "nonlinearity estimation"

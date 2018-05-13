@@ -13,24 +13,24 @@ def define_datasets():
         {
             DataVault().input("single #pi^{0} iteration d3 debug",
                               "low",
-                              listname="PhysEff" + i): (0, 7.0),
+                              listname="PhysEffPlain" + i): (0, 7.0),
             DataVault().input("single #pi^{0} iteration d3 debug",
                               "high",
-                              listname="PhysEff" + i): (7.0, 20)
+                              listname="PhysEffPlain" + i): (7.0, 20)
         }
-        for i in ["", "1", "2", "3"]
+        for i in ["3"]
     ]
-    # datasets = datasets + [
-    #     {
-    #         DataVault().input("single #pi^{0} iteration d3",
-    #                           "low",
-    #                           listname="PhysEff" + i): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration d3",
-    #                           "high",
-    #                           listname="PhysEff" + i): (7.0, 20)
-    #     }
-    #     for i in [""]
-    # ]
+    datasets = datasets + [
+        {
+            DataVault().input("single #pi^{0} iteration d3 debug1",
+                              "low",
+                              listname="PhysEffPlain" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3 debug1",
+                              "high",
+                              listname="PhysEffPlain" + i): (7.0, 20)
+        }
+        for i in ["3"]
+    ]
     datasets = datasets + [
         # {
         #     DataVault().input("single #pi^{0} iteration3 yield",
@@ -41,15 +41,15 @@ def define_datasets():
         {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "low",
-                              listname="PhysEff",
+                              listname="PhysEffPlain",
                               ): (0, 7.0),
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "high",
-                              listname="PhysEff",
+                              listname="PhysEffPlain",
                               ): (7.0, 20)
         },
     ]
-    names = "w0", "w1", "w2", "w3", "initial param"
+    names = "debug1", "debug2", "initial param"
     return names, datasets
 
 

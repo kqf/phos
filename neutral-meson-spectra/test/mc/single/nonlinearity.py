@@ -13,7 +13,7 @@ import ROOT
 
 def nonlinearity_function():
     func_nonlin = ROOT.TF1(
-        "func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x*x/2./[1]/[1]))", 0, 20)
+        "func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x*x/2./[1]/[1]))", 0, 5)
     func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
     # func_nonlin.SetParameters(-0.014719244288611932,
     # 0.8017501954719543, 1.050000000000015)
@@ -34,12 +34,12 @@ class TestNonlinearitySPMC(unittest.TestCase):
 
     def test_composite(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "low",
-                              listname="PhysEff",
-                              histname="MassPt"): (0, 7),
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "high",
-                              listname="PhysEff",
-                              histname="MassPt"): (7, 20)
+            DataVault().input("single #pi^{0} iteration d3 debug1", "low",
+                              listname="PhysNonlin3",
+                              histname="MassPt_SM0"): (0, 7),
+            DataVault().input("single #pi^{0} iteration d3 debug1", "high",
+                              listname="PhysNonlin3",
+                              histname="MassPt_SM0"): (7, 20)
         }
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = nonlinearity_function()
@@ -47,8 +47,8 @@ class TestNonlinearitySPMC(unittest.TestCase):
         estimator = Nonlinearity(options)
         nonlinearity = estimator.transform(
             [
-                DataVault().input('data', listname="Phys",
-                                  histname='MassPt'),
+                DataVault().input('data', listname="PhysNonlinEst",
+                                  histname='MassPt_SM0'),
                 unified_inputs
             ],
             loggs=AnalysisOutput("Testing the composite interface")
