@@ -11,10 +11,10 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 debug",
+            DataVault().input("single #pi^{0} iteration d3 debug1",
                               "low",
                               listname="PhysEffPlain" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 debug",
+            DataVault().input("single #pi^{0} iteration d3 debug1",
                               "high",
                               listname="PhysEffPlain" + i): (7.0, 20)
         }
@@ -22,12 +22,12 @@ def define_datasets():
     ]
     datasets = datasets + [
         {
-            DataVault().input("single #pi^{0} iteration d3 debug1",
+            DataVault().input("single #pi^{0} iteration d3 nonlin1",
                               "low",
-                              listname="PhysEffPlain" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 debug1",
+                              listname="PhysEff" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3 nonlin1",
                               "high",
-                              listname="PhysEffPlain" + i): (7.0, 20)
+                              listname="PhysEff" + i): (7.0, 20)
         }
         for i in ["3"]
     ]
@@ -41,15 +41,15 @@ def define_datasets():
         {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "low",
-                              listname="PhysEffPlain",
+                              listname="PhysEff",
                               ): (0, 7.0),
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "high",
-                              listname="PhysEffPlain",
+                              listname="PhysEff",
                               ): (7.0, 20)
         },
     ]
-    names = "debug1", "debug2", "initial param"
+    names = "debug1", "nonlin1", "initial param"
     return names, datasets
 
 
