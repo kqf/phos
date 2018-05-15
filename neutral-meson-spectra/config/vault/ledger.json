@@ -271,6 +271,36 @@
 			"description": "Iterations 1,2,3 (testing the nonlinearity)"
 		}
 	},
+	"single #pi^{0} iteration d3 nonlin2":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin2/LHC17j3b1.root",
+			"default_selection": "PhysEff3",
+			"hsum": "8bf5ec104396002ae1f3be15f2023c6f03bac883854ab8dfc97b53c18d7ae9fe",
+			"description": "Iterations 1,2,3 (testing the nonlinearity)"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin2/LHC17j3b2.root",
+			"default_selection": "PhysEff3",
+			"hsum": "3109adad4f6e80aa21b542f0c0b7e663160ac9d394ac3ac3e03264b5e0d0d351",
+			"description": "Iterations 1,2,3 (testing the nonlinearity)"
+		}
+	},
+	"single #pi^{0} iteration d3 nonlin3":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin3/LHC17j3b1.root",
+			"default_selection": "PhysEff3",
+			"hsum": "31c08bd54e3f5139ef248f1244ffc9249e702b66b6c9d36a59a280f9fdfbb4c6",
+			"description": "Iterations 1,2,3 (testing the nonlinearity)"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin3/LHC17j3b2.root",
+			"default_selection": "PhysEff3",
+			"hsum": "efe82189bc5b97e17ed200e719249b81cd46b894f35d75deeca777610e8db9c7",
+			"description": "Iterations 1,2,3 (testing the nonlinearity)"
+		}
+	},
 
 	"single #eta":
 	{

@@ -10,10 +10,12 @@ import ROOT
 import os.path
 import unittest
 
+
 def extract_range(hist):
     text = hist.GetTitle()
     return map(float, text.split())
-      
+
+
 class Nonlinearity(object):
     def __init__(self, sinput, options):
         super(Nonlinearity, self).__init__()
@@ -34,31 +36,28 @@ class NonlinearityAtOptimalParameters(unittest.TestCase):
         self.sbins = 4, 4
         self.optimal = 3, 1
 
-    def inputs(self, x = None, y = None):
+    def inputs(self, x=None, y=None):
         if not x:
             x, _ = self.sbins
             return (Input(self.infile, self.sel, self.hname % (i, y)) for i in range(x))
-        if not y: 
+        if not y:
             _, y = self.sbins
             return (Input(self.infile, self.sel, self.hname % (x, j)) for j in range(y))
 
         x, y = self.sbins
         return (Input(self.infile, self.sel, self.hname % (i, j)) for j in range(y) for i in range(x))
 
-
-    def options(self, x = None, y = None):
+    def options(self, x=None, y=None):
         if not x:
             x, _ = self.sbins
-            return (Options('x = %d, y = %d' % (i, y), 'd') for i in range(x))    
+            return (Options('x = %d, y = %d' % (i, y), 'd') for i in range(x))
 
-        if not y: 
+        if not y:
             _, y = self.sbins
-            return (Options('x = %d, y = %d' % (x, j), 'd') for j in range(y))    
-
+            return (Options('x = %d, y = %d' % (x, j), 'd') for j in range(y))
 
         x, y = self.sbins
         return (Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x))
-
 
         y_halfstep = halfstep(ymin, ymax, ybins)
         ystart = ymin - y_halfstep
@@ -68,20 +67,15 @@ class NonlinearityAtOptimalParameters(unittest.TestCase):
 
     def compare_parameter(self, pars):
         inps, opts = self.inputs(*pars), self.options(*pars)
-        masses = map(lambda x, y: Nonlinearity(x, y).mass , inps, opts)
+        masses = map(lambda x, y: Nonlinearity(x, y).mass, inps, opts)
 
         diff = Comparator()
         diff.compare(masses)
-
 
     def test_compare_a_parameter(self):
         pars = self.optimal[0], None
         self.compare_parameter(pars)
 
-
     def test_compare_sigma_parameter(self):
         pars = None, self.optimal[1]
         self.compare_parameter(pars)
-
-
-
