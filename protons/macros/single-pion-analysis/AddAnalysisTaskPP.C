@@ -73,8 +73,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights2.fW2 = 8.241894695494016;
 
 	mc_weights2.fNonGlobal = 1.0222305517917534;
-	mc_weights2.fNonA = -0.00847958820741291;
-	mc_weights2.fNonSigma = 2 * 1.0644033741013799;
+	mc_weights2.fNonA = -0.00847958820741291 * 1.1;
+	mc_weights2.fNonSigma = 1.0644033741013799;
 
 	mc_weights_only2.fNonGlobal = 1.0;
 	mc_weights_only2.fNonA = 0.0;
@@ -96,8 +96,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights3.fW1 = 0.15303013222262335;
 	mc_weights3.fW2 = 8.241894695494016;
 	mc_weights3.fNonGlobal = 1.0222305517917534;
-	mc_weights3.fNonA = -0.00847958820741291;
-	mc_weights3.fNonSigma = 0.5 * 1.0644033741013799;
+	mc_weights3.fNonA = -0.00847958820741291 * 0.9;
+	mc_weights3.fNonSigma = 1.0644033741013799;
 
 
 	mc_weights_only3.fNonGlobal = 1.0;
