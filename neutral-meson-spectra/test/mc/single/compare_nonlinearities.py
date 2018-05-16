@@ -22,10 +22,10 @@ def define_datasets():
     datasets = []
     datasets = datasets + [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin4",
+            DataVault().input("single #pi^{0} iteration d3 nonlin5",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin4",
+            DataVault().input("single #pi^{0} iteration d3 nonlin5",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }

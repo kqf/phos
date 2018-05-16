@@ -316,7 +316,21 @@
 			"description": "Iterations 1,2,3 (testing the nonlinearity)"
 		}
 	},
-
+	"single #pi^{0} iteration d3 nonlin5":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin5/LHC17j3b1.root",
+			"default_selection": "PhysEff3",
+			"hsum": "1a7e49cfc6bee401999d75b985ba90407b105918e2c5f3a767828e7af353bbfa",
+			"description": "Iterations 1,2,3, weights on nonlinearity"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/iterationd3_nonlin5/LHC17j3b2.root",
+			"default_selection": "PhysEff3",
+			"hsum": "e12e0ce408ee7a59710411c38c9d49aa622ee08013625c0739157337f0201a76",
+			"description": "Iterations 1,2,3, weights on nonlinearity"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
