@@ -253,7 +253,7 @@ class NonlinearityOptions(object):
         self.data = Options()
         self.mc = Options()
         # NB: Don't assingn to get an exception
-        # self.fitf = None
+        self.fitf = None
 
 
 class CompositeNonlinearityOptions(object):
@@ -263,4 +263,4 @@ class CompositeNonlinearityOptions(object):
         self.data = Options()
         self.mc = CompositeOptions.spmc(unified_input, particle)
         # NB: Don't assingn to get an exception
-        # self.fitf = None
+        self.fitf = None

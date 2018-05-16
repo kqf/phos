@@ -11,26 +11,26 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin3",
+            DataVault().input("single #pi^{0} iteration d3 nonlin4",
+                              "low",
+                              listname="PhysEffPlain" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3 nonlin4",
+                              "high",
+                              listname="PhysEffPlain" + i): (7.0, 20)
+        }
+        for i in ["1", "2", "3"]
+    ]
+    datasets = datasets + [
+        {
+            DataVault().input("single #pi^{0} iteration d3 nonlin4",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin3",
+            DataVault().input("single #pi^{0} iteration d3 nonlin4",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
-        for i in ["", "1", "2", "3"]
+        for i in ["1", "2", "3"]
     ]
-    # datasets = datasets + [
-    #     {
-    #         DataVault().input("single #pi^{0} iteration d3 nonlin2",
-    #                           "low",
-    #                           listname="PhysEff" + i): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration d3 nonlin2",
-    #                           "high",
-    #                           listname="PhysEff" + i): (7.0, 20)
-    #     }
-    #     for i in ["3"]
-    # ]
     datasets = datasets + [
         # {
         #     DataVault().input("single #pi^{0} iteration3 yield",
@@ -49,7 +49,7 @@ def define_datasets():
                               ): (7.0, 20)
         },
     ]
-    names = "", "n1", "n2", "n3", "initial param"
+    names = "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
     return names, datasets
 
 
@@ -85,7 +85,7 @@ class CompareRawYields(unittest.TestCase):
             (name,
                 Analysis(CompositeOptions.spmc(uinput, particle)))
             for name, uinput in zip(names, datasets)
-        ])
+        ], True)
 
         estimator.transform(
             [DataVault().input("data")] + datasets,
