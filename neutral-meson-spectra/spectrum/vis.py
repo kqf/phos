@@ -81,19 +81,23 @@ class MultipleVisualizer(object):
         set_pad_logx(first_hist, mainpad)
         mainpad.SetLogy(first_hist.logy)
 
-        if self.crange:
-            first_hist.SetAxisRange(self.crange[0], self.crange[1], 'Y')
-        first_hist.DrawCopy()
-        # self.cache.append(info(first_hist))
-
         for i, h in enumerate(hists):
             color, marker = self._color_marker(ci, i, h)
             h.SetLineColor(color)
             h.SetFillColor(color)
             h.SetMarkerStyle(marker)
             h.SetMarkerColor(color)
-            h.DrawCopy('colz same ' + h.GetOption())
+            if self.crange:
+                h.SetAxisRange(self.crange[0], self.crange[1], 'Y')
+            # h.DrawCopy('colz same ' + h.GetOption())
             legend.AddEntry(h, h.label)
+
+        stack = ROOT.THStack("test", first_hist.GetTitle())
+        map(stack.Add, hists)
+        stack.Draw("nostack")
+        stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
+        stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
+        self.cache.append(stack)
 
         # Don't draw legend for TH2 histograms
         if not issubclass(type(first_hist), ROOT.TH2):
