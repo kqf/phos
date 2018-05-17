@@ -8,6 +8,13 @@ from vault.datavault import DataVault
 
 
 def define_datasets():
+    histname = "MassPt"
+    listname = "Phys"
+    mclistname = "PhysEff"
+
+    # histname = "MassPt_SM0"
+    # listname = "PhysNonlinEst"
+    # mclistname = "PhysNonlin"
     # datasets = [
     #     {
     #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
@@ -22,37 +29,42 @@ def define_datasets():
     datasets = []
     datasets = datasets + [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin5",
+            DataVault().input("single #pi^{0} iteration d3 nonlin6",
                               "low",
-                              listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin5",
+                              listname=mclistname + i,
+                              histname=histname): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3 nonlin6",
                               "high",
-                              listname="PhysEff" + i): (7.0, 20)
+                              listname=mclistname + i,
+                              histname=histname): (7.0, 20)
         }
-        for i in ["1", "2", "3"]
+        for i in ["", "1", "2", "3"]
     ]
-    datasets = datasets + [
-        {
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-                              "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-                              "high"): (7.0, 20)
-        },
-        # {
-        #     DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-        #                       "low",
-        #                       listname="PhysEffPlain",
-        #                       ): (0, 7.0),
-        #     DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-        #                       "high",
-        #                       listname="PhysEffPlain",
-        #                       ): (7.0, 20)
-        # },
-    ]
-    data = DataVault().input("data", listname="Phys", histname="MassPt")
+    # datasets = datasets + [
+    #     {
+    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #                           "low"): (0, 7.0),
+    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #                           "high"): (7.0, 20)
+    #     },
+    # ]
+
+    # datasets = datasets + [
+    #     {
+    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #                           "low",
+    #                           listname="PhysEffPlain",
+    #                           ): (0, 7.0),
+    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #                           "high",
+    #                           listname="PhysEffPlain",
+    #                           ): (7.0, 20)
+    #     },
+    # ]
+    data = DataVault().input("data", listname=listname, histname=histname)
     options = list(map(CompositeNonlinearityOptions, datasets))
     mcinput = [[data, i] for i in datasets]
-    names = "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
+    names = "p", "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
     return names, options, mcinput
 
 

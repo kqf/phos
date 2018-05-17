@@ -11,26 +11,26 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin4",
-                              "low",
-                              listname="PhysEffPlain" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin4",
-                              "high",
-                              listname="PhysEffPlain" + i): (7.0, 20)
-        }
-        for i in ["1", "2", "3"]
-    ]
-    datasets = datasets + [
-        {
-            DataVault().input("single #pi^{0} iteration d3 nonlin4",
+            DataVault().input("single #pi^{0} iteration d3 nonlin6",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin4",
+            DataVault().input("single #pi^{0} iteration d3 nonlin6",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
         for i in ["1", "2", "3"]
     ]
+    # datasets = datasets + [
+    #     {
+    #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
+    #                           "low",
+    #                           listname="PhysEff" + i): (0, 7.0),
+    #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
+    #                           "high",
+    #                           listname="PhysEff" + i): (7.0, 20)
+    #     }
+    #     for i in ["1", "2", "3"]
+    # ]
     datasets = datasets + [
         # {
         #     DataVault().input("single #pi^{0} iteration3 yield",
@@ -66,7 +66,7 @@ class CompareDifferentEfficiencies(unittest.TestCase):
                                                     # ptrange='config/pt-dummy.json'
                                                     )))
             for name, uinput in zip(names, datasets)
-        ])
+        ], plot=True)
 
         estimator.transform(
             datasets,
