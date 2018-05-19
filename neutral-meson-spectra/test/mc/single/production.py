@@ -7,7 +7,7 @@ from spectrum.output import AnalysisOutput
 
 
 def inputs(production, is_nonlin=False):
-    listname = "PhysEff1"
+    listname = "PhysEff3"
     histname = "MassPt"
 
     unified_inputs = {
@@ -24,7 +24,7 @@ def inputs(production, is_nonlin=False):
 class TestProductions(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration d3 nonlin5"
+        self.production_name = "single #pi^{0} iteration d3 nonlin7"
 
     # @unittest.skip('')
     def test_nonlinearity(self):

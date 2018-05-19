@@ -29,11 +29,11 @@ def define_datasets():
     datasets = []
     datasets = datasets + [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin6",
+            DataVault().input("single #pi^{0} iteration d3 nonlin7",
                               "low",
                               listname=mclistname + i,
                               histname=histname): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin6",
+            DataVault().input("single #pi^{0} iteration d3 nonlin7",
                               "high",
                               listname=mclistname + i,
                               histname=histname): (7.0, 20)
