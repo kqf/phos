@@ -8,11 +8,6 @@ from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 
-from test.analysis.test_check_different_modules import run_analysis
-
-import ROOT
-
-import os.path
 import unittest
 
 
@@ -37,7 +32,11 @@ class SingleParticleQA(unittest.TestCase):
 
         # Define input
         self.selection = 'MCStudyOnlyTender'
-        self.productions = 'LHC17j3a2', 'LHC17j3c2', 'LHC17j3b1', 'LHC17j3a1', 'LHC17j3c1'
+        self.productions = ('LHC17j3a2',
+                            'LHC17j3c2',
+                            'LHC17j3b1',
+                            'LHC17j3a1',
+                            'LHC17j3c1')
 
     def test_pt_reconstructed(self):
         for prod in self.productions:
