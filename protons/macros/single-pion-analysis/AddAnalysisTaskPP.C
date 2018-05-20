@@ -40,15 +40,17 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	selections->Add(new AliPP13NonlinearitySelection("PhysNonlin", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights, kTRUE));
 	selections->Add(new AliPP13NonlinearitySelection("PhysNonlinPlain", "Plain nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
 
+	// 0.2622666606436988, 0.08435275173194286, 7.356520553419461
+
 
 	// Iteration d1
 	AliPP13SelectionWeightsSPMC & mc_weights1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights1.fW0 = 1.490487117730805;
-	mc_weights1.fW1 = 0.15303013222262335;
-	mc_weights1.fW2 = 8.241894695494016;
+	mc_weights1.fW0 = 0.2622666606436988;
+	mc_weights1.fW1 = 0.08435275173194286;
+	mc_weights1.fW2 = 7.356520553419461;
 
-	mc_weights1.fNonGlobal = 1.009;
+	mc_weights1.fNonGlobal = 1.007;
 	mc_weights1.fNonA = -0.00847958820741291;
 	mc_weights1.fNonSigma = 1.0644033741013799;
 
@@ -76,7 +78,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights2.fNonA = -0.00847958820741291;
 	mc_weights2.fNonSigma = 1.0644033741013799;
 
-	mc_weights_only2.fNonGlobal = 1.008;
+	mc_weights_only2.fNonGlobal = 1.007;
 	mc_weights_only2.fNonA = 0.0;
 	mc_weights_only2.fW0 = 1.490487117730805;
 	mc_weights_only2.fW1 = 0.15303013222262335;
