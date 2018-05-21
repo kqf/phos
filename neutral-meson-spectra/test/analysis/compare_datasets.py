@@ -2,10 +2,8 @@ import unittest
 
 from spectrum.options import Options
 from spectrum.analysis import Analysis
-from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
 from spectrum.transformer import TransformerBase
-from spectrum.pipeline import ParallelPipeline, ReducePipeline
+from spectrum.pipeline import ComparePipeline
 from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
@@ -16,17 +14,17 @@ class CompareAnalysis(TransformerBase):
         super(CompareAnalysis, self).__init__()
         options = Options(particle=particle)
         options.output.scalew_spectrum = True
-        self.pipeline = ReducePipeline(
-            ParallelPipeline([(step, Analysis(options)) for step in steps]),
-            Comparator(labels=steps).compare
+        self.pipeline = ComparePipeline(
+            [(step, Analysis(options)) for step in steps],
+            plot=False,
         )
+
 
 def compare_for_particle(particle):
     data = (
         DataVault().input("data", "LHC17 qa1", label="2017"),
         DataVault().input("data", label="2016"),
     )
-
 
     estimator = CompareAnalysis(
         steps=[d.label for d in data],
