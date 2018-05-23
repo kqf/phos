@@ -18,8 +18,8 @@ class TestCorrectedYield(unittest.TestCase):
     # @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         mcdata = DataVault().input(
-            "single #pi^{0} iteration d3 nonlin9", "low",
-            listname="PhysEff1")
+            "single #pi^{0} iteration d3 nonlin10", "low",
+            listname="PhysEff2")
 
         tsallis = ROOT.TF1(
             "tsallis",
@@ -29,6 +29,7 @@ class TestCorrectedYield(unittest.TestCase):
                       7.356520553419461]
         for i, par in enumerate(parameters):
             tsallis.FixParameter(i, par)
+        tsallis.SetParameter(0, parameters[0])
 
         # tsallis.SetParameters(0.014960701090585591,
         # 0.287830380417601, 9.921003040859755)
