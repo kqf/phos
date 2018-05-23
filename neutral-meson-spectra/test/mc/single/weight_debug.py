@@ -1,7 +1,7 @@
 import ROOT
 import unittest
 
-from spectrum.pipeline import Pipeline
+from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.pipeline import OutputFitter
 from spectrum.input import SingleHistInput
 from spectrum.options import Options
@@ -15,11 +15,11 @@ from vault.formulas import FVault
 
 class TestCorrectedYield(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         mcdata = DataVault().input(
             "single #pi^{0} iteration d3 nonlin10", "low",
-            listname="PhysEff2")
+            listname="PhysEff")
 
         tsallis = ROOT.TF1(
             "tsallis",
@@ -45,3 +45,22 @@ class TestCorrectedYield(unittest.TestCase):
         ])
 
         estimator.transform(mcdata, AnalysisOutput("corrected yield #pi^{0}"))
+
+    def test_corrected_different_spectra(self):
+        original = DataVault().input(
+            "single #pi^{0} iteration3 yield aliphysics", "low",
+            listname="PhysEff")
+
+        mcdata = DataVault().input(
+            "single #pi^{0} iteration d3 nonlin10", "low",
+            listname="PhysEff3")
+
+        estimator = ComparePipeline([
+            ("mcdata", SingleHistInput(
+                "hPt_#pi^{0}_primary_standard", norm=True)),
+            ("original", SingleHistInput(
+                "hPt_#pi^{0}_primary_standard", norm=True)),
+        ], True)
+        estimator.transform(
+            [mcdata, original],
+            AnalysisOutput("corrected yield #pi^{0}"))
