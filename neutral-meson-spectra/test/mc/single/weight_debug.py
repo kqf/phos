@@ -19,17 +19,18 @@ class TestCorrectedYield(unittest.TestCase):
     def test_corrected_yield_for_pi0(self):
         mcdata = DataVault().input(
             "single #pi^{0} iteration d3 nonlin10", "low",
-            listname="PhysEff")
+            listname="PhysEff3")
 
         tsallis = ROOT.TF1(
             "tsallis",
-            FVault().func("tsallis", "standard"), 0, 10)
+            FVault().func("tsallis", "standard"), 0, 8)
         parameters = [0.2622666606436988,
                       0.08435275173194286,
                       7.356520553419461]
+
         for i, par in enumerate(parameters):
-            tsallis.FixParameter(i, par)
-        tsallis.SetParameter(0, parameters[0])
+            tsallis.SetParameter(i, par)
+        # tsallis.SetParameter(0, parameters[0])
 
         # tsallis.SetParameters(0.014960701090585591,
         # 0.287830380417601, 9.921003040859755)
@@ -57,9 +58,9 @@ class TestCorrectedYield(unittest.TestCase):
 
         estimator = ComparePipeline([
             ("mcdata", SingleHistInput(
-                "hPt_#pi^{0}_primary_standard", norm=True)),
+                "hPt_#pi^{0}_primary_standard", norm=False)),
             ("original", SingleHistInput(
-                "hPt_#pi^{0}_primary_standard", norm=True)),
+                "hPt_#pi^{0}_primary_standard", norm=False)),
         ], True)
         estimator.transform(
             [mcdata, original],

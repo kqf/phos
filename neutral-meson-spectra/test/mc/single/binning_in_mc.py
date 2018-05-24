@@ -10,6 +10,7 @@ from spectrum.analysis import Analysis
 from spectrum.options import Options
 
 from vault.datavault import DataVault
+from vault.formulas import FVault
 
 
 class FunctionOutput(object):
@@ -40,7 +41,7 @@ class ReconstructedValidator(object):
 
 def tsallis():
     tsallis = ROOT.TF1(
-        "f", "x[0] * (x[0] )*[0]/2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])", 0, 100)
+        "f", FVault().func("tsallis"), 0, 100)
     tsallis.SetParameters(0.014960701090585591,
                           0.287830380417601, 9.921003040859755)
     # [0.014850211992453644, 0.28695967166609104, 9.90060126848571
