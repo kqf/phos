@@ -146,6 +146,45 @@ void AliPP13PhotonSelection::InitSummaryHistograms()
 						fCuts.fTimingCut * 1e+9
 					   );
 
+
+	TString weights = "";
+	AliPP13SelectionWeightsTOF * tof = dynamic_cast<AliPP13SelectionWeightsTOF *>(fWeights);
+	if(tof)
+	{
+		weights += Form(
+			"\nTOF logA = %.4g, logB = %.4g, logS = %.4g, ExpA = %.4g, ExpB = %.4g",
+			tof->fLogA,
+			tof->fLogB,
+			tof->fLogScale,
+			tof->fExpA,
+			tof->fExpAlpha
+		);
+	}
+
+	AliPP13SelectionWeightsMC * mc = dynamic_cast<AliPP13SelectionWeightsMC *>(fWeights);
+	if(mc)
+	{
+		weights += Form(
+			"\nNonlin NonGlobal = %.4g, NonA = %.4g, NonSigma = %.4g",
+			mc->fNonGlobal,
+			mc->fNonA,
+			mc->fNonSigma
+		);
+	}	
+
+	AliPP13SelectionWeightsSPMC * spmc = dynamic_cast<AliPP13SelectionWeightsSPMC *>(fWeights);
+	if(spmc)
+	{
+		weights += Form(
+			"\nTsallis fW0 = %.4g, fW1 = %.4g, fW2 = %.4g, fW3 = %.4g, fW4 = %.4g, ",
+			spmc->fW0,
+			spmc->fW1,
+			spmc->fW2,
+			spmc->fW3,
+			spmc->fW4
+		);
+	}
+
 	this->SetTitle(this->GetTitle() + cuts);
 
 	cout << "Adding " << this->GetName() << ": " << this->GetTitle() << endl;
