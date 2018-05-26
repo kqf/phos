@@ -29,9 +29,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Iteration d0
 	AliPP13SelectionWeightsSPMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights.fW0 = 1.490487117730805;
-	mc_weights.fW1 = 0.15303013222262335;
-	mc_weights.fW2 = 8.241894695494016;
+	mc_weights.fW0 = 0.2622666606436988 / 0.0119143016137;
+	mc_weights.fW1 = 0.08435275173194286;
+	mc_weights.fW2 = 7.356520553419461;
 
 	mc_weights_only.fNonGlobal = 1.0;
 	mc_weights_only.fNonA = 0.0;
@@ -40,13 +40,13 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	selections->Add(new AliPP13NonlinearitySelection("PhysNonlin", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights, kTRUE));
 	selections->Add(new AliPP13NonlinearitySelection("PhysNonlinPlain", "Plain nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
 
-	// 0.2622666606436988, 0.08435275173194286, 7.356520553419461
+	// 0.2622666606436988 / 0.0119143016137, 0.08435275173194286, 7.356520553419461
 
 
 	// Iteration d1
 	AliPP13SelectionWeightsSPMC & mc_weights1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights1.fW0 = 0.2622666606436988;
+	mc_weights1.fW0 = 0.2622666606436988 / 0.0119143016137;
 	mc_weights1.fW1 = 0.08435275173194286;
 	mc_weights1.fW2 = 7.356520553419461;
 
@@ -70,9 +70,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeightsSPMC & mc_weights2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 
-	mc_weights2.fW0 = 1.490487117730805;
-	mc_weights2.fW1 = 0.15303013222262335;
-	mc_weights2.fW2 = 8.241894695494016;
+	mc_weights2.fW0 = 0.2622666606436988 / 0.0119143016137;
+	mc_weights2.fW1 = 0.08435275173194286;
+	mc_weights2.fW2 = 7.356520553419461;
 
 	mc_weights2.fNonGlobal = 1.;
 	mc_weights2.fNonA = -0.00847958820741291;
@@ -94,7 +94,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeightsSPMC & mc_weights3 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only3 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 
-	mc_weights3.fW0 = 0.2622666606436988;
+	mc_weights3.fW0 = 0.2622666606436988 / 0.0119143016137;
 	mc_weights3.fW1 = 0.08435275173194286;
 	mc_weights3.fW2 = 7.356520553419461;
 	mc_weights3.fNonGlobal = 1.007;
