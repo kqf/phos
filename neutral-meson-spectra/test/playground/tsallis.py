@@ -11,7 +11,7 @@ class TestTsallisFunction(unittest.TestCase):
         fv = FVault()
         functions = [
             ROOT.TF1('f' + str(i), fv.func("tsallis"), 0, 20)
-            for i in range(3)
+            for i in range(2)
         ]
 
         parameters = [
@@ -24,7 +24,7 @@ class TestTsallisFunction(unittest.TestCase):
             ROOT.gStyle.SetPalette(51)
             for i, func in enumerate(functions):
                 for ip, par in enumerate(parameters):
-                    parvalue = par + 10 * i * (change == ip)
+                    parvalue = par + 0.01 * i * (change == ip)
                     func.SetParameter(ip, parvalue)
                     func.SetLineColor(i + 1)
 
@@ -33,3 +33,15 @@ class TestTsallisFunction(unittest.TestCase):
             Comparator().compare(
                 map(lambda x: x.GetHistogram(), functions)
             )
+
+    def test_integral(self):
+        parameters = [
+            0.2622666593790998 / 0.0119143016137,
+            0.08435275184952101,
+            7.356520554717935,
+            0.135,
+            0.135
+        ]
+        tsallis = ROOT.TF1('tsallis', FVault().func("tsallis"), 0, 20)
+        tsallis.SetParameters(*parameters)
+        print tsallis.Integral(0, 20)

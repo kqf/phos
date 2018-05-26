@@ -16,11 +16,11 @@ class TestCorrectedYield(unittest.TestCase):
     def test_corrected_yield_for_pi0(self):
         unified_inputs = {
             DataVault().input(
-                "single #pi^{0} iteration d3", "low",
-                listname="PhysEff3"): (0, 7.0),
+                "single #pi^{0} iteration3 yield aliphysics", "low",
+                listname="PhysEff"): (0, 7.0),
             DataVault().input(
-                "single #pi^{0} iteration d3", "high",
-                listname="PhysEff3"): (7.0, 20)
+                "single #pi^{0} iteration3 yield aliphysics", "high",
+                listname="PhysEff"): (7.0, 20)
         }
 
         data = [

@@ -15,11 +15,10 @@ from vault.formulas import FVault
 
 class TestCorrectedYield(unittest.TestCase):
 
-    @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         mcdata = DataVault().input(
-            "single #pi^{0} iteration d3 nonlin10", "low",
-            listname="PhysEff3")
+            "single #pi^{0} iteration3 yield aliphysics", "low",
+            listname="PhysEff")
 
         tsallis = ROOT.TF1(
             "tsallis",
@@ -47,6 +46,7 @@ class TestCorrectedYield(unittest.TestCase):
 
         estimator.transform(mcdata, AnalysisOutput("corrected yield #pi^{0}"))
 
+    @unittest.skip('')
     def test_corrected_different_spectra(self):
         original = DataVault().input(
             "single #pi^{0} iteration3 yield aliphysics", "low",
