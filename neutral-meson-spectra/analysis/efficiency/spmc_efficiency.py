@@ -21,7 +21,7 @@ class TestFakeEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_pi0_efficiency(self):
         unified_inputs = {
             DataVault().input(
@@ -38,7 +38,7 @@ class TestEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyEta(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_eta_efficiency(self):
         unified_inputs = {
             DataVault().input("single #eta new tender", "low"): (0, 6),
