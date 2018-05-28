@@ -1,32 +1,42 @@
-#!/usr/bin/python
+import unittest
 
-from spectrum.spectrum import Spectrum
-from spectrum.input import Input, TimecutInput
-from spectrum.sutils import gcanvas
-
-import test.check_default
-
-
-class CheckPileup(test.check_default.CheckDefault):
-
-    def setUp(self):
-        super(CheckPileup, self).setUp()
-
-        def f(x, y, z): return Spectrum(
-            x, label=y, mode=z, relaxedcb=True).evaluate()
-
-        # The histogram MassPtMainMain is the same as the histogram MassPtN3 because
-        # timing cut in the TimeTender selection is off
-        # Don't forget to enable this cut later
-        #
-
-        canvas = gcanvas(1. / 2.)
-        self.results = [
-            f(Input('input-data/LHC16.root', 'PhysTender').read(), '12.5 ns', self.mode),
-            f(TimecutInput('input-data/LHC16.root', 'TimeTender',
-                           'MassPtN3').read(), 'no timecut', self.mode)
-        ]
+from spectrum.analysis import Analysis
+from spectrum.options import Options
+from spectrum.transformer import TransformerBase
+from spectrum.pipeline import Pipeline, HistogramSelector
+from spectrum.pipeline import ComparePipeline
+from vault.datavault import DataVault
+from spectrum.output import AnalysisOutput
 
 
-if __name__ == '__main__':
-    main()
+class PileupEstimator(TransformerBase):
+    def __init__(self, options=Options(), plot=False):
+        super(PileupEstimator, self).__init__(plot)
+        self.pipeline = ComparePipeline([
+            ('12.5 ns', Pipeline([
+                ('analysis', Analysis(options, plot)),
+                ('spectrum', HistogramSelector("nmesons"))
+            ])),
+            ('no cut', Pipeline([
+                ('analysis', Analysis(options, plot)),
+                ('spectrum', HistogramSelector("nmesons"))
+            ])),
+        ], plot)
+
+
+class CheckPileup(unittest.TestCase):
+    def test_pileup(self):
+        with_cut = DataVault().input("data",
+                                     "latest",
+                                     "Time",
+                                     histname="MassPtMainMain")
+
+        no_cut = DataVault().input("data",
+                                   "latest",
+                                   "Time"
+                                   )
+        estimator = PileupEstimator(plot=True)
+        estimator.transform(
+            [with_cut, no_cut],
+            loggs=AnalysisOutput("pileup contribution")
+        )

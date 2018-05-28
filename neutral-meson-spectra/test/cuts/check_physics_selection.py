@@ -8,7 +8,6 @@ import ROOT
 ROOT.TH1.AddDirectory(False)
 
 
-
 def decorate_hist(h, label, logy=False, norm=1, rebin=1):
     h.label = label
     h.Rebin(rebin)
@@ -85,8 +84,9 @@ class CheckPhysicsSelection(unittest.TestCase):
         # Extract energy of clusters
         events = lst.FindObject('EventCounter').GetBinContent(2)
 
-        def f(n): return decorate_hist(
-            lst.FindObject(n), label, True, events, 50)
+        def f(n):
+            return decorate_hist(
+                lst.FindObject(n), label, True, events, 50)
         clusters = [f('hClusterEnergy_SM%d' % i) for i in range(5)]
         main_clusters = [f('hMainClusterEnergy_SM%d' % i) for i in range(5)]
 
@@ -96,9 +96,11 @@ class CheckPhysicsSelection(unittest.TestCase):
         return [clusters[0], decorate_hist(r, label, False)]
 
     def raw_yield(self, filename, label):
-        def f(x, y, z): return ModuleAnalyzer(x, label=y, mode=z).quantities()
+        def f(x, y, z):
+            return ModuleAnalyzer(x, label=y, mode=z).quantities()
         pi0s = [
-            f(Input(filename, 'PhysTender').read(), label + ' no timecut', 'dead'),
+            f(Input(filename, 'PhysTender').read(),
+                label + ' no timecut', 'dead'),
             f(TimecutInput(filename, 'TimeTender', 'MassPtMainMain').read(),
               label + ' 12.5 ns', 'dead'),
         ]
