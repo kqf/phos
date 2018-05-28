@@ -1,7 +1,9 @@
 import unittest
 
 from spectrum.corrected_yield import YieldRatio
-from spectrum.options import CorrectedYieldOptions
+from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.output import AnalysisOutput
+from spectrum.comparator import Comparator
 
 from vault.datavault import DataVault
 
@@ -21,16 +23,17 @@ class TestNeutralMesonYieldRatio(unittest.TestCase):
             unified_inputs_eta
         ]
 
-        options_eta = CorrectedYieldOptions(
+        options_eta = CompositeCorrectedYieldOptions(
             particle="#eta",
             unified_inputs=unified_inputs_eta
         )
 
         # Define the inputs and the dataset for #pi^{0}
         #
+        prod = "single #pi^{0} iteration3 yield aliphysics"
         unified_inputs_pi0 = {
-            DataVault().input("single #pi^{0} corrected weights", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
+            DataVault().input(prod, "low"): (0, 7.0),
+            DataVault().input(prod, "high"): (7.0, 20)
         }
 
         data_pi0 = [
@@ -38,7 +41,7 @@ class TestNeutralMesonYieldRatio(unittest.TestCase):
             unified_inputs_pi0
         ]
 
-        options_pi0 = CorrectedYieldOptions(
+        options_pi0 = CompositeCorrectedYieldOptions(
             particle="#pi^{0}",
             unified_inputs=unified_inputs_pi0
         )
@@ -51,10 +54,12 @@ class TestNeutralMesonYieldRatio(unittest.TestCase):
 
         estimator = YieldRatio(
             options_eta=options_eta,
-            options_pi0=options_pi0
+            options_pi0=options_pi0,
+            plot=True
         )
 
-        estimator.transform(
+        output = estimator.transform(
             [data_eta, data_pi0],
-            "eta to pion ratio"
+            loggs=AnalysisOutput("eta to pion ratio")
         )
+        Comparator().compare(output)
