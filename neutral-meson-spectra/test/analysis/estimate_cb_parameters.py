@@ -1,18 +1,13 @@
 import unittest
+
 import ROOT
-
-from spectrum.spectrum import Spectrum
-from spectrum.input import Input
-from spectrum.sutils import ticks
-from spectrum.options import Options
-
-
 from spectrum.analysis import Analysis
-from spectrum.transformer import TransformerBase
-from spectrum.pipeline import Pipeline
-from vault.datavault import DataVault
-from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
+from spectrum.options import Options
+from spectrum.output import AnalysisOutput
+from spectrum.pipeline import Pipeline
+from spectrum.transformer import TransformerBase
+from vault.datavault import DataVault
 
 
 class CbFitOptions(object):
