@@ -1,36 +1,35 @@
 #!/usr/bin/python
+import unittest
 
 from vault.datavault import DataVault
-from spectrum.spectrum import Spectrum
-from spectrum.input import Input
+from spectrum.pipeline import ComparePipeline
+from spectrum.analysis import Analysis
 from spectrum.options import Options
-import test.check_default
+from spectrum.output import AnalysisOutput
 
 
 # Problem: There are some bins in invariant mass histogram
-#          that have no entries for same event data and 
+#          that have no entries for same event data and
 #          nonzero content for mixed event. ROOT fails to calculate
 #          the error in that bin for real/mixed ratio!
-#           
+#
 #          This test compares different solutions
 #
 
-class CheckEmptyBins(test.check_default.CheckDefault):
-    
+class CheckEmptyBins(unittest.TestCase):
+
     def test(self):
-        arguments = []
-        for l, average in {'func': {}, 'empty': {'empty'}}.iteritems():
+        options = []
+        for average in ["standard", "with empty"]:
             option = Options()
             option.invmass.average = average
-            sinput = Input(
-                DataVault().file("data"), 
-                'PhysTender',
-                label=l
-            )
-            arguments.append((sinput, option))
+            options.append(option)
 
-        self.results = [Spectrum(*args).evaluate() for args in arguments]
+        estimator = ComparePipeline([
+            (o.invmass.average, Analysis(o)) for o in options
+        ], plot=True)
 
-
-if __name__ == '__main__':
-    main()
+        estimator.transform(
+            [DataVault().input("data")] * 2,
+            loggs=AnalysisOutput("check empty bins")
+        )

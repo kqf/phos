@@ -65,7 +65,6 @@ class Options(object):
         self.signalp.relaxed = relaxedcb
 
         self.invmass = AnalysisOption('MassFitter', invmassconf, particle)
-        self.invmass.average = {}
         self.invmass.signalp = self.signalp
         self.invmass.backgroundp = self.backgroundp
 
