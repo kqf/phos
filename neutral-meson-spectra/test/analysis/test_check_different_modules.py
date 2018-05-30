@@ -1,18 +1,12 @@
 #!/usr/bin/python
+import unittest
 
-from spectrum.spectrum import Spectrum
+from spectrum.analysis import Analysis
 from spectrum.input import Input
 from spectrum.options import Options
-from spectrum.sutils import gcanvas, adjust_canvas
-from spectrum.pipeline import ParallelPipeline, ReducePipeline
-from vault.datavault import DataVault
-from spectrum.analysis import Analysis
 from spectrum.output import AnalysisOutput
-from spectrum.comparator import Comparator
-
-import test.check_default
-import unittest
-import operator
+from spectrum.pipeline import ComparePipeline
+from vault.datavault import DataVault
 
 
 def analyze(inputs, particle="#pi^{0}"):
@@ -20,12 +14,10 @@ def analyze(inputs, particle="#pi^{0}"):
         particle=particle,
         ptrange="config/test_different_modules.json"
     )
-    estimator = ReducePipeline(
-        ParallelPipeline([
-            ('module{0}'.format(i), Analysis(options)) for i, _ in enumerate(inputs)
-        ]),
-        Comparator().compare
-    )
+    estimator = ComparePipeline([
+        ('module {0}'.format(i), Analysis(options))
+        for i, _ in enumerate(inputs)
+    ])
 
     loggs = AnalysisOutput("compare_different_modules", particle=particle)
     estimator.transform(inputs, loggs)
@@ -48,9 +40,3 @@ class TestCheckModules(unittest.TestCase):
             same_module=True
         )
         analyze(inputs, "#eta")
-
-
-
-
-if __name__ == '__main__':
-    main()
