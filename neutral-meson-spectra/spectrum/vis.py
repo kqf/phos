@@ -89,7 +89,7 @@ class MultipleVisualizer(object):
             h.SetMarkerColor(color)
             if self.crange:
                 h.SetAxisRange(self.crange[0], self.crange[1], 'Y')
-            # h.DrawCopy('colz same ' + h.GetOption())
+            h.DrawCopy('colz same ' + h.GetOption())
             legend.AddEntry(h, h.label)
 
         stack = ROOT.THStack("test", first_hist.GetTitle())
@@ -98,6 +98,7 @@ class MultipleVisualizer(object):
         stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
         stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
         self.cache.append(stack)
+        self.cache.extend(hists)
 
         # Don't draw legend for TH2 histograms
         if not issubclass(type(first_hist), ROOT.TH2):

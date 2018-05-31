@@ -2,7 +2,7 @@ from analysis import Analysis
 from options import CorrectedYieldOptions
 from efficiency import Efficiency
 from transformer import TransformerBase
-from pipeline import Pipeline, HistogramSelector
+from pipeline import Pipeline, HistogramSelector, OutputDecorator
 from pipeline import ComparePipeline
 from pipeline import OutputFitter
 
@@ -20,6 +20,7 @@ class CorrectedYield(TransformerBase):
 
         self.pipeline = Pipeline([
             ('corrected yield', compare),
+            ('fix naming', OutputDecorator(options.analysis.particle)),
             ('fitted yield', OutputFitter(options)),
         ])
 

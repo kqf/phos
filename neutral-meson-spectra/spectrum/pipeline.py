@@ -51,6 +51,18 @@ class OutputFitter(TransformerBase):
         return histogram
 
 
+class OutputDecorator(TransformerBase):
+
+    def __init__(self, histname, plot=False):
+        super(OutputDecorator, self).__init__(plot)
+        self.histname = histname
+
+    def transform(self, data, loggs):
+        new_name = "{}_{}".format(data.GetName(), self.histname)
+        data.SetName(new_name)
+        return data
+
+
 class HistogramSelector(TransformerBase):
 
     def __init__(self, histname, plot=False):
