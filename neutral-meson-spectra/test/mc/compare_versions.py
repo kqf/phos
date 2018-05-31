@@ -19,8 +19,9 @@ def define_datasets():
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
-        for i in ["", "1", "2", "3"]
+        for i in ["", "1", "2"]
     ]
+
     # datasets = datasets + [
     #     {
     #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
@@ -32,7 +33,8 @@ def define_datasets():
     #     }
     #     for i in ["1", "2", "3"]
     # ]
-    datasets = datasets + [
+
+    reference = [
         # {
         #     DataVault().input("single #pi^{0} iteration3 yield",
         #                       "low"): (0, 7.0),
@@ -42,15 +44,16 @@ def define_datasets():
         {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "low",
-                              listname="PhysEff",
+                              listname="PhysEffP",
                               ): (0, 7.0),
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "high",
-                              listname="PhysEff",
+                              listname="PhysEffP",
                               ): (7.0, 20)
         },
     ]
-    names = "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
+    # datasets = datasets + reference
+    names = "old nonlinearity", "new g_{E} = 1.0", "new g_{E} = 1.007"
     return names, datasets
 
 

@@ -11,6 +11,7 @@ def define_datasets():
     histname = "MassPt"
     listname = "Phys"
     mclistname = "PhysEff"
+    production = "single #pi^{0} iteration d3 nonlin11"
 
     # histname = "MassPt_SM0"
     # listname = "PhysNonlinEst"
@@ -29,42 +30,23 @@ def define_datasets():
     datasets = []
     datasets = datasets + [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin8",
+            DataVault().input(production,
                               "low",
                               listname=mclistname + i,
                               histname=histname): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin8",
+            DataVault().input(production,
                               "high",
                               listname=mclistname + i,
                               histname=histname): (7.0, 20)
         }
-        for i in ["", "1", "2", "3"]
+        for i in ["", "1", "2"]
     ]
-    # datasets = datasets + [
-    #     {
-    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-    #                           "low"): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-    #                           "high"): (7.0, 20)
-    #     },
-    # ]
 
-    # datasets = datasets + [
-    #     {
-    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-    #                           "low",
-    #                           listname="PhysEffPlain",
-    #                           ): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-    #                           "high",
-    #                           listname="PhysEffPlain",
-    #                           ): (7.0, 20)
-    #     },
-    # ]
     data = DataVault().input("data", listname=listname, histname=histname)
     options = list(map(CompositeNonlinearityOptions, datasets))
     mcinput = [[data, i] for i in datasets]
-    names = "p", "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
+    # names = "p", "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
+    names = "old nonlinearity", "new g_{E} = 1.0", "new g_{E} = 1.007"
     return names, options, mcinput
 
 

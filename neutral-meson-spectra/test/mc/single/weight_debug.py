@@ -6,11 +6,19 @@ from spectrum.pipeline import OutputFitter
 from spectrum.input import SingleHistInput
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
+from spectrum.transformer import TransformerBase
 # from spectrum.comparator import Comparator
 # from spectrum.broot import BROOT as br
 
 from vault.datavault import DataVault
 from vault.formulas import FVault
+
+
+class Attributes(TransformerBase):
+    def transform(self, data, loggs):
+        data.logy = True
+        data.logx = True
+        return data
 
 
 class TestCorrectedYield(unittest.TestCase):
@@ -19,11 +27,12 @@ class TestCorrectedYield(unittest.TestCase):
         mcdata = DataVault().input(
             "single #pi^{0} iteration d3 nonlin11", "low",
             # "single #pi^{0} iteration3 yield aliphysics", "low",
-            listname="PhysEff1")
+            listname="PhysEff")
 
         tsallis = ROOT.TF1(
             "tsallis",
             FVault().func("tsallis", "standard"), 0, 8)
+
         parameters = [0.2622666606436988,
                       0.08435275173194286,
                       7.356520553419461]
@@ -42,6 +51,7 @@ class TestCorrectedYield(unittest.TestCase):
         estimator = Pipeline([
             ("data", SingleHistInput(
                 "hPt_#pi^{0}_primary_standard", norm=True)),
+            ("attributes", Attributes()),
             ("fit", OutputFitter(options)),
         ])
 

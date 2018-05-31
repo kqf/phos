@@ -3,6 +3,7 @@ from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import OutputDecorator
 
 
 class DataMCComparator(TransformerBase):
@@ -18,6 +19,7 @@ class DataMCComparator(TransformerBase):
             ('mc', Pipeline([
                 ("ReconstructMesons", Analysis(options.mc, plot)),
                 (histname, HistogramSelector(histname, plot)),
+                ("decorate", OutputDecorator(*options.decorate))
             ])),
         ], plot)
 

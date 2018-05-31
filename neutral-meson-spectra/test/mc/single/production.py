@@ -24,9 +24,9 @@ def inputs(production, is_nonlin=False):
 class TestProductions(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration d3 nonlin7"
+        self.production_name = "single #pi^{0} iteration d3 nonlin11"
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_nonlinearity(self):
         unified_inputs = inputs(self.production_name, is_nonlin=True)
         options = CompositeNonlinearityOptions(unified_inputs)
@@ -42,21 +42,22 @@ class TestProductions(unittest.TestCase):
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_decalibration(self):
         unified_inputs = inputs(self.production_name)
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = None
-        estimator = Decalibration(options)
+        estimator = Decalibration(options, plot=True)
         nonlinearity = estimator.transform(
             [
                 DataVault().input("data"),
                 unified_inputs
             ],
-            "nonlinearity estimation"
+            loggs=AnalysisOutput("decalibration estimation")
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
+    @unittest.skip('')
     def test_weights(self):
         unified_inputs = inputs(self.production_name)
         options = CompositeNonlinearityOptions(unified_inputs)
@@ -67,6 +68,6 @@ class TestProductions(unittest.TestCase):
                 DataVault().input("data"),
                 unified_inputs
             ],
-            "nonlinearity estimation"
+            loggs=AnalysisOutput("weight estimation")
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
