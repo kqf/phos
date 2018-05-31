@@ -14,7 +14,8 @@ class TransformerBase(object):
             loggs = AnalysisOutput(loggs)
 
         output = self.pipeline.transform(inputs, loggs)
-        loggs.update('output', [output])
+        if output:
+            loggs.update('output', [output])
 
         if lazy_logs:
             loggs.plot(self.plot)

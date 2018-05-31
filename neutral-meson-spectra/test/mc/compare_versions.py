@@ -4,6 +4,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
+from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 
@@ -70,7 +71,7 @@ class CompareDifferentEfficiencies(unittest.TestCase):
 
         estimator.transform(
             datasets,
-            "compare different datasts"
+            loggs=AnalysisOutput("compare different datasts")
         )
 
 

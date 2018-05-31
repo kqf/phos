@@ -145,6 +145,12 @@ class EfficiencyOptions(object):
         self.genname = genname
         self.scale = scale
 
+        histname = "#varepsilon = #Delta #phi #Delta y/ 2 #pi "
+        histname += "#frac{Number of reconstructed %s}" % particle
+        histname += "{Number of generated primary %s}" % particle
+        histname += "; p_{T}, GeV/c; efficiency #times acceptance"
+        self.decorate = "eff_" + particle, histname
+
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
         self.analysis.pt.rebins = rebins

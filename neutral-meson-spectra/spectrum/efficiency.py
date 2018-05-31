@@ -5,6 +5,7 @@ from options import EfficiencyOptions, CompositeEfficiencyOptions
 from .input import SingleHistInput
 from analysis import Analysis
 from pipeline import Pipeline, RatioUnion, HistogramSelector
+from pipeline import OutputDecorator
 from pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
 from broot import BROOT as br
 
@@ -17,7 +18,7 @@ class SimpleEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):
         super(SimpleEfficiency, self).__init__(plot)
-        self.pipeline = RatioUnion(
+        efficiency = RatioUnion(
             Pipeline([
                 ("ReconstructMesons", Analysis(options.analysis)),
                 ("NumberOfMesons", HistogramSelector("nmesons")),
@@ -25,6 +26,10 @@ class SimpleEfficiency(TransformerBase):
             ]),
             SingleHistInput(options.genname)
         )
+        self.pipeline = Pipeline([
+            ('efficiency', efficiency),
+            ('decorate', OutputDecorator(*options.decorate))
+        ])
 
 
 class CompositeEfficiency(TransformerBase):

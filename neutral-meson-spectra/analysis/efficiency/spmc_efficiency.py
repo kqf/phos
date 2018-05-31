@@ -61,11 +61,5 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
         "composite_efficiency_spmc_{}".format(particle)
     )
 
-    efficiency.SetTitle(
-        "#varepsilon = #Delta #phi #Delta y/ 2 #pi "
-        "#frac{Number of reconstructed %s}{Number of generated primary %s}"
-        % (particle, particle)
-    )
-
     diff = Comparator()
     diff.compare(efficiency)

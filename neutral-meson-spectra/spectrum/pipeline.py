@@ -53,13 +53,16 @@ class OutputFitter(TransformerBase):
 
 class OutputDecorator(TransformerBase):
 
-    def __init__(self, histname, plot=False):
+    def __init__(self, histname, title=None, plot=False):
         super(OutputDecorator, self).__init__(plot)
         self.histname = histname
+        self.title = title
 
     def transform(self, data, loggs):
         new_name = "{}_{}".format(data.GetName(), self.histname)
         data.SetName(new_name)
+        if self.title:
+            data.SetTitle(self.title)
         return data
 
 

@@ -17,6 +17,9 @@ def info(hist):
 
 
 def set_pad_logx(hist, pad):
+    if 'eff' in hist.GetName().lower():
+        return
+
     if hist.logx:
         pad.SetLogx(hist.logx)
         return
