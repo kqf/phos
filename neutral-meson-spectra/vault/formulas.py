@@ -7,5 +7,5 @@ class FVault(object):
         with open('config/vault/formulas.json') as f:
             self._ledger = json.load(f)
 
-    def func(self, production, version="invariant"):
+    def func(self, production, version="standard"):
         return self._ledger[production][version]

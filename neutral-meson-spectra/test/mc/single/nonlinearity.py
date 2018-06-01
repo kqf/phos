@@ -7,13 +7,14 @@ from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput
 from tools.mc import Nonlinearity
 from spectrum.broot import BROOT as br
+from vault.formulas import FVault
 
 import ROOT
 
 
 def nonlinearity_function():
     func_nonlin = ROOT.TF1(
-        "func_nonlin", "[2] * (1.+[0]*TMath::Exp(-x*x/2./[1]/[1]))", 0, 5)
+        "func_nonlin", FVault().func("nonlinearity"), 0, 5)
     func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
     # func_nonlin.SetParameters(-0.014719244288611932,
     # 0.8017501954719543, 1.050000000000015)
@@ -32,14 +33,26 @@ def nonlinearity_function():
 
 class TestNonlinearitySPMC(unittest.TestCase):
 
-    def test_composite(self):
+    def test_nonlin_photon_level(self):
+        mcsel = "PhysNonlinPlain"
+        selection = "PhysNonlinEst"
+        histname = "MassPt_SM0"
+        self.calculate(selection, mcsel, histname)
+
+    def test_nonlin_pion_level(self):
+        mcsel = "PhysEffPlain"
+        selection = "Phys"
+        histname = "MassPt"
+        self.calculate(selection, mcsel, histname)
+
+    def calculate(self, selection, mcsel, histname):
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration d3 nonlin5", "low",
-                              listname="PhysNonlinPlain3",
-                              histname="MassPt_SM0"): (0, 7),
-            DataVault().input("single #pi^{0} iteration d3 nonlin5", "high",
-                              listname="PhysNonlinPlain3",
-                              histname="MassPt_SM0"): (7, 20)
+            DataVault().input("single #pi^{0} iteration d3 nonlin11", "low",
+                              listname=mcsel,
+                              histname=histname): (0, 7),
+            DataVault().input("single #pi^{0} iteration d3 nonlin11", "high",
+                              listname=mcsel,
+                              histname=histname): (7, 20)
         }
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = nonlinearity_function()
@@ -47,8 +60,8 @@ class TestNonlinearitySPMC(unittest.TestCase):
         estimator = Nonlinearity(options, plot=True)
         nonlinearity = estimator.transform(
             [
-                DataVault().input('data', listname="PhysNonlinEst",
-                                  histname='MassPt_SM0'),
+                DataVault().input('data', listname=selection,
+                                  histname=histname),
                 unified_inputs
             ],
             loggs=AnalysisOutput("Testing the composite interface")
