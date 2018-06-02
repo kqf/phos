@@ -3,27 +3,18 @@ import unittest
 
 from vault.formulas import FVault
 from spectrum.comparator import Comparator
+from spectrum.broot import BROOT as br
 
 
 class TestNonlinearityFunction(unittest.TestCase):
 
     def test_parameters(self):
         parameters = {
-            "recent": [
-                1.0644033741013799,
-                -0.00847958820741291,
-                1.007,
-            ],
             "old": [
 
                 -0.014719244288611932,
                 2 * 0.8017501954719543,
                 1.050000000000015,
-            ],
-            "plain": [
-                0.0,
-                2 * 0.8017501954719543,
-                1.0,
             ],
             "updated gamma": [
                 -0.008502585550404397,
@@ -34,8 +25,12 @@ class TestNonlinearityFunction(unittest.TestCase):
                 -0.022361543707205396,
                 1.9834455549215824,
                 1.0160704760491277,
+            ],
+            "new pi0": [
+                -0.023207895974126137,
+                2.1705074159914495,
+                1.0178019980200619
             ]
-
         }
 
         fv = FVault()
@@ -50,4 +45,5 @@ class TestNonlinearityFunction(unittest.TestCase):
             histograms.append(f.GetHistogram())
             histograms[-1].SetTitle(p)
             histograms[-1].label = p
+            histograms[-1]
         Comparator().compare(*histograms)

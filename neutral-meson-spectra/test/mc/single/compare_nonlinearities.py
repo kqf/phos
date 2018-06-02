@@ -16,17 +16,6 @@ def define_datasets():
     # histname = "MassPt_SM0"
     # listname = "PhysNonlinEst"
     # mclistname = "PhysNonlin"
-    # datasets = [
-    #     {
-    #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
-    #                           "low",
-    #                           listname="PhysEffPlain" + i): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
-    #                           "high",
-    #                           listname="PhysEffPlain" + i): (7.0, 20)
-    #     }
-    #     for i in ["1", "2", "3"]
-    # ]
     datasets = []
     datasets = datasets + [
         {

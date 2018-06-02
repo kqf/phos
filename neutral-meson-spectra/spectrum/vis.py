@@ -64,7 +64,7 @@ class MultipleVisualizer(object):
     def compare_visually(self, hists, ci, pad=None):
         canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
         su.ticks(canvas)
-        legend = ROOT.TLegend(0.7, 0.4, 0.8, 0.6)
+        legend = ROOT.TLegend(0.7, 0.65, 0.8, 0.85)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         legend.SetTextSize(0.04)
@@ -100,6 +100,7 @@ class MultipleVisualizer(object):
         stack.Draw("nostack")
         stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
         stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
+        stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
         self.cache.append(stack)
         self.cache.extend(hists)
 

@@ -23,10 +23,11 @@ class TestEfficiencyPi0(unittest.TestCase):
 
     # @unittest.skip('')
     def test_pi0_efficiency(self):
-        production = "single #pi^{0} iteration3 yield aliphysics"
+        # production = "single #pi^{0} iteration3 yield aliphysics"
+        production = "single #pi^{0} iteration d3 nonlin12"
         unified_inputs = {
-            DataVault().input(production, "low"): (0, 7.0),
-            DataVault().input(production, "high"): (7.0, 20)
+            DataVault().input(production, "low", "PhysEff2"): (0, 7.5),
+            DataVault().input(production, "high", "PhysEff2"): (7.5, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 

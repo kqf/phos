@@ -119,19 +119,38 @@ class Options(object):
         return options
 
 
+class OptionsSPMC(Options):
+    def __init__(self, pt_fit_range,
+                 particle='#pi^{0}',
+                 ptrange='config/pt-spmc.json',
+                 spectrumconf='config/spectrum-spmc.json',
+                 backgroudpconf='config/cball-parameters-spmc-enhanced.json',
+                 signalp='config/cball-parameters-spmc-signal.json',
+                 *args,
+                 **kwargs
+                 ):
+        super(OptionsSPMC, self).__init__(ptrange=ptrange,
+                                          particle=particle,
+                                          spectrumconf=spectrumconf,
+                                          signalp=signalp,
+                                          *args, **kwargs)
+        self.spectrum.fit_range = pt_fit_range
+        self.invmass.use_mixed = False
+
+
 class CompositeOptions(object):
 
-    def __init__(self, steps, mergeranges):
+    def __init__(self, unified_inputs, particle, *args, **kwargs):
         super(CompositeOptions, self).__init__()
-        self.steps = steps
-        self.mergeranges = mergeranges
+        self.mergeranges = [rr for rr in unified_inputs.values()]
+        options = [Options.spmc(rr, particle, *args, **kwargs)
+                   for rr in self.mergeranges]
+        names = ["{0}-{1}".format(*rr) for rr in self.mergeranges]
+        self.steps = zip(names, options)
 
     @classmethod
-    def spmc(klass, unified_input, particle):
-        ranges = [rr for rr in unified_input.values()]
-        options = [Options.spmc(rr, particle) for rr in ranges]
-        names = ["{0}-{1}".format(*rr) for rr in ranges]
-        return klass(zip(names, options), ranges)
+    def spmc(klass, unified_inputs, particle):
+        return klass(unified_inputs, particle)
 
 
 class EfficiencyOptions(object):
@@ -177,16 +196,16 @@ class CompositeEfficiencyOptions(object):
             eff_options.analysis.pt.rebins = rebins
 
     @classmethod
-    def spmc(klass, unified_input, particle,
+    def spmc(klass, unified_inputs, particle,
              genname='hPt_{0}_primary_standard',
              use_particle=True, *args, **kwargs):
         if use_particle:
             genname = genname.format(particle)
         options = [EfficiencyOptions.spmc(
             rr, particle, genname, *args, **kwargs)
-            for _, rr in unified_input.iteritems()
+            for _, rr in unified_inputs.iteritems()
         ]
-        return klass(options, unified_input.values())
+        return klass(options, unified_inputs.values())
 
 
 class CorrectedYieldOptions(object):
@@ -264,10 +283,12 @@ class NonlinearityOptions(object):
 
 class CompositeNonlinearityOptions(object):
 
-    def __init__(self, unified_input, particle="#pi^{0}"):
+    def __init__(self, unified_inputs, particle="#pi^{0}"):
         super(CompositeNonlinearityOptions, self).__init__()
-        self.data = Options()
-        self.mc = CompositeOptions.spmc(unified_input, particle)
+        ptrange = "config/pt-nonlinearity.json"
+
+        self.data = Options(ptrange=ptrange)
+        self.mc = CompositeOptions(unified_inputs, particle, ptrange=ptrange)
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
