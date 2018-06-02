@@ -56,8 +56,13 @@
 			"default_selection": "PionToKaonRatioOnlyTender",
 			"hsum": "e52a898501a8397d581724849955781ba99ba53532b3786a99efd1ca43f7a229",
 			"description": "Pythia8 with all corrections, for feeddown correction"
+		},
+		"staging": {
+			"file": "input-data/mc/pythia/multiple_years/pythia8.root",
+			"default_selection": "PhysEff",
+			"hsum": "6e49d3b77826f9934848c755b1f3f7ef4792711ba7e111c7c061aff3bb4d5f78",
+			"description": "LHC16, LHC17 pythia. Added E/p ratio. kaon2pion analysis"
 		}
-
 	},
 
 	"single #pi^{0}":

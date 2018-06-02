@@ -57,12 +57,11 @@ class CompareDifferentEfficiencies(unittest.TestCase):
         names, datasets = define_datasets()
         particle = "#pi^{0}"
         estimator = ComparePipeline([
-            (name,
-                Efficiency(
-                    CompositeEfficiencyOptions.spmc(uinput,
-                                                    particle,
-                                                    # ptrange='config/pt-dummy.json'
-                                                    )))
+            (name, Efficiency(CompositeEfficiencyOptions(
+                uinput,
+                particle,
+                # ptrange='config/pt-dummy.json'
+            )))
             for name, uinput in zip(names, datasets)
         ], plot=True)
 
@@ -81,7 +80,7 @@ class CompareRawYields(unittest.TestCase):
         data = [('data', Analysis(Options()))]
         estimator = ComparePipeline(data + [
             (name,
-                Analysis(CompositeOptions.spmc(uinput, particle)))
+                Analysis(CompositeOptions(uinput, particle)))
             for name, uinput in zip(names, datasets)
         ], True)
 

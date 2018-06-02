@@ -27,7 +27,7 @@ class TestEfficiency(unittest.TestCase):
         }
 
         estimator = Efficiency(
-            CompositeEfficiencyOptions.spmc(unified_inputs, "#pi^{0}")
+            CompositeEfficiencyOptions(unified_inputs, "#pi^{0}")
         )
 
         efficiency = estimator.transform(

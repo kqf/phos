@@ -7,10 +7,11 @@ from vault.datavault import DataVault
 
 
 def define_datasets():
+    production = "single #pi^{0} iteration3 yield aliphysics"
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "high"): (7.0, 20)
+            DataVault().input(production, "low"): (0, 7.0),
+            DataVault().input(production, "high"): (7.0, 20)
         },
         DataVault().input("pythia8", "stable"),
         DataVault().input("pythia8", "stable"),
@@ -24,27 +25,20 @@ class CompareDifferentEfficiencies(unittest.TestCase):
     def test_efficiencies(self):
         names, datasets = define_datasets()
         particle = "#pi^{0}"
-        estimator = ComparePipeline([
-            (names[0],
-                Efficiency(
-                    CompositeEfficiencyOptions.spmc(
-                        datasets[0],
-                        particle,
-                    )
-            ))] + [(name,
-                    Efficiency(
-                        EfficiencyOptions(
-                            genname='hPt_#pi^{0}_primary_',
-                            scale=1.8,
-                            ptrange='config/pt-same-truncated.json'
-                        )
-                    )
-                    )
-                   for name in names[1:]
-                   ],
-            plot=False
+        composite_options = CompositeEfficiencyOptions(datasets[0], particle)
+        options = [(names[0], Efficiency(composite_options))]
+
+        general_options = EfficiencyOptions(
+            genname='hPt_#pi^{0}_primary_',
+            scale=1.8,
+            ptrange='config/pt-same-truncated.json'
         )
 
+        options += [
+            (name, Efficiency(general_options)) for name in names[1:]
+        ]
+
+        estimator = ComparePipeline(options, plot=False)
         estimator.transform(
             datasets,
             "compare different datasts"

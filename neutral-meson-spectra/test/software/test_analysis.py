@@ -24,7 +24,7 @@ class TestAnalysis(unittest.TestCase):
         }
 
         analysis = Analysis(
-            CompositeOptions.spmc(unified_inputs, "#pi^{0}")
+            CompositeOptions(unified_inputs, "#pi^{0}")
         )
 
         output = analysis.transform(

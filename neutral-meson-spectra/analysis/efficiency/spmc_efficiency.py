@@ -45,10 +45,7 @@ class TestEfficiencyEta(unittest.TestCase):
 
 
 def evaluate_spmc_efficiency(unified_inputs, particle):
-    options = CompositeEfficiencyOptions.spmc(
-        unified_inputs,
-        particle
-    )
+    options = CompositeEfficiencyOptions(unified_inputs, particle)
     # for options in options.suboptions:
     # options.analysis.signalp.relaxed = True
     # options.analysis.backgroundp.relaxed = True

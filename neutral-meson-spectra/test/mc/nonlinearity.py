@@ -27,13 +27,13 @@ class TestNonlinearity(unittest.TestCase):
         options = NonlinearityOptions()
         options.fitf = nonlinearity_function()
 
-        estimator = Nonlinearity(options)
+        estimator = Nonlinearity(options, plot=True)
         nonlinearity = estimator.transform(
             [
-                DataVault().input('data', listname="PhysNonlinEst",
-                                  histname='MassPt_SM0'),
-                DataVault().input('pythia8', listname="PhysNonlinTender",
-                                  histname='MassPt_SM0'),
+                DataVault().input('data', listname="Phys",
+                                  histname="MassPt"),
+                DataVault().input('pythia8', 'staging', listname="PhysEff",
+                                  histname="MassPt"),
             ],
             loggs=AnalysisOutput("Testing the interface")
         )

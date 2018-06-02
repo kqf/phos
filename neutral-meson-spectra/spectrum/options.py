@@ -148,10 +148,6 @@ class CompositeOptions(object):
         names = ["{0}-{1}".format(*rr) for rr in self.mergeranges]
         self.steps = zip(names, options)
 
-    @classmethod
-    def spmc(klass, unified_inputs, particle):
-        return klass(unified_inputs, particle)
-
 
 class EfficiencyOptions(object):
 
@@ -185,10 +181,17 @@ class EfficiencyOptions(object):
 
 class CompositeEfficiencyOptions(object):
 
-    def __init__(self, effoptions, mergeranges):
+    def __init__(self, unified_inputs, particle,
+                 genname='hPt_{0}_primary_standard',
+                 use_particle=True, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
-        self.suboptions = effoptions
-        self.mergeranges = mergeranges
+        if use_particle:
+            genname = genname.format(particle)
+        self.suboptions = [EfficiencyOptions.spmc(
+            rr, particle, genname, *args, **kwargs)
+            for _, rr in unified_inputs.iteritems()
+        ]
+        self.mergeranges = unified_inputs.values()
 
     def set_binning(self, ptedges, rebins):
         for eff_options in self.suboptions:
@@ -232,8 +235,7 @@ class CompositeCorrectedYieldOptions(object):
         )
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = CompositeEfficiencyOptions.spmc(
-            unified_inputs, particle)
+        self.efficiency = CompositeEfficiencyOptions(unified_inputs, particle)
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges

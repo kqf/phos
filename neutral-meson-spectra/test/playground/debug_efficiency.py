@@ -92,7 +92,7 @@ class DebugTheEfficiency(unittest.TestCase):
             DataVault().input("debug efficiency", "high", n_events=1, histnames=('hSparseMgg_proj_0_1_3_yx', ''), label="high"): (6, 20)
         }
 
-        # moptions = CompositeEfficiencyOptions.spmc(
+        # moptions = CompositeEfficiencyOptions(
         #     debug_inputs,
         #     particle,
         #     genname='hGenPi0Pt_clone',
@@ -105,7 +105,7 @@ class DebugTheEfficiency(unittest.TestCase):
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
-        moptions = CompositeEfficiencyOptions.spmc(
+        moptions = CompositeEfficiencyOptions(
             unified_inputs,
             particle,
             genname='hPt_{0}_primary_standard',
@@ -130,7 +130,7 @@ class DebugTheEfficiency(unittest.TestCase):
             DataVault().input("single #pi^{0} corrected weights", "high"): (7.0, 20)
         }
 
-        moptions = CompositeEfficiencyOptions.spmc(unified_inputs, particle)
+        moptions = CompositeEfficiencyOptions(unified_inputs, particle)
 
         names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
 
