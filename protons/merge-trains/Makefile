@@ -1,12 +1,8 @@
-paths.log:
-	./io.sh >> paths.log
-	echo "\n" >> paths.log
-
 download: paths.log
-	download
+	./io-download.sh
 
 upload: paths.log
-	upload
+	./io-upload.sh
 
 clean:
 	rm paths.log
