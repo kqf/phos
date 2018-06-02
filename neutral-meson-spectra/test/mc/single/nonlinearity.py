@@ -34,23 +34,23 @@ def nonlinearity_function():
 class TestNonlinearitySPMC(unittest.TestCase):
 
     def test_nonlin_photon_level(self):
-        mcsel = "PhysNonlinPlain"
+        mcsel = "PhysNonlin2"
         selection = "PhysNonlinEst"
         histname = "MassPt_SM0"
         self.calculate(selection, mcsel, histname)
 
     def test_nonlin_pion_level(self):
-        mcsel = "PhysEffPlain"
+        mcsel = "PhysEff2"
         selection = "Phys"
         histname = "MassPt"
         self.calculate(selection, mcsel, histname)
 
     def calculate(self, selection, mcsel, histname):
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration d3 nonlin11", "low",
+            DataVault().input("single #pi^{0} iteration d3 nonlin12", "low",
                               listname=mcsel,
                               histname=histname): (0, 7),
-            DataVault().input("single #pi^{0} iteration d3 nonlin11", "high",
+            DataVault().input("single #pi^{0} iteration d3 nonlin12", "high",
                               listname=mcsel,
                               histname=histname): (7, 20)
         }

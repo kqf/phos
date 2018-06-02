@@ -11,7 +11,7 @@ def define_datasets():
     histname = "MassPt"
     listname = "Phys"
     mclistname = "PhysEff"
-    production = "single #pi^{0} iteration d3 nonlin11"
+    production = "single #pi^{0} iteration d3 nonlin12"
 
     # histname = "MassPt_SM0"
     # listname = "PhysNonlinEst"
@@ -39,14 +39,14 @@ def define_datasets():
                               listname=mclistname + i,
                               histname=histname): (7.0, 20)
         }
-        for i in ["", "1", "2"]
+        for i in ["", "1", "2", "3"]
     ]
 
     data = DataVault().input("data", listname=listname, histname=histname)
     options = list(map(CompositeNonlinearityOptions, datasets))
     mcinput = [[data, i] for i in datasets]
     # names = "p", "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
-    names = "old nonlinearity", "new g_{E} = 1.0", "new g_{E} = 1.007"
+    names = "gamma", "pi0", "0.5 pi0", "2 pi0"
     return names, options, mcinput
 
 

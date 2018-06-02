@@ -23,15 +23,10 @@ class TestEfficiencyPi0(unittest.TestCase):
 
     # @unittest.skip('')
     def test_pi0_efficiency(self):
+        production = "single #pi^{0} iteration3 yield aliphysics"
         unified_inputs = {
-            DataVault().input(
-                "single #pi^{0} iteration3 yield aliphysics",
-                "low"
-            ): (0, 7.0),
-            DataVault().input(
-                "single #pi^{0} iteration3 yield aliphysics",
-                "high"
-            ): (7.0, 20)
+            DataVault().input(production, "low"): (0, 7.0),
+            DataVault().input(production, "high"): (7.0, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
@@ -40,9 +35,10 @@ class TestEfficiencyEta(unittest.TestCase):
 
     @unittest.skip('')
     def test_eta_efficiency(self):
+        production = "single #eta new tender"
         unified_inputs = {
-            DataVault().input("single #eta new tender", "low"): (0, 6),
-            DataVault().input("single #eta new tender", "high"): (6, 20)
+            DataVault().input(production, "low"): (0, 6),
+            DataVault().input(production, "high"): (6, 20)
         }
         evaluate_spmc_efficiency(unified_inputs, "#eta")
 

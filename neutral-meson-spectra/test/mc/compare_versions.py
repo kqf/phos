@@ -12,14 +12,14 @@ from vault.datavault import DataVault
 def define_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin11",
+            DataVault().input("single #pi^{0} iteration d3 nonlin12",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin11",
+            DataVault().input("single #pi^{0} iteration d3 nonlin12",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
-        for i in ["", "1", "2"]
+        for i in ["", "1", "2", "3"]
     ]
 
     # datasets = datasets + [
@@ -35,25 +35,19 @@ def define_datasets():
     # ]
 
     reference = [
-        # {
-        #     DataVault().input("single #pi^{0} iteration3 yield",
-        #                       "low"): (0, 7.0),
-        #     DataVault().input("single #pi^{0} iteration3 yield",
-        #                       "high"): (7.0, 20)
-        # },
         {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "low",
-                              listname="PhysEffP",
+                              listname="PhysEff",
                               ): (0, 7.0),
             DataVault().input("single #pi^{0} iteration3 yield aliphysics",
                               "high",
-                              listname="PhysEffP",
+                              listname="PhysEff",
                               ): (7.0, 20)
         },
     ]
-    # datasets = datasets + reference
-    names = "old nonlinearity", "new g_{E} = 1.0", "new g_{E} = 1.007"
+    datasets = datasets + reference
+    names = "nonlin", "standard", "0.5 standard", "2 standard", "ref"
     return names, datasets
 
 
