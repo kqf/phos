@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import ROOT
 
 import os
@@ -11,10 +9,16 @@ from collections import namedtuple
 
 ROOT.TH1.AddDirectory(False)
 
+
 class BROOT(object):
     class prop(object):
-        _properties = {'label': '', 'logy': 0, 'logx': 0, 'priority': 999, 'marker': 0}
-        def __init__(self, label = '', logy = 0, logx = 0, priority = 999, marker = 0):
+        _properties = {'label': '',
+                       'logy': 0,
+                       'logx': 0,
+                       'priority': 999,
+                       'marker': 0}
+
+        def __init__(self, label='', logy=0, logx=0, priority=999, marker=0):
             super(BROOT.prop, self).__init__()
             self.__dict__.update(self._properties)
             # Add self.set_properties
@@ -25,25 +29,30 @@ class BROOT(object):
             self.priority = priority
             # self.fitfunc = fitfunc
 
-        def set_properties(self, source, force = False):
-            assert self.has_properties(source), "There is no properties in source histogram"
+        def set_properties(self, source, force=False):
+            assert self.has_properties(source),\
+                "There is no properties in source histogram"
             self.copy(self, source, force)
 
         @classmethod
         def same_as(klass, a, b):
-            assert klass.has_properties(b), "There is no properties in b histogram"
-            return all(a.__dict__[prop] == b.__dict__[prop] for prop in klass._properties)
+            assert klass.has_properties(b), \
+                "There is no properties in b histogram"
+            return all(a.__dict__[prop] == b.__dict__[prop]
+                       for prop in klass._properties)
 
         @classmethod
-        def init(klass, hist, force = True):
+        def init(klass, hist, force=True):
             self = klass()
             klass.copy(hist, self, force)
 
         @classmethod
-        def copy(klass, dest, source, force = False):
-            assert klass.has_properties(source), "There is no properties in source histogram"
+        def copy(klass, dest, source, force=False):
+            assert klass.has_properties(source), \
+                "There is no properties in source histogram"
 
-            keys = (key for key in klass._properties if key not in dir(dest) or force)
+            keys = (key for key in klass._properties
+                    if key not in dir(dest) or force)
             for key in keys:
                 dest.__dict__[key] = copy.deepcopy(source.__dict__[key])
 
@@ -62,24 +71,23 @@ class BROOT(object):
             super(BROOT.io, self).__init__()
 
         @classmethod
-        def _read_file(klass, filename, directory = 'input-data/'):
+        def _read_file(klass, filename, directory='input-data/'):
             if os.path.isfile(filename):
                 return ROOT.TFile(filename)
 
-            if not directory in filename:
+            if directory not in filename:
                 return klass._read_file(directory + filename, directory)
 
-            if not '.root' in filename:
+            if '.root' not in filename:
                 return klass._read_file(filename + '.root', directory)
 
             raise IOError('No such file: {0}'.format(filename))
-
 
         @classmethod
         def _dir_to_list(klass, tdir):
             try:
                 keys = tdir.GetListOfKeys()
-            except AttributeError: # It's not a tdirectory
+            except AttributeError:  # It's not a tdirectory
                 return tdir
 
             nlist = ROOT.TList()
@@ -104,16 +112,15 @@ class BROOT(object):
 
             return klass._dir_to_list(lst)
 
-
         @classmethod
         def read(klass, filename, selection, histname):
             lst = klass._read_list(filename, selection)
             hist = lst.FindObject(histname)
 
             if not hist:
-                raise IOError('No such histogram {2} for selection {1} in file: {0}'
+                raise IOError(
+                    'No such histogram {2} for selection {1} in file: {0}'
                     .format(filename, selection, histname))
-
 
             hist = hist.Clone()
             BROOT.prop.init(hist)
@@ -133,7 +140,8 @@ class BROOT(object):
 
                 hist = lst.FindObject(histname)
                 if not hist:
-                    raise IOError('No such histogram {2} for selection {1} in file: {0}'
+                    raise IOError(
+                        'No such histogram {2} for selection {1} in file: {0}'
                         .format(filename, selection, histname))
 
                 hist = hist.Clone()
@@ -143,7 +151,8 @@ class BROOT(object):
             return histograms
 
         @classmethod
-        def save(klass, obj, fname = 'output.root', selection = '', option = 'recreate'):
+        def save(klass, obj, fname='output.root',
+                 selection='', option='recreate'):
             ofile = ROOT.TFile(fname, option)
 
             if not selection:
@@ -159,20 +168,20 @@ class BROOT(object):
 
         @classmethod
         def hepdata(klass, record, ofilename):
+            link = 'https://www.hepdata.net/download/table/{0}/Table1/1/root'
             try:
-                download = 'https://www.hepdata.net/download/table/{0}/Table1/1/root'
+                download = link
                 response = urllib2.urlopen(download.format(record))
 
                 with open(ofilename, 'wb') as f:
                     f.write(response.read())
             except urllib2.HTTPError, e:
                 raise IOError('HTTP error {0}\nInvalid record {1}\n{2}'
-                    .format(e.code, record, download.format(record)))
+                              .format(e.code, record, download.format(record)))
 
             except urllib2.URLError, e:
                 raise IOError('URL error {0}\nInvalid record {1}\n{2}'
-                    .format(e.code, record, download.format(record)))
-
+                              .format(e.code, record, download.format(record)))
 
     def __init__(self):
         super(BROOT, self).__init__()
@@ -184,12 +193,13 @@ class BROOT(object):
         return hist
 
     @classmethod
-    def setp(klass, dest, source = None, force = False):
-        if not source: source = klass.prop()
+    def setp(klass, dest, source=None, force=False):
+        if not source:
+            source = klass.prop()
         klass.prop.copy(dest, source, force)
 
     @classmethod
-    def clone(klass, hist, name = '_copied', replace = False):
+    def clone(klass, hist, name='_copied', replace=False):
         name = name if replace else hist.GetName() + name
         cloned = hist.Clone(name)
         prop = hist if klass.prop.has_properties(hist) else klass.prop()
@@ -197,13 +207,13 @@ class BROOT(object):
         return cloned
 
     @classmethod
-    def copy(klass, hist, name = '_copied', replace = False):
+    def copy(klass, hist, name='_copied', replace=False):
         hist = BROOT.clone(hist, name, replace)
         hist.Reset()
         return hist
 
     @classmethod
-    def projection(klass, hist, name, a, b, axis = 'x'):
+    def projection(klass, hist, name, a, b, axis='x'):
         axis, name = axis.lower(), hist.GetName() + name
 
         if '%d_%d' in name:
@@ -215,16 +225,15 @@ class BROOT(object):
         #
 
         args = name, a, b - 1
-        proj = hist.ProjectionX(*args) if axis == 'x' else hist.ProjectionY(*args)
-        klass.setp(proj, hist, force = True)
+        proj = hist.ProjectionX(
+            *args) if axis == 'x' else hist.ProjectionY(*args)
+        klass.setp(proj, hist, force=True)
         return proj
 
-
     @classmethod
-    def project_range(klass, hist, name, xa, xb, axis = 'x'):
-        bin = klass.bincenterf(hist, not 'x' in axis)
+    def project_range(klass, hist, name, xa, xb, axis='x'):
+        bin = klass.bincenterf(hist, 'x' not in axis)
         return klass.projection(hist, name, bin(xa), bin(xb), axis)
-
 
     @classmethod
     def same(klass, hist1, hist2):
@@ -234,22 +243,23 @@ class BROOT(object):
         if klass.prop.has_properties(hist2):
             return klass.prop.same_as(hist1, hist2)
 
-        raise AttributeError('Neither of hist1 and hist2 have BROOT properties')
+        raise AttributeError(
+            'Neither of hist1 and hist2 have BROOT properties')
 
     @classmethod
-    def ratio(klass, a, b, option = "B"):
+    def ratio(klass, a, b, option="B"):
         ratio = a.Clone('ratio' + a.GetName())
         klass.prop.copy_everything(ratio, a)
 
         # if ratio.GetNbinsX() != b.GetNbinsX():
-            # ratio, b = klass.rebin_as(ratio, b)
+        # ratio, b = klass.rebin_as(ratio, b)
         if type(b) == ROOT.TF1:
             ratio.Divide(b)
         else:
             ratio.Divide(a, b, 1, 1, option)
         label = a.label + ' / ' + b.label
 
-        at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
+        # at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
         # ratio.GetYaxis().SetTitle(at + '/' + bt)
         ratio.GetYaxis().SetTitle(label)
 
@@ -262,7 +272,7 @@ class BROOT(object):
         return ratio
 
     @classmethod
-    def set_nevents(klass, hist, nevents, norm = False):
+    def set_nevents(klass, hist, nevents, norm=False):
         hist.nevents = nevents
         if norm:
             hist.Scale(1. / nevents)
@@ -275,27 +285,29 @@ class BROOT(object):
         if hist1.GetNbinsX() == hist2.GetNbinsY():
             return hist1, hist2
 
-        nbins = lambda x: x.GetNbinsX()
-        lbins = lambda x: (
-            x.GetBinLowEdge(i) for i in klass.range(x, edges=True)
-        )
+        def nbins(x):
+            return x.GetNbinsX()
 
-        a, b = (hist1, hist2) if nbins(hist1) > nbins(hist2) else (hist2, hist1)
+        def lbins(x):
+            return (
+                x.GetBinLowEdge(i) for i in klass.range(x, edges=True)
+            )
+
+        a, b = (hist1, hist2) if nbins(
+            hist1) > nbins(hist2) else (hist2, hist1)
         rebinned = klass.rebin(a, lbins(b))
         return (rebinned, b) if a == hist1 else (b, rebinned)
 
-
     @classmethod
-    def rebin(klass, hist, edges, name = "_rebinned"):
+    def rebin(klass, hist, edges, name="_rebinned"):
         edges = array.array('d', edges)
         rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
         if klass.prop.has_properties(hist):
-            klass.setp(rebin, hist, force = True)
+            klass.setp(rebin, hist, force=True)
         return rebin
 
-
     @classmethod
-    def sum(klass, histograms, label = None):
+    def sum(klass, histograms, label=None):
         if not histograms:
             raise ValueError("You are trying to sum 0 histograms")
 
@@ -313,14 +325,14 @@ class BROOT(object):
         return result
 
     @classmethod
-    def scalew(klass, hist, factor = 1.):
+    def scalew(klass, hist, factor=1.):
         if type(hist) == ROOT.TF1:
             return
         hist.Scale(factor, "width")
         return hist
 
     @staticmethod
-    def bincenterf(hist, isxaxis = True):
+    def bincenterf(hist, isxaxis=True):
         axis = hist.GetXaxis() if isxaxis else hist.GetYaxis()
         return lambda x: axis.FindBin(x)
 
@@ -333,7 +345,6 @@ class BROOT(object):
         area = hist.IntegralAndError(bin(a), bin(b), areae)
         return area, areae
 
-
     @classmethod
     def init_inputs(klass, func):
         def f(self, hists, *args, **kwargs):
@@ -343,13 +354,14 @@ class BROOT(object):
         return f
 
     @staticmethod
-    def define_colors(ci = 10000):
+    def define_colors(ci=10000):
         with open("config/colors.json") as f:
             conf = json.load(f)
 
         colors = conf["colors"]
         rcolors = [[b / 255. for b in c] for c in colors]
-        rcolors = [ROOT.TColor(ci + i, *color) for i, color in enumerate(rcolors)]
+        rcolors = [ROOT.TColor(ci + i, *color)
+                   for i, color in enumerate(rcolors)]
         return ci, rcolors
 
     @classmethod
@@ -358,7 +370,8 @@ class BROOT(object):
         contents = np.array([hist.GetBinContent(i) for i in klass.range(hist)])
         errors = np.array([hist.GetBinError(i) for i in klass.range(hist)])
         centers = np.array([hist.GetBinCenter(i) for i in klass.range(hist)])
-        HistMatrix = namedtuple('HistMatrix', ['contents', 'errors', 'centers'])
+        HistMatrix = namedtuple(
+            'HistMatrix', ['contents', 'errors', 'centers'])
         return HistMatrix(contents, errors, centers)
 
     @classmethod
@@ -366,7 +379,7 @@ class BROOT(object):
         import numpy as np
         matrix = np.array([klass.bins(h)[0] for h in histograms])
 
-        rms, mean = np.std(matrix, axis = 0), np.mean(matrix, axis = 0)
+        rms, mean = np.std(matrix, axis=0), np.mean(matrix, axis=0)
 
         klass.setp(histograms[0])
         syst = klass.copy(histograms[0], 'RMS/mean')
@@ -386,7 +399,7 @@ class BROOT(object):
         return range(start, nbins + 1 + int(edges))
 
     @classmethod
-    def pars(klass, tfunc, npars = None):
+    def pars(klass, tfunc, npars=None):
         if not npars:
             npars = tfunc.GetNpar()
 
@@ -397,23 +410,21 @@ class BROOT(object):
         return FitPars(pp, ep)
 
     @classmethod
-    def empty_bins(klass, hist, tolerance = 1e-10):
-        return [i for i in klass.range(hist) if hist.GetBinContent(i) < tolerance]
-
+    def empty_bins(klass, hist, tolerance=1e-10):
+        return [i for i in klass.range(hist)
+                if hist.GetBinContent(i) < tolerance]
 
     @classmethod
-    def diff(klass, hist1, hist2, tol = 1e-10):
+    def diff(klass, hist1, hist2, tol=1e-10):
         bins1, errors1, centers = klass.bins(hist1)
         bins2, errors2, centers = klass.bins(hist2)
 
-        kernel = lambda x, y: abs(x - y) < tol
+        def kernel(x, y):
+            return abs(x - y) < tol
 
         bins_ok = map(kernel, bins1, bins2)
         errors_ok = map(kernel, errors1, errors2)
         return all(bins_ok) and all(errors_ok)
-
-        if not histograms:
-            raise ValueError("You are trying to sum 0 histograms")
 
     @classmethod
     def set_to_zero(klass, hist, rrange):
@@ -423,15 +434,16 @@ class BROOT(object):
         #     keep have clean interface for spmc: weight, (0, 1) - range
         #
 
-        bins = list(b for b in klass.range(hist) if not (a < hist.GetBinCenter(b) < bb))
-        # NB: Don't include the last bin, othervise we will count twice the same point
+        bins = list(b for b in klass.range(hist)
+                    if not (a < hist.GetBinCenter(b) < bb))
+        # NB: Don't include the last bin,
+        #     othervise we will count twice the same point
         #     in BROOT.sum_trimm method
 
         # TODO: Check this!?
         for bin in bins:
             hist.SetBinContent(bin, 0)
             hist.SetBinError(bin, 0)
-
 
     @classmethod
     def sum_trimm(klass, hists, ranges):
@@ -442,7 +454,7 @@ class BROOT(object):
         return klass.sum(clones)
 
     @classmethod
-    def confidence_intervals(klass, hist, func, options = "qR", histbining = None):
+    def confidence_intervals(klass, hist, func, options="qR", histbining=None):
         ci = klass.copy(histbining if histbining else hist)
         hist.Fit(func, options)
         ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(ci)
@@ -450,7 +462,6 @@ class BROOT(object):
         ci.SetOption("E3")
         ci.SetFillColor(3)
         return ci
-
 
     @classmethod
     def function2histogram(klass, func, hist):
@@ -462,3 +473,20 @@ class BROOT(object):
             )
         return newhist
 
+    @classmethod
+    def chi2(klass, hist1, hist2):
+        assert hist1.GetNbinsX() == hist2.GetNbinsX(), \
+            "Histograms should have the same binning"
+        difference = klass.copy(hist1, 'difference')
+        difference.Add(hist2, hist1, -1)
+
+        chi2 = sum((b / err) ** 2
+                   for b, err, _ in zip(*klass.bins(difference)))
+        return chi2
+
+    @classmethod
+    def chi2ndf(klass, hist1, hist2):
+        assert hist1.GetNbinsX() > 0, \
+            "Histograms should have more than 0 bins"
+
+        return klass.chi2(hist1, hist2) / hist1.GetNbinsX()

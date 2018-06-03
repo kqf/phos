@@ -175,12 +175,12 @@ class TestTH(unittest.TestCase):
         nbinsx, startx, stopx = carter(ncarter), -10, 10
         nbinsy, starty, stopy = 100, -10, 10
 
-        hist = br.BH(ROOT.TH2F, "refhistProjArea",                # Name
-                    "Testing updated ProjectX method for BH2F",   # Title
-                    nbinsx, startx, stopx, nbinsy, starty, stopy, # Xbins, Ybins
-                    label = "test prop",                          # Label
-                    logy = 1, logx = 0, priority = 3              # Misc properties
-                   )
+        hist = br.BH(ROOT.TH2F, "refhistProjArea",        # Name
+            "Testing updated ProjectX method for BH2F",   # Title
+            nbinsx, startx, stopx, nbinsy, starty, stopy, # Xbins, Ybins
+            label = "test prop",                          # Label
+            logy = 1, logx = 0, priority = 3              # Misc properties
+        )
 
         # Fill random values
         for i in br.range(hist):
@@ -194,7 +194,7 @@ class TestTH(unittest.TestCase):
 
         # print
         # for b, p in zip(bins, projections):
-            # print b, p.Integral()
+        # print b, p.Integral()
         # print sum(p.Integral() for p in projections), hist.Integral()
 
         total = sum(p.Integral() for p in projections)
@@ -644,7 +644,7 @@ class TestTH(unittest.TestCase):
         wait(draw=self.mode)
 
     def test_calculates_confidence_intervals(self):
-        hist1 = br.BH(ROOT.TH1F, "hFit", "Test BROOT1: Test add Trimm", 100, -4, 4)
+        hist1 = br.BH(ROOT.TH1F, "hFit", "Test BROOT: Trimm", 100, -4, 4)
         hist1.FillRandom("gaus")
         function = ROOT.gROOT.FindObject("gaus")
 
@@ -653,12 +653,24 @@ class TestTH(unittest.TestCase):
         self.assertEqual(hist1.GetNbinsX(), ci.GetNbinsX())
         self.assertNotEqual(hist1.GetEntries(), 0)
 
-
     def test_subtracts_histogram(self):
-        hist = br.BH(ROOT.TH1F, "TestHistSubraction", "Test BROOT: Function to hist", 100, -4, 4)
+        hist = br.BH(ROOT.TH1F, "f2h", "Test BROOT: func2hist", 100, -4, 4)
         for b in br.range(hist):
             hist.Fill(hist.GetBinCenter(b), 5)
         func = ROOT.TF1("testFunc", "5", -4, 4)
         output = br.function2histogram(func, hist)
         output.Add(hist, -1)
         self.assertEqual(output.Integral(), 0)
+
+    def test_chi2(self):
+        histogram = ROOT.TH1F("TestChi2", "Test BROOT: chi2", 100, -1, 1)
+        histogram.Sumw2()
+        histogram.FillRandom("gaus")
+        # self.assertEqual(br.chi2(histogram, histogram), 0)
+
+        histogram2 = br.clone(histogram)
+        error = histogram2.GetBinError(1)
+        histogram2.SetBinContent(1, histogram2.GetBinContent(1) + error)
+        # The sigma of this datapoint drops as 1 / sqrt(2)
+        # because both points have their own errors
+        self.assertAlmostEqual(br.chi2(histogram, histogram2), 0.5)
