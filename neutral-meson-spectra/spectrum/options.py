@@ -294,3 +294,11 @@ class CompositeNonlinearityOptions(object):
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
+
+
+class NonlinearityScanOptions(object):
+
+    def __init__(self, nbins=11):
+        super(NonlinearityScanOptions, self).__init__()
+        self.nbins = nbins
+        self.analysis = Options()

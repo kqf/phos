@@ -12,9 +12,11 @@ import os.path
 
 ROOT.TH1.AddDirectory(False)
 
+
 def extract_range(hist):
     text = hist.GetTitle()
     return map(float, text.split())
+
 
 class Chi2Entry(object):
 
@@ -37,7 +39,8 @@ class Chi2Entry(object):
             self.ratio.Add(rhs.ratio)
         except AttributeError:
             self.ratio = br.clone(rhs.ratio)
-            self.ratio.SetTitle('#pi^{0} mass positition / #pi^{0} peak width; p_{T}, GeV/c; m/#sigma')
+            self.ratio.SetTitle(
+                '#pi^{0} mass positition / #pi^{0} peak width; p_{T}, GeV/c; m/#sigma')
             self.ratio.label = 'mean'
         return self
 
@@ -48,7 +51,8 @@ class Chi2Entry(object):
         result = sum((mean - xi) ** 2 / sigma)
         print result
         return result
-        
+
+
 class Nonlinearity(Chi2Entry):
     def __init__(self, sinput, options):
         super(Nonlinearity, self).__init__()
@@ -67,7 +71,6 @@ class Nonlinearity(Chi2Entry):
         self.spectrum = sresults.spectrum
 
 
-
 class NonlinearityScanner(object):
 
     def __init__(self, stop):
@@ -77,24 +80,25 @@ class NonlinearityScanner(object):
         self.hname = 'MassPt_%d_%d'
         self.sbins = 11, 11
         self.stop = stop
-        self.outsys = SysError(label = 'nonlinearity')
+        self.outsys = SysError(label='nonlinearity')
 
     def inputs(self):
         x, y = self.sbins
         return (Input(self.infile, self.sel, self.hname % (i, j)).read() for j in range(y) for i in range(x))
 
-
     def options(self):
         x, y = self.sbins
-        options = [Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x)]
+        options = [Options('x = %d, y = %d' % (i, j), 'd')
+                   for j in range(y) for i in range(x)]
         options = map(Options.coarse_binning, options)
         return options
-
 
     def calculate_ranges(self, nonlins):
         xbins, ybins = self.sbins
         (xmin, ymin), (xmax, ymax) = nonlins[0].ranges, nonlins[-1].ranges
-        halfstep = lambda mmin, mmax, nbins: (mmax - mmin) / nbins / 2.
+
+        def halfstep(mmin, mmax, nbins):
+            return (mmax - mmin) / nbins / 2.
 
         x_halfstep = halfstep(xmin, xmax, xbins)
         xstart = xmin - x_halfstep
@@ -106,7 +110,6 @@ class NonlinearityScanner(object):
 
         return xbins, xstart, xstop, ybins, ystart, ystop
 
-
     def test_systematics(self):
         inputs, options = self.inputs(), self.options()
         nonlinearities = map(Nonlinearity, inputs, options)
@@ -114,21 +117,22 @@ class NonlinearityScanner(object):
         # Total ratio
         mean = Chi2Entry.evaluate(nonlinearities)
 
-        c1 = gcanvas(1, 1, resize = True)
-        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c', \
-            *self.calculate_ranges(nonlinearities))
+        c1 = gcanvas(1, 1, resize=True)
+        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c',
+                              *self.calculate_ranges(nonlinearities))
 
         mean_hist = mean.mean(len(nonlinearities))
         diff = Comparator()
-        diff.compare([mean_hist] + map(lambda x: x.ratio, nonlinearities[::10]))
+        diff.compare(
+            [mean_hist] + map(lambda x: x.ratio, nonlinearities[::10]))
         # wait(draw = self.stop or True)
 
         for nonlin in nonlinearities:
-            (xx, yy), val = nonlin.ranges, mean.chi2(mean_hist,  nonlin)
+            (xx, yy), val = nonlin.ranges, mean.chi2(mean_hist, nonlin)
             print chi2_hist.Fill(xx, yy, val)
 
         chi2_hist.Draw('colz')
-        wait(draw = self.stop or True)
+        wait(draw=self.stop or True)
         return self.outsys.histogram(nonlinearities[0].spectrum)
 
     def test_systematics(self):
@@ -142,10 +146,9 @@ class NonlinearityScanner(object):
         inputs, options = self.inputs(), self.options()
         nonlinearities = map(Nonlinearity, inputs, options)
 
-
-        c1 = gcanvas(1, 1, resize = True)
-        chi2_hist = ROOT.TH2F('chi2_from_data', 'Deviation from data: #chi^{2} distriubiton; a; #sigma, GeV/c', \
-            *self.calculate_ranges(nonlinearities))
+        c1 = gcanvas(1, 1, resize=True)
+        chi2_hist = ROOT.TH2F('chi2_from_data', 'Deviation from data: #chi^{2} distriubiton; a; #sigma, GeV/c',
+                              *self.calculate_ranges(nonlinearities))
 
         diff = Comparator()
         diff.compare([data] + map(lambda x: x.ratio, nonlinearities[::10]))
@@ -156,9 +159,5 @@ class NonlinearityScanner(object):
             print chi2_hist.Fill(xx, yy, val)
 
         chi2_hist.Draw('colz')
-        wait(draw = self.stop or True)
+        wait(draw=self.stop or True)
         return self.outsys.histogram(nonlinearities[0].spectrum)
-
-
-
-
