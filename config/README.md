@@ -23,10 +23,12 @@ docker build -t aliworker:physics .
 Then log in to `aliworker`, and install `AliPhysics`:
 
 ```bash
-docker run -it aliworker:physics
+docker run -v $HOME/alice/:/alice -it aliworker:physics
 # Now you are working in aliworker:physics' shell
 
-
+cd AliPhysics/
+git remote add kqf git@github.com:kqf/AliPhysics
+cd -
 aliBuild build AliPhysics
 
 # don't close the terminal, don't exit the container

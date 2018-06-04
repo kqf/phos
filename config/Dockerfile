@@ -18,8 +18,6 @@ RUN pip install alibuild
 RUN mkdir -p /alice
 WORKDIR /alice
 RUN apt-get -y install git
-RUN aliBuild init AliRoot
-RUN aliBuild init AliPhysics
 RUN apt-get -y install libncurses5-dev
 RUN apt-get -y install libperl-dev
 RUN apt-get -y install curl libcurl4-gnutls-dev
@@ -43,8 +41,8 @@ RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 # Add keys to the aliphysics
-WORKDIR /alice/AliPhysics
-RUN git remote add kqf git@github.com:kqf/AliPhysics
+# WORKDIR /alice/AliPhysics
+# RUN git remote add kqf git@github.com:kqf/AliPhysics
 
 RUN echo "Install aliPhysics aliBuild build AliPhysics"
 WORKDIR /alice
