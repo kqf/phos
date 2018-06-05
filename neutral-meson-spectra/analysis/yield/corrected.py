@@ -8,7 +8,7 @@ from vault.datavault import DataVault
 
 class TestCorrectedYield(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         unified_inputs = {
             DataVault().input("single #pi^{0} iteration3 yield aliphysics", "low"): (0, 7.0),
@@ -28,7 +28,7 @@ class TestCorrectedYield(unittest.TestCase):
         )
         estimator.transform(data, "corrected yield #pi^{0}")
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_corrected_yield_for_eta(self):
         unified_inputs = {
             DataVault().input("single #eta new tender", "low"): (0, 6.0),

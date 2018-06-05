@@ -119,25 +119,6 @@ class Options(object):
         return options
 
 
-class OptionsSPMC(Options):
-    def __init__(self, pt_fit_range,
-                 particle='#pi^{0}',
-                 ptrange='config/pt-spmc.json',
-                 spectrumconf='config/spectrum-spmc.json',
-                 backgroudpconf='config/cball-parameters-spmc-enhanced.json',
-                 signalp='config/cball-parameters-spmc-signal.json',
-                 *args,
-                 **kwargs
-                 ):
-        super(OptionsSPMC, self).__init__(ptrange=ptrange,
-                                          particle=particle,
-                                          spectrumconf=spectrumconf,
-                                          signalp=signalp,
-                                          *args, **kwargs)
-        self.spectrum.fit_range = pt_fit_range
-        self.invmass.use_mixed = False
-
-
 class CompositeOptions(object):
 
     def __init__(self, unified_inputs, particle, *args, **kwargs):
@@ -197,18 +178,6 @@ class CompositeEfficiencyOptions(object):
         for eff_options in self.suboptions:
             eff_options.analysis.pt.ptedges = ptedges
             eff_options.analysis.pt.rebins = rebins
-
-    @classmethod
-    def spmc(klass, unified_inputs, particle,
-             genname='hPt_{0}_primary_standard',
-             use_particle=True, *args, **kwargs):
-        if use_particle:
-            genname = genname.format(particle)
-        options = [EfficiencyOptions.spmc(
-            rr, particle, genname, *args, **kwargs)
-            for _, rr in unified_inputs.iteritems()
-        ]
-        return klass(options, unified_inputs.values())
 
 
 class CorrectedYieldOptions(object):

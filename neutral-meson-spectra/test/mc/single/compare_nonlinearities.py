@@ -35,7 +35,7 @@ def define_datasets():
     options = list(map(CompositeNonlinearityOptions, datasets))
     mcinput = [[data, i] for i in datasets]
     # names = "p", "p1", "p2", "p3", "n1", "n2", "n3", "initial param"
-    names = "gamma", "pi0", "0.5 pi0", "2 pi0"
+    names = "the newest", "truncated", "test", "same as test"
     return names, options, mcinput
 
 
