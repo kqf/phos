@@ -1,7 +1,7 @@
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.input import SingleHistInput
-from array import array
+from spectrum.broot import BROOT as br
 
 
 class EpSlicer(TransformerBase):
@@ -11,13 +11,11 @@ class EpSlicer(TransformerBase):
         self.options = options
 
     def transform(self, data, loggs):
-        output = data.ProjectionY()
-        rebinned = output.Rebin(
-            len(self.options.ptedges) - 1,
-            data.GetName() + "_rebinned",
-            array('d', self.options.ptedges)
-        )
-        return rebinned
+        hists = [
+            br.project_range(data, '_%d_%d', *rr)
+            for rr in zip(self.options.ptedges[:-1], self.options.ptedges[1:])
+        ]
+        return hists
 
 
 class EpRatioEstimator(TransformerBase):
