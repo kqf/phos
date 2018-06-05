@@ -527,5 +527,14 @@
 			"hsum": "1b4975bf824aadb0a0305d128a029e1d1817b697b97d7af1bbf1a7791f6ca4fe",
 			"description": "Single #eta simulations with all correctons"
 		}
+	},
+	"kaon2pion":
+	{
+		"latest": {
+			"file": "input-data/data/alice/HIST_pp.13TeV.mb.INEL.PREL_12062017.root",
+			"default_selection": "",
+			"hsum": "b96b7a46cbb1b516318b9197f340085619379d2d18c029bad3ac625da96ea459",
+			"description": "HADRON production measurements (ALICE) preliminary"
+		}
 	}
 }

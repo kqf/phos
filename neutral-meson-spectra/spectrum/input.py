@@ -31,7 +31,6 @@ class SingleHistInput(object):
             inputs.listname,
             self.histname
         )
-
         br.set_nevents(hist, inputs.events(
             inputs.filename, inputs.listname), self.norm)
         hist.priority = self.priority
@@ -54,9 +53,15 @@ class Input(object):
         self.label = label
 
     def events(self, filename, listname):
-        if self._n_events:
-            return self._n_events
-        return br.io.read(filename, listname, 'EventCounter').GetBinContent(2)
+        try:
+            if self._n_events:
+                return self._n_events
+            return br.io.read(
+                filename,
+                listname,
+                'EventCounter').GetBinContent(2)
+        except IOError:
+            return -137
 
     def read(self, histo=''):
         # NB: Use histo to support per module histogram

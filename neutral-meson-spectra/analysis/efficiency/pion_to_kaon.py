@@ -3,9 +3,10 @@ from spectrum.broot import BROOT as br
 from spectrum.input import SingleHistInput
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
-from spectrum.comparator import Comparator
+from spectrum.pipeline import ComparePipeline
 from spectrum.output import AnalysisOutput
 from vault.datavault import DataVault
+from spectrum.comparator import Comparator
 
 
 class HistSum(TransformerBase):
@@ -20,26 +21,44 @@ class HistSum(TransformerBase):
 
 
 class KaonToPionRatio(TransformerBase):
-    def __init__(self, pions, kaons):
+    def __init__(self, pions, kaons, plot=False):
         super(KaonToPionRatio, self).__init__()
-        self.pipeline = ReducePipeline(
-            ParallelPipeline([
-                ('kaons', HistSum(kaons)),
-                ('pions', HistSum(pions))
-            ]),
-            Comparator().compare
-        )
+        self.pipeline = ComparePipeline([
+            ('kaons', HistSum(kaons)),
+            ('pions', HistSum(pions))
+        ], plot)
 
 
-class TestPionToKaonRatio(unittest.TestCase):
+class TestKaonToPionRatio(unittest.TestCase):
+
+    # @unittest.skip("")
     def test_ratio(self):
         estimator = KaonToPionRatio(
             kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
             pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"],
+            plot=True,
         )
 
         loggs = AnalysisOutput("calculate_pion_to_kaon", particle="")
-        output = estimator.transform(
-            [[DataVault().input("pythia8", "kaon2pion")] * 2] * 2,
+
+        infile = DataVault().input(
+            "pythia8",
+            "staging",
+            listname="KaonToPionRatio"
+        )
+
+        data = estimator.transform(
+            [[infile] * 2] * 2,
             loggs
         )
+
+        estimator = ComparePipeline([
+            ("kaon", SingleHistInput("hstat_kaon_pp13_sum")),
+            ("pion", SingleHistInput("hstat_pion_pp13_sum")),
+        ], plot=True)
+
+        mc = estimator.transform(
+            [DataVault().input("kaon2pion")] * 2,
+            "test"
+        )
+        Comparator().compare(data, mc)
