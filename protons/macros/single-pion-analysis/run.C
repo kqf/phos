@@ -41,7 +41,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
 
-    TString msg = "Testing nonlinearity for different weights";
+    TString msg = "Testing different nonlinearities in tender";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";
