@@ -27,9 +27,40 @@ void run(
     AliAODInputHandler * aodH = new AliAODInputHandler();
     manager->SetInputEventHandler(aodH);
 
-    // LoadAnalysisLibraries(); // Local tests
-    // gROOT->LoadMacro("AddAnalysisTaskPP.C"); // Local tests
+    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
+    Bool_t enablePileupCuts = kTRUE;
+    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
+
+
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+
+    TString tenderOption = isMC ? "Run2Default" : "";
+    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
+
+    AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
+    PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
+
+    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
+    AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
+        isMC, 
+        kTRUE,
+        kTRUE, 
+        1,          // reco pass
+        kFALSE, 
+        "",
+        kTRUE,
+        kFALSE,
+        1           // reco pass
+    );
+
+    if (isMC)
+    {
+        // Important: Keep track of this variable
+        // ZS threshold in unit of GeV
+        Double_t zs_threshold = 0.020;
+        PHOSSupply->ApplyZeroSuppression(zs_threshold);
+    }
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
     TString pref =  isMC ? "MC" : "";
     AddAnalysisTaskPP(isMC, "test");
