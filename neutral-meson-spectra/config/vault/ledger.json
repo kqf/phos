@@ -460,13 +460,13 @@
 	{
 		"low": {
 			"file": "input-data/mc/single/pi0/iterationd3_nonlin14/LHC17j3b1.root",
-			"default_selection": "PhysEff3",
+			"default_selection": "PhysEff",
 			"hsum": "0a99e169cb24414ef145ed70102c404250c77d04e21773fb700c3696747a1361",
 			"description": "Add fine tuning of the nonlinearity parametrization"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/iterationd3_nonlin14/LHC17j3b2.root",
-			"default_selection": "PhysEff3",
+			"default_selection": "PhysEff",
 			"hsum": "bc97f8fe328064d16fa632b41caa50e242b8772e5e3361fd7d427fcdf4d40c2a",
 			"description": "Add fine tuning of the nonlinearity parametrization"
 		}

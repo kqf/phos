@@ -69,8 +69,12 @@ class MassFitter(object):
 
 class RangeEstimator(object):
 
-    _output = "mass", "width"
-    _titles = "particle mass", "particle width"
+    _quantities = "mass", "width"
+    _output = "fit_mass", "fit_width"
+    _titles = (
+        "particle mass position; m, GeV, p_{T}, GeV/c",
+        "particle peak width; #sigma, GeV, p_{T}, GeV/c",
+    )
 
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
@@ -79,7 +83,7 @@ class RangeEstimator(object):
 
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(
-            self._output,
+            self._quantities,
             masses
         )
 
@@ -135,7 +139,7 @@ class RangeEstimator(object):
 
     def _fit_ranges(self, quantities, loggs):
         ROOT.gStyle.SetOptStat("")
-        mass, sigma = quantities.mass, quantities.width
+        mass, sigma = quantities.fit_mass, quantities.fit_width
 
         massf = self.fit_mass(mass)
         sigmaf = self.fit_sigma(sigma)

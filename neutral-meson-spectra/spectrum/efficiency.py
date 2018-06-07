@@ -47,7 +47,7 @@ class CompositeEfficiency(TransformerBase):
         )
 
     def _stepname(self, ranges):
-        return "#varepsilon {0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
+        return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
 
 
 class Efficiency(TransformerBase):

@@ -21,14 +21,14 @@ def define_general_datasets():
 def define_composite_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin12",
+            DataVault().input("single #pi^{0} iteration d3 nonlin14",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin12",
+            DataVault().input("single #pi^{0} iteration d3 nonlin14",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
-        for i in ["2"]
+        for i in [""]
     ]
 
     reference = [
@@ -43,8 +43,9 @@ def define_composite_datasets():
                               ): (7.0, 20)
         },
     ]
-    datasets = datasets + reference
-    names = "nonlin", "standard", "0.5 standard", "2 standard", "ref"
+    # datasets = datasets + reference
+    # , "standard", "0.5 standard", "2 standard", "ref"
+    names = "single particle production",
     return names, datasets
 
 
@@ -64,7 +65,9 @@ class CompareDifferentEfficiencies(unittest.TestCase):
         ]
 
         estimator = ComparePipeline(estimators, plot=True)
+        loggs = AnalysisOutput("compare different datasts")
         estimator.transform(
             datasets + gdatasets,
-            loggs=AnalysisOutput("compare different datasts")
+            loggs,
         )
+        loggs.plot()

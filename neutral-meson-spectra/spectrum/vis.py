@@ -83,7 +83,8 @@ class MultipleVisualizer(object):
         mainpad = pad if pad else su.gcanvas()
         mainpad.cd()
         set_pad_logx(first_hist, mainpad)
-        mainpad.SetLogy(first_hist.logy)
+        if 'eff' not in first_hist.GetName():
+            mainpad.SetLogy(first_hist.logy)
 
         for i, h in enumerate(hists):
             color, marker = self._color_marker(ci, i, h)
@@ -101,6 +102,7 @@ class MultipleVisualizer(object):
         stack.Draw("nostack")
         stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
         stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
+        stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
         self.cache.append(stack)
         self.cache.extend(hists)
@@ -174,12 +176,16 @@ class Visualizer(MultipleVisualizer):
         return ratio
 
     def set_ratio_yaxis(self, ratio, n=3):
-        if self.rrange:
-            ratio.SetAxisRange(self.rrange[0], self.rrange[1], 'Y')
-            return
+        bins, _, _ = br.bins(ratio)
+        try:
+            ymin, ymax = self.rrange
+            if any(ymin < b < ymax for b in bins):
+                ratio.SetAxisRange(self.rrange[0], self.rrange[1], 'Y')
+                return
+        except ValueError:
+            pass
 
-        bins = np.array([ratio.GetBinContent(i)
-                         for i in range(1, ratio.GetXaxis().GetNbins())])
+        bins, _, _ = br.bins(ratio)
         mean, std = np.mean(bins), np.std(bins)
         no_outliers = [b for b in bins if abs(b - mean) < n * std]
 

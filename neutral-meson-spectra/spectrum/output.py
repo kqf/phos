@@ -24,7 +24,8 @@ class LogItem(object):
         for hist in self.data:
             diff = Comparator(
                 stop=stop,
-                oname="{0}/{1}".format(self.name, self.oname(hist))
+                oname="{0}/{1}".format(self.name, self.oname(hist)),
+                rrange=(0, 2),
             )
             diff.compare(hist)
 
@@ -65,7 +66,8 @@ class MergedLogItem(object):
 
             diff = Comparator(
                 stop=stop,
-                oname="{0}/{1}".format(self.name, name)
+                oname="{0}/{1}".format(self.name, name),
+                rrange=(0, 2),
             )
             diff.compare(logg)
 
