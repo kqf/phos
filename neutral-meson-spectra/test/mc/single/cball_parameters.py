@@ -33,7 +33,7 @@ class TestBackgroundSubtraction(unittest.TestCase):
     def test_background_fitting(self):
         inputs = Input(
             DataVault().file(
-                "single #pi^{0} iteration1 new weights",
+                "single #pi^{0} iteration d3 nonlin13",
                 "high"
             ),
             "PhysEff"

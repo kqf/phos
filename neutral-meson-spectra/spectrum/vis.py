@@ -64,10 +64,11 @@ class MultipleVisualizer(object):
     def compare_visually(self, hists, ci, pad=None):
         canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
         su.ticks(canvas)
-        legend = ROOT.TLegend(0.7, 0.65, 0.8, 0.85)
+        legend = ROOT.TLegend(0.55, 0.65, 0.8, 0.85)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         legend.SetTextSize(0.04)
+        # legend.SetTextFont(132)
 
         if self.labels:
             for h, l in zip(hists, self.labels):

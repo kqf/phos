@@ -17,17 +17,17 @@ class TestDataSetForConsistency(unittest.TestCase):
 
     def test_dataset(self):
         # Configure the analysis
-        options = Options()
+        options = Options(particle="#eta")
         options.output.scalew_spectrum = True
         estimator = Analysis(options)
 
         # Analyze the data
         observables = estimator.transform(
-            DataVault().input('data', 'LHC17 qa1', 'Phys', label='old'),
-            AnalysisOutput("consistency check", "\pi^{0}")
+            DataVault().input('data'),
+            AnalysisOutput("ALICE, \sqrt{s} = 13 TeV", "\pi^{0}")
         )
 
-        c1 = gcanvas(1. / 2, resize=True)
+        # c1 = gcanvas(1. / 2, resize=True)
         diff = cmpr.Comparator()
         for obs in observables:
             diff.compare(obs)

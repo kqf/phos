@@ -36,7 +36,8 @@ class SelectAndFitHistograms(TransformerBase):
         histogram.Fit(func, 'q')
         histogram.SetLineColor(37)
         func.SetLineColor(46)
-        print "The scale is", histogram.GetTitle(), func.GetParameter(0)
+        val, err = func.GetParameter(0), func.GetParError(0)
+        print "The scale is", histogram.GetTitle(), val, err
 
 
 class CballParametersEstimator(TransformerBase):
@@ -59,14 +60,14 @@ class CrystalBallParametersPi0(unittest.TestCase):
         hists = estimator.transform(
             DataVault().input("data"),
             loggs=AnalysisOutput(
-                "test cball parameters for %s" % self.particle
+                "%s #rightarrow #gamma #gamma, ALICE, pp #sqrt{s} = 13 TeV " % self.particle
             ),
         )
         for h in hists:
             Comparator().compare(h)
 
 
-class CrystalBallParametersEta(CrystalBallParametersPi0):
+# class CrystalBallParametersEta(CrystalBallParametersPi0):
 
-    def setUp(self):
-        self.particle = "#eta"
+#     def setUp(self):
+#         self.particle = "#eta"

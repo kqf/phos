@@ -19,20 +19,20 @@ def define_datasets():
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
-        for i in ["", "1", "2", "3"]
+        for i in ["3"]
     ]
 
-    # datasets = datasets + [
-    #     {
-    #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
-    #                           "low",
-    #                           listname="PhysEff" + i): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration d3 nonlin4",
-    #                           "high",
-    #                           listname="PhysEff" + i): (7.0, 20)
-    #     }
-    #     for i in ["1", "2", "3"]
-    # ]
+    datasets = datasets + [
+        {
+            DataVault().input("single #pi^{0} iteration d3 nonlin14",
+                              "low",
+                              listname="PhysEff" + i): (0, 7.0),
+            DataVault().input("single #pi^{0} iteration d3 nonlin14",
+                              "high",
+                              listname="PhysEff" + i): (7.0, 20)
+        }
+        for i in [""]
+    ]
 
     reference = [
         {
@@ -47,7 +47,7 @@ def define_datasets():
         },
     ]
     datasets = datasets + reference
-    names = "nonlin", "standard", "0.5 standard", "2 standard", "ref"
+    names = "old", "new", "the oldest one"
     return names, datasets
 
 
