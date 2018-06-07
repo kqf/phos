@@ -6,7 +6,7 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DATASET = LHC17j3b2
+DATASET = LHC17j3b1
 OUTDIR = results/mc/single/pi0/interationd3_nonlin14
 TEST_SELECTION = PhysTender
 

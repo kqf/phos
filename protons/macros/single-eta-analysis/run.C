@@ -46,7 +46,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
 
-    TString msg = "Single #eta Analysis + weights iteration 0";
+    TString msg = "Single #eta Analysis + weights + new nonlinearity";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";
