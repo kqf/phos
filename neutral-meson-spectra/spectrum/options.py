@@ -258,7 +258,7 @@ class CompositeNonlinearityOptions(object):
         super(CompositeNonlinearityOptions, self).__init__()
         ptrange = "config/pt-nonlinearity.json"
 
-        self.data = Options(ptrange=ptrange)
+        self.data = Options(particle=particle, ptrange=ptrange)
         self.mc = CompositeOptions(unified_inputs, particle, ptrange=ptrange)
         # NB: Don't assingn to get an exception
         self.fitf = None

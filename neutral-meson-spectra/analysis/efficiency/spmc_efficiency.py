@@ -22,7 +22,7 @@ class TestFakeEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_pi0_efficiency(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} iteration d3 nonlin14"
@@ -35,9 +35,10 @@ class TestEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyEta(unittest.TestCase):
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_eta_efficiency(self):
-        production = "single #eta new tender"
+        production = "single #eta nonlin"
+        # production = "single #eta new tender"
         unified_inputs = {
             DataVault().input(production, "low"): (0, 6),
             DataVault().input(production, "high"): (6, 20)
@@ -56,6 +57,6 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
         unified_inputs.keys(),
         loggs
     )
-    loggs.plot()
+    # loggs.plot()
     diff = Comparator()
     diff.compare(efficiency)

@@ -516,6 +516,21 @@
 			"description": "Single #eta simulations with all correctons"
 		}
 	},
+	"single #eta nonlin":
+	{
+		"low": {
+			"file": "input-data/mc/single/eta/iteration1_new_nonlinearity/LHC17j3c1.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "01f69effa4f3cd67a81bf609788631b9371a87436c911985cc2cf85ec290c0d3",
+			"description": "Single #eta simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/mc/single/eta/iteration1_new_nonlinearity/LHC17j3c2.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "6f8f6e1283fec95e5b43a605e0f5f588c1ee6d272c4a4d4eb3f7bb11760064f2",
+			"description": "Single #eta simulations with all correctons"
+		}
+	},
 
 	"epos": {
 	},

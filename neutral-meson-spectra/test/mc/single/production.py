@@ -21,15 +21,21 @@ def inputs(production, is_nonlin=False):
     return unified_inputs
 
 
-class TestProductions(unittest.TestCase):
+class TestProductionsPi0(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration d3 nonlin14"
+        # self.production_name = "single #pi^{0} iteration d3 nonlin14"
+        # self.particle = "#pi^{0}"
+        self.production_name = "single #eta nonlin"
+        self.particle = "#eta"
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_nonlinearity(self):
         unified_inputs = inputs(self.production_name, is_nonlin=True)
-        options = CompositeNonlinearityOptions(unified_inputs)
+        options = CompositeNonlinearityOptions(
+            unified_inputs,
+            self.particle,
+        )
         options.fitf = None
         estimator = Nonlinearity(options, plot=True)
         nonlinearity = estimator.transform(
@@ -42,10 +48,12 @@ class TestProductions(unittest.TestCase):
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_decalibration(self):
         unified_inputs = inputs(self.production_name)
-        options = CompositeNonlinearityOptions(unified_inputs)
+        options = CompositeNonlinearityOptions(
+            unified_inputs,
+            self.particle,)
         options.fitf = None
         estimator = Decalibration(options, plot=True)
         nonlinearity = estimator.transform(
@@ -60,7 +68,10 @@ class TestProductions(unittest.TestCase):
     @unittest.skip('')
     def test_weights(self):
         unified_inputs = inputs(self.production_name)
-        options = CompositeNonlinearityOptions(unified_inputs)
+        options = CompositeNonlinearityOptions(
+            unified_inputs,
+            particle=self.particle
+        )
         options.fitf = None
         estimator = Shape(options)
         nonlinearity = estimator.transform(

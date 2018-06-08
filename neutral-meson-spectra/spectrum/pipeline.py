@@ -63,6 +63,7 @@ class OutputDecorator(TransformerBase):
         data.SetName(new_name)
         if self.title:
             data.SetTitle(self.title)
+            data.label = "efficiency"
         return data
 
 
