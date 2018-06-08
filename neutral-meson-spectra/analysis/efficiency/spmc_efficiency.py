@@ -14,34 +14,34 @@ class TestFakeEfficiencyPi0(unittest.TestCase):
     @unittest.skip('')
     def test_artificial_efficiency(self):
         unified_inputs = {
-            "LHC16-single-low.root": (0, 7),
-            "LHC16-single.root": (7, 20)
+            "LHC16-single-low.root": (0.0, 8.0),
+            "LHC16-single.root": (4.0, 20.0)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_pi0_efficiency(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} iteration d3 nonlin14"
         unified_inputs = {
-            DataVault().input(production, "low", "PhysEff"): (0, 7.0),
-            DataVault().input(production, "high", "PhysEff"): (7.0, 20)
+            DataVault().input(production, "low", "PhysEff"): (0.0, 8.0),
+            DataVault().input(production, "high", "PhysEff"): (4.0, 20.0)
         }
         evaluate_spmc_efficiency(unified_inputs, "#pi^{0}")
 
 
 class TestEfficiencyEta(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_eta_efficiency(self):
         production = "single #eta nonlin"
         # production = "single #eta new tender"
         unified_inputs = {
-            DataVault().input(production, "low"): (0, 6),
-            DataVault().input(production, "high"): (6, 20)
+            DataVault().input(production, "low"): (0.0, 10.0),
+            DataVault().input(production, "high"): (4.0, 20.0)
         }
         evaluate_spmc_efficiency(unified_inputs, "#eta")
 
@@ -57,6 +57,6 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
         unified_inputs.keys(),
         loggs
     )
-    # loggs.plot()
+    loggs.plot()
     diff = Comparator()
     diff.compare(efficiency)

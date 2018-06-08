@@ -1,6 +1,7 @@
 import ROOT
 import collections as coll
 from array import array
+from broot import BROOT as br
 
 
 class SpectrumExtractor(object):
@@ -98,8 +99,9 @@ class SpectrumExtractor(object):
 
 
 class OutputCreator(object):
-    def __init__(self, name, title, label, priority=999):
+    def __init__(self, ptrange, name, title, label, priority=999):
         super(OutputCreator, self).__init__()
+        self.ptrange = ptrange
         self.title = title
         self.label = label
         self.name = name + '_' + filter(str.isalnum, self.label)
@@ -118,11 +120,19 @@ class OutputCreator(object):
         for i, (d, e) in enumerate(data):
             hist.SetBinContent(i + 1, d)
             hist.SetBinError(i + 1, e)
+
+        xmin, xmax = self.ptrange
+        for i in br.range(hist):
+            if xmin < hist.GetBinCenter(i) < xmax:
+                continue
+            hist.SetBinError(i, 0)
+            hist.SetBinContent(i, 0)
+
         return hist
 
     @staticmethod
-    def output_histogram(name, title, label, bins, data):
-        output = OutputCreator(name, title, label)
+    def output_histogram(ptrange, name, title, label, bins, data):
+        output = OutputCreator(ptrange, name, title, label)
         return output.get_hist(bins, data)
 
     @classmethod
@@ -130,11 +140,12 @@ class OutputCreator(object):
                typename,
                data,
                order,
+               ptrange,
                ptedges,
                titles,  # self.opt.output[quant] % self.opt.partlabel,
                label
-               ):
 
+               ):
         OutType = coll.namedtuple(typename, order)
 
         iter_collection = zip(
@@ -146,6 +157,7 @@ class OutputCreator(object):
         # Don't use format, as it confuses root/latex syntax
         output = {quant:
                   OutputCreator.output_histogram(
+                      ptrange,
                       quant,
                       titles[quant],
                       label,

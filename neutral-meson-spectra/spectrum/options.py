@@ -40,6 +40,7 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle='#pi^{0}',
+                 fitrange=(0, 20),
                  relaxedcb=False,
                  fitf='cball',
                  spectrumconf='config/spectrum.json',
@@ -53,9 +54,12 @@ class Options(object):
 
         self.spectrum = AnalysisOption(
             'RangeEstimator', spectrumconf, particle)
+        self.spectrum.ptrange = fitrange
+
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', outconf, particle)
         self.output.scalew_spectrum = False
+        self.output.ptrange = fitrange
 
         self.backgroundp = AnalysisOption(
             'backgroundp', backgroudpconf, particle)
@@ -107,6 +111,7 @@ class Options(object):
              ptrange='config/pt-spmc.json', *args, **kwargs):
         options = Options(
             particle=particle,
+            fitrange=pt_fit_range,
             ptrange=ptrange,
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
@@ -114,7 +119,6 @@ class Options(object):
             *args,
             **kwargs
         )
-        options.spectrum.fit_range = pt_fit_range
         options.invmass.use_mixed = False
         return options
 
@@ -172,7 +176,9 @@ class CompositeEfficiencyOptions(object):
             rr, particle, genname, *args, **kwargs)
             for _, rr in unified_inputs.iteritems()
         ]
-        self.mergeranges = unified_inputs.values()
+        self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
+        if particle == "#eta":
+            self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
 
     def set_binning(self, ptedges, rebins):
         for eff_options in self.suboptions:

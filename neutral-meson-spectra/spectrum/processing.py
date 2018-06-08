@@ -93,6 +93,7 @@ class RangeEstimator(object):
             "MassWidthOutput",
             values,
             self._output,
+            self.opt.ptrange,
             RawMass.ptedges(masses),
             titles,
             loggs.label
@@ -208,6 +209,7 @@ class DataExtractor(object):
             "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
+            self.opt.ptrange,
             edges,
             titles,
             loggs.label

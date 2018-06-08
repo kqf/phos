@@ -22,8 +22,8 @@ class TestEfficiency(unittest.TestCase):
 
     def test_composite(self):
         unified_inputs = {
-            DataVault().input("single #pi^{0}", "low"): (0, 7),
-            DataVault().input("single #pi^{0}", "high"): (7, 20)
+            DataVault().input("single #pi^{0}", "low"): (0.0, 8.0),
+            DataVault().input("single #pi^{0}", "high"): (4.0, 20.0)
         }
 
         estimator = Efficiency(

@@ -56,7 +56,7 @@ class ValidateReconstructedPi0(unittest.TestCase):
     def test_pi0_generated(self):
         estimator = ReconstructedValidator(
             tsallis(),
-            Options.spmc((7, 20), particle="#pi^{0}")
+            Options.spmc((8.0, 20.0), particle="#pi^{0}")
         )
 
         loggs = AnalysisOutput(

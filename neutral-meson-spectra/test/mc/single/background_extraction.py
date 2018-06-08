@@ -51,7 +51,7 @@ class TestBackgroundSubtraction(unittest.TestCase):
     def test_background_fitting(self):
         loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
 
-        options = Options.spmc((7, 20))
+        options = Options.spmc((4.0, 20.0))
         # options.fitf = 'gaus'
         masses = MassExtractor(options).transform(
             # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),

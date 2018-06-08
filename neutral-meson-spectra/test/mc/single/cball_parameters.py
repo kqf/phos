@@ -40,12 +40,12 @@ class TestBackgroundSubtraction(unittest.TestCase):
         )
 
         loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
-        options = Options.spmc((7, 20))
+        options = Options.spmc((4.0, 20.0))
 
         outputs1 = Analysis(options).transform(inputs, loggs)
 
         loggs = AnalysisOutput("relaxed cb parameters", "#pi^{0}")
-        options = Options.spmc((7, 20))
+        options = Options.spmc((4.0, 20.0))
         options.signalp.relaxed = True
 
         outputs2 = Analysis(options).transform(inputs, loggs)

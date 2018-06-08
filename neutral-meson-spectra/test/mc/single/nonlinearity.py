@@ -41,9 +41,9 @@ class TestNonlinearitySPMC(unittest.TestCase):
         production = "single #pi^{0} iteration d3 nonlin13"
         unified_inputs = {
             DataVault().input(production, "low", mcsel,
-                              histname=histname): (0, 7),
+                              histname=histname): (0.0, 8.0),
             DataVault().input(production, "high", mcsel,
-                              histname=histname): (7, 20)
+                              histname=histname): (4.0, 20.0)
         }
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = nonlinearity_function()

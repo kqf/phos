@@ -13,10 +13,10 @@ def inputs(production, is_nonlin=False):
     unified_inputs = {
         DataVault().input(production, "low",
                           listname=listname,
-                          histname=histname): (0, 7),
+                          histname=histname): (0.0, 8.0),
         DataVault().input(production, "high",
                           listname=listname,
-                          histname=histname): (7, 20)
+                          histname=histname): (4.0, 20.0)
     }
     return unified_inputs
 
@@ -24,10 +24,10 @@ def inputs(production, is_nonlin=False):
 class TestProductionsPi0(unittest.TestCase):
 
     def setUp(self):
-        # self.production_name = "single #pi^{0} iteration d3 nonlin14"
-        # self.particle = "#pi^{0}"
-        self.production_name = "single #eta nonlin"
-        self.particle = "#eta"
+        self.production_name = "single #pi^{0} iteration d3 nonlin14"
+        self.particle = "#pi^{0}"
+        # self.production_name = "single #eta nonlin"
+        # self.particle = "#eta"
 
     @unittest.skip('')
     def test_nonlinearity(self):
@@ -56,13 +56,15 @@ class TestProductionsPi0(unittest.TestCase):
             self.particle,)
         options.fitf = None
         estimator = Decalibration(options, plot=True)
+        loggs=AnalysisOutput("decalibration estimation")
         nonlinearity = estimator.transform(
             [
                 DataVault().input("data"),
                 unified_inputs
             ],
-            loggs=AnalysisOutput("decalibration estimation")
+            loggs
         )
+        loggs.plot()
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
     @unittest.skip('')

@@ -43,10 +43,10 @@ class TestNonlinearityEstimator(unittest.TestCase):
         unified_inputs = {
             DataVault().input("single #pi^{0}", "low",
                               listname="PhysNonlin",
-                              histname="MassPt_SM0"): (0, 7),
+                              histname="MassPt_SM0"): (0.0, 8.0),
             DataVault().input("single #pi^{0}", "high",
                               listname="PhysNonlin",
-                              histname="MassPt_SM0"): (7, 20)
+                              histname="MassPt_SM0"): (8.0, 20.0)
         }
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = nonlinearity_function()
