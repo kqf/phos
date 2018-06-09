@@ -35,6 +35,7 @@ class LogItem(object):
             except BaseException:
                 return self.name.split('/')[-1]
 
+
 class MultirangeLogItem(LogItem):
 
     def save(self, stop):

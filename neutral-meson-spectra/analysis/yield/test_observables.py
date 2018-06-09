@@ -40,7 +40,7 @@ class TestSpectrum(unittest.TestCase):
             DataVault().input("data", "stable", selection, label='testsignal'),
             AnalysisOutput("testing_the_singnal", particle)
         )
-        actual = [br.bins(h).contents for h in output]
+        actual = [list(br.bins(h).contents) for h in output]
 
         mymsg = '\n\nActual values:\n' + str(actual)
         for a, b, c in zip(self.nominal[particle], actual, output):

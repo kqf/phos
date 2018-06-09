@@ -40,7 +40,7 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle='#pi^{0}',
-                 fitrange=(10, 20),
+                 fitrange=(0, 20),
                  relaxedcb=False,
                  fitf='cball',
                  spectrumconf='config/spectrum.json',
@@ -58,7 +58,7 @@ class Options(object):
 
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', outconf, particle)
-        self.output.scalew_spectrum = False
+        self.output.scalew_spectrum = True
         self.output.ptrange = fitrange
 
         self.backgroundp = AnalysisOption(
