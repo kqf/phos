@@ -127,11 +127,21 @@ class CompositeOptions(object):
 
     def __init__(self, unified_inputs, particle, *args, **kwargs):
         super(CompositeOptions, self).__init__()
-        self.mergeranges = [rr for rr in unified_inputs.values()]
-        options = [Options.spmc(rr, particle, *args, **kwargs)
-                   for rr in self.mergeranges]
-        names = ["{0}-{1}".format(*rr) for rr in self.mergeranges]
+        ranges = [rr for rr in unified_inputs.values()]
+        options = [
+            Options.spmc(rr, particle, *args, **kwargs)
+            for rr in ranges
+        ]
+
+        names = ["{0}-{1}".format(*rr) for rr in ranges]
         self.steps = zip(names, options)
+
+        self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
+        if particle == "#eta":
+            self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
+
+        if ranges[0][0] > ranges[0][1]:
+            self.mergeranges = reversed(self.mergeranges)
 
 
 class EfficiencyOptions(object):
@@ -179,6 +189,12 @@ class CompositeEfficiencyOptions(object):
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
         if particle == "#eta":
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
+
+        ranges = unified_inputs.values()
+        if ranges[0][0] > ranges[0][1]:
+            self.mergeranges = reversed(self.mergeranges)
+
+        self.analysis = CompositeOptions(unified_inputs, particle)
 
     def set_binning(self, ptedges, rebins):
         for eff_options in self.suboptions:

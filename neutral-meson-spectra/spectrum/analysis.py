@@ -44,8 +44,11 @@ class CompositeAnalysis(TransformerBase):
 
         # Transpose
         pairs = zip(*hists)
-        truncated = [br.sum_trimm(obs_pt, self.mergeranges)
-                     for obs_pt in pairs]
+
+        truncated = [
+            br.sum_trimm(obs_pt, self.mergeranges)
+            for obs_pt in pairs
+        ]
 
         # Use the same container as normal analysis
         # TODO: Fix me?

@@ -8,6 +8,7 @@ from pipeline import Pipeline, RatioUnion, HistogramSelector
 from pipeline import OutputDecorator
 from pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
 from broot import BROOT as br
+from processing import RangeEstimator
 
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
@@ -32,12 +33,39 @@ class SimpleEfficiency(TransformerBase):
         ])
 
 
+class PeakPositionWidthEstimator(TransformerBase):
+    def __init__(self, options, plot=False):
+        super(PeakPositionWidthEstimator, self).__init__(plot)
+        self.options = options
+        self.pipeline = Analysis(options.analysis)
+        name, option = options.analysis.steps[0]
+        self.restimator = RangeEstimator(option.spectrum)
+
+    def transform(self, data, loggs):
+        output = self.pipeline.transform(data, loggs)
+
+        massf = self.restimator.fit_mass(output.mass)
+        widthf = self.restimator.fit_sigma(output.width)
+        mass_pars, _ = br.pars(massf)
+        width_pars, _ = br.pars(widthf)
+
+        for option in self.options.suboptions:
+            option.analysis.spectrum.mass_pars = mass_pars
+            option.analysis.spectrum.width_pars = width_pars
+            option.analysis.spectrum.fit_mass_width = False
+
+        loggs.update(
+            "composite_range_estimator",
+            [output.mass, output.width],
+            mergable=True)
+        return data  # NB: Don't change the data
+
+
 class CompositeEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):
         super(CompositeEfficiency, self).__init__(plot)
-
-        self.pipeline = ReducePipeline(
+        efficiency = ReducePipeline(
             ParallelPipeline([
                 (self._stepname(ranges), Efficiency(opt, plot))
                 for (opt, ranges) in zip(options.suboptions,
@@ -45,6 +73,10 @@ class CompositeEfficiency(TransformerBase):
             ]),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
+        self.pipeline = Pipeline([
+            ("preliminary fit", PeakPositionWidthEstimator(options)),
+            ("efficiency", efficiency)
+        ])
 
     def _stepname(self, ranges):
         return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
