@@ -6,7 +6,7 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DATASET = LHC17j3b2
+DATASET = LHC17j3b1
 OUTDIR = results/mc/single/pi0/nonlinearity_scan
 TEST_SELECTION = PhysTender
 
