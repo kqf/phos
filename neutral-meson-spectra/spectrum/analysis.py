@@ -34,6 +34,7 @@ class CompositeAnalysis(TransformerBase):
         )
 
     def merge(self, hists):
+        print "REACHED HERE"
         if len(hists) == 2:
             spectra = map(lambda x: x.spectrum, hists)
             for spec in spectra:

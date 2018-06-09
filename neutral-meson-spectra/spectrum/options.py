@@ -40,7 +40,7 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle='#pi^{0}',
-                 fitrange=(0, 20),
+                 fitrange=(10, 20),
                  relaxedcb=False,
                  fitf='cball',
                  spectrumconf='config/spectrum.json',
@@ -139,9 +139,11 @@ class CompositeOptions(object):
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
         if particle == "#eta":
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
+        print ranges
 
-        if ranges[0][0] > ranges[0][1]:
-            self.mergeranges = reversed(self.mergeranges)
+        if ranges[0][0] > ranges[1][0]:
+            self.mergeranges = self.mergeranges[::-1]
+        print self.mergeranges
 
 
 class EfficiencyOptions(object):
@@ -191,8 +193,10 @@ class CompositeEfficiencyOptions(object):
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
 
         ranges = unified_inputs.values()
-        if ranges[0][0] > ranges[0][1]:
-            self.mergeranges = reversed(self.mergeranges)
+        if ranges[0][0] > ranges[1][0]:
+            self.mergeranges = self.mergeranges[::-1]
+        print ranges
+        print self.mergeranges
 
         self.analysis = CompositeOptions(unified_inputs, particle)
 

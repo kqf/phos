@@ -54,9 +54,9 @@ def evaluate_spmc_efficiency(unified_inputs, particle):
 
     loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle))
     efficiency = Efficiency(options).transform(
-        unified_inputs.keys(),
+        unified_inputs,
         loggs
     )
-    loggs.plot()
     diff = Comparator()
     diff.compare(efficiency)
+    loggs.plot()

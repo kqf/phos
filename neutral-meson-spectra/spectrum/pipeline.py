@@ -183,5 +183,5 @@ class RatioUnion(object):
         numerator, denominator = br.rebin_as(numerator, denominator)
         br.scalew(denominator)
         br.scalew(numerator)
-        loggs.update("ratio_union", [[numerator, denominator]])
+        loggs.update("ratio_union", [[numerator, denominator]], mergable=True)
         return br.ratio(numerator, denominator, self.error)

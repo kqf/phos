@@ -41,11 +41,15 @@ class PeakPositionWidthEstimator(TransformerBase):
         name, option = options.analysis.steps[0]
         self.restimator = RangeEstimator(option.spectrum)
 
-    def transform(self, data, loggs):
+    def _estimate(self, data, loggs):
         output = self.pipeline.transform(data, loggs)
 
         massf = self.restimator.fit_mass(output.mass)
         widthf = self.restimator.fit_sigma(output.width)
+        return output.mass, massf, output.width, widthf
+
+    def transform(self, data, loggs):
+        mass, massf, width, widthf = self._estimate(data, loggs)
         mass_pars, _ = br.pars(massf)
         width_pars, _ = br.pars(widthf)
 
@@ -56,7 +60,7 @@ class PeakPositionWidthEstimator(TransformerBase):
 
         loggs.update(
             "composite_range_estimator",
-            [output.mass, output.width],
+            [mass, width],
             mergable=True)
         return data  # NB: Don't change the data
 

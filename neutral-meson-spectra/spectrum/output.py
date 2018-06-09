@@ -22,18 +22,18 @@ class LogItem(object):
 
     def save(self, stop):
         for hist in self.data:
-            diff = Comparator(
-                stop=stop,
-                oname="{0}/{1}".format(self.name, self.oname(hist)),
-            )
+            oname = "{0}/{1}".format(self.name, self.oname(hist))
+            diff = Comparator(stop=stop, oname=oname)
             diff.compare(hist)
 
     def oname(self, hist):
         try:
             return hist.GetName()
         except AttributeError:
-            return self.name.split('/')[-1]
-
+            try:
+                return hist[0].GetName()
+            except BaseException:
+                return self.name.split('/')[-1]
 
 class MultirangeLogItem(LogItem):
 
@@ -62,10 +62,10 @@ class MergedLogItem(object):
                 name = logg[0].GetName()
             except AttributeError:
                 name = logg[0][0].GetName()
-
+            output = "merged-{0}/{1}".format(self.name, name)
             diff = Comparator(
                 stop=stop,
-                oname="{0}/{1}".format(self.name, name),
+                oname=output
             )
             diff.compare(logg)
 
