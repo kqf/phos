@@ -1,6 +1,5 @@
 import os
 import ROOT
-from math import sqrt
 from collections import Iterable
 
 
@@ -38,30 +37,41 @@ def wait(name='', draw=True, save=False, suffix=''):
     canvas.Update()
     name = clean_name(name)
     if save:
-        canvas.SaveAs(prepare_directory(outdir + name.split('/')[0] + '.pdf'))
-        ofile = ROOT.TFile(
-            (outdir + name.split('/')[0] + '.root').replace("#", ""), "UPDATE")
-        directory = ofile.mkdir(name)
-        ofile.cd(name)
-        canvas.Write()
-        ofile.Close()
+        canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
+        save_canvas(canvas, outdir, name)
 
     canvas.Connect("Closed()", "TApplication",
-            ROOT.gApplication, "Terminate()")
+                   ROOT.gApplication, "Terminate()")
     if draw:
         ROOT.gApplication.Run(True)
 
+
+def save_canvas(canvas, outdir, name):
+    ofilename = name.split('/')[0]
+    hname = name.split('/')[-1]
+    path = name.replace(hname, '')
+
+    ofile = ROOT.TFile(
+        outdir + ofilename.replace("#", "") + ".root", "UPDATE")
+    ofile.mkdir(path)
+    ofile.cd(path)
+    canvas.Write(hname)
+    ofile.Close()
+
+
 def canvas(name, x=1., y=1., scale=6):
-    canvas = ROOT.TCanvas('c1', 'Canvas', int(128 * x * scale) , int(96 * y * scale))
+    canvas = ROOT.TCanvas('c1', 'Canvas', int(
+        128 * x * scale), int(96 * y * scale))
     ticks(canvas)
     return adjust_canvas(canvas)
 
-def gcanvas(x = 1., y = 1, resize = False, scale = 6):
+
+def gcanvas(x=1., y=1, resize=False, scale=6):
     ccanvas = ROOT.gROOT.FindObject('c1')
-    if ccanvas: 
+    if ccanvas:
         if not resize:
             ccanvas.cd()
-            return ccanvas 
+            return ccanvas
 
         cx, cy = map(int, [128 * x * scale, 96 * y * scale])
         ccanvas.SetWindowSize(cx, cy)
@@ -80,7 +90,7 @@ def fitstat_style():
     ROOT.gStyle.SetOptFit(1)
 
 
-def adjust_labels(hist1, hist2, scale = 1):
+def adjust_labels(hist1, hist2, scale=1):
     if not hist1 or not hist2:
         return None
 
@@ -104,6 +114,7 @@ def ticks(pad):
     pad.SetGridy()
     return pad
 
+
 def adjust_canvas(canvas):
     height = canvas.GetWindowHeight()
     canvas.SetBottomMargin(0.02 * height)
@@ -115,22 +126,17 @@ def adjust_canvas(canvas):
     return canvas
 
 
-def tsallis(x, p, a = 0.135, b = 0.135, bias = 0):
-    return (x[0] + x[0] * bias)*p[0]/2./3.1415*(p[2]-1.)*(p[2]-2.)/(p[2]*p[1]*(p[2]*p[1]+b*(p[2]-2.))) * (1.+(sqrt((x[0] +x[0] * bias)*(x[0] +x[0] * bias)+a*a)-b)/(p[2]*p[1])) ** (-p[2])
-
-
-def equals(a, b, tol = 1e-7):
-    if isinstance(a,Iterable):
+def equals(a, b, tol=1e-7):
+    if isinstance(a, Iterable):
         return all(map(lambda x, y: equals(x, y, tol), zip(a, b)))
-    return abs(a - b) < tol 
+    return abs(a - b) < tol
 
-    
+
 def in_range(x, somerange):
     a, b = somerange
     return a < x < b
 
 
-    
 class Cc:
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'
@@ -138,14 +144,13 @@ class Cc:
     ENDC = '\033[0m'
 
     @staticmethod
-    def fail(s): 
+    def fail(s):
         return '{0}{1}{2}'.format(Cc.FAIL, s, Cc.ENDC)
 
     @staticmethod
-    def warning(s): 
+    def warning(s):
         return '{0}{1}{2}'.format(Cc.warning, s, Cc.ENDC)
 
     @staticmethod
-    def ok(s): 
+    def ok(s):
         return '{0}{1}{2}'.format(Cc.OKGREEN, s, Cc.ENDC)
- 

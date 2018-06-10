@@ -113,7 +113,7 @@ class Pipeline(object):
         updated = inputs
         for name, step in self.steps:
             local_logs = AnalysisOutput(name)
-            updated = step.transform(updated, loggs)
+            updated = step.transform(updated, local_logs)
             loggs.append(local_logs)
         return updated
 
@@ -164,7 +164,7 @@ class ReducePipeline(object):
 
     def transform(self, inputs, loggs):
         updated = self.parallel.transform(inputs, loggs)
-        loggs.update("reduced_output", [updated])
+        loggs.update("reduced_output", [updated], mergable=True)
         return self.function(updated)
 
 
