@@ -27,5 +27,5 @@ class TestPeakPosition(unittest.TestCase):
         )
         # loggs.plot()
         Comparator().compare(mass)
-        Comparator().compare(width)
-        print br.pars(widthf)
+        # Comparator().compare(width)
+        print br.pars(massf)

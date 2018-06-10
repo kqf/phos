@@ -117,8 +117,11 @@ class RangeEstimator(object):
         if not self.opt.fit_mass_width:
             [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
 
+        # fitquant.FixParameter(0, par[0])
+        # fitquant.FixParameter(0, )
+
         # print self.opt.fit_range
-        quant.Fit(fitquant, "q", "", *self.opt.fit_range)
+        quant.Fit(fitquant, "q", "", 0, 20)
         quant.GetListOfFunctions().Add(fitquant)
 
         # TODO: Now we mutate options. Should we do it in future?
