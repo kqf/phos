@@ -7,7 +7,6 @@ from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
 
 class TestEfficiency(unittest.TestCase):
 
-    @unittest.skip('')
     def test_simple(self):
         estimator = Efficiency(
             EfficiencyOptions(genname='hPt_#pi^{0}_primary_'),
@@ -20,6 +19,7 @@ class TestEfficiency(unittest.TestCase):
         )
         self.assertGreater(efficiency.GetEntries(), 0)
 
+    @unittest.skip('')
     def test_composite(self):
         unified_inputs = {
             DataVault().input("single #pi^{0}", "low"): (0.0, 8.0),

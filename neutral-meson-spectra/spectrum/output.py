@@ -63,7 +63,7 @@ class MergedLogItem(object):
                 name = logg[0].GetName()
             except AttributeError:
                 name = logg[0][0].GetName()
-            output = "merged-{0}/{1}".format(self.name, name)
+            output = "{0}/{1}".format(self.name, name)
             diff = Comparator(
                 stop=stop,
                 oname=output

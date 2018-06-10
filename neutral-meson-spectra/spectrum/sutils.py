@@ -1,7 +1,7 @@
+import os
 import ROOT
 from math import sqrt
 from collections import Iterable
-import os
 
 
 def prepare_directory(name):
@@ -38,7 +38,13 @@ def wait(name='', draw=True, save=False, suffix=''):
     canvas.Update()
     name = clean_name(name)
     if save:
-        canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
+        canvas.SaveAs(prepare_directory(outdir + name.split('/')[0] + '.pdf'))
+        ofile = ROOT.TFile(
+            (outdir + name.split('/')[0] + '.root').replace("#", ""), "UPDATE")
+        directory = ofile.mkdir(name)
+        ofile.cd(name)
+        canvas.Write()
+        ofile.Close()
 
     canvas.Connect("Closed()", "TApplication",
             ROOT.gApplication, "Terminate()")

@@ -447,7 +447,6 @@ class BROOT(object):
 
     @classmethod
     def sum_trimm(klass, hists, ranges):
-        print "Trimming", ranges
         clones = map(klass.clone, hists)
         for c, r in zip(clones, ranges):
             klass.set_to_zero(c, r)
