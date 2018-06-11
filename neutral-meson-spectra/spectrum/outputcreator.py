@@ -21,7 +21,7 @@ class SpectrumExtractor(object):
         rules = {
             'mass': self.mass,
             'width': self.width,
-            'spectrum': self.nraw,
+            'spectrum': self.nmesons,
             'chi2': self.chi2,
             'nmesons': self.nmesons,
             'cball_alpha': self.cball_alpha,
@@ -60,11 +60,6 @@ class SpectrumExtractor(object):
     @handle_empty_fit
     def nmesons(self, mass):
         return mass.number_of_mesons()
-
-    @handle_empty_fit
-    def nraw(self, mass):
-        nmesons = mass.number_of_mesons()
-        return map(lambda x: x / (2. * ROOT.TMath.Pi()), nmesons)
 
     @handle_empty_fit
     def chi2(self, mass):
