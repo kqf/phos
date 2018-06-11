@@ -180,8 +180,11 @@ class Visualizer(MultipleVisualizer):
         bins, _, _ = br.bins(ratio)
         try:
             ymin, ymax = self.rrange
+            ratio.SetAxisRange(ymin, ymax, 'Y')
+            return
+            # print ymin, ymax
             if any(ymin < b < ymax for b in bins):
-                ratio.SetAxisRange(self.rrange[0], self.rrange[1], 'Y')
+                ratio.SetAxisRange(ymin, ymax, 'Y')
                 return
         except ValueError:
             pass

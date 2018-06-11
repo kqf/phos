@@ -7,11 +7,12 @@ import sutils as st
 
 class ComparePipeline(TransformerBase):
 
-    def __init__(self, estimators, plot=False):
+    def __init__(self, estimators, plot=False, **kwargs):
         super(ComparePipeline, self).__init__(plot)
+        labels = zip(*estimators)[0]
         self.pipeline = ReducePipeline(
             ParallelPipeline(estimators),
-            Comparator(labels=zip(*estimators)[0], stop=plot).compare
+            Comparator(labels=labels, stop=plot, **kwargs).compare
         )
 
 

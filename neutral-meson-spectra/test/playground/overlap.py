@@ -14,12 +14,10 @@ from spectrum.broot import BROOT as br
 
 class SignalExtractor(TransformerBase):
     def transform(self, data, loggs):
-        signals = [m.signal for m in data
+        signals = [m.mass for m in data
                    if m.pt_range[0] > 4 and m.pt_range[1] < 8]
         for s in signals:
-            s.GetXaxis().SetRangeUser(0.08, 0.2)
             s.SetAxisRange(0.08, 0.2, "X")
-        print ">>>", br.hist_range(s)
         return signals
 
 
@@ -43,7 +41,7 @@ class MassComparator(TransformerBase):
             (self._stepname(ranges), SimpleAnalysis(opt.analysis, plot))
             for (opt, ranges) in zip(options.suboptions,
                                      options.mergeranges)
-        ])
+        ], rrange=(0, 4))
 
     def _stepname(self, ranges):
         return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
