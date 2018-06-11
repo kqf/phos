@@ -490,3 +490,11 @@ class BROOT(object):
             "Histograms should have more than 0 bins"
 
         return klass.chi2(hist1, hist2) / hist1.GetNbinsX()
+
+    @classmethod
+    def hist_range(klass, hist):
+        x = hist.GetXaxis()
+        return (
+            hist.GetBinCenter(x.GetFirst()),
+            hist.GetBinCenter(x.GetLast())
+        )

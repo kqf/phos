@@ -104,6 +104,7 @@ class MultipleVisualizer(object):
         stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
         stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
+        stack.GetXaxis().SetRangeUser(*br.hist_range(first_hist))
         self.cache.append(stack)
         self.cache.extend(hists)
 
