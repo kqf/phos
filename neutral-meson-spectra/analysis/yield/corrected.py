@@ -10,9 +10,10 @@ class TestCorrectedYield(unittest.TestCase):
 
     @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
+        production = "single #pi^{0} iteration3 yield aliphysics"
         unified_inputs = {
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics", "high"): (7.0, 20)
+            DataVault().input(production, "low"): (0, 8.0),
+            DataVault().input(production, "high"): (4.0, 20)
         }
 
         data = [
@@ -30,9 +31,10 @@ class TestCorrectedYield(unittest.TestCase):
 
     # @unittest.skip('')
     def test_corrected_yield_for_eta(self):
+        production = "single #eta new tender"
         unified_inputs = {
-            DataVault().input("single #eta new tender", "low"): (0, 6.0),
-            DataVault().input("single #eta new tender", "high"): (6.0, 20)
+            DataVault().input(production, "low"): (0, 10),
+            DataVault().input(production, "high"): (4.0, 20)
         }
 
         data = [

@@ -54,17 +54,21 @@ class OutputFitter(TransformerBase):
 
 class OutputDecorator(TransformerBase):
 
-    def __init__(self, histname, title=None, plot=False):
+    def __init__(self, histname, title=None, label=None, plot=False):
         super(OutputDecorator, self).__init__(plot)
         self.histname = histname
         self.title = title
+        self.label = label
 
     def transform(self, data, loggs):
         new_name = "{}_{}".format(data.GetName(), self.histname)
         data.SetName(new_name)
         if self.title:
             data.SetTitle(self.title)
-            data.label = "efficiency"
+
+        if self.label:
+            data.label = self.label
+        loggs.update("decorated", [data])
         return data
 
 
@@ -165,7 +169,7 @@ class ReducePipeline(object):
 
     def transform(self, inputs, loggs):
         updated = self.parallel.transform(inputs, loggs)
-        loggs.update("reduced_output", [updated], mergable=True)
+        loggs.update("reduced_output", [updated])
         return self.function(updated)
 
 

@@ -22,6 +22,7 @@ class CorrectedYield(TransformerBase):
             ('corrected yield', compare),
             ('fix naming', OutputDecorator(options.analysis.particle)),
             ('fitted yield', OutputFitter(options)),
+            ('decorate output', OutputDecorator(**options.decorate)),
         ])
 
 

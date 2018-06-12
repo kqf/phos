@@ -159,7 +159,7 @@ class EfficiencyOptions(object):
         histname += "#frac{Number of reconstructed %s}" % particle
         histname += "{Number of generated primary %s}" % particle
         histname += "; p_{T}, GeV/c; efficiency #times acceptance"
-        self.decorate = "eff_" + particle, histname
+        self.decorate = "eff_" + particle, histname, "efficiency"
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
@@ -211,6 +211,15 @@ class CorrectedYieldOptions(object):
         self.efficiency = EfficiencyOptions(
             genname='hPt_{0}_primary_'.format(particle))
 
+        out_title = "Corrected {} yield;".format(particle)
+        out_title += " p_{T}, GeV/c;"
+        out_title += "#frac{1}{N_{events}} #frac{dN}{d p_{T}}}"
+        self.decorate = {
+            "histname": "corrected_yield",
+            "title": out_title,
+            "label": "ALICE, pp \sqrt{s} = 13 TeV",
+        }
+
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
         self.analysis.pt.rebins = rebins
@@ -227,6 +236,15 @@ class CompositeCorrectedYieldOptions(object):
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
         self.efficiency = CompositeEfficiencyOptions(unified_inputs, particle)
+
+        out_title = "Corrected {} yield;".format(particle)
+        out_title += " p_{T}, GeV/c;"
+        out_title += "#frac{1}{N_{events}} #frac{dN}{d p_{T}}"
+        self.decorate = {
+            "histname": "corrected_yield",
+            "title": out_title,
+            "label": "ALICE, pp \sqrt{s} = 13 TeV",
+        }
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
