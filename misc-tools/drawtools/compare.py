@@ -39,7 +39,9 @@ def compare_chi(hist1, hist2):
     percentile = hist1.Chi2Test(hist2)
     if isclose(1., percentile):
         return  # everything is fine
-    print '{0}Rate of change of {1}{2}{0} is {1}{3}{0} {4}'.format(Cc.WARNING, Cc.OKGREEN, hist1.GetName(), percentile, Cc.ENDC)
+    msg = '{0}Rate of change of {1}{2}{0} is {1}{3}{0} {4}'
+    print msg.format(Cc.WARNING, Cc.OKGREEN,
+                     hist1.GetName(), percentile, Cc.ENDC)
 
 
 def isclose(a, b, rel_tol=1e-09):

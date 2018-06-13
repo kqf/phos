@@ -14,7 +14,7 @@ def badmap(hists, c1=None):
         c1.Divide(2, 2)
 
     for i, sm in enumerate(hists):
-        pad = c1.cd(i + 1)
+        c1.cd(i + 1)
         # print sm.label, sm.GetEntries()
         sm.Draw(sm.option)
 

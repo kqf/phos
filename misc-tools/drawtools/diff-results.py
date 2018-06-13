@@ -15,7 +15,8 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def error(s): print bcolors.FAIL + s + bcolors.ENDC
+def error(s):
+    print bcolors.FAIL + s + bcolors.ENDC
 
 
 def draw_and_save(name, draw=False, save=True):
@@ -34,14 +35,17 @@ def draw_and_save(name, draw=False, save=True):
 def hist_cut(h, namecut=lambda x: True):
     res = namecut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
     if not res:
-        print bcolors.WARNING + 'Warning: Empty histogram found: ', h.GetName(), bcolors.ENDC
+        msg = "{}Warning: Empty histogram found: {}{}"
+        print msg.format(bcolors.WARNING, h.GetName(), bcolors.ENDC)
     return res
 
 
 def get_my_list(filename='AnalysisResults.root'):
     print 'Processing %s file:' % filename
     mfile = ROOT.TFile(filename)
-    # Without this line your Clones are created inside FILENAME directory. mfile -> local, so this object will when we reach the end of this function. Therefore ROOT this direcotry and all its will be destroyed.
+    # Without this line your Clones are created inside FILENAME directory.
+    # mfile -> local, so this object will when we reach the end of this
+    # function.Therefore ROOT this direcotry and all its will be destroyed.
     ROOT.gROOT.cd()
     mlist = [key.ReadObj().Clone() for key in mfile.GetListOfKeys()]
     hists = [h for h in mlist if hist_cut(h)]  # Don't take empty histograms

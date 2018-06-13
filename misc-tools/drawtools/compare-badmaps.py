@@ -28,7 +28,6 @@ def hist_cut(h, namecut=lambda x: True):
 def get_my_list(filename='AnalysisResults.root'):
     print 'Processing %s file:' % filename
     mfile = ROOT.TFile(filename)
-    # Without this line your Clones are created inside FILENAME directory. mfile -> local, so this object will when we reach the end of this function. Therefore ROOT this direcotry and all its will be destroyed.
     ROOT.gROOT.cd()
     mlist = [key.ReadObj().Clone() for key in mfile.GetListOfKeys()]
     hists = [h for h in mlist if hist_cut(h)]  # Don't take empty histograms
