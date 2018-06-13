@@ -52,6 +52,13 @@ def fit_tof_efficiency():
         "tof efficiency"
     )
     efficiency.Fit(options.fitfunc, "R")
+    efficiency.SetTitle(
+        "%s %s" % (
+            "Timing cut efficiency for efficiency",
+            # options.fitfunc.GetChisquare() / options.fitfunc.GetNDF(),
+            "; p_{T}, GeV/c; efficiency"
+        )
+    )
     diff = Comparator(crange=(0.2, 1.05))
     diff.compare(efficiency)
     return efficiency

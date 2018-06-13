@@ -72,8 +72,8 @@ class RangeEstimator(object):
     _quantities = "mass", "width"
     _output = "fit_mass", "fit_width"
     _titles = (
-        "particle mass position; m, GeV, p_{T}, GeV/c",
-        "particle peak width; #sigma, GeV, p_{T}, GeV/c",
+        "Parametrized {} mass position; p_{T}, GeV/c; m, GeV",
+        "Parametrized {} peak width; p_{T}, GeV/c; #sigma, GeV",
     )
 
     def __init__(self, options):
@@ -87,7 +87,9 @@ class RangeEstimator(object):
             masses
         )
 
-        titles = {q: t for q, t in zip(self._output, self._titles)}
+        titles = {q:
+                  t.format(self.opt.particle, T="{T}")
+                  for q, t in zip(self._output, self._titles)}
 
         self.output = OutputCreator.output(
             "MassWidthOutput",
