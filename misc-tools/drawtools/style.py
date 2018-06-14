@@ -282,7 +282,7 @@ class MultipleStyler(SingleStyler):
         self.decorate_map(canvas, maps[0].oname)
 
     def decorate_map(self, canvas, oname=None):
-        if not 'canvas' in self.data:
+        if 'canvas' not in self.data:
             return
 
         props = self.data['canvas']
