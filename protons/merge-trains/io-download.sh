@@ -3,8 +3,9 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
 # run=326_20180209-1536_child_
 # run=334_20180217-1427_child_
 # run=345_20180305-1550_child_
-run=831_20180530-1028_child_
-runlist=merge_runlist_1
+# run=831_20180530-1028_child_
+run=861_20180608-1521_child_
+runlist=merge_runlist_3
 # outdir=results/data/LHC17/iteration0
 
 
