@@ -2,7 +2,6 @@
 
 import ROOT
 import json
-import random
 from test.general_test import TestImages, GeneralTest
 
 

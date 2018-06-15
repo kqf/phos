@@ -6,7 +6,6 @@ import spectrum.comparator as cmpr
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
-from spectrum.sutils import gcanvas
 from vault.datavault import DataVault
 
 

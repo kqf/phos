@@ -26,7 +26,8 @@ class TestOffset(unittest.TestCase):
                 {
                     "xofset": 1.5,
                     "xofset": 1.7,
-                    "title": "Testing offsets for ratio plots ;x - quantity; y - observable",
+                    "title":
+                    "Testing offsets for ratio plots ;x; y - obs",
                     "label": histname,
                     "color": 1001 + i,
                     'ratio': i,

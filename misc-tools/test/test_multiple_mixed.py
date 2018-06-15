@@ -47,10 +47,14 @@ class TestMultipleMixed(TestImages, GeneralTest):
     def save_histogram(self, filename, histnames):
         ofile = ROOT.TFile(filename, "update")
 
-        def h1(sm): return ROOT.TH1F(histname % sm, "Testing ...", 200, 0, 10)
+        def h1(sm):
+            return ROOT.TH1F(
+                histname % sm, "Testing ...", 200, 0, 10)
 
-        def h2(sm): return ROOT.TH2F(histname %
-                                     sm, "Testing ...", 20, 0, 100, 20, 0, 100)
+        def h2(sm):
+            return ROOT.TH2F(
+                histname %
+                sm, "Testing ...", 20, 0, 100, 20, 0, 100)
 
         for s, histname in enumerate(histnames):
             for sm in range(1, 5):

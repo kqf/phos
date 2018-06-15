@@ -29,7 +29,7 @@ class TestProductionsPi0(unittest.TestCase):
         # self.production_name = "single #eta nonlin"
         # self.particle = "#eta"
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_nonlinearity(self):
         unified_inputs = inputs(self.production_name, is_nonlin=True)
         options = CompositeNonlinearityOptions(
@@ -37,18 +37,18 @@ class TestProductionsPi0(unittest.TestCase):
             self.particle,
         )
         options.fitf = None
-        estimator = Nonlinearity(options, plot=True)
+        estimator = Nonlinearity(options)
         nonlinearity = estimator.transform(
             [
                 DataVault().input("data", listname="Phys",
                                   histname="MassPt"),
                 unified_inputs
             ],
-            "nonlinearity estimation"
+            "nonlinearity estimation {}".format(self.particle)
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_decalibration(self):
         unified_inputs = inputs(self.production_name)
         options = CompositeNonlinearityOptions(
@@ -56,7 +56,8 @@ class TestProductionsPi0(unittest.TestCase):
             self.particle,)
         options.fitf = None
         estimator = Decalibration(options, plot=True)
-        loggs=AnalysisOutput("decalibration estimation")
+        loggs = AnalysisOutput(
+            "decalibration estimation {}".format(self.particle))
         nonlinearity = estimator.transform(
             [
                 DataVault().input("data"),

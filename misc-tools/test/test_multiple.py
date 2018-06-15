@@ -10,7 +10,7 @@ class TestMultipleImages(TestImages, GeneralTest):
     def save_config(self):
         conffile = 'config/test_single.json'
         rfile = 'input/testfile_multiple_hists.root'
-        histname = 'hSomeHistInModule_%d'
+        histname = 'hSomeHistInModule_%d/'
         pfile = 'results/test_multiple_hists.pdf'
 
         data = {

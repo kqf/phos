@@ -53,19 +53,24 @@ class SingleStyler(object):
     def read_histogram(self, rpath, properties):
         # Extract root file
         filename, path = rpath.split('.root/')
-        path = path.split('/')
+        path = path.strip().split('/')
 
         # Extract list name
         lst, path = path[0], path[1:]
         infile = ROOT.TFile(filename + '.root')
 
+
         # Handle situation when we have nested lists
         obj = infile.Get(lst)
         for n in path:
+            if not n:
+                continue
             obj = obj.FindObject(n)
+        print lst
+        print obj.GetName()
 
-        assert obj, 'Specify right path to histogram. ' + lst + \
-            ' Current path: ' + path + '. Or check your .root file.'
+        # assert obj, 'Specify right path to histogram. ' + lst + \
+        #     ' Current path: ' + path + '. Or check your .root file.'
 
         if 'projecty' in properties:
             canvas = self.get_canvas()
