@@ -296,6 +296,8 @@ class BROOT(object):
         a, b = (hist1, hist2) if nbins(
             hist1) > nbins(hist2) else (hist2, hist1)
         rebinned = klass.rebin(a, lbins(b))
+        original_width = min(a.GetBinWidth(i) for i in klass.range(a))
+        klass.scalew(rebinned, original_width)
         return (rebinned, b) if a == hist1 else (b, rebinned)
 
     @classmethod
@@ -325,9 +327,13 @@ class BROOT(object):
         return result
 
     @classmethod
-    def scalew(klass, hist, factor=1.):
+    def scalew(klass, hist, factor=None):
         if type(hist) == ROOT.TF1:
             return
+
+        if factor is None:
+            factor = min(hist.GetBinWidth(i)
+                         for i in klass.range(hist))
         hist.Scale(factor, "width")
         return hist
 
