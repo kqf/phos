@@ -22,12 +22,17 @@ def set_pad_logx(hist, pad):
 
     if hist.logx:
         pad.SetLogx(hist.logx)
+        hist.GetXaxis().SetMoreLogLabels(hist.logx)
         return
+
     # Draw logx for increasing bin width
     start_width = hist.GetBinWidth(1)
     stop_width = hist.GetBinWidth(hist.GetNbinsX() - 1)
     pad.SetLogx(start_width < stop_width)
-    hist.GetXaxis().SetMoreLogLabels(start_width < stop_width)
+    hist.GetXaxis().SetMoreLogLabels()
+
+    if hist.GetName() == 'testtest':
+        print hist, start_width < stop_width
 
 
 class VisHub(object):
@@ -105,6 +110,9 @@ class MultipleVisualizer(object):
         stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
         stack.GetXaxis().SetRangeUser(*br.hist_range(first_hist))
+        stack.GetXaxis().SetMoreLogLabels(
+            first_hist.GetXaxis().GetMoreLogLabels()
+        )
         self.cache.append(stack)
         self.cache.extend(hists)
 

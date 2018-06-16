@@ -34,8 +34,8 @@ class FeddownTest(unittest.TestCase):
             [
                 DataVault().input(
                     "pythia8",
-                    "stable",
-                    listname="MCStudyOnlyTender",
+                    "staging",
+                    listname="MCStudy",
                     use_mixing=False,
                     histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}"
                 ),
