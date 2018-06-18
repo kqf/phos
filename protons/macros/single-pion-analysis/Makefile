@@ -7,7 +7,7 @@ PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/nonlinearity_scan
+OUTDIR = results/mc/single/pi0/nonlinearity_scan_corrected
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
