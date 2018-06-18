@@ -48,6 +48,7 @@ class MassExtractor(object):
 
 class TestBackgroundSubtraction(unittest.TestCase):
 
+    @unittest.skip("")
     def test_background_fitting(self):
         loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
 
@@ -59,7 +60,7 @@ class TestBackgroundSubtraction(unittest.TestCase):
             loggs
         )
 
-        target = masses[22]
+        target = masses[8]
         param = PeakParametrisation.get(options.invmass.backgroundp)
         fitf, background = param.fit(target.mass)
 
@@ -87,3 +88,25 @@ class TestBackgroundSubtraction(unittest.TestCase):
         # diff.compare(
         #     br.rebin_as(target.mass, background.GetHistogram())
         # )
+
+    def test_data_peak(self):
+        loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
+
+        options = Options()
+        # options.fitf = 'gaus'
+        masses = MassExtractor(options).transform(
+            DataVault().input("data"),
+            loggs
+        )
+
+        target = masses[12]
+        param = PeakParametrisation.get(options.invmass.backgroundp)
+        fitf, background = param.fit(target.mass)
+
+        canvas = su.canvas("test")
+        MassesPlot().transform(target, canvas)
+        # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
+        # target.mass.Draw()
+        # fitf.Draw("same")
+        canvas.Update()
+        su.wait()

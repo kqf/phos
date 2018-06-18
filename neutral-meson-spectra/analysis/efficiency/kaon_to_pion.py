@@ -52,6 +52,11 @@ class TestKaonToPionRatio(unittest.TestCase):
             [[infile] * 2] * 2,
             loggs
         )
+        title = "Charged kaon to charged pion yields ratio"
+        title += "; p_{T} , GeV/c"
+        title += "; #frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}}"
+        mc.SetTitle(title)
+        mc.label = "PYTHIA8, #sqrt{s} = 13 TeV"
 
         estimator = ComparePipeline([
             ("kaon", SingleHistInput("hstat_kaon_pp13_sum")),
@@ -62,6 +67,8 @@ class TestKaonToPionRatio(unittest.TestCase):
             [DataVault().input("kaon2pion")] * 2,
             "test"
         )
+        data.SetTitle(title)
+        data.label = "ALCIE, #sqrt{s} = 13 TeV, preliminary"
         Comparator().compare(mc)
         mc.SetAxisRange(1, 20, "X")
         mc, data = br.rebin_as(mc, data)

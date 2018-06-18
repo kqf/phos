@@ -14,7 +14,7 @@ def feeddown_paramerization():
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
         0, 100
     )
-    func_feeddown.SetParNames('A', '#sigma', 'E_{scale}')
+    func_feeddown.SetParNames("A", "#sigma", "E_{scale}")
     func_feeddown.SetParameter(0, -1.4)
     func_feeddown.SetParameter(1, 0.33)
     func_feeddown.SetParLimits(1, 0, 10)
@@ -44,9 +44,14 @@ class FeddownTest(unittest.TestCase):
             ],
             "test the feeddown correction"
         )
-        errors.SetTitle('feeddown correction approximation')
-        errors.label = 'approximation'
-        errors.SetOption('e3')
+        title = "Feeddown correction approximation"
+        title += "; p_{T}, GeV/c"
+        title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
+        title += "#frac{dN(all)}{dp_{T}}"
+        output.SetTitle(title)
+        errors.SetTitle(title)
+        errors.label = "approximation"
+        errors.SetOption("e3")
         output.logy = False
         errors.SetFillStyle(3002)
         Comparator(rrange=(-1, -1)).compare(output, errors)
