@@ -59,9 +59,10 @@ class SingleStyler(object):
         lst, path = path[0], path[1:]
         infile = ROOT.TFile(filename + '.root')
 
-
         # Handle situation when we have nested lists
-        obj = infile.Get(lst)
+        obj = [key.ReadObj() for key in infile.GetListOfKeys()
+               if key.GetName() == lst][0]
+        infile.ls()
         for n in path:
             if not n:
                 continue
