@@ -311,3 +311,12 @@ class NonlinearityScanOptions(object):
         super(NonlinearityScanOptions, self).__init__()
         self.nbins = nbins
         self.analysis = Options()
+
+
+class CompositeNonlinearityScanOptions(object):
+
+    def __init__(self, unified_inputs, particle="#pi^{0}", nbins=11, ):
+        super(NonlinearityScanOptions, self).__init__()
+        self.nbins = nbins
+        self.analysis = CompositeOptions(
+            unified_inputs, particle)
