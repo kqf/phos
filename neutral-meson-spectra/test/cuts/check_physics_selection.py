@@ -41,8 +41,10 @@ class CheckPhysicsSelection(unittest.TestCase):
         self.canvas = gcanvas()
 
     def test_selection(self):
-        hists, multiples = zip(*[self.extract_data('input-data/LHC16l.root', 'old PS'),
-                                 self.extract_data('input-data/LHC16l-psel.root', 'new PS')])
+        hists, multiples = zip(*[
+            self.extract_data('input-data/LHC16l.root', 'old PS'),
+            self.extract_data('input-data/LHC16l-psel.root', 'new PS')
+        ])
         multiples = [[h] for h in sum(multiples, [])]
 
         import spectrum.comparator as cmpr
@@ -64,7 +66,8 @@ class CheckPhysicsSelection(unittest.TestCase):
     def timing(self, lst, label):
         events = lst.FindObject('EventCounter').GetBinContent(2)
 
-        def f(n): return decorate_hist(lst.FindObject(n), label, events)
+        def f(n):
+            return decorate_hist(lst.FindObject(n), label, events)
 
         def hist(h, i):
             axis = h.GetXaxis()
