@@ -1,19 +1,18 @@
-from spectrum.spectrum import Spectrum
-from spectrum.input import Input
-from spectrum.sutils import get_canvas, adjust_canvas, wait
-from spectrum.options import Options
-from spectrum.comparator import Visualizer, Comparator
-from spectrum.sutils import scalew
-
-import ROOT
-
-import os.path
 import unittest
+
+from spectrum.comparator import Comparator
+from spectrum.input import Input
+from spectrum.options import Options
+from spectrum.spectrum import Spectrum
 
 
 def extract_range(hist):
     text = hist.GetTitle()
     return map(float, text.split())
+
+
+def halfstep(a, b, n):
+    return (b - a) / n
 
 
 class Nonlinearity(object):
@@ -39,25 +38,33 @@ class NonlinearityAtOptimalParameters(unittest.TestCase):
     def inputs(self, x=None, y=None):
         if not x:
             x, _ = self.sbins
-            return (Input(self.infile, self.sel, self.hname % (i, y)) for i in range(x))
+            return (Input(self.infile, self.sel, self.hname % (i, y))
+                    for i in range(x))
         if not y:
             _, y = self.sbins
-            return (Input(self.infile, self.sel, self.hname % (x, j)) for j in range(y))
+            return (Input(self.infile, self.sel, self.hname % (x, j))
+                    for j in range(y))
 
         x, y = self.sbins
-        return (Input(self.infile, self.sel, self.hname % (i, j)) for j in range(y) for i in range(x))
+        return (Input(self.infile, self.sel, self.hname % (i, j))
+                for j in range(y)
+                for i in range(x))
 
     def options(self, x=None, y=None):
         if not x:
             x, _ = self.sbins
-            return (Options('x = %d, y = %d' % (i, y), 'd') for i in range(x))
+            return (Options('x = %d, y = %d' % (i, y), 'd')
+                    for i in range(x))
 
         if not y:
             _, y = self.sbins
-            return (Options('x = %d, y = %d' % (x, j), 'd') for j in range(y))
+            return (Options('x = %d, y = %d' % (x, j), 'd')
+                    for j in range(y))
 
         x, y = self.sbins
-        return (Options('x = %d, y = %d' % (i, j), 'd') for j in range(y) for i in range(x))
+        return (Options('x = %d, y = %d' % (i, j), 'd')
+                for j in range(y)
+                for i in range(x))
 
         y_halfstep = halfstep(ymin, ymax, ybins)
         ystart = ymin - y_halfstep

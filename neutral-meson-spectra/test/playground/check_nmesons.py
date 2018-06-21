@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-from spectrum.spectrum import Spectrum
-from spectrum.input import Input
-from spectrum.options import Options
+import os
 
 import test.check_default
-import os
+from spectrum.input import Input
+from spectrum.spectrum import Spectrum
+
 
 # This way we can test different ways of counting the amount
 # of particles in the given pt-range
@@ -29,7 +29,8 @@ def manual_counting(mass, intgr_ranges):
 
 class CheckAlgorithm(test.check_default.CheckDefault):
     def test(self):
-        def inp(): return Input('input-data/LHC16.root', 'PhysTender').read()
+        def inp():
+            return Input('input-data/LHC16.root', 'PhysTender').read()
 
         original = Spectrum(inp(), 'testsignal', self.mode)
 
