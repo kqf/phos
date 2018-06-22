@@ -11,6 +11,7 @@ from spectrum.broot import BROOT as br
 
 
 from vault.datavault import DataVault
+from tools.validate import validate
 
 
 class TestSpectrum(unittest.TestCase):
@@ -40,13 +41,17 @@ class TestSpectrum(unittest.TestCase):
             DataVault().input("data", "stable", selection, label='testsignal'),
             AnalysisOutput("testing_the_singnal", particle)
         )
-        actual = [list(br.bins(h).contents) for h in output]
+        actual = {
+            h.GetName(): list(br.bins(h).contents) for h in output
+        }
+        validate(self, actual, "observables/{}".format(particle))
 
-        mymsg = '\n\nActual values:\n' + str(actual)
-        for a, b, c in zip(self.nominal[particle], actual, output):
-            print 'Checking ', c.GetName()
-            for aa, bb in zip(a, b):
-                self.assertAlmostEqual(aa, bb, msg=mymsg)
+
+        # mymsg = '\n\nActual values:\n' + str(actual)
+        # for a, b, c in zip(self.nominal[particle], actual, output):
+        #     print 'Checking ', c.GetName()
+        #     for aa, bb in zip(a, b):
+        #         self.assertAlmostEqual(aa, bb, msg=mymsg)
 
     def test_extracts_pi0_spectrum(self):
         self.validate_particle("#pi^{0}", "PhysTender")
