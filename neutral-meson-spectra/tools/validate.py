@@ -18,8 +18,12 @@ def validate(test, output, path,
     for p in path.split('/'):
         nominal = nominal[p]
 
-    msg = '\n\nActual values:\n' + dump_dict(output)
     for label, actual in output.iteritems():
         print 'Checking {}'.format(label)
+        msg = '\n\n'
+        msg += 'Nominal values:\n'
+        msg += '"{}": {}\n'.format(label, nominal[label])
+        msg += 'Actual values:\n'
+        msg += '"{}": {}\n'.format(label, dump_dict(actual))
         for aa, bb in zip(actual, nominal[label]):
             test.assertAlmostEqual(aa, bb, msg=msg)

@@ -7,7 +7,9 @@ from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
 from spectrum.sutils import gcanvas, adjust_canvas
 from vault.datavault import DataVault
+from spectrum.output import AnalysisOutput
 from tools.probe import TagAndProbe
+from tools.validate import validate
 
 ROOT.TH1.AddDirectory(False)
 
@@ -39,7 +41,7 @@ def efficincy_function():
 def fit_tof_efficiency():
     options = ProbeTofOptions()
     options.fitfunc = efficincy_function()
-    probe_estimator = TagAndProbe(options)
+    probe_estimator = TagAndProbe(options, False)
     efficiency = probe_estimator.transform(
         [
             DataVault().input("data", "uncorrected",
@@ -49,7 +51,7 @@ def fit_tof_efficiency():
                               "TagAndProbleTOFOnlyTender",
                               histname="MassEnergyAll_SM0"),
         ],
-        "tof efficiency"
+        loggs=AnalysisOutput("tof efficiency")
     )
     efficiency.Fit(options.fitfunc, "R")
     efficiency.SetTitle(
@@ -59,8 +61,8 @@ def fit_tof_efficiency():
             "; p_{T}, GeV/c; efficiency"
         )
     )
-    diff = Comparator(crange=(0.2, 1.05))
-    diff.compare(efficiency)
+    # diff = Comparator(crange=(0.2, 1.05))
+    # diff.compare(efficiency)
     return efficiency
 
 
@@ -73,12 +75,9 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def test_estimate_tof_efficiency(self):
         efficiency = fit_tof_efficiency()
-        bins = br.bins(efficiency)
-
-        for actual, nominal in zip(bins, self.nominal_bins):
-            message = "\nNominal {0}\nActual: {1}".format(nominal, actual)
-            for vactual, vnominal in zip(actual, nominal):
-                self.assertAlmostEqual(vactual, vnominal, msg=message)
+        bins = br.bins(efficiency)._asdict()
+        bins = {k: list(v) for k, v in bins.iteritems()}
+        validate(self, bins, "efficiency_tag")
 
     @unittest.skip("Debug")
     def test_different_modules(self):
