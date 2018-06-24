@@ -4,18 +4,18 @@ from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
 from spectrum.broot import BROOT as br
 
 
-class NonlinearityExtractor(TransformerBase):
-    def transform(self, data, loggs):
-        output = []
-        for d in data:
-            real, mixing = d.read()
-            try:
-                output.append(
-                    map(float, real.GetTitle().split())
-                )
-            except ValueError:
-                output.append(None)
-        return output
+# class NonlinearityExtractor(TransformerBase):
+#     def transform(self, data, loggs):
+#         output = []
+#         for d in data:
+#             real, mixing = d.transform()
+#             try:
+#                 output.append(
+#                     map(float, real.GetTitle().split())
+#                 )
+#             except ValueError:
+#                 output.append(None)
+#         return output
 
 
 class NonlinearityScan(TransformerBase):
@@ -26,14 +26,20 @@ class NonlinearityScan(TransformerBase):
             ("mass", HistogramSelector("mass")),
         ])
 
+        mass_estimator_data = Pipeline([
+            ("reconstruction", Analysis(options.analysis_data, plot)),
+            ("mass", HistogramSelector("mass")),
+        ])
+
         self.pipeline = ParallelPipeline([
-            ('mass' + str(i), mass_estimator)
-            for i in range(1 + options.nbins ** 2)
+            ("mass_data", mass_estimator_data)] + [
+            ("mass" + str(i), mass_estimator)
+            for i in range(options.nbins ** 2)
         ])
 
     def transform(self, data, loggs):
-        titles = NonlinearityExtractor().transform(data, loggs)
-        print titles
+        # titles = NonlinearityExtractor().transform(data, loggs)
+        # print titles
         out = self.pipeline.transform(data, loggs)
         data = out[0]
         mc = out[1:]

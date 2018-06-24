@@ -82,7 +82,7 @@ class TestInputMemoryPerformance(unittest.TestCase):
         self.hname = 'MassPt_%d_%d'
         self.sbins = 11, 11
 
-    @unittest.skip('These tests are only needed to check memory consuptions')
+    @unittest.skip('These tests are only needed to check memory consumption')
     def test_sequence(self):
         x, y = self.sbins
         bar = progressbar.ProgressBar(maxval=x * y)
@@ -94,7 +94,7 @@ class TestInputMemoryPerformance(unittest.TestCase):
                 bar.update(x * i + j)
                 self.assertIsNotNone(hists)
 
-    @unittest.skip('These tests are only needed to check memory consuptions')
+    @unittest.skip('These tests are only needed to check memory consumption')
     def test_copy(self):
         inp = Input(self.infile, self.sel, self.hname % (0, 0))
         raw, mixed = inp.read()
