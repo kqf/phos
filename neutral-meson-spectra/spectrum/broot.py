@@ -5,6 +5,7 @@ import json
 import copy
 import array
 import urllib2
+import tqdm
 from collections import namedtuple
 
 ROOT.TH1.AddDirectory(False)
@@ -133,7 +134,10 @@ class BROOT(object):
             lst = klass._read_list(filename, selection)
 
             histograms = []
-            for histname in histnames:
+            iternames = histnames
+            if len(histnames) > 10:
+                iternames = tqdm.tqdm(histnames)
+            for histname in iternames:
                 if not histname:
                     histograms.append(None)
                     continue

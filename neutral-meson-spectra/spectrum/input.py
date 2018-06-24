@@ -38,10 +38,19 @@ class SingleHistInput(object):
         return hist
 
 
+class IdentityInput(object):
+    def __init__(self, inputs):
+        self.inputs = inputs
+
+    def transform(self, data=None, outputs=None):
+        return self.inputs
+
+
 class Input(object):
     def __init__(self, filename, listname,
                  histname='MassPt', label='',
-                 mixprefix='Mix', histnames=None, n_events=None):
+                 mixprefix='Mix', histnames=None,
+                 n_events=None, inputs=None):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
@@ -51,6 +60,10 @@ class Input(object):
         self._n_events = n_events
         self._events = self.events(filename, listname)
         self.label = label
+        self.inputs = inputs
+        if self.inputs:
+            return
+        self.inputs = ['h{}{}'.format(p, self.histname) for p in self.prefix]
 
     def events(self, filename, listname):
         try:
@@ -63,21 +76,24 @@ class Input(object):
         except IOError:
             return -137
 
-    def read(self, histo=''):
-        # NB: Use histo to support per module histogram
-        histo = histo if histo else self.histname
-        raw_mix = ['h' + p + histo for p in self.prefix]
-        # Override the default histograms
-        if self.histnames:
-            raw_mix = self.histnames
-
-        raw_mix = br.io.read_multiple(self.filename, self.listname, raw_mix)
+    def read(self):
+        raw_mix = br.io.read_multiple(
+            self.filename,
+            self.listname,
+            self.inputs
+        )
 
         for h in raw_mix:
             if not h:
                 continue
             br.set_nevents(h, self._events)
         return raw_mix
+
+    def read_multiple(self, n_groups=2):
+        data = self.read()
+        return [
+            IdentityInput(h) for h in zip(*(iter(data),) * n_groups)
+        ]
 
     def transform(self, data=None, outputs=None):
         return self.read()
