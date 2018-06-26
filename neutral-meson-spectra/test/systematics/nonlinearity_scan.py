@@ -3,12 +3,10 @@ from spectrum.input import Input, read_histogram
 from spectrum.sutils import gcanvas, wait
 from spectrum.options import Options
 from spectrum.comparator import Comparator
-from systematic_error import SysError
+from spectrum.transformer import TransformerBase
 from spectrum.broot import BROOT as br
 
 import ROOT
-
-import os.path
 
 ROOT.TH1.AddDirectory(False)
 
@@ -71,7 +69,7 @@ class Nonlinearity(Chi2Entry):
         self.spectrum = sresults.spectrum
 
 
-class NonlinearityScanner(object):
+class NonlinearityScanner(TransformerBase):
 
     def __init__(self, stop):
         super(NonlinearityScanner, self).__init__()
@@ -80,7 +78,6 @@ class NonlinearityScanner(object):
         self.hname = 'MassPt_%d_%d'
         self.sbins = 11, 11
         self.stop = stop
-        self.outsys = SysError(label='nonlinearity')
 
     def inputs(self):
         x, y = self.sbins

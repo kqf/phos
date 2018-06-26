@@ -3,24 +3,17 @@ import spectrum.sutils as sl
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
-from systematic_error import SysError
+from spectrum.transformer import TransformerBase
 
 
 # CWR: Run this on corrected spectrum
 #
 
-class GlobalEnergyScaleUncetanityEvaluator(object):
+class GlobalEnergyScaleUncetanityEvaluator(TransformerBase):
 
     def __init__(self, stop):
         super(GlobalEnergyScaleUncetanityEvaluator, self).__init__()
         # This should be studied on corrected yield
-        #
-        self.infile = 'LHC16'
-        self.selection = 'PhysOnlyTender'
-        self.mcfile = 'Pythia-LHC16-a5'
-        self.mchist = 'hPt_#pi^{0}_primary_'
-        self.stop = True or stop
-        self.outsys = SysError(label='global energy scale')
 
     @staticmethod
     def ratiofunc(fitf, name='', bias=0.01, color=46):
