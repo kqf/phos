@@ -1,31 +1,17 @@
+import unittest
 from spectrum.options import Options
 from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
-from systematic_error import SysError
-from spectrum.efficiency import Efficiency
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CorrectedYieldOptions
+from spectrum.options import CompositeCorrectedYieldOptions
+from vault.datavault import DataVault
 
 import ROOT
 
 
-class RawYieldError(object):
-
-    def __init__(self, stop):
-        super(RawYieldError, self).__init__()
-        # This should be studied on corrected yield
-        #
-        self.infile = 'LHC16'
-        self.selection = 'PhysOnlyTender'
-        self.outsys = SysError(label='yield extraction')
-        self.stop = stop
-
-        # Calculate efficiency to correct the yield
-        #
-        effile = 'Pythia-LHC16-a5'
-        effhist = 'hPt_#pi^{0}_primary_'
-        self.eff = Efficiency(effhist, 'eff', effile).eff()
+class YieldExtractioinUncertanity(object):
 
     def average_yiled(self, histos):
         average = histos[0].Clone(histos[0].GetName() + '_average')
@@ -74,3 +60,28 @@ class RawYieldError(object):
         diff = Comparator(stop=self.stop, oname='syst-error-yield-extraction')
         diff.compare(uncert)
         return self.outsys.histogram(spectrums[0], uncert)
+
+
+class TestYieldExtractionUncertanity(unittest.TestCase):
+
+    # @unittest.skip('')
+    def test_yield_extraction_uncertanity_pion(self):
+        # production = "single #pi^{0} iteration3 yield aliphysics"
+        production = "single #pi^{0} iteration d3 nonlin14"
+        unified_inputs = {
+            DataVault().input(production, "low"): (0, 8.0),
+            DataVault().input(production, "high"): (4.0, 20)
+        }
+
+        data = [
+            DataVault().input("data"),
+            unified_inputs
+        ]
+
+        estimator = CorrectedYield(
+            CompositeCorrectedYieldOptions(
+                particle="#pi^{0}",
+                unified_inputs=unified_inputs
+            )
+        )
+        estimator.transform(data, "corrected yield #pi^{0}")
