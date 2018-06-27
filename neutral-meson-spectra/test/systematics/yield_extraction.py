@@ -1,20 +1,35 @@
 import unittest
-from spectrum.options import Options
-from spectrum.comparator import Comparator
-
-from spectrum.broot import BROOT as br
-from spectrum.corrected_yield import CorrectedYield
-from spectrum.options import CorrectedYieldOptions
-from spectrum.options import CompositeCorrectedYieldOptions
-from vault.datavault import DataVault
 
 import ROOT
+from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
+from spectrum.corrected_yield import CorrectedYield
+from spectrum.options import CompositeCorrectedYieldOptions, Options
+from spectrum.output import AnalysisOutput
+from spectrum.transformer import TransformerBase
+from vault.datavault import DataVault
 
 
-class YieldExtractioinUncertanity(object):
+class YieldExtractioinUncertanityOptions(object):
+    def __init__(self, cyield):
+        self.mass_range = {
+            "low": [0.06, 0.22],
+            "mid": [0.04, 0.20],
+            "wide": [0.08, 0.24]
+        }
+        self.backgrounds = ["pol1", "pol2"]
+        self.signals = ["CrystalBall", "Gaus"]
+        self.nsigmas = [2, 3]
+        self.cyield = cyield
+
+
+class YieldExtractioinUncertanity(TransformerBase):
+
+    def __init__(self, options, plot=False):
+        self.options = options
 
     def average_yiled(self, histos):
-        average = histos[0].Clone(histos[0].GetName() + '_average')
+        average = histos[0].Clone(histos[0].GetName() + "_average")
         average.Reset()
         average.Sumw2()
         llist = ROOT.TList()
@@ -24,47 +39,48 @@ class YieldExtractioinUncertanity(object):
 
         average.Merge(llist)
         average.Scale(1. / len(histos))
-        average.label = 'averaged yield'
+        average.label = "averaged yield"
         return average
 
-    def transofrm(self, data, loggs):
-        spectrums, options = [], Options()
-        for frange, flab in zip([[0.06, 0.22], [0.04, 0.20], [0.08, 0.24]], ['low', 'mid', 'wide']):
-            for bckgr in ['pol1', 'pol2']:
-                for marker, par in enumerate(['CrystalBall', 'Gaus']):
-                    for nsigmas in [2, 3]:
+    def transform(self, data, loggs):
+        spectrums = []
+        for frange, flab in self.options.mass_range.iteritems():
+            for bckgr in self.options.backgrounds:
+                for marker, par in enumerate(self.options.signals):
+                    for nsigmas in self.options.nsigmas:
+                        options = Options()
                         options.spectrum.dead = True
-                        options.pt.label = 'n#sigma = {0} {1} {2} {3}'.format(
+                        options.pt.label = "n#sigma = {0} {1} {2} {3}".format(
                             nsigmas, par, bckgr, flab)
                         options.spectrum.nsigmas = nsigmas
-                        options.param.fitf = par
-                        options.param.background = bckgr
-                        options.param.fit_range = frange
+                        options.signalp.fitf = par
+                        options.signalp.background = bckgr
+                        options.signalp.fit_range = frange
 
-                        copt = CorrectedYieldOptions()
-                        copt.analysis = options
-                        spectrum = CorrectedYield(copt).transform(data, loggs)
+                        self.options.analysis = options
+                        spectrum = CorrectedYield(
+                            self.options.cyield).transform(data, loggs)
                         spectrum.marker = marker
                         spectrums.append(spectrum)
 
-        diff = Comparator(stop=self.stop, oname='spectrum_extraction_methods')
+        diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
         diff.compare(spectrums)
 
         average = self.average_yiled(spectrums)
-        diff = Comparator(stop=self.stop, oname='yield_deviation_from_average')
+        diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
         diff.compare_ratios(spectrums, average)
 
         uncert, rms, mean = br.systematic_deviation(spectrums)
         uncert.SetTitle(
-            'Systematic uncertanity from yield extraction (RMS/mean)')
-        diff = Comparator(stop=self.stop, oname='syst-error-yield-extraction')
+            "Systematic uncertanity from yield extraction (RMS/mean)")
+        diff = Comparator(stop=self.plot, oname="syst-error-yield-extraction")
         diff.compare(uncert)
         return self.outsys.histogram(spectrums[0], uncert)
 
 
 class TestYieldExtractionUncertanity(unittest.TestCase):
 
-    # @unittest.skip('')
+    # @unittest.skip("")
     def test_yield_extraction_uncertanity_pion(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} iteration d3 nonlin14"
@@ -78,10 +94,14 @@ class TestYieldExtractionUncertanity(unittest.TestCase):
             unified_inputs
         ]
 
-        estimator = CorrectedYield(
+        options = YieldExtractioinUncertanityOptions(
             CompositeCorrectedYieldOptions(
                 particle="#pi^{0}",
                 unified_inputs=unified_inputs
             )
         )
-        estimator.transform(data, "corrected yield #pi^{0}")
+        estimator = YieldExtractioinUncertanity(options)
+        estimator.transform(
+            data,
+            loggs=AnalysisOutput("corrected yield #pi^{0}")
+        )
