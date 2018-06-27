@@ -1,5 +1,5 @@
 import unittest
-
+import tqdm
 import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
@@ -14,8 +14,8 @@ class YieldExtractioinUncertanityOptions(object):
     def __init__(self, cyield):
         self.mass_range = {
             "low": [0.06, 0.22],
-            "mid": [0.04, 0.20],
-            "wide": [0.08, 0.24]
+            # "mid": [0.04, 0.20],
+            # "wide": [0.08, 0.24]
         }
         self.backgrounds = ["pol1", "pol2"]
         self.signals = ["CrystalBall", "Gaus"]
@@ -27,6 +27,7 @@ class YieldExtractioinUncertanity(TransformerBase):
 
     def __init__(self, options, plot=False):
         self.options = options
+        self.plot = plot
 
     def average_yiled(self, histos):
         average = histos[0].Clone(histos[0].GetName() + "_average")
@@ -44,6 +45,12 @@ class YieldExtractioinUncertanity(TransformerBase):
 
     def transform(self, data, loggs):
         spectrums = []
+        pbar = tqdm.tqdm(
+            total=len(self.options.mass_range) *
+            len(self.options.backgrounds) *
+            len(self.options.signals) *
+            len(self.options.nsigmas)
+        )
         for frange, flab in self.options.mass_range.iteritems():
             for bckgr in self.options.backgrounds:
                 for marker, par in enumerate(self.options.signals):
@@ -62,7 +69,8 @@ class YieldExtractioinUncertanity(TransformerBase):
                             self.options.cyield).transform(data, loggs)
                         spectrum.marker = marker
                         spectrums.append(spectrum)
-
+                        pbar.update()
+        pbar.close()
         diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
         diff.compare(spectrums)
 
@@ -75,7 +83,7 @@ class YieldExtractioinUncertanity(TransformerBase):
             "Systematic uncertanity from yield extraction (RMS/mean)")
         diff = Comparator(stop=self.plot, oname="syst-error-yield-extraction")
         diff.compare(uncert)
-        return self.outsys.histogram(spectrums[0], uncert)
+        return uncert
 
 
 class TestYieldExtractionUncertanity(unittest.TestCase):
