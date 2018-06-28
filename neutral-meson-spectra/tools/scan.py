@@ -2,6 +2,7 @@ from spectrum.analysis import Analysis
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
 from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
 
 
 # class NonlinearityExtractor(TransformerBase):
@@ -19,7 +20,7 @@ from spectrum.broot import BROOT as br
 
 
 class NonlinearityScan(TransformerBase):
-    def __init__(self, options, plot=False):
+    def __init__(self, options, plot=True):
         super(NonlinearityScan, self).__init__()
         mass_estimator = Pipeline([
             ("reconstruction", Analysis(options.analysis, plot)),
@@ -43,4 +44,9 @@ class NonlinearityScan(TransformerBase):
         out = self.pipeline.transform(data, loggs)
         data = out[0]
         mc = out[1:]
+        for hist in mc:
+            Comparator().compare(hist, data)
+            # _, diff = br.chi2ndf(hist, data)
+            # Comparator().compare(diff)
+
         return [br.chi2ndf(hist, data) for hist in mc]

@@ -28,10 +28,6 @@ class Particles(object):
     def _spectrum(name, par):
         function = ROOT.TF1('f' + name, FVault().func("tsallis"), 0.3, 15, 5)
         function.SetParameters(*par)
-        function.Draw()
-        canvas = ROOT.gROOT.FindObject('c1')
-        canvas.Update()
-        raw_input('')
         title = '%s p_{T} spectrum; p_{T}, GeV/c; #frac{dN}{dp_{T}}' % name
         histogram = ROOT.TH1F(name + '_spectrum', title, 100, 0.3, 15)
         histogram.FillRandom('f' + name, 1000000)
