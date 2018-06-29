@@ -507,6 +507,21 @@
 			"description": "Add nonlinearity scan"
 		}
 	},
+	"single #pi^{0} nonlin scan1":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/nonlinearity_scan1/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "5857ec047803f43ddc0103617a5754a4025dba3b67b8d1212aa631b63f6cea82",
+			"description": "Add nonlinearity sca"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/nonlinearity_scan1/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "cb5e3252f7479e9e178d9294e3d87a75ca394579fbf44898dc9f6cfc7e77744c",
+			"description": "Add nonlinearity scan"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
