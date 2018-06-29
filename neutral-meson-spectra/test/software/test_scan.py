@@ -1,7 +1,7 @@
 import unittest
 from tools.scan import NonlinearityScan
 from vault.datavault import DataVault
-from spectrum.options import CompositeOptions
+from spectrum.options import CompositeOptions, Options
 from spectrum.options import NonlinearityScanOptions
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.output import AnalysisOutput
@@ -35,6 +35,7 @@ class TestScan(unittest.TestCase):
             loggs=AnalysisOutput("testing the scan interface")
         )
 
+    @unittest.skip('')
     def test_composite_interface(self):
         prod = "single #pi^{0} nonlin scan old"
         nbins = 4
@@ -72,7 +73,7 @@ class TestScan(unittest.TestCase):
 class TestAnalysis(unittest.TestCase):
     @unittest.skip('')
     def test_composite(self):
-        prod = "single #pi^{0} nonlin scan old"
+        prod = "single #pi^{0} nonlin scan"
         unified_inputs = {
             DataVault().input(prod, "low", histname="MassPt_0_0"): (0.0, 8.0),
             DataVault().input(prod, "high", histname="MassPt_0_0"): (4.0, 20.0)
@@ -86,6 +87,20 @@ class TestAnalysis(unittest.TestCase):
             unified_inputs,
             loggs=AnalysisOutput("test the composite analysis")
         )
+
         for o in output:
             Comparator().compare(o)
-        self.assertGreater(len(output), 0)
+
+    def test_simple(self):
+        analysis = Analysis(Options().spmc((4.0, 20), "#pi^{0}"), plot=True)
+
+        prod = "single #pi^{0} nonlin scan"
+        loggs = AnalysisOutput("test the single analysis")
+        output = analysis.transform(
+            DataVault().input(prod, "high", histname="MassPt_0_0"),
+            loggs
+        )
+        loggs.plot()
+
+        for o in output:
+            Comparator().compare(o)
