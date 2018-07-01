@@ -94,7 +94,7 @@ class TestAnalysis(unittest.TestCase):
     def test_simple(self):
         analysis = Analysis(Options().spmc((4.0, 20), "#pi^{0}"), plot=True)
 
-        prod = "single #pi^{0} nonlin scan"
+        prod = "single #pi^{0} nonlin scan1"
         loggs = AnalysisOutput("test the single analysis")
         output = analysis.transform(
             DataVault().input(prod, "high", histname="MassPt_0_0"),
