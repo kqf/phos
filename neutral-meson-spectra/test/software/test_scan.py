@@ -1,14 +1,11 @@
 import unittest
 from tools.scan import NonlinearityScan
 from vault.datavault import DataVault
-from spectrum.options import CompositeOptions, Options
 from spectrum.options import NonlinearityScanOptions
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.output import AnalysisOutput
-from spectrum.comparator import Comparator
 from collections import OrderedDict
 from tqdm import trange
-from spectrum.analysis import Analysis
 
 
 class TestScan(unittest.TestCase):
@@ -68,40 +65,3 @@ class TestScan(unittest.TestCase):
             loggs=AnalysisOutput("testing the scan interface")
         )
         # loggs.plot()
-
-
-class TestAnalysis(unittest.TestCase):
-    @unittest.skip('')
-    def test_composite(self):
-        prod = "single #pi^{0} nonlinearity scan"
-        unified_inputs = {
-            DataVault().input(prod, "low", histname="MassPt_0_0"): (0.0, 8.0),
-            DataVault().input(prod, "high", histname="MassPt_0_0"): (4.0, 20.0)
-        }
-
-        analysis = Analysis(
-            CompositeOptions(unified_inputs, "#pi^{0}")
-        )
-
-        output = analysis.transform(
-            unified_inputs,
-            loggs=AnalysisOutput("test the composite analysis")
-        )
-
-        for o in output:
-            Comparator().compare(o)
-
-    @unittest.skip('')
-    def test_simple(self):
-        analysis = Analysis(Options().spmc((4.0, 20), "#pi^{0}"), plot=True)
-
-        prod = "single #pi^{0} nonlinearity scan"
-        loggs = AnalysisOutput("test the single analysis")
-        output = analysis.transform(
-            DataVault().input(prod, "low", histname="MassPt_0_0"),
-            loggs
-        )
-        loggs.plot()
-
-        for o in output:
-            Comparator().compare(o)
