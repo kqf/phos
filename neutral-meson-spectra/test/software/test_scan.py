@@ -35,9 +35,9 @@ class TestScan(unittest.TestCase):
             loggs=AnalysisOutput("testing the scan interface")
         )
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_composite_interface(self):
-        prod = "single #pi^{0} nonlin scan old"
+        prod = "single #pi^{0} nonlinearity scan"
         nbins = 4
         histnames = sum([
             [
@@ -73,7 +73,7 @@ class TestScan(unittest.TestCase):
 class TestAnalysis(unittest.TestCase):
     @unittest.skip('')
     def test_composite(self):
-        prod = "single #pi^{0} nonlin scan"
+        prod = "single #pi^{0} nonlinearity scan"
         unified_inputs = {
             DataVault().input(prod, "low", histname="MassPt_0_0"): (0.0, 8.0),
             DataVault().input(prod, "high", histname="MassPt_0_0"): (4.0, 20.0)
@@ -91,13 +91,14 @@ class TestAnalysis(unittest.TestCase):
         for o in output:
             Comparator().compare(o)
 
+    @unittest.skip('')
     def test_simple(self):
         analysis = Analysis(Options().spmc((4.0, 20), "#pi^{0}"), plot=True)
 
-        prod = "single #pi^{0} nonlin scan1"
+        prod = "single #pi^{0} nonlinearity scan"
         loggs = AnalysisOutput("test the single analysis")
         output = analysis.transform(
-            DataVault().input(prod, "high", histname="MassPt_0_0"),
+            DataVault().input(prod, "low", histname="MassPt_0_0"),
             loggs
         )
         loggs.plot()
