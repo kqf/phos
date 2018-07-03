@@ -187,6 +187,7 @@ class ReduceArgumentPipeline(object):
         updated = self.parallel.transform(inputs_inp, loggs)
         return [self.function(o, argument) for o in updated]
 
+
 class RatioUnion(object):
 
     def __init__(self, numerator, denominator, error="B"):

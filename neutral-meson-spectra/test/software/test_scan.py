@@ -1,11 +1,14 @@
 import unittest
-from tools.scan import NonlinearityScan
-from vault.datavault import DataVault
-from spectrum.options import NonlinearityScanOptions
-from spectrum.options import CompositeNonlinearityScanOptions
-from spectrum.output import AnalysisOutput
 from collections import OrderedDict
+
+from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
+from spectrum.options import (CompositeNonlinearityScanOptions,
+                              NonlinearityScanOptions)
+from spectrum.output import AnalysisOutput
+from tools.scan import NonlinearityScan
 from tqdm import trange
+from vault.datavault import DataVault
 
 
 class TestScan(unittest.TestCase):
@@ -28,14 +31,13 @@ class TestScan(unittest.TestCase):
         ]
 
         print estimator.transform(
-            [DataVault().input("data")] + mc,
+            [DataVault().input("data"), mc],
             loggs=AnalysisOutput("testing the scan interface")
         )
 
-    # @unittest.skip('')
     def test_composite_interface(self):
         prod = "single #pi^{0} nonlinearity scan"
-        nbins = 4
+        nbins = 9
         histnames = sum([
             [
                 "hMassPt_{}_{}".format(i, j),
@@ -60,8 +62,15 @@ class TestScan(unittest.TestCase):
         low, high = low.read_multiple(2), high.read_multiple(2)
         mc_data = [(l, h) for l, h in zip(low, high)]
 
-        print estimator.transform(
-            [DataVault().input("data")] + mc_data,
+        hist = estimator.transform(
+            [DataVault().input("data"), mc_data],
             loggs=AnalysisOutput("testing the scan interface")
         )
+        import ROOT
+        ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
+        hist.Write()
+        ofile.Close()
+        hist.Draw('colz text')
+        raw_input("press enter")
+        Comparator().compare(hist)
         # loggs.plot()

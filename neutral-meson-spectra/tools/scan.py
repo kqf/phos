@@ -1,30 +1,63 @@
+import ROOT
 from spectrum.analysis import Analysis
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
+from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 
 
-# class NonlinearityExtractor(TransformerBase):
-#     def transform(self, data, loggs):
-#         output = []
-#         for d in data:
-#             real, mixing = d.transform()
-#             try:
-#                 output.append(
-#                     map(float, real.GetTitle().split())
-#                 )
-#             except ValueError:
-#                 output.append(None)
-#         return output
+class NonlinearityParamExtractor(TransformerBase):
+
+    def __init__(self):
+        self.labels = None
+
+    def read_labels(self, data):
+        data, mc = data
+        output = []
+        for d in mc:
+            try:
+                real, mixing = d.transform()
+            except AttributeError:
+                # Composite MC
+                high, low = d
+                real, mixing = low.transform()
+            output.append(
+                map(float, real.GetTitle().split())
+            )
+        return output
+
+    def transform(self, data, loggs):
+        # Run transform two times:
+        # at the very beginning to read the labels and exit
+        # and at the end to form the final output
+        if not self.labels:
+            self.labels = self.read_labels(data)
+            return data
+        chi2 = data
+        assert len(chi2) == len(self.labels), "Wrong number of mc samples"
+
+        a, sigma = zip(*self.labels)
+        bins = list(br.vec_to_bins(set(a))) + list(br.vec_to_bins(set(sigma)))
+        hist = ROOT.TH2F("nonlinearity_scan",
+                         "Chi2/ndf for data and mc; a; #sigma, GeV/c", *bins)
+        for c, b in zip(chi2, self.labels):
+            hist.Fill(b[0], b[1], c)
+
+        return hist
 
 
 class NonlinearityScan(TransformerBase):
     def __init__(self, options, plot=True):
         super(NonlinearityScan, self).__init__()
-        mass_estimator = Pipeline([
+        mass = Pipeline([
             ("reconstruction", Analysis(options.analysis, plot)),
             ("mass", HistogramSelector("mass")),
+        ])
+
+        masses_mc = ParallelPipeline([
+            ("mass" + str(i), mass)
+            for i in range(options.nbins ** 2)
         ])
 
         mass_estimator_data = Pipeline([
@@ -32,21 +65,15 @@ class NonlinearityScan(TransformerBase):
             ("mass", HistogramSelector("mass")),
         ])
 
-        self.pipeline = ParallelPipeline([
-            ("mass_data", mass_estimator_data)] + [
-            ("mass" + str(i), mass_estimator)
-            for i in range(options.nbins ** 2)
+        chi2 = ReduceArgumentPipeline(
+            masses_mc,
+            mass_estimator_data,
+            br.chi2ndf
+        )
+
+        extractor = NonlinearityParamExtractor()
+        self.pipeline = Pipeline([
+            ("read-titles", extractor),
+            ("chi2", chi2),
+            ("dump", extractor)
         ])
-
-    def transform(self, data, loggs):
-        # titles = NonlinearityExtractor().transform(data, loggs)
-        # print titles
-        out = self.pipeline.transform(data, loggs)
-        data = out[0]
-        mc = out[1:]
-        for hist in mc:
-            Comparator().compare(hist, data)
-            # _, diff = br.chi2ndf(hist, data)
-            # Comparator().compare(diff)
-
-        return [br.chi2ndf(hist, data) for hist in mc]
