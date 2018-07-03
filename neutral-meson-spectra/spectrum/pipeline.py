@@ -173,6 +173,20 @@ class ReducePipeline(object):
         return self.function(updated)
 
 
+class ReduceArgumentPipeline(object):
+
+    def __init__(self, parallel, argument, function):
+        super(ReduceArgumentPipeline, self).__init__()
+        self.parallel = parallel
+        self.argument = argument
+        self.function = function
+
+    def transform(self, inputs, loggs):
+        argument_inp, inputs_inp = inputs
+        argument = self.argument.transform(argument_inp, loggs)
+        updated = self.parallel.transform(inputs_inp, loggs)
+        return [self.function(o, argument) for o in updated]
+
 class RatioUnion(object):
 
     def __init__(self, numerator, denominator, error="B"):

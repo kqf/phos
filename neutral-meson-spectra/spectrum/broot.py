@@ -508,3 +508,9 @@ class BROOT(object):
             hist.GetBinCenter(x.GetFirst()),
             hist.GetBinCenter(x.GetLast())
         )
+
+    @classmethod
+    def vec_to_bins(klass, data):
+        nbins = len(data)
+        step = (max(data) - min(data)) / nbins
+        return nbins, min(data) - 0.5 * step, max(data) + 0.5 * step
