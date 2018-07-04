@@ -26,11 +26,17 @@ class Particles(object):
 
     @staticmethod
     def _spectrum(name, par):
-        function = ROOT.TF1('f' + name, FVault().func("tsallis"), 0.3, 15, 5)
+        function = ROOT.TF1(name, FVault().func("tsallis"), 0.3, 15, 3)
         function.SetParameters(*par)
         title = '%s p_{T} spectrum; p_{T}, GeV/c; #frac{dN}{dp_{T}}' % name
-        histogram = ROOT.TH1F(name + '_spectrum', title, 100, 0.3, 15)
-        histogram.FillRandom('f' + name, 1000000)
+        histogram = function.GetHistogram().Clone()
+        histogram.SetName(name + "_spectrum")
+        histogram.SetTitle(title)
+        histogram.Scale(100000000)
         histogram.label = name
-        histogram.Sumw2()
+        for i in range(histogram.GetNbinsX()):
+            histogram.SetBinError(
+                i + 1,
+                histogram.GetBinContent(i) ** 0.5
+            )
         return histogram

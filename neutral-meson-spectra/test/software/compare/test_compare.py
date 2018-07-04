@@ -1,5 +1,5 @@
 import unittest
-import spectrum.comparator as cmpr
+from spectrum.comparator import Comparator
 from particles import Particles
 
 
@@ -9,16 +9,16 @@ class TestComparator(unittest.TestCase, Particles):
         self.data, self.stop = self.config()
 
     def testCompareMultiple(self):
-        diff = cmpr.Comparator(stop=self.stop)
+        diff = Comparator(stop=self.stop)
         self.data[0].SetTitle('Testing compare set of histograms: explicit')
         diff.compare_set_of_histograms(zip(*[self.data]))
 
         self.data[0].SetTitle('Testing compare set of histograms: "compare"')
-        diff = cmpr.Comparator(stop=self.stop)
+        diff = Comparator(stop=self.stop)
         diff.compare(self.data)
 
     def testPriority(self):
-        diff = cmpr.Comparator(stop=self.stop)
+        diff = Comparator(stop=self.stop)
 
         for h in self.data:
             h.SetTitle('Checking priority of the histograms')
@@ -47,7 +47,7 @@ class TestComparator(unittest.TestCase, Particles):
                 Also this test assures that comparison "A" and "B" and "B" and "A" work as needed.
         """
 
-        diff = cmpr.Comparator(stop=self.stop)
+        diff = Comparator(stop=self.stop)
 
         self.data[2].SetTitle('Checking if compare is able to redraw' +
                               'same images properly, Check 1')
@@ -57,6 +57,7 @@ class TestComparator(unittest.TestCase, Particles):
                               'same images properly, Check 2')
         diff.compare(self.data[2], self.data[1])
 
-        self.data[1].SetTitle('Checking if compare is able to redraw' +
-                              'same images properly: reverse order of histograms')
+        self.data[1].SetTitle(
+            'Checking if compare is able to redraw' +
+            'same images properly: reverse order of histograms')
         diff.compare(self.data[1], self.data[2])
