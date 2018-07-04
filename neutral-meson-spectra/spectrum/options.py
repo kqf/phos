@@ -320,5 +320,6 @@ class CompositeNonlinearityScanOptions(object):
         super(CompositeNonlinearityScanOptions, self).__init__()
         self.nbins = nbins
         self.analysis = CompositeOptions(
-            unified_inputs, particle)
-        self.analysis_data = Options()
+            unified_inputs, particle,
+            ptrange="config/pt-nonlin-scan.json")
+        self.analysis_data = Options(ptrange="config/pt-nonlin-scan.json")
