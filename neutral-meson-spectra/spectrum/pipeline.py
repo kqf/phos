@@ -9,11 +9,21 @@ class ComparePipeline(TransformerBase):
 
     def __init__(self, estimators, plot=False, **kwargs):
         super(ComparePipeline, self).__init__(plot)
-        labels = zip(*estimators)[0]
+        self.estimators = estimators
+        self.labels = zip(*estimators)[0]
+        self.kwargs = kwargs
+
+    def transform(self, data, loggs):
         self.pipeline = ReducePipeline(
-            ParallelPipeline(estimators),
-            Comparator(labels=labels, stop=plot, **kwargs).compare
+            ParallelPipeline(self.estimators),
+            Comparator(
+                labels=self.labels,
+                stop=self.plot,
+                loggs=loggs,
+                **self.kwargs
+            ).compare
         )
+        return super(ComparePipeline, self).transform(data, loggs)
 
 
 class FitfunctionAssigner(TransformerBase):

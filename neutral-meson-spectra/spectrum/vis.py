@@ -56,7 +56,7 @@ class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
 
-    def __init__(self, size, rrange, crange, stop, oname, labels):
+    def __init__(self, size, rrange, crange, stop, oname, labels, loggs):
         super(MultipleVisualizer, self).__init__()
         self.size = size
         self.cache = []
@@ -64,6 +64,7 @@ class MultipleVisualizer(object):
         self.oname = oname
         self.stop = stop
         self.labels = labels
+        self.loggs = loggs
 
     @br.init_inputs
     def compare_visually(self, hists, ci, pad=None):
@@ -114,7 +115,10 @@ class MultipleVisualizer(object):
 
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        su.wait(oname, save=True, draw=self.stop)
+        if self.loggs:
+            self.loggs.update('compare', canvas)
+        else:
+            su.wait(oname, save=True, draw=self.stop)
         return None
 
     def _drawable(self, first_hist, hists):
@@ -153,9 +157,9 @@ class MultipleVisualizer(object):
 
 
 class Visualizer(MultipleVisualizer):
-    def __init__(self, size, rrange, crange, stop, oname, labels):
+    def __init__(self, size, rrange, crange, stop, oname, labels, loggs):
         super(Visualizer, self).__init__(
-            size, rrange, crange, stop, oname, labels)
+            size, rrange, crange, stop, oname, labels, loggs)
         self.rrange = rrange
 
     def _canvas(self, hists):
@@ -245,5 +249,8 @@ class Visualizer(MultipleVisualizer):
         canvas.cd()
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        su.wait(oname, save=True, draw=self.stop)
+        if self.loggs:
+            self.loggs.update('compare', canvas)
+        else:
+            su.wait(oname, save=True, draw=self.stop)
         return su.adjust_labels(ratio, hists[0])

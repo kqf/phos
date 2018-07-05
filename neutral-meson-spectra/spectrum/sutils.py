@@ -46,15 +46,17 @@ def wait(name='', draw=True, save=False, suffix=''):
         ROOT.gApplication.Run(True)
 
 
-def save_canvas(canvas, outdir, name):
+def save_canvas(canvas, outdir, name, verbose=False):
     ofilename = name.split('/')[0]
     hname = name.split('/')[-1]
     path = name.replace(hname, '')
-
-    ofile = ROOT.TFile(
-        outdir + ofilename.replace("#", "") + ".root", "UPDATE")
+    fname = clean_name(outdir + ofilename.replace("#", "") + ".root")
+    print fname
+    ofile = ROOT.TFile(fname, "UPDATE")
     ofile.mkdir(path)
     ofile.cd(path)
+    # if verbose:
+    print "Saving", hname, "in {}/{}".format(fname, path)
     canvas.Write(hname)
     ofile.Close()
 

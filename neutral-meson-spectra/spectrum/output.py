@@ -1,6 +1,8 @@
+import ROOT
 from comparator import Comparator
 from ptplotter import MultiplePlotter
-# import ROOT
+from broot import BROOT as br
+import sutils as su
 
 # TODO: Introduce more log items for compare etc
 #
@@ -21,6 +23,11 @@ class LogItem(object):
         )
 
     def save(self, stop):
+        if isinstance(self.data, ROOT.TCanvas):
+            oname = "{0}/{1}".format(self.name, self.oname(self.data))
+            su.save_canvas(self.data, "results/", oname,  verbose=True)
+            return
+
         for hist in self.data:
             oname = "{0}/{1}".format(self.name, self.oname(hist))
             diff = Comparator(stop=stop, oname=oname)
