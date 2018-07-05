@@ -37,7 +37,7 @@ class TestScan(unittest.TestCase):
 
     def test_composite_interface(self):
         prod = "single #pi^{0} nonlinearity scan"
-        nbins = 9
+        nbins = 2
         histnames = sum([
             [
                 "hMassPt_{}_{}".format(i, j),
@@ -70,7 +70,5 @@ class TestScan(unittest.TestCase):
         ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
         hist.Write()
         ofile.Close()
-        hist.Draw('colz text')
-        raw_input("press enter")
         Comparator().compare(hist)
         # loggs.plot()

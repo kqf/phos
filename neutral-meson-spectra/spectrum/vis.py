@@ -102,20 +102,7 @@ class MultipleVisualizer(object):
             h.DrawCopy('colz same ' + h.GetOption())
             legend.AddEntry(h, h.label)
 
-        stack = ROOT.THStack("test", first_hist.GetTitle())
-        map(stack.Add, hists)
-        stack.Draw("nostack")
-        stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
-        stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
-        stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
-        stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
-        stack.GetXaxis().SetRangeUser(*br.hist_range(first_hist))
-        stack.GetXaxis().SetMoreLogLabels(
-            first_hist.GetXaxis().GetMoreLogLabels()
-        )
-        self.cache.append(stack)
-        self.cache.extend(hists)
-
+        self._drawable(first_hist, hists)
         # Don't draw legend for TH2 histograms
         if not issubclass(type(first_hist), ROOT.TH2):
             legend.Draw('same')
@@ -129,6 +116,26 @@ class MultipleVisualizer(object):
         oname = self._oname(fname.lower())
         su.wait(oname, save=True, draw=self.stop)
         return None
+
+    def _drawable(self, first_hist, hists):
+        if issubclass(type(first_hist), ROOT.TH2):
+            first_hist.Draw("colz")
+            return first_hist
+
+        stack = ROOT.THStack("test", first_hist.GetTitle())
+        map(stack.Add, hists)
+        stack.Draw("colz nostack")
+        stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
+        stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
+        stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
+        stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
+        stack.GetXaxis().SetRangeUser(*br.hist_range(first_hist))
+        stack.GetXaxis().SetMoreLogLabels(
+            first_hist.GetXaxis().GetMoreLogLabels()
+        )
+        self.cache.append(stack)
+        self.cache.extend(hists)
+        return stack
 
     def _color_marker(self, ci, i, h):
         color = ci + i % self.ncolors
