@@ -41,8 +41,14 @@ class NonlinearityParamExtractor(TransformerBase):
         bins = list(br.vec_to_bins(set(a))) + list(br.vec_to_bins(set(sigma)))
         hist = ROOT.TH2F("nonlinearity_scan",
                          "Chi2/ndf for data and mc; a; #sigma, GeV/c", *bins)
+        chi2_params = {}
         for c, b in zip(chi2, self.labels):
             hist.Fill(b[0], b[1], c)
+            chi2_params[tuple(b)] = c
+
+        msg = "The most optimal parameters are: {}, chi2 = {}"
+        optimal = min(chi2_params, key=lambda x: chi2_params[x])
+        print msg.format(optimal, chi2_params[optimal])
 
         return hist
 

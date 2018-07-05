@@ -21,7 +21,11 @@ class DataSlicer(object):
         intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
         assert len(intervals) == len(self.opt.rebins), \
             "Number of intervals is not equal " \
-            "to the number of rebin parameters"
+            "to the number of rebin parameters" \
+            "edges = {} vs rebins = {}".format(
+                len(intervals),
+                len(self.opt.rebins)
+        )
 
         def common_inputs(x, y):
             return RawMass(input_data, x, y)
