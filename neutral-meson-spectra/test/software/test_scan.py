@@ -13,7 +13,6 @@ from vault.datavault import DataVault
 
 class TestScan(unittest.TestCase):
 
-    @unittest.skip('')
     def test_interface(self):
         nbins = 2
         estimator = NonlinearityScan(
@@ -30,7 +29,7 @@ class TestScan(unittest.TestCase):
             for j in trange(nbins) for i in trange(nbins)
         ]
 
-        print estimator.transform(
+        assert estimator.transform(
             [DataVault().input("data"), mc],
             loggs=AnalysisOutput("testing the scan interface")
         )
@@ -62,13 +61,7 @@ class TestScan(unittest.TestCase):
         low, high = low.read_multiple(2), high.read_multiple(2)
         mc_data = [(l, h) for l, h in zip(low, high)]
 
-        hist = estimator.transform(
+        assert estimator.transform(
             [DataVault().input("data"), mc_data],
             loggs=AnalysisOutput("testing the scan interface")
         )
-        import ROOT
-        ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
-        hist.Write()
-        ofile.Close()
-        Comparator().compare(hist)
-        # loggs.plot()

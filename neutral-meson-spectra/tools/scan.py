@@ -46,10 +46,13 @@ class NonlinearityParamExtractor(TransformerBase):
             hist.Fill(b[0], b[1], c)
             chi2_params[tuple(b)] = c
 
-        msg = "The most optimal parameters are: {}, chi2 = {}"
+        msg = "The most optimal parameters are: {}, chi2 = {}, index = {}"
         optimal = min(chi2_params, key=lambda x: chi2_params[x])
-        print msg.format(optimal, chi2_params[optimal])
-
+        print msg.format(
+            optimal,
+            chi2_params[optimal],
+            self.labels.index(list(optimal))
+        )
         return hist
 
 

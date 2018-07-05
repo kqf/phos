@@ -1,160 +1,89 @@
-from spectrum.spectrum import Spectrum
-from spectrum.input import Input, read_histogram
-from spectrum.sutils import gcanvas, wait
-from spectrum.options import Options
-from spectrum.comparator import Comparator
-from spectrum.transformer import TransformerBase
-from spectrum.broot import BROOT as br
-
 import ROOT
+import unittest
+from collections import OrderedDict
 
-ROOT.TH1.AddDirectory(False)
-
-
-def extract_range(hist):
-    text = hist.GetTitle()
-    return map(float, text.split())
-
-
-class Chi2Entry(object):
-
-    def __init__(self):
-        super(Chi2Entry, self).__init__()
-
-    @classmethod
-    def evaluate(klass, nonlins):
-        self, nsize = sum(nonlins, klass()), len(nonlins)
-        self.mean(nsize)
-        return self
-
-    def mean(self, nsize):
-        hmean = br.clone(self.ratio)
-        hmean.Scale(1. / nsize)
-        return hmean
-
-    def __add__(self, rhs):
-        try:
-            self.ratio.Add(rhs.ratio)
-        except AttributeError:
-            self.ratio = br.clone(rhs.ratio)
-            self.ratio.SetTitle(
-                '#pi^{0} mass positition / #pi^{0} peak width; p_{T}, GeV/c; m/#sigma')
-            self.ratio.label = 'mean'
-        return self
-
-    @staticmethod
-    def chi2(mean, nonlin):
-        mean, sigma, _ = br.bins(mean)
-        xi, _, _ = br.bins(nonlin.ratio)
-        result = sum((mean - xi) ** 2 / sigma)
-        print result
-        return result
+from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
+from spectrum.options import CompositeNonlinearityScanOptions
+from spectrum.options import CompositeNonlinearityOptions
+from spectrum.output import AnalysisOutput
+from tools.mc import Nonlinearity
+from tools.scan import NonlinearityScan
+from vault.datavault import DataVault
 
 
-class Nonlinearity(Chi2Entry):
-    def __init__(self, sinput, options):
-        super(Nonlinearity, self).__init__()
-        spectrum = Spectrum(sinput, options)
-        sresults = spectrum.evaluate()
-        self.mass, self.width = sresults[0:2]
-
-        # Set Values for different ranges
-        self.ranges = extract_range(spectrum.analyzer.hists[0])
-
-        # self.mass, self.width = range(1, 20), range(1, 20)
-        self.ratio = br.ratio(self.mass, self.width)
-        self.ratio.label = 'a = {0:.2f}, #sigma = {1:.2f}'.format(*self.ranges)
-
-        # Save it to have a reference
-        self.spectrum = sresults.spectrum
+def form_histnames(nbins=4):
+    histnames = sum([
+        [
+            "hMassPt_{}_{}".format(i, j),
+            "hMixMassPt_{}_{}".format(i, j),
+        ]
+        for j in range(nbins)
+        for i in range(nbins)
+    ], [])
+    return histnames
 
 
-class NonlinearityScanner(TransformerBase):
+class ScanNonlinearities(unittest.TestCase):
 
-    def __init__(self, stop):
-        super(NonlinearityScanner, self).__init__()
-        self.infile = 'Pythia-new.root'
-        self.sel = 'StudyNonlinOnlyTender'
-        self.hname = 'MassPt_%d_%d'
-        self.sbins = 11, 11
-        self.stop = stop
+    def setUp(self):
+        self.nbins = 9
 
-    def inputs(self):
-        x, y = self.sbins
-        return (Input(self.infile, self.sel, self.hname % (i, j)).read() for j in range(y) for i in range(x))
+    @unittest.skip('')
+    def test(self):
+        prod = "single #pi^{0} nonlinearity scan"
+        histnames = form_histnames(self.nbins)
+        low = DataVault().input(prod, "low", inputs=histnames)
+        high = DataVault().input(prod, "high", inputs=histnames)
 
-    def options(self):
-        x, y = self.sbins
-        options = [Options('x = %d, y = %d' % (i, j), 'd')
-                   for j in range(y) for i in range(x)]
-        options = map(Options.coarse_binning, options)
-        return options
+        unified_inputs = OrderedDict([
+            (low, (0.0, 8.0)),
+            (high, (4.0, 20.0)),
+        ])
 
-    def calculate_ranges(self, nonlins):
-        xbins, ybins = self.sbins
-        (xmin, ymin), (xmax, ymax) = nonlins[0].ranges, nonlins[-1].ranges
+        estimator = NonlinearityScan(
+            CompositeNonlinearityScanOptions(
+                unified_inputs, nbins=self.nbins)
+        )
 
-        def halfstep(mmin, mmax, nbins):
-            return (mmax - mmin) / nbins / 2.
+        low, high = low.read_multiple(2), high.read_multiple(2)
+        mc_data = [(l, h) for l, h in zip(low, high)]
 
-        x_halfstep = halfstep(xmin, xmax, xbins)
-        xstart = xmin - x_halfstep
-        xstop = xmax + x_halfstep
+        chi2ndf = estimator.transform(
+            [DataVault().input("data"), mc_data],
+            loggs=AnalysisOutput("testing the scan interface")
+        )
+        # TODO: Add this to the output
+        ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
+        chi2ndf.Write()
+        ofile.Close()
+        Comparator().compare(chi2ndf)
 
-        y_halfstep = halfstep(ymin, ymax, ybins)
-        ystart = ymin - y_halfstep
-        ystop = ymax + y_halfstep
+    # @unittest.skip('')
+    def test_draw_most_optimal_nonlinearity(self):
+        production = "single #pi^{0} nonlinearity scan"
+        minimum_index = 22
+        minimum_index *= 2
+        histname = form_histnames(self.nbins)[minimum_index]
+        histname = histname[1:]  # Remove first h
+        # production = "single #pi^{0} iteration d3 nonlin14"
+        # histname = "MassPt"
+        unified_inputs = {
+            DataVault().input(production, "low",
+                              histname=histname): (0.0, 8.0),
+            DataVault().input(production, "high",
+                              histname=histname): (4.0, 20.0)
+        }
 
-        return xbins, xstart, xstop, ybins, ystart, ystop
-
-    def test_systematics(self):
-        inputs, options = self.inputs(), self.options()
-        nonlinearities = map(Nonlinearity, inputs, options)
-
-        # Total ratio
-        mean = Chi2Entry.evaluate(nonlinearities)
-
-        c1 = gcanvas(1, 1, resize=True)
-        chi2_hist = ROOT.TH2F('chi2', '#chi^{2} distriubiton; a; #sigma, GeV/c',
-                              *self.calculate_ranges(nonlinearities))
-
-        mean_hist = mean.mean(len(nonlinearities))
-        diff = Comparator()
-        diff.compare(
-            [mean_hist] + map(lambda x: x.ratio, nonlinearities[::10]))
-        # wait(draw = self.stop or True)
-
-        for nonlin in nonlinearities:
-            (xx, yy), val = nonlin.ranges, mean.chi2(mean_hist, nonlin)
-            print chi2_hist.Fill(xx, yy, val)
-
-        chi2_hist.Draw('colz')
-        wait(draw=self.stop or True)
-        return self.outsys.histogram(nonlinearities[0].spectrum)
-
-    def test_systematics(self):
-        inp = Input('LHC16.root', 'PhysTender').read()
-        opt = Options('data')
-        opt = Options.coarse_binning(opt)
-        spectrum = Spectrum(inp, opt)
-        sresults = spectrum.evaluate()
-        data = br.ratio(*sresults[0:2])
-
-        inputs, options = self.inputs(), self.options()
-        nonlinearities = map(Nonlinearity, inputs, options)
-
-        c1 = gcanvas(1, 1, resize=True)
-        chi2_hist = ROOT.TH2F('chi2_from_data', 'Deviation from data: #chi^{2} distriubiton; a; #sigma, GeV/c',
-                              *self.calculate_ranges(nonlinearities))
-
-        diff = Comparator()
-        diff.compare([data] + map(lambda x: x.ratio, nonlinearities[::10]))
-        # wait(draw = self.stop or True)
-
-        for nonlin in nonlinearities:
-            (xx, yy), val = nonlin.ranges, Chi2Entry.chi2(data, nonlin)
-            print chi2_hist.Fill(xx, yy, val)
-
-        chi2_hist.Draw('colz')
-        wait(draw=self.stop or True)
-        return self.outsys.histogram(nonlinearities[0].spectrum)
+        options = CompositeNonlinearityOptions(unified_inputs)
+        options.fitf = None
+        estimator = Nonlinearity(options)
+        nonlinearity = estimator.transform(
+            [
+                DataVault().input("data", listname="Phys",
+                                  histname="MassPt"),
+                unified_inputs
+            ],
+            loggs=AnalysisOutput("optimal nonlinearity")
+        )
+        Comparator().compare(nonlinearity)
