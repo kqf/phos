@@ -66,6 +66,7 @@ class ScanNonlinearities(unittest.TestCase):
         minimum_index *= 2
         histname = form_histnames(self.nbins)[minimum_index]
         histname = histname[1:]  # Remove first h
+        print histname
         # production = "single #pi^{0} iteration d3 nonlin14"
         # histname = "MassPt"
         unified_inputs = {

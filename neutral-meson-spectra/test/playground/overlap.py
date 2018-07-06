@@ -14,7 +14,7 @@ from spectrum.broot import BROOT as br
 
 class SignalExtractor(TransformerBase):
     def transform(self, data, loggs):
-        signals = [m.mass for m in data
+        signals = [m.signal for m in data
                    if m.pt_range[0] > 4 and m.pt_range[1] < 8]
         for s in signals:
             s.SetAxisRange(0.08, 0.2, "X")

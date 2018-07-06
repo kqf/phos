@@ -25,7 +25,7 @@ class LogItem(object):
     def save(self, stop):
         if isinstance(self.data, ROOT.TCanvas):
             oname = "{0}/{1}".format(self.name, self.oname(self.data))
-            su.save_canvas(self.data, "results/", oname,  verbose=True)
+            su.save_canvas(self.data, "results/", oname)
             return
 
         for hist in self.data:

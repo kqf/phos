@@ -10,3 +10,4 @@ graphs:
 
 clean:
 	rm -f results/*.pdf signals.root *.pdf *.png input-data/efficiency-*.root *.root input-data/nonlinearity-*.root input-data/tof-cut*.root
+	rm -rf results/*
