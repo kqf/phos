@@ -116,7 +116,9 @@ class MultipleVisualizer(object):
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
         if self.loggs:
-            self.loggs.update('compare', canvas)
+            cloned = canvas.Clone()
+            cloned.SetName('c' + first_hist.GetName())
+            self.loggs.update('compare', cloned)
         else:
             su.wait(oname, save=True, draw=self.stop)
         return None
@@ -250,7 +252,9 @@ class Visualizer(MultipleVisualizer):
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
         if self.loggs:
-            self.loggs.update('compare', canvas)
+            cloned = canvas.Clone()
+            cloned.SetName('c' + hists[0].GetName())
+            self.loggs.update('compare', cloned)
         else:
             su.wait(oname, save=True, draw=self.stop)
         return su.adjust_labels(ratio, hists[0])
