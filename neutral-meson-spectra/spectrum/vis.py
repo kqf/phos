@@ -125,7 +125,14 @@ class MultipleVisualizer(object):
 
     def _drawable(self, first_hist, hists):
         if issubclass(type(first_hist), ROOT.TH2):
-            first_hist.Draw("colz")
+            option = "colz"
+            maxbins = max(
+                first_hist.GetNbinsX(),
+                first_hist.GetNbinsY()
+            )
+            if maxbins < 20:
+                option += " text"
+            first_hist.Draw(option)
             return first_hist
 
         stack = ROOT.THStack("test", first_hist.GetTitle())

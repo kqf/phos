@@ -492,6 +492,21 @@
 			"description": "Add fine tuning of the nonlinearity parametrization"
 		}
 	},
+	"single #pi^{0} nonlinearity scan fine":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/nonlinearity_scan_fine/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "693e3c5cdbad9950fee7f5eac98bd9152f108a3f3ae0d0547dec3615e02f692a",
+			"description": "Add fine tuning of the nonlinearity parametrization"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/nonlinearity_scan_fine/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "e391efbb6dbbe94be1154e65ef3249bf8344c79d1db17d8722cf9ab55d2975b6",
+			"description": "Add fine tuning of the nonlinearity parametrization"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
