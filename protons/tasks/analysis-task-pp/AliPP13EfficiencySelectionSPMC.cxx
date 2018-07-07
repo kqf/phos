@@ -78,6 +78,7 @@ void AliPP13EfficiencySelectionSPMC::ConsiderGeneratedParticles(const EventFlags
 
 		fSpectrums[code]->fPt->Fill(pt, w);
 		fSpectrums[code]->fPtRadius->Fill(pt, r, w);
+		fSpectrums[code]->fMassPt[0]->Fill(particle->M(), pt, w);
 
 		Bool_t primary = IsPrimary(particle);
 
