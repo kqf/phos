@@ -40,8 +40,7 @@ class ReconstructedValidator(object):
 
 
 def tsallis():
-    tsallis = ROOT.TF1(
-        "f", FVault().func("tsallis"), 0, 100)
+    tsallis = ROOT.TF1("f", FVault().func("tsallis"), 0, 100)
     tsallis.SetParameters(0.014960701090585591,
                           0.287830380417601, 9.921003040859755)
     # [0.014850211992453644, 0.28695967166609104, 9.90060126848571
