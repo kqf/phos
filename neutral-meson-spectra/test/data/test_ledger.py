@@ -14,4 +14,4 @@ class TestDatasets(unittest.TestCase):
             "Some files are changed or missing\n\n{0}".format(
                 ill_datasets)
         # NB: test dataset is always missing
-        self.assertTrue(len(bad_datasets) == 1, msg=message)
+        self.assertTrue(len(bad_datasets) == 0, msg=message)

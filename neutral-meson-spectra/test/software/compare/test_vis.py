@@ -14,7 +14,7 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
         self.data, self.stop = self.config()
 
     def test_vis_hub(self):
-        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None)
+        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None, None)
 
         self.data[0].SetTitle('Test ViHub: Testing MultipleVisualizer')
         vishub.compare_visually(self.data, 1)
@@ -26,7 +26,7 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
         vishub.compare_visually([self.data[0]], 1)
 
     def test_draws_multiple_plots(self):
-        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None)
+        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None, None)
         vis = vishub._regular
 
         self.data[0].SetTitle('Test VisMultiple: Testing MultipleVisualizer')
@@ -39,7 +39,7 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
         vis.compare_visually([self.data[0]], 1)
 
     def test_handles_double_plots(self):
-        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None)
+        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None, None)
         vis = vishub._double
 
         self.assertRaises(ValueError, vis.compare_visually, self.data, 1)

@@ -567,18 +567,6 @@
 			"description": "Single #eta simulations with all correctons"
 		}
 	},
-
-	"epos": {
-	},
-	"test": {
-		"latest": {
-			"file": "input-data/test_vault.root",
-			"default_selection": "Phys",
-			"hsum": "32a2f2c9d91bd33649bd12a068d28fee0f7884c8cb94b166992083f727cf0e51",
-			"description": "This one is needed for testing purposes"
-		}
-	},
-
 	"debug efficiency":
 	{
 		"low": {
