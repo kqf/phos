@@ -25,7 +25,8 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
-        production = "single #pi^{0} iteration d3 nonlin14"
+        # production = "single #pi^{0} iteration d3 nonlin14"
+        production = "single #pi^{0} debug2"
         unified_inputs = {
             DataVault().input(production, "low", "PhysEff"): (0.0, 8.0),
             # DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),

@@ -67,7 +67,7 @@ class TestMasses(unittest.TestCase):
     def test_efficiency(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         particle = "#pi^{0}"
-        production = "single #pi^{0} iteration d3 nonlin14"
+        production = "single #pi^{0} debug2"
         unified_inputs = {
             DataVault().input(production, "low", "PhysEff"): (0.0, 8.0),
             # DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),

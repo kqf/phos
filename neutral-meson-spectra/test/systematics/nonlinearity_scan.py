@@ -31,7 +31,7 @@ class ScanNonlinearities(unittest.TestCase):
 
     # @unittest.skip('')
     def test(self):
-        prod = "single #pi^{0} nonlinearity scan fine"
+        prod = "single #pi^{0} debug2"
         histnames = form_histnames(self.nbins)
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
@@ -61,7 +61,7 @@ class ScanNonlinearities(unittest.TestCase):
 
     @unittest.skip('')
     def test_draw_most_optimal_nonlinearity(self):
-        production = "single #pi^{0} nonlinearity scan"
+        production = "single #pi^{0} debug2"
         minimum_index = 22
         minimum_index *= 2
         histname = form_histnames(self.nbins)[minimum_index]
