@@ -14,11 +14,24 @@ from spectrum.broot import BROOT as br
 
 class SignalExtractor(TransformerBase):
     def transform(self, data, loggs):
-        signals = [m.signal for m in data
-                   if m.pt_range[0] > 4 and m.pt_range[1] < 8]
-        for s in signals:
+        signals = [m.mass for m in data
+                   if m.pt_range[0] >= 4 and m.pt_range[1] <= 8]
+        for s, m in zip(signals, data):
             s.SetAxisRange(0.08, 0.2, "X")
+            s.GetListOfFunctions().Clear()
+            s.label = m.pt_label
         return signals
+
+
+class SignalScaler(TransformerBase):
+    def __init__(self, options):
+        low_pt = options.spectrum.ptrange[-1] < 19
+        self.scale = 0.02 if low_pt else 1.0
+
+    def transform(self, data, loggs):
+        for h in data:
+            h.Scale(self.scale)
+        return data
 
 
 class SimpleAnalysis(TransformerBase):
@@ -30,6 +43,7 @@ class SimpleAnalysis(TransformerBase):
             ("slice", DataSlicer(options.pt)),
             ("fitmasses", MassFitter(options.invmass)),
             ("signals", SignalExtractor()),
+            ("scale", SignalScaler(options))
         ])
 
 
@@ -59,7 +73,11 @@ class TestMasses(unittest.TestCase):
             # DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
             DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
         }
-        options = CompositeEfficiencyOptions(unified_inputs, particle)
+        options = CompositeEfficiencyOptions(
+            unified_inputs,
+            particle,
+            ptrange="config/pt-debug-full.json"
+        )
         loggs = AnalysisOutput("mass_test_{}".format(particle))
         MassComparator(options, plot=True).transform(
             unified_inputs,
