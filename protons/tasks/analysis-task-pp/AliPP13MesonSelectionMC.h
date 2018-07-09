@@ -74,7 +74,7 @@ struct ParticleSpectrum
 		const char * rtitle = "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}";
 		for (Int_t i = 0; i < 2; ++i)
 		{
-			const char * rname = Form("h%sMassPt", i == 0 ? "" : "Mix");
+			const char * rname = Form("h%sMassPtDebug_%s", i == 0 ? "" : "Mix", n);
 			fMassPt[i] = new TH2F(rname, rtitle, nM, mMin, mMax, nPt, ptMin, ptMax);
 			fListOfHistos->Add(fMassPt[i]);
 		}
