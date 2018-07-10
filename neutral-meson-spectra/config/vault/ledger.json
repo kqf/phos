@@ -552,6 +552,21 @@
 			"description": "Calculate efficiency using old AliROOT."
 		}
 	},
+	"single #pi^{0} debug4":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug_production4/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "02896baa23289bdbd984ae0f0331bbbd386b5b7ee967ed138f5714001483e01b",
+			"description": "Study different versions of nonlinearity"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug_production4/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "5383ba38db8c5d4e28534532d165c442c5c43234b6e54fd3517e1086a902b7b6",
+			"description": "Study different versions of nonlinearity"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
