@@ -537,6 +537,21 @@
 			"description": "Add fine tuning of the nonlinearity parametrization"
 		}
 	},
+	"single #pi^{0} debug3":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug_production3/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "8adee2b64bf41797e9c83cfda7011a5d4b0c966b985955b86e721a7870cd4772",
+			"description": "Calculate efficiency using old AliROOT."
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug_production3/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "9d6d42a5db751de168f4f5d20d788422aeb521e0ab81e7d2575e72bccc805126",
+			"description": "Calculate efficiency using old AliROOT."
+		}
+	},
 	"single #eta":
 	{
 		"low": {
