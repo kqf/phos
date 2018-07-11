@@ -6,8 +6,9 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DATASET = LHC17j3b4
-OUTDIR = results/mc/single/pi0/debug_production4
+# Check the global energy scale that is equal to unity
+DATASET = LHC17j3b1
+OUTDIR = results/mc/single/pi0/debug_production5
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.

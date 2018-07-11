@@ -109,10 +109,10 @@ class DebugTheEfficiency(unittest.TestCase):
         # )
         # moptions.mergeranges = [(0, 6), (6, 20)]
 
-        prod = "single #pi^{0} iteration d3 nonlin14"
+        prod = "single #pi^{0} debug4"
         unified_inputs = {
-            DataVault().input(prod, "low"): (0, 8.0),
-            DataVault().input(prod, "high"): (4.0, 20)
+            DataVault().input(prod, "low", listname="PhysEff"): (0, 8.0),
+            DataVault().input(prod, "high", listname="PhysEff"): (4.0, 20)
         }
 
         moptions = CompositeEfficiencyOptions(

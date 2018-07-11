@@ -513,13 +513,13 @@
 			"file": "input-data/mc/single/pi0/debug_production1/LHC17j3b1.root",
 			"default_selection": "PhysNonlinScan",
 			"hsum": "f6547c84d7162afde448bec0e2b64814a975cb02c01f66706795c9e242621aab",
-			"description": "Add fine tuning of the nonlinearity parametrization"
+			"description": "Add fine tuning of the nonlinearity parametrization. Strange Histogram"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/debug_production1/LHC17j3b2.root",
 			"default_selection": "PhysNonlinScan",
 			"hsum": "f215cf37fd86a090ef2e1ec45d413508c27a5b3308653261ff3926db6693fc5a",
-			"description": "Add fine tuning of the nonlinearity parametrization"
+			"description": "Add fine tuning of the nonlinearity parametrization. Strange Histogram"
 		}
 	},
 	"single #pi^{0} debug2":
