@@ -6,9 +6,9 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Check the global energy scale that is equal to unity
-DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/debug_production5
+# Use No Correction option in PHOS tender:w
+DATASET = LHC17j3b2
+OUTDIR = results/mc/single/pi0/debug_production6
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.

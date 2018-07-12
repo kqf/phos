@@ -24,12 +24,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     TString decalibration = "Run2Default";
     AliPHOSTenderTask * tender = AddAODPHOSTender(
-        "PHOSTenderTask",  // Task Name
-        "PHOStender",      // Container Name
-        decalibration,     // Important: de-calibration
-         1,                // Important: reco pass
-         kTRUE             // Important: is MC?
-    );
+                                     "PHOSTenderTask",  // Task Name
+                                     "PHOStender",      // Container Name
+                                     decalibration,     // Important: de-calibration
+                                     1,                // Important: reco pass
+                                     kTRUE             // Important: is MC?
+                                 );
 
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
     // supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
@@ -37,6 +37,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // ZS threshold in unit of GeV
     Double_t zs_threshold = 0.020;
     supply->ApplyZeroSuppression(zs_threshold);
+    supply->SetNonlinearityVersion("NoCorrection");
+    // Double_t par[3] = {9.54582e-01, 3.25219e-02, 5.41188e+00};
+    // supply->SetNonlinearityParams(3, par);
 
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");

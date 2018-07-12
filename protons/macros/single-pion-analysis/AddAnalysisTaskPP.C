@@ -32,7 +32,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeightsSPMC & mc_weights_d = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	mc_weights.fNonA = -0.025708;
 	mc_weights.fNonSigma = 0.910254;
-	mc_weights.fNonGlobal = 1.0;
 	mc_weights_only.fNonA = 0.;
 	mc_weights_only.fNonGlobal = 1.0;
 
