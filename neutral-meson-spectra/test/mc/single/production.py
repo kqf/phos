@@ -24,7 +24,7 @@ def inputs(production, is_nonlin=False):
 class TestProductionsPi0(unittest.TestCase):
 
     def setUp(self):
-        self.production_name = "single #pi^{0} iteration d3 nonlin14"
+        self.production_name = "single #pi^{0} debug2"
         self.particle = "#pi^{0}"
         # self.production_name = "single #eta nonlin"
         # self.particle = "#eta"

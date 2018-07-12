@@ -582,6 +582,21 @@
 			"description": "Use the best nonlinearity with the with GE scale 1."
 		}
 	},
+	"single #pi^{0} debug6":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug_production6/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "5844d6476f280d373748b1a3621413305b34463a0050b1e760d3e01611b88334",
+			"description": "Use Tender Option NoCorrection"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug_production6/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "f201bb4a864f9affe958a5e73b7c8d409ba0e5d1ab7b32de2e7f23c88023a8f0",
+			"description": "Use Tender Option NoCorrection"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
