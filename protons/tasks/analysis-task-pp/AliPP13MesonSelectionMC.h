@@ -26,7 +26,7 @@
 //
 
 // TODO: Split this class to have separate efficiency and contamination estimators
-//
+// 
 
 struct ParticleSpectrum
 {
@@ -54,29 +54,15 @@ struct ParticleSpectrum
 		if (!full)
 			return;
 
-		for (Int_t i = 0; i < 2; ++i)
+		for(Int_t i = 0; i < 2; ++i)
 		{
-			const char * s = (i == 0) ? "secondary" : "primary";
+			const char * s = (i == 0) ? "secondary": "primary";
 			fPtPrimaries[i] = new TH1F(Form("hPt_%s_%s_", n, s), Form("Generated p_{T} spectrum of %s %ss; p_{T}, GeV/c", s, n), ptsize, ptbins);
 			fListOfHistos->Add(fPtPrimaries[i]);
 
 			fPtPrimariesStandard[i] = new TH1F(Form("hPt_%s_%s_standard", n, s), Form("Generated p_{T} spectrum of %s %ss; p_{T}, GeV/c", s, n), 200, 0, 20);
 			fListOfHistos->Add(fPtPrimariesStandard[i]);
 
-		}
-		Int_t nM       = 750;
-		Double_t mMin  = 0.0;
-		Double_t mMax  = 1.5;
-		Int_t nPt      = 400;
-		Double_t ptMin = 0;
-		Double_t ptMax = 20;
-
-		const char * rtitle = "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}";
-		for (Int_t i = 0; i < 2; ++i)
-		{
-			const char * rname = Form("h%sMassPtDebug_%s", i == 0 ? "" : "Mix", n);
-			fMassPt[i] = new TH2F(rname, rtitle, nM, mMin, mMax, nPt, ptMin, ptMax);
-			fListOfHistos->Add(fMassPt[i]);
 		}
 	}
 
@@ -89,7 +75,6 @@ struct ParticleSpectrum
 	TH1F * fPt;         //!
 	TH1F * fPtPrimaries[2]; //!
 	TH1F * fPtPrimariesStandard[2]; //!
-	TH2F * fMassPt[2]; //!
 
 };
 
@@ -137,8 +122,8 @@ public:
 		fPi0SourcesNames[kSigmaZero] = "#Sigma^{0}";
 	}
 
-	AliPP13MesonSelectionMC(const char * name, const char * title,
-	                        AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
+	AliPP13MesonSelectionMC(const char * name, const char * title, 
+			AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
 		AliPP13PhysPhotonSelectionMC(name, title, cuts, w),
 		fPrimaryPi0(),
 		fSecondaryPi0(),
@@ -148,7 +133,7 @@ public:
 	{
 		// Force no timing cut for MC,
 		// as there is no photons from different bunches
-		fCuts.fTimingCut = 9999;
+		fCuts.fTimingCut = 9999; 
 
 		// Don't use c++11 here, as it might fail at some nodes
 		fPartNames[kGamma] = "#gamma";
