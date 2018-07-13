@@ -38,9 +38,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights_d.fNonA =  -0.06;
 	mc_weights_d.fNonSigma = 0.7;
 	mc_weights_d.fNonGlobal = 1.0;
-	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
-	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights_only));
-	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffD", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights_d));
+	// selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
+	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights_only));
+	// selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffD", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights_d));
 	// selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights, 0.0025, 0.025));
 	// selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only));
 	// selections->Add(new AliPP13NonlinearitySelection("PhysNonlin", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights, kTRUE));

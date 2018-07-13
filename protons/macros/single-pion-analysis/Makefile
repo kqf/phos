@@ -6,9 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Use No Correction option in PHOS tender:w
+# Use Boris' parametrization for the nonlinearity
+#
 DATASET = LHC17j3b2
-OUTDIR = results/mc/single/pi0/debug_production6
+OUTDIR = results/mc/single/pi0/debug_production7
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
