@@ -55,6 +55,7 @@ class Options(object):
         self.spectrum = AnalysisOption(
             'RangeEstimator', spectrumconf, particle)
         self.spectrum.ptrange = fitrange
+        self.spectrum.fit_range = fitrange
 
         self.pt = AnalysisOption('DataSlicer', ptrange, particle)
         self.output = AnalysisOption('DataExtractor', outconf, particle)
@@ -108,11 +109,12 @@ class Options(object):
 
     @staticmethod
     def spmc(pt_fit_range, particle='pi0',
-             ptrange='config/pt-spmc.json', *args, **kwargs):
+             ptrange='config/pt-spmc-%s.json', *args, **kwargs):
+        pref = "low" if pt_fit_range[0] < 1 else "high"
         options = Options(
             particle=particle,
             fitrange=pt_fit_range,
-            ptrange=ptrange,
+            ptrange=ptrange % pref,
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
             signalp='config/cball-parameters-spmc-signal.json',

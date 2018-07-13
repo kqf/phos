@@ -56,7 +56,7 @@ class PeakPositionWidthEstimator(TransformerBase):
         for option in self.options.suboptions:
             option.analysis.spectrum.mass_pars = mass_pars
             option.analysis.spectrum.width_pars = width_pars
-            option.analysis.spectrum.fit_mass_width = False
+            # option.analysis.spectrum.fit_mass_width = False
 
         loggs.update(
             "composite_range_estimator",
