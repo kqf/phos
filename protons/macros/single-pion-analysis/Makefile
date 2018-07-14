@@ -8,7 +8,7 @@ PROTONS_PATH=../../
 
 # Use Boris' parametrization for the nonlinearity
 #
-DATASET = LHC17j3b2
+DATASET = LHC17j3b1
 OUTDIR = results/mc/single/pi0/debug_production7
 TEST_SELECTION = PhysTender
 
