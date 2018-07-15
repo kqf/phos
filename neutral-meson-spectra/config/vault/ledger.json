@@ -597,6 +597,21 @@
 			"description": "Use Tender Option NoCorrection"
 		}
 	},
+	"single #pi^{0} debug7":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug_production7/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "3f12d7758266cc8c8632944b7af5c939a11708bac90a24684ef874c64a5bd531",
+			"description": "Use Boris' nonlinearity correcton"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug_production7/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "01e331fa7a33a041ad1d919701e44829ac8c9af9ce7eb2810a5f0b3a205a9d5e",
+			"description": "Use Boris' nonlinearity correcton"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
