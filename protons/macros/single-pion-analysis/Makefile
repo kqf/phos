@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Use Boris' parametrization for the nonlinearity
+# Start nonlinearity Scan for a new nonlinearity
 #
 DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/debug_production7
+OUTDIR = results/mc/single/pi0/scan_nonlinearities
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.

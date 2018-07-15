@@ -37,9 +37,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // ZS threshold in unit of GeV
     Double_t zs_threshold = 0.020;
     supply->ApplyZeroSuppression(zs_threshold);
-    supply->SetNonlinearityVersion("MC");
-    Double_t par[3] = {9.54582e-01, 3.25219e-02, 5.41188e+00};
-    supply->SetNonlinearityParams(3, par);
+    // supply->SetNonlinearityVersion("MC");
+    // Double_t par[3] = {9.54582e-01, 3.25219e-02, 5.41188e+00};
+    // supply->SetNonlinearityParams(3, par);
 
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
