@@ -612,6 +612,21 @@
 			"description": "Use Boris' nonlinearity correcton"
 		}
 	},
+	"single #pi^{0} scan nonlinearity":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "f295f8dcb6dbaf02234e12d99ef795a1da88b07a8314f98820c3d20829c5b181",
+			"description": "Add fine tuning of the nonlinearity parametrization"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "0ebffc15d35a4b3274368f98405b8889318b2398d10cfaf9e04525b457b90c50",
+			"description": "Add fine tuning of the nonlinearity parametrization"
+		}
+	},
 	"single #eta":
 	{
 		"low": {

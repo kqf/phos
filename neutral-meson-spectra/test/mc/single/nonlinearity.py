@@ -7,18 +7,20 @@ from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput
 from tools.mc import Nonlinearity
 from spectrum.broot import BROOT as br
-from vault.formulas import FVault
+# from vault.formulas import FVault
 
 import ROOT
 
 
 def nonlinearity_function():
+    # func_nonlin = ROOT.TF1(
+    #     "func_nonlin", FVault().func("nonlinearity"), 0, 20)
+    # func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
+
     func_nonlin = ROOT.TF1(
-        "func_nonlin", FVault().func("nonlinearity"), 0, 20)
-    func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
-    func_nonlin.SetParameter(0, -0.014719244288611932)
-    func_nonlin.SetParameter(1, 0.8017501954719543 * 2)
-    func_nonlin.SetParameter(2, 1.050000000000015)
+        "func_nonlin",
+        "[2]*(1.+[0]/(1. + TMath::Power(2 * x/[1],2)))", 0, 100)
+    func_nonlin.SetParameters(-0.06, 0.7, 1.015)
     return func_nonlin
 
 
