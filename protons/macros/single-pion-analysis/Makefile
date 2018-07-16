@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Start nonlinearity Scan for a new nonlinearity
+# Start nonlinearity Scan for a new nonlinearity and updated parameters
 #
-DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/scan_nonlinearities
+DATASET = LHC17j3b2
+OUTDIR = results/mc/single/pi0/scan_nonlinearities1
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
