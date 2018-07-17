@@ -19,20 +19,20 @@ def nonlinearity_function():
 
     func_nonlin = ROOT.TF1(
         "func_nonlin",
-        "[2]*(1.+[0]/(1. + TMath::Power(2 * x/[1],2)))", 0, 100)
+        "[2]*(1.+[0]/(1. + TMath::Power(x/[1],2)))", 0, 100)
     func_nonlin.SetParameters(-0.06, 0.7, 1.015)
     return func_nonlin
 
 
 class TestNonlinearitySPMC(unittest.TestCase):
 
+    @unittest.skip("")
     def test_nonlin_photon_level(self):
         mcsel = "PhysNonlinPlain"
         selection = "PhysNonlinEst"
         histname = "MassPt_SM0"
         self.calculate(selection, mcsel, histname)
 
-    @unittest.skip("")
     def test_nonlin_pion_level(self):
         mcsel = "PhysEffPlain"
         selection = "Phys"
@@ -40,7 +40,7 @@ class TestNonlinearitySPMC(unittest.TestCase):
         self.calculate(selection, mcsel, histname)
 
     def calculate(self, selection, mcsel, histname):
-        production = "single #pi^{0} iteration d3 nonlin13"
+        production = "single #pi^{0} scan nonlinearity1"
         unified_inputs = {
             DataVault().input(production, "low", mcsel,
                               histname=histname): (0.0, 8.0),
@@ -57,7 +57,8 @@ class TestNonlinearitySPMC(unittest.TestCase):
                                   histname=histname),
                 unified_inputs
             ],
-            loggs=AnalysisOutput("Testing the composite interface")
+            # loggs=AnalysisOutput("Testing the composite interface")
+            "Testing the composite interface"
         )
         print "Fit parameters:", br.pars(options.fitf)
         self.assertGreater(nonlinearity.GetEntries(), 0)
