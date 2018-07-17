@@ -642,6 +642,21 @@
 			"description": "Nonlienarity scan arandom minimum from previous production; Add EffPlain"
 		}
 	},
+	"single #pi^{0} scan nonlinearity2":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity2/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "5fd6e13cc1beb48caf6f7955bd69dec8e04d50425d783750e3c69091f40de4a8",
+			"description": "Nonlienarity scan arandom minimum from previous production; Add EffPlain"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity2/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "0d955ca9f67f084b756430b68915feeeb93f9d5fba0d308d5e392606b38f9bc4",
+			"description": "Nonlienarity scan arandom minimum from previous production; Add EffPlain"
+		}
+	},
 	"single #eta":
 	{
 		"low": {

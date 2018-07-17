@@ -31,7 +31,7 @@ class ScanNonlinearities(unittest.TestCase):
 
     # @unittest.skip('')
     def test(self):
-        prod = "single #pi^{0} scan nonlinearity1"
+        prod = "single #pi^{0} scan nonlinearity2"
         histnames = form_histnames(self.nbins)
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
