@@ -29,6 +29,7 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString period, TString
     plugin->SetOutputFiles(AliAnalysisManager::GetCommonFileName());
 	period.ToLower();
 	plugin->SetGridWorkingDir("debug-phos-" + period);	
+	plugin->SetExecutable(TString("debug_pp_") + period + ".sh");
 
     //plugin->SetUseSubmitPolicy();
 	return plugin;

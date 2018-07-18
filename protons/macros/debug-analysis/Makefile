@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Try old parameters but different energy scale
+# Update the parameters for a new optimum
 #
 DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/scan_nonlinearities3
+OUTDIR = results/mc/single/pi0/scan_nonlinearities4
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.

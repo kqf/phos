@@ -172,3 +172,4 @@ class DebugTheEfficiency(unittest.TestCase):
         nominal_low.Fit(tsallis)
         print br.pars(tsallis)
         Comparator().compare(nominal_low)
+

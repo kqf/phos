@@ -657,6 +657,21 @@
 			"description": "Nonlienarity scan arandom minimum from previous production; Add EffPlain"
 		}
 	},
+	"single #pi^{0} scan nonlinearity3":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity3/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "3f53162f23a7d3b436647c11f557f28cd11d293a3d6a4f176914147e6c78e7ae",
+			"description": "Compare different GE scales for standard nonlin. parameters"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity3/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "a9105a81659ca2d53ecc707437e8b78602e0e5a29f101d5584527dfb6513de4e",
+			"description": "Compare different GE scales for standard nonlin. parameters"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
