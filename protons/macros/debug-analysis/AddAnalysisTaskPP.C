@@ -1,4 +1,4 @@
-#include "../../setup/sources.h"
+#include "../../tasks/debug/sources.h"
 
 void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "")
 {
