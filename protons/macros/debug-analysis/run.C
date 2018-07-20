@@ -44,7 +44,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("../../setup/values_for_dataset.h+");
 
-    TString msg = "Nonlinearity Scan";
+    TString msg = "Debugging the efficiency";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";

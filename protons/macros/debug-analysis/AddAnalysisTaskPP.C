@@ -28,13 +28,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights.fNonGlobal = 1.022;
 	selections->Add(new EfficiencySelection("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 
-
-
-	// selections->Add(new NonlinearitySelection("PhysNonlin", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights, kTRUE));
-	// selections->Add(new NonlinearitySelection("PhysNonlinPlain", "Plain nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
-
-
-
 	// Setup task
 	AnalysisTaskDebug * task = new AnalysisTaskDebug("PhosProtons", selections);
 	mgr->AddTask(task);
