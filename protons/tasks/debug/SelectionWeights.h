@@ -84,10 +84,10 @@ protected:
 	ClassDef(SelectionWeights, 2)
 };
 
-struct AliPP13SelectionWeightsTOF: public SelectionWeights
+struct SelectionWeightsTOF: public SelectionWeights
 {
 	// NB: One needs default constructor for IO readsons
-	AliPP13SelectionWeightsTOF(
+	SelectionWeightsTOF(
 	    Double_t la = -1.02802e+00,
 	    Double_t lb = 8.51857e+00,
 	    Double_t ls = 6.19420e-01,
@@ -115,14 +115,14 @@ struct AliPP13SelectionWeightsTOF: public SelectionWeights
 	Double_t fExpAlpha;
 
 protected:
-	ClassDef(AliPP13SelectionWeightsTOF, 2)
+	ClassDef(SelectionWeightsTOF, 2)
 
 };
 
-struct AliPP13SelectionWeightsMC: public SelectionWeights
+struct SelectionWeightsMC: public SelectionWeights
 {
 	// NB: One needs default constructor for IO readsons
-	AliPP13SelectionWeightsMC(Double_t a = -0.06, Double_t s = 0.7, Double_t g = 1.015):
+	SelectionWeightsMC(Double_t a = -0.06, Double_t s = 0.7, Double_t g = 1.015):
 		SelectionWeights(),
 		fNonGlobal(g),
 		fNonA(a),
@@ -138,15 +138,15 @@ struct AliPP13SelectionWeightsMC: public SelectionWeights
 	Double_t fNonSigma;
 
 protected:
-	ClassDef(AliPP13SelectionWeightsMC, 2)
+	ClassDef(SelectionWeightsMC, 2)
 
 };
 
-struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
+struct SelectionWeightsSPMC: public SelectionWeightsMC
 {
 	// NB: One needs default constructor for IO readsons
-	AliPP13SelectionWeightsSPMC(Double_t a = -0.06, Double_t s = 0.7, Double_t g = 1.015):
-		AliPP13SelectionWeightsMC(g, a, s),
+	SelectionWeightsSPMC(Double_t a = -0.06, Double_t s = 0.7, Double_t g = 1.015):
+		SelectionWeightsMC(g, a, s),
 		fW0(0.014875782846110793),
 		fW1(0.28727403800708634),
 		fW2(9.9198075195331),
@@ -168,7 +168,7 @@ struct AliPP13SelectionWeightsSPMC: public AliPP13SelectionWeightsMC
 	Double_t fW4;
 
 protected:
-	ClassDef(AliPP13SelectionWeightsSPMC, 2)
+	ClassDef(SelectionWeightsSPMC, 2)
 };
 
 #endif

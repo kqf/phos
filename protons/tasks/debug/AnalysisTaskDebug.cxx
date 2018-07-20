@@ -30,10 +30,7 @@ ClassImp(AnalysisTaskDebug)
 AnalysisTaskDebug::AnalysisTaskDebug() : AliAnalysisTaskSE(),
 	fPreviousEvents(0),
 	fSelections(0),
-	fPHOSBadMap(),
-	fNMixedEvents(0),
-	fNBad(0),
-	fBadCells(0)
+	fNMixedEvents(0)
 {
 	// Constructor for root I/O, do not use it
 }
@@ -43,10 +40,7 @@ AnalysisTaskDebug::AnalysisTaskDebug(const char * name, TList * selections, Int_
 	AliAnalysisTaskSE(name),
 	fPreviousEvents(0),
 	fSelections(selections),
-	fPHOSBadMap(),
-	fNMixedEvents(nmix),
-	fNBad(0),
-	fBadCells(0)
+	fNMixedEvents(nmix)
 {
 	fSelections->SetOwner(kTRUE);
 
@@ -58,7 +52,6 @@ AnalysisTaskDebug::AnalysisTaskDebug(const char * name, TList * selections, Int_
 AnalysisTaskDebug::~AnalysisTaskDebug()
 {
 	if (!AliAnalysisManager::GetAnalysisManager()->IsProofMode()) delete fSelections;
-	if (fBadCells) delete [] fBadCells;
 	if (fPreviousEvents) delete fPreviousEvents;
 }
 
@@ -68,12 +61,12 @@ void AnalysisTaskDebug::UserCreateOutputObjects()
 	// Initialization of all outputs
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 	{
-		AliPP13PhotonSelection * selection = dynamic_cast<AliPP13PhotonSelection *> (fSelections->At(i));
+		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
 		selection->InitSummaryHistograms();
 		PostData(i + 1, selection->GetListOfHistos()); // Output starts from 1
 	}
 
-	fPreviousEvents = new AliPP13MixingSample(fNMixedEvents);
+	fPreviousEvents = new MixingSample(fNMixedEvents);
 }
 
 //________________________________________________________________
@@ -92,7 +85,7 @@ void AnalysisTaskDebug::UserExec(Option_t *)
 	// Count MB event before event cuts for every selection
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 	{
-		AliPP13PhotonSelection * selection = dynamic_cast<AliPP13PhotonSelection *> (fSelections->At(i));
+		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
 		selection->CountMBEvent();
 	}
 
@@ -134,8 +127,6 @@ void AnalysisTaskDebug::UserExec(Option_t *)
 
 		// only basic filtering
 		if (!clus->IsPHOS()) continue;
-		if (IsClusterBad(clus)) continue;
-
 		clusArray.Add(clus);
 	}
 
@@ -144,7 +135,7 @@ void AnalysisTaskDebug::UserExec(Option_t *)
 	TList * pool = fPreviousEvents->GetPool(evtProperties);
 	for (int i = 0; i < fSelections->GetEntries(); ++i) // Fill and Post Data to outputs
 	{
-		AliPP13PhotonSelection * selection = dynamic_cast<AliPP13PhotonSelection *> (fSelections->At(i));
+		PhotonSelection * selection = dynamic_cast<PhotonSelection *> (fSelections->At(i));
 
 		if (!selection->SelectEvent(evtProperties))
 			continue;
@@ -202,7 +193,6 @@ Bool_t AnalysisTaskDebug::EventSelected(const AliVEvent * event, EventFlags & ep
 
 	vertex->GetXYZ(eprops.vtxBest);
 	eprops.BC = event->GetBunchCrossNumber();
-
 	eprops.ncontributors = vertex->GetNContributors();
 
 	return kTRUE;

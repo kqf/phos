@@ -148,7 +148,7 @@ void PhotonSelection::InitSummaryHistograms()
 
 
 	TString weights = "";
-	AliPP13SelectionWeightsTOF * tof = dynamic_cast<AliPP13SelectionWeightsTOF *>(fWeights);
+	SelectionWeightsTOF * tof = dynamic_cast<SelectionWeightsTOF *>(fWeights);
 	if(tof)
 	{
 		weights += Form(
@@ -161,7 +161,7 @@ void PhotonSelection::InitSummaryHistograms()
 		);
 	}
 
-	AliPP13SelectionWeightsMC * mc = dynamic_cast<AliPP13SelectionWeightsMC *>(fWeights);
+	SelectionWeightsMC * mc = dynamic_cast<SelectionWeightsMC *>(fWeights);
 	if(mc)
 	{
 		weights += Form(
@@ -172,7 +172,7 @@ void PhotonSelection::InitSummaryHistograms()
 		);
 	}	
 
-	AliPP13SelectionWeightsSPMC * spmc = dynamic_cast<AliPP13SelectionWeightsSPMC *>(fWeights);
+	SelectionWeightsSPMC * spmc = dynamic_cast<SelectionWeightsSPMC *>(fWeights);
 	if(spmc)
 	{
 		weights += Form(

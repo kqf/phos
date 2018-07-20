@@ -2,8 +2,8 @@
 #define PHOTONSELECTION_H
 
 // --- Custom libraries ---
-#include "AliPP13ClusterCuts.h"
-#include "AliPP13SelectionWeights.h"
+#include "ClusterCuts.h"
+#include "SelectionWeights.h"
 
 
 // --- ROOT system ---
@@ -33,12 +33,12 @@ public:
 		fEventCounter(0)
 	{}
 
-	PhotonSelection(const char * name, const char * title, AliPP13ClusterCuts cuts,
-			AliPP13SelectionWeights * sw):
+	PhotonSelection(const char * name, const char * title, ClusterCuts cuts,
+			SelectionWeights * sw):
 		TNamed(name, title),
 		fListOfHistos(0),
 		fCuts(cuts),
-		fWeights(dynamic_cast<AliPP13SelectionWeights *>(sw->Clone())),
+		fWeights(dynamic_cast<SelectionWeights *>(sw->Clone())),
 		fEventCounter(0)
 
 	{}
@@ -83,9 +83,9 @@ protected:
 	PhotonSelection & operator = (const PhotonSelection &);
 
 	TList  * fListOfHistos;  //! list of histograms
-	AliPP13ClusterCuts fCuts;
+	ClusterCuts fCuts;
 
-	AliPP13SelectionWeights * fWeights;
+	SelectionWeights * fWeights;
 	TH1 * fEventCounter;  //!
 private:
 	ClassDef(PhotonSelection, 2)

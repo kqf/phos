@@ -28,12 +28,13 @@ public:
 	TList * GetSelections() { return fSelections; }
 
 protected:
+	Bool_t EventSelected(const AliVEvent * event, EventFlags & eprops) const;
 	TClonesArray * GetMCParticles(const AliVEvent * event) const;
 	AnalysisTaskDebug & operator =(const AnalysisTaskDebug &);
 	AnalysisTaskDebug(const AnalysisTaskDebug & c);
 
 private:
-	AliPP13MixingSample * fPreviousEvents;
+	MixingSample * fPreviousEvents;
 	TList * fSelections;     // analysis instance
 	Int_t fNMixedEvents;     // number of events used for mixing
 

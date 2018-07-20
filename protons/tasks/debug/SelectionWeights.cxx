@@ -8,12 +8,12 @@
 
 
 ClassImp(SelectionWeights);
-ClassImp(AliPP13SelectionWeightsTOF);
-ClassImp(AliPP13SelectionWeightsMC);
-ClassImp(AliPP13SelectionWeightsSPMC);
+ClassImp(SelectionWeightsTOF);
+ClassImp(SelectionWeightsMC);
+ClassImp(SelectionWeightsSPMC);
 
 //________________________________________________________________
-Double_t AliPP13SelectionWeightsTOF::TofEfficiency(Double_t energy) const
+Double_t SelectionWeightsTOF::TofEfficiency(Double_t energy) const
 {
     // TOF efficiency was parametrized as photon energy
     //
@@ -25,7 +25,7 @@ Double_t AliPP13SelectionWeightsTOF::TofEfficiency(Double_t energy) const
 
 
 //________________________________________________________________
-Double_t AliPP13SelectionWeightsMC::Nonlinearity(Double_t x) const
+Double_t SelectionWeightsMC::Nonlinearity(Double_t x) const
 {
     return fNonGlobal * (1. + fNonA / (1 + TMath::Power(x / fNonSigma, 2)));
 }
@@ -33,7 +33,7 @@ Double_t AliPP13SelectionWeightsMC::Nonlinearity(Double_t x) const
 
 
 //________________________________________________________________
-Double_t AliPP13SelectionWeightsSPMC::Weights(Double_t pT, const EventFlags & eflags) const
+Double_t SelectionWeightsSPMC::Weights(Double_t pT, const EventFlags & eflags) const
 {
     // NB: Don't use origin pT
     (void) pT;
@@ -48,9 +48,9 @@ Double_t AliPP13SelectionWeightsSPMC::Weights(Double_t pT, const EventFlags & ef
 }
 
 //________________________________________________________________
-SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()
+SelectionWeights & SelectionWeightsSPMC::SinglePi0()
 {
-    AliPP13SelectionWeightsSPMC & ws = * new AliPP13SelectionWeightsSPMC();
+    SelectionWeightsSPMC & ws = * new SelectionWeightsSPMC();
 
     // Weights 3
     // ws.fW0 = 0.014875782846110793;
@@ -83,9 +83,9 @@ SelectionWeights & AliPP13SelectionWeightsSPMC::SinglePi0()
 
 
 //________________________________________________________________
-SelectionWeights & AliPP13SelectionWeightsSPMC::SingleEta()
+SelectionWeights & SelectionWeightsSPMC::SingleEta()
 {
-    AliPP13SelectionWeightsSPMC & ws = * new AliPP13SelectionWeightsSPMC();
+    SelectionWeightsSPMC & ws = * new SelectionWeightsSPMC();
 
     // NB: Note Different Parameters
     // Weights Initial (form 7 TeV paper)
@@ -107,16 +107,16 @@ SelectionWeights & AliPP13SelectionWeightsSPMC::SingleEta()
 SelectionWeights & SelectionWeights::Init(Mode m)
 {
     if (m == kSinglePi0MC)
-        return AliPP13SelectionWeightsSPMC::SinglePi0();
+        return SelectionWeightsSPMC::SinglePi0();
 
     if (m == kSingleEtaMC)
-        return AliPP13SelectionWeightsSPMC::SingleEta();
+        return SelectionWeightsSPMC::SingleEta();
 
     if (m == kMC)
-        return * new AliPP13SelectionWeightsMC();
+        return * new SelectionWeightsMC();
 
     if (m == kData)
-        return * new AliPP13SelectionWeightsTOF();
+        return * new SelectionWeightsTOF();
 
     return * new SelectionWeights();
 }

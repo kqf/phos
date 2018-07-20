@@ -15,5 +15,5 @@ TEST_SELECTION = PhysTender
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks
 %.cxx:
-	@$(call funlink)
-	@$(call link_sources,../../tasks/analysis-task-pp/, "*.h" "*.cxx")
+	$(call funlink)
+	$(call link_sources,../../tasks/debug/, "*.h" "*.cxx")
