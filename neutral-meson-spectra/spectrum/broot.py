@@ -171,6 +171,11 @@ class BROOT(object):
             ofile.Close()
 
         @classmethod
+        def read_from_canvas(self, canvas):
+            stack = canvas.FindObject("mainpad").FindObject("test")
+            return stack.GetHists()
+
+        @classmethod
         def hepdata(klass, record, ofilename):
             link = 'https://www.hepdata.net/download/table/{0}/Table1/1/root'
             try:

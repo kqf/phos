@@ -21,7 +21,7 @@ class DataMCComparator(TransformerBase):
                 (histname, HistogramSelector(histname, plot)),
                 ("decorate", OutputDecorator(*options.decorate))
             ])),
-        ], plot)
+        ], True)
 
 
 class Nonlinearity(DataMCComparator):

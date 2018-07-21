@@ -40,7 +40,7 @@ class TestNonlinearitySPMC(unittest.TestCase):
         self.calculate(selection, mcsel, histname)
 
     def calculate(self, selection, mcsel, histname):
-        production = "single #pi^{0} scan nonlinearity3"
+        production = "single #pi^{0} scan nonlinearity"
         unified_inputs = {
             DataVault().input(production, "low", mcsel,
                               histname=histname): (0.0, 8.0),

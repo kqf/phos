@@ -31,7 +31,7 @@ class ScanNonlinearities(unittest.TestCase):
 
     @unittest.skip('')
     def test(self):
-        prod = "single #pi^{0} scan nonlinearity4"
+        prod = "single #pi^{0} scan nonlinearity3"
         histnames = form_histnames(self.nbins)
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
@@ -62,7 +62,7 @@ class ScanNonlinearities(unittest.TestCase):
     # @unittest.skip('')
     def test_draw_most_optimal_nonlinearity(self):
         production = "single #pi^{0} scan nonlinearity3"
-        minimum_index = 12
+        minimum_index = 51
         minimum_index *= 2
         histname = form_histnames(self.nbins)[minimum_index]
         histname = histname[1:]  # Remove first h
@@ -79,6 +79,7 @@ class ScanNonlinearities(unittest.TestCase):
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = None
         estimator = Nonlinearity(options)
+        loggs = AnalysisOutput("optimal nonlinearity")
         nonlinearity = estimator.transform(
             [
                 DataVault().input("data", listname="Phys",
@@ -87,4 +88,5 @@ class ScanNonlinearities(unittest.TestCase):
             ],
             loggs=AnalysisOutput("optimal nonlinearity")
         )
-        Comparator().compare(nonlinearity)
+        loggs.plot()
+        # Comparator().compare(nonlinearity)

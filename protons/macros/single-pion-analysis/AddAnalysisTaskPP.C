@@ -26,12 +26,11 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	cuts_eta.fNContributors = 0;
 	cuts_eta.fAsymmetryCut = 0.7;
 
-	// Iteration d0
 	AliPP13SelectionWeightsSPMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights.fNonA = -0.075;
-	mc_weights.fNonSigma = 0.35;
-	mc_weights.fNonGlobal = 1.022;
+	// mc_weights.fNonA = -0.075;
+	// mc_weights.fNonSigma = 0.35;
+	mc_weights.fNonGlobal = 1.029;
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 
@@ -40,29 +39,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	mc_weights_only.fNonSigma = 0.7;
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only));
 
-	AliPP13SelectionWeightsSPMC & mc_weights1 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights1.fNonGlobal = 1.018;
-	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff1", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights1));
-
-	AliPP13SelectionWeightsSPMC & mc_weights2 = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	mc_weights2.fNonGlobal = 1.019;
-	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff2", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights2));
-
-	// selections->Add(new AliPP13NonlinearitySelection("PhysNonlin", "Physics nonlinearity for neutral particles", cuts_pi0, &mc_weights, kTRUE));
-	// selections->Add(new AliPP13NonlinearitySelection("PhysNonlinPlain", "Plain nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
-
-
-
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
-
-	// Don't set map of bad channels on task level.
-	// Always apply tender
-	// if ( !badmap.IsNull() )
-	// 	task->SetBadMap(badmap);
-
-	// task->GetSelections()->Add
-	// task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
 
 
