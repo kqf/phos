@@ -4,9 +4,9 @@ from spectrum.input import Input, NoMixingInput
 
 
 class DataVault(object):
-    def __init__(self):
+    def __init__(self, ledger='ledger.json'):
         super(DataVault, self).__init__()
-        with open('config/vault/ledger.json') as f:
+        with open('config/vault/' + ledger) as f:
             self._ledger = json.load(f)
 
     @classmethod

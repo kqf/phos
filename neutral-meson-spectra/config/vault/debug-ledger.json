@@ -1,0 +1,17 @@
+{
+	"single #pi^{0} debug1":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug1/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "98bb23d74d6a8543676838108892e6b10ed923c4df5a415e2f79d55c7d9646e5",
+			"description": "Repeat the same analysis but with smaller amount of histograms"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug1/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "71f36cf1dd343d1777fb05b3572fdd734da58b05d590c481d61121a7c5e5eb55",
+			"description": "Repeat the same analysis but with smaller amount of histograms"
+		}
+	}
+}

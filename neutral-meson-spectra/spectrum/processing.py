@@ -136,7 +136,7 @@ class RangeEstimator(object):
 
         ndf = fitquant.GetNDF()
         chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.
-        print chi2_ndf, self.opt.fit_range, par
+        # print chi2_ndf, self.opt.fit_range, par
         quant.SetTitle(
             quant.GetTitle() + ", #chi^{2}/ndf" + " = {chi2:0.4g}".format(
                 chi2=chi2_ndf

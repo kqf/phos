@@ -8,12 +8,12 @@ PROTONS_PATH=../../
 
 # Update the parameters for a new optimum
 #
-DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/scan_nonlinearities4
+DATASET = LHC17j3b2
+OUTDIR = results/mc/single/pi0/debug1
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks
 %.cxx:
-	$(call funlink)
-	$(call link_sources,../../tasks/debug/, "*.h" "*.cxx")
+	@$(call funlink)
+	@$(call link_sources,../../tasks/debug/, "*.h" "*.cxx")
