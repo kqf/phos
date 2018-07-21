@@ -687,6 +687,21 @@
 			"description": "Compare different GE scales for new(!) nonlin. parameters"
 		}
 	},
+	"single #pi^{0} scan nonlinearity5":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity5/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "b6e77623f9df7b5b56273a2be09a957568f69f122bfb1bead0973e0e115afa27",
+			"description": "Update GE scale to better fit the data"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity5/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "dbdc26f60a3d03678e924e2927c60a7cb78598e694d9c1d3bb6e58bc5de38098",
+			"description": "Update GE scale to better fit the data"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
