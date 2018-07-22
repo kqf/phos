@@ -29,9 +29,9 @@ class ScanNonlinearities(unittest.TestCase):
     def setUp(self):
         self.nbins = 9
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test(self):
-        prod = "single #pi^{0} scan nonlinearity6"
+        prod = "single #pi^{0} scan nonlinearity5"
         histnames = form_histnames(self.nbins)
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
@@ -59,9 +59,9 @@ class ScanNonlinearities(unittest.TestCase):
         ofile.Close()
         Comparator().compare(chi2ndf)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_draw_most_optimal_nonlinearity(self):
-        production = "single #pi^{0} scan nonlinearity3"
+        production = "single #pi^{0} scan nonlinearity5"
         minimum_index = 51
         minimum_index *= 2
         histname = form_histnames(self.nbins)[minimum_index]

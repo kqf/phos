@@ -30,7 +30,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	AliPP13SelectionWeightsSPMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	// mc_weights.fNonA = -0.075;
 	// mc_weights.fNonSigma = 0.35;
-	mc_weights.fNonGlobal = 1.029;
+	// mc_weights.fNonGlobal = 1.029;
+	mc_weights.fNonGlobal = 1.021; // Take into account the right scale
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 

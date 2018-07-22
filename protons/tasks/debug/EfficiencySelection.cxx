@@ -7,8 +7,8 @@
 
 // --- ROOT system ---
 #include <TParticle.h>
-#include <TH1F.h>
-#include <TH2F.h>
+#include <TH1D.h>
+#include <TH2D.h>
 
 // --- AliRoot header files ---
 #include <AliLog.h>
@@ -38,10 +38,10 @@ void EfficiencySelection::InitSelectionHistograms()
 	for (Int_t i = 0; i < 2; ++i)
 	{
 		const char * rname = Form("h%sMassPt", i == 0 ? "" : "Mix");
-		fInvMass[i] = new TH2F(rname, rtitle, nM, mMin, mMax, ptSize - 1, ptBins);
+		fInvMass[i] = new TH2D(rname, rtitle, nM, mMin, mMax, ptSize - 1, ptBins);
 		fListOfHistos->Add(fInvMass[i]);
 	}
-	fGenerated = new TH1F("hPt_#pi^{0}_primary_", "Generated spectrum of primary #pi^{0}", ptSize - 1, ptBins);
+	fGenerated = new TH1D("hPt_#pi^{0}_primary_", "Generated spectrum of primary #pi^{0}", ptSize - 1, ptBins);
 	fListOfHistos->Add(fGenerated);
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)

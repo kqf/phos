@@ -17,8 +17,8 @@ class RawMass(object):
             return None
         mass = br.project_range(hist, '_%d_%d', *self.pt_range)
         mass.nevents = hist.nevents
-        mass.SetTitle(
-            self.pt_label + '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}' % (mass.nevents / 1e6))
+        title = '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}'
+        mass.SetTitle(self.pt_label + title % (mass.nevents / 1e6))
         mass.SetLineColor(37)
 
         if not mass.GetSumw2N():
@@ -73,8 +73,6 @@ class InvariantMass(object):
     def integration_region(self, value):
         if not value:
             return
-        # assert value[0] > 0, "Trying to set negative values {0}".format(value)
-
         self._integration_region = value
 
     def number_of_mesons(self):

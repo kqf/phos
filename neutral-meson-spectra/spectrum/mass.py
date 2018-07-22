@@ -14,7 +14,6 @@ class BackgroundEstimator(object):
         bgrf.SetLineColor(8)
         bgrf.SetFillColor(8)
         bgrf.SetFillStyle(3436)
-        # mass.background = br.function2histogram(bgrf, mass.mass)
         mass.background = bgrf
         mass.background_fitted = sigf
         return mass
@@ -92,7 +91,8 @@ class ZeroBinsCleaner(object):
 
         zsig = br.empty_bins(mass.mass, mass.opt.tol)
 
-        zmix = br.empty_bins(mass.background, mass.opt.tol)#if mass.background else []
+        # if mass.background else []
+        zmix = br.empty_bins(mass.background, mass.opt.tol)
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
 
@@ -118,14 +118,16 @@ class ZeroBinsCleaner(object):
             return
 
         # Delete bin only if it's empty
-        def valid(i): return h.GetBinContent(i) < mass.opt.tol and \
-            su.in_range(h.GetBinCenter(i), mass.xaxis_range)
+        def valid(i):
+            return h.GetBinContent(i) < mass.opt.tol and \
+                su.in_range(h.GetBinCenter(i), mass.xaxis_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
         for i, c in centers.iteritems():
             res = fitf.Eval(c)
             if res < 0:
-                # print 'Warning zero bin found at ', mass.pt_label, ', mass: ', c
+                # msg  = 'Warning zero bin found at '
+                # print msg, mass.pt_label, ', mass: ', c
                 res = 0
             h.SetBinError(i, res ** 0.5)
         return h
