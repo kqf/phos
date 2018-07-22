@@ -27,12 +27,12 @@ void EfficiencySelection::InitSelectionHistograms()
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
 	Double_t mMax  = 1.5;
-	Int_t nPt      = 400;
-	Double_t ptMin = 0;
-	Double_t ptMax = 20;
+	// Int_t nPt      = 400;
+	// Double_t ptMin = 0;
+	// Double_t ptMax = 20;
 
 	Double_t ptBins[] = {0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 11.0, 12.0, 13.0, 15.0, 20.0};
-	Int_t ptSize = sizeof(ptBins) / sizeof(Float_t);
+	Int_t ptSize = sizeof(ptBins) / sizeof(Double_t);
 
 	const char * rtitle = "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}";
 	for (Int_t i = 0; i < 2; ++i)
