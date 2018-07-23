@@ -96,35 +96,37 @@ class DebugTheEfficiency(unittest.TestCase):
     def test_efficiency_evaluation(self):
         particle = "#pi^{0}"
         debug_inputs = {
-            debug_input("low"): (0, 6),
-            debug_input("high"): (6, 20)
-        }
-
-        # moptions = CompositeEfficiencyOptions(
-        #     debug_inputs,
-        #     particle,
-        #     genname='hGenPi0Pt_clone',
-        #     use_particle=False,
-        #     ptrange="config/pt-debug-full.json"
-        # )
-        # moptions.mergeranges = [(0, 6), (6, 20)]
-
-        prod = "single #pi^{0} debug4"
-        unified_inputs = {
-            DataVault().input(prod, "low", listname="PhysEff"): (0, 8.0),
-            DataVault().input(prod, "high", listname="PhysEff"): (4.0, 20)
+            debug_input("low"): (0, 8),
+            debug_input("high"): (4, 20)
         }
 
         moptions = CompositeEfficiencyOptions(
-            unified_inputs,
+            debug_inputs,
             particle,
-            genname='hPt_{0}_primary_standard',
-            ptrange="config/pt-debug-full.json"
+            genname='hGenPi0Pt_clone',
+            use_particle=False,
+            ptrange="config/pt-debug-full.json",
+            scale=0.5
         )
+        # moptions.mergeranges = [(0, 6), (6, 20)]
+
+        prod = "single #pi^{0} debug3"
+        ll = "debug-ledger.json"
+        unified_inputs = {
+            DataVault(ll).input(prod, "low", listname="PhysEff"): (0, 8.0),
+            DataVault(ll).input(prod, "high", listname="PhysEff"): (4.0, 20)
+        }
+
+        # moptions = CompositeEfficiencyOptions(
+        #     unified_inputs,
+        #     particle,
+        #     genname='hPt_{0}_primary_',
+        #     ptrange="config/pt-debug-full.json"
+        # )
 
         # moptions.mergeranges = [(0, 6), (6, 20)]
         CompareEfficiencies(moptions).transform(
-            [unified_inputs, debug_inputs],
+            [debug_inputs, debug_inputs],
             "compare the debug efficiency"
         )
 

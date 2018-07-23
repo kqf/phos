@@ -28,5 +28,20 @@
 			"hsum": "4f5a1aecf7cf4fdc74af83dd7e2dd9fb6f0b5f04b477399fd9c455f9327d02a3",
 			"description": "Create histograms with #pi^{0} binning"
 		}
+	},
+	"single #pi^{0} debug3":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug3/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "312ea703abf70c246e459afab55570617c39bb1cec3ec29f816e55dc8d5d6a20",
+			"description": "Use TH*D histograms instead of TH*F"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug3/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "c1366c4b79f5f4ff3f14fb144d1a41f7df8c1d1df1c72cfc5bfb1c78a8fa734b",
+			"description": "Use TH*D histograms instead of TH*F"
+		}
 	}
 }

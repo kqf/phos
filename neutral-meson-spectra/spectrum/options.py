@@ -108,7 +108,7 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, particle='pi0',
+    def spmc(pt_fit_range, particle='#pi^{0}',
              ptrange='config/pt-spmc.json', *args, **kwargs):
         options = Options(
             particle=particle,
@@ -168,8 +168,8 @@ class EfficiencyOptions(object):
 
     @classmethod
     def spmc(klass, pt_range, particle="#pi^{0}",
-             genname='hPt_#pi^{0}_primary_', *args, **kwargs):
-        efficiency_options = klass(genname=genname)
+             genname='hPt_#pi^{0}_primary_', scale=0.075, *args, **kwargs):
+        efficiency_options = klass(genname=genname, scale=scale)
         efficiency_options.analysis = Options().spmc(
             pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
@@ -179,12 +179,13 @@ class CompositeEfficiencyOptions(object):
 
     def __init__(self, unified_inputs, particle,
                  genname='hPt_{0}_primary_',
-                 use_particle=True, *args, **kwargs):
+                 use_particle=True,
+                 scale=0.075, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
         if use_particle:
             genname = genname.format(particle)
         self.suboptions = [EfficiencyOptions.spmc(
-            rr, particle, genname, *args, **kwargs)
+            rr, particle, genname, scale, *args, **kwargs)
             for _, rr in unified_inputs.iteritems()
         ]
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
