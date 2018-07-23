@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Update the parameters for a new optimum
+# Don't cut on primary particles
 #
 DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/debug3
+OUTDIR = results/mc/single/pi0/debug4
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.

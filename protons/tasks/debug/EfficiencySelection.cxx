@@ -105,11 +105,9 @@ void EfficiencySelection::ConsiderGeneratedParticles(const EventFlags & eflags)
 			continue;
 
 
-		Bool_t primary = IsPrimary(particle);
-
-		if(!primary)
-			continue;
-
+		// Bool_t primary = IsPrimary(particle);
+		// if(!primary)
+		// 	continue;
 		fGenerated->Fill(pt, w);
 	}
 }

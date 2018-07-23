@@ -4,14 +4,14 @@
 	"#pi^{0}":
 	{
 
-                "fit_range":         [0.08, 0.2],
+                "fit_range":         [0.06, 0.22],
                 "prel_mass_limits":  [0.1, 0.2],
                 "prel_width_limits": [0.004, 0.030],
                 "prel_range":        [0.105, 0.165],
                 "prel_paremeters":   [0.135, 0.010, 0.0],
                 "fit_mass":          0.135,
                 "fit_mass_limits":   [0.1, 0.2],
-                "fit_width_limits":  [0.001, 0.080],
+                "fit_width_limits":  [0.002, 0.080],
                 "cb_n":              3.5,
                 "cb_alpha":          1.25,
                 "cb_n_limits":       [1.0, 10.5],
