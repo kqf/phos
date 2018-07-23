@@ -43,5 +43,20 @@
 			"hsum": "c1366c4b79f5f4ff3f14fb144d1a41f7df8c1d1df1c72cfc5bfb1c78a8fa734b",
 			"description": "Use TH*D histograms instead of TH*F"
 		}
+	},
+	"single #pi^{0} debug4":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug4/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "238e080916cbb61d43dec640abeca2fd6d489c3453091b15b3f92fc8c0f18ba9",
+			"description": "Accept all particles not only primaries"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug4/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "8e61da35b87e1db1298da482f8fed4738958c5bd1e964a31d4aa62645df6ccac",
+			"description": "Accept all particles not only primaries"
+		}
 	}
 }
