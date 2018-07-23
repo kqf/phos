@@ -1,4 +1,4 @@
-AliSoftVersion=VO_ALICE@AliPhysics::vAN-20180714-1
+AliSoftVersion=VO_ALICE@AliPhysics::vAN-20180723-1
 
 function tokeninit()
 {

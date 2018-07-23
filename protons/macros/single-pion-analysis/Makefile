@@ -7,7 +7,7 @@ PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # Find optimal global energy scale for the parametrization
-#
+# (Run on the updated dataset)
 DATASET = LHC17j3b2
 OUTDIR = results/mc/single/pi0/scan_nonlinearities5
 TEST_SELECTION = PhysTender
