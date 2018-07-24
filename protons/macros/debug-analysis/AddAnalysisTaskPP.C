@@ -25,6 +25,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Iteration d0
 	SelectionWeights & mc_weights = SelectionWeights::Init(SelectionWeights::kSinglePi0MC);
 	SelectionWeights & mc_weights_only = SelectionWeights::Init(SelectionWeights::kSinglePi0MC);
+	mc_weights.fNonA = -0.045;
+	mc_weights.fNonSigma = 0.75;
 	mc_weights.fNonGlobal = 1.021;
 	selections->Add(new EfficiencySelection("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 

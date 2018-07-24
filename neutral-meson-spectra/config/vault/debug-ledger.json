@@ -73,5 +73,20 @@
 			"hsum": "28c942ae1801591d1743b936ab5f70046f950e276b423b9989c4a25aea8e2350",
 			"description": "Change gloabal energy scale to spot the influence"
 		}
+	},
+	"single #pi^{0} debug6":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug6/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "f6713c83d6814038d94ad1d9f62a12f8db39907ea060b46b4a5199f3b253891f",
+			"description": "Tune the nonlinearity parameters"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug6/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "61808b08d2de4182fed6023ff13aa9cd0bf7d26a71920db76b151b05e4b98a5d",
+			"description": "Tune the nonlinearity parameters"
+		}
 	}
 }
