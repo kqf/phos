@@ -27,7 +27,7 @@ class TestEfficiencyPi0(unittest.TestCase):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         # production = "single #pi^{0} iteration d3 nonlin14"
         # production = "single #pi^{0} scan nonlinearity4"
-        production = "single #pi^{0} debug4"
+        production = "single #pi^{0} debug5"
         ll = "debug-ledger.json"
         # ll = "ledger.json"
         unified_inputs = {

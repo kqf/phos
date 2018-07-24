@@ -58,5 +58,20 @@
 			"hsum": "8e61da35b87e1db1298da482f8fed4738958c5bd1e964a31d4aa62645df6ccac",
 			"description": "Accept all particles not only primaries"
 		}
+	},
+	"single #pi^{0} debug5":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug5/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "96a137b64c13b4552c6ce707990b26e4919b25e39d3a0696060904ec997ddb25",
+			"description": "Change gloabal energy scale to spot the influence"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug5/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "28c942ae1801591d1743b936ab5f70046f950e276b423b9989c4a25aea8e2350",
+			"description": "Change gloabal energy scale to spot the influence"
+		}
 	}
 }

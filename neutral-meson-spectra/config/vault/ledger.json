@@ -692,13 +692,13 @@
 		"low": {
 			"file": "input-data/mc/single/pi0/scan_nonlinearity5/LHC17j3b1.root",
 			"default_selection": "PhysNonlinScan",
-			"hsum": "76a606fcdf3fb89b5acef6923bcf7435b73e6f91c035211db8ece9d406b6f92c",
+			"hsum": "0c6de3bd2eadb9f89cf7c5bc6e893a3b454bca38fe7a1f1f922a73af90acfcae",
 			"description": "Update GE scale to better fit the data"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/scan_nonlinearity5/LHC17j3b2.root",
 			"default_selection": "PhysNonlinScan",
-			"hsum": "36c9bacbd50e16b8fa111427f27e3a016495bf01103d70caddf546bd85dca5d5",
+			"hsum": "306c367d2ca6846587fc6ab665d7b62e9f42ba74420e9f1443441a39a9806953",
 			"description": "Update GE scale to better fit the data"
 		}
 	},
