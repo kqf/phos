@@ -174,6 +174,7 @@ class Visualizer(MultipleVisualizer):
     def _canvas(self, hists):
         c1 = su.gcanvas(self.size[0], self.size[1], resize=True)
         c1.Clear()
+        # print br.chi2ndf(*hists)
 
         mainpad = ROOT.TPad("mainpad", "main plot", 0, 0.3, 1, 1)
         mainpad.SetBottomMargin(0)

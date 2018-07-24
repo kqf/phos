@@ -3,6 +3,7 @@ from spectrum.analysis import Analysis
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
 from spectrum.pipeline import ReduceArgumentPipeline
+from spectrum.pipeline import HistogramScaler
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 
@@ -67,6 +68,7 @@ class NonlinearityScan(TransformerBase):
         mass = Pipeline([
             ("reconstruction", Analysis(options.analysis, plot)),
             ("mass", HistogramSelector("mass")),
+            ("scale", HistogramScaler(factor=options.factor)),
         ])
 
         masses_mc = ParallelPipeline([

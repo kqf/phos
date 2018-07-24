@@ -292,6 +292,7 @@ class NonlinearityOptions(object):
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
+        self.fractor = 1.0
 
 
 class CompositeNonlinearityOptions(object):
@@ -305,6 +306,7 @@ class CompositeNonlinearityOptions(object):
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
+        self.fractor = 1.0
 
 
 class NonlinearityScanOptions(object):
@@ -314,6 +316,7 @@ class NonlinearityScanOptions(object):
         self.nbins = nbins
         self.analysis = Options()
         self.analysis_data = Options()
+        self.factor = 1.
 
 
 class CompositeNonlinearityScanOptions(object):
@@ -323,5 +326,6 @@ class CompositeNonlinearityScanOptions(object):
         self.nbins = nbins
         self.analysis = CompositeOptions(
             unified_inputs, particle,
-            ptrange="config/pt-nonlin-scan.json")
-        self.analysis_data = Options(ptrange="config/pt-nonlin-scan.json")
+            ptrange="config/pt-spmc.json")
+        self.analysis_data = Options(ptrange="config/pt-spmc.json")
+        self.factor = 1.
