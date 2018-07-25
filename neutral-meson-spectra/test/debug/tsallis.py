@@ -39,3 +39,23 @@ class DebugTheEfficiency(unittest.TestCase):
         print br.pars(tsallis)
         Comparator().compare(nominal_low)
         print tsallis.Integral(0, 20)
+
+    def test_different_inputs(self):
+        prod = "single #pi^{0} debug7"
+        ll = "debug-ledger.json"
+        production = SingleHistInput("hPt_#pi^{0}_primary_").transform(
+            DataVault(ll).input(prod, "high", listname="PhysEff")
+        )
+        production.label = "data"
+        production.logy = True
+        br.scalew(production)
+
+        nominal = SingleHistInput("hGenPi0Pt_clone").transform(
+            DataVault().input(
+                "debug efficiency", "high", n_events=1e6,
+                histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        )
+        nominal.label = "nominal"
+        # br.scalew(nominal)
+
+        Comparator().compare(*br.rebin_as(production, nominal))
