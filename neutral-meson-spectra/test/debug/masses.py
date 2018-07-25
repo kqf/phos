@@ -91,7 +91,7 @@ class TestMasses(unittest.TestCase):
         options = CompositeEfficiencyOptions(
             unified_inputs,
             particle,
-            ptrange="config/pt-debug-full.json"
+            ptrange="config/pt-debug.json"
         )
         loggs = AnalysisOutput("mass_test_{}".format(particle))
         MassComparator(options, plot=True).transform(
@@ -159,7 +159,7 @@ class TestDifferentMasses(unittest.TestCase):
         }
         # theory = SimpleAnalysis(
         #     Options.spmc((6, 20),
-        #                  ptrange="config/pt-debug-full.json"
+        #                  ptrange="config/pt-debug.json"
         #                  )
         # ).transform(debug_input("high"), "")
         templates = [h.Clone() for h in theory]
@@ -167,7 +167,7 @@ class TestDifferentMasses(unittest.TestCase):
             h.label = "calculated"
         experiment = SimpleAnalysis(
             Options.spmc((6, 20),
-                         ptrange="config/pt-debug-full.json"
+                         ptrange="config/pt-debug.json"
                          )
         ).transform(unified_inputs.keys()[0], "")
         for e, t in zip(experiment, templates):

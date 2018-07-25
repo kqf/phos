@@ -76,7 +76,7 @@ class TestMasses(unittest.TestCase):
         options = CompositeEfficiencyOptions(
             unified_inputs,
             particle,
-            ptrange="config/pt-debug-full.json"
+            ptrange="config/pt-debug.json"
         )
         loggs = AnalysisOutput("mass_test_{}".format(particle))
         MassComparator(options, plot=True).transform(

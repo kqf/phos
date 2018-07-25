@@ -18,7 +18,7 @@ from array import array
 class StanadrtizeOutput(TransformerBase):
     def __init__(self):
         super(StanadrtizeOutput, self).__init__()
-        self.ptedges = Options(ptrange="config/pt-debug-full.json").pt.ptedges
+        self.ptedges = Options(ptrange="config/pt-debug.json").pt.ptedges
 
     def transform(self, histogram, loggs):
         ohist = ROOT.TH1F(
@@ -105,7 +105,7 @@ class DebugTheEfficiency(unittest.TestCase):
             particle,
             genname='hGenPi0Pt_clone',
             use_particle=False,
-            ptrange="config/pt-debug-full.json",
+            ptrange="config/pt-debug.json",
             scale=0.5
         )
         # moptions.mergeranges = [(0, 6), (6, 20)]
@@ -121,7 +121,7 @@ class DebugTheEfficiency(unittest.TestCase):
         #     unified_inputs,
         #     particle,
         #     genname='hPt_{0}_primary_',
-        #     ptrange="config/pt-debug-full.json"
+        #     ptrange="config/pt-debug.json"
         # )
 
         # moptions.mergeranges = [(0, 6), (6, 20)]
