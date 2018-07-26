@@ -31,7 +31,7 @@ class ScanNonlinearities(unittest.TestCase):
 
     @unittest.skip('')
     def test(self):
-        prod = "single #pi^{0} scan nonlinearity5"
+        prod = "single #pi^{0} scan nonlinearity"
         histnames = form_histnames(self.nbins)
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
@@ -85,7 +85,7 @@ class ScanNonlinearities(unittest.TestCase):
                                   histname="MassPt"),
                 unified_inputs
             ],
-            loggs=AnalysisOutput("optimal nonlinearity")
+            loggs=loggs
         )
         loggs.plot()
         # Comparator().compare(nonlinearity)

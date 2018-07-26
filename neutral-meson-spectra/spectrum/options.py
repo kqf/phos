@@ -292,7 +292,7 @@ class NonlinearityOptions(object):
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
-        self.fractor = 1.0
+        self.factor = 1.0
 
 
 class CompositeNonlinearityOptions(object):
@@ -306,7 +306,7 @@ class CompositeNonlinearityOptions(object):
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
-        self.fractor = 1.0
+        self.factor = 1.0
 
 
 class NonlinearityScanOptions(object):

@@ -1,18 +1,12 @@
 import unittest
-import ROOT
 
 from vault.datavault import DataVault
-from vault.formulas import FVault
-from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from spectrum.transformer import TransformerBase
-from spectrum.pipeline import Pipeline, ReducePipeline
-from spectrum.pipeline import ParallelPipeline, FunctionTransformer
-from spectrum.input import SingleHistInput
-
-from spectrum.broot import BROOT as br
-from array import array
+from spectrum.pipeline import ReducePipeline
+from spectrum.pipeline import ParallelPipeline
+from spectrum.options import CompositeEfficiencyOptions
 
 
 class CompareEfficiencies(TransformerBase):
@@ -45,7 +39,7 @@ class DebugTheEfficiency(unittest.TestCase):
             debug_input("high"): (4, 20)
         }
 
-        prod = "single #pi^{0} debug8"
+        prod = "single #pi^{0} debug9"
         ll = "debug-ledger.json"
         unified_inputs = {
             DataVault(ll).input(prod, "low", listname="PhysEff"): (0, 8.0),
