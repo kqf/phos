@@ -45,7 +45,7 @@ class DebugTheEfficiency(unittest.TestCase):
             debug_input("high"): (4, 20)
         }
 
-        prod = "single #pi^{0} debug7"
+        prod = "single #pi^{0} debug8"
         ll = "debug-ledger.json"
         unified_inputs = {
             DataVault(ll).input(prod, "low", listname="PhysEff"): (0, 8.0),
