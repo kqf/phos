@@ -27,9 +27,9 @@ class TestEfficiencyPi0(unittest.TestCase):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         # production = "single #pi^{0} iteration d3 nonlin14"
         # production = "single #pi^{0} scan nonlinearity4"
-        production = "single #pi^{0} debug8"
-        ll = "debug-ledger.json"
-        # ll = "ledger.json"
+        production = "single #pi^{0} debug9"
+        # ll = "debug-ledger.json"
+        ll = "ledger.json"
         unified_inputs = {
             DataVault(ll).input(production, "low", "PhysEff"): (0.0, 8.0),
             # DataVault(ll).input(production, "high", "PhysEff"): (4.0, 20.0),

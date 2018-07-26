@@ -29,7 +29,7 @@ class ScanNonlinearities(unittest.TestCase):
     def setUp(self):
         self.nbins = 9
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test(self):
         prod = "single #pi^{0} scan nonlinearity5"
         histnames = form_histnames(self.nbins)
@@ -42,7 +42,7 @@ class ScanNonlinearities(unittest.TestCase):
         ])
         options = CompositeNonlinearityScanOptions(
             unified_inputs, nbins=self.nbins)
-        options.factor = 1.007
+        options.factor = 1.
 
         low, high = low.read_multiple(2), high.read_multiple(2)
         mc_data = [(l, h) for l, h in zip(low, high)]
@@ -57,7 +57,7 @@ class ScanNonlinearities(unittest.TestCase):
         ofile.Close()
         Comparator().compare(chi2ndf)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_draw_most_optimal_nonlinearity(self):
         production = "single #pi^{0} scan nonlinearity5"
         minimum_index = 70
@@ -76,7 +76,7 @@ class ScanNonlinearities(unittest.TestCase):
 
         options = CompositeNonlinearityOptions(unified_inputs)
         options.fitf = None
-        options.factor = 1.007
+        options.factor = 1.
         estimator = Nonlinearity(options)
         loggs = AnalysisOutput("optimal nonlinearity")
         nonlinearity = estimator.transform(
