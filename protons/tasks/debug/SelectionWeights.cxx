@@ -84,7 +84,7 @@ SelectionWeights & SelectionWeightsSPMC::SinglePi0()
 
     ws.fNonA = -0.06;
     ws.fNonSigma = 0.7;
-    ws.fNonGlobal = 1.02;
+    ws.fNonGlobal = 1.0215;
     return ws;
 }
 

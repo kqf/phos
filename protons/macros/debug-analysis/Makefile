@@ -8,8 +8,8 @@ PROTONS_PATH=../../
 
 # Finetune the global energy scale
 #
-DATASET = LHC17j3b2
-OUTDIR = results/mc/single/pi0/debug8
+DATASET = LHC17j3b1
+OUTDIR = results/mc/single/pi0/debug10
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
