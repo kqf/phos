@@ -1,13 +1,9 @@
-
-import ROOT
-import os.path
 import unittest
 
 from spectrum.spectrum import Spectrum
 from spectrum.input import NoMixingInput, read_histogram
 from spectrum.options import Options
-from spectrum.sutils import wait
-from spectrum.comparator import Visualizer, Comparator
+from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 

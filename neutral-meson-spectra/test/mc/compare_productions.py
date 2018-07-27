@@ -2,8 +2,6 @@ import unittest
 from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions, EfficiencyOptions
-from spectrum.options import CompositeOptions
-from spectrum.analysis import Analysis
 from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
@@ -31,18 +29,18 @@ def define_composite_datasets():
         for i in [""]
     ]
 
-    reference = [
-        {
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-                              "low",
-                              listname="PhysEff",
-                              ): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration3 yield aliphysics",
-                              "high",
-                              listname="PhysEff",
-                              ): (7.0, 20)
-        },
-    ]
+    # reference = [
+    #     {
+    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #                           "low",
+    #                           listname="PhysEff",
+    #                           ): (0, 7.0),
+    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #                           "high",
+    #                           listname="PhysEff",
+    #                           ): (7.0, 20)
+    #     },
+    # ]
     # datasets = datasets + reference
     # , "standard", "0.5 standard", "2 standard", "ref"
     names = "single particle production",
