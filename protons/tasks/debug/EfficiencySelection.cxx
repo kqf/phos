@@ -70,8 +70,6 @@ void EfficiencySelection::ConsiderPair(const AliVCluster * c1, const AliVCluster
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-	// AliAODMCParticle * origin = (AliAODMCParticle*)eflags.fMcParticles->At(0);//0 is always generated particle by AliGenBox.
-	// Double_t w = fWeights->Weight(origin->Pt());
 	Double_t w = fWeights->Weights(pt12, eflags);
 	TH2 * hist = dynamic_cast<TH2 *> (fInvMass[eflags.isMixing]);
 	hist->Fill(ma12, pt12, w);
@@ -105,9 +103,9 @@ void EfficiencySelection::ConsiderGeneratedParticles(const EventFlags & eflags)
 			continue;
 
 
-		// Bool_t primary = IsPrimary(particle);
-		// if(!primary)
-		// 	continue;
+		Bool_t primary = IsPrimary(particle);
+		if(!primary)
+			continue;
 		fGenerated->Fill(pt, w);
 	}
 }

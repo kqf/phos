@@ -52,35 +52,20 @@ SelectionWeights & SelectionWeightsSPMC::SinglePi0()
 {
     SelectionWeightsSPMC & ws = * new SelectionWeightsSPMC();
 
-    // Weights 3
-    // ws.fW0 = 0.014875782846110793;
-    // ws.fW1 = 0.28727403800708634;
-    // ws.fW2 = 9.9198075195331;
-
-    // Weights 0 (new efficiency)
-    // ws.fW0 = 0.10325998438001027;
-    // ws.fW1 = 0.1710556728057399;
-    // ws.fW2 = 8.613628140871766;
-
-    // Debug
-    // ws.fW0 = 21.339890553914014;
-    // ws.fW1 = 0.08359755308503322;
-    // ws.fW2 = 7.334946541612603;
-
     // The latest iteration
     //
-    // ws.fW0 = 0.2622666606436988 / 0.0119143016137;
-    // ws.fW1 = 0.08435275173194286;
-    // ws.fW2 = 7.356520553419461;
-    // ws.fW3 = 0.135;
-    // ws.fW4 = 0.135;
-
-    // Start similar iteration
-    ws.fW0 = 0.6216964179825611 / 0.0989488446585;
-    ws.fW1 = 0.1327837274571318;
-    ws.fW2 = 6.656459891593017;
+    ws.fW0 = 0.2622666606436988 / 0.0119143016137;
+    ws.fW1 = 0.08435275173194286;
+    ws.fW2 = 7.356520553419461;
     ws.fW3 = 0.135;
     ws.fW4 = 0.135;
+
+    // Start similar iteration
+    // ws.fW0 = 0.6216964179825611 / 0.0989488446585;
+    // ws.fW1 = 0.1327837274571318;
+    // ws.fW2 = 6.656459891593017;
+    // ws.fW3 = 0.135;
+    // ws.fW4 = 0.135;
 
     ws.fNonA = -0.06;
     ws.fNonSigma = 0.7;
