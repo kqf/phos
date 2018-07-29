@@ -170,8 +170,10 @@ class EfficiencyOptions(object):
 
     @classmethod
     def spmc(klass, pt_range, particle="#pi^{0}",
-             genname='hPt_#pi^{0}_primary_', scale=0.075, *args, **kwargs):
-        efficiency_options = klass(genname=genname, scale=scale)
+             genname='hPt_#pi^{0}_primary_', scale=0.075,
+             selname=None, *args, **kwargs):
+        efficiency_options = klass(genname=genname, scale=scale,
+                                   selname=selname)
         efficiency_options.analysis = Options().spmc(
             pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
@@ -188,7 +190,8 @@ class CompositeEfficiencyOptions(object):
         if use_particle:
             genname = genname.format(particle)
         self.suboptions = [EfficiencyOptions.spmc(
-            rr, particle, genname, scale, *args, **kwargs)
+            rr, particle, genname, scale, selname,
+            *args, **kwargs)
             for _, rr in unified_inputs.iteritems()
         ]
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
