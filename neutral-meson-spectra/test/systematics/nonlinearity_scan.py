@@ -2,26 +2,13 @@ import ROOT
 import unittest
 from collections import OrderedDict
 
-from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput
 from tools.mc import Nonlinearity
-from tools.scan import NonlinearityScan
+from tools.scan import NonlinearityScan, form_histnames
 from vault.datavault import DataVault
-
-
-def form_histnames(nbins=4):
-    histnames = sum([
-        [
-            "hMassPt_{}_{}".format(i, j),
-            "hMixMassPt_{}_{}".format(i, j),
-        ]
-        for j in range(nbins)
-        for i in range(nbins)
-    ], [])
-    return histnames
 
 
 class ScanNonlinearities(unittest.TestCase):

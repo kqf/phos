@@ -154,3 +154,9 @@ class Cc:
     @staticmethod
     def ok(s):
         return '{0}{1}{2}'.format(Cc.OKGREEN, s, Cc.ENDC)
+
+
+def write(tobject, filename, option="recreate"):
+    ofile = ROOT.TFile(filename, option)
+    tobject.Write()
+    ofile.Close()

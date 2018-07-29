@@ -5,7 +5,6 @@ from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import HistogramScaler
 from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
 
 
 class NonlinearityParamExtractor(TransformerBase):
@@ -63,7 +62,7 @@ def chi2_func(hist1, hist2):
 
 
 class NonlinearityScan(TransformerBase):
-    def __init__(self, options, plot=True):
+    def __init__(self, options, chi2_=br.chi2ndf, plot=True):
         super(NonlinearityScan, self).__init__()
         mass = Pipeline([
             ("reconstruction", Analysis(options.analysis, plot)),
@@ -84,7 +83,7 @@ class NonlinearityScan(TransformerBase):
         chi2 = ReduceArgumentPipeline(
             masses_mc,
             mass_estimator_data,
-            chi2_func
+            chi2_
         )
 
         extractor = NonlinearityParamExtractor()
@@ -93,3 +92,15 @@ class NonlinearityScan(TransformerBase):
             ("chi2", chi2),
             ("dump", extractor)
         ])
+
+
+def form_histnames(nbins=4):
+    histnames = sum([
+        [
+            "hMassPt_{}_{}".format(i, j),
+            "hMixMassPt_{}_{}".format(i, j),
+        ]
+        for j in range(nbins)
+        for i in range(nbins)
+    ], [])
+    return histnames
