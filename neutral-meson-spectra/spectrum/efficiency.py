@@ -25,7 +25,7 @@ class SimpleEfficiency(TransformerBase):
                 ("NumberOfMesons", HistogramSelector("nmesons")),
                 ("ScaleForAcceptance", HistogramScaler(options.scale))
             ]),
-            SingleHistInput(options.genname)
+            SingleHistInput(options.genname, options.selname)
         )
         self.pipeline = Pipeline([
             ('efficiency', efficiency),
@@ -75,7 +75,7 @@ class CompositeEfficiency(TransformerBase):
                 for (opt, ranges) in zip(options.suboptions,
                                          options.mergeranges)
             ]),
-            lambda x: br.sum_trimm(x, options.mergeranges)
+            self._reduce_function(options)
         )
         self.pipeline = Pipeline([
             ("preliminary fit", PeakPositionWidthEstimator(options)),
@@ -84,6 +84,11 @@ class CompositeEfficiency(TransformerBase):
 
     def _stepname(self, ranges):
         return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
+
+    def _reduce_function(self, options):
+        if options.reduce_function != "standard":
+            return options.reduce_function
+        return lambda x: br.sum_trimm(x, options.mergeranges)
 
 
 class Efficiency(TransformerBase):

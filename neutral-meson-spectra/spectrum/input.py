@@ -19,16 +19,17 @@ def read_histogram(filename, listname, histname,
 
 class SingleHistInput(object):
 
-    def __init__(self, histname, priority=999, norm=False):
+    def __init__(self, histname, listname=None, priority=999, norm=False):
         super(SingleHistInput, self).__init__()
         self.histname = histname
+        self.listname = listname
         self.priority = priority
         self.norm = norm
 
     def transform(self, inputs, loggs=None):
         hist = br.io.read(
             inputs.filename,
-            inputs.listname,
+            self.listname or inputs.listname,
             self.histname
         )
         br.set_nevents(hist, inputs.events(

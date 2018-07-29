@@ -150,10 +150,12 @@ class EfficiencyOptions(object):
     def __init__(self, particle='#pi^{0}',
                  genname='hPt_#pi^{0}_primary_',
                  scale=0.075,
+                 selname=None,
                  ptrange="config/pt.json"):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options(particle=particle, ptrange=ptrange)
         self.genname = genname
+        self.selname = selname
         self.scale = scale
 
         histname = "#varepsilon = #Delta #phi #Delta y/ 2 #pi "
@@ -180,6 +182,7 @@ class CompositeEfficiencyOptions(object):
     def __init__(self, unified_inputs, particle,
                  genname='hPt_{0}_primary_',
                  use_particle=True,
+                 selname=None,
                  scale=0.075, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
         if use_particle:
@@ -197,6 +200,7 @@ class CompositeEfficiencyOptions(object):
             self.mergeranges = self.mergeranges[::-1]
 
         self.analysis = CompositeOptions(unified_inputs, particle)
+        self.reduce_function = "standard"
 
     def set_binning(self, ptedges, rebins):
         for eff_options in self.suboptions:
