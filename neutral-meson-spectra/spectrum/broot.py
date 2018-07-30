@@ -489,14 +489,25 @@ class BROOT(object):
         return newhist
 
     @classmethod
-    def chi2(klass, hist1, hist2):
+    def chi2(klass, hist1, hist2, rrange=None):
         assert hist1.GetNbinsX() == hist2.GetNbinsX(), \
             "Histograms should have the same binning"
         difference = klass.copy(hist1, 'difference')
         difference.Add(hist2, hist1, -1)
 
-        chi2 = sum((b / err) ** 2
-                   for b, err, _ in zip(*klass.bins(difference)))
+        def within_range(x):
+            if not rrange:
+                return True
+            a, b = rrange
+            return a < x < b
+
+        chi2 = [
+            (b / err) ** 2
+            for b, err, center in zip(*klass.bins(difference))
+            if within_range(center)
+        ]
+        print chi2
+        chi2 = sum(chi2)
         return chi2
 
     @classmethod
