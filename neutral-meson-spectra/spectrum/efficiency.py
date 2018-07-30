@@ -25,7 +25,7 @@ class SimpleEfficiency(TransformerBase):
                 ("NumberOfMesons", HistogramSelector("nmesons")),
                 ("ScaleForAcceptance", HistogramScaler(options.scale))
             ]),
-            SingleHistInput(options.genname, options.selname)
+            SingleHistInput(options.genname)
         )
         self.pipeline = Pipeline([
             ('efficiency', efficiency),

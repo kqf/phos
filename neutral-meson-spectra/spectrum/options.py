@@ -150,12 +150,10 @@ class EfficiencyOptions(object):
     def __init__(self, particle='#pi^{0}',
                  genname='hPt_#pi^{0}_primary_',
                  scale=0.075,
-                 selname=None,
                  ptrange="config/pt.json"):
         super(EfficiencyOptions, self).__init__()
         self.analysis = Options(particle=particle, ptrange=ptrange)
         self.genname = genname
-        self.selname = selname
         self.scale = scale
 
         histname = "#varepsilon = #Delta #phi #Delta y/ 2 #pi "
@@ -171,9 +169,8 @@ class EfficiencyOptions(object):
     @classmethod
     def spmc(klass, pt_range, particle="#pi^{0}",
              genname='hPt_#pi^{0}_primary_', scale=0.075,
-             selname=None, *args, **kwargs):
-        efficiency_options = klass(genname=genname, scale=scale,
-                                   selname=selname)
+             *args, **kwargs):
+        efficiency_options = klass(genname=genname, scale=scale)
         efficiency_options.analysis = Options().spmc(
             pt_range, particle=particle, *args, **kwargs)
         return efficiency_options
@@ -184,13 +181,12 @@ class CompositeEfficiencyOptions(object):
     def __init__(self, unified_inputs, particle,
                  genname='hPt_{0}_primary_',
                  use_particle=True,
-                 selname=None,
                  scale=0.075, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
         if use_particle:
             genname = genname.format(particle)
         self.suboptions = [EfficiencyOptions.spmc(
-            rr, particle, genname, scale, selname,
+            rr, particle, genname, scale,
             *args, **kwargs)
             for _, rr in unified_inputs.iteritems()
         ]

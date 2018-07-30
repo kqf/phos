@@ -45,14 +45,13 @@ class OverlapNonlinearityScan(TransformerBase):
 def add_arguments(identity, original):
     identity.filename = original.filename
     identity.histname = original.histname
-    identity.listname = original.listname
+    identity.listname = "PhysEff"
     identity.events = original.events
     identity.label = original.label
     return identity
 
 
 # TODO: Add Calculate only inside the overlap region
-# TODO: Remove unnecessary configuration from the options effname
 class ScanNonlinearitiesOverlap(unittest.TestCase):
 
     def test(self):
@@ -66,8 +65,7 @@ class ScanNonlinearitiesOverlap(unittest.TestCase):
             (low, (0.0, 8.0)),
             (high, (4.0, 20.0)),
         ])
-        options = CompositeEfficiencyOptions(unified_inputs, "#pi^{0}",
-                                             selname="PhysEff")
+        options = CompositeEfficiencyOptions(unified_inputs, "#pi^{0}")
         options.reduce_function = lambda x: br.chi2ndf(*x)
 
         low_, high_ = low.read_multiple(2), high.read_multiple(2)
