@@ -28,17 +28,12 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	AliPP13SelectionWeightsSPMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
 	AliPP13SelectionWeightsSPMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC);
-	// mc_weights.fNonA = -0.075;
-	// mc_weights.fNonSigma = 0.35;
-	// mc_weights.fNonGlobal = 1.029;
+	mc_weights.fNonA = -0.035;
+	mc_weights.fNonSigma = 0.95;
 	mc_weights.fNonGlobal = 1.021; // Take into account the right scale
 	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
-	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
+	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights, 0.005, 0.05));
 
-	mc_weights_only.fNonA = 0;
-	mc_weights_only.fNonGlobal = 1.;
-	mc_weights_only.fNonSigma = 0.7;
-	selections->Add(new AliPP13EfficiencySelectionSPMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only));
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);

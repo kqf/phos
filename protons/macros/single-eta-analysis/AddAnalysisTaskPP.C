@@ -25,7 +25,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC);
 	AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC);
-
+	mc_weights.fNonA = -0.035;
+	mc_weights.fNonSigma = 0.95;
+	mc_weights.fNonGlobal = 1.021; // Take into account the right scale
 
 	mc_weights_only.fNonGlobal = 1.0;
 	mc_weights_only.fNonA = 0.0;
