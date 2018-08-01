@@ -59,7 +59,7 @@ def reduce_chi2(hists):
 
 class ScanNonlinearitiesOverlap(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test(self):
         nbins = 9
         prod = "single #pi^{0} scan nonlinearity"
@@ -85,11 +85,11 @@ class ScanNonlinearitiesOverlap(unittest.TestCase):
         )
         Comparator().compare(chi2ndf)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_optimum(self):
         nbins = 9
-        prod = "single #pi^{0} scan nonlinearity"
-        minimum_index = 15
+        prod = "single #pi^{0} scan nonlinearity6"
+        minimum_index = 33
         minimum_index *= 2
         histnames = form_histnames(nbins)[minimum_index: minimum_index + 2]
         low = DataVault().input(prod, "low", inputs=histnames)

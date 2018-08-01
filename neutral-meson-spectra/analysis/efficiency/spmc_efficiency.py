@@ -22,11 +22,11 @@ class TestFakeEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_pi0_efficiency(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         # production = "single #pi^{0} iteration d3 nonlin14"
-        production = "single #pi^{0} scan nonlinearity5"
+        production = "single #pi^{0} scan nonlinearity6"
         # production = "single #pi^{0} debug9"
         # ll = "debug-ledger.json"
         ll = "ledger.json"
@@ -40,10 +40,10 @@ class TestEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyEta(unittest.TestCase):
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_eta_efficiency(self):
-        production = "single #eta nonlin"
-        # production = "single #eta new tender"
+        # production = "single #eta updated nonlinearity"
+        production = "single #eta new tender"
         unified_inputs = {
             DataVault().input(production, "low"): (0.0, 10.0),
             DataVault().input(production, "high"): (4.0, 20.0)

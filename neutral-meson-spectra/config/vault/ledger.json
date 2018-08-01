@@ -702,6 +702,21 @@
 			"description": "Update GE scale to better fit the data"
 		}
 	},
+	"single #pi^{0} scan nonlinearity6":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity6/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "5270630cd7612329b117b9d49c8912dba14aa789cfa7ed6d220b6e2573fb9bb3",
+			"description": "Scan nonlinearities around the minimum for new parametriztion"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/scan_nonlinearity6/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"hsum": "a2d7a45f7d8969b197f81f161c049e81ed8645a40b1835997864de120425e987",
+			"description": "Scan nonlinearities around the minimum for new parametriztion"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
@@ -759,6 +774,21 @@
 			"file": "input-data/mc/single/eta/iteration1_new_nonlinearity/LHC17j3c2.root",
 			"default_selection": "PhysEffNoA",
 			"hsum": "6f8f6e1283fec95e5b43a605e0f5f588c1ee6d272c4a4d4eb3f7bb11760064f2",
+			"description": "Single #eta simulations with all correctons"
+		}
+	},
+	"single #eta updated nonlinearity":
+	{
+		"low": {
+			"file": "input-data/mc/single/eta/updated_nonlinearity/LHC17j3c1.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "589e99b68881b281181254ac0e9d83475ef5b36f4308f048505a1aeac38375de",
+			"description": "Single #eta simulations with all correctons"
+		},
+		"high": {
+			"file": "input-data/mc/single/eta/updated_nonlinearity/LHC17j3c2.root",
+			"default_selection": "PhysEffNoA",
+			"hsum": "26ecfbc47c5a18fc920544bf959b2141f125b4fd78af3f76bfb7a261604413f0",
 			"description": "Single #eta simulations with all correctons"
 		}
 	},

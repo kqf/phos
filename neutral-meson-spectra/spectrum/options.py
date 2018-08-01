@@ -179,7 +179,7 @@ class EfficiencyOptions(object):
 class CompositeEfficiencyOptions(object):
 
     def __init__(self, unified_inputs, particle,
-                 genname='hPt_{0}_primary_',
+                 genname='hPt_{0}_primary_standard',
                  use_particle=True,
                  scale=0.075, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
