@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Finetune the global energy scale High
+# Finetune the global energy scale Low
 #
 DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/debug10
+OUTDIR = results/mc/single/pi0/debug11
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
