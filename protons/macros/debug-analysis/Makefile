@@ -6,7 +6,7 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Finetune the global energy scale
+# Finetune the global energy scale High
 #
 DATASET = LHC17j3b1
 OUTDIR = results/mc/single/pi0/debug10

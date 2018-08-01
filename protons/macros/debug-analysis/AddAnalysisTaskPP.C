@@ -23,12 +23,22 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	cuts_eta.fAsymmetryCut = 0.7;
 
 	// Iteration d0
-	SelectionWeights & mc_weights = SelectionWeights::Init(SelectionWeights::kSinglePi0MC);
 	SelectionWeights & mc_weights_only = SelectionWeights::Init(SelectionWeights::kSinglePi0MC);
+	SelectionWeights & mc_weights = SelectionWeights::Init(SelectionWeights::kSinglePi0MC);
 	mc_weights.fNonA = -0.035;
 	mc_weights.fNonSigma = 0.95;
-	mc_weights.fNonGlobal = 1.021
-	selections->Add(new EfficiencySelection("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
+	mc_weights.fNonGlobal = 1.021;
+	selections->Add(new EfficiencySelection("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));	SelectionWeights & mc_weights = SelectionWeights::Init(SelectionWeights::kSinglePi0MC);
+
+	// mc_weights.fNonA = -0.035;
+	// mc_weights.fNonSigma = 0.95;
+	// mc_weights.fNonGlobal = 1.020;
+	// selections->Add(new EfficiencySelection("PhysEffLow", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
+
+	// mc_weights.fNonA = -0.035;
+	// mc_weights.fNonSigma = 0.95;
+	// mc_weights.fNonGlobal = 1.022;
+	// selections->Add(new EfficiencySelection("PhysEffHigh", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 
 	// Setup task
 	AnalysisTaskDebug * task = new AnalysisTaskDebug("PhosProtons", selections);

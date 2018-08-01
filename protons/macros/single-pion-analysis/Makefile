@@ -8,7 +8,7 @@ PROTONS_PATH=../../
 
 # Scan in the optimum
 # (Run on the updated dataset)
-DATASET = LHC17j3b2
+DATASET = LHC17j3b1
 OUTDIR = results/mc/single/pi0/scan_nonlinearities6
 TEST_SELECTION = PhysTender
 
