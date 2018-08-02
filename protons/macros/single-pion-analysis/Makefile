@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Scan in the optimum
-# (Run on the updated dataset)
+# Run final efficiency for optimized GE scale
+#
 DATASET = LHC17j3b1
-OUTDIR = results/mc/single/pi0/scan_nonlinearities6
+OUTDIR = results/mc/single/pi0/scan_nonlinearities7
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
