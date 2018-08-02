@@ -46,8 +46,8 @@ class ScanNonlinearities(unittest.TestCase):
 
     # @unittest.skip('')
     def test_draw_most_optimal_nonlinearity(self):
-        production = "single #pi^{0} scan nonlinearity6"
-        minimum_index = 33
+        production = "single #pi^{0} scan nonlinearity5"
+        minimum_index = 70
         minimum_index *= 2
         histname = form_histnames(self.nbins)[minimum_index]
         histname = histname[1:]  # Remove first h

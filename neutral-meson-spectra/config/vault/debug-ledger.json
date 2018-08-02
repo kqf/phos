@@ -133,5 +133,35 @@
 			"hsum": "f305c05603ff04147d6a830fdea1388c1299c3bca9db6865dc263f1c13f08211",
 			"description": "Finetune the global energy scale"
 		}
+	},
+	"single #pi^{0} debug10":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug10/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "bce57badca77f6b33a1bbdbde642df0d712c9a001279d3d17c09cdd503ffab4c",
+			"description": "Optimal nonlinearity ge = 1.22"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug10/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "df21aed91634c420f5377461629873618c01d2bd85873e43eb146bc321646bbf",
+			"description": "Optimal nonlinearity ge = 1.22"
+		}
+	},
+	"single #pi^{0} debug11":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/debug11/LHC17j3b1.root",
+			"default_selection": "PhysEff",
+			"hsum": "c7858cf5190e0c5f1006a767e6de133625633c03efb82f8c8a5902fdf4451eda",
+			"description": "Optimal nonlinearity ge = 1.20"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/debug11/LHC17j3b2.root",
+			"default_selection": "PhysEff",
+			"hsum": "d3ec4617456cd2c2ac4de39e073f831fa9755f2d34d35e9242e5729a85ec7eb7",
+			"description": "Optimal nonlinearity ge = 1.20"
+		}
 	}
 }
