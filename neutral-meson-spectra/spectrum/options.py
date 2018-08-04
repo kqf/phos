@@ -116,7 +116,7 @@ class Options(object):
             ptrange=ptrange,
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
-            signalp='config/cball-parameters-spmc-signal.json',
+            signalp='config/cball-parameters-spmc-enhanced.json',
             *args,
             **kwargs
         )
