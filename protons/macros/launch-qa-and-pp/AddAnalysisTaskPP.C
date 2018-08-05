@@ -62,7 +62,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 		mc_weights_only.fNonGlobal = 1.0;
 		mc_weights_only.fNonA = 0.0;
-		mc_weights.fWeights = new TF1("fWeights", "2", 0, 100);
 
 		selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13EfficiencySelectionMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only));
@@ -73,6 +72,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13KaonToPionRatioMC("KaonToPionRatio", "MC Selection for kaon/pion ratio", cuts_pi0, &mc_weights));
+		selections->Add(new AliPP13FeeddownSelection("FeeddownSelection", "FeeddownSelection", cuts_pi0, &mc_weights));
 	}
 
 	// Setup task

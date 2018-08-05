@@ -2,7 +2,7 @@
 // #include "iterator"
 
 // --- Custom header files ---
-#include "AliPP13FeddownSelection.h"
+#include "AliPP13FeeddownSelection.h"
 
 // --- ROOT system ---
 #include <TParticle.h>
@@ -22,11 +22,11 @@
 using namespace std;
 
 
-ClassImp(AliPP13FeddownSelection);
+ClassImp(AliPP13FeeddownSelection);
 
 
 //________________________________________________________________
-void AliPP13FeddownSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
+void AliPP13FeeddownSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
 	TLorentzVector p1 = ClusterMomentum(c1, eflags);
 	TLorentzVector p2 = ClusterMomentum(c2, eflags);
@@ -48,41 +48,35 @@ void AliPP13FeddownSelection::ConsiderPair(const AliVCluster * c1, const AliVClu
 	if (eflags.isMixing)
 		return;
 
-	Int_t label1 = c1->GetLabelAt(0) ;
-	Int_t label2 = c2->GetLabelAt(0) ;
+	AliAODMCParticle * gamma1_mother = GetMother(c1, eflags.fMcParticles);
+	AliAODMCParticle * gamma2_mother = GetMother(c2, eflags.fMcParticles);
 
-	AliAODMCParticle * gamma_mother1 = GetParent(label1, eflags.fMcParticles);
-	AliAODMCParticle * gamma_mother2 = GetParent(label2, eflags.fMcParticles);
-
-	if (!gamma_mother1 || !gamma_mother2)
+	if (!gamma1_mother || !gamma2_mother)
 		return;
 
-	if (gamma_mother1 != gamma_mother2)
+	if (gamma1_mother != gamma2_mother)
 		return;
 
-	if (gamma_mother1->GetPdgCode() != kPi0)
+	if (gamma1_mother->GetPdgCode() != kPi0)
 		return;
 
-	// Check if the selected \pi^{0} is primary
-	//
 	// Looking at the source of pi0
-	Int_t source_label = gamma_mother1->GetMother();
+	//
 
-	// It's not decay pi0
-	if (source_label == -1)
-		return;
-
-	AliAODMCParticle * hadron = dynamic_cast<AliAODMCParticle *> (eflags.fMcParticles->At(source_label));
-
+	AliAODMCParticle * hadron = GetMother(gamma1_mother, eflags.fMcParticles);
 	if (!hadron)
 		return;
 
-	fFeedownK0s[0]->Fill(ma12, pt12);
+	if (hadron->GetPdgCode() != kK0s)
+		return;
+
+	Double_t weight = fWeights->Weights(hadron->Pt(), eflags);
+	dynamic_cast<TH2F *>(fFeedownK0s[0])->Fill(ma12, pt12, weight);
 }
 
 
 //________________________________________________________________
-void AliPP13FeddownSelection::InitSelectionHistograms()
+void AliPP13FeeddownSelection::InitSelectionHistograms()
 {
 	Int_t nM       = 750;
 	Double_t mMin  = 0.0;
@@ -94,9 +88,10 @@ void AliPP13FeddownSelection::InitSelectionHistograms()
 	for (Int_t i = 0; i < 2; ++i)
 	{
 		fInvMass[i] = new TH2F(Form("h%sMassPt", i == 0 ? "" : "Mix") , "(M,p_{T})_{#gamma#gamma}, N_{cell}>2; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
-		fListOfHistos->Add(fInvMass[i]);
 	}
 	fFeedownK0s[0] = new TH2F("MassPt_#pi^{0}_feeddown_K^{s}_{0}", "(M,p_{T})_{#gamma#gamma} originating form K^{s}_{0}; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+	fListOfHistos->Add(fFeedownK0s[0]);
+
 	fFeedownK0s[1] = new TH1F("MassPt_#pi^{0}_feeddown_K^{s}_{0}_generated", "(M,p_{T})_{#gamma#gamma} originating form K^{s}_{0}; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nPt, ptMin, ptMax);
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
@@ -108,19 +103,41 @@ void AliPP13FeddownSelection::InitSelectionHistograms()
 }
 
 //________________________________________________________________
-AliAODMCParticle * AliPP13FeddownSelection::GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const
+void AliPP13FeeddownSelection::ConsiderGeneratedParticles(const EventFlags & eflags)
 {
-	if (label <= -1)
-		return 0;
+	if (!eflags.fMcParticles)
+		return;
 
-	// Int_t primLabel = cluster->GetLabelAt(0) ;
-	// Particle # reached PHOS front surface
-	AliAODMCParticle * particle = dynamic_cast<AliAODMCParticle * >(particles->At(label));
+	for (Int_t i = 0; i < eflags.fMcParticles->GetEntriesFast(); i++)
+	{
+		AliAODMCParticle * particle = (AliAODMCParticle *) eflags.fMcParticles->At(i);
+		Int_t code = TMath::Abs(particle->GetPdgCode());
 
-	if (!particle)
-		return 0;
+		// NB: replace this condition by find, if the number of particles will grow
+		//
+		if (code != kPi0)
+			continue;
 
-	plabel = particle->GetMother();
+		Double_t pt = particle->Pt();
+
+		// Use this to remove forward photons that can modify our true efficiency
+		if (TMath::Abs(particle->Y()) > 0.5) // NB: Use rapidity instead of pseudo rapidity!
+			continue;
+
+		AliAODMCParticle * hadron = GetMother(particle, eflags.fMcParticles);
+
+		if (!hadron)
+			return;
+
+		if (hadron->GetPdgCode() == kK0s)
+			fFeedownK0s[1]->Fill(pt, fWeights->Weights(pt, eflags));
+	}
+}
+
+//________________________________________________________________
+AliAODMCParticle * AliPP13FeeddownSelection::GetMother(const AliAODMCParticle * particle, TClonesArray * particles) const
+{
+	Int_t plabel = particle->GetMother();
 
 	if (plabel <= -1)
 		return 0;
@@ -129,29 +146,3 @@ AliAODMCParticle * AliPP13FeddownSelection::GetParent(Int_t label, Int_t & plabe
 	return parent;
 }
 
-//________________________________________________________________
-Bool_t AliPP13FeddownSelection::IsPrimary(const AliAODMCParticle * particle) const
-{
-	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
-	Double_t rcut = 1.;
-	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
-	return r2 < rcut * rcut;
-}
-
-// //________________________________________________________________________
-// AliAODMCParticle * AliAnalysisTaskPHOSPi0EtaToGammaGamma::GetParent(Int_t label, TClonesArray * particles) const
-// {
-// 	AliAODMCParticle *particle = (AliAODMCParticle*) particles->At(label);
-// 	Int_t motherid = particle->GetMother();
-
-// 	while (motherid > -1)
-// 	{
-// 		AliAODMCParticle *mp = (AliAODMCParticle*) particles->At(motherid);
-
-// 		if (TMath::Abs(pdg) == target_pdg && R(mp) < 1.0) 
-// 			return kTRUE;
-// 		motherid = mp->GetMother();
-// 	}
-// 	return kFALSE;
-
-// }
