@@ -14,12 +14,22 @@ Main repository consists of several scripts, analysis tasks and various utilitie
   - [x] Timing cut efficiency study
   - [x] Raw uncorrected yield extraction
   - [ ] Acceptance and neutral pion reconstruction efficiency evaluation
-  - [ ] Corrected yield extraction
+    - [x] Single particle Monte-Carlo generation
+    - [x] Nonliearity correction
+    - [ ] Efficiency calculation
+    - [ ] Feed-down correction
+    - [ ] Corrected yield extraction
   - [ ] Systematic uncertainties estimation
+    - [ ] Corrected yiled extraction
+    - [ ] Timing cut efficiency
+    - [ ] Feed-down correction
+    - [ ] Nonlinearity correction
+    - [ ] Global energy scale
+    - [ ] Acceptance
+    - [ ] Matherial budget
 
-- [ ] Measurement of the [direct photon](direct-photons) spectrum 
-  - [ ] Photon raw yield extraction
-  - [ ] Photon registration efficiency
-  - [ ] Decay photon spectrum estimation 
-  - [ ] $\gamma/\pi^0$ ratio evaluation
-  - [ ] Systematic error estimation 
+- [ ] Measurement of neutral meson production in PHOS trigger events 
+  - [ ] Trigger QA
+  - [ ] Rejection factor
+  - [ ] Trigger efficiency
+  - [ ] Systematic uncertanity of the PHOS trigger efficiency estimation
