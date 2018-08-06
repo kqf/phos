@@ -65,7 +65,7 @@ class TestKaonToPionRatio(unittest.TestCase):
 
         data = estimator.transform(
             [DataVault().input("kaon2pion")] * 2,
-            "test"
+            AnalysisOutput("test")
         )
         data.SetTitle(title)
         data.label = "ALCIE, #sqrt{s} = 13 TeV, preliminary"
