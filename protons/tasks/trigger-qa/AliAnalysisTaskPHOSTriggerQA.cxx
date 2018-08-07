@@ -35,26 +35,19 @@ ClassImp(AliAnalysisTaskPHOSTriggerQA)
 
 //________________________________________________________________________
 AliAnalysisTaskPHOSTriggerQA::AliAnalysisTaskPHOSTriggerQA() : AliAnalysisTaskSE(),
-  fOutputContainer(0),fPHOSGeo(0),fEventCounter(0),fL1Threshold(-1)
+  fOutputContainer(0),fPHOSGeo(0),fEventCounter(0),fL1Threshold(-1), fPHOSGeo(0)
 {
   //Default constructor.  
-  // Initialize the PHOS geometry 
-  fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP") ;
-  
 }
 
 //________________________________________________________________________
 AliAnalysisTaskPHOSTriggerQA::AliAnalysisTaskPHOSTriggerQA(const char *name, Int_t L1_threshold) 
 : AliAnalysisTaskSE(name),
-  fOutputContainer(0),fPHOSGeo(0),fEventCounter(0),fL1Threshold(L1_threshold)
+  fOutputContainer(0),fPHOSGeo(0),fEventCounter(0),fL1Threshold(L1_threshold), fPHOSGeo(0)
 {
   
   // Output slots #0 write into a TH1 container
   DefineOutput(1,TList::Class());
-
-  // Initialize the PHOS geometry
-  fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP") ;
-
 }
 
 //________________________________________________________________________
@@ -141,6 +134,17 @@ void AliAnalysisTaskPHOSTriggerQA::UserExec(Option_t *)
   // Analyze ESD/AOD  
   
   AliVEvent *event = InputEvent();
+  fPHOSGeo = AliPHOSGeometry::GetInstance();
+
+  if (!fPHOSGeo)
+  {
+      AliInfo("PHOS geometry not initialized, initializing it for you");
+
+      if(event->GetRunNumber() < 224994)
+        fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP"); // Run1 geometry
+      else
+        fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") 
+  }
   
   if (!event) {
     Printf("ERROR: Could not retrieve event");
