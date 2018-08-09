@@ -18,10 +18,6 @@ class MassesPlot(object):
         self.draw(imass.mass, "histe")
         self.draw(imass.sigf, color=ci + 1)
         self.draw(imass.background, color=ci + 1)
-
-        # if imass.ratio:
-        #     self.draw(imass.ratio, color=ci + 4)
-
         self.draw(imass.signal, color=ci + 2)
         self.draw(imass.bgrf, color=ci + 5)
         self._draw_line(imass)

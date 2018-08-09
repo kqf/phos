@@ -530,3 +530,21 @@ class BROOT(object):
         nbins = len(data)
         step = (max(data) - min(data)) / nbins
         return nbins, min(data) - 0.5 * step, max(data) + 0.5 * step
+
+    @classmethod
+    def average(klass, histograms, label=None):
+        summed = klass.sum(histograms, label)
+        nhist = len(histograms)
+        for i, (c, e, _) in zip(klass.range(summed), klass.bins(summed)):
+            summed.SetBinContent(i, c / nhist)
+            summed.SetBinError(i, e / nhist)
+        return summed
+
+    def bins(klass, hist):
+        import numpy as np
+        contents = np.array([hist.GetBinContent(i) for i in klass.range(hist)])
+        errors = np.array([hist.GetBinError(i) for i in klass.range(hist)])
+        centers = np.array([hist.GetBinCenter(i) for i in klass.range(hist)])
+        HistMatrix = namedtuple(
+            'HistMatrix', ['contents', 'errors', 'centers'])
+        return HistMatrix(contents, errors, centers)

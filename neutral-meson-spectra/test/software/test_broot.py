@@ -326,6 +326,23 @@ class TestTH(unittest.TestCase):
         self.assertEqual(total.GetEntries(), entries)
         self.assertEqual(total.label, newlabel)
 
+    def test_average(self):
+        hists = [br.BH(
+            ROOT.TH1F,
+            "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
+            label="%dth histogram" % i, logy=True, logx=False, priority=3)
+            for i in range(10)]
+
+        for hist in hists:
+            hist.FillRandom('gaus')
+
+        entries = sum(h.GetEntries() for h in hists)
+
+        newlabel = 'average'
+        total = br.sum(hists, newlabel)
+
+        self.assertEqual(total.GetEntries(), entries)
+
     def test_scales_histogram(self):
         nbins, start, stop = 200, -10, 10
 
