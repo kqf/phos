@@ -4,6 +4,7 @@ from math import sqrt
 
 import ROOT
 import tqdm
+import numpy as np
 
 
 class EventGenerator(object):
@@ -26,6 +27,14 @@ class EventGenerator(object):
         return ROOT.TLorentzVector(0., 0., p, energy)
 
 
+class EventGeneratorRandomized(object):
+    def _generate_original(self):
+        p = self.function.GetRandom()
+        mass = np.random.normal(self.original_mass, 0.01)
+        energy = sqrt(mass ** 2 + p ** 2)
+        return ROOT.TLorentzVector(0., 0., p, energy)
+
+
 class AnalysisOptions(object):
     def __init__(self, cfile="config/angle-analysis.json"):
         super(AnalysisOptions, self).__init__()
@@ -33,6 +42,7 @@ class AnalysisOptions(object):
             self.conf = json.load(f)
         self.n_events = self.conf["n_events"]
         self.generator = self.conf["generator"]
+        self.type = EventGeneratorRandomized
 
         # Setup the momentum generation function
         momentum = self.conf["momentum_distribution"]
@@ -45,7 +55,7 @@ class Analysis(object):
     def __init__(self, config=AnalysisOptions()):
         super(Analysis, self).__init__()
         self.n_events = config.n_events
-        self.generator = EventGenerator(**config.generator)
+        self.generator = config.type(**config.generator)
 
     def transform(self, selections):
         for _ in tqdm.trange(self.n_events):
