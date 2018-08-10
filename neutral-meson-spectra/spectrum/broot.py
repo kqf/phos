@@ -7,6 +7,7 @@ import array
 import urllib2
 import tqdm
 from collections import namedtuple
+import numpy as np
 
 ROOT.TH1.AddDirectory(False)
 
@@ -381,7 +382,6 @@ class BROOT(object):
 
     @classmethod
     def bins(klass, hist):
-        import numpy as np
         contents = np.array([hist.GetBinContent(i) for i in klass.range(hist)])
         errors = np.array([hist.GetBinError(i) for i in klass.range(hist)])
         centers = np.array([hist.GetBinCenter(i) for i in klass.range(hist)])
@@ -391,7 +391,6 @@ class BROOT(object):
 
     @classmethod
     def systematic_deviation(klass, histograms):
-        import numpy as np
         matrix = np.array([klass.bins(h)[0] for h in histograms])
 
         rms, mean = np.std(matrix, axis=0), np.mean(matrix, axis=0)
@@ -506,7 +505,7 @@ class BROOT(object):
             for b, err, center in zip(*klass.bins(difference))
             if within_range(center)
         ]
-        print chi2
+        # print chi2
         chi2 = sum(chi2)
         return chi2
 
@@ -536,12 +535,3 @@ class BROOT(object):
         summed = klass.sum(histograms, label)
         summed.Scale(1. / len(histograms))
         return summed
-
-    def bins(klass, hist):
-        import numpy as np
-        contents = np.array([hist.GetBinContent(i) for i in klass.range(hist)])
-        errors = np.array([hist.GetBinError(i) for i in klass.range(hist)])
-        centers = np.array([hist.GetBinCenter(i) for i in klass.range(hist)])
-        HistMatrix = namedtuple(
-            'HistMatrix', ['contents', 'errors', 'centers'])
-        return HistMatrix(contents, errors, centers)

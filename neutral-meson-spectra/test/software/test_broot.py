@@ -710,8 +710,9 @@ class TestTH(unittest.TestCase):
         histogram2.SetBinContent(1, histogram2.GetBinContent(1) + error)
         # The sigma of this datapoint drops as 1 / sqrt(2)
         # because both points have their own errors
-        self.assertAlmostEqual(br.chi2(histogram, histogram2), 0.5)
+        self.assertAlmostEqual(br.chi2(histogram, histogram2), 0.5, places=5)
 
+    # @unittest.skip("")
     def test_scales_with_rebins(self):
         hist1 = ROOT.TH1F(
             "TestScalesAndRebins",
@@ -740,5 +741,5 @@ class TestTH(unittest.TestCase):
         Comparator(stop=self.stop).compare(hist1, hist2)
         hist3 = hist2.Clone(hist2.GetName() + "_scale")
         br.scalew(hist3, hist1.GetBinWidth(0))
-        print hist3.Integral() / hist2.Integral()
+        # print hist3.Integral() / hist2.Integral()
         Comparator(stop=self.stop).compare([hist1, hist2, hist3])
