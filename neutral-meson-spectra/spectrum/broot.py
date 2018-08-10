@@ -534,10 +534,7 @@ class BROOT(object):
     @classmethod
     def average(klass, histograms, label=None):
         summed = klass.sum(histograms, label)
-        nhist = len(histograms)
-        for i, (c, e, _) in zip(klass.range(summed), klass.bins(summed)):
-            summed.SetBinContent(i, c / nhist)
-            summed.SetBinError(i, e / nhist)
+        summed.Scale(1. / len(histograms))
         return summed
 
     def bins(klass, hist):

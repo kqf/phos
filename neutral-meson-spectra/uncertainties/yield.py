@@ -14,20 +14,6 @@ class YieldExtractioin(TransformerBase):
         self.options = options
         self.plot = plot
 
-    def average_yiled(self, histos):
-        average = histos[0].Clone(histos[0].GetName() + "_average")
-        average.Reset()
-        average.Sumw2()
-        llist = ROOT.TList()
-
-        for h in histos:
-            llist.Add(h)
-
-        average.Merge(llist)
-        average.Scale(1. / len(histos))
-        average.label = "averaged yield"
-        return average
-
     def transform(self, data, loggs):
         spectrums = []
         pbar = tqdm.tqdm(
@@ -59,7 +45,7 @@ class YieldExtractioin(TransformerBase):
         diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
         diff.compare(spectrums)
 
-        average = self.average_yiled(spectrums)
+        average = br.average(spectrums, "averaged yield")
         diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
         diff.compare_ratios(spectrums, average)
 

@@ -334,14 +334,18 @@ class TestTH(unittest.TestCase):
             for i in range(10)]
 
         for hist in hists:
-            hist.FillRandom('gaus')
+            for i in range(10):
+                hist.Fill(i, i)
 
         entries = sum(h.GetEntries() for h in hists)
 
         newlabel = 'average'
         total = br.sum(hists, newlabel)
 
-        self.assertEqual(total.GetEntries(), entries)
+        self.assertEqual(total.GetBinContent(1), hists[0].GetBinContent(1))
+        self.assertEqual(total.GetBinContent(10), hists[0].GetBinContent(10))
+        self.assertEqual(total.GetBinError(1), hists[0].GetBinError(1))
+        self.assertEqual(total.GetBinError(10), hists[0].GetBinError(10))
 
     def test_scales_histogram(self):
         nbins, start, stop = 200, -10, 10
