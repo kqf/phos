@@ -63,11 +63,17 @@
 			"hsum": "6e49d3b77826f9934848c755b1f3f7ef4792711ba7e111c7c061aff3bb4d5f78",
 			"description": "LHC17 pythia. Added E/p ratio. kaon2pion analysis. Prblems with nonlin scan"
 		},
-		"staging": {
+		"multiple_years": {
 			"file": "input-data/mc/pythia/multiple_years_fixed/pythia8.root",
 			"default_selection": "PhysEff",
 			"hsum": "6383d760b4204ab95079bae602e6cb5425a0de1916227cacb83222652c719033",
 			"description": "LHC17 pythia. Added E/p ratio. kaon2pion analysis, fix nonlin scan"
+		},
+		"staging": {
+			"file": "input-data/mc/pythia/kaon_to_pion_fixed/pythia8.root",
+			"default_selection": "PhysEff",
+			"hsum": "6a0ce4ac36fd5f8b81b7e1dd5167a129dda4c9e78f51cde13631e04efefbe28c",
+			"description": "Fix binning in kaon to pion ratio"
 		}
 	},
 
