@@ -4,8 +4,9 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
 # run=334_20180217-1427_child_
 # run=345_20180305-1550_child_
 # run=831_20180530-1028_child_
-run=861_20180608-1521_child_
-runlist=merge_runlist_3
+# run=861_20180608-1521_child_
+run=963_20180809-1020_child_
+runlist=merge_runlist_1
 # outdir=results/data/LHC17/iteration0
 
 
@@ -19,7 +20,7 @@ function show_dir() {
 
 function download() {
 	# NB: Always check runlists awailable for merge
-	for i in {1..8}; do
+	for i in {1..10}; do
 		echo "_________________"
 		echo "                 "
 		echo $train$run$i/$runlist

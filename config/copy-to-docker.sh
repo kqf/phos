@@ -1,0 +1,1 @@
+cp -r ../protons/tasks/analysis-task-pp/*  ~/alice/AliPhysics/PWGGA/PHOSTasks/PHOS_LHC16_pp

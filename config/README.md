@@ -59,6 +59,11 @@ docker run -v $HOME/path/to/workdir/:/alice/AliPhysics/PWGGA/PHOSTasks/workdir -
 ```
 
 # Development
+Copy analysis task to the docker volume
+```bash
+./copy-to-docker.sh
+```
+
 To modify the library structure do the following
 
 ```bash
