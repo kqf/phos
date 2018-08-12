@@ -183,6 +183,13 @@ class ReducePipeline(object):
         return self.function(updated)
 
 
+class ReducePipelineLoggs(ReducePipeline):
+
+    def transform(self, inputs, loggs):
+        updated = self.parallel.transform(inputs, loggs)
+        return self.function(updated, loggs)
+
+
 class ReduceArgumentPipeline(object):
 
     def __init__(self, parallel, argument, function):

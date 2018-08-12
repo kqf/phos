@@ -115,12 +115,7 @@ class MultipleVisualizer(object):
 
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        if self.loggs:
-            cloned = canvas.Clone()
-            cloned.SetName('c' + first_hist.GetName())
-            self.loggs.update('compare', cloned)
-        if not self.loggs or self.stop:
-            su.wait(oname, save=True, draw=self.stop)
+        self.io(canvas, hists, oname)
         return None
 
     def _drawable(self, first_hist, hists):
@@ -163,6 +158,18 @@ class MultipleVisualizer(object):
 
         oname = self.output_prefix + name
         return oname
+
+    def io(self, canvas, hists, oname):
+        cloned = canvas.Clone()
+        cloned.SetName('c' + hists[0].GetName())
+
+        if self.loggs:
+            self.loggs.update('compare', cloned)
+        else:
+            su.save_canvas(oname, pdf=False)
+
+        if not self.loggs and self.stop:
+            su.wait(oname, save=True, draw=self.stop)
 
 
 class Visualizer(MultipleVisualizer):
@@ -259,10 +266,5 @@ class Visualizer(MultipleVisualizer):
         canvas.cd()
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        if self.loggs:
-            cloned = canvas.Clone()
-            cloned.SetName('c' + hists[0].GetName())
-            self.loggs.update('compare', cloned)
-        if not self.loggs or self.stop:
-            su.wait(oname, save=True, draw=self.stop)
+        self.io(canvas, hists, oname)
         return su.adjust_labels(ratio, hists[0])

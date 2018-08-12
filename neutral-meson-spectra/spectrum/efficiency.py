@@ -15,6 +15,10 @@ from processing import RangeEstimator
 #
 
 
+# TODO: Rewrite RatioUnion to accept list of estimators
+#       add named steps, etc
+#
+
 class SimpleEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):

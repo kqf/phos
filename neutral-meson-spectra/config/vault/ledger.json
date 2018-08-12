@@ -32,12 +32,18 @@
 
 	"pythia8": {
 		"latest": {
+			"file": "input-data/mc/pythia/kaon_to_pion_fixed/pythia8.root",
+			"default_selection": "PhysEff",
+			"hsum": "6a0ce4ac36fd5f8b81b7e1dd5167a129dda4c9e78f51cde13631e04efefbe28c",
+			"description": "Fix binning in kaon to pion ratio"
+		},
+		"delete_latest": {
 			"file": "input-data/mc/pythia/pythia8.root",
 			"default_selection": "PhysEffTender",
 			"hsum": "3c804e068fe7a653063d8566fc73891b9630fed730029786ef7948b5c1f5fbca",
 			"description": "Pythia8 with all corrections, for feeddown correction. Calculated on LHC17 production. TODO: Recalculate this on trains"
 		},
-		"stable": {
+		"delete_stable": {
 			"file": "input-data/mc/pythia/pythia8-feeddown.root",
 			"default_selection": "PhysEffTender",
 			"hsum": "deda91c619113a9f7f8364a0f85e0cfabf7cf181adefe69df90654e2bcb9a117",
@@ -68,15 +74,8 @@
 			"default_selection": "PhysEff",
 			"hsum": "6383d760b4204ab95079bae602e6cb5425a0de1916227cacb83222652c719033",
 			"description": "LHC17 pythia. Added E/p ratio. kaon2pion analysis, fix nonlin scan"
-		},
-		"staging": {
-			"file": "input-data/mc/pythia/kaon_to_pion_fixed/pythia8.root",
-			"default_selection": "PhysEff",
-			"hsum": "6a0ce4ac36fd5f8b81b7e1dd5167a129dda4c9e78f51cde13631e04efefbe28c",
-			"description": "Fix binning in kaon to pion ratio"
 		}
 	},
-
 	"single #pi^{0}":
 	{
 		"low": {

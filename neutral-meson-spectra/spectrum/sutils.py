@@ -32,21 +32,27 @@ def clean_name(name):
 
 
 def wait(name='', draw=True, save=False, suffix=''):
-    outdir = 'results/'
     canvas = gcanvas()
     canvas.Update()
-    name = clean_name(name)
-    if save:
-        canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
-        save_canvas(canvas, outdir, name)
-
+    save_canvas(name, pdf=save, root=save)
     canvas.Connect("Closed()", "TApplication",
                    ROOT.gApplication, "Terminate()")
     if draw:
         ROOT.gApplication.Run(True)
 
 
-def save_canvas(canvas, outdir, name):
+def save_canvas(name, pdf=True, root=True):
+    outdir = 'results/'
+    canvas = gcanvas()
+    canvas.Update()
+    name = clean_name(name)
+    if pdf:
+        canvas.SaveAs(prepare_directory(outdir + name + '.pdf'))
+    if root:
+        save_canvas_root(canvas, outdir, name)
+
+
+def save_canvas_root(canvas, outdir, name):
     ofilename = name.split('/')[0]
     hname = name.split('/')[-1]
     path = name.replace(hname, '')
