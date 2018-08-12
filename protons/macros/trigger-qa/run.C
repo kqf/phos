@@ -16,13 +16,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection(
-        kTRUE,             //false for data, true for MC
+        isMC,             //false for data, true for MC
         enablePileupCuts
     );
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
-    TString decalibration = "Run2Default";
     AliPHOSTenderTask * tender = AddAODPHOSTender(
                                      "PHOSTenderTask",  // Task Name
                                      "PHOStender",      // Container Name
@@ -30,8 +29,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                      1,                 // Important: reco pass
                                      isMC              // Important: is MC?
                                  );
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    AddTaskPHOSTriggerQA(AliAnalysisManager::GetCommonFileName());
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AddTaskPHOSTriggerQA(AliAnalysisManager::GetCommonFileName());
+    LoadAnalysisLibraries();
+    gROOT->LoadMacro("./AddTaskPHOSTriggerQAv1.C");
+    AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
+        TString("AnalysisResults.root"),
+        "trigger"
+    );
+    // task->SelectCollisionCandidates(AliVEvent::kINT7);
+
   
     // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
     manager->InitAnalysis();
@@ -43,4 +50,30 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     manager->StartAnalysis(runmode);
     gObjectTable->Print();
+}
+
+void LoadAnalysisLibraries()
+{
+    AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
+    if (!mgr)
+    {
+        cerr << "Fatal: There is no analysis manager" << endl;
+        return;
+    }
+
+    gROOT->LoadMacro("AliAnalysisTaskPHOSTriggerQAv1.cxx+");
+    AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
+    TString sources = plugin->GetAnalysisSource();
+    TString libs   = plugin->GetAdditionalLibs();
+    plugin->SetAnalysisSource(
+        sources +
+        "AliAnalysisTaskPHOSTriggerQAv1.cxx "
+    );
+
+    plugin->SetAdditionalLibs(
+        libs +
+        "libPWGGAPHOSTasks.so " +
+        "AliAnalysisTaskPHOSTriggerQAv1.cxx " +
+        "AliAnalysisTaskPHOSTriggerQAv1.h "
+    );
 }

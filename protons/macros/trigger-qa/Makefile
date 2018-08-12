@@ -2,7 +2,7 @@ include ../../base.mk
 
 #  >>>>>>>>  Don't change this <<<<<<<<<<<<
 DPART = first
-MC = kTRUE
+MC = kFALSE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -16,4 +16,4 @@ TEST_SELECTION = PhysTender
 # Add all necessary taks
 %.cxx:
 	@$(call funlink)
-	@$(call link_sources,../../tasks/analysis-task-pp/, "*.h" "*.cxx")
+	@$(call link_sources,../../tasks/trigger-qa/, "*.h" "*.cxx")

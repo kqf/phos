@@ -15,7 +15,7 @@
 
 #include "AliAnalysisManager.h"
 #include "AliAnalysisTaskSE.h"
-#include "AliAnalysisTaskPHOSTriggerQA.h"
+#include "AliAnalysisTaskPHOSTriggerQAv1.h"
 #include "AliESDCaloCluster.h"
 #include "AliPHOSGeometry.h"
 #include "AliESDEvent.h"
@@ -31,19 +31,19 @@
 // Author: Boris Polishchuk 
 // Date  : 06.02.2012
 
-ClassImp(AliAnalysisTaskPHOSTriggerQA)
+ClassImp(AliAnalysisTaskPHOSTriggerQAv1)
 
 //________________________________________________________________________
-AliAnalysisTaskPHOSTriggerQA::AliAnalysisTaskPHOSTriggerQA() : AliAnalysisTaskSE(),
-  fOutputContainer(0),fPHOSGeo(0),fEventCounter(0),fL1Threshold(-1), fPHOSGeo(0)
+AliAnalysisTaskPHOSTriggerQAv1::AliAnalysisTaskPHOSTriggerQAv1() : AliAnalysisTaskSE(),
+  fOutputContainer(0),fEventCounter(0),fL1Threshold(-1)
 {
   //Default constructor.  
 }
 
 //________________________________________________________________________
-AliAnalysisTaskPHOSTriggerQA::AliAnalysisTaskPHOSTriggerQA(const char *name, Int_t L1_threshold) 
+AliAnalysisTaskPHOSTriggerQAv1::AliAnalysisTaskPHOSTriggerQAv1(const char *name, Int_t L1_threshold) 
 : AliAnalysisTaskSE(name),
-  fOutputContainer(0),fPHOSGeo(0),fEventCounter(0),fL1Threshold(L1_threshold), fPHOSGeo(0)
+  fOutputContainer(0),fEventCounter(0),fL1Threshold(L1_threshold)
 {
   
   // Output slots #0 write into a TH1 container
@@ -51,7 +51,7 @@ AliAnalysisTaskPHOSTriggerQA::AliAnalysisTaskPHOSTriggerQA(const char *name, Int
 }
 
 //________________________________________________________________________
-void AliAnalysisTaskPHOSTriggerQA::UserCreateOutputObjects()
+void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
 {
   // Create histograms
   // Called once
@@ -128,22 +128,22 @@ void AliAnalysisTaskPHOSTriggerQA::UserCreateOutputObjects()
 }
 
 //________________________________________________________________________
-void AliAnalysisTaskPHOSTriggerQA::UserExec(Option_t *) 
+void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *) 
 {
   // Main loop, called for each event
   // Analyze ESD/AOD  
   
   AliVEvent *event = InputEvent();
-  fPHOSGeo = AliPHOSGeometry::GetInstance();
+  AliPHOSGeometry *PHOSGeo = AliPHOSGeometry::GetInstance();
 
-  if (!fPHOSGeo)
+  if (!PHOSGeo)
   {
       AliInfo("PHOS geometry not initialized, initializing it for you");
 
       if(event->GetRunNumber() < 224994)
-        fPHOSGeo = AliPHOSGeometry::GetInstance("IHEP"); // Run1 geometry
+        PHOSGeo = AliPHOSGeometry::GetInstance("IHEP"); // Run1 geometry
       else
-        fPHOSGeo = AliPHOSGeometry::GetInstance("Run2") 
+        PHOSGeo = AliPHOSGeometry::GetInstance("Run2");
   }
   
   if (!event) {
@@ -171,7 +171,7 @@ void AliAnalysisTaskPHOSTriggerQA::UserExec(Option_t *)
   if(fEventCounter == 0) {
     for(Int_t mod=0; mod<5; mod++) {
       if(!event->GetPHOSMatrix(mod)) continue;
-      fPHOSGeo->SetMisalMatrix(event->GetPHOSMatrix(mod),mod) ;
+      PHOSGeo->SetMisalMatrix(event->GetPHOSMatrix(mod),mod) ;
     }
   }
   
@@ -194,7 +194,7 @@ void AliAnalysisTaskPHOSTriggerQA::UserExec(Option_t *)
     trgESD->GetPosition(tmod,tabsId);
     
     Int_t trelid[4] ;
-    fPHOSGeo->AbsToRelNumbering(tabsId,trelid);
+    PHOSGeo->AbsToRelNumbering(tabsId,trelid);
 
     snprintf(key,55,"h4x4SM%d",trelid[0]);
     FillHistogram(key,trelid[2]-1,trelid[3]-1);
@@ -215,7 +215,7 @@ void AliAnalysisTaskPHOSTriggerQA::UserExec(Option_t *)
       Int_t maxId, relid[4];
       MaxEnergyCellPos(phsCells,c1,maxId);
       
-      fPHOSGeo->AbsToRelNumbering(maxId, relid);
+      PHOSGeo->AbsToRelNumbering(maxId, relid);
       snprintf(key,55,"hPhotAllSM%d",relid[0]);
       FillHistogram(key,c1->E());
 
@@ -261,7 +261,7 @@ void AliAnalysisTaskPHOSTriggerQA::UserExec(Option_t *)
 }
 
 //_____________________________________________________________________________
-void AliAnalysisTaskPHOSTriggerQA::FillHistogram(const char * key,Double_t x)const{
+void AliAnalysisTaskPHOSTriggerQAv1::FillHistogram(const char * key,Double_t x)const{
   //FillHistogram
   TH1I * tmpI = dynamic_cast<TH1I*>(fOutputContainer->FindObject(key)) ;
   if(tmpI){
@@ -281,7 +281,7 @@ void AliAnalysisTaskPHOSTriggerQA::FillHistogram(const char * key,Double_t x)con
   AliInfo(Form("can not find histogram <%s> ",key)) ;
 }
 //_____________________________________________________________________________
-void AliAnalysisTaskPHOSTriggerQA::FillHistogram(const char * key,Double_t x,Double_t y)const{
+void AliAnalysisTaskPHOSTriggerQAv1::FillHistogram(const char * key,Double_t x,Double_t y)const{
   //FillHistogram
   TObject * tmp = fOutputContainer->FindObject(key) ;
   if(!tmp){
@@ -300,7 +300,7 @@ void AliAnalysisTaskPHOSTriggerQA::FillHistogram(const char * key,Double_t x,Dou
 }
 
 //_____________________________________________________________________________
-void AliAnalysisTaskPHOSTriggerQA::MaxEnergyCellPos(AliVCaloCells *cells, AliVCluster* clu, Int_t& maxId)
+void AliAnalysisTaskPHOSTriggerQAv1::MaxEnergyCellPos(AliVCaloCells *cells, AliVCluster* clu, Int_t& maxId)
 {  
   Double_t eMax = -111;
   
@@ -316,7 +316,7 @@ void AliAnalysisTaskPHOSTriggerQA::MaxEnergyCellPos(AliVCaloCells *cells, AliVCl
 }
 
 //_____________________________________________________________________________
-Bool_t AliAnalysisTaskPHOSTriggerQA::Matched(Int_t *trig_relid, Int_t *cluster_relid)
+Bool_t AliAnalysisTaskPHOSTriggerQAv1::Matched(Int_t *trig_relid, Int_t *cluster_relid)
 {
   //Returns kTRUE if cluster position coincides with 4x4 position.
 
@@ -328,7 +328,7 @@ Bool_t AliAnalysisTaskPHOSTriggerQA::Matched(Int_t *trig_relid, Int_t *cluster_r
 }
 
 //_______________________________________________________________________________
-Int_t AliAnalysisTaskPHOSTriggerQA::GetTRUNum(Int_t cellX, Int_t cellZ)
+Int_t AliAnalysisTaskPHOSTriggerQAv1::GetTRUNum(Int_t cellX, Int_t cellZ)
 {
   //Return TRU region number for given cell.
   //cellX: [0-63], cellZ: [0-55]
