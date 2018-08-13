@@ -37,10 +37,7 @@ void run(
 
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
-
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
-
     gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
     AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
         isMC, 

@@ -1,4 +1,5 @@
 #include "../../../setup/alien.h"
+#include "../../../setup/values_for_dataset.h"
 #include "iostream"
 
 using std::cout;
@@ -11,7 +12,10 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 
 	// Use default setup for the plugin
 	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
-
+	std::vector<Int_t> v; //
+	values_for_dataset(v, period, "../../../datasets/");
+	for (UInt_t i = 0; i < v.size(); ++i)
+		plugin->AddRunNumber(v[i]);	
 	// Extract period and reconstruction pass
 	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
 	
@@ -29,7 +33,5 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 
 	plugin->SetFileForTestMode("../../../datasets/filesmc.txt");
     //plugin->SetUseSubmitPolicy();
-
-	plugin->SetAliPhysicsVersion("vAN-20171120-1");
 	return plugin;
 }

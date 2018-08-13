@@ -72,7 +72,9 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13KaonToPionRatioMC("KaonToPionRatio", "MC Selection for kaon/pion ratio", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13FeeddownSelection("FeeddownSelection", "FeeddownSelection", cuts_pi0, &mc_weights));
+		selections->Add(new AliPP13FeeddownSelection("FeeddownSelectionPlain", "FeeddownSelection", cuts_pi0, &mc_weights));
+		AliPP13SelectionWeightsMC & mc_weights_feeddown = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kFeeddown);
+		selections->Add(new AliPP13FeeddownSelection("FeeddownSelection", "FeeddownSelection", cuts_pi0, &mc_weights_feeddown));
 	}
 
 	// Setup task
