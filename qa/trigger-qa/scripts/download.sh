@@ -34,7 +34,7 @@ function main()
     TRAIN_CHILD=""
     PERIOD=LHC17c
 
-    NAME=default
+    NAME=$2
     FILE_NAME=QAresults.root
 
     train_children=("" "")
@@ -59,4 +59,4 @@ function main()
 }
 
 
-main $1
+main $1 $2

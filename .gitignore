@@ -5,6 +5,7 @@ Task*.sh
 *.o
 *.d
 *.pdf
+*.eps
 *.swp
 *.so
 event_stat.root
