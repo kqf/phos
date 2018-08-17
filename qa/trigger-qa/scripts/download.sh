@@ -38,7 +38,7 @@ function main()
     FILE_NAME=QAresults.root
 
     train_children=("" "")
-    periods=("LHC17c" "LHC17e")
+    periods=("LHC17c" "LHC17e" "LHC17d")
 
 
     for i in "${!train_children[@]}"; do 

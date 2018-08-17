@@ -162,7 +162,7 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   c1->cd(4);
   gPad->SetLogz();
   h4x4SM4->Draw("colz");
-  c1->Print(Form("TrigOccupancy_%s.eps",trigger));
+  c1->Print(Form("TrigOccupancy_%s.pdf",trigger));
   
   TCanvas * c2 = new TCanvas("c2","c2",0,0,1000,600);
   c2->Divide(2,2);
@@ -178,7 +178,7 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   c2->cd(4);
   gPad->SetLogz();
   h4x4CluSM4->Draw("colz");
-  c2->Print(Form("TrigOccupancyCluster_%s.eps",trigger));
+  c2->Print(Form("TrigOccupancyCluster_%s.pdf",trigger));
 
   TCanvas * c3 = new TCanvas("c3","c3",0,0,1000,600);
   c3->Divide(2,2);
@@ -194,7 +194,7 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   c3->cd(4);
   gPad->SetLogy();
   hPhotTrigSM4->Draw();
-  c3->Print(Form("TrigPhotE_triggered_%s.eps",trigger));
+  c3->Print(Form("TrigPhotE_triggered_%s.pdf",trigger));
 
   TLegend *leg = new TLegend(0.6,0.78,0.89,0.9);
   leg->SetFillColor(kWhite);
@@ -221,7 +221,7 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   gPad->SetLogy();
   hPhotAllSM4->Draw();
   hPhotTrigSM4->Draw("same");
-  c4->Print(Form("TrigPhotE_all_%s.eps",trigger));
+  c4->Print(Form("TrigPhotE_all_%s.pdf",trigger));
 
   TCanvas * c5 = new TCanvas("c5","c5",0,0,1000,600);
   c5->Divide(2,2);
@@ -237,7 +237,7 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   c5->cd(4);
   gPad->SetLogy();
   rTrigRatioSM4->Draw();
-  c5->Print(Form("TrigPhotE_ratio_%s.eps",trigger));
+  c5->Print(Form("TrigPhotE_ratio_%s.pdf",trigger));
 }
 void DrawTriggerQATRU(const char* filename="TriggerQA_253436-253591.root",
 		 const char* trigger ="L0",
@@ -422,7 +422,7 @@ void DrawTriggerQATRU(const char* filename="TriggerQA_253436-253591.root",
   hPhotAllTRU8->Draw();
   hPhotTrigTRU8->Draw("same");
 
-  c21->Print(Form("TrigPhotEperTRU_%s_%s.eps",trigger,module));
+  c21->Print(Form("TrigPhotEperTRU_%s_%s.pdf",trigger,module));
 
   TCanvas * c22 = new TCanvas("c22","c22",0,0,1000,600);
   c22->Divide(4,2);
@@ -443,7 +443,7 @@ void DrawTriggerQATRU(const char* filename="TriggerQA_253436-253591.root",
   c22->cd(8);
   rTrigRatioTRU8->Draw();
   
-  c22->Print(Form("TrigEffiperTRU_%s_%s.eps",trigger,module));
+  c22->Print(Form("TrigEffiperTRU_%s_%s.pdf",trigger,module));
 
 }
 //-----------------------------------------------------------------------------
@@ -569,5 +569,5 @@ void DrawTriggerEff(const char* filename="TriggerQA_253436-253591.root")
   hRatioL1L0SM3->Draw();
   c14->cd(4);
   hRatioL1L0SM4->Draw();
-  c14->Print("TrigEfficiency.eps");
+  c14->Print("TrigEfficiency.pdf");
 }  
