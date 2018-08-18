@@ -1,4 +1,4 @@
-outdir=results/mc/pythia/kaon_to_pion_fixed/
+outdir=results/mc/pythia/feeddown/
 ofile=pythia8.root
 function upload() {
 	hadd $ofile child*.root
