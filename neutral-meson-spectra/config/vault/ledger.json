@@ -32,6 +32,12 @@
 
 	"pythia8": {
 		"latest": {
+			"file": "input-data/mc/pythia/feeddown/pythia8.root",
+			"default_selection": "PhysEff",
+			"hsum": "4bb9f7c32247a54e2a5d96f0f1b0a86f3fa47e9a02b0f76f1e5f952d53adb139",
+			"description": "Feeddown corrected for kaon to pion ratio"
+		},
+		"delete_latest1": {
 			"file": "input-data/mc/pythia/kaon_to_pion_fixed/pythia8.root",
 			"default_selection": "PhysEff",
 			"hsum": "6a0ce4ac36fd5f8b81b7e1dd5167a129dda4c9e78f51cde13631e04efefbe28c",
