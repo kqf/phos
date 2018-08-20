@@ -51,20 +51,23 @@ class Input(object):
     def __init__(self, filename, listname,
                  histname='MassPt', label='',
                  mixprefix='Mix', histnames=None,
-                 n_events=None, inputs=None):
+                 n_events=None, inputs=None,
+                 prefix='h'):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
         self.histnames = histnames
-        self.prefix = '', mixprefix
+        self.mixprefix = '', mixprefix
+        self.prefix = prefix
         self._n_events = n_events
         self._events = self.events(filename, listname)
         self.label = label
         self.inputs = inputs
         if self.inputs:
             return
-        self.inputs = ['h{}{}'.format(p, self.histname) for p in self.prefix]
+        self.inputs = ['{}{}{}'.format(self.prefix, p, self.histname)
+                       for p in self.mixprefix]
 
     def events(self, filename, listname):
         try:
@@ -121,14 +124,13 @@ class Input(object):
 
 
 class NoMixingInput(Input):
-    def __init__(self, filename, listname, histname='MassPt',
-                 label='', mixprefix='Mix'):
-        super(NoMixingInput, self).__init__(
-            filename, listname, histname, label, mixprefix)
+    def __init__(self, filename, listname, histname='MassPt', *args, **kwargs):
+        super(NoMixingInput, self).__init__(filename, listname,
+                                            histname, *args, **kwargs)
 
     def read(self, histo=''):
         histo = histo if histo else self.histname
-        raw = br.io.read(self.filename, self.listname, 'h' + histo)
+        raw = br.io.read(self.filename, self.listname, self.prefix + histo)
         br.set_nevents(raw, self._events)
         return raw, None
 
