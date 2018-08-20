@@ -5,6 +5,7 @@ from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
 
 from spectrum.options import FeeddownOptions
+from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
 
 
@@ -18,7 +19,7 @@ def feeddown_paramerization():
     func_feeddown.SetParameter(0, -1.4)
     func_feeddown.SetParameter(1, 0.33)
     func_feeddown.SetParLimits(1, 0, 10)
-    func_feeddown.FixParameter(2, 0.02)
+    func_feeddown.SetParameter(2, 0.02)
     return func_feeddown
 
 
@@ -34,15 +35,14 @@ class FeddownTest(unittest.TestCase):
             [
                 DataVault().input(
                     "pythia8",
-                    "staging",
-                    listname="MCStudy",
+                    listname="FeeddownSelection",
                     use_mixing=False,
-                    histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}"
+                    histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}",
+                    prefix=""
                 ),
-                DataVault().input("pythia8", "stable",
-                                  listname="MCStudyOnlyTender"),
+                DataVault().input("pythia8", listname="FeeddownSelection"),
             ],
-            "test the feeddown correction"
+            AnalysisOutput("test the feeddown correction")
         )
         title = "Feeddown correction approximation"
         title += "; p_{T}, GeV/c"
