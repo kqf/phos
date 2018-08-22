@@ -1,19 +1,30 @@
 import unittest
-from spectrum.broot import BROOT as br
-from uncertainties.genergy_scale import GlobalEnergyScaleUncetanityEvaluator
+from vault.datavault import DataVault
+from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.outputcreator import AnalysisOutput
+from uncertainties.gscale import GScale
 
 
-# CWR: Run this on corrected spectrum
-#
-class TestGE(unittest.TestCase):
+class TestGeScaleUncertainty(unittest.TestCase):
+    def test_interface_composite(self):
+        unified_inputs = {
+            DataVault().input("single #pi^{0}", "low"): (0, 7.0),
+            DataVault().input("single #pi^{0}", "high"): (7.0, 20)
+        }
 
-    def test_systematics(self):
-        spectrum, lower, upper = GlobalEnergyScaleUncetanityEvaluator().fit()
-        syst_error = self.outsys.histogram(spectrum)
-        bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
-        bins = [upper.Eval(c) - lower.Eval(c) for c in bins]
-        for i, b in enumerate(bins):
-            if b < 0:
-                print 'Warning: negative global energy scale corrections'
-            syst_error.SetBinContent(i + 1, abs(b))
-        return syst_error
+        data = [
+            DataVault().input("data"),
+            unified_inputs
+        ]
+
+        estimator = GScale(
+            CompositeCorrectedYieldOptions(
+                particle="#pi^{0}",
+                unified_inputs=unified_inputs
+            ),
+            plot=False
+        )
+        uncertanity = estimator.transform(
+            data,
+            loggs=AnalysisOutput("test composite corr. yield interface")
+        )
