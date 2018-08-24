@@ -8,6 +8,7 @@ from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
 from spectrum.pipeline import ReducePipelineLoggs
 from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import Pipeline
 from spectrum.output import AnalysisOutput
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
@@ -25,7 +26,7 @@ class HistSum(TransformerBase):
 
 
 K2POptions = namedtuple("K2POptions", ["pions", "kaons"])
-DoubleK2POptions = namedtuple("DoubleK2POptions", ["data", "mc"])
+DoubleK2POptions = namedtuple("DoubleK2POptions", ["data", "mc", "fitfunc"])
 
 
 class KaonToPionRatioMC(TransformerBase):
@@ -63,10 +64,28 @@ def rebin_compare(inputs, loggs):
     return Comparator(loggs=loggs).compare(data, mc)
 
 
+class DoubleRatioFitter(TransformerBase):
+    def __init__(self, fitfunc, plot=False):
+        super(DoubleRatioFitter, self).__init__(plot)
+        self.fitfunc = fitfunc
+
+    def transform(self, double_ratio, loggs):
+        double_ratio.SetMarkerSize(0)
+        double_ratio.Fit(self.fitfunc, "R")
+        self.fitfunc.SetRange(0, 20)
+        title = "Chi2/ndf = " + \
+            str(self.fitfunc.GetChisquare() / self.fitfunc.GetNDF())
+        double_ratio.SetTitle(title)
+        double_ratio.label = "pp at \sqrt{s} = 13 TeV"
+        double_ratio.SetName("kaon2pion")
+        print(br.pars(self.fitfunc))
+        return double_ratio
+
+
 class KaonToPionDoubleRatio(TransformerBase):
     def __init__(self, options, plot=False):
         super(KaonToPionDoubleRatio, self).__init__()
-        self.pipeline = ReducePipelineLoggs(
+        double_ratio = ReducePipelineLoggs(
             ParallelPipeline([
                 ("data", KaonToPionRatioData(options.data)),
                 ("mc", KaonToPionRatioMC(options.mc)),
@@ -74,41 +93,16 @@ class KaonToPionDoubleRatio(TransformerBase):
             rebin_compare
         )
 
-
-# float inBack(float x)
-# {
-#     if(x < [0]) return[0]
-#     if(x > [1]) return[1]
-#     return x * x * (([2] + [1]) * x - [2])
-# }
+        self.pipeline = Pipeline([
+            ("data_mc_ratio", double_ratio),
+            ("fit", DoubleRatioFitter(options.fitfunc, plot)),
+        ])
 
 
 class TestDoubleKaonToPionRatio(unittest.TestCase):
 
     # @unittest.skip("")
     def test_ratio(self):
-        options = DoubleK2POptions(
-            data=K2POptions(
-                kaons="hstat_kaon_pp13_sum",
-                pions="hstat_pion_pp13_sum"
-            ),
-            mc=K2POptions(
-                kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
-                pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
-            )
-        )
-
-        estimator = KaonToPionDoubleRatio(options, plot=True)
-        pythia8 = DataVault().input("pythia8", listname="KaonToPionRatio")
-        loggs = AnalysisOutput("calculate_pion_to_kaon", particle="")
-        double_ratio = estimator.transform(
-            [
-                [DataVault().input("kaon2pion")] * 2,
-                [[pythia8] * 2] * 2
-            ],
-            loggs
-        )
-        double_ratio.SetMarkerSize(0)
         fitfunc = ROOT.TF1(
             "feeddown_ratio",
             "[3] * x *(([4] + [5]) * x - [5]) + "
@@ -120,12 +114,27 @@ class TestDoubleKaonToPionRatio(unittest.TestCase):
         fitfunc.SetParameter(4, 6.30860e-01)
         fitfunc.SetParameter(5, -7.21683e-01)
 
-        double_ratio.Fit(fitfunc, "R")
-        fitfunc.SetRange(0, 20)
-        print(br.pars(fitfunc))
+        options = DoubleK2POptions(
+            data=K2POptions(
+                kaons="hstat_kaon_pp13_sum",
+                pions="hstat_pion_pp13_sum"
+            ),
+            mc=K2POptions(
+                kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
+                pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
+            ),
+            fitfunc=fitfunc
+        )
 
-        title = "Chi2/ndf = " + str(fitfunc.GetChisquare() / fitfunc.GetNDF())
-        double_ratio.SetTitle(title)
-        double_ratio.label = "pp at \sqrt{s} = 13 TeV"
-        double_ratio.SetName("kaon2pion")
+        estimator = KaonToPionDoubleRatio(options, plot=True)
+        pythia8 = DataVault().input("pythia8", listname="KaonToPionRatio")
+        loggs = AnalysisOutput("pion to kaon", particle="")
+        double_ratio = estimator.transform(
+            [
+                [DataVault().input("kaon2pion")] * 2,
+                [[pythia8] * 2] * 2
+            ],
+            loggs
+        )
+        loggs.plot()
         Comparator().compare(double_ratio)
