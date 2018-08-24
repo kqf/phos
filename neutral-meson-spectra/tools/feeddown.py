@@ -2,6 +2,7 @@ from spectrum.broot import BROOT as br
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
+from spectrum.comparator import Comparator
 
 
 class ConfidenceLevelEstimator(TransformerBase):
@@ -10,14 +11,26 @@ class ConfidenceLevelEstimator(TransformerBase):
         self.fitf = fitf
 
     def transform(self, feeddown, loggs):
-        return feeddown, br.confidence_intervals(feeddown, self.fitf)
+        errors = br.confidence_intervals(feeddown, self.fitf)
+        title = "Feeddown correction approximation"
+        title += "; p_{T}, GeV/c"
+        title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
+        title += "#frac{dN(all)}{dp_{T}}"
+        feeddown.SetTitle(title)
+        errors.SetTitle(title)
+        errors.label = "approximation"
+        errors.SetOption("e3")
+        errors.SetFillStyle(3002)
+        feeddown.logy = False
+        Comparator(loggs=loggs, rrange=(-1, -1)).compare(feeddown, errors)
+        return feeddown
 
 
 class FeeddownEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(FeeddownEstimator, self).__init__(plot)
         feeddown_main = ComparePipeline([
-            ("feeddown",
+            ("feed-down",
                 Pipeline([
                     ("analysis", Analysis(options.feeddown, plot)),
                     ("nmesons", HistogramSelector("nmesons"))

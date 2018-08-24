@@ -468,8 +468,8 @@ class BROOT(object):
         return klass.sum(clones)
 
     @classmethod
-    def confidence_intervals(klass, hist, func, options="qR", histbining=None):
-        ci = klass.copy(histbining if histbining else hist)
+    def confidence_intervals(klass, hist, func, options="R", histbining=None):
+        ci = klass.copy(histbining or hist)
         hist.Fit(func, options)
         ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(ci)
         ci.SetStats(False)

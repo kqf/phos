@@ -113,8 +113,9 @@ class FunctionTransformer(object):
         super(FunctionTransformer, self).__init__()
         self.func = func
 
+    # TODO: Ensure all transformers have loggs
     def transform(self, inputs, loggs):
-        output = self.func(inputs)
+        output = self.func(inputs, loggs)
         return output
 
 
