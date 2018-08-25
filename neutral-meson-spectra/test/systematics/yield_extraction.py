@@ -3,7 +3,8 @@ import unittest
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import AnalysisOutput
 from vault.datavault import DataVault
-from uncertainties import YieldExtractioin
+from uncertainties.yields import YieldExtractioin
+from spectrum.comparator import Comparator
 
 
 class YieldExtractioinUncertanityOptions(object):
@@ -41,7 +42,8 @@ class TestYieldExtractionUncertanity(unittest.TestCase):
             )
         )
         estimator = YieldExtractioin(options)
-        estimator.transform(
+        output = estimator.transform(
             data,
             loggs=AnalysisOutput("corrected yield #pi^{0}")
         )
+        Comparator().compare(output)
