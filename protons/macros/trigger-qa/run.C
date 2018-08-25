@@ -29,14 +29,14 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                      1,                 // Important: reco pass
                                      isMC              // Important: is MC?
                                  );
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    // AddTaskPHOSTriggerQA(AliAnalysisManager::GetCommonFileName());
-    LoadAnalysisLibraries();
-    gROOT->LoadMacro("./AddTaskPHOSTriggerQAv1.C");
-    AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
-        TString("AnalysisResults.root"),
-        "trigger"
-    );
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    AddTaskPHOSTriggerQA("TriggerQA.root", "trigger");
+    // LoadAnalysisLibraries();
+    // gROOT->LoadMacro("./AddTaskPHOSTriggerQAv1.C");
+    // AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
+    //     TString("AnalysisResults.root"),
+    //     "trigger"
+    // );
     // task->SelectCollisionCandidates(AliVEvent::kINT7);
 
   
@@ -46,7 +46,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
-    alien->SetOutputFiles(files);
+    alien->SetOutputFiles("TriggerQA.root");
 
     manager->StartAnalysis(runmode);
     gObjectTable->Print();
