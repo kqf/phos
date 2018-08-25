@@ -9,7 +9,10 @@ import tqdm
 from collections import namedtuple
 import numpy as np
 
+from repoze.lru import lru_cache
+
 ROOT.TH1.AddDirectory(False)
+MAX_CACHE = 128
 
 
 class BROOT(object):
@@ -115,6 +118,7 @@ class BROOT(object):
             return klass._dir_to_list(lst)
 
         @classmethod
+        @lru_cache(MAX_CACHE)
         def read(klass, filename, selection, histname):
             lst = klass._read_list(filename, selection)
             hist = lst.FindObject(histname)

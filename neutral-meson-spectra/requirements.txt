@@ -1,3 +1,4 @@
 ipdb
 numpy
 pandas
+repoze.lru
