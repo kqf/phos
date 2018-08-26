@@ -1,7 +1,7 @@
 import unittest
 from vault.datavault import DataVault
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.outputcreator import AnalysisOutput
+from spectrum.output import AnalysisOutput
 from uncertainties.gscale import GScale
 
 

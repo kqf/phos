@@ -9,11 +9,11 @@ from spectrum.transformer import TransformerBase
 # CWR: Run this on corrected spectrum
 #
 
-class GlobalEnergyScaleUncetanityEvaluator(TransformerBase):
+class GScale(TransformerBase):
 
-    def __init__(self, options, stop=True):
-        super(GlobalEnergyScaleUncetanityEvaluator, self).__init__(stop)
-        self.options
+    def __init__(self, options, plot=True):
+        super(GScale, self).__init__(plot)
+        self.options = options
         # This should be studied on corrected yield
 
     @staticmethod
@@ -36,8 +36,8 @@ class GlobalEnergyScaleUncetanityEvaluator(TransformerBase):
         fitf.SetParameter(2, 6.88)
         return fitf
 
-    def fit(self):
-        corrected_spectrum = CorrectedYield(self.options).transform(data)
+    def fit(self, data, loggs):
+        corrected_spectrum = CorrectedYield(self.options).transform(data, loggs)
         fitf = self.fitfunc('tsallis_')
         corrected_spectrum.Fit(fitf, 'R', '')
         corrected_spectrum.Draw()
@@ -56,8 +56,8 @@ class GlobalEnergyScaleUncetanityEvaluator(TransformerBase):
 
         return corrected_spectrum, lower, upper
 
-    def transform(self, data):
-        spectrum, lower, upper = self.fit(data)
+    def transform(self, data, loggs):
+        spectrum, lower, upper = self.fit(data, loggs)
         syst_error = self.outsys.histogram(spectrum)
         bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
         bins = [upper.Eval(c) - lower.Eval(c) for c in bins]
