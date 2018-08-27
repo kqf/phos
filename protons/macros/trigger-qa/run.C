@@ -30,7 +30,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                      isMC              // Important: is MC?
                                  );
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    AddTaskPHOSTriggerQA("TriggerQA.root", "trigger");
+    AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
     // LoadAnalysisLibraries();
     // gROOT->LoadMacro("./AddTaskPHOSTriggerQAv1.C");
     // AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
