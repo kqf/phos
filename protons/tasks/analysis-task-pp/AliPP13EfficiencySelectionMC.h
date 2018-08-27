@@ -5,7 +5,7 @@
 #include <map>
 
 // --- Custom header files ---
-#include "AliPP13PhotonSelectionMC.h"
+#include "AliPP13PhysPhotonSelectionMC.h"
 #include "AliPP13SelectionWeights.h"
 #include "AliPP13MesonSelectionMC.h"
 
@@ -22,7 +22,7 @@
 #include <AliLog.h>
 
 
-class AliPP13EfficiencySelectionMC: public AliPP13PhotonSelectionMC
+class AliPP13EfficiencySelectionMC: public AliPP13PhysPhotonSelectionMC
 {
 public:
 	enum Particles
@@ -31,7 +31,7 @@ public:
 	};
 
 	AliPP13EfficiencySelectionMC():
-		AliPP13PhotonSelectionMC(),
+		AliPP13PhysPhotonSelectionMC(),
 		fInvMass()
 	{
 		fPartNames[kGamma] = "#gamma";
@@ -40,7 +40,7 @@ public:
 	}
 
 	AliPP13EfficiencySelectionMC(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
-		AliPP13PhotonSelectionMC(name, title, cuts, w),
+		AliPP13PhysPhotonSelectionMC(name, title, cuts, w),
 		fInvMass()
 	{
 		// Force no timing cut for MC,

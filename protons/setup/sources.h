@@ -12,7 +12,6 @@ void LoadAnalysisLibraries()
 	gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
 	gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
 	gROOT->LoadMacro("AliPP13PhotonSelection.cxx+");
-	gROOT->LoadMacro("AliPP13PhotonSelectionMC.cxx+");
 	gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
 	gROOT->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
 	// TODO: Add to particle histogram
@@ -42,7 +41,6 @@ void LoadAnalysisLibraries()
 		"AliPP13SelectionWeights.cxx " +
 		"AliPP13DetectorHistogram.cxx " +
 		"AliPP13PhotonSelection.cxx " +
-		"AliPP13PhotonSelectionMC.cxx " +
 		"AliPP13PhotonSpectrumSelection.cxx " +
 		"AliPP13QualityPhotonSelection.cxx " +
 		"AliPP13ParticlesHistogram.cxx " +
@@ -74,8 +72,6 @@ void LoadAnalysisLibraries()
 		"AliPP13DetectorHistogram.h " +
 		"AliPP13PhotonSelection.cxx " +
 		"AliPP13PhotonSelection.h " +
-		"AliPP13PhotonSelectionMC.cxx " +
-		"AliPP13PhotonSelectionMC.h " +
 		"AliPP13PhotonSpectrumSelection.cxx " +
 		"AliPP13PhotonSpectrumSelection.h " +
 		"AliPP13QualityPhotonSelection.cxx " +

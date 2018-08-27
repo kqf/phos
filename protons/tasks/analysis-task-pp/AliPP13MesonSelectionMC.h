@@ -178,7 +178,6 @@ public:
 protected:
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
 
-	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;
 	virtual AliAODMCParticle * GetParent(Int_t label, Int_t & plabel, TClonesArray * particles) const;
 	virtual AliAODMCParticle * GetParent(Int_t label, TClonesArray * particles) const
 	{

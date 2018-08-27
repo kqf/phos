@@ -20,6 +20,7 @@ public:
 	}
 
 protected:
+	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;
 	virtual TLorentzVector ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const;
 	
 	AliPP13PhysPhotonSelectionMC(const AliPP13PhysPhotonSelectionMC &);

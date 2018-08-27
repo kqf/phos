@@ -80,7 +80,6 @@ protected:
 		(void) eflags;
 	}
 
-	virtual Bool_t IsPrimary(const AliAODMCParticle * particle) const;
 	AliPP13KaonToPionRatioMC(const AliPP13KaonToPionRatioMC &);
 	AliPP13KaonToPionRatioMC & operator = (const AliPP13KaonToPionRatioMC &);
 
