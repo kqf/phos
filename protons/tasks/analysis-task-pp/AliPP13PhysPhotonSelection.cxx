@@ -58,10 +58,6 @@ void AliPP13PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliV
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
 
-	// Appply asymmetry cut for pair
-	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
-	if (asym >fCuts.fAsymmetryCut) return;
-
 	Int_t sm1, sm2, x1, z1, x2, z2;
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok

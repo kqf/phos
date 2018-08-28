@@ -77,11 +77,6 @@ void AliPP13QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const A
 	// Pair cuts can be applied here
 	if (psum.M2() < 0)  return;
 
-	// Appply asymmetry cut for pair
-	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
-	if (asym > fCuts.fAsymmetryCut) return;
-
-
 	Int_t sm1, sm2, x1, z1, x2, z2;
 	if ((sm1 = CheckClusterGetSM(c1, x1, z1)) < 0) return; //  To be sure that everything is Ok
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
@@ -89,6 +84,7 @@ void AliPP13QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const A
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 	
+	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
 	fMassPtA[Int_t(eflags.isMixing)]->Fill(ma12, pt12, asym);
 }
 

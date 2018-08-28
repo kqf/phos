@@ -32,6 +32,11 @@ void AliPP13NonlinearitySelection::SelectTwoParticleCombinations(const TObjArray
 				continue;
 
 			AliVCluster * second = dynamic_cast<AliVCluster *> (photonCandidates.At(j));
+
+			Double_t asym = TMath::Abs( (first->E() - second->E()) / (first->E() + second->E()) );
+			if (asym > fCuts.fAsymmetryCut)
+				continue;
+
 			ConsiderPair(first, second, flags);
 		} // second cluster loop
 	} // cluster loop

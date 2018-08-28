@@ -50,6 +50,10 @@ void PhotonSelection::SelectTwoParticleCombinations(const TObjArray & photonCand
 		{
 			// ++counter;
 			AliVCluster * clus2 = (AliVCluster *) photonCandidates.At(j);
+			// Appply asymmetry cut for pair
+			Double_t asym = TMath::Abs( (clus1->E() - clus2->E()) / (clus1->E() + clus2->E()) );
+			if (asym > fCuts.fAsymmetryCut)
+				continue;
 			ConsiderPair(clus1, clus2, flags);
 		} // second cluster loop
 	} // cluster loop
@@ -83,6 +87,10 @@ void PhotonSelection::MixPhotons(TObjArray & photonCandidates, TList * pool, con
 		for (Int_t i = 0; i < photonCandidates.GetEntriesFast(); ++i)
 		{
 			AliVCluster * clus2 = (AliVCluster *) photonCandidates.At(i);
+			// Appply asymmetry cut for pair
+			Double_t asym = TMath::Abs( (clus1->E() - clus2->E()) / (clus1->E() + clus2->E()) );
+			if (asym > fCuts.fAsymmetryCut)
+				continue;	
 			ConsiderPair(clus1, clus2, mflags);
 		}
 	} // old cluster loop
