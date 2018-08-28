@@ -1,4 +1,4 @@
-outdir=results/mc/pythia/feeddown/
+outdir=results/mc/pythia/ep_ratio/
 ofile=pythia8.root
 function upload() {
 	hadd $ofile child*.root

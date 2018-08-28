@@ -37,6 +37,12 @@
 			"hsum": "4bb9f7c32247a54e2a5d96f0f1b0a86f3fa47e9a02b0f76f1e5f952d53adb139",
 			"description": "Feeddown corrected for kaon to pion ratio"
 		},
+		"ep_ratio": {
+			"file": "input-data/mc/pythia/ep_ratio/pythia8.root",
+			"default_selection": "PhysEff",
+			"hsum": "9f70fa635a3e2fa163196d70ca27ba6c55ef4c4ffbd7e9b731e94cea48583630",
+			"description": "Feeddown corrected for kaon to pion ratio + EP ratio. Move to the latest if feeddown, K/pi, coincide"
+		},
 		"delete_latest1": {
 			"file": "input-data/mc/pythia/kaon_to_pion_fixed/pythia8.root",
 			"default_selection": "PhysEff",
