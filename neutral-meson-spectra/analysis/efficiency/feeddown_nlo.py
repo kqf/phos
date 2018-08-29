@@ -28,18 +28,19 @@ class FeddownTest(unittest.TestCase):
         options = FeeddownOptions()
         options.fitf = feeddown_paramerization()
         estimator = FeeddownEstimator(options)
-        loggs = AnalysisOutput("feeddown correction")
+        loggs = AnalysisOutput("feeddown nlo correction")
         output = estimator.transform(
             [
                 DataVault().input(
                     "pythia8",
                     listname="MCStudy",
                     use_mixing=False,
-                    histname="MassPt_#pi^{0}_feeddown_#Lambda",
+                    histname="MassPt_#pi^{0}_primary_#Lambda",
                 ),
                 DataVault().input("pythia8", listname="FeeddownSelection"),
             ],
             loggs
         )
         loggs.plot()
+        Comparator().compare(output)
         self.assertGreater(output.GetEntries(), 0)
