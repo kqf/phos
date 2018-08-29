@@ -122,11 +122,11 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	// The track wasn't found
 	if (!track)
 		return;
-
-	Bool_t isHybridTrack = dynamic_cast<AliAODTrack*>(track)->IsHybridGlobalConstrainedGlobal();//hybrid track
+	// Standard cuts, very loose DCA cut	
+	Bool_t isGlobalTrack = dynamic_cast<AliAODTrack*>(track)->TestFilterMask(AliAODTrack::kTrkGlobalNoDCA);
 
 	// Take only hybrid tracks
-	if (!isHybridTrack)
+	if (!isGlobalTrack)
 		return;
 
 	Int_t sm, x1, z1;
@@ -151,7 +151,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	fTPCSignal[3]->Fill(trackP, dEdx);
 
 	// TODO: Accept electron cuts
-	// TODO: Ensure not neutra particles ?
+	// TODO: Ensure not neutral particles ?
 	//
 
 	Double_t nSigma = eflags.fPIDResponse->NumberOfSigmasTPC(track, AliPID::kElectron);
