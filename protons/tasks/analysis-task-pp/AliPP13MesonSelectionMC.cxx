@@ -85,19 +85,6 @@ void AliPP13MesonSelectionMC::ConsiderPair(const AliVCluster * c1, const AliVClu
 		return;
 
 	Int_t hcode = hadron->GetPdgCode();
-
-	if (primary)
-	{
-		fPrimaryPi0[kReconstructed]->Fill(hcode, ma12, pt12);
-		return;
-	}
-
-	if (!IsPrimary(hadron))
-	{
-		fSecondaryPi0[kReconstructed]->Fill(hcode, ma12, pt12);
-		return;
-	}
-
 	fFeedDownPi0[kReconstructed]->FillAll(hcode, ma12, pt12);
 }
 
