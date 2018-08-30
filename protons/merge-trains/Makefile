@@ -1,8 +1,8 @@
-upload: paths.log
+upload: | *.root
 	./io-upload.sh
 
-paths.log:
-	./io-download.sh > paths.log
+*.root:
+	./io-download.sh
 
 clean:
-	rm paths.log
+	rm *.root
