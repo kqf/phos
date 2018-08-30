@@ -369,6 +369,8 @@ class BROOT(object):
     def init_inputs(klass, func):
         def f(self, hists, *args, **kwargs):
             for h in hists:
+                if not h:
+                    continue
                 klass.setp(h)
             return func(self, hists, *args, **kwargs)
         return f

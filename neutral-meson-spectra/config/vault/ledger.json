@@ -6,7 +6,12 @@
 			"hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
 			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
 		},
-
+		"staging": {
+			"file": "input-data/data/LHC16/LHC16/LHC16.root",
+			"default_selection": "Phys",
+			"hsum": "2ba72cd91dafe01ca0c85ffb2e84a5665e7798933afd33a1276583311bb93e60",
+			"description": "Same result with the newest aliphysics"
+		},
 		"LHC17 qa1": {
 			"file": "input-data/data/LHC17/qa1/LHC17.root",
 			"default_selection": "Phys",

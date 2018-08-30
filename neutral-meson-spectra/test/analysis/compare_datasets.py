@@ -16,12 +16,13 @@ class CompareAnalysis(TransformerBase):
         options.output.scalew_spectrum = True
         self.pipeline = ComparePipeline(
             [(step, Analysis(options)) for step in steps],
-            plot=False,
+            plot=True,
         )
 
 
 def compare_for_particle(particle):
     data = (
+        DataVault().input("data", "staging", label="2016 new aliphysics"),
         DataVault().input("data", "LHC17 qa1", label="2017"),
         DataVault().input("data", label="2016"),
     )
@@ -41,5 +42,6 @@ class TestCompareDatasets(unittest.TestCase):
     def test_gives_similar_results_for_pions(self):
         compare_for_particle("#pi^{0}")
 
+    @unittest.skip('')
     def test_gives_similar_results_for_eta(self):
         compare_for_particle("#eta")

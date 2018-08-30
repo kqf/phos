@@ -116,7 +116,7 @@ class MultipleVisualizer(object):
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
         self.io(canvas, hists, oname)
-        return None
+        return first_hist
 
     def _drawable(self, first_hist, hists):
         if issubclass(type(first_hist), ROOT.TH2):
