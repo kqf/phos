@@ -111,6 +111,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 {
 	Float_t nsigma_min = -1.5;
 	Float_t nsigma_max = 3;
+	Float_t nsigma_cpv = 2;
 
 	// Don't do anything if pidresponse wasn't defined
 	if (!eflags.fPIDResponse)
@@ -129,6 +130,10 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Double_t cluster_energy = cluster->E();
 	Double_t r = cluster->GetEmcCpvDistance(); 
 	fCPVDistance->Fill(r, cluster_energy);
+
+
+	if(TMath::Abs(r) > nsigma_cpv)
+		return;
 
 	// Standard cuts, very loose DCA cut	
 	Bool_t isGlobalTrack = dynamic_cast<AliAODTrack*>(track)->TestFilterMask(AliAODTrack::kTrkGlobalNoDCA);
