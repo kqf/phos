@@ -95,6 +95,9 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	for (int i = 0; i < 4; ++i)
 		fListOfHistos->Add(fTPCSignal[i]);
 
+	fCPVDistance = new TH2F("hCPVDistance", "CPV distance to cluster ; n#sigma; E_{#gamma}, GeV", 100, -5, 5, nPt, ptMin, ptMax);
+	fListOfHistos->Add(fCPVDistance);
+
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
 		TH1 * hist = dynamic_cast<TH1 *>(fListOfHistos->At(i));
@@ -122,6 +125,11 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	// The track wasn't found
 	if (!track)
 		return;
+
+	Double_t cluster_energy = cluster->E();
+	Double_t r = cluster->GetEmcCpvDistance(); 
+	fCPVDistance->Fill(r, cluster_energy);
+
 	// Standard cuts, very loose DCA cut	
 	Bool_t isGlobalTrack = dynamic_cast<AliAODTrack*>(track)->TestFilterMask(AliAODTrack::kTrkGlobalNoDCA);
 
@@ -143,10 +151,9 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	fPosition[Int_t(charge > 0)]->FillAll(sm, sm, local.X(), dx, trackPt);
 	fPosition[1]->FillAll(sm, sm, local.Z(), dz, trackPt);
 
-	Double_t energy = cluster->E();
 	Double_t trackP = track->P();
 	Double_t dEdx = track->GetTPCsignal();
-	Double_t EpRatio = energy / trackP;
+	Double_t EpRatio = cluster_energy / trackP;
 
 	fTPCSignal[3]->Fill(trackP, dEdx);
 
@@ -163,15 +170,15 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 
 	if (isElectron)
 	{
-		fEpE[0]->FillAll(sm, sm, EpRatio, energy);
+		fEpE[0]->FillAll(sm, sm, EpRatio, cluster_energy);
 		fEpPt[0]->FillAll(sm, sm, EpRatio, trackPt);
 		fTPCSignal[1]->Fill(trackP, dEdx);
-        if(0.8 < energy / trackP && energy / trackP < 1.2) 
+        if(0.8 < cluster_energy / trackP && cluster_energy / trackP < 1.2) 
 			fPosition[3]->FillAll(sm, sm, local.Z(), dz, trackPt);
 	}
 	if (!isElectron)
 	{
-		fEpE[1]->FillAll(sm, sm, EpRatio, energy);
+		fEpE[1]->FillAll(sm, sm, EpRatio, cluster_energy);
 		fEpPt[1]->FillAll(sm, sm, EpRatio, trackPt);
 		fTPCSignal[2]->Fill(trackP, dEdx);
 	}
