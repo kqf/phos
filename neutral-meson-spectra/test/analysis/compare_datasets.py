@@ -22,7 +22,7 @@ class CompareAnalysis(TransformerBase):
 
 def compare_for_particle(particle):
     data = (
-        DataVault().input("data", "staging", label="2016 new aliphysics"),
+        DataVault().input("data", "ep_ratio", label="2016 new aliphysics"),
         DataVault().input("data", "LHC17 qa1", label="2017"),
         DataVault().input("data", label="2016"),
     )
