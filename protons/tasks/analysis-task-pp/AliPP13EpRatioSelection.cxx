@@ -98,9 +98,12 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 
 	fPIDCriteria[0] = new TH2F("hCPVDistance", "CPV distance to cluster ; n#sigma; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
 	fPIDCriteria[1] = new TH2F("hFullDispersion", "Full cluster dispersion ; n#sigma; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
+	fPIDCriteria[2] = new TH2F("hDistanceToBadCh", "Distance to a bad channel ; cm; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
+
 
 	fListOfHistos->Add(fPIDCriteria[0]);
 	fListOfHistos->Add(fPIDCriteria[1]);
+	fListOfHistos->Add(fPIDCriteria[2]);
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
@@ -139,6 +142,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	AliCaloPhoton * photon = (AliCaloPhoton *) cluster;
 	Double_t disp = photon->GetNsigmaFullDisp();
 	fPIDCriteria[1]->Fill(disp, cluster_energy);
+	// fPIDCriteria[2]->Fill(photon->DistToBadfp(), cluster_energy);
 
 
 	// Apply PID cuts
@@ -146,8 +150,8 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 		return;
 
 	// Apply PID cuts
-	// if(disp > nsigma_disp)
-	// 	return;
+	if(disp > nsigma_disp)
+		return;
 
 	// Standard cuts, very loose DCA cut	
 	Bool_t isGlobalTrack = dynamic_cast<AliAODTrack*>(track)->TestFilterMask(AliAODTrack::kTrkGlobalNoDCA);
@@ -176,17 +180,10 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 
 	fTPCSignal[3]->Fill(trackP, dEdx);
 
-	// TODO: Accept electron cuts
-	// TODO: Ensure not neutral particles ?
-	//
-
 	Double_t nSigma = eflags.fPIDResponse->NumberOfSigmasTPC(track, AliPID::kElectron);
-
 	fTPCSignal[0]->Fill(EpRatio, nSigma);
+
 	Bool_t isElectron = (nsigma_min < nSigma && nSigma < nsigma_max) ;
-
-
-
 	if (isElectron)
 	{
 		fEpE[0]->FillAll(sm, sm, EpRatio, cluster_energy);
