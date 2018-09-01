@@ -15,7 +15,7 @@ using namespace std;
 ClassImp(AliPP13TagAndProbeSelection);
 
 //________________________________________________________________
-void AliPP13TagAndProbeSelection::SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & flags)
+void AliPP13TagAndProbeSelection::SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & eflags)
 {
 	// NB: Nonlinearity is a function of photon energy
 	//     therefore the histograms should be filled for each photon.
@@ -36,11 +36,10 @@ void AliPP13TagAndProbeSelection::SelectTwoParticleCombinations(const TObjArray 
 			AliVCluster * probe = dynamic_cast<AliVCluster *> (photonCandidates.At(j));
 
 			// Appply asymmetry cut for pair
-			Double_t asym = TMath::Abs( (tag->E() - probe->E()) / (tag->E() + probe->E()) );
-			if (asym > fCuts.fAsymmetryCut)
+			if (!fCuts.AcceptPair(tag, probe, eflags))
 				continue;
 
-			ConsiderPair(tag, probe, flags);
+			ConsiderPair(tag, probe, eflags);
 		} // second cluster loop
 	} // cluster loop}
 }

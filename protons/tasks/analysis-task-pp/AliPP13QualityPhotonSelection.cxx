@@ -33,7 +33,7 @@ void AliPP13QualityPhotonSelection::InitSelectionHistograms()
 	fListOfHistos->Add(fNcellsE);
 	fListOfHistos->Add(fShapeE);
 
-	// Test Assymetry cut
+	// Test Asymmetry cut
 	for(Int_t i = 0; i < 2; ++i)
 	{
 		const char * s = (i == 0) ? "": "Mix";
@@ -53,6 +53,7 @@ void AliPP13QualityPhotonSelection::InitSelectionHistograms()
 	fClusterTime    = new AliPP13DetectorHistogram(new TH1F("hClusterTime", "Cluster Time scaled by E, ;t, s", 4800, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, AliPP13DetectorHistogram::kModules);
 	fClusterEvsT    = new AliPP13DetectorHistogram(new TH2F("hClusterEvsT", "Cluster energy vs time, ; cluster energy, GeV; time, s", 100, 0., 12., 1200, -0.25 * 1e-6, 0.25 * 1e-6), fListOfHistos, AliPP13DetectorHistogram::kModules);
 	fClusterTimeMap = new AliPP13DetectorHistogram(new TH2F("hClusterTimeMap", "Cluster time map, ; X; Z", 64, 0.5, 64.5, 56, 0.5, 56.5), fListOfHistos, AliPP13DetectorHistogram::kModules);
+	fAsymmetry      = new TH1F("hAsymmetry", "Asymmetry between clusters; asymmetry A = (E_{1} - E_{2})/(E_{1} + E_{2})", 500, -0.5, 1.5);
 
 	for(Int_t i = 0; i < 2; ++i)
 	{
@@ -63,6 +64,7 @@ void AliPP13QualityPhotonSelection::InitSelectionHistograms()
 		fListOfHistos->Add(fClusterIdN[i]);
 		fListOfHistos->Add(fClusterIdE[i]);
 	}
+	fListOfHistos->Add(fAsymmetry);
 }
 
 
@@ -85,6 +87,10 @@ void AliPP13QualityPhotonSelection::ConsiderPair(const AliVCluster * c1, const A
 	Double_t pt12 = psum.Pt();
 	
 	Double_t asym = TMath::Abs( (p1.E() - p2.E()) / (p1.E() + p2.E()) );
+
+	if(!eflags.isMixing)
+		fAsymmetry->Fill(asym);
+
 	fMassPtA[Int_t(eflags.isMixing)]->Fill(ma12, pt12, asym);
 }
 

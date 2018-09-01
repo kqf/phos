@@ -37,7 +37,7 @@ void AliPP13PhotonSelection::FillHistograms(TObjArray * clusArray, TList * pool,
 }
 
 //________________________________________________________________
-void AliPP13PhotonSelection::SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & flags)
+void AliPP13PhotonSelection::SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & eflags)
 {
 	// All possible combinations on photon candadates
 	// Int_t counter = 0;
@@ -50,7 +50,11 @@ void AliPP13PhotonSelection::SelectTwoParticleCombinations(const TObjArray & pho
 		{
 			// ++counter;
 			AliVCluster * clus2 = (AliVCluster *) photonCandidates.At(j);
-			ConsiderPair(clus1, clus2, flags);
+
+			if(!fCuts.AcceptPair(clus1, clus2, eflags))
+				continue;
+
+			ConsiderPair(clus1, clus2, eflags);
 		} // second cluster loop
 	} // cluster loop
 
@@ -83,6 +87,10 @@ void AliPP13PhotonSelection::MixPhotons(TObjArray & photonCandidates, TList * po
 		for (Int_t i = 0; i < photonCandidates.GetEntriesFast(); ++i)
 		{
 			AliVCluster * clus2 = (AliVCluster *) photonCandidates.At(i);
+
+			if(!fCuts.AcceptPair(clus1, clus2, eflags))
+				continue;
+
 			ConsiderPair(clus1, clus2, mflags);
 		}
 	} // old cluster loop
