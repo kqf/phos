@@ -147,11 +147,12 @@ void AliPP13PhotonSelection::InitSummaryHistograms()
 	InitSelectionHistograms();
 
 	TString cuts = Form(
-	                   ";Cuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns",
+	                   ";Cuts: |Z_{vtx}| < 10 cm, no pileup spd, E_{min}^{clu} = %.2g GeV, A =  %.2g, N_{min}^{cell} = %d, t_{clus} = %0.3g ns, dist = %.2g",
 	                   fCuts.fClusterMinE,
 	                   fCuts.fAsymmetryCut,
 	                   fCuts.fNCellsCut,
-	                   fCuts.fTimingCut * 1e+9
+	                   fCuts.fTimingCut * 1e+9,
+	                   fCuts.fMinimalDistance
 	               );
 
 	cout << "Adding " << this->GetName() << ": " << this->GetTitle() << endl;

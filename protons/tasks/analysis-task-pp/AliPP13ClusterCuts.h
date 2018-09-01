@@ -23,6 +23,7 @@ struct AliPP13ClusterCuts
 	Float_t fClusterMinE;
 	Float_t fAsymmetryCut;
 	Float_t fTimingCut;
+	Float_t fMinimalDistance;
 	Int_t fNCellsCut;
     Int_t fNContributors;
 };

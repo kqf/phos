@@ -13,6 +13,11 @@ Bool_t AliPP13ClusterCuts::AcceptCluster(AliVCluster * clus) const
 	if (TMath::Abs(clus->GetTOF()) > fTimingCut)
 		return kFALSE;
 
+	// AliCaloPhoton * photon = (AliCaloPhoton *) clus;
+	// if (photon->DistToBadfp() < fMinimalDistance)
+	// 	return kFALSE;
+
+
 	return kTRUE;
 }
 
@@ -39,5 +44,6 @@ AliPP13ClusterCuts AliPP13ClusterCuts::GetClusterCuts(Int_t ctype)
 	cuts.fTimingCut = 12.5e-9;
 	cuts.fAsymmetryCut = 1.0;
 	cuts.fNContributors = 1;
+	cuts.fMinimalDistance = 0;
 	return cuts;
 }
