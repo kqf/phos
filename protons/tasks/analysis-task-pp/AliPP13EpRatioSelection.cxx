@@ -5,6 +5,7 @@
 
 // --- AliRoot header files ---
 #include <AliPP13EpRatioSelection.h>
+#include <AliCaloPhoton.h>
 #include <AliAODTrack.h>
 
 
@@ -95,8 +96,11 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	for (int i = 0; i < 4; ++i)
 		fListOfHistos->Add(fTPCSignal[i]);
 
-	fCPVDistance = new TH2F("hCPVDistance", "CPV distance to cluster ; n#sigma; E_{#gamma}, GeV", 100, -5, 5, nPt, ptMin, ptMax);
-	fListOfHistos->Add(fCPVDistance);
+	fPIDCriteria[0] = new TH2F("hCPVDistance", "CPV distance to cluster ; n#sigma; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
+	fPIDCriteria[1] = new TH2F("hFullDispersion", "Full cluster dispersion ; n#sigma; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
+
+	fListOfHistos->Add(fPIDCriteria[0]);
+	fListOfHistos->Add(fPIDCriteria[1]);
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
@@ -112,6 +116,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Float_t nsigma_min = -1.5;
 	Float_t nsigma_max = 3;
 	Float_t nsigma_cpv = 2;
+	Float_t nsigma_disp = 2.5;
 
 	// Don't do anything if pidresponse wasn't defined
 	if (!eflags.fPIDResponse)
@@ -129,11 +134,20 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 
 	Double_t cluster_energy = cluster->E();
 	Double_t r = cluster->GetEmcCpvDistance(); 
-	fCPVDistance->Fill(r, cluster_energy);
+	fPIDCriteria[0]->Fill(r, cluster_energy);
+
+	AliCaloPhoton * photon = (AliCaloPhoton *) cluster;
+	Double_t disp = photon->GetNsigmaFullDisp();
+	fPIDCriteria[1]->Fill(disp, cluster_energy);
 
 
+	// Apply PID cuts
 	if(TMath::Abs(r) > nsigma_cpv)
 		return;
+
+	// Apply PID cuts
+	// if(disp > nsigma_disp)
+	// 	return;
 
 	// Standard cuts, very loose DCA cut	
 	Bool_t isGlobalTrack = dynamic_cast<AliAODTrack*>(track)->TestFilterMask(AliAODTrack::kTrkGlobalNoDCA);
@@ -181,7 +195,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
         if(0.8 < cluster_energy / trackP && cluster_energy / trackP < 1.2) 
 			fPosition[3]->FillAll(sm, sm, local.Z(), dz, trackPt);
 	}
-	if (!isElectron)
+	else
 	{
 		fEpE[1]->FillAll(sm, sm, EpRatio, cluster_energy);
 		fEpPt[1]->FillAll(sm, sm, EpRatio, trackPt);
