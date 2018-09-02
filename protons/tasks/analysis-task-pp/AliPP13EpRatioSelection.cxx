@@ -27,8 +27,8 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
 	Int_t nM       = 50;
-	Double_t mMin  = 0.0;
-	Double_t mMax  = 2.;
+	Double_t nMin  = 0.0;
+	Double_t nMax  = 2.;
 	Int_t nPt      = 400;
 	Double_t ptMin = 0;
 	Double_t ptMax = 20;
@@ -40,7 +40,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		TH2 * patternP = new TH2F(
 		    Form("hEp%sE", species),
 		    "E/p ratio vs. E^{cluster}, ; E/p; E^{track} ,GeV",
-		    nM, mMin, mMax, nPt, ptMin, ptMax
+		    nM, nMin, nMax, nPt, ptMin, ptMax
 		);
 
 		fEpE[i] = new AliPP13DetectorHistogram(
@@ -52,7 +52,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		TH2 * patternPt = new TH2F(
 		    Form("hEp%sP", species),
 		    "E/p ratio vs. p_{T}^{cluster}, ; E/p; p_{T}^{track} ,GeV/c",
-		    nM, mMin, mMax, nPt, ptMin, ptMax
+		    nM, nMin, nMax, nPt, ptMin, ptMax
 		);
 
 		fEpPt[i] = new AliPP13DetectorHistogram(
@@ -62,7 +62,7 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 		);
 	}
 
-	fTPCSignal[0] = new TH2F("hEpRatioNSigmaElectron", "E/p ratio vs. N_{#sigma}^{electron}; E/p; n#sigma^{electron}", nM, mMin, mMax, 40, -5, 5);
+	fTPCSignal[0] = new TH2F("hEpRatioNSigmaElectron", "E/p ratio vs. N_{#sigma}^{electron}; E/p; n#sigma^{electron}", nM, nMin, nMax, 40, -5, 5);
 	fTPCSignal[1] = new TH2F("hTPCSignal_Electron", "TPC dE/dx vs. electron momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
 	fTPCSignal[2] = new TH2F("hTPCSignal_Non-Electron", "TPC dE/dx vs. non-electron momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
 	fTPCSignal[3] = new TH2F("hTPCSignal_All", "TPC dE/dx vs. all particles momentum; p^{track}, GeV/c; dE/dx, a.u.", 40, 0, 20, 200, 0, 200);
@@ -100,10 +100,21 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	fPIDCriteria[1] = new TH2F("hFullDispersion", "Full cluster dispersion ; n#sigma; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
 	fPIDCriteria[2] = new TH2F("hDistanceToBadCh", "Distance to a bad channel ; cm; E_{#gamma}, GeV", 100, -5, 50, nPt, ptMin, ptMax);
 
+	fPIDCriteria[3] = new TH2F("hCPVDistanceNsigma", "CPV distance to cluster ; E/p ratio ; n#sigma cpv", nM, nMin, nMax, 100, -1, 10);
+	fPIDCriteria[4] = new TH2F("hFullDispersionNsigma", "Full cluster dispersion ; E/p ratio ; n#sigma cpv", nM, nMin, nMax, 100, -1, 10);
+
+	fPIDCriteria[5] = new TH2F("hCPVDistanceNsigmaElectrons", "CPV distance to cluster for electrons ; E/p ratio ; n#sigma cpv", nM, nMin, nMax, 100, -1, 10);
+	fPIDCriteria[6] = new TH2F("hFullDispersionNsigmaElectrons", "Full cluster dispersion for electrons ; E/p ratio ; n#sigma disp", nM, nMin, nMax, 100, -1, 10);
+
 
 	fListOfHistos->Add(fPIDCriteria[0]);
 	fListOfHistos->Add(fPIDCriteria[1]);
 	fListOfHistos->Add(fPIDCriteria[2]);
+	fListOfHistos->Add(fPIDCriteria[3]);
+	fListOfHistos->Add(fPIDCriteria[4]);
+	fListOfHistos->Add(fPIDCriteria[5]);
+	fListOfHistos->Add(fPIDCriteria[6]);
+
 
 	for (Int_t i = 0; i < fListOfHistos->GetEntries(); ++i)
 	{
@@ -177,6 +188,8 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Double_t trackP = track->P();
 	Double_t dEdx = track->GetTPCsignal();
 	Double_t EpRatio = cluster_energy / trackP;
+	fPIDCriteria[3]->Fill(EpRatio, r);
+	fPIDCriteria[4]->Fill(EpRatio, disp);
 
 	fTPCSignal[3]->Fill(trackP, dEdx);
 
@@ -186,6 +199,9 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Bool_t isElectron = (nsigma_min < nSigma && nSigma < nsigma_max) ;
 	if (isElectron)
 	{
+		fPIDCriteria[5]->Fill(EpRatio, r);
+		fPIDCriteria[6]->Fill(EpRatio, disp);
+
 		fEpE[0]->FillAll(sm, sm, EpRatio, cluster_energy);
 		fEpPt[0]->FillAll(sm, sm, EpRatio, trackPt);
 		fTPCSignal[1]->Fill(trackP, dEdx);
