@@ -5,7 +5,6 @@
 
 // --- AliRoot header files ---
 #include <AliPP13EpRatioSelection.h>
-#include <AliCaloPhoton.h>
 #include <AliAODTrack.h>
 
 
@@ -150,10 +149,9 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Double_t r = cluster->GetEmcCpvDistance(); 
 	fPIDCriteria[0]->Fill(r, cluster_energy);
 
-	AliCaloPhoton * photon = (AliCaloPhoton *) cluster;
-	Double_t disp = photon->GetNsigmaFullDisp();
+	Double_t disp = cluster->GetDispersion();
 	fPIDCriteria[1]->Fill(disp, cluster_energy);
-	// fPIDCriteria[2]->Fill(photon->DistToBadfp(), cluster_energy);
+	fPIDCriteria[2]->Fill(cluster->GetDistanceToBadChannel(), cluster_energy);
 
 
 	// Apply PID cuts
