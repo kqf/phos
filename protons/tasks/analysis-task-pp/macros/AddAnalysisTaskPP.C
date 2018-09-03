@@ -83,7 +83,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 	AliAnalysisDataContainer * coutput = 0;
 	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
 	{
-		AliPP13PhotonSelection * fSel = dynamic_cast<AliPP13PhotonSelection *> (task->GetSelections()->At(i));
+		AliPP13PhysicsSelection * fSel = dynamic_cast<AliPP13PhysicsSelection *> (task->GetSelections()->At(i));
 		fSel->SetTitle(description);
 		cout << fSel->GetTitle() << endl;
 

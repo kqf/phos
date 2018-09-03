@@ -2,7 +2,7 @@
 #define ALIPP13EPRATIOSELECTION_H
 
 // --- Custom header files ---
-#include "AliPP13PhotonSelection.h"
+#include "AliPP13PhysicsSelection.h"
 #include "AliPP13DetectorHistogram.h"
 #include "AliPP13SelectionWeights.h"
 	
@@ -15,11 +15,11 @@
 // --- AliRoot header files ---
 #include <AliVCluster.h>
 
-class AliPP13EpRatioSelection : public AliPP13PhotonSelection
+class AliPP13EpRatioSelection : public AliPP13PhysicsSelection
 {
 public:
 	AliPP13EpRatioSelection():
-		AliPP13PhotonSelection(),
+		AliPP13PhysicsSelection(),
 		fEpE(),
 		fEpPt(),
 		fPosition(),
@@ -29,7 +29,7 @@ public:
 
 	AliPP13EpRatioSelection(const char * name, const char * title, AliPP13ClusterCuts cuts,
 		AliPP13SelectionWeights * w):
-		AliPP13PhotonSelection(name, title, cuts, w),
+		AliPP13PhysicsSelection(name, title, cuts, w),
 		fEpE(),
 		fEpPt(),
 		fPosition(),

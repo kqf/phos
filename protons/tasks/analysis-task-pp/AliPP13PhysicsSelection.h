@@ -1,5 +1,5 @@
-#ifndef ALIPP13GPHOTONSELECTION_H
-#define ALIPP13GPHOTONSELECTION_H
+#ifndef ALIPP13PHYSICSSELECTION_H
+#define ALIPP13PHYSICSSELECTION_H
 
 // --- Custom libraries ---
 #include "AliPP13ClusterCuts.h"
@@ -21,11 +21,11 @@
 #include <AliLog.h>
 
 
-class AliPP13PhotonSelection : public TNamed
+class AliPP13PhysicsSelection : public TNamed
 {
 public:
 
-	AliPP13PhotonSelection():
+	AliPP13PhysicsSelection():
 		TNamed(),
 		fListOfHistos(0),
 		fCuts(),
@@ -33,7 +33,7 @@ public:
 		fEventCounter(0)
 	{}
 
-	AliPP13PhotonSelection(const char * name, const char * title, AliPP13ClusterCuts cuts,
+	AliPP13PhysicsSelection(const char * name, const char * title, AliPP13ClusterCuts cuts,
 			AliPP13SelectionWeights * sw):
 		TNamed(name, title),
 		fListOfHistos(0),
@@ -43,7 +43,7 @@ public:
 
 	{}
 
-	virtual ~AliPP13PhotonSelection();
+	virtual ~AliPP13PhysicsSelection();
 
 	virtual void InitSummaryHistograms();
 	virtual void InitSelectionHistograms() = 0;
@@ -79,8 +79,8 @@ protected:
 		(void) eflags;
 	}	
 
-	AliPP13PhotonSelection(const AliPP13PhotonSelection &);
-	AliPP13PhotonSelection & operator = (const AliPP13PhotonSelection &);
+	AliPP13PhysicsSelection(const AliPP13PhysicsSelection &);
+	AliPP13PhysicsSelection & operator = (const AliPP13PhysicsSelection &);
 
 	TList  * fListOfHistos;  //! list of histograms
 	AliPP13ClusterCuts fCuts;
@@ -88,6 +88,6 @@ protected:
 	AliPP13SelectionWeights * fWeights;
 	TH1 * fEventCounter;  //!
 private:
-	ClassDef(AliPP13PhotonSelection, 2)
+	ClassDef(AliPP13PhysicsSelection, 2)
 };
 #endif
