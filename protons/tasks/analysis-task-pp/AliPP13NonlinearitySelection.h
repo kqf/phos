@@ -2,7 +2,7 @@
 #define ALIPP13NONLINEARITYSELECTION_H
 
 // --- Custom header files ---
-#include "AliPP13PhysPhotonSelectionMC.h"
+#include "AliPP13SpectrumSelectionMC.h"
 #include "AliPP13SelectionWeights.h"
 #include "AliPP13DetectorHistogram.h"
 
@@ -18,18 +18,18 @@
 // TODO: Merge nonlinearity selection wiht nonlinearity Study
 //
 
-class AliPP13NonlinearitySelection: public AliPP13PhysPhotonSelectionMC
+class AliPP13NonlinearitySelection: public AliPP13SpectrumSelectionMC
 {
 public:
 	AliPP13NonlinearitySelection():
-		AliPP13PhysPhotonSelectionMC(),
+		AliPP13SpectrumSelectionMC(),
 		fMassPt()
 	{
 	}
 
 	AliPP13NonlinearitySelection(const char * name, const char * title, 
 		AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w, Bool_t isMC = kTRUE):
-		AliPP13PhysPhotonSelectionMC(name, title, cuts, w),
+		AliPP13SpectrumSelectionMC(name, title, cuts, w),
 		fMassPt()
 	{
 		// NB: Disable timing cuts for MC

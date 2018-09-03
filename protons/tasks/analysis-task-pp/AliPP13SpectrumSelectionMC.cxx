@@ -1,5 +1,5 @@
 // --- Custom header files ---
-#include "AliPP13PhysPhotonSelectionMC.h"
+#include "AliPP13SpectrumSelectionMC.h"
 
 // --- AliRoot header files ---
 #include <AliPHOSAodCluster.h>
@@ -9,11 +9,11 @@
 using namespace std;
 
 
-ClassImp(AliPP13PhysPhotonSelectionMC);
+ClassImp(AliPP13SpectrumSelectionMC);
 
 
 //________________________________________________________________
-TLorentzVector AliPP13PhysPhotonSelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
+TLorentzVector AliPP13SpectrumSelectionMC::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
 {
     Float_t energy = c1->E();
 
@@ -24,7 +24,7 @@ TLorentzVector AliPP13PhysPhotonSelectionMC::ClusterMomentum(const AliVCluster *
 }
 
 //________________________________________________________________
-Bool_t AliPP13PhysPhotonSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
+Bool_t AliPP13SpectrumSelectionMC::IsPrimary(const AliAODMCParticle * particle) const
 {
 	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
 	Double_t rcut = 1.;

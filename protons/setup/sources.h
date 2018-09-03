@@ -17,11 +17,11 @@ void LoadAnalysisLibraries()
 	// TODO: Add to particle histogram
 	gROOT->LoadMacro("AliPP13ParticlesHistogram.cxx+");
 	gROOT->LoadMacro("AliPP13PhotonTimecutStudySelection.cxx+");
-	gROOT->LoadMacro("AliPP13PhysPhotonSelection.cxx+");
+	gROOT->LoadMacro("AliPP13SpectrumSelection.cxx+");
 	gROOT->LoadMacro("AliPP13EpRatioSelection.cxx+");
 	gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
 	gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
-	gROOT->LoadMacro("AliPP13PhysPhotonSelectionMC.cxx+");
+	gROOT->LoadMacro("AliPP13SpectrumSelectionMC.cxx+");
 	gROOT->LoadMacro("AliPP13KaonToPionRatioMC.cxx+");
 	gROOT->LoadMacro("AliPP13NonlinearitySelection.cxx+");
 	gROOT->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
@@ -44,12 +44,12 @@ void LoadAnalysisLibraries()
 		"AliPP13PhotonSpectrumSelection.cxx " +
 		"AliPP13QualityPhotonSelection.cxx " +
 		"AliPP13ParticlesHistogram.cxx " +
-		"AliPP13PhysPhotonSelection.cxx " +
+		"AliPP13SpectrumSelection.cxx " +
 		"AliPP13EpRatioSelection.cxx " +
 		"AliPP13PhotonTimecutStudySelection.cxx " +
 		"AliPP13TagAndProbeSelection.cxx " +
 		"AliPP13PythiaInfoSelection.cxx " +
-		"AliPP13PhysPhotonSelectionMC.cxx " +
+		"AliPP13SpectrumSelectionMC.cxx " +
 		"AliPP13KaonToPionRatioMC.cxx " +
 		"AliPP13MesonSelectionMC.cxx " +
 		"AliPP13FeeddownSelection.cxx " +
@@ -78,16 +78,16 @@ void LoadAnalysisLibraries()
 		"AliPP13QualityPhotonSelection.h " +
 		"AliPP13ParticlesHistogram.cxx " +
 		"AliPP13ParticlesHistogram.h " +
-		"AliPP13PhysPhotonSelection.cxx " +
-		"AliPP13PhysPhotonSelection.h " +
+		"AliPP13SpectrumSelection.cxx " +
+		"AliPP13SpectrumSelection.h " +
 		"AliPP13EpRatioSelection.cxx " +
 		"AliPP13EpRatioSelection.h " +
 		"AliPP13PhotonTimecutStudySelection.cxx " +
 		"AliPP13PhotonTimecutStudySelection.h " +
 		"AliPP13TagAndProbeSelection.cxx " +
 		"AliPP13TagAndProbeSelection.h " +
-		"AliPP13PhysPhotonSelectionMC.cxx " +
-		"AliPP13PhysPhotonSelectionMC.h " +
+		"AliPP13SpectrumSelectionMC.cxx " +
+		"AliPP13SpectrumSelectionMC.h " +
 		"AliPP13KaonToPionRatioMC.cxx " +
 		"AliPP13KaonToPionRatioMC.h " +
 		"AliPP13PythiaInfoSelection.cxx " +

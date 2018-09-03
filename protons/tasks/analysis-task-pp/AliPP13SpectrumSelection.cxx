@@ -1,5 +1,5 @@
 // --- Custom header files ---
-#include "AliPP13PhysPhotonSelection.h"
+#include "AliPP13SpectrumSelection.h"
 
 // --- ROOT system ---
 #include <TH2F.h>
@@ -12,11 +12,11 @@
 using namespace std;
 
 
-ClassImp(AliPP13PhysPhotonSelection);
+ClassImp(AliPP13SpectrumSelection);
 
 
 //________________________________________________________________
-void AliPP13PhysPhotonSelection::InitSelectionHistograms()
+void AliPP13SpectrumSelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
 	Int_t nM       = 750;
@@ -49,7 +49,7 @@ void AliPP13PhysPhotonSelection::InitSelectionHistograms()
 }
 
 //________________________________________________________________
-void AliPP13PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
+void AliPP13SpectrumSelection::ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags)
 {
 	TLorentzVector p1 = ClusterMomentum(c1, eflags);
 	TLorentzVector p2 = ClusterMomentum(c2, eflags);
@@ -70,7 +70,7 @@ void AliPP13PhysPhotonSelection::ConsiderPair(const AliVCluster * c1, const AliV
 }
 
 //________________________________________________________________
-void AliPP13PhysPhotonSelection::FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags)
+void AliPP13SpectrumSelection::FillClusterHistograms(const AliVCluster * clus, const EventFlags & eflags)
 {
 	TLorentzVector p = ClusterMomentum(clus, eflags);
 	
