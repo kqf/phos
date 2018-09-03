@@ -19,17 +19,17 @@ ClassImp(AliPP13SpectrumSelection);
 void AliPP13SpectrumSelection::InitSelectionHistograms()
 {
 	// pi0 mass spectrum
-	Int_t nM       = 750;
-	Double_t mMin  = 0.0;
-	Double_t mMax  = 1.5;
-	Int_t nPt      = 400;
-	Double_t ptMin = 0;
-	Double_t ptMax = 20;
+	//
 
 	for (Int_t i = 0; i < 2; ++i)
 	{
 		const char * s = (i == 0) ? "" : "Mix";
-		TH1 * hist = new TH2F(Form("h%sMassPt", s), "(M,p_{T})_{#gamma#gamma}, ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c", nM, mMin, mMax, nPt, ptMin, ptMax);
+		TH1 * hist = new TH2F(
+			Form("h%sMassPt", s),
+			"(M,p_{T})_{#gamma#gamma}, ; M_{#gamma#gamma}, GeV; p_{T}, GeV/c",
+			fLimits.nM, fLimits.mMin, fLimits.mMax,
+			fLimits.nPt, fLimits.ptMin, fLimits.ptMax
+		);
 		fInvariantMass[i] = new AliPP13DetectorHistogram(hist, fListOfHistos);
 	}
 
@@ -44,7 +44,7 @@ void AliPP13SpectrumSelection::InitSelectionHistograms()
 	// Don't do any analysis with these histograms.
 	//
 
-	fClusters = new TH1F("hClusterPt_SM0", "Cluster p_{T} spectrum with default cuts, all modules; p_{T}, GeV/c", nPt, ptMin, ptMax);	
+	fClusters = new TH1F("hClusterPt_SM0", "Cluster p_{T} spectrum with default cuts, all modules; p_{T}, GeV/c", fLimits.nPt, fLimits.ptMin, fLimits.ptMax);	
 	fListOfHistos->Add(fClusters);
 }
 

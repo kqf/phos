@@ -21,6 +21,28 @@
 #include <AliLog.h>
 
 
+struct SelectionLimits
+{
+	SelectionLimits()
+	{
+		nM = 750;
+		mMin = 0.0;
+		mMax = 1.5;
+		nPt = 400;
+		ptMin = 0;
+		ptMax = 20;
+
+	}
+
+	Int_t nM;
+	Double_t mMin;
+	Double_t mMax;
+	Int_t nPt;
+	Double_t ptMin;
+	Double_t ptMax;
+};
+
+
 class AliPP13PhysicsSelection : public TNamed
 {
 public:
@@ -30,17 +52,18 @@ public:
 		fListOfHistos(0),
 		fCuts(),
 		fWeights(),
-		fEventCounter(0)
+		fEventCounter(0),
+		fLimits()
 	{}
 
 	AliPP13PhysicsSelection(const char * name, const char * title, AliPP13ClusterCuts cuts,
-			AliPP13SelectionWeights * sw):
+	                        AliPP13SelectionWeights * sw):
 		TNamed(name, title),
 		fListOfHistos(0),
 		fCuts(cuts),
 		fWeights(dynamic_cast<AliPP13SelectionWeights *>(sw->Clone())),
-		fEventCounter(0)
-
+		fEventCounter(0),
+		fLimits()
 	{}
 
 	virtual ~AliPP13PhysicsSelection();
@@ -52,10 +75,10 @@ public:
 	// This is a dummy method to count number of Triggered Events.
 	virtual void CountMBEvent();
 	virtual void FillHistograms(TObjArray * clusArray, TList * pool, const EventFlags & eflags); // implements algorithm
-    virtual void ConsiderGeneratedParticles(const EventFlags & eflags)
-    {
-    	(void) eflags;
-    }
+	virtual void ConsiderGeneratedParticles(const EventFlags & eflags)
+	{
+		(void) eflags;
+	}
 
 	virtual void MixPhotons(TObjArray & photons, TList * pool, const EventFlags & eflags);
 	virtual TList * GetListOfHistos() { return fListOfHistos; }
@@ -77,7 +100,7 @@ protected:
 		(void) c1;
 		(void) c2;
 		(void) eflags;
-	}	
+	}
 
 	AliPP13PhysicsSelection(const AliPP13PhysicsSelection &);
 	AliPP13PhysicsSelection & operator = (const AliPP13PhysicsSelection &);
@@ -87,6 +110,8 @@ protected:
 
 	AliPP13SelectionWeights * fWeights;
 	TH1 * fEventCounter;  //!
+
+	SelectionLimits fLimits;
 private:
 	ClassDef(AliPP13PhysicsSelection, 2)
 };
