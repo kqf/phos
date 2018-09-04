@@ -1,62 +1,38 @@
-function download_from_grid()
-{
-    counter=1
-    for run in $(alien_ls $1/); do
-        # echo $run
-    	filepath=$1/$run/$2/$3
-    	output=$(alien_ls "$filepath") 
-        # echo $output
-        if [ "$output" == "$3" ]; then
-        	echo "Downloading run " $run
-	        alien_cp alien://$filepath $4/$((counter++)).$run.root
-        fi
-        # echo $run
-        # until alien_cp alien://$1/$1/output/$run/$4 $2/$((counter++)).$run.root; do echo 'Trying again in 10 sec.'; sleep 10; done
+TARGET=TriggerQA.root
+
+function download_file() {
+    alien_cp alien:/$1/$TARGET $2
+}
+
+function show_dir() {
+    alien_ls $1
+}
+
+function main() {
+    # MC trains here
+    # Data trains here
+    train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/
+    run=448_20180830-1147_child_
+    # This scheme is valid for LHC16 data.
+    # fill the map in the following way ([child number]=runlist number)
+    declare -A children=([2]=3 [3]=3 [4]=3 [5]=3 [6]=4 [7]=3 [8]=3 [9]=3)
+    declare -A names=([2]=LHC16g [3]=LHC16h [4]=LHC16i [5]=LHC16j [6]=LHC16k [7]=LHC16l [8]=LHC16o [9]=LHC16p)
+
+    # NB: Always check runlists awailable for merge
+    for i in ${!children[@]}; do
+        runlist=merge_runlist_${children[$i]}
+        outdir=$1/${names[$i]}
+
+        # Create
+        mkdir -p $outdir
+        oname=$outdir/${names[$i]}.root
+        echo $train$run$i/$runlist
+        {
+            download_file $train$run$i/$runlist $oname 
+        } || {
+            download_file $train$run$i/merge $oname 
+        }
     done
 }
 
-function main()
-{
-    # TRAIN=/pass1/PWGGA/GA_pp_AOD/354_20180320-1238_child_
-    # DATAPATH=/alice/data/2017
-
-    # TRAIN_CHILD=11
-    # PERIOD=LHC17r
-
-    # NAME=iteration1
-    # # FILE_NAME=TriggerQA.root
-    # DIRECTORY=$1/$PERIOD/$NAME
-
-
-    TRAIN=/pass1/QA/
-    DATAPATH=/alice/data/2017
-
-    TRAIN_CHILD=""
-    PERIOD=LHC17c
-
-    NAME=$2
-    FILE_NAME=QAresults.root
-
-    train_children=("" "")
-    periods=("LHC17c" "LHC17e" "LHC17d")
-
-
-    for i in "${!train_children[@]}"; do 
-        child=${train_children[$i]}
-        period=${periods[$i]}
-        directory=$1/$period/$NAME
-        echo "*******************************"
-        echo ""
-        echo "Processing the period $period" 
-        echo ""
-        echo "*******************************"
-
-        mkdir -p $directory
-        download_from_grid $DATAPATH/$period $TRAIN$train_child $FILE_NAME $directory 
-        hadd $directory/$period.root $directory/*.root
-        find $directory -type f -not -name "$period.root" -print0 | xargs -0 rm --
-    done
-}
-
-
-main $1 $2
+main $1
