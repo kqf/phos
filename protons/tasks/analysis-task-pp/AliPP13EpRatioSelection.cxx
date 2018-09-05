@@ -161,6 +161,12 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	// Apply PID cuts
 	if(disp > nsigma_disp)
 		return;
+	
+	// Don't take into account particles outside eta range
+	// 
+	if(TMath::Abs(track->Eta()) > 0.8)
+		return;
+
 
 	// Standard cuts, very loose DCA cut	
 	Bool_t isGlobalTrack = dynamic_cast<AliAODTrack*>(track)->TestFilterMask(AliAODTrack::kTrkGlobalNoDCA);
