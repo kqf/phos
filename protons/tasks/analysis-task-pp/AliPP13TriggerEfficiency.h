@@ -42,8 +42,8 @@ protected:
 	AliPP13TriggerEfficiency(const AliPP13TriggerEfficiency &);
 	AliPP13TriggerEfficiency & operator = (const AliPP13TriggerEfficiency &);
 private:
-	AliPP13DetectorHistogram * fTotalMassEnergyAll[2]; //!
-	AliPP13DetectorHistogram * fTotalMassEnergyTrigger[2]; //!
+	TH1 * fTotalMassEnergyAll[2]; //!
+	TH1 * fTotalMassEnergyTrigger[2]; //!
 
 	AliPP13DetectorHistogram * fMassEnergyAll[kTRUs][2]; //!
 	AliPP13DetectorHistogram * fMassEnergyTrigger[kTRUs][2]; //!

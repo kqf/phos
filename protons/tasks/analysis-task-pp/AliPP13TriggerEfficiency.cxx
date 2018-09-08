@@ -67,13 +67,13 @@ void AliPP13TriggerEfficiency::ConsiderPair(const AliVCluster * c1, const AliVCl
 	Int_t tru = 0;
 	Int_t mix = int(eflags.isMixing);
 
-	fTotalMassEnergyAll[mix]->FillAll(sm1, sm2, m12, energy);
+	fTotalMassEnergyAll[mix]->Fill(m12, energy);
 	fMassEnergyAll[tru][mix]->FillAll(sm1, sm2, m12, energy);
 
 	if (false)
 		return;
 
-	fTotalMassEnergyTrigger[mix]->FillAll(sm1, sm2, m12, energy);
+	fTotalMassEnergyTrigger[mix]->Fill(m12, energy);
 	fMassEnergyTrigger[tru][mix]->FillAll(sm1, sm2, m12, energy);
 }
 
@@ -95,11 +95,11 @@ void AliPP13TriggerEfficiency::InitSelectionHistograms()
 		const char * sf = (i == 0) ? "" : "Mix";
 		const char * title = "(M_{#gamma#gamma}, E_{probe}); M_{#gamma#gamma}, GeV; E_{probe}, GeV";
 
-		fTotalMassEnergyAll = new TH2F(Form("h%sMassEnergy", sf), title, nM, mMin, mMax, nE, eMin, eMax);
-		fTotalMassEnergyTrigger = new TH2F(Form("h%sMassEnergy", sf), title, nM, mMin, mMax, nE, eMin, eMax);
+		fTotalMassEnergyAll[i] = new TH2F(Form("h%sMassEnergyAll", sf), title, nM, mMin, mMax, nE, eMin, eMax);
+		fTotalMassEnergyTrigger[i] = new TH2F(Form("h%sMassEnergyTrg", sf), title, nM, mMin, mMax, nE, eMin, eMax);
 
-		fListOfHistos->Add(fTotalMassEnergyAll);
-		fListOfHistos->Add(fTotalMassEnergyTrigger);
+		fListOfHistos->Add(fTotalMassEnergyAll[i]);
+		fListOfHistos->Add(fTotalMassEnergyTrigger[i]);
 	}
 
 
@@ -108,12 +108,12 @@ void AliPP13TriggerEfficiency::InitSelectionHistograms()
 		for (Int_t i = 0; i < 2; ++i)
 		{
 			const char * sf = (i == 0) ? "" : "Mix";
-			const char * title = Form("(M_{#gamma#gamma}, E_{probe}) TRU# %d ; M_{#gamma#gamma}, GeV; E_{probe}, GeV", tru);
-			TH2F * hist1 = new TH2F(Form("h%sMassEnergy", sf, tru), title, nM, mMin, mMax, nE, eMin, eMax);
-			TH2F * hist2 = new TH2F(Form("h%sMassEnergy", sf, tru), title, nM, mMin, mMax, nE, eMin, eMax);
+			const char * title = Form("(M_{#gamma#gamma}, E_{probe}) TRU #%d ; M_{#gamma#gamma}, GeV; E_{probe}, GeV", tru);
+			TH2F * hist1 = new TH2F(Form("h%sMassEnergyAll_TRU_%d_", sf, tru), title, nM, mMin, mMax, nE, eMin, eMax);
+			TH2F * hist2 = new TH2F(Form("h%sMassEnergyTrg_TRU_%d_", sf, tru), title, nM, mMin, mMax, nE, eMin, eMax);
 
-			fMassEnergyAll[tru][i] = new AliPP13DetectorHistogram(hist1, fListOfHistos);
-			fMassEnergyTrigger[tru][i] = new AliPP13DetectorHistogram(hist2, fListOfHistos);
+			fMassEnergyAll[tru][i] = new AliPP13DetectorHistogram(hist1, fListOfHistos, AliPP13DetectorHistogram::kSingleHist);
+			fMassEnergyTrigger[tru][i] = new AliPP13DetectorHistogram(hist2, fListOfHistos, AliPP13DetectorHistogram::kSingleHist);
 		}
 	}
 

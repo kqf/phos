@@ -29,6 +29,7 @@ void LoadAnalysisLibraries()
 	gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
 	gROOT->LoadMacro("AliPP13FeeddownSelection.cxx+");
 	gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
+	gROOT->LoadMacro("AliPP13TriggerEfficiency.cxx+");
 	gROOT->LoadMacro("AliPP13MixingSample.cxx+");
 	gROOT->LoadMacro("AliAnalysisTaskPP13.cxx+");
 
@@ -57,6 +58,7 @@ void LoadAnalysisLibraries()
 		"AliPP13EfficiencySelectionMC.cxx " +
 		"AliPP13EfficiencySelectionSPMC.cxx " +
 		"AliPP13NonlinearityScanSelection.cxx " +
+		"AliPP13TriggerEfficiency.cxx " +
 		"AliPP13MixingSample.cxx " +
 		"AliAnalysisTaskPP13.cxx "
 	);
@@ -104,6 +106,8 @@ void LoadAnalysisLibraries()
 		"AliPP13FeeddownSelection.h " +
 		"AliPP13NonlinearityScanSelection.cxx " +
 		"AliPP13NonlinearityScanSelection.h " +
+		"AliPP13TriggerEfficiency.cxx " +
+		"AliPP13TriggerEfficiency.h " +
 		"AliPP13MixingSample.cxx " +
 		"AliPP13MixingSample.h " +
 		"AliAnalysisTaskPP13.cxx " +
