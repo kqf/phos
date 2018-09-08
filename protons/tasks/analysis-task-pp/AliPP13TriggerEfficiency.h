@@ -1,5 +1,5 @@
-#ifndef ALIPP13TAGANDPROBESELECTION_H
-#define ALIPP13TAGANDPROBESELECTION_H
+#ifndef ALIPP13TRIGGEREFFICIENCY_H
+#define ALIPP13TRIGGEREFFICIENCY_H
 
 // --- Custom header files ---
 #include "AliPP13PhysicsSelection.h"
@@ -17,22 +17,20 @@
 
 class AliPP13TriggerEfficiency: public AliPP13PhysicsSelection
 {
+	enum {kTRUs=7};
 public:
 	AliPP13TriggerEfficiency():
 		AliPP13PhysicsSelection(),
-		fTimingCut(999999),
 		fMassEnergyAll(),
-		fMassEnergyTOF()
+		fMassEnergyTrigger()
 	{
 	}
 
 	AliPP13TriggerEfficiency(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
 		AliPP13PhysicsSelection(name, title, cuts, w),
-		fTimingCut(cuts.fTimingCut),  // Copy timing cut information
 		fMassEnergyAll(),
-		fMassEnergyTOF()
+		fMassEnergyTrigger()
 	{
-		fCuts.fTimingCut = 99999; // Don't use timecut for cluster selection
 	}
 
 	virtual void InitSelectionHistograms();
@@ -44,10 +42,11 @@ protected:
 	AliPP13TriggerEfficiency(const AliPP13TriggerEfficiency &);
 	AliPP13TriggerEfficiency & operator = (const AliPP13TriggerEfficiency &);
 private:
-	Float_t fTimingCut;
-	AliPP13DetectorHistogram * fMassEnergyAll[2]; //!
-	AliPP13DetectorHistogram * fMassEnergyTOF[2]; //!
+	AliPP13DetectorHistogram * fTotalMassEnergyAll[2]; //!
+	AliPP13DetectorHistogram * fTotalMassEnergyTrigger[2]; //!
 
+	AliPP13DetectorHistogram * fMassEnergyAll[kTRUs][2]; //!
+	AliPP13DetectorHistogram * fMassEnergyTrigger[kTRUs][2]; //!
 	ClassDef(AliPP13TriggerEfficiency, 2)
 };
 #endif
