@@ -1,5 +1,9 @@
 #include "iostream"
 
+// --- Custom header files ---
+#include <AliPP13AnalysisCluster.h>
+
+
 // --- ROOT header files ---
 #include <TFile.h>
 #include <TObjArray.h>
@@ -136,7 +140,7 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		if (!clus->IsPHOS()) continue;
 		if (IsClusterBad(clus)) continue;
 
-		clusArray.Add(clus);
+		clusArray.Add(AliPP13AnalysisCluster(clus, kFALSE));
 	}
 
 	evtProperties.fMcParticles = GetMCParticles(event);
