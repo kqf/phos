@@ -1,6 +1,7 @@
 // --- Custom header files ---
 #include "AliPP13TriggerEfficiency.h"
 #include "AliPP13DetectorHistogram.h"
+#include <AliPP13AnalysisCluster.h>
 
 // --- ROOT system ---
 #include <TH2F.h>
@@ -23,10 +24,10 @@ void AliPP13TriggerEfficiency::SelectTwoParticleCombinations(const TObjArray & p
 	// Consider N^2 - N combinations, excluding only same-same clusters.
 	for (Int_t i = 0; i < photonCandidates.GetEntriesFast(); i++)
 	{
-		AliVCluster * tag = dynamic_cast<AliVCluster *> (photonCandidates.At(i));
+		AliPP13AnalysisCluster * tag = dynamic_cast<AliPP13AnalysisCluster *> (photonCandidates.At(i));
 
 		// TODO: Implement the trigger cluster selection
-		if (false)
+		if (!tag->IsTrigger())
 			continue;
 
 		for (Int_t j = 0; j < photonCandidates.GetEntriesFast(); j++)
@@ -34,7 +35,7 @@ void AliPP13TriggerEfficiency::SelectTwoParticleCombinations(const TObjArray & p
 			if (i == j) // Skip the same clusters
 				continue;
 
-			AliVCluster * probe = dynamic_cast<AliVCluster *> (photonCandidates.At(j));
+			AliPP13AnalysisCluster * probe = dynamic_cast<AliPP13AnalysisCluster *> (photonCandidates.At(j));
 
 			if (!fCuts.AcceptPair(tag, probe, eflags))
 				continue;
@@ -61,20 +62,27 @@ void AliPP13TriggerEfficiency::ConsiderPair(const AliVCluster * c1, const AliVCl
 	if ((sm2 = CheckClusterGetSM(c2, x2, z2)) < 0) return; //  To be sure that everything is Ok
 
 
-	// TODO: Implement the GetTruFunction
-	// 
+	const AliPP13AnalysisCluster * tag = dynamic_cast<const AliPP13AnalysisCluster * >(c1);
+	const AliPP13AnalysisCluster * probe = dynamic_cast<const AliPP13AnalysisCluster * >(c2);
 
-	Int_t tru = 0;
+	// Filter out clusters from the same 4x4 patch
+	//
+
+	Bool_t close = TMath::Abs(x1 - x2) < 4 && TMath::Abs(z1 - z2) < 4;
+	if((probe->TRU() == tag->TRU()) &&  (sm1 == sm2) && close)
+		return;
+
+	Int_t tru = probe->TRU();
 	Int_t mix = int(eflags.isMixing);
 
 	fTotalMassEnergyAll[mix]->Fill(m12, energy);
-	fMassEnergyAll[tru][mix]->FillAll(sm1, sm2, m12, energy);
+	fMassEnergyAll[tru][mix]->FillAll(sm1, sm1, m12, energy);
 
-	if (false)
+	if (!probe->IsTrigger())
 		return;
 
 	fTotalMassEnergyTrigger[mix]->Fill(m12, energy);
-	fMassEnergyTrigger[tru][mix]->FillAll(sm1, sm2, m12, energy);
+	fMassEnergyTrigger[tru][mix]->FillAll(sm1, sm1, m12, energy);
 }
 
 
