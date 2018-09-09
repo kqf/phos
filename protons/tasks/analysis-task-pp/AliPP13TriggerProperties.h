@@ -14,15 +14,20 @@
 class AliPP13TriggerProperties:
 {
 public:
-	AliPP13TriggerProperties(): fCluster(), fTrigger() {}
-	AliPP13TriggerProperties(AliVCaloTrigger * trigger): fTrigger(fTrigger) {}
+	AliPP13TriggerProperties(): fTrigger(), fL1Threshold(-1) {}
+	AliPP13TriggerProperties(AliVCaloTrigger * trigger, Int_t l1threshold = -1):
+		fTrigger(fTrigger),
+		fL1Threshold(l1threshold)
+		{}
 
-	AliPP13TriggerProperties * SelectTriggeredCluster(AliVCluster * cluster);
-	Bool_t Matched(AliVCaloTrigger * trigger, AliVCluster * cluster);
+	AliPP13AnalysisCluster * SelectTriggeredCluster(AliVCluster * cluster);
+	Bool_t Matched(AliVCaloTrigger * trigger, Int_t * relid);
 	
 protected:
-	AliVCluster * fCluster;
-	Bool_t fTrigger;
+	AliVCaloTrigger * fTrigger;
+
+    // L1 threshold: -1 = L0, 0 = high, 1 = medium, 2 = low
+	Int_t fL1Threshold;
 
 private:
 	AliPP13TriggerProperties(const AliPP13TriggerProperties &);

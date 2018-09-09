@@ -112,8 +112,6 @@ Int_t AliPP13PhysicsSelection::CheckClusterGetSM(const AliVCluster * clus, Int_t
 
 	Int_t relId[4];
 	AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance();
-	// AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance("IHEP");
-	// AliPHOSGeometry * phosGeometry = AliPHOSGeometry::GetInstance("Run2") ;
 	phosGeometry->GlobalPos2RelId(global, relId) ;
 
 	Int_t sm = relId[0];
