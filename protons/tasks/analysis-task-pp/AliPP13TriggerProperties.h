@@ -18,15 +18,15 @@ public:
 	AliPP13TriggerProperties(AliVCaloTrigger * trigger, Int_t l1threshold = -1):
 		fTrigger(fTrigger),
 		fL1Threshold(l1threshold)
-		{}
+	{}
 
-	AliPP13AnalysisCluster * SelectTriggeredCluster(AliVCluster * cluster);
+	void FillTriggerInformation(AliPP13AnalysisCluster * cluster);
 	Bool_t Matched(AliVCaloTrigger * trigger, Int_t * relid);
-	
+
 protected:
 	AliVCaloTrigger * fTrigger;
 
-    // L1 threshold: -1 = L0, 0 = high, 1 = medium, 2 = low
+	// L1 threshold: -1 = L0, 0 = high, 1 = medium, 2 = low
 	Int_t fL1Threshold;
 
 private:

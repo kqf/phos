@@ -16,6 +16,7 @@
 #include <AliVEvent.h>
 #include <AliVCaloCells.h>
 #include <AliVCluster.h>
+#include <AliAODCaloCluster.h>
 #include <AliVVertex.h>
 #include <AliPHOSGeometry.h>
 #include <AliLog.h>
@@ -127,6 +128,7 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 	// just use pointers
 	//
 	TObjArray clusArray;
+	clusArray.SetOwner(kTRUE);
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
 	{
 		AliVCluster * clus = event->GetCaloCluster(i);
@@ -140,7 +142,9 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		if (!clus->IsPHOS()) continue;
 		if (IsClusterBad(clus)) continue;
 
-		clusArray.Add(AliPP13AnalysisCluster(clus, kFALSE));
+		clusArray.Add(
+			new AliPP13AnalysisCluster(*(AliAODCaloCluster *) clus)
+		);
 	}
 
 	evtProperties.fMcParticles = GetMCParticles(event);

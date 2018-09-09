@@ -9,7 +9,7 @@
 ClassImp(AliPP13TriggerProperties);
 
 //________________________________________________________________
-AliPP13AnalysisCluster * AliPP13TriggerProperties::SelectTriggeredCluster(AliVCluster * cluster)
+void AliPP13TriggerProperties::FillTriggerInformation(AliPP13AnalysisCluster * cluster)
 {
     // Coordinates of a cluster
     Float_t  position[3];
@@ -17,10 +17,17 @@ AliPP13AnalysisCluster * AliPP13TriggerProperties::SelectTriggeredCluster(AliVCl
     TVector3 global(position);
 
     Int_t relid[4];
-    AliPHOSGeometry::GetInstance()->GlobalPos2RelId(global, relid) ;
+    AliPHOSGeometry::GetInstance()->GlobalPos2RelId(global, relid);
+    Int_t tru = TRU(relid[2], relid[3]);
 
+    Int_t tru_ch_x, tru_ch_z;
+    Int_t tru_ch = TRUChannel(relid[2], relid[3], tru_ch_x, tru_ch_z);
 
-    AliPP13AnalysisCluster * acluster = AliPP13AnalysisCluster(cluster, kFALSE); 
+    cluster->SetTrigger(kFALSE);
+    cluster->SetTRU(tru);
+    cluster->SetTRUChannel(tru_ch, tru_ch_x, tru_ch_z);
+    cluster->SetModule(relid[0]);
+
     AliVCaloTrigger * fTrigger = fEvent->GetCaloTrigger("PHOS");
     fTrigger->Reset();
     while (fTrigger->Next())
@@ -28,13 +35,15 @@ AliPP13AnalysisCluster * AliPP13TriggerProperties::SelectTriggeredCluster(AliVCl
         if (fTrigger->GetL1TimeSum() != fL1Threshold)
             continue;
 
-        if (Matched(fTrigger, acluster))
-            return acluster;
+        if (Matched(fTrigger, cluster))
+        {
+            cluster->SetTrigger(kTRUE);
+            return;
+        }
     }
-
-    return acluster;
 }
 
+//________________________________________________________________
 Bool_t AliPP13TriggerProperties::Matched(AliVCaloTrigger * trigger, Int_t * relid)
 {
     // "Online" module number, bottom-left 4x4 edge cell absId
@@ -58,4 +67,38 @@ Bool_t AliPP13TriggerProperties::Matched(AliVCaloTrigger * trigger, Int_t * reli
         return kFALSE;
 
     return kTRUE;
+}
+
+//________________________________________________________________________
+Int_t AliPHOSTriggerHelper::TRU(Int_t cellx, Int_t cellz)
+{
+    Int_t tru = -1;
+    if (cellx < 1 || 64 < cellx) 
+        return -1;
+
+    if (cellz < 1 || 56 < cellz)
+        return -1;
+
+    Int_t XID = (cellx - 1) / 16 + 1;
+    Int_t ZID = (cellz - 1) / 28;
+
+    tru = 2 * XID - ZID;
+    return tru;
+}
+//________________________________________________________________________
+Int_t AliPHOSTriggerHelper::TRUChannel(Int_t cellx, Int_t cellz, Int_t &chX, Int_t &chZ)
+{
+    // Returns TRU channel in the range 0-111.
+    Int_t ch = -1;
+    if (cellx < 1 || 64 < cellx)
+        return -1;
+
+    if (cellz < 1 || 56 < cellz)
+        return -1;
+
+    chX = ((cellx - 1) / 2) %  8;
+    chZ = ((cellz - 1) / 2) % 14;
+
+    ch = 8 * chZ + chX;
+    return ch;
 }
