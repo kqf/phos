@@ -11,17 +11,19 @@
 #include <AliVCluster.h>
 #include <AliVCaloTrigger.h>
 
-class AliPP13TriggerProperties:
+class AliPP13TriggerProperties
 {
 public:
 	AliPP13TriggerProperties(): fTrigger(), fL1Threshold(-1) {}
 	AliPP13TriggerProperties(AliVCaloTrigger * trigger, Int_t l1threshold = -1):
-		fTrigger(fTrigger),
+		fTrigger(trigger),
 		fL1Threshold(l1threshold)
 	{}
 
 	void FillTriggerInformation(AliPP13AnalysisCluster * cluster);
 	Bool_t Matched(AliVCaloTrigger * trigger, Int_t * relid);
+	static Int_t TRU(Int_t cellx, Int_t cellz);
+	static Int_t TRUChannel(Int_t cellx, Int_t cellz, Int_t &chX, Int_t &chZ);
 
 protected:
 	AliVCaloTrigger * fTrigger;

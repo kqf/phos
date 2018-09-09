@@ -1,7 +1,9 @@
 #include "iostream"
 
 // --- Custom header files ---
+#include "AliAnalysisTaskPP13.h"
 #include <AliPP13AnalysisCluster.h>
+#include <AliPP13TriggerProperties.h>
 
 
 // --- ROOT header files ---
@@ -9,7 +11,6 @@
 #include <TObjArray.h>
 #include <TROOT.h>
 
-#include "AliAnalysisTaskPP13.h"
 
 // --- AliRoot header files ---
 #include "AliAnalysisManager.h"
@@ -94,6 +95,10 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		return;
 	}
 
+    AliPP13TriggerProperties triggerProperties(
+    	event->GetCaloTrigger("PHOS")
+    );
+
 	// Count MB event before event cuts for every selection
 	for (int i = 0; i < fSelections->GetEntries(); ++i)
 	{
@@ -131,20 +136,20 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 	clusArray.SetOwner(kTRUE);
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
 	{
-		AliVCluster * clus = event->GetCaloCluster(i);
-		if (!clus)
+		AliAODCaloCluster * c = dynamic_cast<AliAODCaloCluster *> (event->GetCaloCluster(i));
+		if (!c)
 		{
 			AliWarning("Can't get cluster");
 			return;
 		}
 
+		AliPP13AnalysisCluster * clus = new AliPP13AnalysisCluster(*c);
 		// only basic filtering
 		if (!clus->IsPHOS()) continue;
 		if (IsClusterBad(clus)) continue;
 
-		clusArray.Add(
-			new AliPP13AnalysisCluster(*(AliAODCaloCluster *) clus)
-		);
+		triggerProperties.FillTriggerInformation(clus);
+		clusArray.Add(clus);
 	}
 
 	evtProperties.fMcParticles = GetMCParticles(event);

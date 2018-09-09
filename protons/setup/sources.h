@@ -9,6 +9,7 @@ void LoadAnalysisLibraries()
 	}
 
 	gROOT->LoadMacro("AliPP13AnalysisCluster.cxx+");
+	gROOT->LoadMacro("AliPP13TriggerProperties.cxx+");
 	gROOT->LoadMacro("AliPP13ClusterCuts.cxx+");
 	gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
 	gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
@@ -40,6 +41,7 @@ void LoadAnalysisLibraries()
 	plugin->SetAnalysisSource(
 		sources +
 		"AliPP13AnalysisCluster.cxx " +
+		"AliPP13TriggerProperties.cxx " +
 		"AliPP13ClusterCuts.cxx " +
 		"AliPP13SelectionWeights.cxx " +
 		"AliPP13DetectorHistogram.cxx " +
@@ -70,6 +72,8 @@ void LoadAnalysisLibraries()
 		"libPWGGAPHOSTasks.so "	+
 		"AliPP13AnalysisCluster.cxx " +
 		"AliPP13AnalysisCluster.h " +
+		"AliPP13TriggerProperties.cxx " +
+		"AliPP13TriggerProperties.h " +
 		"AliPP13ClusterCuts.cxx " +
 		"AliPP13ClusterCuts.h " +
 		"AliPP13SelectionWeights.cxx " +

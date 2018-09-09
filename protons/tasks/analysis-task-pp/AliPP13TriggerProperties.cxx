@@ -4,7 +4,7 @@
 // --- ROOT system ---
 
 // --- AliRoot header files ---
-
+#include <AliPHOSGeometry.h>
 
 ClassImp(AliPP13TriggerProperties);
 
@@ -28,14 +28,13 @@ void AliPP13TriggerProperties::FillTriggerInformation(AliPP13AnalysisCluster * c
     cluster->SetTRUChannel(tru_ch, tru_ch_x, tru_ch_z);
     cluster->SetModule(relid[0]);
 
-    AliVCaloTrigger * fTrigger = fEvent->GetCaloTrigger("PHOS");
     fTrigger->Reset();
     while (fTrigger->Next())
     {
         if (fTrigger->GetL1TimeSum() != fL1Threshold)
             continue;
 
-        if (Matched(fTrigger, cluster))
+        if (Matched(fTrigger, relid))
         {
             cluster->SetTrigger(kTRUE);
             return;
@@ -49,7 +48,7 @@ Bool_t AliPP13TriggerProperties::Matched(AliVCaloTrigger * trigger, Int_t * reli
     // "Online" module number, bottom-left 4x4 edge cell absId
     // Get the global position of the fired trigger
     Int_t trigger_module, trigger_absId;
-    fTrigger->GetPosition(trigger_module, trigger_absId);
+    trigger->GetPosition(trigger_module, trigger_absId);
 
     // Convert it to local coordinates of PHOS
     Int_t trigger_relid[4] ;
@@ -70,7 +69,7 @@ Bool_t AliPP13TriggerProperties::Matched(AliVCaloTrigger * trigger, Int_t * reli
 }
 
 //________________________________________________________________________
-Int_t AliPHOSTriggerHelper::TRU(Int_t cellx, Int_t cellz)
+Int_t AliPP13TriggerProperties::TRU(Int_t cellx, Int_t cellz)
 {
     Int_t tru = -1;
     if (cellx < 1 || 64 < cellx) 
@@ -86,7 +85,7 @@ Int_t AliPHOSTriggerHelper::TRU(Int_t cellx, Int_t cellz)
     return tru;
 }
 //________________________________________________________________________
-Int_t AliPHOSTriggerHelper::TRUChannel(Int_t cellx, Int_t cellz, Int_t &chX, Int_t &chZ)
+Int_t AliPP13TriggerProperties::TRUChannel(Int_t cellx, Int_t cellz, Int_t &chX, Int_t &chZ)
 {
     // Returns TRU channel in the range 0-111.
     Int_t ch = -1;
