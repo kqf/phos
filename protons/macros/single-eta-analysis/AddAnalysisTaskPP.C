@@ -2,12 +2,7 @@
 
 void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "")
 {
-	Int_t id = gClassTable->GetID("AliAnalysisTaskPP13");
-	// Load analysis libraries for the older versions of aliphysics
-	// without the task being manually added
-	if(id == -1)
-		LoadAnalysisLibraries();
-
+	LoadAnalysisLibraries();
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr)
