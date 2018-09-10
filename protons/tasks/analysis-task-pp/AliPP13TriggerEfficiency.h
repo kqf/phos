@@ -17,7 +17,7 @@
 
 class AliPP13TriggerEfficiency: public AliPP13PhysicsSelection
 {
-	enum {kTRUs=7};
+	enum {kTRUs = 7};
 public:
 	AliPP13TriggerEfficiency():
 		AliPP13PhysicsSelection(),
@@ -33,8 +33,20 @@ public:
 	{
 	}
 
+	~AliPP13TriggerEfficiency()
+	{
+		for (Int_t tru = 0; tru < kTRUs; ++tru)
+		{
+			for (Int_t i = 0; i < 2; ++i)
+			{
+				delete fMassEnergyAll[tru][i];
+				delete fMassEnergyTrigger[tru][i];
+			}
+		}
+	}
+
 	virtual void InitSelectionHistograms();
-	
+
 protected:
 	virtual void SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & eflags);
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
