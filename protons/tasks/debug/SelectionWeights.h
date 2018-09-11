@@ -34,7 +34,8 @@ struct EventFlags
 		eventVtxExists(vtx),
 		ncontributors(0),
 		fMcParticles(0),
-		fPIDResponse(0)
+		fPIDResponse(0),
+		fTriggerEvent(kFalse)
 		//, eventV0AND(v0)
 	{}
 
@@ -48,6 +49,7 @@ struct EventFlags
 	Int_t ncontributors;
 	TClonesArray * fMcParticles;
 	AliPIDResponse * fPIDResponse;
+	Bool_t fTriggerEvent;
 	// Bool_t eventV0AND;
 };
 

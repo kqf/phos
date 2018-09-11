@@ -132,6 +132,7 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 	// NB: Use don't use TClonesArray as you don't want to copy the clusters
 	// just use pointers
 	//
+	Int_t nTriggered = 0;
 	TObjArray clusArray;
 	clusArray.SetOwner(kTRUE);
 	for (Int_t i = 0; i < event->GetNumberOfCaloClusters(); i++)
@@ -149,9 +150,12 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		if (IsClusterBad(clus)) continue;
 
 		triggerProperties.FillTriggerInformation(clus);
+		nTriggered += clus->IsTrigger();
+
 		clusArray.Add(clus);
 	}
 
+	evtProperties.fTriggerEvent = nTriggered > 0;
 	evtProperties.fMcParticles = GetMCParticles(event);
 
 	TList * pool = fPreviousEvents->GetPool(evtProperties);

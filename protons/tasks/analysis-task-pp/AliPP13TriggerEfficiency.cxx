@@ -69,7 +69,7 @@ void AliPP13TriggerEfficiency::ConsiderPair(const AliVCluster * c1, const AliVCl
 	//
 
 	Bool_t close = TMath::Abs(x1 - x2) < 4 && TMath::Abs(z1 - z2) < 4;
-	if((probe->TRU() == tag->TRU()) &&  (sm1 == sm2) && close)
+	if ((probe->TRU() == tag->TRU()) &&  (sm1 == sm2) && close)
 		return;
 
 	// Int_t tru = probe->TRU();
@@ -97,6 +97,9 @@ void AliPP13TriggerEfficiency::InitSelectionHistograms()
 	Int_t nE      = 2000;
 	Double_t eMin = 0;
 	Double_t eMax = 20;
+
+	fNevents = new TH1F("hNevents", "Number of events", 2, 0.5, 2.5);
+	fListOfHistos->Add(fNevents);
 
 	for (Int_t i = 0; i < 2; ++i)
 	{
@@ -132,4 +135,13 @@ void AliPP13TriggerEfficiency::InitSelectionHistograms()
 		hist->Sumw2();
 	}
 
+}
+
+void AliPP13TriggerEfficiency::SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags)
+{
+	AliPP13PhysicsSelection::SelectPhotonCandidates(clusArray, candidates, eflags);
+	fNevents->Fill(1);
+
+	if (eflags.fTriggerEvent)
+		fNevents->Fill(2);
 }

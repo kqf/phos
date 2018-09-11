@@ -21,6 +21,7 @@ class AliPP13TriggerEfficiency: public AliPP13PhysicsSelection
 public:
 	AliPP13TriggerEfficiency():
 		AliPP13PhysicsSelection(),
+		fNevents(0),
 		fTotalMassEnergyAll(),
 		fTotalMassEnergyTrigger()
 	{
@@ -28,6 +29,7 @@ public:
 
 	AliPP13TriggerEfficiency(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
 		AliPP13PhysicsSelection(name, title, cuts, w),
+		fNevents(0),
 		fTotalMassEnergyAll(),
 		fTotalMassEnergyTrigger()
 	{
@@ -57,10 +59,12 @@ public:
 protected:
 	virtual void SelectTwoParticleCombinations(const TObjArray & photonCandidates, const EventFlags & eflags);
 	virtual void ConsiderPair(const AliVCluster * c1, const AliVCluster * c2, const EventFlags & eflags);
+	virtual void SelectPhotonCandidates(const TObjArray * clusArray, TObjArray * candidates, const EventFlags & eflags);
 
 	AliPP13TriggerEfficiency(const AliPP13TriggerEfficiency &);
 	AliPP13TriggerEfficiency & operator = (const AliPP13TriggerEfficiency &);
 private:
+	TH1 * fNevents; //!
 	AliPP13DetectorHistogram *  fTotalMassEnergyAll[2]; //!
 	AliPP13DetectorHistogram *  fTotalMassEnergyTrigger[2]; //!
 
