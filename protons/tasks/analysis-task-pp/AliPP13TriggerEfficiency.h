@@ -21,28 +21,35 @@ class AliPP13TriggerEfficiency: public AliPP13PhysicsSelection
 public:
 	AliPP13TriggerEfficiency():
 		AliPP13PhysicsSelection(),
-		fMassEnergyAll(),
-		fMassEnergyTrigger()
+		fTotalMassEnergyAll(),
+		fTotalMassEnergyTrigger()
 	{
 	}
 
 	AliPP13TriggerEfficiency(const char * name, const char * title, AliPP13ClusterCuts cuts, AliPP13SelectionWeights * w):
 		AliPP13PhysicsSelection(name, title, cuts, w),
-		fMassEnergyAll(),
-		fMassEnergyTrigger()
+		fTotalMassEnergyAll(),
+		fTotalMassEnergyTrigger()
 	{
 	}
 
 	~AliPP13TriggerEfficiency()
 	{
-		for (Int_t tru = 0; tru < kTRUs; ++tru)
+		// for (Int_t tru = 0; tru < kTRUs; ++tru)
+		// {
+		// 	for (Int_t i = 0; i < 2; ++i)
+		// 	{
+		// 		delete fMassEnergyAll[tru][i];
+		// 		delete fMassEnergyTrigger[tru][i];
+		// 	}
+		// }
+
+		for (Int_t i = 0; i < 2; ++i)
 		{
-			for (Int_t i = 0; i < 2; ++i)
-			{
-				delete fMassEnergyAll[tru][i];
-				delete fMassEnergyTrigger[tru][i];
-			}
+			delete fTotalMassEnergyAll[i];
+			delete fTotalMassEnergyTrigger[i];
 		}
+
 	}
 
 	virtual void InitSelectionHistograms();
@@ -54,11 +61,11 @@ protected:
 	AliPP13TriggerEfficiency(const AliPP13TriggerEfficiency &);
 	AliPP13TriggerEfficiency & operator = (const AliPP13TriggerEfficiency &);
 private:
-	TH1 * fTotalMassEnergyAll[2]; //!
-	TH1 * fTotalMassEnergyTrigger[2]; //!
+	AliPP13DetectorHistogram *  fTotalMassEnergyAll[2]; //!
+	AliPP13DetectorHistogram *  fTotalMassEnergyTrigger[2]; //!
 
-	AliPP13DetectorHistogram * fMassEnergyAll[kTRUs][2]; //!
-	AliPP13DetectorHistogram * fMassEnergyTrigger[kTRUs][2]; //!
+	// AliPP13DetectorHistogram * fMassEnergyAll[kTRUs][2]; //!
+	// AliPP13DetectorHistogram * fMassEnergyTrigger[kTRUs][2]; //!
 	ClassDef(AliPP13TriggerEfficiency, 2)
 };
 #endif
