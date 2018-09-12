@@ -6,7 +6,7 @@ import ROOT
 
 def main():
     filename, dirname, selname = sys.argv[1:]
-    print "From file", dirname, "and folder", dirname, "selct", "selname"
+    print "From file", dirname, "and folder", dirname, "selct", selname
 
     infile = ROOT.TFile(filename, "update")
     selection = infile.Get("{}/{}".format(dirname, selname))
