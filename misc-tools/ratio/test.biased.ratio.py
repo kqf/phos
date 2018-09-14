@@ -14,7 +14,18 @@ def main():
     original = ROOT.TH1F("original", "Original; E GeV", 25, 0, 50)
     original.Sumw2()
     map(original.Fill, sample)
-    original.Draw()
+    # original.Draw()
+
+    sampled = original.Clone()
+    sampled.SetTitle("sampled")
+    sampled.Sumw2()
+    sampled.Reset()
+    map(sampled.Fill, subsample)
+    # sampled.Draw("same")
+
+    ratio = ROOT.TGraphAsymmErrors(sampled, original)
+    ratio.Draw()
+
     canvas = ROOT.gROOT.FindObject("c1")
     canvas.Update()
     raw_input("Press enter.")
