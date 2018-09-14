@@ -23,6 +23,7 @@
 #include <AliLog.h>
 #include <AliAODMCParticle.h>
 #include <AliAODEvent.h>
+#include "AliPHOSTriggerUtils.h"
 
 
 // --- AliRoot MC headers ---
@@ -88,6 +89,9 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 		return;
 	}
 
+	AliPHOSTriggerUtils * triggerUtils = new AliPHOSTriggerUtils("PHOSTrig"); 
+	triggerUtils->SetEvent(event);
+
     AliPP13TriggerProperties triggerProperties(
     	event->GetCaloTrigger("PHOS")
     );
@@ -143,6 +147,7 @@ void AliAnalysisTaskPP13::UserExec(Option_t *)
 			continue;
 
 		triggerProperties.FillTriggerInformation(clus);
+		clus->SetTrigger(triggerUtils->IsFiredTrigger(c));
 		nTriggered += clus->IsTrigger();
 
 		clusArray.Add(clus);
