@@ -8,10 +8,16 @@ from uncertainties.nonlinearity import Nonlinearity, form_histnames
 from vault.datavault import DataVault
 
 
+# TODO: Look at generated histogram in different selection
+#       fix this asap
+
+# TODO: Add Generated Histogram to the nonlinearity scan selection
+#
+
 class TestNonliearityUncertainty(unittest.TestCase):
 
     def test(self):
-        self.nbins = 4
+        self.nbins = 2
         prod = "single #pi^{0} scan nonlinearity6"
         histnames = form_histnames(self.nbins)
         low = DataVault().input(prod, "low", inputs=histnames)
@@ -21,6 +27,12 @@ class TestNonliearityUncertainty(unittest.TestCase):
             (low, (0.0, 8.0)),
             (high, (4.0, 20.0)),
         ])
+
+        main_inputs = {
+            DataVault().input(prod, "low", "PhysEff"): (0.0, 8.0),
+            DataVault().input(prod, "high", "PhysEff"): (4.0, 20.0),
+        }
+
         options = CompositeNonlinearityUncertainty(
             unified_inputs, nbins=self.nbins)
         options.factor = 1.
@@ -29,7 +41,7 @@ class TestNonliearityUncertainty(unittest.TestCase):
         spmc = [(l, h) for l, h in zip(low, high)]
 
         chi2ndf = Nonlinearity(options).transform(
-            spmc,
+            (main_inputs, spmc),
             loggs=AnalysisOutput("testing the scan interface")
         )
         Comparator().compare(chi2ndf)
