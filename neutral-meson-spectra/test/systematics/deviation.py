@@ -3,7 +3,6 @@ import unittest
 
 from uncertainties.deviation import MaxDeviation
 from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
 
 
 class TestDeviation(unittest.TestCase):

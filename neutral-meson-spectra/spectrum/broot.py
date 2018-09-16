@@ -53,8 +53,8 @@ class BROOT(object):
 
         @classmethod
         def copy(klass, dest, source, force=False):
-            assert klass.has_properties(source), \
-                "There is no properties in source histogram"
+            if not klass.has_properties(source):
+                klass.init(dest)
 
             keys = (key for key in klass._properties
                     if key not in dir(dest) or force)
@@ -271,7 +271,11 @@ class BROOT(object):
             ratio.Divide(b)
         else:
             ratio.Divide(a, b, 1, 1, option)
-        label = a.label + ' / ' + b.label
+
+        try:
+            label = a.label + ' / ' + b.label
+        except AttributeError:
+            label = ""
 
         # at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
         # ratio.GetYaxis().SetTitle(at + '/' + bt)
