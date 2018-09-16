@@ -1,29 +1,31 @@
 import ROOT
-from spectrum.analysis import Analysis
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ParallelPipeline
-from spectrum.pipeline import HistogramSelector
-from spectrum.pipeline import ReducePipeline
-from spectrum.pipeline import HistogramScaler
+from spectrum.pipeline import ReduceArgumentPipeline
+from spectrum.efficiency import Efficiency
 from spectrum.broot import BROOT as br
+
+from uncertainties.deviation import MaxDeviation
 
 
 class Nonlinearity(TransformerBase):
     def __init__(self, options, chi2_=br.chi2ndf, plot=True):
         super(Nonlinearity, self).__init__()
-        mass = Pipeline([
-            ("reconstruction", Analysis(options.analysis, plot)),
-            ("mass", HistogramSelector("mass")),
-            ("scale", HistogramScaler(factor=options.factor)),
+        main = Pipeline([
+            ('efficiency_main', Efficiency(options.eff, plot))
         ])
 
-        masses_mc = ParallelPipeline([
-            ("mass" + str(i), mass)
+        mc = ParallelPipeline([
+            ("efficiency_" + str(i), Efficiency(options.eff, plot))
             for i in range(options.nbins ** 2)
         ])
 
-        self.pipeline = ReducePipeline(masses_mc, br.sum)
+        ratio = ReduceArgumentPipeline(mc, main, br.ratio)
+        self.pipeline = Pipeline([
+            ("ratios", ratio),
+            ("deviation", MaxDeviation())
+        ])
 
 
 def form_histnames(nbins=4):

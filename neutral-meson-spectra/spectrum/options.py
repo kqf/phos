@@ -332,3 +332,11 @@ class CompositeNonlinearityScanOptions(object):
             ptrange="config/pt-spmc.json")
         self.analysis_data = Options(ptrange="config/pt-spmc.json")
         self.factor = 1.
+
+
+class CompositeNonlinearityUncertainty(object):
+
+    def __init__(self, unified_inputs, particle="#pi^{0}", nbins=11,):
+        super(CompositeNonlinearityUncertainty, self).__init__()
+        self.nbins = nbins
+        self.eff = CompositeEfficiencyOptions(unified_inputs, particle)
