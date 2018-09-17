@@ -88,7 +88,7 @@ trigger: | $(DIRECTORY)
 
 badmap:
 	root -l -b -q  'saveBadMap.C("$(PERIOD)")'
-	@if [ -f BadMap_$(PERIOD).root ]; then mv BadMap_$(PERIOD).root ../results/$(PERIOD); fi
+	@if [ -f BadMap_$(PERIOD).root ]; then mv BadMap_$(PERIOD).root ../results/$(YEAR)/$(PERIOD).root; fi
 	
 initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
 	root -l -b -q  'saveBadMap.C("$(PERIOD)", "$<")'
