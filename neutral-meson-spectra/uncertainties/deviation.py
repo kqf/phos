@@ -1,5 +1,8 @@
 import ROOT
+import numpy as np
+import root_numpy as rp
 from spectrum.transformer import TransformerBase
+from spectrum.broot import BROOT as br
 
 
 def max_value(hist, prec):
@@ -25,11 +28,13 @@ class MaxDeviation(TransformerBase):
 class MaxDeviationVector(MaxDeviation):
 
     def transform(self, ratios, loggs):
-        max_deviation = max(
-            max_value(r, self.max_value) for r in ratios
-        )
-        # Maximal deviation from unity
-        error = max_deviation - 1
-        output = ROOT.TF1("fMaxDeviation", "pol0", 0, 100)
-        output.SetParameter(0, error)
-        return output.GetHistogram().Clone()
+        bins = np.asarray(map(rp.hist2array, ratios))
+        max_deviations = np.abs(bins).max(axis=0)
+        max_deviations = np.abs(max_deviations - 1.)
+
+        output = ratios[0].Clone()
+        output.Reset()
+        for i, m in zip(br.range(output), max_deviations):
+            output.SetBinContent(i, m)
+
+        return output
