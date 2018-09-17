@@ -1,8 +1,7 @@
 # Order-only prerequisite is marked by "|" character
-
-
+# LHC17 data
 # TRAIN=345_20180305-1550_child
-TRAIN=354_20180320-1238_child
+# TRAIN=354_20180320-1238_child
 # TRAIN_CHILD=1
 # PERIOD=LHC17c
 
@@ -33,16 +32,37 @@ TRAIN=354_20180320-1238_child
 # TRAIN_CHILD=10
 # PERIOD=LHC17o
 
-TRAIN_CHILD=11
-PERIOD=LHC17r
+# TRAIN_CHILD=11
+# PERIOD=LHC17r
 
+# LHC16 data
+TRAIN=444_20180827-1128_child
+# TRAIN_CHILD=2
+# PERIOD=LHC16g
+# TRAIN_CHILD=3
+# PERIOD=LHC16h
+# TRAIN_CHILD=4
+# PERIOD=LHC16i
+# TRAIN_CHILD=5
+# PERIOD=LHC16j
+# TRAIN_CHILD=6
+# PERIOD=LHC16k
+# TRAIN_CHILD=7
+# PERIOD=LHC16l
+# TRAIN_CHILD=8
+# PERIOD=LHC16o
+TRAIN_CHILD=9
+PERIOD=LHC16p
+YEAR=2016
+NAME=final
 
-NAME=iteration2
+TARGETDIR=/alice/data/$(YEAR)/$(PERIOD)
+FULL_TRAIN=/pass1/PWGGA/GA_pp_AOD/$(TRAIN)_$(TRAIN_CHILD)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
 # NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
 # FILE_NAME=TriggerQA.root
 FILE_NAME=CaloCellsQA.root
-DIRECTORY=../results/$(PERIOD)/$(NAME)
+DIRECTORY=../results/$(YEAR)/$(PERIOD)/$(NAME)
 IM = $(DIRECTORY)/images
 
 allplots: | $(DIRECTORY)/CaloCellsQA.root
@@ -59,7 +79,7 @@ $(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
-	./download_trains.sh $(PERIOD) $(DIRECTORY) $(TRAIN)_$(TRAIN_CHILD)
+	./download_trains.sh $(TARGETDIR) $(DIRECTORY) $(FULL_TRAIN)
 	@echo -e "\x07"
 
 trigger: | $(DIRECTORY)
