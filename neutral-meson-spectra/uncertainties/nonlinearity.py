@@ -6,7 +6,7 @@ from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.efficiency import Efficiency
 from spectrum.broot import BROOT as br
 
-from uncertainties.deviation import MaxDeviation
+from uncertainties.deviation import MaxDeviationVector
 
 
 class Nonlinearity(TransformerBase):
@@ -24,7 +24,7 @@ class Nonlinearity(TransformerBase):
         ratio = ReduceArgumentPipeline(mc, main, br.ratio)
         self.pipeline = Pipeline([
             ("ratios", ratio),
-            ("deviation", MaxDeviation())
+            ("deviation", MaxDeviationVector())
         ])
 
 

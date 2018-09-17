@@ -28,17 +28,21 @@ class TestNonliearityUncertainty(unittest.TestCase):
             (high, (4.0, 20.0)),
         ])
 
+        main_low = DataVault().input(prod, "low", "PhysEff")
+        main_high = DataVault().input(prod, "high", "PhysEff")
         main_inputs = {
-            DataVault().input(prod, "low", "PhysEff"): (0.0, 8.0),
-            DataVault().input(prod, "high", "PhysEff"): (4.0, 20.0),
+            main_low: (0.0, 8.0),
+            main_high: (4.0, 20.0)
         }
 
         options = CompositeNonlinearityUncertainty(
             unified_inputs, nbins=self.nbins)
         options.factor = 1.
 
-        low, high = low.read_multiple(2), high.read_multiple(2)
-        spmc = [(l, h) for l, h in zip(low, high)]
+        spmc = [(l, h) for l, h in zip(
+            low.read_multiple(single=main_low),
+            high.read_multiple(single=main_high)
+        )]
 
         chi2ndf = Nonlinearity(options).transform(
             (main_inputs, spmc),
