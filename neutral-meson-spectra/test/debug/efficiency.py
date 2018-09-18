@@ -45,11 +45,9 @@ class ReadCompositeDistribution(TransformerBase):
                  Pipeline([
                             ("raw_efficiency", SingleHistInput(name)),
                             ("standard-output", StanadrtizeOutput())
-                 ])
-                 )
+                 ]))
                 for ranges in zip(options.mergeranges)
-            ]
-            ),
+            ]),
             lambda x: br.sum_trimm(x, options.mergeranges)
         )
 
