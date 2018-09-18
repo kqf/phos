@@ -43,8 +43,9 @@ class SingleHistInput(object):
 
 
 class IdentityInput(object):
-    def __init__(self, inputs, single=None):
+    def __init__(self, inputs, pt_range, single=None):
         self.inputs = inputs
+        self.pt_range = pt_range
         # Input Object for single hist selection
         self.single = single
 
@@ -57,7 +58,7 @@ class Input(object):
                  histname='MassPt', label='',
                  mixprefix='Mix', histnames=None,
                  n_events=None, inputs=None,
-                 prefix='h'):
+                 prefix='h', pt_range=(0., 20.)):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
@@ -69,6 +70,7 @@ class Input(object):
         self._events = self.events(filename, listname)
         self.label = label
         self.inputs = inputs
+        self.pt_range = pt_range
         if self.inputs:
             return
         self.inputs = ['{}{}{}'.format(self.prefix, p, self.histname)
@@ -101,7 +103,8 @@ class Input(object):
     def read_multiple(self, n_groups=2, single=None):
         data = self.read()
         return [
-            IdentityInput(h, single) for h in zip(*(iter(data),) * n_groups)
+            IdentityInput(h, self.pt_range, single)
+            for h in zip(*(iter(data),) * n_groups)
         ]
 
     def transform(self, data=None, outputs=None):
