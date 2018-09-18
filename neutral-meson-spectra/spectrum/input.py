@@ -55,10 +55,10 @@ class IdentityInput(object):
 
 class Input(object):
     def __init__(self, filename, listname,
-                 histname='MassPt', label='',
+                 histname='MassPt', pt_range=(0., 20.), label='',
                  mixprefix='Mix', histnames=None,
                  n_events=None, inputs=None,
-                 prefix='h', pt_range=(0., 20.)):
+                 prefix='h'):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
@@ -132,7 +132,8 @@ class Input(object):
 
 
 class NoMixingInput(Input):
-    def __init__(self, filename, listname, histname='MassPt', *args, **kwargs):
+    def __init__(self, filename, listname, pt_range=(0, 20.),
+                 histname='MassPt', *args, **kwargs):
         super(NoMixingInput, self).__init__(filename, listname,
                                             histname, *args, **kwargs)
 

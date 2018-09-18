@@ -36,13 +36,19 @@ class DataVault(object):
         return filename
 
     def input(self, production, version="latest",
-              listname=None, use_mixing=True, *args, **kwargs):
+              listname=None, pt_range=None, use_mixing=True,
+              *args, **kwargs):
+
         filename = self.file(production, version)
         if not listname:
             listname = self.dataset(production, version)['default_selection']
 
+        if not pt_range:
+            pt_range = self.dataset(production, version)['pt_range']
+
         transformer = Input if use_mixing else NoMixingInput
-        return transformer(filename, str(listname), *args, **kwargs)
+        return transformer(filename, str(listname), pt_range=pt_range,
+                           *args, **kwargs)
 
     def validate_all_datasets(self):
         not_valid = []
