@@ -7,10 +7,16 @@ from spectrum.comparator import Comparator
 
 class TestEpRatio(unittest.TestCase):
     def test_ep_ratio(self):
-        estimator = EpRatioEstimator(EpRatioOptions())
+        options = EpRatioOptions()
+        options.histname = "hEp_ele"
+        estimator = EpRatioEstimator(options)
         output = estimator.transform(
-            DataVault().input("pythia8", version="ep_ratio", listname="EpRatio"),
+            DataVault().input(
+                "pythia8",
+                version="ep_ratio_1",
+                listname="PHOSEpRatioCoutput1",
+                histname="Ep_ele"),
             "test ep ratio estimator"
         )
         for o in output:
-	        Comparator().compare(o)
+            Comparator().compare(o)

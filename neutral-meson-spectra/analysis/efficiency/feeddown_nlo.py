@@ -35,7 +35,7 @@ class FeddownTest(unittest.TestCase):
                     "pythia8",
                     listname="MCStudy",
                     use_mixing=False,
-                    histname="MassPt_#pi^{0}_primary_#Lambda",
+                    histname="MassPt_#pi^{0}_primary_#omega",
                 ),
                 DataVault().input("pythia8", listname="FeeddownSelection"),
             ],
