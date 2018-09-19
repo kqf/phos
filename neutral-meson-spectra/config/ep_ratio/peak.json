@@ -1,0 +1,22 @@
+{
+	"fitf": "Gaus",
+	"par_names": ["A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}"],
+	"#pi^{0}":
+	{
+
+		"fit_range":         [0.5, 1.5],
+		"prel_mass_limits":  [0.5, 1.5],
+		"prel_width_limits": [0.096, 1.040],
+		"prel_range":        [0.096, 1.040],
+		"prel_paremeters":   [1, 0.01, 0.0],
+		"fit_mass":          1.0,
+		"fit_mass_limits":   [0.98, 1.02],
+		"fit_width_limits":  [0.096, 1.040],
+		"background": "pol1"
+
+	},
+
+	"#eta":
+	{
+	}
+}

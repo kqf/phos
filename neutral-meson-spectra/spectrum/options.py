@@ -3,7 +3,7 @@ import json
 
 
 class AnalysisOption(object):
-    ignore_attributes = '#eta', '#pi^{0}', 'comment'
+    ignore_attributes = "#eta", "#pi^{0}", "comment"
     _particles = {"pi0": "#pi^{0}", "eta": "#eta"}
 
     def __init__(self, name, config, particle):
@@ -39,37 +39,37 @@ class AnalysisOption(object):
 
 class Options(object):
     def __init__(self,
-                 particle='#pi^{0}',
+                 particle="#pi^{0}",
                  fitrange=(0, 20.),  # Leave it for backward compatibility
                  relaxedcb=False,
-                 fitf='cball',
-                 spectrumconf='config/spectrum.json',
-                 ptrange='config/pt.json',
-                 outconf='config/spectrum-output.json',
-                 invmassconf='config/invariant-mass.json',
-                 backgroudpconf='config/cball-parameters.json',
-                 signalp='config/cball-parameters.json',
+                 fitf="cball",
+                 spectrumconf="config/spectrum.json",
+                 ptrange="config/pt.json",
+                 outconf="config/spectrum-output.json",
+                 invmassconf="config/invariant-mass.json",
+                 backgroudpconf="config/cball-parameters.json",
+                 signalp="config/cball-parameters.json",
                  ):
         super(Options, self).__init__()
 
         self.spectrum = AnalysisOption(
-            'RangeEstimator', spectrumconf, particle)
+            "RangeEstimator", spectrumconf, particle)
         self.spectrum.ptrange = fitrange
         self.spectrum.fit_range = fitrange
 
-        self.pt = AnalysisOption('DataSlicer', ptrange, particle)
-        self.output = AnalysisOption('DataExtractor', outconf, particle)
+        self.pt = AnalysisOption("DataSlicer", ptrange, particle)
+        self.output = AnalysisOption("DataExtractor", outconf, particle)
         self.output.scalew_spectrum = True
         self.output.ptrange = fitrange
 
         self.backgroundp = AnalysisOption(
-            'backgroundp', backgroudpconf, particle)
+            "backgroundp", backgroudpconf, particle)
         self.backgroundp.relaxed = relaxedcb
 
-        self.signalp = AnalysisOption('signalp', signalp, particle)
+        self.signalp = AnalysisOption("signalp", signalp, particle)
         self.signalp.relaxed = relaxedcb
 
-        self.invmass = AnalysisOption('MassFitter', invmassconf, particle)
+        self.invmass = AnalysisOption("MassFitter", invmassconf, particle)
         self.invmass.signalp = self.signalp
         self.invmass.backgroundp = self.backgroundp
 
@@ -84,16 +84,16 @@ class Options(object):
         # This one is needed only for. systematic error estimation
         #
         relaxed, particle = self.backgroundp.relaxed, self.backgroundp.particle
-        prefix = 'gaus' if 'gaus' in fitf.lower() else 'cball'
-        pconf = 'config/{0}-parameters.json'.format(prefix)
-        self.backgroundp = AnalysisOption('backgroundp', pconf, particle)
+        prefix = "gaus" if "gaus" in fitf.lower() else "cball"
+        pconf = "config/{0}-parameters.json".format(prefix)
+        self.backgroundp = AnalysisOption("backgroundp", pconf, particle)
         self.backgroundp.relaxed = relaxed
 
     @staticmethod
     def fixed_peak(*args):
         options = Options(*args)
         options.spectrum.fit_mass_width = False
-        options.mode = 'd'
+        options.mode = "d"
         return options
 
     @staticmethod
@@ -108,14 +108,14 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(particle='#pi^{0}',
-             ptrange='config/pt-spmc.json', *args, **kwargs):
+    def spmc(particle="#pi^{0}",
+             ptrange="config/pt-spmc.json", *args, **kwargs):
         options = Options(
             particle=particle,
             ptrange=ptrange,
-            spectrumconf='config/spectrum-spmc.json',
-            backgroudpconf='config/cball-parameters-spmc-enhanced.json',
-            signalp='config/cball-parameters-spmc-enhanced.json',
+            spectrumconf="config/spectrum-spmc.json",
+            backgroudpconf="config/cball-parameters-spmc-enhanced.json",
+            signalp="config/cball-parameters-spmc-enhanced.json",
             *args,
             **kwargs
         )
@@ -142,8 +142,8 @@ class CompositeOptions(object):
 
 class EfficiencyOptions(object):
 
-    def __init__(self, particle='#pi^{0}',
-                 genname='hPt_#pi^{0}_primary_',
+    def __init__(self, particle="#pi^{0}",
+                 genname="hPt_#pi^{0}_primary_",
                  scale=0.075,
                  ptrange="config/pt.json"):
         super(EfficiencyOptions, self).__init__()
@@ -163,7 +163,7 @@ class EfficiencyOptions(object):
 
     @classmethod
     def spmc(klass, particle="#pi^{0}",
-             genname='hPt_#pi^{0}_primary_', scale=0.075,
+             genname="hPt_#pi^{0}_primary_", scale=0.075,
              *args, **kwargs):
         efficiency_options = klass(genname=genname, scale=scale)
         efficiency_options.analysis = Options().spmc(
@@ -174,7 +174,7 @@ class EfficiencyOptions(object):
 class CompositeEfficiencyOptions(object):
 
     def __init__(self, particle,
-                 genname='hPt_{0}_primary_',
+                 genname="hPt_{0}_primary_",
                  use_particle=True,
                  scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
@@ -208,7 +208,7 @@ class CorrectedYieldOptions(object):
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
         self.efficiency = EfficiencyOptions(
-            genname='hPt_{0}_primary_'.format(particle))
+            genname="hPt_{0}_primary_".format(particle))
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
@@ -255,19 +255,19 @@ class FeeddownOptions(object):
     def __init__(self):
         super(FeeddownOptions, self).__init__()
         self.feeddown = Options()
-        # self.feeddown = Options(ptrange='config/pt-same.json')
-        # NB: Don't fit the mass and width and
+        # self.feeddown = Options(ptrange="config/pt-same.json")
+        # NB: Don"t fit the mass and width and
         #     use the same values from the data
         self.feeddown.spectrum.fit_mass_width = False
         self.regular = Options()
-        # self.regular = Options(ptrange='config/pt-same.json')
+        # self.regular = Options(ptrange="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
         self.fitf = None
 
 
 class ProbeTofOptions(object):
     def __init__(self):
-        self.analysis = Options(ptrange='config/tag-and-probe-tof.json')
+        self.analysis = Options(ptrange="config/tag-and-probe-tof.json")
         # NB: Make sure to define it later
         self.fitfunc = None
 
@@ -275,9 +275,12 @@ class ProbeTofOptions(object):
 class EpRatioOptions(object):
     def __init__(self):
         # We need only pT similar to the original analysis
-        self.pt = Options().pt
+        self.pt = Options(
+            ptrange="config/ep_ratio/pt.json",
+            signalp="config/ep_ratio/peak.json",
+        ).pt
         # NB: Make sure to define it later
-        self.histname = 'hEpElectronsPSM0'
+        self.histname = "hEpElectronsPSM0"
 
 
 class NonlinearityOptions(object):
@@ -286,7 +289,7 @@ class NonlinearityOptions(object):
         super(NonlinearityOptions, self).__init__()
         self.data = Options()
         self.mc = Options()
-        # NB: Don't assingn to get an exception
+        # NB: Don"t assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
         self.factor = 1.0
@@ -301,7 +304,7 @@ class CompositeNonlinearityOptions(object):
         self.data = Options(particle=particle, ptrange=ptrange)
         self.mc = CompositeOptions(particle,
                                    ptrange=ptrange, n_ranges=n_ranges)
-        # NB: Don't assingn to get an exception
+        # NB: Don"t assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
         self.factor = 1.0
