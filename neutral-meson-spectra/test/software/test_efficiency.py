@@ -26,9 +26,7 @@ class TestEfficiency(unittest.TestCase):
             DataVault().input("single #pi^{0}", "high"): (4.0, 20.0)
         }
 
-        estimator = Efficiency(
-            CompositeEfficiencyOptions(unified_inputs, "#pi^{0}")
-        )
+        estimator = Efficiency(CompositeEfficiencyOptions("#pi^{0}"))
 
         efficiency = estimator.transform(
             unified_inputs.keys(),

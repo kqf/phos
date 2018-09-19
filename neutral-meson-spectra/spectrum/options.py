@@ -40,7 +40,7 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle='#pi^{0}',
-                 fitrange=(0, 20),
+                 fitrange=(0, 20.),  # Leave it for backward compatibility
                  relaxedcb=False,
                  fitf='cball',
                  spectrumconf='config/spectrum.json',
@@ -108,11 +108,10 @@ class Options(object):
         return options
 
     @staticmethod
-    def spmc(pt_fit_range, particle='#pi^{0}',
+    def spmc(particle='#pi^{0}',
              ptrange='config/pt-spmc.json', *args, **kwargs):
         options = Options(
             particle=particle,
-            fitrange=pt_fit_range,
             ptrange=ptrange,
             spectrumconf='config/spectrum-spmc.json',
             backgroudpconf='config/cball-parameters-spmc-enhanced.json',
@@ -126,23 +125,19 @@ class Options(object):
 
 class CompositeOptions(object):
 
-    def __init__(self, unified_inputs, particle, *args, **kwargs):
+    def __init__(self, particle, n_ranges=2, *args, **kwargs):
         super(CompositeOptions, self).__init__()
-        ranges = [rr for rr in unified_inputs.values()]
         options = [
-            Options.spmc(rr, particle, *args, **kwargs)
-            for rr in ranges
+            Options.spmc(particle, *args, **kwargs)
+            for _ in range(n_ranges)
         ]
 
-        names = ["{0}-{1}".format(*rr) for rr in ranges]
+        names = ["{0}".format(rr) for rr in range(n_ranges)]
         self.steps = zip(names, options)
 
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
         if particle == "#eta":
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
-
-        if ranges[0][0] > ranges[1][0]:
-            self.mergeranges = self.mergeranges[::-1]
 
 
 class EfficiencyOptions(object):
@@ -167,38 +162,37 @@ class EfficiencyOptions(object):
         self.analysis.pt.rebins = rebins
 
     @classmethod
-    def spmc(klass, pt_range, particle="#pi^{0}",
+    def spmc(klass, particle="#pi^{0}",
              genname='hPt_#pi^{0}_primary_', scale=0.075,
              *args, **kwargs):
         efficiency_options = klass(genname=genname, scale=scale)
         efficiency_options.analysis = Options().spmc(
-            pt_range, particle=particle, *args, **kwargs)
+            particle=particle, *args, **kwargs)
         return efficiency_options
 
 
 class CompositeEfficiencyOptions(object):
 
-    def __init__(self, unified_inputs, particle,
+    def __init__(self, particle,
                  genname='hPt_{0}_primary_',
                  use_particle=True,
-                 scale=0.075, *args, **kwargs):
+                 scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
         if use_particle:
             genname = genname.format(particle)
-        self.suboptions = [EfficiencyOptions.spmc(
-            rr, particle, genname, scale,
-            *args, **kwargs)
-            for _, rr in unified_inputs.iteritems()
+        self.suboptions = [
+            EfficiencyOptions.spmc(
+                particle=particle,
+                genname=genname,
+                scale=scale,
+                *args, **kwargs)
+            for _ in range(n_ranges)
         ]
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
         if particle == "#eta":
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
 
-        ranges = unified_inputs.values()
-        if ranges[0][0] > ranges[1][0]:
-            self.mergeranges = self.mergeranges[::-1]
-
-        self.analysis = CompositeOptions(unified_inputs, particle)
+        self.analysis = CompositeOptions(particle)
         self.reduce_function = "standard"
 
     def set_binning(self, ptedges, rebins):
@@ -232,7 +226,7 @@ class CorrectedYieldOptions(object):
 
 
 class CompositeCorrectedYieldOptions(object):
-    def __init__(self, particle="", unified_inputs=None):
+    def __init__(self, particle="", n_ranges=2):
         super(CompositeCorrectedYieldOptions, self).__init__()
         self.analysis = Options(
             particle=particle,
@@ -240,7 +234,7 @@ class CompositeCorrectedYieldOptions(object):
         )
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = CompositeEfficiencyOptions(unified_inputs, particle)
+        self.efficiency = CompositeEfficiencyOptions(n_ranges, particle)
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
@@ -300,12 +294,13 @@ class NonlinearityOptions(object):
 
 class CompositeNonlinearityOptions(object):
 
-    def __init__(self, unified_inputs, particle="#pi^{0}"):
+    def __init__(self, particle="#pi^{0}", n_ranges=2):
         super(CompositeNonlinearityOptions, self).__init__()
         ptrange = "config/pt-nonlinearity.json"
 
         self.data = Options(particle=particle, ptrange=ptrange)
-        self.mc = CompositeOptions(unified_inputs, particle, ptrange=ptrange)
+        self.mc = CompositeOptions(particle,
+                                   ptrange=ptrange, n_ranges=n_ranges)
         # NB: Don't assingn to get an exception
         self.fitf = None
         self.decorate = self.data.particle, "Nonlinearity"
@@ -324,11 +319,12 @@ class NonlinearityScanOptions(object):
 
 class CompositeNonlinearityScanOptions(object):
 
-    def __init__(self, unified_inputs, particle="#pi^{0}", nbins=11,):
+    def __init__(self, particle="#pi^{0}", nbins=11, n_ranges=2):
         super(CompositeNonlinearityScanOptions, self).__init__()
         self.nbins = nbins
         self.analysis = CompositeOptions(
-            unified_inputs, particle,
+            particle,
+            n_ranges=n_ranges,
             ptrange="config/pt-spmc.json")
         self.analysis_data = Options(ptrange="config/pt-spmc.json")
         self.factor = 1.
@@ -336,7 +332,7 @@ class CompositeNonlinearityScanOptions(object):
 
 class CompositeNonlinearityUncertainty(object):
 
-    def __init__(self, unified_inputs, particle="#pi^{0}", nbins=11,):
+    def __init__(self, particle="#pi^{0}", nbins=11, n_ranges=2):
         super(CompositeNonlinearityUncertainty, self).__init__()
         self.nbins = nbins
-        self.eff = CompositeEfficiencyOptions(unified_inputs, particle)
+        self.eff = CompositeEfficiencyOptions(n_ranges, particle)
