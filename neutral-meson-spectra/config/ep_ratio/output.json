@@ -1,0 +1,12 @@
+{
+    "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
+    "output_order": ["mass", "width", "chi2", "nmesons", "spectrum"],
+    "output":
+    {
+        "mass": "E/p ratio for electrons; matched cluster p_{T}, GeV; E/p ratio; %s",
+        "width": "E/p ratio width ; matched cluster p_{T}; #sigma_{E/p}; %s",
+        "chi2": "#chi^{2} / N_{dof} for E/p ratio; p_{T}, GeV; #chi^{2} / N_{dof}; %s",
+        "nmesons": "Number of electrons in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}; %s",
+        "spectrum": "Number of electrons in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}; %s"
+    }
+}

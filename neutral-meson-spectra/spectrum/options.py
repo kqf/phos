@@ -278,6 +278,7 @@ class EpRatioOptions(object):
         self.analysis = Options(
             ptrange="config/ep_ratio/pt.json",
             signalp="config/ep_ratio/peak.json",
+            outconf="config/ep_ratio/output.json",
         )
         # NB: Make sure to define it later
         self.histname = "hEpElectronsPSM0"
