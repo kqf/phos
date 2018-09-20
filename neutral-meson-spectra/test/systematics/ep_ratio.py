@@ -15,7 +15,8 @@ class TestEpRatio(unittest.TestCase):
                 "pythia8",
                 version="ep_ratio_1",
                 listname="PHOSEpRatioCoutput1",
-                histname="Ep_ele"),
+                histname="Ep_ele",
+                use_mixing=False),
             "test ep ratio estimator"
         )
         for o in output:

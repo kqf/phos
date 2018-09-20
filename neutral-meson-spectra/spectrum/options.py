@@ -275,10 +275,10 @@ class ProbeTofOptions(object):
 class EpRatioOptions(object):
     def __init__(self):
         # We need only pT similar to the original analysis
-        self.pt = Options(
+        self.analysis = Options(
             ptrange="config/ep_ratio/pt.json",
             signalp="config/ep_ratio/peak.json",
-        ).pt
+        )
         # NB: Make sure to define it later
         self.histname = "hEpElectronsPSM0"
 

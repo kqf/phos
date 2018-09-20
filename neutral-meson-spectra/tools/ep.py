@@ -1,6 +1,6 @@
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline
-from spectrum.input import SingleHistInput
+from spectrum.analysis import Analysis
 from spectrum.broot import BROOT as br
 
 
@@ -23,8 +23,4 @@ class EpRatioEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(EpRatioEstimator, self).__init__(plot)
         self.options = options
-        self.pipeline = Pipeline([
-            ('input', SingleHistInput(options.histname)),
-            ('slicer', EpSlicer(options.pt, plot)),
-
-        ])
+        self.pipeline = Analysis(options.analysis, plot)
