@@ -9,7 +9,7 @@ class TestEpRatio(unittest.TestCase):
     def test_ep_ratio(self):
         options = EpRatioOptions()
         options.histname = "hEp_ele"
-        estimator = EpRatioEstimator(options)
+        estimator = EpRatioEstimator(options, plot=True)
         output = estimator.transform(
             DataVault().input(
                 "pythia8",
