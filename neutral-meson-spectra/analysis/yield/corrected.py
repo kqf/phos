@@ -12,20 +12,19 @@ class TestCorrectedYield(unittest.TestCase):
     def test_corrected_yield_for_pi0(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} scan nonlinearity7"
-        unified_inputs = {
-            DataVault().input(production, "low", "PhysEff"): (0, 8.0),
-            DataVault().input(production, "high", "PhysEff"): (4.0, 20)
-        }
+        inputs = [
+            DataVault().input(production, "low", "PhysEff"),
+            DataVault().input(production, "high", "PhysEff"),
+        ]
 
         data = [
             DataVault().input("data"),
-            unified_inputs
+            inputs
         ]
 
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
-                particle="#pi^{0}",
-                unified_inputs=unified_inputs
+                particle="#pi^{0}"
             )
         )
         estimator.transform(data, "corrected yield #pi^{0}")
@@ -33,20 +32,17 @@ class TestCorrectedYield(unittest.TestCase):
     @unittest.skip('')
     def test_corrected_yield_for_eta(self):
         production = "single #eta new tender"
-        unified_inputs = {
-            DataVault().input(production, "low"): (0, 10),
-            DataVault().input(production, "high"): (4.0, 20)
-        }
+        inputs = [
+            DataVault().input(production, "low"),
+            DataVault().input(production, "high"),
+        ]
 
         data = [
             DataVault().input("data"),
-            unified_inputs
+            inputs
         ]
 
         estimator = CorrectedYield(
-            CompositeCorrectedYieldOptions(
-                particle="#eta",
-                unified_inputs=unified_inputs
-            )
+            CompositeCorrectedYieldOptions(particle="#eta")
         )
         estimator.transform(data, "corrected yield #eta")
