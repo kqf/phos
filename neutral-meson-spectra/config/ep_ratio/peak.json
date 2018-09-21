@@ -13,10 +13,5 @@
 		"fit_mass_limits":   [0.98, 1.02],
 		"fit_width_limits":  [0.096, 1.040],
 		"background": "pol1"
-
-	},
-
-	"#eta":
-	{
 	}
 }
