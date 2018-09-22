@@ -12,19 +12,16 @@ class TestPeakPosition(unittest.TestCase):
     def test_pt_ranges(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} iteration d3 nonlin14"
-        unified_inputs = {
-            DataVault().input(production, "low", "PhysEff"): (0.0, 8.0),
-            DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
-        }
+        unified_inputs = (
+            DataVault().input(production, "low", "PhysEff"),
+            DataVault().input(production, "high", "PhysEff"),
+        )
 
         estimator = PeakPositionWidthEstimator(
-            CompositeEfficiencyOptions(unified_inputs, "#pi^{0}")
+            CompositeEfficiencyOptions("#pi^{0}")
         )
         loggs = AnalysisOutput("test ranges")
-        mass, massf, width, widthf = estimator._estimate(
-            unified_inputs,
-            loggs
-        )
+        mass, massf, width, widthf = estimator._estimate(unified_inputs, loggs)
         # loggs.plot()
         Comparator().compare(mass)
         # Comparator().compare(width)

@@ -12,38 +12,32 @@ from vault.datavault import DataVault
 def ratio_input():
     # Define the inputs and the dataset for #eta mesons
     #
-    unified_inputs_eta = {
-        DataVault().input("single #eta updated", "low"): (0, 6.0),
-        DataVault().input("single #eta updated", "high"): (6.0, 20)
-    }
-
-    data_eta = [
-        DataVault().input("data"),
-        unified_inputs_eta
-    ]
-
-    options_eta = CompositeCorrectedYieldOptions(
-        particle="#eta",
-        unified_inputs=unified_inputs_eta
+    inputs_eta = (
+        DataVault().input("single #eta updated", "low"),
+        DataVault().input("single #eta updated", "high"),
     )
+
+    data_eta = (
+        DataVault().input("data"),
+        inputs_eta
+    )
+
+    options_eta = CompositeCorrectedYieldOptions(particle="#eta")
 
     # Define the inputs and the dataset for #pi^{0}
     #
     prod = "single #pi^{0} iteration3 yield aliphysics"
-    unified_inputs_pi0 = {
-        DataVault().input(prod, "low"): (0, 7.0),
-        DataVault().input(prod, "high"): (7.0, 20)
-    }
-
-    data_pi0 = [
-        DataVault().input("data"),
-        unified_inputs_pi0
-    ]
-
-    options_pi0 = CompositeCorrectedYieldOptions(
-        particle="#pi^{0}",
-        unified_inputs=unified_inputs_pi0
+    inputs_pi0 = (
+        DataVault().input(prod, "low"),
+        DataVault().input(prod, "high"),
     )
+
+    data_pi0 = (
+        DataVault().input("data"),
+        inputs_pi0
+    )
+
+    options_pi0 = CompositeCorrectedYieldOptions(particle="#pi^{0}")
     # Make same binning for all neutral mesons
     options_pi0.set_binning(
         options_eta.analysis.pt.ptedges,
@@ -64,7 +58,7 @@ class TestNeutralMesonYieldRatio(unittest.TestCase):
         )
 
         output = estimator.transform(
-            [data_eta, data_pi0],
+            (data_eta, data_pi0),
             loggs=AnalysisOutput("eta to pion ratio")
         )
         Comparator().compare(output)
