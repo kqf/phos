@@ -1,6 +1,6 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
-    "#pi^{0}":
+    "electrons":
     {
         "ptedges": [0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.8, 3.2, 10.0],
         "rebins": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]

@@ -2,7 +2,7 @@
 	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
 	"canvas": [0.001, 0.001],
     "dead": "",
-    "#pi^{0}":
+    "electrons":
     {
         "width_func": "[0] * x + [1]",
     	"width_pars": [1, 1],

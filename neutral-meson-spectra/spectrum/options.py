@@ -276,10 +276,12 @@ class EpRatioOptions(object):
     def __init__(self):
         # We need only pT similar to the original analysis
         self.analysis = Options(
+            particle="electrons",
             fitf="gaus",
             ptrange="config/ep_ratio/pt.json",
             spectrumconf="config/ep_ratio/ep.json",
             signalp="config/ep_ratio/peak.json",
+            backgroudpconf="config/ep_ratio/peak.json",
             outconf="config/ep_ratio/output.json",
             invmassconf="config/ep_ratio/mass.json",
         )
