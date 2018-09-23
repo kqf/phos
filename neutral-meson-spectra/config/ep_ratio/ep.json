@@ -1,0 +1,20 @@
+{
+	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
+	"canvas": [0.001, 0.001],
+    "dead": "",
+    "#pi^{0}":
+    {
+        "width_func": "[0] * x + [1]",
+    	"width_pars": [1, 1],
+    	"width_names": ["a", "b"],
+        "mass_func": "[0] * x + [1]",
+    	"mass_pars": [1, 1],
+    	"mass_names": ["a", "b"],
+        "nsigmas": 2,
+        "fit_range": [0, 20],
+        "fit_mass_width": "True" 
+   },
+  "#eta":
+  {
+  }
+}
