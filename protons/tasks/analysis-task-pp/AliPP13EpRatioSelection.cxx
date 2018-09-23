@@ -133,6 +133,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Float_t nsigma_max = 3;
 	Float_t nsigma_cpv = 9999;
 	Float_t nsigma_disp = 9999;
+	Float_t distance_cut = 5.; // [cm]
 
 	// Don't do anything if pidresponse wasn't defined
 	if (!eflags.fPIDResponse)
@@ -171,6 +172,9 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 
 	// Apply PID cuts
 	if(disp > nsigma_disp)
+		return;
+
+	if(rr > disntance_cut)
 		return;
 	
 	// Don't take into account particles outside eta range
