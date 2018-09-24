@@ -93,13 +93,12 @@ class DebugTheEfficiency(unittest.TestCase):
 
     def test_efficiency_evaluation(self):
         particle = "#pi^{0}"
-        debug_inputs = {
-            debug_input("low"): (0, 8),
-            debug_input("high"): (4, 20)
-        }
+        debug_inputs = (
+            debug_input("low"),
+            debug_input("high"),
+        )
 
         moptions = CompositeEfficiencyOptions(
-            debug_inputs,
             particle,
             genname='hGenPi0Pt_clone',
             use_particle=False,
@@ -110,13 +109,12 @@ class DebugTheEfficiency(unittest.TestCase):
 
         prod = "single #pi^{0} debug3"
         ll = "debug-ledger.json"
-        unified_inputs = {
-            DataVault(ll).input(prod, "low", listname="PhysEff"): (0, 8.0),
-            DataVault(ll).input(prod, "high", listname="PhysEff"): (4.0, 20)
-        }
+        # inputs = (
+        #     DataVault(ll).input(prod, "low", listname="PhysEff"),
+        #     DataVault(ll).input(prod, "high", listname="PhysEff"),
+        # )
 
         # moptions = CompositeEfficiencyOptions(
-        #     unified_inputs,
         #     particle,
         #     genname='hPt_{0}_primary_',
         #     ptrange="config/pt-debug.json"
@@ -131,23 +129,23 @@ class DebugTheEfficiency(unittest.TestCase):
     @unittest.skip('')
     def test_generated_spectrum(self):
         particle = "#pi^{0}"
-        debug_inputs = {
-            debug_input("low"): (0, 6),
-            debug_input("high"): (6, 20)
-        }
+        debug_inputs = (
+            debug_input("low"),
+            debug_input("high"),
+        )
 
         prod = "single #pi^{0} iteration d3 nonlin14"
-        unified_inputs = {
-            DataVault().input(prod, "low"): (0, 7.0),
-            DataVault().input(prod, "high"): (7.0, 20)
-        }
+        inputs = (
+            DataVault().input(prod, "low"),
+            DataVault().input(prod, "high"),
+        )
 
-        moptions = CompositeEfficiencyOptions(unified_inputs, particle)
+        moptions = CompositeEfficiencyOptions(particle)
 
         names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
 
         CompareGeneratedSpectra(moptions, names=names).transform(
-            [unified_inputs.keys()[0], debug_inputs.keys()[0]],
+            [inputs.keys()[0], debug_inputs.keys()[0]],
             "compare the debug efficiency"
         )
 
@@ -172,4 +170,3 @@ class DebugTheEfficiency(unittest.TestCase):
         nominal_low.Fit(tsallis)
         print br.pars(tsallis)
         Comparator().compare(nominal_low)
-

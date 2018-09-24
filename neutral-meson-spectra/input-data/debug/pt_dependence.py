@@ -12,7 +12,7 @@ class TestPeakPosition(unittest.TestCase):
     def test_pt_ranges(self):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} iteration d3 nonlin14"
-        unified_inputs = (
+        inputs = (
             DataVault().input(production, "low", "PhysEff"),
             DataVault().input(production, "high", "PhysEff"),
         )
@@ -21,7 +21,7 @@ class TestPeakPosition(unittest.TestCase):
             CompositeEfficiencyOptions("#pi^{0}")
         )
         loggs = AnalysisOutput("test ranges")
-        mass, massf, width, widthf = estimator._estimate(unified_inputs, loggs)
+        mass, massf, width, widthf = estimator._estimate(inputs, loggs)
         # loggs.plot()
         Comparator().compare(mass)
         # Comparator().compare(width)
