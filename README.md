@@ -1,4 +1,4 @@
-# Photon analysis using PHOS dectector
+# Photon analysis using PHOS dectector ![status](https://travis-ci.com/kqf/phos.svg?token=7bkqqhrPB19pD1YKrAZM&branch=master)
 
 Main repository consists of several scripts, analysis tasks and various utilities. The outputs from some scripts serve as an input (explicitly or not) to other scripts. Therefore all these tasks should be maintained simultaneously.
 
