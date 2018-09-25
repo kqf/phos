@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  echo "Configure automatic tests on the server"
+  # - docker build -t tests .
+  # - docker ps -a
+  # - docker run --rm tests pytest
