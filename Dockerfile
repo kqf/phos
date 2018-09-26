@@ -12,8 +12,6 @@ RUN apt-get update -y
 
 # Setup python
 RUN apt-get install -y python-pip
-RUN apt-get install -y python
-
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install .
