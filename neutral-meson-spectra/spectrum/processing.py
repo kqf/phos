@@ -36,28 +36,32 @@ class DataSlicer(object):
                    )
 
 
-class MassFitter(object):
+class InvariantMassExtractor(object):
 
     def __init__(self, options):
-        super(MassFitter, self).__init__()
+        super(InvariantMassExtractor, self).__init__()
         self.opt = options
 
     def transform(self, rmasses, loggs):
-        pipeline = self.pipeline(self.opt.use_mixed)
+        return map(lambda x: InvariantMass(x, self.opt), rmasses)
 
-        # Extract invariant masses
-        masses = map(
-            lambda x: InvariantMass(x, self.opt),
-            rmasses
-        )
+
+class MassFitter(object):
+
+    def __init__(self, use_mixed):
+        super(MassFitter, self).__init__()
+        self.use_mixed = use_mixed
+
+    def transform(self, masses, loggs):
+        pipeline = self._pipeline()
 
         for estimator in pipeline:
             map(estimator.transform, masses)
 
         return masses
 
-    def pipeline(self, use_mixed):
-        if not use_mixed:
+    def _pipeline(self):
+        if not self.use_mixed:
             return [
                 BackgroundEstimator(),
                 SignalExtractor(),

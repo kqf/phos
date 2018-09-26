@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
+from processing import InvariantMassExtractor
 from options import Options, CompositeOptions
 from pipeline import Pipeline, ParallelPipeline, ReducePipeline
 from transformer import TransformerBase
@@ -14,7 +15,8 @@ class SimpleAnalysis(TransformerBase):
         self.options = options
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.pt)),
-            ("fitmasses", MassFitter(options.invmass)),
+            ("parametrize", InvariantMassExtractor(options.invmass)),
+            ("fitmasses", MassFitter(options.invmass.use_mixed)),
             ("ranges", RangeEstimator(options.spectrum)),
             ("data", DataExtractor(options.output))
         ])
