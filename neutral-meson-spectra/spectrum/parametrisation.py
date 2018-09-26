@@ -51,6 +51,7 @@ class PeakParametrisation(object):
         hist.Fit(ff, "0QL", "", *self.opt.prel_range)
         par = [ff.GetParameter(i) if i !=
                1 else self.opt.fit_mass for i in range(4)]
+        print par
         fitfun.SetParameters(*par)
         return par
 

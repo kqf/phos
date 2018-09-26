@@ -280,8 +280,8 @@ class EpRatioOptions(object):
             fitf="gaus",
             ptrange="config/ep_ratio/pt.json",
             spectrumconf="config/ep_ratio/ep.json",
-            signalp="config/ep_ratio/peak.json",
             backgroudpconf="config/ep_ratio/peak.json",
+            signalp="config/ep_ratio/peak.json",
             outconf="config/ep_ratio/output.json",
             invmassconf="config/ep_ratio/mass.json",
         )

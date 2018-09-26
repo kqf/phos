@@ -3,15 +3,14 @@
 	"par_names": ["A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}"],
 	"electrons":
 	{
-
 		"fit_range":         [0.7, 1.4],
 		"prel_mass_limits":  [0.8, 1.2],
-		"prel_width_limits": [0.096, 1.040],
-		"prel_range":        [0.096, 1.040],
-		"prel_paremeters":   [1, 0.098, 0.0],
+		"prel_width_limits": [-0.06, 0.06],
+		"prel_range":        [0.7, 1.4],
+		"prel_paremeters":   [9.68573e-01, 6.84894e-02, 0.0],
 		"fit_mass":          1.0,
 		"fit_mass_limits":   [0.98, 1.02],
-		"fit_width_limits":  [0.096, 1.040],
-		"background": "pol1"
+		"fit_width_limits":  [-0.06, 0.06],
+		"background": "pol0"
 	}
 }

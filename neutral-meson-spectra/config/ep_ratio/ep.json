@@ -13,8 +13,5 @@
         "nsigmas": 2,
         "fit_range": [0, 20],
         "fit_mass_width": "True" 
-   },
-  "#eta":
-  {
-  }
+   }
 }

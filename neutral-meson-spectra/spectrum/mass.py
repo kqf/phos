@@ -36,7 +36,7 @@ class SignalExtractor(object):
 
         # mass.signal = mass.mass.Clone()
         # mass.signal.Sumw2(True)
-        # mass.signal.Add(mass.mass, mass.background.GetHistogram(), 1,  -1.)
+        # mass.signal.Add(mass.mass, mass.background.GetHistogram(), 1, -1.)
         # TODO: SetAxisRange aswell
         mass.signal.SetAxisRange(*mass.xaxis_range)
         mass.signal.GetYaxis().SetTitle("Real - background")
