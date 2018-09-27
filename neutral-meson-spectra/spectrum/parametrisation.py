@@ -51,7 +51,6 @@ class PeakParametrisation(object):
         hist.Fit(ff, "0QL", "", *self.opt.prel_range)
         par = [ff.GetParameter(i) if i !=
                1 else self.opt.fit_mass for i in range(4)]
-        print par
         fitfun.SetParameters(*par)
         return par
 
@@ -65,15 +64,18 @@ class PeakParametrisation(object):
         return self.preliminary_fit(hist, fitfun)
 
     def form_background(self, fname="background"):
+        fit_mass = (self.opt.fit_mass,)
+        fit_range = self.opt.fit_range
+
         if 'pol2' in self.opt.background:
             bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
-            return ROOT.TF1(fname, bf % tuple([self.opt.fit_mass] * 2), *self.opt.fit_range)
+            return ROOT.TF1(fname, bf % (fit_mass * 2), *fit_range)
 
         if 'pol3' in self.opt.background:
             bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2 + [3] * x^(x-%.3f)^3"
-            return ROOT.TF1(fname, bf % tuple([self.opt.fit_mass] * 3), *self.opt.fit_range)
+            return ROOT.TF1(fname, bf % (fit_mass * 3), *fit_range)
 
-        return ROOT.TF1(fname, self.opt.background + "(0)", *self.opt.fit_range)
+        return ROOT.TF1(fname, self.opt.background + "(0)", *fit_range)
 
     @staticmethod
     def get(options):
@@ -95,7 +97,8 @@ class CrystalBall(PeakParametrisation):
         alpha, n = '[3]', '[4]'  # alpha >= 0, n > 1
         a = 'TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])'
         b = '[4] / [3] - [3]'
-        cff = "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : [0]*%s*(%s-(x-[1])/[2])^(-%s)"
+        cff = "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : " \
+            "[0]*%s*(%s-(x-[1])/[2])^(-%s)"
         signal = ROOT.TF1(name, cff % (alpha, a, b, n))
         return signal
 
@@ -178,8 +181,8 @@ class CrystalBallEnhanced(CrystalBall):
         # if not self.opt.relaxed:
         fitfun.FixParameter(3, self.opt.cb_alpha)
         fitfun.FixParameter(4, self.opt.cb_n)
-
-        for i in range(fitfun.GetNpar() - self.background.GetNpar(), fitfun.GetNpar()):
+        n_start = fitfun.GetNpar() - self.background.GetNpar()
+        for i in range(n_start, fitfun.GetNpar()):
             fitfun.SetParameter(i, 0)
 
 
