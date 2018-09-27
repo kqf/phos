@@ -4,7 +4,7 @@
 	"electrons":
 	{
 		"fit_range":         [0.7, 1.4],
-        "prel_area_limits":  1.5,
+        "prel_area_limits":  null,
 		"prel_mass_limits":  null,
 		"prel_width_limits": null,
 		"prel_range":        [0.7, 1.4],
@@ -12,6 +12,6 @@
 		"fit_mass":          1.0,
 		"fit_mass_limits":   null,
 		"fit_width_limits":  null,
-		"background": "pol1"
+		"background": "pol0"
 	}
 }

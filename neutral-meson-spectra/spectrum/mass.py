@@ -47,8 +47,10 @@ class SignalFitter(object):
 
     def transform(self, mass):
         mass.sigf, mass.bgrf = mass.signalp.fit(mass.signal)
+        # mass.signal.Draw()
+        # mass.signal.Draw("same")
+        # mass.mass.Fit(mass.sigf, "R")
         # mass.mass.Draw()
-        # mass.bgrf.Draw("same")
         # canvas = ROOT.gROOT.FindObject("c1")
         # canvas.Update()
         # raw_input("testing the inputs")

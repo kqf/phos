@@ -11,6 +11,36 @@ from spectrum.pipeline import Pipeline
 from spectrum.transformer import TransformerBase
 from spectrum.output import AnalysisOutput
 
+from spectrum.mass import SignalFitter
+
+
+class IdentityExtractor(object):
+    def transform(self, mass):
+        mass.signal = mass.mass.Clone()
+        func = ROOT.TF1('func', "gaus(0)", 0.8, 1.2)
+        func.SetParameter(0, 1)
+        func.SetParameter(1, 1)
+        func.SetParameter(2, 1)
+        mass.signal.Fit(func, "R")
+        mass.sigf = func
+        return mass
+
+
+class EpFitter(object):
+
+    def __init__(self):
+        super(EpFitter, self).__init__()
+        self.pipeline = [
+            IdentityExtractor(),
+            # SignalFitter(),
+        ]
+
+    def transform(self, masses, loggs):
+        for estimator in self.pipeline:
+            map(estimator.transform, masses)
+
+        return masses
+
 
 class ExtractMass(TransformerBase):
 
@@ -20,12 +50,13 @@ class ExtractMass(TransformerBase):
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
+            ("fit", EpFitter()),
         ])
 
 
 class DebugEpRatio(unittest.TestCase):
 
-    @unittest.skip("")
+    # @unittest.skip("")
     def test_ep_ratio(self):
         options = EpRatioOptions()
         options.histname = "hEp_ele"
@@ -41,18 +72,18 @@ class DebugEpRatio(unittest.TestCase):
         )
 
         for o in output:
-            func = ROOT.TF1('func', "gaus(0)", 0.8, 1.2)
-            func.SetParameter(0, 1)
-            func.SetParameter(1, 1)
-            func.SetParameter(2, 1)
-            o.mass.Fit(func, "R")
-            Comparator().compare(o.mass)
+            # func = ROOT.TF1('func', "gaus(0)", 0.8, 1.2)
+            # func.SetParameter(0, 1)
+            # func.SetParameter(1, 1)
+            # func.SetParameter(2, 1)
+            # o.mass.Fit(func, "R")
+            Comparator().compare(o.signal)
             # Comparator().compare(o.mass)
 
 
 class TestEpRatio(unittest.TestCase):
 
-    # @unittest.skip("")
+    @unittest.skip("")
     def test_ep_ratio(self):
         options = EpRatioOptions()
         options.histname = "hEp_ele"
