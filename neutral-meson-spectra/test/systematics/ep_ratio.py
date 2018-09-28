@@ -10,14 +10,21 @@ from spectrum.options import Options
 from spectrum.pipeline import Pipeline
 from spectrum.transformer import TransformerBase
 from spectrum.output import AnalysisOutput
-
-from spectrum.mass import SignalFitter
+from spectrum.processing import RangeEstimator, DataExtractor
 
 
 class IdentityExtractor(object):
+    def __init__(self, options):
+        super(IdentityExtractor, self).__init__()
+        self.options = options
+
     def transform(self, mass):
         mass.signal = mass.mass.Clone()
-        func = ROOT.TF1('func', "gaus(0)", 0.8, 1.2)
+
+        formula = "gaus(0) + {}(3)".format(self.options.background)
+        func = ROOT.TF1("func", formula, *self.options.fit_range)
+
+        func.SetParNames(*self.options.par_names)
         func.SetParameter(0, 1)
         func.SetParameter(1, 1)
         func.SetParameter(2, 1)
@@ -28,10 +35,10 @@ class IdentityExtractor(object):
 
 class EpFitter(object):
 
-    def __init__(self):
+    def __init__(self, options):
         super(EpFitter, self).__init__()
         self.pipeline = [
-            IdentityExtractor(),
+            IdentityExtractor(options),
             # SignalFitter(),
         ]
 
@@ -50,7 +57,9 @@ class ExtractMass(TransformerBase):
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
-            ("fit", EpFitter()),
+            ("fit", EpFitter(options.analysis.signalp)),
+            ("ranges", RangeEstimator(options.analysis.spectrum)),
+            ("data", DataExtractor(options.analysis.output))
         ])
 
 
@@ -77,7 +86,7 @@ class DebugEpRatio(unittest.TestCase):
             # func.SetParameter(1, 1)
             # func.SetParameter(2, 1)
             # o.mass.Fit(func, "R")
-            Comparator().compare(o.signal)
+            Comparator().compare(o)
             # Comparator().compare(o.mass)
 
 
