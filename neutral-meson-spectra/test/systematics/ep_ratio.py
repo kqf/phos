@@ -25,11 +25,12 @@ class IdentityExtractor(object):
         func = ROOT.TF1("func", formula, *self.options.fit_range)
 
         func.SetParNames(*self.options.par_names)
-        func.SetParameter(0, 1)
+        func.SetParameter(0, 60)
         func.SetParameter(1, 1)
-        func.SetParameter(2, 1)
-        mass.signal.Fit(func, "R")
+        func.SetParameter(2, 0.08)
+        mass.signal.Fit(func, "RQ")
         mass.sigf = func
+        mass.bgrf = func
         return mass
 
 
@@ -45,7 +46,6 @@ class EpFitter(object):
     def transform(self, masses, loggs):
         for estimator in self.pipeline:
             map(estimator.transform, masses)
-
         return masses
 
 
@@ -77,15 +77,10 @@ class DebugEpRatio(unittest.TestCase):
                 listname="PHOSEpRatioCoutput1",
                 histname="Ep_ele",
                 use_mixing=False),
-            loggs=AnalysisOutput("test ep ratio estimator")
+            loggs="test ep ratio estimator"
         )
 
         for o in output:
-            # func = ROOT.TF1('func', "gaus(0)", 0.8, 1.2)
-            # func.SetParameter(0, 1)
-            # func.SetParameter(1, 1)
-            # func.SetParameter(2, 1)
-            # o.mass.Fit(func, "R")
             Comparator().compare(o)
             # Comparator().compare(o.mass)
 
