@@ -1,26 +1,55 @@
-from spectrum.transformer import TransformerBase
+import ROOT
+from spectrum.processing import DataSlicer, InvariantMassExtractor
+from spectrum.options import Options
 from spectrum.pipeline import Pipeline
-from spectrum.analysis import Analysis
-from spectrum.broot import BROOT as br
+from spectrum.transformer import TransformerBase
+from spectrum.processing import RangeEstimator, DataExtractor
 
 
-class EpSlicer(TransformerBase):
-
-    def __init__(self, options, plot):
-        super(EpSlicer, self).__init__(plot)
+class IdentityExtractor(object):
+    def __init__(self, options):
+        super(IdentityExtractor, self).__init__()
         self.options = options
 
-    def transform(self, data, loggs):
-        hists = [
-            br.project_range(data, '_%d_%d', *rr)
-            for rr in zip(self.options.ptedges[:-1], self.options.ptedges[1:])
+    def transform(self, mass):
+        mass.signal = mass.mass.Clone()
+
+        formula = "gaus(0) + {}(3)".format(self.options.background)
+        func = ROOT.TF1("func", formula, *self.options.fit_range)
+
+        func.SetParNames(*self.options.par_names)
+        func.SetParameter(0, 60)
+        func.SetParameter(1, 1)
+        func.SetParameter(2, 0.08)
+        mass.signal.Fit(func, "RQ")
+        mass.sigf = func
+        mass.bgrf = func
+        return mass
+
+
+class EpFitter(object):
+
+    def __init__(self, options):
+        super(EpFitter, self).__init__()
+        self.pipeline = [
+            IdentityExtractor(options),
         ]
-        return hists
+
+    def transform(self, masses, loggs):
+        for estimator in self.pipeline:
+            map(estimator.transform, masses)
+        return masses
 
 
 class EpRatioEstimator(TransformerBase):
 
-    def __init__(self, options, plot=False):
+    def __init__(self, options=Options(), plot=False):
         super(EpRatioEstimator, self).__init__(plot)
         self.options = options
-        self.pipeline = Analysis(options.analysis, plot)
+        self.pipeline = Pipeline([
+            ("slice", DataSlicer(options.analysis.pt)),
+            ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
+            ("fit", EpFitter(options.analysis.signalp)),
+            ("ranges", RangeEstimator(options.analysis.spectrum)),
+            ("data", DataExtractor(options.analysis.output))
+        ])
