@@ -33,12 +33,8 @@ class ScanNonlinearities(unittest.TestCase):
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
 
-        unified_inputs = OrderedDict([
-            (low, (0.0, 8.0)),
-            (high, (4.0, 20.0)),
-        ])
         options = CompositeNonlinearityScanOptions(
-            unified_inputs,
+            (low, high),
             nbins=nbins
         )
         options.factor = 1.

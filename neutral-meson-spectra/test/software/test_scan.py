@@ -1,8 +1,5 @@
 import unittest
-from collections import OrderedDict
 
-from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
 from spectrum.options import (CompositeNonlinearityScanOptions,
                               NonlinearityScanOptions)
 from spectrum.output import AnalysisOutput
@@ -49,13 +46,8 @@ class TestScan(unittest.TestCase):
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
 
-        unified_inputs = OrderedDict([
-            (low, (0.0, 8.0)),
-            (high, (4.0, 20.0)),
-        ])
-
         estimator = NonlinearityScan(
-            CompositeNonlinearityScanOptions(unified_inputs, nbins=nbins)
+            CompositeNonlinearityScanOptions((low, high), nbins=nbins)
         )
 
         low, high = low.read_multiple(2), high.read_multiple(2)

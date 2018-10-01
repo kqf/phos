@@ -1,6 +1,5 @@
 import ROOT
 import unittest
-from collections import OrderedDict
 
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
@@ -23,12 +22,8 @@ class ScanNonlinearities(unittest.TestCase):
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
 
-        unified_inputs = OrderedDict([
-            (low, (0.0, 8.0)),
-            (high, (4.0, 20.0)),
-        ])
         options = CompositeNonlinearityScanOptions(
-            unified_inputs, nbins=self.nbins)
+            (low, high), nbins=self.nbins)
         options.factor = 1.
 
         low, high = low.read_multiple(2), high.read_multiple(2)
@@ -54,23 +49,18 @@ class ScanNonlinearities(unittest.TestCase):
         print histname
         # production = "single #pi^{0} iteration d3 nonlin14"
         # histname = "MassPt"
-        unified_inputs = {
-            DataVault().input(production, "low",
-                              histname=histname): (0.0, 8.0),
-            DataVault().input(production, "high",
-                              histname=histname): (4.0, 20.0)
-        }
-
-        options = CompositeNonlinearityOptions(unified_inputs)
+        options = CompositeNonlinearityOptions()
         options.fitf = None
         options.factor = 1.
         estimator = Nonlinearity(options)
         loggs = AnalysisOutput("optimal nonlinearity")
         nonlinearity = estimator.transform(
             [
-                DataVault().input("data", listname="Phys",
-                                  histname="MassPt"),
-                unified_inputs
+                DataVault().input("data", listname="Phys", histname="MassPt"),
+                (
+                    DataVault().input(production, "low", histname=histname),
+                    DataVault().input(production, "high", histname=histname),
+                )
             ],
             loggs=loggs
         )
