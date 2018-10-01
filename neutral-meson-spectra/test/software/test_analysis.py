@@ -21,17 +21,13 @@ class TestAnalysis(unittest.TestCase):
         self.assertGreater(len(output), 0)
 
     def test_composite(self):
-        unified_inputs = {
-            DataVault().input("single #pi^{0}", "low"): (0.0, 8.0),
-            DataVault().input("single #pi^{0}", "high"): (4.0, 20.0)
-        }
-
-        analysis = Analysis(
-            CompositeOptions(unified_inputs, "#pi^{0}")
-        )
+        analysis = Analysis(CompositeOptions("#pi^{0}"))
 
         output = analysis.transform(
-            unified_inputs,
+            (
+                DataVault().input("single #pi^{0}", "low"),
+                DataVault().input("single #pi^{0}", "high"),
+            ),
             loggs=AnalysisOutput("test the composite analysis")
         )
         # for o in output:

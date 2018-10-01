@@ -59,6 +59,7 @@ class TestTH(unittest.TestCase):
 
     def setUp(self):
         self.stop = 'discover' not in sys.argv
+        self.stop = self.stop and 'pytest' not in sys.argv
         # self.stop = 'discover' in sys.argv
         self.hist = br.BH(
             ROOT.TH1F, "hist" + str(random.randint(0, 1e9)),
