@@ -174,7 +174,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	if(disp > nsigma_disp)
 		return;
 
-	if(rr > disntance_cut)
+	if(rr > distance_cut)
 		return;
 	
 	// Don't take into account particles outside eta range
