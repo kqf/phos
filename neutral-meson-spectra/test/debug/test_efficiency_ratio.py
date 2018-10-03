@@ -41,20 +41,19 @@ class TestEfficiencyEtaRatio(unittest.TestCase):
     def test_eta_efficiency(self):
         particle = "#eta"
         production = "single #eta updated nonlinearity"
-        unified_inputs = {
-            DataVault().input(production, "low"): (0.0, 10.0),
-            DataVault().input(production, "low"): (0.0, 10.0)
-        }
         efficiency = SimpleEfficiency(
-            CompositeEfficiencyOptions(unified_inputs, particle).suboptions[0]
+            CompositeEfficiencyOptions(particle).suboptions[0]
         )
         numerator, denominator = efficiency.transform(
-            unified_inputs,
-            AnalysisOutput("compare numerator with denominator")
+            (
+                DataVault().input(production, "low"),
+                DataVault().input(production, "low"),
+            ),
+            loggs=AnalysisOutput("compare numerator with denominator")
         )
         denominator.label = "generated"
         denominator_orig = denominator.Clone()
         denominator_orig.label = "original"
         denominator_orig.logy = True
         numerator, denominator = br.rebin_as(numerator, denominator)
-        Comparator().compare(denominator_orig, denominator)
+        # Comparator().compare(denominator_orig, denominator)
