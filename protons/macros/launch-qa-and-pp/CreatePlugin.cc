@@ -4,13 +4,18 @@
 using std::cout;
 using std::endl;
 
-AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
+AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period_raw, TString dpart, Bool_t useJDL, Bool_t isMC)
 {
 	// Maximal size of the dataset that shouldn't be slitted on two halves
 	Int_t msize = 80;
 
 	// Use default setup for the plugin
-	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
+	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period_raw, dpart, useJDL, isMC, msize);
+    TString period = period_raw.ReplaceAll("-isolated", "");
+    cout << " *****  " << period << endl;
+    cout << " *****  " << period << endl;
+    cout << " *****  " << period << endl;
+    cout << " *****  " << period << endl;
 
 	// Extract period and reconstruction pass
 	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
