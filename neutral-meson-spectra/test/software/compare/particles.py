@@ -18,7 +18,7 @@ class Particles(object):
         for hist in data:
             hist.logy = 1
 
-        pytest = 'pytest' in sys.argv
+        pytest = 'pytest' in sys.argv[0]
         discover = 'discover' in sys.argv
         compare = 'test.software.compare' in sys.argv
         skip = discover and not compare and not pytest
