@@ -15,7 +15,7 @@ class TestOutputRatio(unittest.TestCase, Particles):
     def setUp(self):
         self.data, self.stop = self.config()
 
-    def testCompareTwo(self):
+    def test_draws_two_histograms(self):
         diff = cmpr.Comparator(stop=self.stop)
 
         self.data[2].SetTitle('Checking output ratio comparator')
@@ -28,9 +28,9 @@ class TestOutputRatio(unittest.TestCase, Particles):
         ratio.Draw()
         wait("test", draw=self.stop)
 
-    def testCompareMultiple(self):
+    def test_draws_multiple_histograms(self):
         diff = cmpr.Comparator(stop=self.stop)
 
         self.data[0].SetTitle('Checking output ratio comparator')
         ratio = diff.compare(zip(*[self.data, self.data]))
-        self.assertFalse(all(ratio))
+        self.assertTrue(all(ratio))

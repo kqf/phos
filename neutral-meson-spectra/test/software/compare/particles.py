@@ -21,7 +21,7 @@ class Particles(object):
         pytest = 'pytest' in sys.argv[0]
         discover = 'discover' in sys.argv
         compare = 'test.software.compare' in sys.argv
-        skip = discover and not compare and not pytest
+        skip = discover and not compare or pytest
 
         return data, not skip
 
