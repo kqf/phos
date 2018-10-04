@@ -6,6 +6,7 @@ from spectrum.sutils import wait
 from spectrum.options import Options
 from spectrum.invariantmass import InvariantMass
 from spectrum.processing import DataSlicer, MassFitter, RangeEstimator
+from spectrum.processing import InvariantMassExtractor
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
 
@@ -16,6 +17,7 @@ class TestInvariantMass(unittest.TestCase):
 
     def setUp(self):
         self.wait = 'discover' not in sys.argv
+        self.wait = self.wait and 'pytest' not in sys.argv[0]
         self.input = DataVault().input(
             "data",
             "stable",
@@ -41,7 +43,8 @@ class TestInvariantMass(unittest.TestCase):
 
         pipeline = Pipeline([
             ('slice', DataSlicer(option.pt)),
-            ('fit', MassFitter(option.invmass)),
+            ('extract', InvariantMassExtractor(option.invmass)),
+            ('fit', MassFitter(option.invmass.use_mixed)),
             ("ranges", RangeEstimator(option.spectrum)),
         ])
 

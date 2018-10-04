@@ -4,6 +4,7 @@ from spectrum.processing import MassFitter
 from spectrum.output import AnalysisOutput
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline
+from spectrum.processing import InvariantMassExtractor
 
 from spectrum.options import Options
 from vault.datavault import DataVault
@@ -18,7 +19,8 @@ class UpdatedAnalysis(TransformerBase):
         self.options = options
         self.pipeline = Pipeline([
             ('data_slicer', DataSlicer(self.options.pt)),
-            ('mass_fitter', MassFitter(self.options.invmass))
+            ('mass_extractor', InvariantMassExtractor(self.options.invmass)),
+            ('mass_fitter', MassFitter(self.options.invmass.use_mixed))
         ])
 
 
