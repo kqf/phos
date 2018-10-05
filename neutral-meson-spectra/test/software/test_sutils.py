@@ -15,7 +15,7 @@ class TestSpectrumUtils(unittest.TestCase):
         hist = ROOT.TH1F(
             'histWait', 'Test: Drawing with no global canvas', 600, -3, 3)
         hist.Draw()
-        self.stop = 'discover' not in sys.argv
+        self.stop = not ('discover' in sys.argv or 'pytest' in sys.argv[0])
 
     def test_draws_histogram(self):
         hist = ROOT.TH1F(

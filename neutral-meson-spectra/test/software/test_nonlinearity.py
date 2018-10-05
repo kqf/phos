@@ -13,7 +13,7 @@ def nonlinearity_function():
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
         0, 100
     )
-    func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
+    func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
     func_nonlin.SetParameter(0, -0.05)
     func_nonlin.SetParameter(1, 0.6)
     func_nonlin.SetParLimits(1, 0, 10)
@@ -30,34 +30,32 @@ class TestNonlinearityEstimator(unittest.TestCase):
         estimator = Nonlinearity(options)
         nonlinearity = estimator.transform(
             [
-                DataVault().input('data', listname="PhysNonlinEst",
-                                  histname='MassPt_SM0'),
-                DataVault().input('pythia8', listname="PhysNonlinTender",
-                                  histname='MassPt_SM0'),
+                DataVault().input("data", listname="PhysNonlinEst",
+                                  histname="MassPt_SM0"),
+                DataVault().input("pythia8", listname="PhysNonlin",
+                                  histname="MassPt_SM0"),
             ],
             loggs=AnalysisOutput("Testing the interface")
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
     def test_composite(self):
-        unified_inputs = {
-            DataVault().input("single #pi^{0}", "low",
-                              listname="PhysNonlin",
-                              histname="MassPt_SM0"): (0.0, 8.0),
-            DataVault().input("single #pi^{0}", "high",
-                              listname="PhysNonlin",
-                              histname="MassPt_SM0"): (8.0, 20.0)
-        }
-        options = CompositeNonlinearityOptions(unified_inputs)
+        options = CompositeNonlinearityOptions()
         options.fitf = nonlinearity_function()
 
         estimator = Nonlinearity(options)
+        hist = "MassPt_SM0"
         nonlinearity = estimator.transform(
-            [
-                DataVault().input('data', listname="PhysNonlinEst",
-                                  histname='MassPt_SM0'),
-                unified_inputs
-            ],
+            (
+                DataVault().input("data", listname="PhysNonlinEst",
+                                  histname=hist),
+                (
+                    DataVault().input(
+                        "single #pi^{0}", "low", "PhysNonlin", histname=hist),
+                    DataVault().input(
+                        "single #pi^{0}", "high", "PhysNonlin", histname=hist)
+                )
+            ),
             loggs=AnalysisOutput("Testing the composite interface")
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
