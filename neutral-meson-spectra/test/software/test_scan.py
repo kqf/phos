@@ -19,7 +19,6 @@ class TestScan(unittest.TestCase):
         mc = [
             DataVault().input(
                 "pythia8",
-                "staging",
                 listname="PhysNonlinScan",
                 histname="MassPt_{}_{}".format(i, j)
             )
@@ -27,7 +26,7 @@ class TestScan(unittest.TestCase):
         ]
 
         assert estimator.transform(
-            [DataVault().input("data"), mc],
+            (DataVault().input("data"), mc),
             loggs=AnalysisOutput("testing the scan interface")
         )
 
@@ -47,13 +46,13 @@ class TestScan(unittest.TestCase):
         high = DataVault().input(prod, "high", inputs=histnames)
 
         estimator = NonlinearityScan(
-            CompositeNonlinearityScanOptions((low, high), nbins=nbins)
+            CompositeNonlinearityScanOptions(nbins=nbins)
         )
 
         low, high = low.read_multiple(2), high.read_multiple(2)
         mc_data = [(l, h) for l, h in zip(low, high)]
 
         assert estimator.transform(
-            [DataVault().input("data"), mc_data],
+            (DataVault().input("data"), mc_data),
             loggs=AnalysisOutput("testing the scan interface")
         )

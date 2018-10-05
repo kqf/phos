@@ -1,7 +1,5 @@
 import unittest
-from collections import OrderedDict
 
-import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.efficiency import Efficiency
@@ -67,11 +65,7 @@ class ScanNonlinearitiesOverlap(unittest.TestCase):
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
 
-        unified_inputs = OrderedDict([
-            (low, (0.0, 8.0)),
-            (high, (4.0, 20.0)),
-        ])
-        options = CompositeEfficiencyOptions(unified_inputs, "#pi^{0}")
+        options = CompositeEfficiencyOptions("#pi^{0}")
         options.reduce_function = reduce_chi2
 
         low_, high_ = low.read_multiple(2), high.read_multiple(2)
@@ -95,11 +89,7 @@ class ScanNonlinearitiesOverlap(unittest.TestCase):
         low = DataVault().input(prod, "low", inputs=histnames)
         high = DataVault().input(prod, "high", inputs=histnames)
 
-        unified_inputs = OrderedDict([
-            (low, (0.0, 8.0)),
-            (high, (4.0, 20.0)),
-        ])
-        options = CompositeEfficiencyOptions(unified_inputs, "#pi^{0}")
+        options = CompositeEfficiencyOptions("#pi^{0}")
         options.reduce_function = reduce_chi2
 
         low_, high_ = low.read_multiple(2), high.read_multiple(2)
