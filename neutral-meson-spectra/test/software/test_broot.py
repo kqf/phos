@@ -10,7 +10,7 @@ import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.options import Options
-from spectrum.sutils import wait, gcanvas
+from spectrum.sutils import wait
 
 
 # NB: Don't use broot in write functions

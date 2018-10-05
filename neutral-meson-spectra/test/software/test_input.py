@@ -9,10 +9,10 @@ from test.software.test_broot import write_histograms
 class TestInput(unittest.TestCase):
 
     def test_reads_single_histogram(self):
-        ofilename = 'test_read.root'
-        selection = 'testSelection'
-        myhist = 'testHistogram'
-        histnames = myhist, 'EventCounter'
+        ofilename = "test_reads_single.root"
+        selection = "testSelection"
+        myhist = "testHistogram"
+        histnames = myhist, "EventCounter"
         original = write_histograms(ofilename, selection, histnames)
 
         fromfile = read_histogram(ofilename, selection, myhist)
@@ -26,13 +26,12 @@ class TestInput(unittest.TestCase):
         os.remove(ofilename)
 
     def test_reads_standard_input(self):
-        ofilename = 'test_read.root'
-        selection = 'testSelection'
-        histnames = 'hMassPt', 'hMixMassPt', 'EventCounter'
+        ofilename = "test_reads_standard.root"
+        selection = "testSelection"
+        histnames = "hMassPt", "hMixMassPt", "EventCounter"
 
-        original = write_histograms(ofilename, selection, histnames)
-        oreal, omixed = original[:-1]
-        onevents = original[-1].GetBinContent(2)
+        oreal, omixed, cntr = write_histograms(ofilename, selection, histnames)
+        onevents = cntr.GetBinContent(2)
 
         real, mixed = Input(ofilename, selection).read()
 
@@ -52,9 +51,9 @@ class TestInput(unittest.TestCase):
         os.remove(ofilename)
 
     def test_reads_nomixing_input(self):
-        ofilename = 'test_read.root'
-        selection = 'testSelection'
-        histnames = 'hMassPt', 'EventCounter'
+        ofilename = "test_reads_nomixing.root"
+        selection = "testSelection"
+        histnames = "hMassPt", "EventCounter"
 
         original = write_histograms(ofilename, selection, histnames)
         oreal, onevents = original[0], original[-1].GetBinContent(2)
@@ -77,12 +76,12 @@ class TestInput(unittest.TestCase):
 class TestInputMemoryPerformance(unittest.TestCase):
 
     def setUp(self):
-        self.infile = 'Pythia-new.root'
-        self.sel = 'StudyNonlinOnlyTender'
-        self.hname = 'MassPt_%d_%d'
+        self.infile = "Pythia-new.root"
+        self.sel = "StudyNonlinOnlyTender"
+        self.hname = "MassPt_%d_%d"
         self.sbins = 11, 11
 
-    @unittest.skip('These tests are only needed to check memory consumption')
+    @unittest.skip("These tests are only needed to check memory consumption")
     def test_sequence(self):
         x, y = self.sbins
         bar = progressbar.ProgressBar(maxval=x * y)
@@ -94,7 +93,7 @@ class TestInputMemoryPerformance(unittest.TestCase):
                 bar.update(x * i + j)
                 self.assertIsNotNone(hists)
 
-    @unittest.skip('These tests are only needed to check memory consumption')
+    @unittest.skip("These tests are only needed to check memory consumption")
     def test_copy(self):
         inp = Input(self.infile, self.sel, self.hname % (0, 0))
         raw, mixed = inp.read()

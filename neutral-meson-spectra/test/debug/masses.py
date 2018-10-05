@@ -83,19 +83,16 @@ class TestMasses(unittest.TestCase):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         particle = "#pi^{0}"
         production = "single #pi^{0} debug3"
-        unified_inputs = {
-            DataVault().input(production, "low", "PhysEff"): (0.0, 8.0),
-            # DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
-            DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
-        }
         options = CompositeEfficiencyOptions(
-            unified_inputs,
             particle,
             ptrange="config/pt-debug.json"
         )
         loggs = AnalysisOutput("mass_test_{}".format(particle))
         MassComparator(options, plot=True).transform(
-            unified_inputs,
+            (
+                DataVault().input(production, "low", "PhysEff"),
+                DataVault().input(production, "high", "PhysEff"),
+            ),
             loggs
         )
         # diff.compare(efficiency)
@@ -153,10 +150,10 @@ class TestDifferentMasses(unittest.TestCase):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         production = "single #pi^{0} debug3"
         ll = "debug-ledger.json"
-        unified_inputs = {
-            DataVault(ll).input(production, "high", "PhysEff"): (6.0, 20),
-            DataVault(ll).input(production, "high", "PhysEff"): (6.0, 20),
-        }
+        inputs = (
+            DataVault(ll).input(production, "high", "PhysEff"),
+            DataVault(ll).input(production, "high", "PhysEff"),
+        )
         # theory = SimpleAnalysis(
         #     Options.spmc((6, 20),
         #                  ptrange="config/pt-debug.json"
@@ -169,7 +166,7 @@ class TestDifferentMasses(unittest.TestCase):
             Options.spmc((6, 20),
                          ptrange="config/pt-debug.json"
                          )
-        ).transform(unified_inputs.keys()[0], "")
+        ).transform(inputs[0], "")
         for e, t in zip(experiment, templates):
             move_histogram(e, t)
         Comparator().compare(theory, templates)
