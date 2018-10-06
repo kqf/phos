@@ -74,8 +74,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t isTest = TString(pluginmode).Contains("test");
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "", cells, isMC, isTest);
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
-    AddTaskPHOSEpRatio(isMC);
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
+    // AddTaskPHOSEpRatio(isMC);
 
 
     if ( !manager->InitAnalysis( ) ) return;
