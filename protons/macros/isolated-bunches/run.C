@@ -26,9 +26,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
-    TString pref =  isMC ? "MC" : "";
-
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     TString tenderOption = isMC ? "Run2Default" : "";
@@ -72,17 +69,21 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
+    TString pref =  isMC ? "MC" : "";
+
+    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "", cells, isMC, isTest);
 
     // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
     // AddTaskPHOSEpRatio(isMC);
 
-
-    if ( !manager->InitAnalysis( ) ) return;
+    manager->InitAnalysis();
     manager->PrintStatus();
 
+    TString files = AliAnalysisManager::GetCommonFileName();
+    cout << "Output files " << files << endl;
+    alien->SetOutputFiles(files);
 
-    alien->SetOutputFiles("AnalysisResults.root");
-    manager->StartAnalysis (runmode);
-    gObjectTable->Print( );
+    manager->StartAnalysis(runmode);
+    gObjectTable->Print();
 }
