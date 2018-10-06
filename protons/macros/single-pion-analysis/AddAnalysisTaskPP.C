@@ -35,9 +35,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
 	mgr->AddTask(task);
-
-
-
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;
 	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
