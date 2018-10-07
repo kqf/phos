@@ -1,4 +1,4 @@
-#include "../setup/environment.h"
+#include "../../setup/environment.h"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
@@ -46,12 +46,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
 
-    gROOT->LoadMacro("../setup/values_for_dataset.h+");
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
-
     TString msg = "## Real data, no TOF cut efficiency.";
-
     if (tenderOption)
     {
         msg += " with tender option ";
@@ -59,8 +54,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", isMC, isTest);
 
 
     if ( !manager->InitAnalysis( ) ) return;

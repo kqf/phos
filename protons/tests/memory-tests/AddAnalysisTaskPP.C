@@ -1,6 +1,6 @@
-#include "../setup/sources.h"
+#include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	LoadAnalysisLibraries();
 	
@@ -78,29 +78,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
-
-	if ( !badmap.IsNull() ) 
-		task->SetBadMap(badmap);
-
-	if (v.size() > 0) 
-	{
-		const Int_t nexc = v.size();
-		Int_t excells[nexc];
-		for (int i = 0; i < v.size(); ++i)
-			excells[i] = v[i];
-
-		task->SetBadCells(excells, nexc);
-	}
-
-	if (v.size() > 0 && !badmap.IsNull()) 
-		cout << "Warning, you are setting bad cells and bad map! Be sure that you know what you are doing" << endl;
-
-	// task->GetSelections()->Add
 	task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
-
-
-
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;
 	for (Int_t i = 0; i < task->GetSelections()->GetEntries(); ++ i)
