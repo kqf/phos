@@ -6,7 +6,6 @@ from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
 from spectrum.output import AnalysisOutput
 from vault.datavault import DataVault
-from spectrum.broot import BROOT as br
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
 #
@@ -68,19 +67,16 @@ class TestMasses(unittest.TestCase):
         # production = "single #pi^{0} iteration3 yield aliphysics"
         particle = "#pi^{0}"
         production = "single #pi^{0} debug3"
-        unified_inputs = {
-            DataVault().input(production, "low", "PhysEff"): (0.0, 8.0),
-            # DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
-            DataVault().input(production, "high", "PhysEff"): (4.0, 20.0),
-        }
         options = CompositeEfficiencyOptions(
-            unified_inputs,
             particle,
             ptrange="config/pt-debug.json"
         )
         loggs = AnalysisOutput("mass_test_{}".format(particle))
         MassComparator(options, plot=True).transform(
-            unified_inputs,
+            (
+                DataVault().input(production, "low", "PhysEff"),
+                DataVault().input(production, "high", "PhysEff"),
+            ),
             loggs
         )
         # diff.compare(efficiency)

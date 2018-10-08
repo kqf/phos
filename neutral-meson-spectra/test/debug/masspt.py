@@ -34,37 +34,32 @@ class DebugTheEfficiency(unittest.TestCase):
 
     def test_efficiency_evaluation(self):
         particle = "#pi^{0}"
-        debug_inputs = {
-            debug_input("low"): (0, 8),
-            debug_input("high"): (4, 20)
-        }
-
-        prod = "single #pi^{0} debug9"
-        ll = "debug-ledger.json"
-        unified_inputs = {
-            DataVault(ll).input(prod, "low", listname="PhysEff"): (0, 8.0),
-            DataVault(ll).input(prod, "high", listname="PhysEff"): (4.0, 20)
-        }
-
         doptions = CompositeEfficiencyOptions(
-            debug_inputs,
             particle,
             genname='hGenPi0Pt_clone',
             use_particle=False,
             ptrange="config/pt-spmc.json",
             scale=0.5
         )
-        # doptions.mergeranges = [(0, 6), (6, 20)]
 
         moptions = CompositeEfficiencyOptions(
-            unified_inputs,
             particle,
             genname='hPt_{0}_primary_',
             ptrange="config/pt-spmc.json"
         )
 
-        # moptions.mergeranges = [(0, 6), (6, 20)][::-1]
+        prod = "single #pi^{0} debug9"
+        ll = "debug-ledger.json"
         CompareEfficiencies(doptions, moptions).transform(
-            [debug_inputs, unified_inputs],
+            (
+                (
+                    debug_input("low"),
+                    debug_input("high"),
+                ),
+                (
+                    DataVault(ll).input(prod, "low", listname="PhysEff"),
+                    DataVault(ll).input(prod, "high", listname="PhysEff"),
+                )
+            ),
             "compare the debug efficiency"
         )
