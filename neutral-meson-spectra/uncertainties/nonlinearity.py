@@ -1,10 +1,10 @@
-import ROOT
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.efficiency import Efficiency
 from spectrum.broot import BROOT as br
+from vault.datavault import DataVault
 
 from uncertainties.deviation import MaxDeviationVector
 
@@ -38,3 +38,23 @@ def form_histnames(nbins=4):
         for i in range(nbins)
     ], [])
     return histnames
+
+
+# TODO: Add Generated Histogram to the nonlinearity scan selection
+#
+def define_inputs(nbins, prod, eff_prod="PhysEff"):
+    histnames = form_histnames(nbins)
+    low = DataVault().input(prod, "low", inputs=histnames)
+    high = DataVault().input(prod, "high", inputs=histnames)
+
+    efficiency_inputs = (
+        DataVault().input(prod, "low", "PhysEff"),
+        DataVault().input(prod, "high", "PhysEff")
+    )
+
+    spmc = [(l, h) for l, h in zip(
+        low.read_multiple(single=efficiency_inputs[0]),
+        high.read_multiple(single=efficiency_inputs[1])
+    )]
+
+    return (efficiency_inputs, spmc)

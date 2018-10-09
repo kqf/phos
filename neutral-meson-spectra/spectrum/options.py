@@ -344,4 +344,4 @@ class CompositeNonlinearityUncertainty(object):
     def __init__(self, particle="#pi^{0}", nbins=11, n_ranges=2):
         super(CompositeNonlinearityUncertainty, self).__init__()
         self.nbins = nbins
-        self.eff = CompositeEfficiencyOptions(n_ranges, particle)
+        self.eff = CompositeEfficiencyOptions(particle)
