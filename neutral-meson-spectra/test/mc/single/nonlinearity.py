@@ -39,24 +39,20 @@ class TestNonlinearitySPMC(unittest.TestCase):
         histname = "MassPt"
         self.calculate(selection, mcsel, histname)
 
-    def calculate(self, selection, mcsel, histname):
-        production = "single #pi^{0} scan nonlinearity5"
-        unified_inputs = {
-            DataVault().input(production, "low", mcsel,
-                              histname=histname): (0.0, 8.0),
-            DataVault().input(production, "high", mcsel,
-                              histname=histname): (4.0, 20.0)
-        }
-        options = CompositeNonlinearityOptions(unified_inputs)
+    def calculate(self, selection, mcsel, hname):
+        prod = "single #pi^{0} scan nonlinearity5"
+        options = CompositeNonlinearityOptions()
         options.fitf = nonlinearity_function()
 
         estimator = Nonlinearity(options, plot=True)
         nonlinearity = estimator.transform(
-            [
-                DataVault().input('data', listname=selection,
-                                  histname=histname),
-                unified_inputs
-            ],
+            (
+                DataVault().input('data', listname=selection, histname=hname),
+                (
+                    DataVault().input(prod, "low", mcsel, histname=hname),
+                    DataVault().input(prod, "high", mcsel, histname=hname)
+                )
+            ),
             # loggs=AnalysisOutput("Testing the composite interface")
             "Testing the composite interface"
         )
