@@ -1,22 +1,43 @@
-from spectrum.comparator import Comparator
-
 import unittest
 
-from test.systematics.yield_extraction import RawYieldError
-from test.systematics.nonlinearity_scan import NonlinearityScanner
-from test.systematics.genergy_scale import GlobalEnergyScaleUncetanityEvaluator
+from spectrum.output import AnalysisOutput
+from spectrum.pipeline import ComparePipeline
+from uncertainties.yields import YieldExtractioin
+from test.uncertainties.yields import YieldExtractioinUncertanityOptions
+from uncertainties.nonlinearity import Nonlinearity, define_inputs
+from spectrum.options import CompositeNonlinearityUncertainty
+from vault.datavault import DataVault
+
+
+def data(nbins):
+    production = "single #pi^{0} iteration d3 nonlin14"
+    unified_inputs = {
+        DataVault().input(production, "low"): (0, 8.0),
+        DataVault().input(production, "high"): (4.0, 20)
+    }
+
+    yields = [
+        DataVault().input("data"),
+        unified_inputs
+    ]
+    return (
+        yields,
+        define_inputs(nbins),
+    )
 
 
 class DrawAllSources(unittest.TestCase):
 
     def test_all(self):
-        stop = False
-        tests = (
-            RawYieldError(stop),
-            GlobalEnergyScaleUncetanityEvaluator(stop),
-            NonlinearityScanner(stop)
-        )
-        output = [test.test_systematics() for test in tests]
+        nbins = 2
+        nonlin_options = CompositeNonlinearityUncertainty(nbins=nbins)
+        nonlin_options.factor = 1.
 
-        diff = Comparator()
-        diff.compare(output)
+        estimator = ComparePipeline((
+            ("yield", YieldExtractioin(YieldExtractioinUncertanityOptions())),
+            ("nonlinearity", Nonlinearity(nonlin_options)),
+        ))
+        estimator.transform(
+            data(nbins),
+            loggs=AnalysisOutput("testing the scan interface")
+        )
