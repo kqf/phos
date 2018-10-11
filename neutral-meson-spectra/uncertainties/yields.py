@@ -35,7 +35,7 @@ class YieldExtractioin(TransformerBase):
                         options.signalp.background = bckgr
                         options.signalp.fit_range = frange
 
-                        self.options.analysis = options
+                        self.options.cyield.analysis = options
                         spectrum = CorrectedYield(
                             self.options.cyield).transform(data, loggs)
                         spectrum.marker = marker

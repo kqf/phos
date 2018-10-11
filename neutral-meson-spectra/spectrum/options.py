@@ -234,7 +234,10 @@ class CompositeCorrectedYieldOptions(object):
         )
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = CompositeEfficiencyOptions(n_ranges, particle)
+        self.efficiency = CompositeEfficiencyOptions(
+            particle,
+            n_ranges=n_ranges
+        )
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
