@@ -14,9 +14,9 @@ class YieldExtractioinUncertanityOptions(object):
             # "mid": [0.04, 0.20],
             # "wide": [0.08, 0.24]
         }
-        self.backgrounds = ["pol1", "pol2"]
-        self.signals = ["CrystalBall", "Gaus"]
-        self.nsigmas = [2, 3]
+        self.backgrounds = ["pol1"]
+        self.signals = ["CrystalBall"]
+        self.nsigmas = [2]
         self.cyield = cyield
 
 
@@ -25,21 +25,18 @@ class TestYieldExtractionUncertanity(unittest.TestCase):
     # @unittest.skip("")
     def test_yield_extraction_uncertanity_pion(self):
         production = "single #pi^{0} iteration d3 nonlin14"
-        unified_inputs = {
-            DataVault().input(production, "low"): (0, 8.0),
-            DataVault().input(production, "high"): (4.0, 20)
-        }
+        inputs = (
+            DataVault().input(production, "low"),
+            DataVault().input(production, "high"),
+        )
 
         data = [
             DataVault().input("data"),
-            unified_inputs
+            inputs
         ]
 
         options = YieldExtractioinUncertanityOptions(
-            CompositeCorrectedYieldOptions(
-                particle="#pi^{0}",
-                unified_inputs=unified_inputs
-            )
+            CompositeCorrectedYieldOptions(particle="#pi^{0}")
         )
         estimator = YieldExtractioin(options)
         output = estimator.transform(

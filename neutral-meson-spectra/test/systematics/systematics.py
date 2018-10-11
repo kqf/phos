@@ -11,15 +11,15 @@ from vault.datavault import DataVault
 
 def data(nbins):
     production = "single #pi^{0} iteration d3 nonlin14"
-    unified_inputs = {
-        DataVault().input(production, "low"): (0, 8.0),
-        DataVault().input(production, "high"): (4.0, 20)
-    }
+    yields_inputs = (
+        DataVault().input(production, "low"),
+        DataVault().input(production, "high"),
+    )
 
-    yields = [
+    yields = (
         DataVault().input("data"),
-        unified_inputs
-    ]
+        yields_inputs
+    )
     return (
         yields,
         define_inputs(nbins),
