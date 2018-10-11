@@ -22,7 +22,7 @@ class YieldExtractioin(TransformerBase):
             len(self.options.signals) *
             len(self.options.nsigmas)
         )
-        for frange, flab in self.options.mass_range.iteritems():
+        for flab, frange in self.options.mass_range.iteritems():
             for bckgr in self.options.backgrounds:
                 for marker, par in enumerate(self.options.signals):
                     for nsigmas in self.options.nsigmas:
