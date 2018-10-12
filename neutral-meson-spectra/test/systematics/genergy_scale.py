@@ -7,24 +7,18 @@ from uncertainties.gscale import GScale
 
 class TestGeScaleUncertainty(unittest.TestCase):
     def test_interface_composite(self):
-        unified_inputs = {
-            DataVault().input("single #pi^{0}", "low"): (0, 7.0),
-            DataVault().input("single #pi^{0}", "high"): (7.0, 20)
-        }
-
-        data = [
-            DataVault().input("data"),
-            unified_inputs
-        ]
-
         estimator = GScale(
-            CompositeCorrectedYieldOptions(
-                particle="#pi^{0}",
-                unified_inputs=unified_inputs
-            ),
+            CompositeCorrectedYieldOptions(particle="#pi^{0}"),
             plot=False
         )
         uncertanity = estimator.transform(
-            data,
+            (
+                DataVault().input("data"),
+                (
+                    DataVault().input("single #pi^{0}", "low"),
+                    DataVault().input("single #pi^{0}", "high"),
+                )
+            ),
             loggs=AnalysisOutput("test composite corr. yield interface")
         )
+        return uncertanity

@@ -14,30 +14,24 @@ class TestCorrectedYield(unittest.TestCase):
 
     # @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
-        unified_inputs = {
-            DataVault().input(
-                "single #pi^{0} iteration3 yield aliphysics", "low",
-                listname="PhysEff"): (0, 7.0),
-            DataVault().input(
-                "single #pi^{0} iteration3 yield aliphysics", "high",
-                listname="PhysEff"): (7.0, 20)
-        }
-
-        data = [
-            DataVault().input("data"),
-            unified_inputs
-        ]
+        prod = "single #pi^{0} iteration3 yield aliphysics"
+        inputs = (
+            DataVault().input(prod, "low", listname="PhysEff"),
+            DataVault().input(prod, "high", listname="PhysEff"),
+        )
 
         tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 10)
-
         tsallis.SetParameters(0.014960701090585591,
                               0.287830380417601, 9.921003040859755)
         tsallis.FixParameter(3, 0.135)
         tsallis.FixParameter(4, 0.135)
 
-        options = CompositeCorrectedYieldOptions(
-            particle="#pi^{0}",
-            unified_inputs=unified_inputs
-        )
+        options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
         options.fitfunc = tsallis
-        CorrectedYield(options).transform(data, "corrected yield #pi^{0}")
+        CorrectedYield(options).transform(
+            (
+                DataVault().input("data"),
+                inputs
+            ),
+            "corrected yield #pi^{0}"
+        )
