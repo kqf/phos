@@ -1,4 +1,5 @@
 import unittest
+import pytest
 import ROOT
 
 from vault.datavault import DataVault
@@ -23,22 +24,24 @@ def nonlinearity_function():
 
 class TestNonlinearityEstimator(unittest.TestCase):
 
+    @pytest.mark.onlylocal
     def test_simple(self):
         options = NonlinearityOptions()
         options.fitf = nonlinearity_function()
 
         estimator = Nonlinearity(options)
         nonlinearity = estimator.transform(
-            [
+            (
                 DataVault().input("data", listname="PhysNonlinEst",
                                   histname="MassPt_SM0"),
                 DataVault().input("pythia8", listname="PhysNonlin",
                                   histname="MassPt_SM0"),
-            ],
+            ),
             loggs=AnalysisOutput("Testing the interface")
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
+    @pytest.mark.onlylocal
     def test_composite(self):
         options = CompositeNonlinearityOptions()
         options.fitf = nonlinearity_function()

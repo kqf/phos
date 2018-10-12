@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 from spectrum.efficiency import Efficiency
 from vault.datavault import DataVault
@@ -20,6 +21,7 @@ class TestEfficiency(unittest.TestCase):
         )
         self.assertGreater(efficiency.GetEntries(), 0)
 
+    @pytest.mark.onlylocal
     def test_composite(self):
         estimator = Efficiency(CompositeEfficiencyOptions("#pi^{0}"))
         efficiency = estimator.transform(

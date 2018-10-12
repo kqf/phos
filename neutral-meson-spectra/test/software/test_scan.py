@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 from spectrum.options import (CompositeNonlinearityScanOptions,
                               NonlinearityScanOptions)
@@ -10,6 +11,7 @@ from vault.datavault import DataVault
 
 class TestScan(unittest.TestCase):
 
+    @pytest.mark.onlylocal
     def test_interface(self):
         nbins = 2
         estimator = NonlinearityScan(
@@ -30,6 +32,7 @@ class TestScan(unittest.TestCase):
             loggs=AnalysisOutput("testing the scan interface")
         )
 
+    @pytest.mark.onlylocal
     def test_composite_interface(self):
         prod = "single #pi^{0} nonlinearity scan"
         nbins = 2

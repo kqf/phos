@@ -1,3 +1,5 @@
+import unittest
+import pytest
 
 from spectrum.processing import DataSlicer
 from spectrum.processing import MassFitter
@@ -8,8 +10,6 @@ from spectrum.processing import InvariantMassExtractor
 
 from spectrum.options import Options
 from vault.datavault import DataVault
-
-import unittest
 
 
 class UpdatedAnalysis(TransformerBase):
@@ -37,8 +37,10 @@ class TestMassFitter(unittest.TestCase):
         )
         self.assertGreater(len(masses), 0)
 
+    @pytest.mark.onlylocal
     def test_fits_the_analysis(self):
         self.run_analysis(mixed=False)
 
+    @pytest.mark.onlylocal
     def test_fits_the_analysis_mixed(self):
         self.run_analysis(mixed=True)

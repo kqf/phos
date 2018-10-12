@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 from spectrum.output import AnalysisOutput
 from spectrum.options import Options, CompositeOptions
@@ -11,6 +12,7 @@ from vault.datavault import DataVault
 class TestAnalysis(unittest.TestCase):
 
     # @unittest.skip('')
+    @pytest.mark.onlylocal
     def test_simple(self):
         analysis = Analysis(Options())
 
@@ -20,6 +22,7 @@ class TestAnalysis(unittest.TestCase):
         )
         self.assertGreater(len(output), 0)
 
+    @pytest.mark.onlylocal
     def test_composite(self):
         analysis = Analysis(CompositeOptions("#pi^{0}"))
 

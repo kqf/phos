@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CorrectedYieldOptions
@@ -10,11 +11,12 @@ from vault.datavault import DataVault
 
 class TestCorrectedYield(unittest.TestCase):
 
+    @pytest.mark.onlylocal
     def test_interface_simple(self):
-        data = [
+        data = (
             DataVault().input("data"),
             DataVault().input("pythia8")
-        ]
+        )
 
         estimator = CorrectedYield(
             CorrectedYieldOptions(particle="#pi^{0}"),

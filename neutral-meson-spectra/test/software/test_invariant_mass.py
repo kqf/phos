@@ -1,6 +1,7 @@
 
 import sys
 import unittest
+import pytest
 
 from spectrum.sutils import wait
 from spectrum.options import Options
@@ -54,6 +55,7 @@ class TestInvariantMass(unittest.TestCase):
         loggs.plot(stop=self.wait)
 
     # @unittest.skip('')
+    @pytest.mark.onlylocal
     def test_multiple_plots(self):
         for p in self.particles:
             self.draw_multiple(p)
