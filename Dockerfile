@@ -2,7 +2,7 @@ FROM rootproject/root-ubuntu16
 USER root
 
 ADD . /phos
-WORKDIR /phos
+WORKDIR /phos/neutral-meson-spectra
 
 # Install/update the package manager
 RUN apt-get update  -y
