@@ -4,10 +4,9 @@
 import ROOT
 
 import json
-import progressbar
+import tqdm
 
 from array import array
-from random import random
 from itertools import combinations, product
 
 from spectrum.sutils import tsallis
@@ -166,8 +165,7 @@ class InclusiveGenerator(object):
 
     def generate(self, nevents):
         mixed = []
-        bar = progressbar.ProgressBar()
-        for i in bar(range(nevents)):
+        for i in tqdm.trange(nevents):
             photons = self.fill(self.signal.generate() +
                                 self.backgrnd.generate(), mixed)
             mixed.append(photons)

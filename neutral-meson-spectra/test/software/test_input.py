@@ -1,6 +1,6 @@
 import os
 import unittest
-import progressbar
+import tqdm
 
 from spectrum.input import Input, NoMixingInput, read_histogram
 from test.software.test_broot import write_histograms
@@ -84,13 +84,11 @@ class TestInputMemoryPerformance(unittest.TestCase):
     @unittest.skip("These tests are only needed to check memory consumption")
     def test_sequence(self):
         x, y = self.sbins
-        bar = progressbar.ProgressBar(maxval=x * y)
         for i in range(x):
             for j in range(y):
                 hists = Input(
                     self.infile,
                     self.sel, self.hname % (i, j)).read()
-                bar.update(x * i + j)
                 self.assertIsNotNone(hists)
 
     @unittest.skip("These tests are only needed to check memory consumption")
@@ -100,7 +98,6 @@ class TestInputMemoryPerformance(unittest.TestCase):
 
         cache = []
         msize = 11 * 11
-        bar = progressbar.ProgressBar()
-        for i in bar(range(msize)):
+        for i in tqdm.tqdm(range(msize)):
             hists = raw.Clone(), mixed.Clone()
             cache.append(hists)
