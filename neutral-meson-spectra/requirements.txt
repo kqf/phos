@@ -4,4 +4,4 @@ pandas
 repoze.lru
 root_numpy
 pytest
-
+tqdm
