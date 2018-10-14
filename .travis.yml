@@ -6,4 +6,4 @@ services:
 
 script:
   - docker build -t tests .
-  - docker run --rm tests pytest -m "not onlylocal" test/software
+  - docker run --rm tests pytest -m "not onlylocal" tests/software
