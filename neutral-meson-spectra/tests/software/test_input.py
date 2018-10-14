@@ -3,7 +3,7 @@ import unittest
 import tqdm
 
 from spectrum.input import Input, NoMixingInput, read_histogram
-from test.software.test_broot import write_histograms
+from tests.software.test_broot import write_histograms
 
 
 class TestInput(unittest.TestCase):
