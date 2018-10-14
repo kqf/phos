@@ -1,12 +1,16 @@
 import unittest
+import pytest
+
 from vault.datavault import DataVault
 
 
 class TestDatasets(unittest.TestCase):
 
+    @pytest.mark.onlylocal
     def test_input_data_is_valid(self):
         self.check_ledger("ledger.json")
 
+    @pytest.mark.onlylocal
     def test_debug_data_is_valid(self):
         self.check_ledger("debug-ledger.json")
 

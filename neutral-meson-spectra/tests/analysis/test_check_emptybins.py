@@ -1,5 +1,5 @@
-#!/usr/bin/python
 import unittest
+import pytest
 
 from vault.datavault import DataVault
 from spectrum.pipeline import ComparePipeline
@@ -18,6 +18,7 @@ from spectrum.output import AnalysisOutput
 
 class CheckEmptyBins(unittest.TestCase):
 
+    @pytest.mark.onlylocal
     def test(self):
         options = []
         for average in ["standard", "with empty"]:

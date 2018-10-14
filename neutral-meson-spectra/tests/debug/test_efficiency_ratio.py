@@ -1,6 +1,5 @@
 import unittest
-
-from spectrum.comparator import Comparator
+import pytest
 
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
@@ -37,7 +36,7 @@ class SimpleEfficiency(TransformerBase):
 
 class TestEfficiencyEtaRatio(unittest.TestCase):
 
-    # @unittest.skip('')
+    @pytest.mark.onlylocal
     def test_eta_efficiency(self):
         particle = "#eta"
         production = "single #eta updated nonlinearity"

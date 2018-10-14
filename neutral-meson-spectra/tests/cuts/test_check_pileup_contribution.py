@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import Options
@@ -25,6 +26,8 @@ class PileupEstimator(TransformerBase):
 
 
 class CheckPileup(unittest.TestCase):
+
+    @pytest.mark.onlylocal
     def test_pileup(self):
         with_cut = DataVault().input("data",
                                      "latest",
