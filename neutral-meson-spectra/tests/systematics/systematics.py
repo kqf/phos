@@ -2,10 +2,11 @@ import unittest
 
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
+from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import CompositeNonlinearityUncertainty
 from uncertainties.yields import YieldExtractioin
+from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, define_inputs
-from tests.uncertainties.yields import YieldExtractioinUncertanityOptions
 from vault.datavault import DataVault
 
 
@@ -22,7 +23,7 @@ def data(nbins):
     )
     return (
         yields,
-        define_inputs(nbins),
+        define_inputs(nbins, "single #pi^{0} scan nonlinearity6"),
     )
 
 
@@ -33,8 +34,11 @@ class DrawAllSources(unittest.TestCase):
         nonlin_options = CompositeNonlinearityUncertainty(nbins=nbins)
         nonlin_options.factor = 1.
 
+        cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
+
         estimator = ComparePipeline((
-            ("yield", YieldExtractioin(YieldExtractioinUncertanityOptions())),
+            ("yield", YieldExtractioin(
+                YieldExtractioinUncertanityOptions(cyield_options))),
             ("nonlinearity", Nonlinearity(nonlin_options)),
         ))
         estimator.transform(

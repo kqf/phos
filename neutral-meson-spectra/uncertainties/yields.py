@@ -1,10 +1,22 @@
-import ROOT
 import tqdm
 from spectrum.broot import BROOT as br
+from spectrum.options import Options
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.options import Options
 from spectrum.transformer import TransformerBase
+
+
+class YieldExtractioinUncertanityOptions(object):
+    def __init__(self, cyield):
+        self.mass_range = {
+            "low": [0.06, 0.22],
+            # "mid": [0.04, 0.20],
+            # "wide": [0.08, 0.24]
+        }
+        self.backgrounds = ["pol1"]
+        self.signals = ["CrystalBall"]
+        self.nsigmas = [2]
+        self.cyield = cyield
 
 
 class YieldExtractioin(TransformerBase):
