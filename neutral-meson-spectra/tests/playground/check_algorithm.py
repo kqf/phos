@@ -6,7 +6,7 @@ from spectrum.options import Options
 from spectrum.input import Input
 
 from spectrum.broot import BROOT as br
-from test.playground.phspace import InclusiveGenerator
+from tests.playground.phspace import InclusiveGenerator
 
 import test.check_default
 

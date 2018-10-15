@@ -2,10 +2,10 @@ import unittest
 
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
-from uncertainties.yields import YieldExtractioin
-from test.uncertainties.yields import YieldExtractioinUncertanityOptions
-from uncertainties.nonlinearity import Nonlinearity, define_inputs
 from spectrum.options import CompositeNonlinearityUncertainty
+from uncertainties.yields import YieldExtractioin
+from uncertainties.nonlinearity import Nonlinearity, define_inputs
+from tests.uncertainties.yields import YieldExtractioinUncertanityOptions
 from vault.datavault import DataVault
 
 

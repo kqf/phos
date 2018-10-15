@@ -2,7 +2,7 @@ import unittest
 
 from spectrum.sutils import gcanvas, wait, ratio
 from spectrum.input import Input, TimecutInput
-from test.test_check_different_modules import ModuleAnalyzer
+from tests.test_check_different_modules import ModuleAnalyzer
 import ROOT
 ROOT.TH1.AddDirectory(False)
 
