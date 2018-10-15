@@ -40,8 +40,10 @@ class DrawAllSources(unittest.TestCase):
             ("yield", YieldExtractioin(
                 YieldExtractioinUncertanityOptions(cyield_options))),
             ("nonlinearity", Nonlinearity(nonlin_options)),
-        ))
+        ), plot=True)
+        loggs = AnalysisOutput("testing the scan interface")
         estimator.transform(
             data(nbins),
-            loggs=AnalysisOutput("testing the scan interface")
+            loggs
         )
+        loggs.plot(True)

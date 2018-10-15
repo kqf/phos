@@ -3,7 +3,6 @@ import unittest
 from math import sqrt
 from uncertainties.rms import RmsToMean
 from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
 
 
 class TestRmsToMean(unittest.TestCase):
