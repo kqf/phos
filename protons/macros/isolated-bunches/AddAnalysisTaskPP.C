@@ -14,7 +14,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	// Applying no weights
 	//
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
-	cuts_pi0.fTimingCut = 1000e-9;
+	cuts_pi0.fTimingCut = 500e-9;
 
 	// TODO: Add plain selections
 	AliPP13SelectionWeights & data_weights_plain = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain);
