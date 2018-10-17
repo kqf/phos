@@ -33,6 +33,4 @@ class TestAnalysis(unittest.TestCase):
             ),
             loggs=AnalysisOutput("test the composite analysis")
         )
-        # for o in output:
-        #     Comparator().compare(o)
         self.assertGreater(len(output), 0)
