@@ -7,6 +7,7 @@ from spectrum.options import CompositeNonlinearityUncertainty
 from uncertainties.yields import YieldExtractioin
 from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, define_inputs
+from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
 from vault.datavault import DataVault
 
 
@@ -21,9 +22,15 @@ def data(nbins):
         DataVault().input("data"),
         yields_inputs
     )
+
+    tof = (
+        DataVault().input("data"),
+        DataVault().input("data"),
+    )
     return (
         yields,
         define_inputs(nbins, "single #pi^{0} scan nonlinearity6"),
+        tof,
     )
 
 
@@ -40,6 +47,7 @@ class DrawAllSources(unittest.TestCase):
             ("yield", YieldExtractioin(
                 YieldExtractioinUncertanityOptions(cyield_options))),
             ("nonlinearity", Nonlinearity(nonlin_options)),
+            ("tof", TofUncertainty(TofUncertaintyOptions())),
         ), plot=True)
         loggs = AnalysisOutput("testing the scan interface")
         estimator.transform(
