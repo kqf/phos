@@ -1,7 +1,7 @@
 import ROOT
 from spectrum.processing import DataSlicer, InvariantMassExtractor
-from spectrum.options import Options
 from spectrum.pipeline import Pipeline
+from spectrum.pipeline import ComparePipeline
 from spectrum.transformer import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
 
@@ -43,13 +43,21 @@ class EpFitter(object):
 
 class EpRatioEstimator(TransformerBase):
 
-    def __init__(self, options=Options(), plot=False):
+    def __init__(self, options, plot=False):
         super(EpRatioEstimator, self).__init__(plot)
-        self.options = options
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
             ("fit", EpFitter(options.analysis.signalp)),
             ("ranges", RangeEstimator(options.analysis.spectrum)),
             ("data", DataExtractor(options.analysis.output))
+        ])
+
+
+class DataMCEpRatioEstimator(TransformerBase):
+    def __init__(self, options, plot=False):
+        super(DataMCEpRatioEstimator, self).__init__(plot)
+        self.pipeline = ComparePipeline([
+            ("data", EpRatioEstimator(options.data)),
+            ("mc", EpRatioEstimator(options.mc)),
         ])

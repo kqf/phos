@@ -289,7 +289,13 @@ class EpRatioOptions(object):
             invmassconf="config/ep_ratio/mass.json",
         )
         # NB: Make sure to define it later
-        self.histname = "hEpElectronsPSM0"
+        self.histname = "hEp_ele"
+
+
+class DataMCEpRatioOptions(object):
+    def __init__(self):
+        self.data = EpRatioOptions()
+        self.mc = EpRatioOptions()
 
 
 class NonlinearityOptions(object):
