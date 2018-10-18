@@ -1,12 +1,13 @@
 import sys
 import ROOT
 
-# PHOSEpRatio / PHOSEpRatioCoutput1
+# Usage
+# python remove2dir.py ./path/to/file PHOSEpRatio PHOSEpRatioCoutput1
 
 
 def main():
     filename, dirname, selname = sys.argv[1:]
-    print "From file", dirname, "and folder", dirname, "selct", selname
+    print "From file", dirname, "and folder", dirname, "select", selname
 
     infile = ROOT.TFile(filename, "update")
     selection = infile.Get("{}/{}".format(dirname, selname))

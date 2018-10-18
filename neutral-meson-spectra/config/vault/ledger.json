@@ -8,6 +8,13 @@
 			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
 		},
 		"ep_ratio": {
+			"file": "input-data/data/LHC16/ep_ratio/LHC16.root",
+			"default_selection": "Phys",
+			"pt_range": [0, 20],
+			"hsum": "563f2d7cb9eb4d7c66543df736db8cb173248f3f3dc1781f6d75dfd0c66e2a06",
+			"description": "Updated E/p ratio analysis"
+		},
+		"ep_ratio_failed": {
 			"file": "input-data/data/LHC16/LHC16/LHC16.root",
 			"default_selection": "Phys",
 			"pt_range": [0, 20],
