@@ -17,7 +17,7 @@ class TestPipeline(unittest.TestCase):
         ])
 
         output = estimator.transform(
-            (DataVault().input("single #pi^{0}", "low")) * 2,
+            (DataVault().input("single #pi^{0}", "low"), ) * 2,
             loggs=AnalysisOutput("Testing the compare pipeline")
         )
         self.assertGreater(output.GetEntries(), 0)
