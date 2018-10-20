@@ -4,11 +4,37 @@ from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.transformer import TransformerBase
+from spectrum.pipeline import ReduceArgumentPipeline
+from spectrum.pipeline import Pipeline
 from vault.formulas import FVault
 
 
 # CWR: Run this on corrected spectrum
 #
+
+class MockEpRatio(TransformerBase):
+    def transform(self, data, loggs):
+        return 0.01
+
+
+class TsallisFitter(TransformerBase):
+    @classmethod
+    def fitfunc(klass, name='', bias=0.0001):
+        fitf = ROOT.TF1(name, FVault().func("tsallis"), 2, 25)
+        fitf.SetParameter(0, 2.40)
+        fitf.SetParameter(1, 0.139)
+        fitf.SetParameter(2, 6.88)
+        return fitf
+
+    def transform(self, corrected_yield, loggs):
+        fitf = self.fitfunc('tsallis_')
+        corrected_yield.Fit(fitf, 'R', '')
+        # corrected_yield.Draw()
+        # diff = Comparator(stop=self.plot)
+        # diff.compare(corrected_yield)
+        corrected_yield.fitf = fitf
+        return [(corrected_yield, fitf)]
+
 
 class GScale(TransformerBase):
 
@@ -16,6 +42,14 @@ class GScale(TransformerBase):
         super(GScale, self).__init__(plot)
         self.options = options
         # This should be studied on corrected yield
+        self.pipeline = ReduceArgumentPipeline(
+            Pipeline([
+                ("cyield", CorrectedYield(options)),
+                ("tsallis_fit", TsallisFitter()),
+            ]),
+            MockEpRatio(options),
+            self.fit
+        )
 
     @staticmethod
     def ratiofunc(fitf, name='', bias=0.01, color=46):
@@ -29,40 +63,20 @@ class GScale(TransformerBase):
         rfunc.SetLineColor(color)
         return rfunc
 
-    @classmethod
-    def fitfunc(klass, name='', bias=0.0001):
-        fitf = ROOT.TF1(name, FVault().func("tsallis"), 2, 25)
-        fitf.SetParameter(0, 2.40)
-        fitf.SetParameter(1, 0.139)
-        fitf.SetParameter(2, 6.88)
-        return fitf
-
-    def fit(self, data, loggs):
-        corrected_spectrum = CorrectedYield(
-            self.options).transform(data, loggs)
-        fitf = self.fitfunc('tsallis_')
-        corrected_spectrum.Fit(fitf, 'R', '')
-        corrected_spectrum.Draw()
-
-        diff = Comparator(stop=self.plot)
-        diff.compare(corrected_spectrum)
-
+    def fit(self, data, ep_ratio):
+        corrected_yield, fitf = data
         lower = self.ratiofunc(fitf, 'low', -0.01, 38)
         upper = self.ratiofunc(fitf, 'up', 0.01, 47)
 
-        diff = Comparator(stop=self.plot, rrange=(-1, ), crange=(0.9, 1.1))
-        diff.compare(
-            lower.GetHistogram(),
-            upper.GetHistogram()
-        )
+        # diff = Comparator(stop=self.plot, rrange=(-1, ), crange=(0.9, 1.1))
+        # diff.compare(
+        #     lower.GetHistogram(),
+        #     upper.GetHistogram()
+        # )
 
-        return corrected_spectrum, lower, upper
-
-    def transform(self, data, loggs):
-        spectrum, lower, upper = self.fit(data, loggs)
-        syst_error = spectrum
+        syst_error = corrected_yield.Clone("gescale")
         bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
-        bins = [upper.Eval(c) - lower.Eval(c) for c in bins]
+        bins = [lower.Eval(c) - upper.Eval(c) for c in bins]
         for i, b in enumerate(bins):
             if b < 0:
                 print 'Warning: negative global energy scale corrections'
