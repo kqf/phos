@@ -2,10 +2,10 @@ include ../../base.mk
 
 PROTONS_PATH=../../
 
-DATASET = LHC16h-pass1-isolated
+DATASET = LHC16l-pass1-isolated
 DPART = first
 MC = kFALSE
-OUTDIR = results/mc/pythia/debug_weights
+OUTDIR = results/data/LHC16/isolated_1
 
 
 TEST_SELECTION = PhysTender
