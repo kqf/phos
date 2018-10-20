@@ -1,16 +1,21 @@
 import ROOT
-import spectrum.sutils as sl
 from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
+# from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.options import DataMCEpRatioOptions
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ReduceArgumentPipeline
+from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import Pipeline
 from vault.formulas import FVault
 
 
-# CWR: Run this on corrected spectrum
-#
+class GScaleOptions(object):
+    def __init__(self, particle="#pi^{0}"):
+        self.cyield = CompositeCorrectedYieldOptions(particle=particle)
+        self.ep_ratio = DataMCEpRatioOptions()
+
 
 class MockEpRatio(TransformerBase):
     def transform(self, data, loggs):
@@ -42,14 +47,17 @@ class GScale(TransformerBase):
         super(GScale, self).__init__(plot)
         self.options = options
         # This should be studied on corrected yield
-        self.pipeline = ReduceArgumentPipeline(
-            Pipeline([
-                ("cyield", CorrectedYield(options)),
-                ("tsallis_fit", TsallisFitter()),
-            ]),
-            MockEpRatio(options),
-            self.fit
-        )
+        self.pipeline = Pipeline([
+            ("gescale_raw", ReduceArgumentPipeline(
+                Pipeline([
+                    ("cyield", CorrectedYield(options.cyield)),
+                    ("tsallis_fit", TsallisFitter()),
+                ]),
+                MockEpRatio(options.ep_ratio),
+                self.fit
+            )),
+            ("gescale", FunctionTransformer(lambda output, _: output[0])),
+        ])
 
     @staticmethod
     def ratiofunc(fitf, name='', bias=0.01, color=46):

@@ -16,7 +16,7 @@ def data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
-class EpRatio(unittest.TestCase):
+class CalculateEpRatio(unittest.TestCase):
 
     @unittest.skip("")
     def test_ep_ratio_mc(self):
