@@ -1,10 +1,10 @@
 import ROOT
 from spectrum.broot import BROOT as br
 # from spectrum.comparator import Comparator
+from spectrum.transformer import TransformerBase
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import DataMCEpRatioOptions
-from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import Pipeline

@@ -6,7 +6,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
 
-from uncertainties.deviation import MaxDeviationVector
+from tools.deviation import MaxDeviationVector
 
 
 class Nonlinearity(TransformerBase):
