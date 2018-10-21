@@ -35,7 +35,7 @@ def data(nbins):
 
     tof = (
         DataVault().input("data"),
-        DataVault().input("data"),
+        DataVault().input("data", "isolated", histname="MassPtSM0"),
     )
 
     gscale = (

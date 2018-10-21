@@ -14,6 +14,13 @@
 			"hsum": "563f2d7cb9eb4d7c66543df736db8cb173248f3f3dc1781f6d75dfd0c66e2a06",
 			"description": "Updated E/p ratio analysis"
 		},
+		"isolated": {
+			"file": "input-data/data/LHC16/isolated_1/LHC16.root",
+			"default_selection": "Phys",
+			"pt_range": [0, 20],
+			"hsum": "5d9155810eff9f1988a5633b47e8cc58b79773756b03ff93fa8c14cf50012400",
+			"description": "Merged isolated bunches analysis"
+		},
 		"ep_ratio_failed": {
 			"file": "input-data/data/LHC16/LHC16/LHC16.root",
 			"default_selection": "Phys",

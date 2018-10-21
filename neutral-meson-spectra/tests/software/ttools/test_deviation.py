@@ -1,7 +1,7 @@
 import ROOT
 import unittest
 
-from uncertainties.deviation import MaxDeviation
+from tools.deviation import MaxDeviation
 from spectrum.broot import BROOT as br
 
 
