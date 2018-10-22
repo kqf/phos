@@ -1,5 +1,3 @@
-import ROOT
-
 from spectrum.analysis import Analysis
 from spectrum.transformer import TransformerBase
 from spectrum.options import Options
@@ -7,8 +5,7 @@ from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputDecorator
-from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
+from tools.unityfit import unityfit
 
 
 class TofUncertaintyOptions(object):
@@ -29,21 +26,12 @@ class RatioFitter(TransformerBase):
         self.fit_range = fit_range
 
     def transform(self, ratio, loggs):
-        fitf = ROOT.TF1("ratio", "1. - pol0(0)", *self.fit_range)
-        fitf.SetParameter(0, 0.0)
-        ratio.Fit(fitf, "R")
-        # Comparator().compare(ratio)
-
-        sys_error = abs(fitf.GetParameter(0))
-        sys_error_conf = fitf.GetParError(0)
-
-        output = ratio.Clone("tof_uncertainty")
-        output.Reset()
-        output.SetTitle("TOF uncertainty; p_T, GeV/c; Relateive error, %")
-        for i in br.range(output):
-            output.SetBinContent(i, sys_error)
-            output.SetBinError(i, sys_error_conf)
-        return output
+        return unityfit(
+            ratio,
+            "tof_uncertainty",
+            "TOF uncertainty; p_T, GeV/c; Relateive error, %",
+            self.fit_range
+        )
 
 
 class TofUncertainty(TransformerBase):
