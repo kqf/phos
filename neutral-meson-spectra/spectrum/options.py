@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import json
+import ROOT
 
 
 class AnalysisOption(object):
@@ -265,7 +266,21 @@ class FeeddownOptions(object):
         self.regular = Options()
         # self.regular = Options(ptrange="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
-        self.fitf = None
+        self.fitf = self.feeddown_paramerization()
+
+    @staticmethod
+    def feeddown_paramerization():
+        func_feeddown = ROOT.TF1(
+            "func_feeddown",
+            "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
+            0, 100
+        )
+        func_feeddown.SetParNames("A", "#sigma", "E_{scale}")
+        func_feeddown.SetParameter(0, -1.4)
+        func_feeddown.SetParameter(1, 0.33)
+        func_feeddown.SetParLimits(1, 0, 10)
+        func_feeddown.SetParameter(2, 0.02)
+        return func_feeddown
 
 
 class ProbeTofOptions(object):
