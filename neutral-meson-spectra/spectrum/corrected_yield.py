@@ -3,33 +3,50 @@ from options import CorrectedYieldOptions
 from efficiency import Efficiency
 from transformer import TransformerBase
 from pipeline import Pipeline, HistogramSelector, OutputDecorator
+from pipeline import ParallelPipeline, ReducePipeline
 from pipeline import ComparePipeline
 from pipeline import OutputFitter
+from tools.feeddown import FeeddownEstimator
 
 
 class CorrectedYield(TransformerBase):
     def __init__(self, options=CorrectedYieldOptions(), plot=False):
         super(CorrectedYield, self).__init__(plot)
+        raw_yield = Pipeline([
+            ("analysis", Analysis(options.analysis, plot)),
+            ("spectrum", HistogramSelector(options.spectrum))
+        ])
+
+        fyield = ReducePipeline(
+            ParallelPipeline([
+                ("raw_yield", raw_yield),
+                ("feed-down", FeeddownEstimator(options.feeddown))
+            ]),
+            self.multiply)
+
         compare = ComparePipeline([
-            ('raw yield', Pipeline([
-                ('analysis', Analysis(options.analysis, plot)),
-                ('spectrum', HistogramSelector(options.spectrum))
-            ])),
-            ('efficiency', Efficiency(options.efficiency, plot))
+            ("yield", fyield),
+            ("efficiency", Efficiency(options.efficiency, plot))
         ], plot)
 
         self.pipeline = Pipeline([
-            ('corrected yield', compare),
-            ('fix naming', OutputDecorator(options.analysis.particle)),
-            ('fitted yield', OutputFitter(options)),
-            ('decorate output', OutputDecorator(**options.decorate)),
+            ("corrected yield", compare),
+            ("fix naming", OutputDecorator(options.analysis.particle)),
+            ("fitted yield", OutputFitter(options)),
+            ("decorate output", OutputDecorator(**options.decorate)),
         ])
+
+    def multiply(self, calculations):
+        ryield, feeddown = calculations
+        cyield = ryield.Clone(ryield.GetName() + "_corrected_yield")
+        cyield.Multiply(feeddown)
+        return cyield
 
 
 class YieldRatio(TransformerBase):
     def __init__(self, options_eta, options_pi0, plot=False):
         super(YieldRatio, self).__init__(plot)
         self.pipeline = ComparePipeline([
-            ('#eta', CorrectedYield(options_eta, plot)),
-            ('#pi^{0}', CorrectedYield(options_pi0, plot)),
+            ("#eta", CorrectedYield(options_eta, plot)),
+            ("#pi^{0}", CorrectedYield(options_pi0, plot)),
         ], plot)

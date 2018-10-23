@@ -3,6 +3,20 @@ from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
+from vault.datavault import DataVault
+
+
+def data_feeddown():
+    return (
+        DataVault().input(
+            "pythia8",
+            listname="FeeddownSelection",
+            use_mixing=False,
+            histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}",
+            prefix=""
+        ),
+        DataVault().input("pythia8", listname="FeeddownSelection"),
+    )
 
 
 class ConfidenceLevelEstimator(TransformerBase):
@@ -23,7 +37,14 @@ class ConfidenceLevelEstimator(TransformerBase):
         errors.SetFillStyle(3002)
         feeddown.logy = False
         Comparator(loggs=loggs, rrange=(-1, -1)).compare(feeddown, errors)
-        return feeddown
+        corr = br.copy(feeddown)
+        corr.Reset()
+        for b in br.range(feeddown):
+            corr.SetBinContent(b, 1. - self.fitf.Eval(corr.GetBinCenter(b)))
+        # NB: I don't know why It should be scaled by 1.
+        #     otherwise it plots something strange
+        corr.Scale(1.0)
+        return corr
 
 
 class FeeddownEstimator(TransformerBase):

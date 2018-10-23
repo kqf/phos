@@ -1,7 +1,6 @@
 import unittest
 
-from tools.feeddown import FeeddownEstimator
-from vault.datavault import DataVault
+from tools.feeddown import FeeddownEstimator, data_feeddown
 
 from spectrum.options import FeeddownOptions
 from spectrum.output import AnalysisOutput
@@ -13,19 +12,8 @@ class FeddownTest(unittest.TestCase):
         options = FeeddownOptions()
         estimator = FeeddownEstimator(options)
         loggs = AnalysisOutput("feeddown correction")
-        output = estimator.transform(
-            [
-                DataVault().input(
-                    "pythia8",
-                    listname="FeeddownSelection",
-                    use_mixing=False,
-                    histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}",
-                    prefix=""
-                ),
-                DataVault().input("pythia8", listname="FeeddownSelection"),
-            ],
-            loggs
-        )
+        output = estimator.transform(data_feeddown(), loggs)
         # loggs.plot()
-        Comparator().compare(output)
+        print "first bin", output.GetBinContent(1)
+        Comparator().compare([output])
         self.assertGreater(output.GetEntries(), 0)
