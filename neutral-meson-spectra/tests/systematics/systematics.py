@@ -9,6 +9,7 @@ from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, define_inputs
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
 from uncertainties.gscale import GScale, GScaleOptions
+from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from vault.datavault import DataVault
 
 
@@ -23,14 +24,14 @@ def ep_data(prod="data", version="ep_ratio"):
 
 def data(nbins):
     production = "single #pi^{0} iteration d3 nonlin14"
-    yields_inputs = (
+    spmc_inputs = (
         DataVault().input(production, "low"),
         DataVault().input(production, "high"),
     )
 
-    yields = (
+    cyield = (
         DataVault().input("data"),
-        yields_inputs
+        spmc_inputs
     )
 
     tof = (
@@ -45,18 +46,24 @@ def data(nbins):
         ),
         (
             DataVault().input("data"),
-            (
-                DataVault().input("single #pi^{0}", "low"),
-                DataVault().input("single #pi^{0}", "high"),
-            )
+            spmc_inputs
         ),
     )
 
+    acceptance = (
+        cyield,  # Original corrected yield data
+        (
+            cyield,  # 1 cm distance to a bad cell
+            cyield,  # 2 cm distance to a bad cell
+        )
+    )
+
     return (
-        yields,
+        cyield,
         define_inputs(nbins, "single #pi^{0} scan nonlinearity6"),
         tof,
         gscale,
+        acceptance,
     )
 
 
@@ -75,10 +82,9 @@ class DrawAllSources(unittest.TestCase):
             ("nonlinearity", Nonlinearity(nonlin_options)),
             ("tof", TofUncertainty(TofUncertaintyOptions())),
             ("gescale", GScale(GScaleOptions(particle="#pi^{0}"))),
+            ("accepntace", Acceptance(AcceptanceOptions(particle="#pi^{0}"))),
         ), plot=True)
+
         loggs = AnalysisOutput("testing the scan interface")
-        estimator.transform(
-            data(nbins),
-            loggs
-        )
+        estimator.transform(data(nbins), loggs)
         loggs.plot(True)
