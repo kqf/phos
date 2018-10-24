@@ -4,6 +4,7 @@ from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import CompositeNonlinearityUncertainty
+from tools.feeddown import data_feeddown
 from uncertainties.yields import YieldExtractioin
 from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, define_inputs
@@ -30,7 +31,10 @@ def data(nbins):
     )
 
     cyield = (
-        DataVault().input("data"),
+        (
+            DataVault().input("data"),
+            data_feeddown(),
+        ),
         spmc_inputs
     )
 
@@ -44,10 +48,7 @@ def data(nbins):
             ep_data("data"),
             ep_data("pythia8", "ep_ratio_1"),
         ),
-        (
-            DataVault().input("data"),
-            spmc_inputs
-        ),
+        cyield,
     )
 
     acceptance = (
