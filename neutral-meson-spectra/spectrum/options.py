@@ -258,14 +258,15 @@ class CompositeCorrectedYieldOptions(object):
 
 
 class FeeddownOptions(object):
-    def __init__(self):
+    def __init__(self, particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()
-        self.feeddown = Options()
+        self.particle = particle
+        self.feeddown = Options(particle=particle)
         # self.feeddown = Options(ptrange="config/pt-same.json")
         # NB: Don"t fit the mass and width and
         #     use the same values from the data
         self.feeddown.spectrum.fit_mass_width = False
-        self.regular = Options()
+        self.regular = Options(particle=particle)
         # self.regular = Options(ptrange="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
         self.fitf = self.feeddown_paramerization()

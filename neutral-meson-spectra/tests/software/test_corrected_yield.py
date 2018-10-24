@@ -32,7 +32,7 @@ class TestCorrectedYield(unittest.TestCase):
         )
         self.assertGreater(cyield.GetEntries(), 0)
 
-    @unittest.skip("Fix this test later")
+    @pytest.mark.onlylocal
     def test_interface_composite(self):
         data = (
             (

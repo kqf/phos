@@ -1,8 +1,11 @@
+import numpy as np
+
 from spectrum.broot import BROOT as br
 from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
+from spectrum.outputcreator import OutputCreator
 from vault.datavault import DataVault
 
 
@@ -50,6 +53,8 @@ class ConfidenceLevelEstimator(TransformerBase):
 class FeeddownEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(FeeddownEstimator, self).__init__(plot)
+        self.pt = options.regular.pt.ptedges
+        self.particle = options.particle
         feeddown_main = ComparePipeline([
             ("feed-down",
                 Pipeline([
@@ -69,3 +74,24 @@ class FeeddownEstimator(TransformerBase):
             ("feeddown_extraction", feeddown_main),
             ("feeddown_fit", ConfidenceLevelEstimator(options.fitf, plot))
         ])
+
+    def transform(self, data, loggs):
+        if data and self.particle != "#pi^{0}":
+            raise IOError(
+                "Found nonempty input for feeddown estimator "
+                "for particle {}. "
+                "Only pions have sufficient statistics".format(self.particle)
+            )
+
+        if self.particle != "#pi^{0}":
+            data = zip(np.ones(len(self.pt) - 1), np.zeros(len(self.pt) - 1))
+            return OutputCreator.output_histogram(
+                (min(self.pt), max(self.pt)),
+                "feeddown",
+                "No Feeddown",
+                "feeddown",
+                self.pt,
+                data
+            )
+
+        return super(FeeddownEstimator, self).transform(data, loggs)
