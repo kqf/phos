@@ -18,11 +18,12 @@ class FeddownTestInterface(unittest.TestCase):
         )
         self.assertGreater(output.GetEntries(), 0)
 
+    @pytest.mark.onlylocal
     def test_handles_non_pions_with_data(self):
         estimator = FeeddownEstimator(FeeddownOptions(particle="#eta"))
         self.assertRaises(IOError, estimator.transform, data_feeddown(), "")
 
-    def test_(self):
+    def test_eta(self):
         estimator = FeeddownEstimator(FeeddownOptions(particle="#eta"))
         output = estimator.transform(
             None,
