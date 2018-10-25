@@ -21,6 +21,7 @@ class IdentityExtractor(object):
         func.SetParameter(0, 60)
         func.SetParameter(1, 1)
         func.SetParameter(2, 0.08)
+        func.SetLineColor(ROOT.kRed + 1)
         mass.signal.Fit(func, "RQ")
         mass.sigf = func
         mass.bgrf = func
