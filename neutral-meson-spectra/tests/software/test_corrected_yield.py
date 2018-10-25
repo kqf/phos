@@ -10,20 +10,24 @@ from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 
-class TestCorrectedYield(unittest.TestCase):
+class TestCorrectedPionYield(unittest.TestCase):
+
+    def setUp(self):
+        self.particle = "#pi^{0}"
+        self.data_feeddown = data_feeddown()
 
     @pytest.mark.onlylocal
     def test_interface_simple(self):
         data = (
             (
                 DataVault().input("data"),
-                data_feeddown(),
+                self.data_feeddown,
             ),
             DataVault().input("pythia8")
         )
 
         estimator = CorrectedYield(
-            CorrectedYieldOptions(particle="#pi^{0}"),
+            CorrectedYieldOptions(particle=self.particle),
             plot=False
         )
         cyield = estimator.transform(
@@ -37,7 +41,7 @@ class TestCorrectedYield(unittest.TestCase):
         data = (
             (
                 DataVault().input("data"),
-                data_feeddown(),
+                self.data_feeddown,
             ),
             (
                 DataVault().input("single #pi^{0}", "low"),
@@ -46,7 +50,7 @@ class TestCorrectedYield(unittest.TestCase):
         )
 
         estimator = CorrectedYield(
-            CompositeCorrectedYieldOptions(particle="#pi^{0}"),
+            CompositeCorrectedYieldOptions(particle=self.particle),
             plot=False
         )
         cyield = estimator.transform(
@@ -54,3 +58,10 @@ class TestCorrectedYield(unittest.TestCase):
             loggs=AnalysisOutput("test composite corr. yield interface")
         )
         self.assertGreater(cyield.GetEntries(), 0)
+
+
+class TestCorrectedEtaYield(TestCorrectedPionYield):
+
+    def setUp(self):
+        self.particle = "#eta"
+        self.data_feeddown = None

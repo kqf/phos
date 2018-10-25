@@ -210,7 +210,7 @@ class CorrectedYieldOptions(object):
         self.spectrum = "spectrum"
         self.efficiency = EfficiencyOptions(
             genname="hPt_{0}_primary_".format(particle))
-        self.feeddown = FeeddownOptions()
+        self.feeddown = FeeddownOptions(particle=particle)
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
@@ -240,7 +240,7 @@ class CompositeCorrectedYieldOptions(object):
             particle,
             n_ranges=n_ranges
         )
-        self.feeddown = FeeddownOptions()
+        self.feeddown = FeeddownOptions(particle=particle)
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
