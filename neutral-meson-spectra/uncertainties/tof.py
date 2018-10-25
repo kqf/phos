@@ -1,3 +1,5 @@
+import ROOT
+
 from spectrum.analysis import Analysis
 from spectrum.transformer import TransformerBase
 from spectrum.options import Options
@@ -14,10 +16,9 @@ class TofUncertaintyOptions(object):
         super(TofUncertaintyOptions, self).__init__()
         self.data = Options()
         self.isolated = Options()
-        # NB: Don"t assingn to get an exception
-        self.fitf = None
         self.decorate = self.data.particle, "isolated"
         self.fit_range = 1.0, 10
+        self.fitf = ROOT.TF1("ratio", "1. - pol0(0)", *self.fit_range)
 
 
 class RatioFitter(TransformerBase):
