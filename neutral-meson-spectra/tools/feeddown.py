@@ -5,7 +5,7 @@ from spectrum.transformer import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
-from spectrum.outputcreator import OutputCreator
+from spectrum.outputcreator import output_histogram
 from vault.datavault import DataVault
 
 
@@ -85,7 +85,7 @@ class FeeddownEstimator(TransformerBase):
 
         if self.particle != "#pi^{0}":
             data = zip(np.ones(len(self.pt) - 1), np.zeros(len(self.pt) - 1))
-            return OutputCreator.output_histogram(
+            return output_histogram(
                 (min(self.pt), max(self.pt)),
                 "feeddown",
                 "No Feeddown",

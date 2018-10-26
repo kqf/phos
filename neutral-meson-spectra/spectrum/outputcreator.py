@@ -93,54 +93,37 @@ class SpectrumExtractor(object):
         return map(extractor.eval, masses)
 
 
+def output_histogram(ptrange, name, title, label, bins, data, priority=999):
+    name = name + '_' + filter(str.isalnum, label)
+    hist = ROOT.TH1F(name, title,
+                     len(bins) - 1, array('d', bins))
+
+    if not hist.GetSumw2N():
+        hist.Sumw2()
+
+    hist.label = label
+    hist.priority = priority
+
+    for i, (d, e) in enumerate(data):
+        hist.SetBinContent(i + 1, d)
+        hist.SetBinError(i + 1, e)
+
+    xmin, xmax = ptrange
+    for i in br.range(hist):
+        if xmin < hist.GetBinCenter(i) < xmax:
+            continue
+        hist.SetBinError(i, 0)
+        hist.SetBinContent(i, 0)
+
+    return hist
+
+
 class OutputCreator(object):
     def __init__(self, ptrange, name, title, label, priority=999):
         super(OutputCreator, self).__init__()
-        self.ptrange = ptrange
-        self.title = title
-        self.label = label
-        self.name = name + '_' + filter(str.isalnum, self.label)
-        self.priority = priority
-
-    def get_hist(self, bins, data):
-        hist = ROOT.TH1F(self.name, self.title,
-                         len(bins) - 1, array('d', bins))
-
-        if not hist.GetSumw2N():
-            hist.Sumw2()
-
-        hist.label = self.label
-        hist.priority = self.priority
-
-        for i, (d, e) in enumerate(data):
-            hist.SetBinContent(i + 1, d)
-            hist.SetBinError(i + 1, e)
-
-        xmin, xmax = self.ptrange
-        for i in br.range(hist):
-            if xmin < hist.GetBinCenter(i) < xmax:
-                continue
-            hist.SetBinError(i, 0)
-            hist.SetBinContent(i, 0)
-
-        return hist
-
-    @staticmethod
-    def output_histogram(ptrange, name, title, label, bins, data):
-        output = OutputCreator(ptrange, name, title, label)
-        return output.get_hist(bins, data)
 
     @classmethod
-    def output(klass,
-               typename,
-               data,
-               order,
-               ptrange,
-               ptedges,
-               titles,  # self.opt.output[quant] % self.opt.partlabel,
-               label
-
-               ):
+    def output(klass, typename, data, order, ptrange, ptedges, titles, label):
         OutType = coll.namedtuple(typename, order)
 
         iter_collection = zip(
@@ -150,16 +133,16 @@ class OutputCreator(object):
 
         # Extract the data
         # Don't use format, as it confuses root/latex syntax
-        output = {quant:
-                  OutputCreator.output_histogram(
-                      ptrange,
-                      quant,
-                      titles[quant],
-                      label,
-                      ptedges,
-                      datapoints
-                  ) for quant, datapoints in iter_collection
-                  }
+        output = {
+            quant: output_histogram(
+                ptrange,
+                quant,
+                titles[quant],
+                label,
+                ptedges,
+                datapoints
+            ) for quant, datapoints in iter_collection
+        }
 
         # Convert to a proper datastructure
         return OutType(**output)
