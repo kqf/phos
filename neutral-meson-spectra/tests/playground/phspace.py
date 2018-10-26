@@ -10,7 +10,7 @@ from array import array
 from itertools import combinations, product
 
 from spectrum.sutils import tsallis
-from spectrum.outputcreator import OutputCreator
+from spectrum.outputcreator import output_histogram
 
 
 def particle(pt, mass=0):
@@ -41,8 +41,8 @@ class SignalGenerator(object):
         super(SignalGenerator, self).__init__()
         ptbins = self._configure(config)
         self.generated = generated if generated else (
-            OutputCreator(genhistname, "Generated spectrum",
-                          "").get_hist(ptbins, [])
+            output_histogram(genhistname, "Generated spectrum",
+                             "").get_hist(ptbins, [])
         )
 
     def _configure(self, conffile):

@@ -118,31 +118,26 @@ def output_histogram(ptrange, name, title, label, bins, data, priority=999):
     return hist
 
 
-class OutputCreator(object):
-    def __init__(self, ptrange, name, title, label, priority=999):
-        super(OutputCreator, self).__init__()
+def analysis_output(typename, data, order, ptrange, ptedges, titles, label):
+    AnalysisOutType = coll.namedtuple(typename, order)
 
-    @classmethod
-    def output(klass, typename, data, order, ptrange, ptedges, titles, label):
-        OutType = coll.namedtuple(typename, order)
+    iter_collection = zip(
+        order,  # Ensure ordering of `data`
+        zip(*data)
+    )
 
-        iter_collection = zip(
-            order,  # Ensure ordering of `data`
-            zip(*data)
-        )
+    # Extract the data
+    # Don't use format, as it confuses root/latex syntax
+    output = {
+        quant: output_histogram(
+            ptrange,
+            quant,
+            titles[quant],
+            label,
+            ptedges,
+            datapoints
+        ) for quant, datapoints in iter_collection
+    }
 
-        # Extract the data
-        # Don't use format, as it confuses root/latex syntax
-        output = {
-            quant: output_histogram(
-                ptrange,
-                quant,
-                titles[quant],
-                label,
-                ptedges,
-                datapoints
-            ) for quant, datapoints in iter_collection
-        }
-
-        # Convert to a proper datastructure
-        return OutType(**output)
+    # Convert to a proper datastructure
+    return AnalysisOutType(**output)

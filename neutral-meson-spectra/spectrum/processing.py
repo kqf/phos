@@ -3,7 +3,7 @@
 import ROOT
 
 from invariantmass import InvariantMass, RawMass
-from outputcreator import OutputCreator, SpectrumExtractor
+from outputcreator import analysis_output, SpectrumExtractor
 
 from mass import BackgroundEstimator, MixingBackgroundEstimator
 from mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
@@ -99,7 +99,7 @@ class RangeEstimator(object):
                   t.format(self.opt.particle, T="{T}")
                   for q, t in zip(self._output, self._titles)}
 
-        self.output = OutputCreator.output(
+        self.output = analysis_output(
             "MassWidthOutput",
             values,
             self._output,
@@ -218,7 +218,7 @@ class DataExtractor(object):
                   }
 
         # Create hitograms
-        histos = OutputCreator.output(
+        histos = analysis_output(
             "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
