@@ -1,17 +1,36 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
     "output_order": ["mass", "width", "spectrum", "chi2", "nmesons", "cball_alpha", "cball_n", "background_chi2", "background_cball_alpha", "background_cball_n"],
-    "output":
+    "#pi^{0}":
     {
-        "mass": "Reconstructed %s mass position; p_{T}, GeV; m, GeV/c^{2}",
-        "width": "Reconstructed %s peak width ; p_{T}, GeV; #sigma, GeV/c^{2}",
-        "spectrum": "Reconstructed %s spectrum ; p_{T}, GeV; #frac{dN_{rec} }{dp_{T}}",  
-        "chi2": "#chi^{2} / N_{dof} for %s spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
-        "nmesons": "Number of %ss in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}",  
-        "cball_alpha": "Crystal ball parameter #alpha for %s peak; p_{T}, GeV; #alpha",
-        "cball_n": "Crystal ball parameter n for %s peak; p_{T}, GeV; n",
-        "background_chi2": "Singnal + background #chi^{2} / N_{dof} for %s spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
-        "background_cball_alpha": "Singnal + background crystal ball parameter #alpha for %s peak; p_{T}, GeV; #alpha",
-        "background_cball_n": "Singnal + background crystal ball parameter n for %s peak; p_{T}, GeV; n"
-    }
+        "output":
+        {
+            "mass": "Reconstructed #pi^{0} mass position; p_{T}, GeV; m, GeV/c^{2}",
+            "width": "Reconstructed #pi^{0} peak width ; p_{T}, GeV; #sigma, GeV/c^{2}",
+            "spectrum": "Reconstructed #pi^{0} spectrum ; p_{T}, GeV; #frac{dN_{rec} }{dp_{T}}",  
+            "chi2": "#chi^{2} / N_{dof} for #pi^{0} spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
+            "nmesons": "Number of #pi^{0}s in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}",  
+            "cball_alpha": "Crystal ball parameter #alpha for #pi^{0} peak; p_{T}, GeV; #alpha",
+            "cball_n": "Crystal ball parameter n for #pi^{0} peak; p_{T}, GeV; n",
+            "background_chi2": "Singnal + background #chi^{2} / N_{dof} for #pi^{0} spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
+            "background_cball_alpha": "Singnal + background crystal ball parameter #alpha for #pi^{0} peak; p_{T}, GeV; #alpha",
+            "background_cball_n": "Singnal + background crystal ball parameter n for #pi^{0} peak; p_{T}, GeV; n"
+        }
+   },
+    "#eta":
+    {
+        "output":
+        {
+            "mass": "Reconstructed #eta mass position; p_{T}, GeV; m, GeV/c^{2}",
+            "width": "Reconstructed #eta peak width ; p_{T}, GeV; #sigma, GeV/c^{2}",
+            "spectrum": "Reconstructed #eta spectrum ; p_{T}, GeV; #frac{dN_{rec} }{dp_{T}}",  
+            "chi2": "#chi^{2} / N_{dof} for #eta spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
+            "nmesons": "Number of #etas in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}",  
+            "cball_alpha": "Crystal ball parameter #alpha for #eta peak; p_{T}, GeV; #alpha",
+            "cball_n": "Crystal ball parameter n for #eta peak; p_{T}, GeV; n",
+            "background_chi2": "Singnal + background #chi^{2} / N_{dof} for #eta spectrum; p_{T}, GeV; #chi^{2} / N_{dof}",
+            "background_cball_alpha": "Singnal + background crystal ball parameter #alpha for #eta peak; p_{T}, GeV; #alpha",
+            "background_cball_n": "Singnal + background crystal ball parameter n for #eta peak; p_{T}, GeV; n"
+        }
+   } 
 }

@@ -204,27 +204,16 @@ class DataExtractor(object):
         return histograms
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract(
-            self.opt.output_order,
-            masses
-        )
+        values = SpectrumExtractor.extract(self.opt.output_order, masses)
 
         edges = RawMass.ptedges(masses)
-
-        # TODO: Move this logic to the option creation
-        titles = {quant:
-                  self.opt.output[quant] % self.opt.particle
-                  for quant in self.opt.output_order
-                  }
-
-        # Create hitograms
         histos = analysis_output(
             "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
             self.opt.ptrange,
             edges,
-            titles,
+            self.opt.output,
             loggs.label
         )
 
