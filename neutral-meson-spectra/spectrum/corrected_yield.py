@@ -1,7 +1,7 @@
 from analysis import Analysis
 from options import CorrectedYieldOptions
 from efficiency import Efficiency
-from transformer import TransformerBase
+from pipeline import TransformerBase
 from pipeline import Pipeline, HistogramSelector, OutputDecorator
 from pipeline import ParallelPipeline, ReducePipeline
 from pipeline import ComparePipeline

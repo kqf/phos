@@ -1,4 +1,4 @@
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import ReduceArgumentPipeline

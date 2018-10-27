@@ -3,7 +3,7 @@ import unittest
 from vault.datavault import DataVault
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.options import CompositeEfficiencyOptions

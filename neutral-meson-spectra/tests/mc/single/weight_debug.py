@@ -6,7 +6,7 @@ from spectrum.pipeline import OutputFitter
 from spectrum.input import SingleHistInput
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 # from spectrum.comparator import Comparator
 # from spectrum.broot import BROOT as br
 

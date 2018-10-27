@@ -1,7 +1,7 @@
 import ROOT
 
 from spectrum.analysis import Analysis
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.options import Options
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner

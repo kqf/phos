@@ -2,7 +2,7 @@ import ROOT
 from spectrum.processing import DataSlicer, InvariantMassExtractor
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ComparePipeline
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
 
 

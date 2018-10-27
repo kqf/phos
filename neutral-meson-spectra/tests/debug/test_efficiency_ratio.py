@@ -6,7 +6,7 @@ from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.input import SingleHistInput
 from spectrum.analysis import Analysis
 from spectrum.pipeline import Pipeline, HistogramSelector

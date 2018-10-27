@@ -6,7 +6,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ParallelPipeline, Pipeline
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from tools.scan import NonlinearityParamExtractor, form_histnames
 from vault.datavault import DataVault
 

@@ -3,7 +3,7 @@ from spectrum.broot import BROOT as br
 from spectrum.options import Options
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 
 
 class YieldExtractioinUncertanityOptions(object):

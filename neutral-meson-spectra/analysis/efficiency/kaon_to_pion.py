@@ -4,7 +4,7 @@ from collections import namedtuple
 import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.input import SingleHistInput
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
 from spectrum.pipeline import ReducePipelineLoggs
 from spectrum.pipeline import ComparePipeline

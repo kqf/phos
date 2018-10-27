@@ -4,7 +4,7 @@ import pytest
 from spectrum.processing import DataSlicer
 from spectrum.processing import MassFitter
 from spectrum.output import AnalysisOutput
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.processing import InvariantMassExtractor
 

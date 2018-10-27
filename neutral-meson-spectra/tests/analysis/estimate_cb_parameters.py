@@ -6,7 +6,7 @@ from spectrum.comparator import Comparator
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from vault.datavault import DataVault
 
 

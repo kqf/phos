@@ -1,8 +1,29 @@
 from comparator import Comparator
 from broot import BROOT as br
 from output import AnalysisOutput, MergedLogItem
-from transformer import TransformerBase
 import sutils as st
+
+
+class TransformerBase(object):
+
+    def __init__(self, plot=True):
+        super(TransformerBase, self).__init__()
+        self.plot = plot
+
+    def transform(self, inputs, loggs):
+        lazy_logs = isinstance(loggs, basestring)
+
+        if lazy_logs:
+            loggs = AnalysisOutput(loggs)
+
+        output = self.pipeline.transform(inputs, loggs)
+        if output:
+            loggs.update('output', [output])
+
+        if lazy_logs:
+            loggs.plot(self.plot)
+
+        return output
 
 
 class ComparePipeline(TransformerBase):

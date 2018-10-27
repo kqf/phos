@@ -1,6 +1,6 @@
 import ROOT
 from spectrum.analysis import Analysis
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import HistogramScaler

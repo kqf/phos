@@ -1,5 +1,5 @@
 from spectrum.analysis import Analysis
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import ComparePipeline

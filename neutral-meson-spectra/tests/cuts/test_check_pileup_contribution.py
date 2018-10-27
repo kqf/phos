@@ -3,7 +3,7 @@ import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import ComparePipeline
 from vault.datavault import DataVault

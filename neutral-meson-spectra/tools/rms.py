@@ -1,4 +1,4 @@
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.broot import BROOT as br
 
 

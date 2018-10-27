@@ -6,7 +6,7 @@ from vault.formulas import FVault
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, ReducePipeline
 from spectrum.pipeline import ParallelPipeline, FunctionTransformer
 from spectrum.input import SingleHistInput

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from transformer import TransformerBase
+from pipeline import TransformerBase
 from options import EfficiencyOptions, CompositeEfficiencyOptions
 from .input import SingleHistInput
 from analysis import Analysis

@@ -1,7 +1,7 @@
 import ROOT
 import numpy as np
 import root_numpy as rp
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.broot import BROOT as br
 
 

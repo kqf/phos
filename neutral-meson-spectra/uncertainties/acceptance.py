@@ -1,4 +1,4 @@
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import ParallelPipeline

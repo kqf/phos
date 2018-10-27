@@ -4,7 +4,7 @@ from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
 from processing import InvariantMassExtractor
 from options import Options, CompositeOptions
 from pipeline import Pipeline, ParallelPipeline, ReducePipeline
-from transformer import TransformerBase
+from pipeline import TransformerBase
 from broot import BROOT as br
 
 

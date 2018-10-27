@@ -2,7 +2,7 @@ import ROOT
 import unittest
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
-from spectrum.transformer import TransformerBase
+from spectrum.pipeline import TransformerBase
 
 
 class DummyTransformer(TransformerBase):
