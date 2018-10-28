@@ -56,7 +56,7 @@ class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
 
-    def __init__(self, size, rrange, crange, stop, oname, labels):
+    def __init__(self, size, rrange, crange, stop, oname, labels, **kwargs):
         super(MultipleVisualizer, self).__init__()
         self.size = size
         self.cache = []
@@ -172,10 +172,11 @@ class MultipleVisualizer(object):
 
 
 class Visualizer(MultipleVisualizer):
-    def __init__(self, size, rrange, crange, stop, oname, labels):
+    def __init__(self, size, rrange, crange, stop, oname, labels, ratio=""):
         super(Visualizer, self).__init__(
             size, rrange, crange, stop, oname, labels)
         self.rrange = rrange
+        self.ratio = ratio
 
     def _canvas(self, hists):
         c1 = su.gcanvas(self.size[0], self.size[1], resize=True)
@@ -197,7 +198,7 @@ class Visualizer(MultipleVisualizer):
 
     def draw_ratio(self, hists, pad):
         a, b = hists
-        ratio = br.ratio(a, b)
+        ratio = br.ratio(a, b, self.ratio)
         self.cache.append(ratio)
 
         pad.cd()

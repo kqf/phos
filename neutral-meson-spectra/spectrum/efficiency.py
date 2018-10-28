@@ -4,9 +4,11 @@ from pipeline import TransformerBase
 from options import EfficiencyOptions, CompositeEfficiencyOptions
 from .input import SingleHistInput
 from analysis import Analysis
-from pipeline import Pipeline, RatioUnion, HistogramSelector
+from pipeline import Pipeline, HistogramSelector
 from pipeline import OutputDecorator
 from pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
+from pipeline import ComparePipeline
+from pipeline import RebinTransformer
 from broot import BROOT as br
 from processing import RangeEstimator
 
@@ -15,26 +17,34 @@ from processing import RangeEstimator
 #
 
 
-# TODO: Rewrite RatioUnion to accept list of estimators
-#       add named steps, etc
-#
-
 class SimpleEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):
         super(SimpleEfficiency, self).__init__(plot)
-        efficiency = RatioUnion(
-            Pipeline([
-                ("ReconstructMesons", Analysis(options.analysis)),
-                ("NumberOfMesons", HistogramSelector("nmesons")),
-                ("ScaleForAcceptance", HistogramScaler(options.scale))
-            ]),
-            SingleHistInput(options.genname)
-        )
+        scaled_ryield = Pipeline([
+            ("ReconstructMesons", Analysis(options.analysis)),
+            ("NumberOfMesons", HistogramSelector("nmesons")),
+            ("ScaleForAcceptance", HistogramScaler(options.scale))
+        ])
+
+        generated = Pipeline([
+            ("raw", SingleHistInput(options.genname)),
+            ("rebinned", RebinTransformer(options.analysis.pt.ptedges)),
+        ])
+
+        efficiency = ComparePipeline([
+            ("raw-yield", scaled_ryield),
+            ("generated", generated),
+        ], ratio="B")
+
         self.pipeline = Pipeline([
             ('efficiency', efficiency),
             ('decorate', OutputDecorator(*options.decorate))
         ])
+
+    def transform(self, data, loggs):
+        # NB: Compare pipeline takes the intput two times
+        return super(SimpleEfficiency, self).transform((data, data), loggs)
 
 
 class PeakPositionWidthEstimator(TransformerBase):
@@ -108,5 +118,4 @@ class Efficiency(TransformerBase):
     def __init__(self, options=EfficiencyOptions(), plot=False):
         super(Efficiency, self).__init__(plot)
         EfficiencyType = self._efficiency_types.get(type(options))
-        efficiency = EfficiencyType(options, plot)
-        self.pipeline = efficiency.pipeline
+        self.pipeline = EfficiencyType(options, plot)

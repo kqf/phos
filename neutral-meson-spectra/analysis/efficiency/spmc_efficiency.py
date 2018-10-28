@@ -1,11 +1,12 @@
 import unittest
 
-from spectrum.comparator import Comparator
-
+# from spectrum.comparator import Comparator
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
+from spectrum.broot import BROOT as br
 
+from tools.validate import validate
 from vault.datavault import DataVault
 
 
@@ -25,11 +26,12 @@ class TestEfficiencyPi0(unittest.TestCase):
     # @unittest.skip('')
     def test_pi0_efficiency(self):
         production = "single #pi^{0} scan nonlinearity7"
-        inputs = [
+        inputs = (
             DataVault().input(production, "low", "PhysEff"),
-            DataVault().input(production, "high", "PhysEff")
-        ]
-        evaluate_spmc_efficiency(inputs, "#pi^{0}")
+            DataVault().input(production, "high", "PhysEff"),
+        )
+        efficiency = evaluate_spmc_efficiency(inputs, "#pi^{0}")
+        validate(self, br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
 
 
 class TestEfficiencyEta(unittest.TestCase):
@@ -47,15 +49,12 @@ class TestEfficiencyEta(unittest.TestCase):
 
 def evaluate_spmc_efficiency(inputs, particle):
     options = CompositeEfficiencyOptions(particle)
-    # for options in options.suboptions:
-    # options.analysis.signalp.relaxed = True
-    # options.analysis.backgroundp.relaxed = True
-
     loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle))
     efficiency = Efficiency(options).transform(
         inputs,
         loggs
     )
-    diff = Comparator()
-    diff.compare(efficiency)
-    loggs.plot()
+    # diff = Comparator()
+    # diff.compare(efficiency)
+    # loggs.plot()
+    return efficiency

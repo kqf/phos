@@ -400,6 +400,12 @@ class BROOT(object):
         return HistMatrix(contents, errors, centers)
 
     @classmethod
+    def hist2dict(klass, hist):
+        binsdict = klass.bins(hist)._asdict()
+        return {k: list(v) for k, v in binsdict.iteritems()}
+
+
+    @classmethod
     def systematic_deviation(klass, histograms):
         matrix = np.array([klass.bins(h)[0] for h in histograms])
 

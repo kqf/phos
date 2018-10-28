@@ -1,3 +1,4 @@
+import array
 from comparator import Comparator
 from broot import BROOT as br
 from output import AnalysisOutput, MergedLogItem
@@ -35,6 +36,18 @@ class ComparePipeline(TransformerBase):
             ParallelPipeline(estimators),
             Comparator(labels=labels, stop=plot, **kwargs).compare
         )
+
+
+class RebinTransformer(TransformerBase):
+    def __init__(self, bins, plot=False):
+        super(RebinTransformer, self).__init__(plot)
+        self.bins = array.array('d', bins)
+
+    def transform(self, data, loggs):
+        newname = "{0}_rebinned".format(data.GetName())
+        rebinned = data.Rebin(len(self.bins) - 1, newname, self.bins)
+        rebinned.Scale(data.GetBinWidth(1), "width")
+        return rebinned
 
 
 class FitfunctionAssigner(TransformerBase):
@@ -151,6 +164,7 @@ class ParallelPipeline(object):
         self.steps = steps
 
     def transform(self, inputs, loggs):
+        # import ipdb; ipdb.set_trace()
         assert len(inputs) == len(self.steps), \
             "Input shape doesn't match the shape" \
             " of estimators, got {0}, {1}".format(
@@ -161,7 +175,6 @@ class ParallelPipeline(object):
         def tr(x, name, step, loggs):
             local_logs = AnalysisOutput(name)
             output = step.transform(x, local_logs)
-            # print "Printing local logs", local_logs
             loggs.append(local_logs)
             return output, local_logs.mergelist()
 

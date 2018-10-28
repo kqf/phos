@@ -75,9 +75,7 @@ class TagAndProbeEfficiencyTOF(unittest.TestCase):
 
     def test_estimate_tof_efficiency(self):
         efficiency = fit_tof_efficiency()
-        bins = br.bins(efficiency)._asdict()
-        bins = {k: list(v) for k, v in bins.iteritems()}
-        validate(self, bins, "efficiency_tag")
+        validate(self, br.hist2dict(efficiency), "efficiency_tag")
 
     @unittest.skip("Debug")
     def test_different_modules(self):
