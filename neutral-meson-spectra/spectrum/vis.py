@@ -43,20 +43,20 @@ class VisHub(object):
         self._regular = MultipleVisualizer(*args, **kwargs)
         su.gcanvas().Clear()
 
-    def compare_visually(self, hists, ci):
+    def compare_visually(self, hists, ci, loggs=None):
         neglimits = any(i < 0 for i in self._double.rrange)
         ignoreratio = neglimits and self._double.rrange
 
         if len(hists) != 2 or ignoreratio:
-            return self._regular.compare_visually(hists, ci)
-        return self._double.compare_visually(hists, ci)
+            return self._regular.compare_visually(hists, ci, loggs=loggs)
+        return self._double.compare_visually(hists, ci, loggs=loggs)
 
 
 class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
 
-    def __init__(self, size, rrange, crange, stop, oname, labels, loggs):
+    def __init__(self, size, rrange, crange, stop, oname, labels):
         super(MultipleVisualizer, self).__init__()
         self.size = size
         self.cache = []
@@ -64,10 +64,9 @@ class MultipleVisualizer(object):
         self.oname = oname
         self.stop = stop
         self.labels = labels
-        self.loggs = loggs
 
     @br.init_inputs
-    def compare_visually(self, hists, ci, pad=None):
+    def compare_visually(self, hists, ci, pad=None, loggs=None):
         canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
         su.ticks(canvas)
         legend = ROOT.TLegend(0.55, 0.65, 0.8, 0.85)
@@ -115,7 +114,7 @@ class MultipleVisualizer(object):
 
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        self.io(canvas, hists, oname)
+        self.io(canvas, hists, oname, loggs)
         return first_hist
 
     def _drawable(self, first_hist, hists):
@@ -159,23 +158,23 @@ class MultipleVisualizer(object):
         oname = self.output_prefix + name
         return oname
 
-    def io(self, canvas, hists, oname):
+    def io(self, canvas, hists, oname, loggs):
         cloned = canvas.Clone()
         cloned.SetName('c' + hists[0].GetName())
 
-        if self.loggs:
-            self.loggs.update('compare', cloned)
+        if loggs:
+            loggs.update('compare', cloned)
         else:
             su.save_canvas(oname, pdf=False)
 
-        if not self.loggs and self.stop:
+        if not loggs and self.stop:
             su.wait(oname, save=True, draw=self.stop)
 
 
 class Visualizer(MultipleVisualizer):
-    def __init__(self, size, rrange, crange, stop, oname, labels, loggs):
+    def __init__(self, size, rrange, crange, stop, oname, labels):
         super(Visualizer, self).__init__(
-            size, rrange, crange, stop, oname, labels, loggs)
+            size, rrange, crange, stop, oname, labels)
         self.rrange = rrange
 
     def _canvas(self, hists):
@@ -256,7 +255,7 @@ class Visualizer(MultipleVisualizer):
         ROOT.gStyle.SetStatBorderSize(0)
         ROOT.gStyle.SetOptFit(1)
 
-    def compare_visually(self, hists, ci):
+    def compare_visually(self, hists, ci, loggs=None):
         canvas, mainpad, ratiopad = self._canvas(hists)
 
         super(Visualizer, self).compare_visually(hists, ci, mainpad)
@@ -266,5 +265,5 @@ class Visualizer(MultipleVisualizer):
         canvas.cd()
         fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
         oname = self._oname(fname.lower())
-        self.io(canvas, hists, oname)
+        self.io(canvas, hists, oname, loggs)
         return su.adjust_labels(ratio, hists[0])
