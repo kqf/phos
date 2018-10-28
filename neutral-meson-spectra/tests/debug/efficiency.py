@@ -48,7 +48,7 @@ class ReadCompositeDistribution(TransformerBase):
                  ]))
                 for ranges in zip(options.mergeranges)
             ]),
-            lambda x: br.sum_trimm(x, options.mergeranges)
+            lambda x, loggs: br.sum_trimm(x, options.mergeranges)
         )
 
 

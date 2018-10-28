@@ -6,7 +6,6 @@ from spectrum.broot import BROOT as br
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
-from spectrum.pipeline import ReducePipelineLoggs
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import Pipeline
 from spectrum.output import AnalysisOutput
@@ -21,7 +20,7 @@ class HistSum(TransformerBase):
             ParallelPipeline([
                 (name, SingleHistInput(name)) for name in names
             ]),
-            br.sum
+            lambda x, loggs: br.sum(x)
         )
 
 
@@ -85,7 +84,7 @@ class DoubleRatioFitter(TransformerBase):
 class KaonToPionDoubleRatio(TransformerBase):
     def __init__(self, options, plot=False):
         super(KaonToPionDoubleRatio, self).__init__()
-        double_ratio = ReducePipelineLoggs(
+        double_ratio = ReducePipeline(
             ParallelPipeline([
                 ("data", KaonToPionRatioData(options.data)),
                 ("mc", KaonToPionRatioMC(options.mc)),

@@ -95,7 +95,7 @@ class CompositeEfficiency(TransformerBase):
     def _reduce_function(self, options):
         if options.reduce_function != "standard":
             return options.reduce_function
-        return lambda x: br.sum_trimm(x, options.mergeranges)
+        return lambda x, loggs: br.sum_trimm(x, options.mergeranges)
 
 
 class Efficiency(TransformerBase):

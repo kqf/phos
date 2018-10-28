@@ -39,7 +39,7 @@ class ConfidenceLevelEstimator(TransformerBase):
         errors.SetOption("e3")
         errors.SetFillStyle(3002)
         feeddown.logy = False
-        Comparator(loggs=loggs, rrange=(-1, -1)).compare(feeddown, errors)
+        Comparator(rrange=(-1, -1)).compare(feeddown, errors, loggs=loggs)
         corr = br.copy(feeddown)
         corr.Reset()
         for b in br.range(feeddown):

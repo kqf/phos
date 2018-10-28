@@ -30,21 +30,11 @@ class ComparePipeline(TransformerBase):
 
     def __init__(self, estimators, plot=False, **kwargs):
         super(ComparePipeline, self).__init__(plot)
-        self.estimators = estimators
-        self.labels = zip(*estimators)[0]
-        self.kwargs = kwargs
-
-    def transform(self, data, loggs):
+        labels = zip(*estimators)[0]
         self.pipeline = ReducePipeline(
-            ParallelPipeline(self.estimators),
-            Comparator(
-                labels=self.labels,
-                stop=self.plot,
-                loggs=loggs,
-                **self.kwargs
-            ).compare
+            ParallelPipeline(estimators),
+            Comparator(labels=labels, stop=plot, **kwargs).compare
         )
-        return super(ComparePipeline, self).transform(data, loggs)
 
 
 class FitfunctionAssigner(TransformerBase):
@@ -135,7 +125,7 @@ class FunctionTransformer(object):
         self.func = func
 
     def transform(self, inputs, loggs):
-        output = self.func(inputs, loggs)
+        output = self.func(inputs, loggs=loggs)
         return output
 
 
@@ -200,15 +190,7 @@ class ReducePipeline(object):
 
     def transform(self, inputs, loggs):
         updated = self.parallel.transform(inputs, loggs)
-        loggs.update("reduced_output", [updated])
-        return self.function(updated)
-
-
-class ReducePipelineLoggs(ReducePipeline):
-
-    def transform(self, inputs, loggs):
-        updated = self.parallel.transform(inputs, loggs)
-        return self.function(updated, loggs)
+        return self.function(updated, loggs=loggs)
 
 
 class ReduceArgumentPipeline(object):

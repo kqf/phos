@@ -9,7 +9,7 @@ class Comparator(object):
     ci, colors = br.define_colors()
 
     def __init__(self, size=(1, 1), rrange=(), crange=(),
-                 stop=True, oname='', labels=None, loggs=None):
+                 stop=True, oname='', labels=None):
         super(Comparator, self).__init__()
         self.vi = VisHub(size, rrange, crange, stop, oname, labels)
 

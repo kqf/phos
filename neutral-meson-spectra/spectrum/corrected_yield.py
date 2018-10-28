@@ -36,10 +36,11 @@ class CorrectedYield(TransformerBase):
             ("decorate output", OutputDecorator(**options.decorate)),
         ])
 
-    def multiply(self, calculations):
+    def multiply(self, calculations, loggs):
         ryield, feeddown = calculations
         cyield = ryield.Clone(ryield.GetName() + "_corrected_yield")
         cyield.Multiply(feeddown)
+        loggs.update("reduced_output", [cyield])
         return cyield
 
 

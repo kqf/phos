@@ -35,7 +35,7 @@ class CompositeAnalysis(TransformerBase):
             self.merge
         )
 
-    def merge(self, hists):
+    def merge(self, hists, loggs):
         if len(hists) == 2:
             spectra = map(lambda x: x.spectrum, hists)
             for spec in spectra:
@@ -55,6 +55,7 @@ class CompositeAnalysis(TransformerBase):
         # Use the same container as normal analysis
         # TODO: Fix me?
         results = hists[0]._make(truncated)
+        loggs.update("reduced_output", results)
         return results
 
 
