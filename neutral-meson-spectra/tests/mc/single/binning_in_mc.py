@@ -4,7 +4,7 @@ import ROOT
 from spectrum.input import Input, SingleHistInput
 from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
-from spectrum.pipeline import RatioUnion, Pipeline, HistogramSelector
+from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
 
 from spectrum.options import Options
@@ -26,17 +26,14 @@ class FunctionOutput(object):
 class ReconstructedValidator(object):
     def __init__(self, func, options=Options()):
         super(ReconstructedValidator, self).__init__()
-        self.runion = RatioUnion(
-            Pipeline([
-                ("ReconstructMesons", Analysis(options)),
-                ("NumberOfMesons", HistogramSelector("nmesons"))
-            ]),
-            FunctionOutput(func)
-        )
-
-    def transform(self, inputs, loggs):
-        ratio = self.runion.transform(inputs, loggs)
-        return ratio
+        nmesons = Pipeline([
+            ("ReconstructMesons", Analysis(options)),
+            ("NumberOfMesons", HistogramSelector("nmesons"))
+        ])
+        self.runion = ComparePipeline([
+            ("nmesons", nmesons),
+            ("func", FunctionOutput(func))
+        ])
 
 
 def tsallis():
@@ -61,7 +58,10 @@ class ValidateReconstructedPi0(unittest.TestCase):
         loggs = AnalysisOutput(
             "test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
         output = estimator.transform(
-            Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+            (
+                Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+                None
+            ),
             loggs
         )
         loggs.plot(False)
@@ -74,14 +74,10 @@ class ValidateReconstructedPi0(unittest.TestCase):
 class GeneratedValidator(object):
     def __init__(self, func, histname):
         super(GeneratedValidator, self).__init__()
-        self.runion = RatioUnion(
-            SingleHistInput(histname),
-            FunctionOutput(func)
-        )
-
-    def transform(self, inputs, loggs):
-        ratio = self.runion.transform(inputs, loggs)
-        return ratio
+        self.runion = ComparePipeline([
+            ("hist", SingleHistInput(histname)),
+            ("func", FunctionOutput(func))
+        ])
 
 
 class ValidateGeneratedPi0(unittest.TestCase):
@@ -93,9 +89,13 @@ class ValidateGeneratedPi0(unittest.TestCase):
         )
 
         loggs = AnalysisOutput(
-            "generated_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
+            "generated_spectrum_extraction_spmc_{}".format(
+                "#pi^{0}"), "#pi^{0}")
         output = estimator.transform(
-            Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+            (
+                Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+                None
+            ),
             loggs
         )
         loggs.plot(False)

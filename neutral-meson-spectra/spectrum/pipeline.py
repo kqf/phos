@@ -219,20 +219,3 @@ class ReduceArgumentPipeline(object):
         argument = self.argument.transform(argument_inp, loggs)
         updated = self.parallel.transform(inputs_inp, loggs)
         return [self.function(o, argument) for o in updated]
-
-
-class RatioUnion(object):
-
-    def __init__(self, numerator, denominator, error="B"):
-        super(RatioUnion, self).__init__()
-        self.numerator = numerator
-        self.denominator = denominator
-        self.error = error
-
-    def transform(self, inputs, loggs):
-        numerator = self.numerator.transform(inputs, loggs)
-        denominator = self.denominator.transform(inputs, loggs)
-
-        numerator, denominator = br.rebin_as(numerator, denominator)
-        loggs.update("ratio_union", [[numerator, denominator]], mergable=True)
-        return br.ratio(numerator, denominator, self.error)
