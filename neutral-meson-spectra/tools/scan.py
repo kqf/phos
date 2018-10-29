@@ -56,13 +56,13 @@ class NonlinearityParamExtractor(TransformerBase):
         return hist
 
 
-def chi2_func(hist1, hist2):
+def chi2_func(hist1, hist2, loggs=None):
     # Comparator().compare(hist1, hist2)
     return br.chi2ndf(hist1, hist2)
 
 
 class NonlinearityScan(TransformerBase):
-    def __init__(self, options, chi2_=br.chi2ndf, plot=True):
+    def __init__(self, options, chi2_=chi2_func, plot=True):
         super(NonlinearityScan, self).__init__()
         mass = Pipeline([
             ("reconstruction", Analysis(options.analysis, plot)),

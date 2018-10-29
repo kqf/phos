@@ -56,7 +56,7 @@ class GScale(TransformerBase):
                 MockEpRatio(options.ep_ratio),
                 self.fit
             )),
-            ("gescale", FunctionTransformer(lambda output, _: output[0])),
+            ("gescale", FunctionTransformer(lambda output, loggs: output[0])),
         ])
 
     @staticmethod
@@ -71,7 +71,7 @@ class GScale(TransformerBase):
         rfunc.SetLineColor(color)
         return rfunc
 
-    def fit(self, data, ep_ratio):
+    def fit(self, data, ep_ratio, loggs=None):
         corrected_yield, fitf = data
         lower = self.ratiofunc(fitf, 'low', -0.01, 38)
         upper = self.ratiofunc(fitf, 'up', 0.01, 47)

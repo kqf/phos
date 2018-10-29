@@ -9,8 +9,12 @@ from vault.datavault import DataVault
 from tools.deviation import MaxDeviationVector
 
 
+def chi2_func(hist1, hist2, loggs):
+    return br.chi2ndf(hist1, hist2)
+
+
 class Nonlinearity(TransformerBase):
-    def __init__(self, options, chi2_=br.chi2ndf, plot=True):
+    def __init__(self, options, chi2_=chi2_func, plot=True):
         super(Nonlinearity, self).__init__()
         main = Pipeline([
             ('efficiency_main', Efficiency(options.eff, plot))
@@ -21,7 +25,8 @@ class Nonlinearity(TransformerBase):
             for i in range(options.nbins ** 2)
         ])
 
-        ratio = ReduceArgumentPipeline(mc, main, br.ratio)
+        ratio = ReduceArgumentPipeline(mc, main,
+                                       lambda x, y, loggs=None: br.ratio(x, y))
         self.pipeline = Pipeline([
             ("ratios", ratio),
             ("deviation", MaxDeviationVector())
