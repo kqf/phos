@@ -38,7 +38,7 @@ class Acceptance(TransformerBase):
             ("max", MaxUnityHistogram()),
         ])
 
-    def fitratio(self, selected, standard):
+    def fitratio(self, selected, standard, loggs=None):
         ratio = br.ratio(selected, standard)
         return unityfit(
             ratio,

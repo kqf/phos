@@ -218,4 +218,4 @@ class ReduceArgumentPipeline(object):
         argument_inp, inputs_inp = inputs
         argument = self.argument.transform(argument_inp, loggs)
         updated = self.parallel.transform(inputs_inp, loggs)
-        return [self.function(o, argument) for o in updated]
+        return [self.function(o, argument, loggs=loggs) for o in updated]
