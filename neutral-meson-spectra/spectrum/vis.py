@@ -163,7 +163,7 @@ class MultipleVisualizer(object):
         cloned.SetName('c' + hists[0].GetName())
 
         if loggs:
-            loggs.update('compare', cloned)
+            loggs.update({'compare': cloned})
         else:
             su.save_canvas(oname, pdf=False)
 

@@ -14,7 +14,7 @@ class DummyTransformer(TransformerBase):
     def transform(self, output, loggs):
         hist = ROOT.TH1F(self.name, "output", 100, -3, 3)
         hist.FillRandom("gaus")
-        loggs.update("dummy_outputs", [hist], mergable=True)
+        loggs.update({"dummy_outputs": [hist]}, mergable=True)
         return hist
 
 

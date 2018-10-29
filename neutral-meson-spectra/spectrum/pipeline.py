@@ -19,7 +19,7 @@ class TransformerBase(object):
 
         output = self.pipeline.transform(inputs, loggs)
         if output:
-            loggs.update('output', [output])
+            loggs.update({'output': [output]})
 
         if lazy_logs:
             loggs.plot(self.plot)
@@ -102,7 +102,7 @@ class OutputDecorator(TransformerBase):
 
         if self.label:
             data.label = self.label
-        loggs.update("decorated", [data])
+        loggs.update({"decorated": [data]})
         return data
 
 

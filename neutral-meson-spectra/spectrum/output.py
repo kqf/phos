@@ -86,15 +86,16 @@ class AnalysisOutput(object):
         # if particle:
         # self.label = "{0}-{1}".format(self.label, particle)
 
-    def update(self, stepname, histograms, multirange=False, mergable=False):
+    def update(self, stepdict, multirange=False, mergable=False):
         logtype = MultirangeLogItem if multirange else LogItem
 
-        self.pool.insert(
-            0,
-            logtype("{0}/{1}".format(
-                self.label,
-                stepname), histograms, mergable)
-        )
+        for stepname, histograms in stepdict.iteritems():
+            self.pool.insert(
+                0,
+                logtype("{0}/{1}".format(
+                    self.label,
+                    stepname), histograms, mergable)
+            )
 
     def plot(self, stop=False):
         # default = ROOT.gROOT.IsBatch()

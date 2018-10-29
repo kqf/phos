@@ -55,7 +55,7 @@ class CompositeAnalysis(TransformerBase):
         # Use the same container as normal analysis
         # TODO: Fix me?
         results = hists[0]._make(truncated)
-        loggs.update("reduced_output", results)
+        loggs.update({"reduced_output": results})
         return results
 
 

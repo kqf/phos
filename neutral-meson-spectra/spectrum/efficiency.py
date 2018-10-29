@@ -76,8 +76,10 @@ class PeakPositionWidthEstimator(TransformerBase):
             option.analysis.spectrum.fit_mass_width = False
 
         loggs.update(
-            "composite_range_estimator",
-            [mass, width],
+            {
+                "composite_range_estimator":
+                [mass, width]
+            },
             mergable=True)
         return data  # NB: Don't change the data
 
