@@ -94,3 +94,18 @@ class MultiplePlotter(object):
                 plotter.transform(mass, canvas.cd(j + 1))
             su.wait("{0}/multiple-{1}".format(self.label, i),
                     draw=show, save=True)
+
+
+class MulipleOutput(object):
+
+    def __init__(self, masses):
+        super(MulipleOutput, self).__init__()
+        self.masses = masses
+
+    def Write(self):
+        for mass in self.masses:
+            mass.mass.Write()
+            if mass.ratio:
+                mass.ratio.Write()
+            if mass.background:
+                mass.background.Write()

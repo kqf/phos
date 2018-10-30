@@ -20,8 +20,8 @@ class TransformerBase(object):
             loggs = AnalysisOutput(loggs)
 
         output = self.pipeline.transform(inputs, loggs)
-        if output:
-            loggs.update({'output': output})
+        # if output:
+        # loggs.update({'output': output})
 
         if lazy_logs:
             loggs.plot(self.plot)
@@ -49,6 +49,7 @@ class RebinTransformer(TransformerBase):
         newname = "{0}_rebinned".format(data.GetName())
         rebinned = data.Rebin(len(self.bins) - 1, newname, self.bins)
         rebinned.Scale(data.GetBinWidth(1), "width")
+        loggs.update({"rebinned": rebinned})
         return rebinned
 
 
@@ -171,7 +172,9 @@ def merge(data):
         flat = flatten(ddict)
         for path, value in flat.iteritems():
             output[path].append((label, value))
-    return unflatten(output)
+    # Merged item should have at least len 2, otherwise it's useless
+    filtered = {k: v for k, v in output.iteritems() if len(v) > 1}
+    return unflatten(filtered)
 
 
 class ParallelPipeline(object):
@@ -195,10 +198,12 @@ class ParallelPipeline(object):
             loggs.update({name: local_logs})
             return output, (name, local_logs)
 
+        steps_loggs = {}
         output_with_logs = [
-            tr(inp, name, step, loggs)
+            tr(inp, name, step, steps_loggs)
             for inp, (name, step) in zip(inputs, self.steps)
         ]
+        loggs.update({"steps": steps_loggs})
 
         outputs, local_logs = zip(*output_with_logs)
         loggs.update({"merged": merge(local_logs)})

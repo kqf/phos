@@ -5,6 +5,7 @@ import ROOT
 from invariantmass import InvariantMass, RawMass
 from outputcreator import analysis_output, SpectrumExtractor
 
+from ptplotter import MulipleOutput
 from mass import BackgroundEstimator, MixingBackgroundEstimator
 from mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
 from broot import BROOT as br
@@ -224,6 +225,7 @@ class DataExtractor(object):
             nevents = 1
 
         decorated = self._decorate_hists(histos, nevents)
-        loggs.update({"invariant_masses": masses})
-        loggs.update({"analysis_output": decorated})
+        loggs.update({"invariant_masses": MulipleOutput(masses)})
+        # TODO: Don't save here, add another step to the pipeline
+        loggs.update({"analysis_output": decorated._asdict()})
         return decorated

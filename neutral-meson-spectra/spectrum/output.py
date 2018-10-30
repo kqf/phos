@@ -1,8 +1,9 @@
 import ROOT
-from comparator import Comparator
-from ptplotter import MultiplePlotter
 import sutils as su
+from comparator import Comparator
 from flatten_dict import flatten
+from ptplotter import MultiplePlotter, MulipleOutput
+
 
 # TODO: Introduce more log items for compare etc
 #
@@ -78,6 +79,21 @@ class MergedLogItem(object):
             diff.compare(logg)
 
 
+def save_item(ofile, name, obj):
+    ofile.mkdir(name)
+    ofile.cd(name)
+
+    if type(obj) in {ROOT.TCanvas, ROOT.TH1F, MulipleOutput}:
+        obj.Write()
+        return
+
+    # if type(obj) == list:
+    #     for o in obj:
+    #         o.Write()
+    #     return
+    print obj, type(obj)
+
+
 class AnalysisOutput(dict):
     def __init__(self, label, particle="", *args, **kwargs):
         super(AnalysisOutput, self).__init__(*args, **kwargs)
@@ -85,7 +101,16 @@ class AnalysisOutput(dict):
         self.particle = particle
 
     def plot(self, stop=False):
-        print flatten(self, reducer="path")
+        print
+        ofile = ROOT.TFile(self._ofile(), "recreate")
+        flattened = flatten(self, reducer="path")
+        for k, v in flattened.iteritems():
+            save_item(ofile, k, v)
+        ofile.Write()
+
+    def _ofile(self):
+        name = self.label.lower().replace(" ", "-")
+        return "results/{}.root".format(name)
 
     def __repr__(self):
         normal = super(AnalysisOutput, self).__repr__()
