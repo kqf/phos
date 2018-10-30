@@ -4,6 +4,7 @@ import pytest
 from spectrum.efficiency import Efficiency
 from vault.datavault import DataVault
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
+from spectrum.output import AnalysisOutput
 
 
 class TestEfficiency(unittest.TestCase):
@@ -15,20 +16,24 @@ class TestEfficiency(unittest.TestCase):
             plot=False
         )
 
+        loggs = AnalysisOutput("test efficiency")
         efficiency = estimator.transform(
             DataVault().input("pythia8"),
-            "test_efficeincy"
+            loggs=loggs
         )
+        loggs.plot()
         self.assertGreater(efficiency.GetEntries(), 0)
 
     @pytest.mark.onlylocal
     def test_composite(self):
         estimator = Efficiency(CompositeEfficiencyOptions("#pi^{0}"))
+        loggs = AnalysisOutput("test composite efficiency")
         efficiency = estimator.transform(
-            [
+            (
                 DataVault().input("single #pi^{0}", "low"),
                 DataVault().input("single #pi^{0}", "high"),
-            ],
-            "testing composite efficiency"
+            ),
+            loggs=loggs
         )
+        loggs.plot()
         self.assertGreater(efficiency.GetEntries(), 0)

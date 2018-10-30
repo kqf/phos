@@ -87,10 +87,15 @@ def save_item(ofile, name, obj):
         obj.Write()
         return
 
-    # if type(obj) == list:
-    #     for o in obj:
-    #         o.Write()
-    #     return
+    if type(obj) == list:
+        if obj and type(obj[0]) == tuple:
+            labels, hists = zip(*obj)
+            if type(hists[0]) != ROOT.TH1F:
+                return
+            labels = Comparator(labels=labels, stop=False).compare(hists)
+            ofile.cd(name)
+            su.gcanvas().Write()
+        return
     print obj, type(obj)
 
 

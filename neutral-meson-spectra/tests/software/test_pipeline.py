@@ -12,8 +12,8 @@ class TestPipeline(unittest.TestCase):
     @pytest.mark.onlylocal
     def test_comparator(self):
         estimator = ComparePipeline([
-            ('normal', SingleHistInput("hPt_#pi^{0}_primary_")),
-            ('normal', SingleHistInput("hPt_#pi^{0}_primary_standard")),
+            ('normal1', SingleHistInput("hPt_#pi^{0}_primary_")),
+            ('normal2', SingleHistInput("hPt_#pi^{0}_primary_standard")),
         ])
 
         loggs = AnalysisOutput("Testing the compare pipeline")
@@ -21,4 +21,5 @@ class TestPipeline(unittest.TestCase):
             (DataVault().input("single #pi^{0}", "low"), ) * 2,
             loggs=loggs
         )
+        loggs.plot()
         self.assertGreater(output.GetEntries(), 0)

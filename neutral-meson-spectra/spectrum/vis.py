@@ -66,7 +66,7 @@ class MultipleVisualizer(object):
         self.labels = labels
 
     @br.init_inputs
-    def compare_visually(self, hists, ci, pad=None, loggs=None):
+    def compare_visually(self, hists, ci, pad=None, loggs=None, canvas=None):
         canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
         su.ticks(canvas)
         legend = ROOT.TLegend(0.55, 0.65, 0.8, 0.85)
@@ -161,6 +161,7 @@ class MultipleVisualizer(object):
     def io(self, canvas, hists, oname, loggs):
         cloned = canvas.Clone()
         cloned.SetName('c' + hists[0].GetName())
+        cloned.Write()
 
         if loggs:
             loggs.update({'compare': cloned})
