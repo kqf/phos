@@ -5,3 +5,4 @@ repoze.lru
 root_numpy
 pytest
 tqdm
+flatten_dict

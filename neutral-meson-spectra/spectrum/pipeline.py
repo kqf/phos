@@ -1,8 +1,10 @@
 import array
-from comparator import Comparator
+from collections import defaultdict
+from flatten_dict import flatten, unflatten
 from broot import BROOT as br
 from output import AnalysisOutput
 import sutils as st
+from comparator import Comparator
 
 
 class TransformerBase(object):
@@ -157,6 +159,21 @@ class Pipeline(object):
         return updated
 
 
+def merge(data):
+    """
+    input:
+         data = list of (str, dict)
+    output:
+         dict with the same structure as input dict
+    """
+    output = defaultdict(list)
+    for label, ddict in data:
+        flat = flatten(ddict)
+        for path, value in flat.iteritems():
+            output[path].append((label, value))
+    return unflatten(output)
+
+
 class ParallelPipeline(object):
 
     def __init__(self, steps):
@@ -184,6 +201,7 @@ class ParallelPipeline(object):
         ]
 
         outputs, local_logs = zip(*output_with_logs)
+        loggs.update({"merged": merge(local_logs)})
         return outputs
 
 

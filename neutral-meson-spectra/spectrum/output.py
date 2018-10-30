@@ -1,8 +1,8 @@
 import ROOT
 from comparator import Comparator
 from ptplotter import MultiplePlotter
-from broot import BROOT as br
 import sutils as su
+from flatten_dict import flatten
 
 # TODO: Introduce more log items for compare etc
 #
@@ -85,7 +85,7 @@ class AnalysisOutput(dict):
         self.particle = particle
 
     def plot(self, stop=False):
-        print self
+        print flatten(self, reducer="path")
 
     def __repr__(self):
         normal = super(AnalysisOutput, self).__repr__()
