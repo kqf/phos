@@ -40,7 +40,7 @@ class CorrectedYield(TransformerBase):
         ryield, feeddown = calculations
         cyield = ryield.Clone(ryield.GetName() + "_corrected_yield")
         cyield.Multiply(feeddown)
-        loggs.update({"reduced_output": [cyield]})
+        loggs.update({"reduced_output": cyield})
         return cyield
 
 

@@ -16,8 +16,9 @@ class TestPipeline(unittest.TestCase):
             ('normal', SingleHistInput("hPt_#pi^{0}_primary_standard")),
         ])
 
+        loggs = AnalysisOutput("Testing the compare pipeline")
         output = estimator.transform(
             (DataVault().input("single #pi^{0}", "low"), ) * 2,
-            loggs=AnalysisOutput("Testing the compare pipeline")
+            loggs=loggs
         )
         self.assertGreater(output.GetEntries(), 0)

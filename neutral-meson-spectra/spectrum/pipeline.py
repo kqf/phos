@@ -1,7 +1,7 @@
 import array
 from comparator import Comparator
 from broot import BROOT as br
-from output import AnalysisOutput, MergedLogItem
+from output import AnalysisOutput
 import sutils as st
 
 
@@ -19,7 +19,7 @@ class TransformerBase(object):
 
         output = self.pipeline.transform(inputs, loggs)
         if output:
-            loggs.update({'output': [output]})
+            loggs.update({'output': output})
 
         if lazy_logs:
             loggs.plot(self.plot)
@@ -102,7 +102,7 @@ class OutputDecorator(TransformerBase):
 
         if self.label:
             data.label = self.label
-        loggs.update({"decorated": [data]})
+        loggs.update({"decorated": data})
         return data
 
 
@@ -151,9 +151,9 @@ class Pipeline(object):
     def transform(self, inputs, loggs):
         updated = inputs
         for name, step in self.steps:
-            local_logs = AnalysisOutput(name)
+            local_logs = {}
             updated = step.transform(updated, local_logs)
-            loggs.append(local_logs)
+            loggs[name] = local_logs
         return updated
 
 
@@ -173,10 +173,10 @@ class ParallelPipeline(object):
         )
 
         def tr(x, name, step, loggs):
-            local_logs = AnalysisOutput(name)
+            local_logs = {}
             output = step.transform(x, local_logs)
-            loggs.append(local_logs)
-            return output, local_logs.mergelist()
+            loggs.update({name: local_logs})
+            return output, (name, local_logs)
 
         output_with_logs = [
             tr(inp, name, step, loggs)
@@ -184,13 +184,6 @@ class ParallelPipeline(object):
         ]
 
         outputs, local_logs = zip(*output_with_logs)
-
-        merged_loggs = AnalysisOutput(loggs.label)
-        merged_loggs.pool = [
-            MergedLogItem("merged", local)
-            for local in zip(*local_logs)
-        ]
-        loggs.append(merged_loggs)
         return outputs
 
 

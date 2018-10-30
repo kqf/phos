@@ -106,7 +106,7 @@ class RangeEstimator(object):
             self.opt.ptrange,
             RawMass.ptedges(masses),
             titles,
-            loggs.label
+            ""
         )
 
         ranges = self._fit_ranges(self.output, loggs)
@@ -164,7 +164,7 @@ class RangeEstimator(object):
                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
             )
 
-        loggs.update({"range_estimator": [mass, sigma]}, mergable=True)
+        loggs.update({"mass": mass, "sigma": sigma})
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values)
@@ -214,7 +214,7 @@ class DataExtractor(object):
             self.opt.ptrange,
             edges,
             self.opt.output,
-            loggs.label
+            ""
         )
 
         # Decorate the histograms
@@ -224,6 +224,6 @@ class DataExtractor(object):
             nevents = 1
 
         decorated = self._decorate_hists(histos, nevents)
-        loggs.update({"invariant_masses": masses}, multirange=True)
-        loggs.update({"analysis_output": decorated}, mergable=True)
+        loggs.update({"invariant_masses": masses})
+        loggs.update({"analysis_output": decorated})
         return decorated

@@ -51,7 +51,7 @@ class TestInvariantMass(unittest.TestCase):
 
         loggs = AnalysisOutput("test-multirage-plotter", particle)
         masses = pipeline.transform(self.input, loggs)
-        loggs.update("invariant-masses", masses, multirange=True)
+        loggs.update({"invariant-masses": masses})
         loggs.plot(stop=self.wait)
 
     # @unittest.skip('')

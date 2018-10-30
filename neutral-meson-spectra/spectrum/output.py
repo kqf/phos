@@ -78,42 +78,16 @@ class MergedLogItem(object):
             diff.compare(logg)
 
 
-class AnalysisOutput(object):
-    def __init__(self, label, particle=""):
-        super(AnalysisOutput, self).__init__()
+class AnalysisOutput(dict):
+    def __init__(self, label, particle="", *args, **kwargs):
+        super(AnalysisOutput, self).__init__(*args, **kwargs)
         self.label = label
-        self.pool = []
-        # if particle:
-        # self.label = "{0}-{1}".format(self.label, particle)
-
-    def update(self, stepdict, multirange=False, mergable=False):
-        logtype = MultirangeLogItem if multirange else LogItem
-
-        for stepname, histograms in stepdict.iteritems():
-            self.pool.insert(
-                0,
-                logtype("{0}/{1}".format(
-                    self.label,
-                    stepname), histograms, mergable)
-            )
+        self.particle = particle
 
     def plot(self, stop=False):
-        # default = ROOT.gROOT.IsBatch()
-        # ROOT.gROOT.SetBatch(not stop)
-        for item in self.pool:
-            item.save(stop)
-        # ROOT.gROOT.SetBatch(default)
+        print self
 
-    def append(self, other):
-        if not other.pool:
-            return
-
-        for item in other.pool:
-            if item == []:
-                continue
-            item.name = "{0}/{1}".format(self.label, item.name)
-
-        self.pool.extend(filter(lambda x: x != [], other.pool))
-
-    def mergelist(self):
-        return [item for item in self.pool if item.mergable]
+    def __repr__(self):
+        normal = super(AnalysisOutput, self).__repr__()
+        message = 'AnalysisOutput(label="{}", particle="{}"): {}'
+        return message.format(self.label, self.particle, normal)
