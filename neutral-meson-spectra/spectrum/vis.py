@@ -39,17 +39,20 @@ class VisHub(object):
 
     def __init__(self, *args, **kwargs):
         super(VisHub, self).__init__()
-        self._double = Visualizer(*args, **kwargs)
-        self._regular = MultipleVisualizer(*args, **kwargs)
+        self.args = args
+        self.kwargs = kwargs
         su.gcanvas().Clear()
 
     def compare_visually(self, hists, ci, loggs=None):
-        neglimits = any(i < 0 for i in self._double.rrange)
-        ignoreratio = neglimits and self._double.rrange
+        vis = Visualizer(*self.args, **self.kwargs)
+        neglimits = any(i < 0 for i in vis.rrange)
+        ignoreratio = neglimits and vis.rrange
 
         if len(hists) != 2 or ignoreratio:
-            return self._regular.compare_visually(hists, ci, loggs=loggs)
-        return self._double.compare_visually(hists, ci, loggs=loggs)
+            vis = MultipleVisualizer(*self.args, **self.kwargs)
+            return vis.compare_visually(hists, ci, loggs=loggs)
+
+        return vis.compare_visually(hists, ci, loggs=loggs)
 
 
 class MultipleVisualizer(object):
@@ -112,9 +115,7 @@ class MultipleVisualizer(object):
         if pad:
             return None
 
-        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
-        oname = self._oname(fname.lower())
-        self.io(canvas, hists, oname, loggs)
+        self.io(canvas, hists, loggs)
         # This shouldn't return anything
         # return first_hist
 
@@ -152,14 +153,7 @@ class MultipleVisualizer(object):
 
         return color, 20 + i // self.ncolors
 
-    def _oname(self, name):
-        if self.oname:
-            return self.oname
-
-        oname = self.output_prefix + name
-        return oname
-
-    def io(self, canvas, hists, oname, loggs):
+    def io(self, canvas, hists, loggs):
         cloned = canvas.Clone()
         cloned.SetName('c' + hists[0].GetName())
         cloned.Write()
@@ -190,13 +184,11 @@ class Visualizer(MultipleVisualizer):
         su.ticks(ratiopad)
         return c1, mainpad, ratiopad
 
-    def draw_ratio(self, hists, pad):
-        a, b = hists
-        ratio = br.ratio(a, b, self.ratio)
+    def draw_ratio(self, ratio, pad):
         self.cache.append(ratio)
 
         pad.cd()
-        su.adjust_labels(ratio, hists[0], scale=7. / 3)
+        su.adjust_labels(ratio, ratio, scale=7. / 3)
         ratio.GetYaxis().CenterTitle(True)
         ratio.SetTitle('')
         set_pad_logx(ratio, pad)
@@ -250,15 +242,29 @@ class Visualizer(MultipleVisualizer):
         ROOT.gStyle.SetStatBorderSize(0)
         ROOT.gStyle.SetOptFit(1)
 
+    @br.init_inputs
     def compare_visually(self, hists, ci, loggs=None):
+        a, b = hists
+        ratio = br.ratio(a, b, self.ratio)
+        if loggs is not None:
+            self.cached_ratio = ratio
+            self.cached_hists = hists
+            self.cached_ci = ci
+            loggs.update({"ratio": self})
+            return ratio
+        return self.compare_show_ratio(hists, ratio, ci)
+
+    def compare_show_ratio(self, hists, ratio, ci, loggs=None):
         canvas, mainpad, ratiopad = self._canvas(hists)
-
         super(Visualizer, self).compare_visually(hists, ci, mainpad)
-        ratio = self.draw_ratio(hists, ratiopad)
-
+        ratio = self.draw_ratio(ratio, ratiopad)
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.cd()
-        fname = hists[0].GetName() + '-' + '-'.join(x.label for x in hists)
-        oname = self._oname(fname.lower())
-        self.io(canvas, hists, oname, loggs)
+        self.io(canvas, hists, loggs)
         return su.adjust_labels(ratio, hists[0])
+
+    def Write(self):
+        return self.compare_show_ratio(
+            self.cached_hists,
+            self.cached_ratio,
+            self.cached_ci)
