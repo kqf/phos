@@ -93,8 +93,6 @@ def save_item(ofile, name, obj):
             if type(hists[0]) != ROOT.TH1F:
                 return
             labels = Comparator(labels=labels, stop=False).compare(hists)
-            ofile.cd(name)
-            su.gcanvas().Write()
         return
     print obj, type(obj)
 
