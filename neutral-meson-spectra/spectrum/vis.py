@@ -165,11 +165,11 @@ class MultipleVisualizer(object):
 
         if loggs:
             loggs.update({'compare': cloned})
-        else:
-            su.save_canvas(oname, pdf=False)
+        # else:
+        # su.save_canvas(oname, pdf=False)
 
-        if not loggs and self.stop:
-            su.wait(oname, save=True, draw=self.stop)
+        # if not loggs and self.stop:
+        #     su.wait(oname, save=True, draw=self.stop)
 
 
 class Visualizer(MultipleVisualizer):
