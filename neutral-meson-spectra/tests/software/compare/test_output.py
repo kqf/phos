@@ -32,5 +32,6 @@ class TestOutputRatio(unittest.TestCase, Particles):
         diff = cmpr.Comparator(stop=self.stop)
 
         self.data[0].SetTitle('Checking output ratio comparator')
-        ratio = diff.compare(zip(*[self.data, self.data]))
-        self.assertTrue(all(ratio))
+        self.assertTrue(
+            all(diff.compare(arg) for arg in zip(*[self.data, self.data]))
+        )

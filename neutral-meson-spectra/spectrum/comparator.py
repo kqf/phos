@@ -17,22 +17,22 @@ class Comparator(object):
         def contains_objs(x):
             return all('__iter__' not in dir(i) for i in x)
 
-        # Halndle coma separated histograms
+        # Halndle coma separated histograms "obj"
         #
         if contains_objs(args):
             return self.vi.compare_visually(args, self.ci, **kwargs)
 
-        # Halndle single list of histograms
+        # Halndle single list of histograms "[obj]"
         #
         if len(args) == 1 and contains_objs(args[0]):
             return self.vi.compare_visually(args[0], self.ci, **kwargs)
 
-        # Halndle two lists of histograms
+        # Halndle two lists of histograms "[[obj, obj, ...], [obj, obj, ...]]"
         #
         if len(args) == 2 and all(map(contains_objs, args)):
             return self.compare_set_of_histograms(args, **kwargs)
 
-        # Handle sets of histograms
+        # Handle sets of histograms "[[obj, obj, obj]]"
         #
         if len(args) == 1 and all(map(contains_objs, args[0])):
             return self.compare_set_of_histograms(args[0], **kwargs)
