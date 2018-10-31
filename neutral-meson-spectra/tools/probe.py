@@ -22,4 +22,4 @@ class TagAndProbe(TransformerBase):
                     ('scale', HistogramScaler())
                 ])
              ),
-        ], plot)
+        ], plot, ratio="B")

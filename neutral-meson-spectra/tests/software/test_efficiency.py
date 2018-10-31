@@ -9,7 +9,6 @@ from spectrum.output import AnalysisOutput
 
 class TestEfficiency(unittest.TestCase):
 
-    @unittest.skip('')
     def test_simple(self):
         estimator = Efficiency(
             EfficiencyOptions(genname='hPt_#pi^{0}_primary_'),
@@ -21,7 +20,7 @@ class TestEfficiency(unittest.TestCase):
             DataVault().input("pythia8"),
             loggs=loggs
         )
-        loggs.plot()
+        # loggs.plot()
         self.assertGreater(efficiency.GetEntries(), 0)
 
     @pytest.mark.onlylocal
@@ -35,5 +34,5 @@ class TestEfficiency(unittest.TestCase):
             ),
             loggs=loggs
         )
-        loggs.plot()
+        # loggs.plot()
         self.assertGreater(efficiency.GetEntries(), 0)

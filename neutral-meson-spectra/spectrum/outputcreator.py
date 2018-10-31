@@ -94,7 +94,9 @@ class SpectrumExtractor(object):
 
 
 def output_histogram(ptrange, name, title, label, bins, data, priority=999):
-    name = name + '_' + filter(str.isalnum, label)
+    if label:
+        name = "{}_{}".format(name, filter(str.isalnum, label))
+
     hist = ROOT.TH1F(name, title,
                      len(bins) - 1, array('d', bins))
 

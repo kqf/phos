@@ -25,7 +25,6 @@ class TransformerBase(object):
 
         if lazy_logs:
             loggs.plot(self.plot)
-        print output
         return output
 
 
