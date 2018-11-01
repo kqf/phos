@@ -26,8 +26,7 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
         vishub.compare_visually([self.data[0]], 1)
 
     def test_draws_multiple_plots(self):
-        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None)
-        vis = vishub._regular
+        vis = vi.VisHub((1, 1), (), (), self.stop, '', None)
 
         self.data[0].SetTitle('Test VisMultiple: Testing MultipleVisualizer')
         vis.compare_visually(self.data, 1)
@@ -39,10 +38,6 @@ class TestMultipleVisualizer(unittest.TestCase, Particles):
         vis.compare_visually([self.data[0]], 1)
 
     def test_handles_double_plots(self):
-        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None)
-        vis = vishub._double
-
-        self.assertRaises(ValueError, vis.compare_visually, self.data, 1)
-
+        vis = vi.VisHub((1, 1), (), (), self.stop, '', None)
         self.data[0].SetTitle('Test DoubleVis: Visualize two plots')
         vis.compare_visually(self.data[0:2], 1)

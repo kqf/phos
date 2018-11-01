@@ -68,6 +68,14 @@ class MultipleVisualizer(object):
         self.stop = stop
         self.labels = labels
 
+    def decorate_hist(self, hist, ci, index=0):
+        color, marker = self._color_marker(ci, index, hist)
+        hist.SetLineColor(color)
+        hist.SetFillColor(color)
+        hist.SetMarkerStyle(marker)
+        hist.SetMarkerColor(color)
+        return hist
+
     @br.init_inputs
     def compare_visually(self, hists, ci, pad=None, loggs=None, canvas=None):
         canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
@@ -95,11 +103,7 @@ class MultipleVisualizer(object):
             mainpad.SetLogy(first_hist.logy)
 
         for i, h in enumerate(hists):
-            color, marker = self._color_marker(ci, i, h)
-            h.SetLineColor(color)
-            h.SetFillColor(color)
-            h.SetMarkerStyle(marker)
-            h.SetMarkerColor(color)
+            self.decorate_hist(h, ci, index=i)
             if self.crange:
                 h.SetAxisRange(self.crange[0], self.crange[1], 'Y')
             h.DrawCopy('colz same ' + h.GetOption())
@@ -184,9 +188,8 @@ class Visualizer(MultipleVisualizer):
         su.ticks(ratiopad)
         return c1, mainpad, ratiopad
 
-    def draw_ratio(self, ratio, pad):
+    def draw_ratio(self, ratio, ci, pad):
         self.cache.append(ratio)
-
         pad.cd()
         su.adjust_labels(ratio, ratio, scale=7. / 3)
         ratio.GetYaxis().CenterTitle(True)
@@ -196,6 +199,7 @@ class Visualizer(MultipleVisualizer):
 
         self.fit_ratio(ratio)
         self.set_ratio_yaxis(ratio)
+        self.decorate_hist(ratio, ci)
         return ratio
 
     def set_ratio_yaxis(self, ratio, n=3):
@@ -224,16 +228,9 @@ class Visualizer(MultipleVisualizer):
     def _fit(self, ratio):
         # NB: Add fitfunc as an attribute to
         # the numerator histogram to get the output
-        ratio.Fit(ratio.fitfunc, "Rq")
-        ratio.fitfunc.SetLineColor(38)
         ratio.SetStats(True)
-
-    def fit_ratio(self, ratio):
-        try:
-            self._fit(ratio)
-        except AttributeError:  # there is no fitfunc defined
-            return
-
+        ROOT.gStyle.SetOptStat()
+        # ROOT.gStyle.SetOptFit(1011)
         ROOT.gStyle.SetStatFontSize(0.1)
         ROOT.gStyle.SetOptStat('')
         ROOT.gStyle.SetStatX(0.35)
@@ -241,6 +238,18 @@ class Visualizer(MultipleVisualizer):
         ROOT.gStyle.SetStatStyle(0)
         ROOT.gStyle.SetStatBorderSize(0)
         ROOT.gStyle.SetOptFit(1)
+        ratio.fitfunc.SetLineColor(ROOT.kBlue + 1)
+        ratio.fitfunc.SetMarkerColor(ROOT.kBlue + 1)
+        ratio.Fit(ratio.fitfunc, "Rq")
+
+    def fit_ratio(self, ratio):
+        try:
+            self._fit(ratio)
+        except AttributeError:  # there is no fitfunc defined
+            ROOT.gStyle.SetOptFit(0)
+            ROOT.gStyle.SetOptStat(0)
+            ratio.SetStats(False)
+            return
 
     @br.init_inputs
     def compare_visually(self, hists, ci, loggs=None):
@@ -257,8 +266,10 @@ class Visualizer(MultipleVisualizer):
     def compare_show_ratio(self, hists, ratio, ci, loggs=None):
         canvas, mainpad, ratiopad = self._canvas(hists)
         super(Visualizer, self).compare_visually(hists, ci, mainpad)
-        ratio = self.draw_ratio(ratio, ratiopad)
+        ratio = self.draw_ratio(ratio, ci, ratiopad)
         # ctrl+alt+f4 closes enire canvas not just a pad.
+        canvas.Update()
+        ratiopad.Update()
         canvas.cd()
         self.io(canvas, hists, loggs)
         return su.adjust_labels(ratio, hists[0])
