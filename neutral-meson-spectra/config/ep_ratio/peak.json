@@ -12,6 +12,6 @@
 		"fit_mass":          1.0,
 		"fit_mass_limits":   null,
 		"fit_width_limits":  null,
-		"background": "pol2"
+		"background": "pol1"
 	}
 }

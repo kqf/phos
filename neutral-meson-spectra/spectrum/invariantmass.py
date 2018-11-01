@@ -17,8 +17,12 @@ class RawMass(object):
             return None
         mass = br.project_range(hist, '_%d_%d', *self.pt_range)
         mass.nevents = hist.nevents
-        title = '  #events = %d M; M_{#gamma#gamma}, GeV/c^{2}'
-        mass.SetTitle(self.pt_label + title % (mass.nevents / 1e6))
+        title = "%s GeV/c " % self.pt_label
+        title_stat = ' '
+        if mass.nevents > 0:
+            title_stat = "#events = {} M ".format(mass.nevents)
+        title_axes_labels = '; M_{#gamma#gamma}, GeV/c^{2}'
+        mass.SetTitle(title + title_stat + title_axes_labels)
         mass.SetLineColor(37)
 
         if not mass.GetSumw2N():

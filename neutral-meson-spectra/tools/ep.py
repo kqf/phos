@@ -24,8 +24,12 @@ class IdentityExtractor(object):
         func.SetParameter(2, 0.08)
         func.SetLineColor(ROOT.kRed + 1)
         mass.signal.Fit(func, "RQ")
+        bkgrnd = ROOT.TF1("bkgrnd", self.options.background,
+                          *self.options.fit_range)
+        for i in range(3, func.GetNpar()):
+            bkgrnd.SetParameter(i - 3, func.GetParameter(i))
         mass.sigf = func
-        mass.bgrf = func
+        mass.bgrf = bkgrnd
         return mass
 
 
