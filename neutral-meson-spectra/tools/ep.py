@@ -4,6 +4,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
+from spectrum.pipeline import HistogramSelector
 
 
 class IdentityExtractor(object):
@@ -51,7 +52,8 @@ class EpRatioEstimator(TransformerBase):
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
             ("fit", EpFitter(options.analysis.signalp)),
             ("ranges", RangeEstimator(options.analysis.spectrum)),
-            ("data", DataExtractor(options.analysis.output))
+            ("data", DataExtractor(options.analysis.output)),
+            ("ep", HistogramSelector("mass", plot))
         ])
 
 

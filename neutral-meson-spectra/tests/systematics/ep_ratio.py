@@ -4,6 +4,7 @@ from tools.ep import EpRatioEstimator, DataMCEpRatioEstimator
 from vault.datavault import DataVault
 from spectrum.options import EpRatioOptions, DataMCEpRatioOptions
 from spectrum.comparator import Comparator
+from spectrum.output import AnalysisOutput
 # from spectrum.output import AnalysisOutput
 
 
@@ -46,11 +47,13 @@ class CalculateEpRatio(unittest.TestCase):
         estimator = DataMCEpRatioEstimator(
             DataMCEpRatioOptions(), plot=True
         )
+        loggs = AnalysisOutput("test double ep ratio estimator")
         output = estimator.transform(
             (
                 data("data"),
                 data("pythia8", "ep_ratio_1"),
             ),
-            loggs="test double ep ratio estimator"
+            loggs=loggs
         )
+        loggs.plot()
         self.assertGreater(len(output), 0)

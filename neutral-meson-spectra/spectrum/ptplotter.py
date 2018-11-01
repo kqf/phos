@@ -74,9 +74,8 @@ class MassesPlot(object):
 
 
 class MultiplePlotter(object):
-    def __init__(self, label):
+    def __init__(self):
         super(MultiplePlotter, self).__init__()
-        self.label = label
         self.multcanvas = [4, 3, 0.001, 0.001]
         self.lastcanvas = [2, 2, 0.001, 0.001]
 
@@ -92,8 +91,7 @@ class MultiplePlotter(object):
             plotter = MassesPlot()
             for j, mass in enumerate(masses[i:i + n_plots]):
                 plotter.transform(mass, canvas.cd(j + 1))
-            su.wait("{0}/multiple-{1}".format(self.label, i),
-                    draw=show, save=True)
+            canvas.Write("masses_{}".format(i))
 
 
 class MulipleOutput(object):
@@ -109,3 +107,4 @@ class MulipleOutput(object):
                 mass.ratio.Write()
             if mass.background:
                 mass.background.Write()
+        MultiplePlotter().transform(self.masses)
