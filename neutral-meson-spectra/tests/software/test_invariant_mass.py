@@ -17,8 +17,8 @@ from vault.datavault import DataVault
 class TestInvariantMass(unittest.TestCase):
 
     def setUp(self):
-        self.wait = 'discover' not in sys.argv
-        self.wait = self.wait and 'pytest' not in sys.argv[0]
+        self.stop = 'discover' not in sys.argv
+        self.stop = self.stop and 'pytest' not in sys.argv[0]
         self.input = DataVault().input(
             "data",
             "stable",
@@ -37,7 +37,7 @@ class TestInvariantMass(unittest.TestCase):
         # NB: Add this to be able to see the significance
         mass.area_error = 10, 0.05
         func(mass)
-        wait('test-inmass-%s-' % particle + title, self.wait, True)
+        wait(self.stop)
 
     def draw_multiple(self, particle):
         option = Options(particle=particle)
@@ -52,7 +52,7 @@ class TestInvariantMass(unittest.TestCase):
         loggs = AnalysisOutput("test-multirage-plotter", particle)
         masses = pipeline.transform(self.input, loggs)
         loggs.update({"invariant-masses": masses})
-        loggs.plot(stop=self.wait)
+        loggs.plot(stop=self.stop)
 
     # @unittest.skip('')
     @pytest.mark.onlylocal

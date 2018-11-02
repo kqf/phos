@@ -55,5 +55,6 @@ class CalculateEpRatio(unittest.TestCase):
             ),
             loggs=loggs
         )
-        loggs.plot()
+        Comparator(stop=True).compare(output)
+        # loggs.plot()
         self.assertGreater(len(output), 0)

@@ -75,7 +75,7 @@ class TestTH(unittest.TestCase):
     def test_draw(self):
         self.assertIsNotNone(self.hist)
         self.hist.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
     def test_setp(self):
         hist = ROOT.TH1F(
@@ -153,13 +153,13 @@ class TestTH(unittest.TestCase):
                 hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
         hist.Draw('colz')
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
         # NB: There is no need to manually set properties
         hist2 = br.project_range(hist, 'newname', -5, 5)
 
         hist2.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
         # Now copy the properties
         self.assertTrue(br.same(hist2, hist))
@@ -498,7 +498,7 @@ class TestTH(unittest.TestCase):
         hist.SetMarkerColor(ci + 2)
         hist.SetMarkerStyle(20)
         hist.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
     def test_caclulates_syst_deviation(self):
         hists = [ROOT.TH1F("hDev_%d" % i, "%d; x, GeV; y, N" %
@@ -518,7 +518,7 @@ class TestTH(unittest.TestCase):
 
         hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
         hist.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
     def test_extracts_bins(self):
         hist = ROOT.TH1F("hGetBins", "Test BROOT: Retuns binvalues", 40, 0, 40)
@@ -562,7 +562,7 @@ class TestTH(unittest.TestCase):
         hist = br.io.read(ofile, 'Table 1', 'Hist1D_y1')
         hist.SetTitle('TEST BROOT: Test read from TDirectory')
         hist.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
         os.remove(ofile)
 
     def test_iterates_over_bins(self):
@@ -633,11 +633,11 @@ class TestTH(unittest.TestCase):
 
         hist1.Sumw2()
         hist1.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
         br.set_to_zero(hist1, zero_range)
         hist1.Draw()
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
         a, b = bin_range
         for bin in range(1, hist1.GetNbinsX()):
@@ -679,7 +679,7 @@ class TestTH(unittest.TestCase):
                         bin), hist.GetBinContent(bin))
                     # print hh.GetBinContent(bin), hist.GetBinContent(bin)
 
-        wait(draw=self.stop)
+        wait(stop=self.stop)
 
     def test_calculates_confidence_intervals(self):
         hist1 = br.BH(ROOT.TH1F, "hFit", "Test BROOT: Trimm", 100, -4, 4)

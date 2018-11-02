@@ -26,7 +26,7 @@ class TestOutputRatio(unittest.TestCase, Particles):
         self.assertIsNotNone(ratio)
         ratio.SetTitle("Test Output: This is output ratio plot")
         ratio.Draw()
-        wait("test", draw=self.stop)
+        wait(stop=self.stop)
 
     def test_draws_multiple_histograms(self):
         diff = cmpr.Comparator(stop=self.stop)

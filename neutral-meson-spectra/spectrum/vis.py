@@ -161,9 +161,7 @@ class MultipleVisualizer(object):
         cloned = canvas.Clone()
         cloned.SetName('c' + hists[0].GetName())
         cloned.Write()
-
-        if self.stop:
-            su.wait()
+        su.wait(stop=self.stop)
 
 
 class Visualizer(MultipleVisualizer):

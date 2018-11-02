@@ -22,7 +22,7 @@ class TestSpectrumUtils(unittest.TestCase):
             'histWait', 'Test: Drawing with no global canvas', 600, -3, 3)
         hist.FillRandom('gaus')
         hist.Draw()
-        st.wait(draw=self.stop)
+        st.wait(stop=self.stop)
 
     def test_draws_rescaled(self):
         st.gcanvas(1., resize=True)
@@ -30,7 +30,7 @@ class TestSpectrumUtils(unittest.TestCase):
             'histNormal', 'Test: Drawing normal scale first', 600, -3, 3)
         hist.FillRandom('gaus')
         hist.Draw()
-        st.wait(draw=self.stop)
+        st.wait(stop=self.stop)
 
         st.gcanvas(1. / 2, resize=True)
         hist = ROOT.TH1F(
@@ -38,7 +38,7 @@ class TestSpectrumUtils(unittest.TestCase):
         hist.FillRandom('gaus')
         hist.SetLineColor(37)
         hist.Draw()
-        st.wait(draw=self.stop)
+        st.wait(stop=self.stop)
 
         st.gcanvas(1., resize=True)
         hist = ROOT.TH1F('histNormalAgain',
@@ -46,7 +46,7 @@ class TestSpectrumUtils(unittest.TestCase):
         hist.FillRandom('gaus')
         hist.SetLineColor(46)
         hist.Draw()
-        st.wait(draw=self.stop)
+        st.wait(stop=self.stop)
 
     def test_doesnt_draw_outiside_the_scope(self):
         def drawfunc():
@@ -64,7 +64,7 @@ class TestSpectrumUtils(unittest.TestCase):
         t.SetTextFont(43)
         t.SetTextSize(40)
         t.Draw()
-        st.wait(draw=self.stop)
+        st.wait(stop=self.stop)
 
     def test_draws_outside_the_scope(self):
         def drawfunc():
@@ -78,4 +78,4 @@ class TestSpectrumUtils(unittest.TestCase):
             return hist
 
         hist = drawfunc()
-        st.wait(draw=self.stop)
+        st.wait(stop=self.stop)

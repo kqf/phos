@@ -31,7 +31,7 @@ def multiple_plot(hists, name):
         pad.SetTickx()
         pad.SetTicky()
 
-    wait(name, True)
+    wait(True)
 
 
 class CheckPhysicsSelection(unittest.TestCase):
