@@ -16,12 +16,28 @@ class MassesPlot(object):
 
         self._set_axis_limits(imass)
         self.draw(imass.mass, "histe")
+        if imass.sigf:
+            imass.sigf.SetLineStyle(9)
         self.draw(imass.sigf, color=ci + 1)
         self.draw(imass.background, color=ci + 1)
         self.draw(imass.signal, color=ci + 2)
         self.draw(imass.bgrf, color=ci + 5)
+        self.draw_chisquare(imass.sigf)
         self._draw_line(imass)
         pad.Update()
+
+    def draw_chisquare(self, func):
+        if not func:
+            return
+        latex = ROOT.TPaveText(.5, .5, .5, .5)
+        latex.SetTextSize(10)
+        latex.SetTextAlign(13)
+
+        chi2ndf = func.GetChisquare() / func.GetNDF()
+        latex.AddText("#chi^{{2}} / ndf = {}".format(chi2ndf))
+        latex.DrawClone("same")
+        func.chi2ndf = chi2ndf
+        return latex
 
     def draw(self, hist, option="same", color=1):
         if not hist:
