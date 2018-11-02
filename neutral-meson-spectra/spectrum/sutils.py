@@ -31,14 +31,12 @@ def clean_name(name):
     return name
 
 
-def wait(name='', draw=True, save=False, suffix=''):
+def wait():
     canvas = gcanvas()
     canvas.Update()
-    save_canvas(name, pdf=save, root=save)
     canvas.Connect("Closed()", "TApplication",
                    ROOT.gApplication, "Terminate()")
-    if draw:
-        ROOT.gApplication.Run(True)
+    ROOT.gApplication.Run(True)
 
 
 def save_canvas(name, pdf=True, root=True):

@@ -162,6 +162,9 @@ class MultipleVisualizer(object):
         cloned.SetName('c' + hists[0].GetName())
         cloned.Write()
 
+        if self.stop:
+            su.wait()
+
 
 class Visualizer(MultipleVisualizer):
     def __init__(self, size, rrange, crange, stop, oname, labels, ratio=""):
