@@ -12,24 +12,30 @@ class IdentityExtractor(object):
         super(IdentityExtractor, self).__init__()
         self.options = options
 
-    def transform(self, mass):
+    def transform(self, mass, loggs):
         mass.signal = mass.mass.Clone()
 
         formula = "gaus(0) + {}(3)".format(self.options.background)
         func = ROOT.TF1("func", formula, *self.options.fit_range)
 
         func.SetParNames(*self.options.par_names)
-        func.SetParameter(0, 60)
-        func.SetParameter(1, 1)
-        func.SetParameter(2, 0.08)
+        func.SetParameters(*self.options.start_paremeters)
         func.SetLineColor(ROOT.kRed + 1)
-        mass.signal.Fit(func, "RQ")
+        mass.signal.Fit(func, "RQ0")
         bkgrnd = ROOT.TF1("bkgrnd", self.options.background,
                           *self.options.fit_range)
         for i in range(3, func.GetNpar()):
             bkgrnd.SetParameter(i - 3, func.GetParameter(i))
         mass.sigf = func
         mass.bgrf = bkgrnd
+        chi2ndf = func.GetChisquare() / func.GetNDF()
+        title = ", #chi^{{2}} / ndf = {:.3f}".format(chi2ndf)
+        mass.mass.SetTitle(mass.mass.GetTitle() + title)
+        mass.signal.SetTitle(mass.signal.GetTitle() + title)
+        a, b = self.options.fit_range
+        mass.signal.GetXaxis().SetRangeUser(a, b)
+        mass.signal.Scale(1. / mass.signal.Integral())
+        loggs.update({mass.signal.GetName(): mass.signal})
         return mass
 
 
@@ -42,8 +48,10 @@ class EpFitter(object):
         ]
 
     def transform(self, masses, loggs):
+        local_loggs = {}
         for estimator in self.pipeline:
-            map(estimator.transform, masses)
+            map(lambda x: estimator.transform(x, local_loggs), masses)
+        loggs.update({"epfitter": local_loggs})
         return masses
 
 

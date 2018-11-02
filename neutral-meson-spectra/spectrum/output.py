@@ -84,18 +84,19 @@ def save_item(ofile, name, obj):
     ofile.mkdir(name)
     ofile.cd(name)
 
-    if type(obj) in {ROOT.TCanvas, ROOT.TH1F, MulipleOutput, Visualizer}:
+    if type(obj) in {ROOT.TCanvas, ROOT.TH1F, ROOT.TH1D,
+                     MulipleOutput, Visualizer}:
         obj.Write()
         return
 
     if type(obj) == list:
         if obj and type(obj[0]) == tuple:
             labels, hists = zip(*obj)
-            if type(hists[0]) != ROOT.TH1F:
+            if type(hists[0]) not in {ROOT.TH1F, ROOT.TH1D}:
                 return
             labels = Comparator(labels=labels, stop=False).compare(hists)
         return
-    # print obj, type(obj)
+    print obj, type(obj)
 
 
 class AnalysisOutput(dict):
