@@ -54,7 +54,7 @@ Bool_t trendPlotEvents = kFALSE;
 
 
 // supermodule colors
-Color_t colorsSM[] = {0, 2, 3, 4, 1};
+Color_t colorsSM[] = {kRed + 1, kGreen + 1, kRed + 1, kOrange + 1, 1};
 
 // cells to exclude from averages calculations and their number: bad cells can
 // mess up the results, it is suggested to list (known and newly found with
@@ -553,10 +553,10 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
   gPad->SetLeftMargin(0.12);
   gPad->SetRightMargin(0.08);
   gPad->SetLogy();
-  hFactorDistr[0]->SetLineColor(kBlue);
-  hFactorDistr[1]->SetLineColor(kRed);
-  hFactorDistr[2]->SetLineColor(kGreen);
-  hFactorDistr[3]->SetLineColor(kOrange);
+  hFactorDistr[0]->SetLineColor(kBlue + 1);
+  hFactorDistr[1]->SetLineColor(kRed + 1);
+  hFactorDistr[2]->SetLineColor(kGreen + 1);
+  hFactorDistr[3]->SetLineColor(kOrange + 1);
   hFactorDistr[0]->Draw();
   hFactorDistr[1]->Draw("same");
   hFactorDistr[2]->Draw("same");
@@ -635,8 +635,8 @@ void DrawDeadNoisyCellMap(TH2* hmap, char* cname)
   // cname -- canvas name.
 
   // Define only 3 color: dead=blue, noisy=red, normal=white
-  Int_t color_index[]={kBlue,kWhite,kRed};
-  gStyle->SetPalette(3,color_index); 
+  Int_t color_index[]={kBlue + 1, kWhite, kRed + 1};
+  gStyle->SetPalette(3, color_index); 
 
   TCanvas *c1 = new TCanvas(cname, cname, 0,0,1000,600);
   c1->Divide(1,3);
@@ -645,7 +645,7 @@ void DrawDeadNoisyCellMap(TH2* hmap, char* cname)
   // Use hardware numeration of modules (2,3,4)
   // instead of offline numeration (3,2,1)
   for (Int_t iM=1; iM<=3; iM++) {
-    c1->cd(4-iM);
+    c1->cd(4-iM)->SetTickx();
     gPad->SetLeftMargin(0.04);
     gPad->SetRightMargin(0.02);
     gPad->SetTopMargin(0.10);
@@ -694,8 +694,8 @@ void DrawDeadNoisyCellMap(TH2* hmap, char* cname)
 //       // draw a line; FIXME: what is a better choice?
 //       TLine* line = new TLine(x,y1,x,y2);
 //       line->SetLineWidth(1);
-//       if (stat > 0) line->SetLineColor(kRed); // noisy cell
-//       else line->SetLineColor(kBlue); // dead cell
+//       if (stat > 0) line->SetLineColor(kRed + 1); // noisy cell
+//       else line->SetLineColor(kBlue + 1); // dead cell
 //       line->Draw();
 //     }
 
@@ -773,7 +773,7 @@ void DrawDeadNoisyCellPercent(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* 
     if (ndeadEvents[c] > 0) {
       line1 = new TLine(x, 0, x, y1);
       line1->SetLineWidth(1);
-      line1->SetLineColor(kBlue);
+      line1->SetLineColor(kBlue + 1);
       line1->Draw();
     }
 
@@ -781,7 +781,7 @@ void DrawDeadNoisyCellPercent(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* 
     if (nnoisyEvents[c] > 0) {
       line2 = new TLine(x, y1, x, y1 + 100.*nnoisyEvents[c]/ntotal);
       line2->SetLineWidth(1);
-      line2->SetLineColor(kRed);
+      line2->SetLineColor(kRed + 1);
       line2->Draw();
     }
 
@@ -799,7 +799,7 @@ void DrawDeadNoisyCellPercent(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* 
       line4 = new TLine(x, y2, x, y2 + 100.*nnoisyRuns[c]/nruns);
       line4->SetLineWidth(1);
       line4->SetLineStyle(7);
-      line4->SetLineColor(kOrange);
+      line4->SetLineColor(kOrange + 1);
       line4->Draw();
     }
   }
@@ -934,7 +934,7 @@ void DrawEMCALOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
     // top left is SM0, bottom right is SM9
     Int_t side = sm%2;
     Int_t sector = sm/2;
-    c1->cd((lastSector - sector)*2 + side + 1);
+    c1->cd((lastSector - sector)*2 + side + 1)->SetTickx();
 
     TH2* hSM = new TH2C(Form("hEMCALSM%i_%s",sm,cname), Form("SM%i",sm), 48,0,48, 24,0,24);
     hSM->SetXTitle("iEta");
@@ -976,7 +976,7 @@ void DrawPHOSOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
   TFile *fBadMap = TFile::Open("PHOS_BadMap.move.root","recreate");
   for (Int_t sm = 1; sm <= nmods; sm++)
   {
-    c1->cd(sm);
+    c1->cd(sm)->SetTickx();
     gPad->SetLeftMargin(0.10);
     gPad->SetRightMargin(0.15);
     gPad->SetTopMargin(0.05);
@@ -1374,14 +1374,14 @@ void Process1(TH1* inhisto, char* label = "", Int_t dnbins = 200,
   TCanvas *c1 = new TCanvas(inhisto->GetName(),inhisto->GetName(), 800,400);
   c1->Divide(2,1);
 
-  c1->cd(1);
+  c1->cd(1)->SetTickx();
   gPad->SetLeftMargin(0.14);
   gPad->SetRightMargin(0.06);
   gPad->SetLogy();
   inhisto->SetTitleOffset(1.7,"Y");
   inhisto->Draw();
 
-  c1->cd(2);
+  c1->cd(2)->SetTickx();
   gPad->SetLeftMargin(0.14);
   gPad->SetRightMargin(0.10);
   gPad->SetLogy();
@@ -1415,12 +1415,12 @@ void Process1(TH1* inhisto, char* label = "", Int_t dnbins = 200,
 
   // lines
   TLine *lline = new TLine(goodmin, 0, goodmin, distrib->GetMaximum());
-  lline->SetLineColor(kOrange);
+  lline->SetLineColor(kOrange + 1);
   lline->SetLineStyle(7);
   lline->Draw();
 
   TLine *rline = new TLine(goodmax, 0, goodmax, distrib->GetMaximum());
-  rline->SetLineColor(kOrange);
+  rline->SetLineColor(kOrange + 1);
   rline->SetLineStyle(7);
   rline->Draw();
 
@@ -1482,7 +1482,7 @@ void DrawCell(Int_t absId, Double_t fitEmin = 0.3, Double_t fitEmax = 1.,
 
   // fit
   TF1 *fit = new TF1("fit", "[0]*exp(-[1]*x)/x^2");
-  fit->SetLineColor(kRed);
+  fit->SetLineColor(kRed + 1);
   fit->SetLineWidth(2);
   fit->SetParName(0, "A");
   fit->SetParName(1, "B");
@@ -1693,7 +1693,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c1->Divide(1,3);
 
   // average cluster energy
-  c1->cd(1);
+  c1->cd(1)->SetTickx();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1719,7 +1719,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of clusters
-  c1->cd(2);
+  c1->cd(2)->SetTickx();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1742,7 +1742,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of cells in cluster
-  c1->cd(3);
+  c1->cd(3)->SetTickx();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1794,7 +1794,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c2->Divide(1,3);
 
   // average cluster energy
-  c2->cd(1);
+  c2->cd(1)->SetTickx();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1813,7 +1813,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of clusters
-  c2->cd(2);
+  c2->cd(2)->SetTickx();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1832,7 +1832,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of cells in cluster
-  c2->cd(3);
+  c2->cd(3)->SetTickx();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1933,7 +1933,7 @@ void DrawPi0Total(Int_t nruns, Int_t runNumbers[], Int_t sm = -1)
     fitfun->GetRange(emin, emax);
 
     backgr = new TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", emin, emax);
-    backgr->SetLineColor(kBlue);
+    backgr->SetLineColor(kBlue + 1);
     backgr->SetLineWidth(2);
     backgr->SetLineStyle(3);
     backgr->SetParameters(fitfun->GetParameter(3), fitfun->GetParameter(4), fitfun->GetParameter(5));
@@ -1999,7 +1999,7 @@ void DrawPi0Slice(Int_t run, Int_t sm = -1)
     fitfun->GetRange(emin, emax);
 
     backgr = new TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", emin, emax);
-    backgr->SetLineColor(kBlue);
+    backgr->SetLineColor(kBlue + 1);
     backgr->SetLineWidth(2);
     backgr->SetLineStyle(3);
     backgr->SetParameters(fitfun->GetParameter(3), fitfun->GetParameter(4), fitfun->GetParameter(5));
@@ -2209,7 +2209,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
   TCanvas *c3 = new TCanvas(Form("hPi0MassSigmaRuns%s",suff),Form("hPi0MassSigmaRuns%s",suff), 1000,707);
   c3->Divide(1,2);
 
-  c3->cd(1);
+  c3->cd(1)->SetTickx();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2235,7 +2235,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
   hPi0Mass->Draw("hist,same");
   leg->Draw("same");
 
-  c3->cd(2);
+  c3->cd(2)->SetTickx();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2271,7 +2271,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
     TCanvas *c4 = new TCanvas(Form("hPi0MassSigmaEvents%s",suff),Form("hPi0MassSigmaEvents%s",suff), 800,400);
     c4->Divide(1,2);
     
-    c4->cd(1);
+    c4->cd(1)->SetTickx();
     gPad->SetLeftMargin(0.16);
     gPad->SetRightMargin(0.08);
     leg = new TLegend(0.75,0.15,0.91,0.15+0.04*(SM2-SM1+1));
@@ -2288,7 +2288,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
     hPi0MassEvents->Draw("hist,same");
     leg->Draw("same");
     
-    c4->cd(2);
+    c4->cd(2)->SetTickx();
     gPad->SetLeftMargin(0.16);
     gPad->SetRightMargin(0.08);
     leg = new TLegend(0.75,0.15,0.91,0.15+0.04*(SM2-SM1+1));
@@ -2329,21 +2329,21 @@ void DrawPi0Distributions(char *suff, Int_t nbins = 100)
   c1->Divide(3,1);
 
   // number of pi0s
-  c1->cd(1)->SetLogy();
+  c1->cd(1)->SetLogy()->SetTickx();
   gPad->SetLeftMargin(0.16);
   gPad->SetRightMargin(0.04);
   TH1* hPi0Num = (TH1*) gROOT->FindObject(Form("hPi0Num%s",suff));
   MakeDistribution(hPi0Num,nbins)->Draw();
 
   // pi0 mass
-  c1->cd(2)->SetLogy();
+  c1->cd(2)->SetLogy()->SetTickx();
   gPad->SetLeftMargin(0.16);
   gPad->SetRightMargin(0.04);
   TH1* hPi0Mass = (TH1*) gROOT->FindObject(Form("hPi0Mass%s",suff));
   MakeDistribution(hPi0Mass,nbins)->Draw();
 
   // pi0 width
-  c1->cd(3)->SetLogy();
+  c1->cd(3)->SetLogy()->SetTickx();
   gPad->SetLeftMargin(0.16);
   gPad->SetRightMargin(0.04);
   TH1* hPi0Sigma = (TH1*) gROOT->FindObject(Form("hPi0Sigma%s",suff));
@@ -2415,7 +2415,7 @@ void FitPi0(TH1* h, Double_t &nraw, Double_t &enraw,
   // signal + background
   TF1 *fitfun = new TF1("fitfun", "cball + mypol2", emin, emax);
   fitfun->SetParNames("A", "M", "#sigma", "a_{0}", "a_{1}", "a_{2}");
-  fitfun->SetLineColor(kRed);
+  fitfun->SetLineColor(kRed + 1);
   fitfun->SetLineWidth(2);
 
   // make a preliminary fit to estimate parameters
@@ -2531,7 +2531,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   TCanvas *c1 = new TCanvas("hNEventsPerRunIndex","hNEventsPerRunIndex", 1000, 707);
   c1->Divide(1,2);
 
-  c1->cd(1);
+  c1->cd(1)->SetTickx();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2543,7 +2543,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   hNEventsPerRunIndex->SetLabelSize(0.06,"X");
   hNEventsPerRunIndex->Draw();
 
-  c1->cd(2);
+  c1->cd(2)->SetTickx();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2569,7 +2569,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   TCanvas *c2 = new TCanvas("hNAllEventsPerRunIndex","hNAllEventsPerRunIndex", 1000, 707);
   c2->Divide(1, 2);
 
-  c2->cd(1);
+  c2->cd(1)->SetTickx();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2603,7 +2603,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   leg->Draw("same");
 
 
-  c2->cd(2);
+  c2->cd(2)->SetTickx();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2719,7 +2719,7 @@ void SavePi0Histogram(TH1 * histo, Int_t sm, Int_t run)
     fitfun->GetRange(emin, emax);
 
     backgr = new TF1("mypol2", "[0] + [1]*(x-0.135) + [2]*(x-0.135)^2", emin, emax);
-    backgr->SetLineColor(kBlue);
+    backgr->SetLineColor(kBlue + 1);
     backgr->SetLineWidth(2);
     backgr->SetLineStyle(3);
     backgr->SetParameters(fitfun->GetParameter(3), fitfun->GetParameter(4), fitfun->GetParameter(5));

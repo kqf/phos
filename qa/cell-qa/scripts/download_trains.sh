@@ -6,6 +6,8 @@ function download_from_grid()
     TRAIN=$3
     for run in $(alien_ls $MHOME/); do
     	filepath=$MHOME/$run/$TRAIN/CaloCellsQA.root
+        echo "Downloading from:"
+        echo $filepath
     	output=$(alien_ls "$filepath") 
         if [ "$output" == "CaloCellsQA.root" ]; then
         	echo "Downloading run " $run
