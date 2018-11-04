@@ -645,7 +645,7 @@ void DrawDeadNoisyCellMap(TH2* hmap, char* cname)
   // Use hardware numeration of modules (2,3,4)
   // instead of offline numeration (3,2,1)
   for (Int_t iM=1; iM<=3; iM++) {
-    c1->cd(4-iM)->SetTickx();
+    c1->cd(4-iM)->SetTicky();
     gPad->SetLeftMargin(0.04);
     gPad->SetRightMargin(0.02);
     gPad->SetTopMargin(0.10);
@@ -934,7 +934,7 @@ void DrawEMCALOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
     // top left is SM0, bottom right is SM9
     Int_t side = sm%2;
     Int_t sector = sm/2;
-    c1->cd((lastSector - sector)*2 + side + 1)->SetTickx();
+    c1->cd((lastSector - sector)*2 + side + 1)->SetTicky();
 
     TH2* hSM = new TH2C(Form("hEMCALSM%i_%s",sm,cname), Form("SM%i",sm), 48,0,48, 24,0,24);
     hSM->SetXTitle("iEta");
@@ -976,7 +976,7 @@ void DrawPHOSOccupancy(Int_t nruns, Int_t runNumbers[], TH2* hmap, char* cname)
   TFile *fBadMap = TFile::Open("PHOS_BadMap.move.root","recreate");
   for (Int_t sm = 1; sm <= nmods; sm++)
   {
-    c1->cd(sm)->SetTickx();
+    c1->cd(sm)->SetTicky();
     gPad->SetLeftMargin(0.10);
     gPad->SetRightMargin(0.15);
     gPad->SetTopMargin(0.05);
@@ -1374,14 +1374,14 @@ void Process1(TH1* inhisto, char* label = "", Int_t dnbins = 200,
   TCanvas *c1 = new TCanvas(inhisto->GetName(),inhisto->GetName(), 800,400);
   c1->Divide(2,1);
 
-  c1->cd(1)->SetTickx();
+  c1->cd(1)->SetTicky();
   gPad->SetLeftMargin(0.14);
   gPad->SetRightMargin(0.06);
   gPad->SetLogy();
   inhisto->SetTitleOffset(1.7,"Y");
   inhisto->Draw();
 
-  c1->cd(2)->SetTickx();
+  c1->cd(2)->SetTicky();
   gPad->SetLeftMargin(0.14);
   gPad->SetRightMargin(0.10);
   gPad->SetLogy();
@@ -1693,8 +1693,9 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c1->Divide(1,3);
 
   // average cluster energy
-  c1->cd(1)->SetTickx();
-  gPad->SetLeftMargin(0.04);
+  c1->cd(1)->SetTicky();
+  gPad->SetTickx();
+  gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
   gPad->SetBottomMargin(0.14);
@@ -1705,6 +1706,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
 
+  hAvECluster->GetYaxis()->SetTitleOffset(0.38);
   hAvECluster->SetAxisRange(hAvECluster->GetMinimum()*0.5, hAvECluster->GetMaximum()*1.2,"Y");
   hAvECluster->SetLineWidth(2);
   hAvECluster->Draw();
@@ -1719,17 +1721,23 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of clusters
-  c1->cd(2)->SetTickx();
-  gPad->SetLeftMargin(0.04);
+  c1->cd(2)->SetTicky();
+  gPad->SetTickx();
+  gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
   gPad->SetBottomMargin(0.14);
   gPad->SetGridx();
   gPad->SetGridy();
+
   leg = new TLegend(0.625,0.46,0.725,0.45+0.08*(SM2-SM1+1));
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->SetTextSize(0.04);
 
   hAvNCluster->SetAxisRange(0, hAvNCluster->GetMaximum()*1.6,"Y");
   hAvNCluster->SetLineWidth(2);
+  hAvNCluster->GetYaxis()->SetTitleOffset(0.38);
   hAvNCluster->Draw();
   leg->AddEntry(hAvNCluster, Form("(All Modules)/%i",SM2-SM1+1),"l");
   for (Int_t sm = SM1; sm <= SM2; sm++) {
@@ -1738,12 +1746,14 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
     hAvNClusterSM[sm]->Draw("E hist same");
     leg->AddEntry(hAvNClusterSM[sm], Form("Module %i",5-sm),"l");
   }
+  hAvNCluster->GetYaxis()->SetTitleOffset(0.38);
   hAvNCluster->Draw("same"); // to top
   leg->Draw("same");
 
   // average number of cells in cluster
-  c1->cd(3)->SetTickx();
-  gPad->SetLeftMargin(0.04);
+  c1->cd(3)->SetTicky();
+  gPad->SetTickx();
+  gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
   gPad->SetBottomMargin(0.14);
@@ -1756,6 +1766,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
 
   hAvNCellsInCluster->SetAxisRange(0, hAvNCellsInCluster->GetMaximum()* 1.2,"Y");
   hAvNCellsInCluster->SetLineWidth(2);
+  hAvNCellsInCluster->GetYaxis()->SetTitleOffset(0.38);
   hAvNCellsInCluster->Draw();
   leg->AddEntry(hAvNCellsInCluster, "All Modules","l");
   for (Int_t sm = SM1; sm <= SM2; sm++) {
@@ -1794,7 +1805,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   c2->Divide(1,3);
 
   // average cluster energy
-  c2->cd(1)->SetTickx();
+  c2->cd(1)->SetTicky();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1813,7 +1824,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of clusters
-  c2->cd(2)->SetTickx();
+  c2->cd(2)->SetTicky();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -1832,7 +1843,7 @@ void DrawClusterAveragesPerRun(Int_t nruns, Int_t runNumbers[], Int_t ncellsMin 
   leg->Draw("same");
 
   // average number of cells in cluster
-  c2->cd(3)->SetTickx();
+  c2->cd(3)->SetTicky();
   gPad->SetLeftMargin(0.04);
   gPad->SetRightMargin(0.02);
   gPad->SetTopMargin(0.10);
@@ -2209,7 +2220,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
   TCanvas *c3 = new TCanvas(Form("hPi0MassSigmaRuns%s",suff),Form("hPi0MassSigmaRuns%s",suff), 1000,707);
   c3->Divide(1,2);
 
-  c3->cd(1)->SetTickx();
+  c3->cd(1)->SetTicky();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2235,7 +2246,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
   hPi0Mass->Draw("hist,same");
   leg->Draw("same");
 
-  c3->cd(2)->SetTickx();
+  c3->cd(2)->SetTicky();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2271,7 +2282,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
     TCanvas *c4 = new TCanvas(Form("hPi0MassSigmaEvents%s",suff),Form("hPi0MassSigmaEvents%s",suff), 800,400);
     c4->Divide(1,2);
     
-    c4->cd(1)->SetTickx();
+    c4->cd(1)->SetTicky();
     gPad->SetLeftMargin(0.16);
     gPad->SetRightMargin(0.08);
     leg = new TLegend(0.75,0.15,0.91,0.15+0.04*(SM2-SM1+1));
@@ -2288,7 +2299,7 @@ void DrawPi0Averages(Int_t nruns, Int_t runNumbers[], Bool_t samesm = kFALSE, TH
     hPi0MassEvents->Draw("hist,same");
     leg->Draw("same");
     
-    c4->cd(2)->SetTickx();
+    c4->cd(2)->SetTicky();
     gPad->SetLeftMargin(0.16);
     gPad->SetRightMargin(0.08);
     leg = new TLegend(0.75,0.15,0.91,0.15+0.04*(SM2-SM1+1));
@@ -2329,21 +2340,21 @@ void DrawPi0Distributions(char *suff, Int_t nbins = 100)
   c1->Divide(3,1);
 
   // number of pi0s
-  c1->cd(1)->SetLogy()->SetTickx();
+  c1->cd(1)->SetLogy()->SetTicky();
   gPad->SetLeftMargin(0.16);
   gPad->SetRightMargin(0.04);
   TH1* hPi0Num = (TH1*) gROOT->FindObject(Form("hPi0Num%s",suff));
   MakeDistribution(hPi0Num,nbins)->Draw();
 
   // pi0 mass
-  c1->cd(2)->SetLogy()->SetTickx();
+  c1->cd(2)->SetLogy()->SetTicky();
   gPad->SetLeftMargin(0.16);
   gPad->SetRightMargin(0.04);
   TH1* hPi0Mass = (TH1*) gROOT->FindObject(Form("hPi0Mass%s",suff));
   MakeDistribution(hPi0Mass,nbins)->Draw();
 
   // pi0 width
-  c1->cd(3)->SetLogy()->SetTickx();
+  c1->cd(3)->SetLogy()->SetTicky();
   gPad->SetLeftMargin(0.16);
   gPad->SetRightMargin(0.04);
   TH1* hPi0Sigma = (TH1*) gROOT->FindObject(Form("hPi0Sigma%s",suff));
@@ -2531,7 +2542,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   TCanvas *c1 = new TCanvas("hNEventsPerRunIndex","hNEventsPerRunIndex", 1000, 707);
   c1->Divide(1,2);
 
-  c1->cd(1)->SetTickx();
+  c1->cd(1)->SetTicky();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2543,7 +2554,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   hNEventsPerRunIndex->SetLabelSize(0.06,"X");
   hNEventsPerRunIndex->Draw();
 
-  c1->cd(2)->SetTickx();
+  c1->cd(2)->SetTicky();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2569,7 +2580,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   TCanvas *c2 = new TCanvas("hNAllEventsPerRunIndex","hNAllEventsPerRunIndex", 1000, 707);
   c2->Divide(1, 2);
 
-  c2->cd(1)->SetTickx();
+  c2->cd(1)->SetTicky();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
@@ -2603,7 +2614,7 @@ void DrawRunsDistribution(Int_t nruns, Int_t runNumbers[], Int_t dnbins = 100)
   leg->Draw("same");
 
 
-  c2->cd(2)->SetTickx();
+  c2->cd(2)->SetTicky();
   gPad->SetLeftMargin(0.06);
   gPad->SetRightMargin(0.04);
   gPad->SetTopMargin(0.10);
