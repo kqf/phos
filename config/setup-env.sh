@@ -20,5 +20,5 @@ export PYTHONPATH=/lib
 # Check for token and get it if needed
 alien-token-info || tokeninit
 
-export PROMPT_PREFIX='\033[1;33m(debug)\033[0m'
+export PROMPT_PREFIX='\033[1;33m(debug not active)\033[0m'
 export PS1="$PROMPT_PREFIX $PS1"
