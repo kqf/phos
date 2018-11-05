@@ -26,7 +26,7 @@ def ratio_input():
 
     # Define the inputs and the dataset for #pi^{0}
     #
-    prod = "single #pi^{0} iteration3 yield aliphysics"
+    prod = "single #pi^{0}"
     inputs_pi0 = (
         DataVault().input(prod, "low"),
         DataVault().input(prod, "high"),

@@ -10,8 +10,7 @@ class TestCorrectedYield(unittest.TestCase):
 
     # @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
-        # production = "single #pi^{0} iteration3 yield aliphysics"
-        production = "single #pi^{0} scan nonlinearity7"
+        production = "single #pi^{0}"
         inputs = [
             DataVault().input(production, "low", "PhysEff"),
             DataVault().input(production, "high", "PhysEff"),

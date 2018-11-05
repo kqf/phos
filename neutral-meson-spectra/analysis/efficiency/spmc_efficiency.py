@@ -25,7 +25,7 @@ class TestEfficiencyPi0(unittest.TestCase):
 
     # @unittest.skip('')
     def test_pi0_efficiency(self):
-        production = "single #pi^{0} scan nonlinearity7"
+        production = "single #pi^{0}"
         inputs = (
             DataVault().input(production, "low", "PhysEff"),
             DataVault().input(production, "high", "PhysEff"),

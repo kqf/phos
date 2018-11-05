@@ -24,10 +24,10 @@ def ep_data(prod="data", version="ep_ratio"):
 
 
 def data(nbins):
-    production = "single #pi^{0} iteration d3 nonlin14"
+    production = "single #pi^{0}"
     spmc_inputs = (
-        DataVault().input(production, "low"),
-        DataVault().input(production, "high"),
+        DataVault().input(production, "low", "PhysEff"),
+        DataVault().input(production, "high", "PhysEff"),
     )
 
     cyield = (
@@ -61,7 +61,7 @@ def data(nbins):
 
     return (
         cyield,
-        define_inputs(nbins, "single #pi^{0} scan nonlinearity6"),
+        define_inputs(nbins, "single #pi^{0}"),
         tof,
         gscale,
         acceptance,

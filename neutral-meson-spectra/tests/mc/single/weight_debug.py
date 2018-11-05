@@ -26,7 +26,7 @@ class TestCorrectedYield(unittest.TestCase):
     def test_corrected_yield_for_pi0(self):
         mcdata = DataVault().input(
             "single #pi^{0} iteration d3 nonlin11", "low",
-            # "single #pi^{0} iteration3 yield aliphysics", "low",
+            # "single #pi^{0}", "low",
             listname="PhysEff")
 
         tsallis = ROOT.TF1(
@@ -60,7 +60,7 @@ class TestCorrectedYield(unittest.TestCase):
     @unittest.skip('')
     def test_corrected_different_spectra(self):
         original = DataVault().input(
-            "single #pi^{0} iteration3 yield aliphysics", "low",
+            "single #pi^{0}", "low",
             listname="PhysEff")
 
         mcdata = DataVault().input(

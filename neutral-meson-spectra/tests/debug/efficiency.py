@@ -134,7 +134,7 @@ class DebugTheEfficiency(unittest.TestCase):
             debug_input("high"),
         )
 
-        prod = "single #pi^{0} iteration d3 nonlin14"
+        prod = "single #pi^{0}"
         inputs = (
             DataVault().input(prod, "low"),
             DataVault().input(prod, "high"),

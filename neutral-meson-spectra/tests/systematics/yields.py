@@ -12,7 +12,7 @@ class TestYieldExtractionUncertanity(unittest.TestCase):
 
     # @unittest.skip("")
     def test_yield_extraction_uncertanity_pion(self):
-        production = "single #pi^{0} iteration d3 nonlin14"
+        production = "single #pi^{0}"
         inputs = (
             DataVault().input(production, "low"),
             DataVault().input(production, "high"),

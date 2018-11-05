@@ -10,8 +10,8 @@ from vault.datavault import DataVault
 class TestPeakPosition(unittest.TestCase):
 
     def test_pt_ranges(self):
-        # production = "single #pi^{0} iteration3 yield aliphysics"
-        production = "single #pi^{0} iteration d3 nonlin14"
+        # production = "single #pi^{0}"
+        production = "single #pi^{0}"
         inputs = (
             DataVault().input(production, "low", "PhysEff"),
             DataVault().input(production, "high", "PhysEff"),

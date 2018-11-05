@@ -19,10 +19,10 @@ def define_general_datasets():
 def define_composite_datasets():
     datasets = [
         {
-            DataVault().input("single #pi^{0} iteration d3 nonlin14",
+            DataVault().input("single #pi^{0}",
                               "low",
                               listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin14",
+            DataVault().input("single #pi^{0}",
                               "high",
                               listname="PhysEff" + i): (7.0, 20)
         }
@@ -31,11 +31,11 @@ def define_composite_datasets():
 
     # reference = [
     #     {
-    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #         DataVault().input("single #pi^{0}",
     #                           "low",
     #                           listname="PhysEff",
     #                           ): (0, 7.0),
-    #         DataVault().input("single #pi^{0} iteration3 yield aliphysics",
+    #         DataVault().input("single #pi^{0}",
     #                           "high",
     #                           listname="PhysEff",
     #                           ): (7.0, 20)

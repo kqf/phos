@@ -80,7 +80,7 @@ class TestMasses(unittest.TestCase):
 
     @unittest.skip('')
     def test_efficiency(self):
-        # production = "single #pi^{0} iteration3 yield aliphysics"
+        # production = "single #pi^{0}"
         particle = "#pi^{0}"
         production = "single #pi^{0} debug3"
         options = CompositeEfficiencyOptions(
@@ -147,7 +147,7 @@ class TestDifferentMasses(unittest.TestCase):
             DataVault().file("debug efficiency", "high"),
             ""
         )
-        # production = "single #pi^{0} iteration3 yield aliphysics"
+        # production = "single #pi^{0}"
         production = "single #pi^{0} debug3"
         ll = "debug-ledger.json"
         inputs = (

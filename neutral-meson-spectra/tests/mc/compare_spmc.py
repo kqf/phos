@@ -7,7 +7,7 @@ from vault.datavault import DataVault
 
 
 def define_datasets():
-    production = "single #pi^{0} iteration3 yield aliphysics"
+    production = "single #pi^{0}"
     datasets = [
         {
             DataVault().input(production, "low"): (0, 7.0),
