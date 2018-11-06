@@ -5,7 +5,7 @@ PROTONS_PATH=../../
 DATASET = LHC16l-pass1-isolated
 DPART = first
 MC = kFALSE
-OUTDIR = results/data/LHC16/isolated_1
+OUTDIR = results/data/LHC16/isolated_2
 
 
 TEST_SELECTION = PhysTender
