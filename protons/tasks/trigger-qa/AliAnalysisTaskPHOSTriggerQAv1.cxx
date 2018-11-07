@@ -122,6 +122,16 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
       fOutputContainer->Add(new TH1F(key, titl, nPtPhot, 0., ptPhotMax));
     }
 
+    Int_t runMin = 254128;
+    Int_t runMax = 254331;
+
+    snprintf(key, 55, "hRunTriggersSM%d", sm);
+    snprintf(titl, 55, "SM%d number of triggers per run; run number", 5 - sm);
+    fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));  
+
+    snprintf(key, 55, "hRunMatchedTriggersSM%d", sm);
+    snprintf(titl, 55, "SM%d number of matched triggers per run; run number", 5 - sm);
+    fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));  
   }
 
   PostData(1, fOutputContainer);
@@ -175,7 +185,7 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
   if (fEventCounter == 0) {
     for (Int_t mod = 0; mod < 5; mod++) {
       if (!event->GetPHOSMatrix(mod)) continue;
-      PHOSGeo->SetMisalMatrix(event->GetPHOSMatrix(mod), mod) ;
+      PHOSGeo->SetMisalMatrix(event->GetPHOSMatrix(mod), mod);
     }
   }
 
@@ -202,6 +212,9 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
 
     snprintf(key, 55, "h4x4SM%d", trelid[0]);
     FillHistogram(key, trelid[2] - 1, trelid[3] - 1);
+
+    snprintf(key, 55, "hRunTriggersSM%d", trelid[0]);
+    FillHistogram(key, event->GetRunNumber(), 1.);
 
     inPHOS[trelid[0] - 1]++;
 
@@ -241,6 +254,9 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
 
         snprintf(key, 55, "hCluTSM%d", relid[0]);
         FillHistogram(key, relid[2] - 1, relid[3] - 1);
+
+        snprintf(key, 55, "hRunMatchedTriggersSM%d", trelid[0]);
+        FillHistogram(key, event->GetRunNumber(), 1.);
 
         if (c1->E() > 2.) { // Eclu > 2 GeV
           snprintf(key, 55, "h4x4CluSM%d", trelid[0]);

@@ -8,8 +8,8 @@ PROTONS_PATH=../../
 
 # Run final efficiency for optimized GE scale
 #
-DATASET = LHC16p-pass1
-OUTDIR = results/data/trigger_qa/iteration1
+DATASET = LHC16g-pass1
+OUTDIR = results/data/trigger_qa/iteration2
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
