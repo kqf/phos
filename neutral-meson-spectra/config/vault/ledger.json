@@ -21,6 +21,20 @@
 			"hsum": "5d9155810eff9f1988a5633b47e8cc58b79773756b03ff93fa8c14cf50012400",
 			"description": "Merged isolated bunches analysis"
 		},
+		"stable": {	
+			"file": "input-data/data/LHC16.root",	
+			"default_selection": "PhysOnlyTender",	
+			"pt_range": [0, 20],	
+			"hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",	
+			"description": "Raw data without TOF correction"	
+		},
+		"uncorrected": {	
+			"file": "input-data/data/LHC16/uncorrected/LHC16.root",	
+			"default_selection": "Phys",	
+			"pt_range": [0, 20],	
+			"hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",	
+			"description": "Raw data without TOF correction"	
+		},
 		"LHC17 qa1": {
 			"file": "input-data/data/LHC17/qa1/LHC17.root",
 			"default_selection": "Phys",
