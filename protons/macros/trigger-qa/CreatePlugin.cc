@@ -23,7 +23,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	plugin->SetGridDataDir(globaldir + dir);
 	cout << "/alice/data/2016/" + dir << endl;
 
-	TString datasuffix = isMC ? "AOD/" : "/*.";
+	TString datasuffix = isMC ? "AOD/" : "/*/";
 	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 	period.ToLower();
