@@ -33,10 +33,11 @@ class MassesPlot(object):
         latex.SetTextSize(10)
         latex.SetTextAlign(13)
 
-        chi2ndf = func.GetChisquare() / func.GetNDF()
-        latex.AddText("#chi^{{2}} / ndf = {}".format(chi2ndf))
-        latex.DrawClone("same")
-        func.chi2ndf = chi2ndf
+        if func.GetNDF() > 0:
+            chi2ndf = func.GetChisquare() / func.GetNDF()
+            latex.AddText("#chi^{{2}} / ndf = {}".format(chi2ndf))
+            latex.DrawClone("same")
+            func.chi2ndf = chi2ndf
         return latex
 
     def draw(self, hist, option="same", color=1):
