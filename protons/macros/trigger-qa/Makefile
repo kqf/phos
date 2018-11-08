@@ -11,6 +11,7 @@ PROTONS_PATH=../../
 DATASET = LHC16g-pass1
 OUTDIR = results/data/trigger_qa/iteration2
 TEST_SELECTION = PhysTender
+OUTFILE = TriggerQA
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks

@@ -11,6 +11,7 @@
 # TEST_SELECTION = PhysTender
 
 # PROTONS_PATH=../../
+OUTFILE = AnalysisResults
 
 
 grid: | %.cxx
@@ -42,7 +43,7 @@ download: | %.cxx
 force-download:
 	@mkdir -p tmp
 	@rm -rf LHC16o.root
-	@$(call save_runs,$(ALIEN_HOME)/pp-phos-$(DATASET),AnalysisResults.root,tmp)
+	@$(call save_runs,$(ALIEN_HOME)/pp-phos-$(DATASET),$(OUTFILE).root,tmp)
 	hadd LHC16o.root tmp/*.root
 	@rm -rf tmp
 	@echo -e "\x07"
@@ -51,7 +52,7 @@ force-download:
 test: | %.cxx
 	root -l -b -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))' || $(call funlink)
 	@echo "Local analysis" >> .runhistory
-	@$(call upload_test,AnalysisResults,test-analysis-pp)
+	@$(call upload_test,$(OUTFILE),test-analysis-pp)
 	@ln -s ../../misc-tools/drawtools/compare.py .
 	@# There are problems with python under alienv environment
 	@# Therefore it's necessary to use all these tweaks
@@ -60,7 +61,7 @@ test: | %.cxx
 	@echo -e "\a"
 
 upload:
-	$(call upload_result,AnalysisResults,$(DATASET))
+	$(call upload_result,$(OUTFILE),$(DATASET))
 
 clean:
 	$(call funlink)

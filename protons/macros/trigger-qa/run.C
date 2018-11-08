@@ -6,6 +6,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
+    alien->SetOutputFiles("TriggerQA.root");
 
     AliAODInputHandler * aod = new AliAODInputHandler();
     AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
@@ -29,15 +30,15 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                      1,                 // Important: reco pass
                                      isMC              // Important: is MC?
                                  );
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
-    // LoadAnalysisLibraries();
-    // gROOT->LoadMacro("./AddTaskPHOSTriggerQAv1.C");
-    // AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
-    //     TString("AnalysisResults.root"),
-    //     "trigger"
-    // );
-    // task->SelectCollisionCandidates(AliVEvent::kINT7);
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
+    LoadAnalysisLibraries();
+    gROOT->LoadMacro("./AddTaskPHOSTriggerQAv1.C");
+    AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
+        TString("TriggerQA.root"),
+        "PHOSTriggerQAResultsL0"
+    );
+    task->SelectCollisionCandidates(AliVEvent::kINT7);
 
   
     // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
@@ -46,7 +47,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
-    alien->SetOutputFiles("TriggerQA.root");
+    
 
     manager->StartAnalysis(runmode);
     gObjectTable->Print();

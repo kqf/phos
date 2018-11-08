@@ -124,7 +124,6 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
 
     Int_t runMin = 254128;
     Int_t runMax = 254331;
-
     snprintf(key, 55, "hRunTriggersSM%d", sm);
     snprintf(titl, 55, "SM%d number of triggers per run; run number", 5 - sm);
     fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));  
