@@ -1,5 +1,5 @@
-outdir=results/data/LHC16/ep_ratio
-ofile=LHC16.root
+outdir=results/data/LHC17/qa1
+ofile=LHC17.root
 # outdir=results/mc/pythia/ep_ratio_1
 # ofile=pythia8.root
 function upload() {
