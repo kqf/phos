@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from broot import BROOT as br
+from collections import OrderedDict
 
 
 def read_histogram(filename, listname, histname,
@@ -122,15 +123,18 @@ class Input(object):
 
         names = ['SM{0}SM{1}'.format(*pair) for pair in pairs]
 
-        output = [klass(
-            filename,
-            listname,
-            histname + x,
-            label=x,
-            mixprefix=mixprefix
-        ) for x in names]
-
-        return output
+        output = [
+            (
+                klass(
+                    filename,
+                    listname,
+                    histname + name,
+                    label=name,
+                    mixprefix=mixprefix
+                ),
+                name
+            ) for name in names]
+        return OrderedDict(output)
 
 
 class NoMixingInput(Input):

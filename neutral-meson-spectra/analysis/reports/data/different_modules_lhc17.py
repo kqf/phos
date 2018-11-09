@@ -2,6 +2,7 @@ import unittest
 import pytest
 
 from spectrum.analysis import Analysis
+from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
@@ -26,10 +27,18 @@ def analyze(inputs, particle="#pi^{0}"):
 class TestCheckModules(unittest.TestCase):
     @pytest.mark.onlylocal
     def test_different_modules_pi0(self):
-        inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
+        inputs = Input.read_per_module(
+            DataVault().file("data", "LHC17 qa1"),
+            "Phys",
+            same_module=True
+        )
         analyze(inputs, "#pi^{0}")
 
     @pytest.mark.onlylocal
     def test_different_modules_eta(self):
-        inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
+        inputs = Input.read_per_module(
+            DataVault().file("data", "LHC17 qa1"),
+            "Phys",
+            same_module=True
+        )
         analyze(inputs, "#eta")

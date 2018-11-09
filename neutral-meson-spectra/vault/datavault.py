@@ -50,6 +50,15 @@ class DataVault(object):
         return transformer(filename, str(listname), pt_range=pt_range,
                            *args, **kwargs)
 
+    def modules_input(self, production, version="latest", listname="Phys",
+                      same_module=True, *args, **kwargs):
+        inputs = Input.read_per_module(
+            self.file(production, version),
+            listname,
+            same_module=same_module
+        )
+        return inputs
+
     def validate_all_datasets(self):
         not_valid = []
         for productionion in self._ledger:
