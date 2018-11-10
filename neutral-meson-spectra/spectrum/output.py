@@ -3,7 +3,7 @@ import sutils as su
 from comparator import Comparator
 from flatten_dict import flatten
 from ptplotter import MultiplePlotter, MulipleOutput
-from vis import Visualizer
+from vis import Visualizer, MultipleVisualizer
 
 
 # TODO: Introduce more log items for compare etc
@@ -85,7 +85,7 @@ def save_item(ofile, name, obj):
     ofile.cd(name)
 
     if type(obj) in {ROOT.TCanvas, ROOT.TH1F, ROOT.TH1D,
-                     MulipleOutput, Visualizer}:
+                     MulipleOutput, Visualizer, MultipleVisualizer}:
         obj.Write()
         return
 
@@ -96,7 +96,7 @@ def save_item(ofile, name, obj):
                 return
             labels = Comparator(labels=labels, stop=False).compare(hists)
         return
-    print obj, type(obj)
+    print "Don't know how to handle", obj, type(obj)
 
 
 class AnalysisOutput(dict):

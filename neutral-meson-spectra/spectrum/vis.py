@@ -78,6 +78,12 @@ class MultipleVisualizer(object):
 
     @br.init_inputs
     def compare_visually(self, hists, ci, pad=None, loggs=None, canvas=None):
+        if loggs is not None:
+            self.cached_hists = hists
+            self.cached_ci = ci
+            loggs.update({"compare": self})
+            return
+
         canvas = su.gcanvas(self.size[0], self.size[1], resize=True)
         su.ticks(canvas)
         legend = ROOT.TLegend(0.55, 0.65, 0.8, 0.85)
@@ -162,6 +168,9 @@ class MultipleVisualizer(object):
         cloned.SetName('c' + hists[0].GetName())
         cloned.Write()
         su.wait(stop=self.stop)
+
+    def Write(self):
+        return self.compare_visually(self.cached_hists, self.cached_ci)
 
 
 class Visualizer(MultipleVisualizer):
