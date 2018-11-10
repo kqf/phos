@@ -162,9 +162,6 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
     return;
   }
 
-  AliPHOSTriggerUtils * triggerUtils = new AliPHOSTriggerUtils("PHOSTrig");
-  triggerUtils->SetEvent(event);
-
   FillHistogram("hNev", 0.); // all events
   fEventCounter++;
 
@@ -241,7 +238,7 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
       snprintf(key, 55, "hCluSM%d", relid[0]);
       FillHistogram(key, relid[2] - 1, relid[3] - 1);
 
-      if ( triggerUtils->IsFiredTrigger(c1) ) {
+      if( Matched(trelid,relid) ) {
 
         kUsedCluster[i] = 1;
 
