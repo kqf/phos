@@ -93,17 +93,17 @@
 	"single #eta":
 	{
 		"low": {
-			"file": "input-data/mc/single/eta/updated_nonlinearity/LHC17j3c1.root",
+			"file": "input-data/mc/single/eta/updated_nonlinearity_asymmetry/LHC17j3c1.root",
 			"default_selection": "PhysEffNoA",
 			"pt_range": [0.0, 10.0],
-			"hsum": "589e99b68881b281181254ac0e9d83475ef5b36f4308f048505a1aeac38375de",
+			"hsum": "b29cd6ad7349830147b9205328dc332280162a20a7d9e8881342210d62cfe373",
 			"description": "Single #eta simulations with all correctons"
 		},
 		"high": {
-			"file": "input-data/mc/single/eta/updated_nonlinearity/LHC17j3c2.root",
+			"file": "input-data/mc/single/eta/updated_nonlinearity_asymmetry/LHC17j3c2.root",
 			"default_selection": "PhysEffNoA",
 			"pt_range": [4.0, 20.0],
-			"hsum": "26ecfbc47c5a18fc920544bf959b2141f125b4fd78af3f76bfb7a261604413f0",
+			"hsum": "740112001ac4a0228b29c341a95a0689ea0904519f0f8ee73533e879467641f2",
 			"description": "Single #eta simulations with all correctons"
 		}
 	},
