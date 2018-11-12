@@ -31,7 +31,7 @@ def save_item(ofile, name, obj):
 class AnalysisOutput(dict):
     def __init__(self, label, particle="", *args, **kwargs):
         super(AnalysisOutput, self).__init__(*args, **kwargs)
-        self.label = label
+        self.label = label.replace("#", "")
         self.particle = particle
 
     def plot(self, stop=False):
