@@ -5,25 +5,15 @@ from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
 from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
 
 from tools.validate import validate
 from vault.datavault import DataVault
 
 
-class TestFakeEfficiencyPi0(unittest.TestCase):
-
-    @unittest.skip('')
-    def test_artificial_efficiency(self):
-        inputs = {
-            "LHC16-single-low.root": (0.0, 8.0),
-            "LHC16-single.root": (4.0, 20.0)
-        }
-        evaluate_spmc_efficiency(inputs, "#pi^{0}")
-
-
 class TestEfficiencyPi0(unittest.TestCase):
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_pi0_efficiency(self):
         production = "single #pi^{0}"
         inputs = (
@@ -36,10 +26,9 @@ class TestEfficiencyPi0(unittest.TestCase):
 
 class TestEfficiencyEta(unittest.TestCase):
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_eta_efficiency(self):
-        # production = "single #eta updated nonlinearity"
-        production = "single #eta new tender"
+        production = "single #eta"
         inputs = [
             DataVault().input(production, "low"),
             DataVault().input(production, "high"),
@@ -49,12 +38,12 @@ class TestEfficiencyEta(unittest.TestCase):
 
 def evaluate_spmc_efficiency(inputs, particle):
     options = CompositeEfficiencyOptions(particle)
-    loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle))
+    loggs = AnalysisOutput("efficiency_spmc_{}".format(particle))
     efficiency = Efficiency(options).transform(
         inputs,
         loggs
     )
-    # diff = Comparator()
-    # diff.compare(efficiency)
-    # loggs.plot()
+    diff = Comparator()
+    diff.compare(efficiency)
+    loggs.plot()
     return efficiency

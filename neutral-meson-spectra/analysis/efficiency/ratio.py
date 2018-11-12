@@ -19,9 +19,9 @@ class TestFakeEfficiencyPi0(unittest.TestCase):
             DataVault().input("single #pi^{0}", "low", "PhysEff"),
             DataVault().input("single #pi^{0}", "high", "PhysEff"),
         )
-        opt_eta = CompositeEfficiencyOptions("#eta", ptrange="config/pt.json")
-        opt_pi0 = CompositeEfficiencyOptions("#pi^{0}",
-                                             ptrange="config/pt.json")
+        ptrange = "config/pt-same.json"
+        opt_eta = CompositeEfficiencyOptions("#eta", ptrange=ptrange)
+        opt_pi0 = CompositeEfficiencyOptions("#pi^{0}", ptrange=ptrange)
         estimator = ComparePipeline([
             ("#eta", Efficiency(opt_eta)),
             ("#pi^{0}", Efficiency(opt_pi0)),
