@@ -34,7 +34,7 @@ class TestScan(unittest.TestCase):
 
     @pytest.mark.onlylocal
     def test_composite_interface(self):
-        prod = "single #pi^{0} nonlinearity scan"
+        prod = "single #pi^{0}"
         nbins = 2
         histnames = sum([
             [

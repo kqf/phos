@@ -32,7 +32,7 @@ class TestComparePipelineWithRatio(unittest.TestCase):
 
         loggs = AnalysisOutput("Test the compare pipeline")
         output = estimator.transform(
-            (DataVault().input("single #pi^{0}", "low"), ) * 2,
+            (DataVault().input("single #pi^{0}", "low", "PhysEff"), ) * 2,
             loggs=loggs
         )
         loggs.plot()
