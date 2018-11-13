@@ -24,6 +24,7 @@ def nonlinearity_function():
 
 class TestNonlinearityEstimator(unittest.TestCase):
 
+    @pytest.mark.skip("The datafile is missing")
     @pytest.mark.onlylocal
     def test_simple(self):
         options = NonlinearityOptions()
@@ -41,6 +42,7 @@ class TestNonlinearityEstimator(unittest.TestCase):
         )
         self.assertGreater(nonlinearity.GetEntries(), 0)
 
+    @pytest.mark.skip("The datafile is missing")
     @pytest.mark.onlylocal
     def test_composite(self):
         options = CompositeNonlinearityOptions()

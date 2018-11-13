@@ -31,8 +31,8 @@ class TestAnalysis(unittest.TestCase):
         loggs = AnalysisOutput("test the composite analysis")
         output = analysis.transform(
             (
-                DataVault().input("single #pi^{0}", "low"),
-                DataVault().input("single #pi^{0}", "high"),
+                DataVault().input("single #pi^{0}", "low", "PhysEff"),
+                DataVault().input("single #pi^{0}", "high", "PhysEff"),
             ),
             loggs=loggs
         )
