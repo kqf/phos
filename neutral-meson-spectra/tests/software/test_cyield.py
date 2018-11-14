@@ -36,12 +36,10 @@ class TestCorrectedYieldInterface(unittest.TestCase):
             DataVault().input(production, "low", "PhysEff"),
             DataVault().input(production, "high", "PhysEff"),
         )
-
         yield_data = (
             DataVault().input("data"),
             data_feeddown(),
         )
-
         data = (
             yield_data,
             spmc_inputs

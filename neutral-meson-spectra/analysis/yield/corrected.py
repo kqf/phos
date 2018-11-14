@@ -4,6 +4,7 @@ from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 
 from vault.datavault import DataVault
+from tools.feeddown import data_feeddown
 
 
 class TestCorrectedYield(unittest.TestCase):
@@ -11,15 +12,18 @@ class TestCorrectedYield(unittest.TestCase):
     # @unittest.skip('')
     def test_corrected_yield_for_pi0(self):
         production = "single #pi^{0}"
-        inputs = [
+        inputs = (
             DataVault().input(production, "low", "PhysEff"),
             DataVault().input(production, "high", "PhysEff"),
-        ]
-
-        data = [
+        )
+        yield_data = (
             DataVault().input("data"),
+            data_feeddown(),
+        )
+        data = (
+            yield_data,
             inputs
-        ]
+        )
 
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
@@ -31,15 +35,15 @@ class TestCorrectedYield(unittest.TestCase):
     @unittest.skip('')
     def test_corrected_yield_for_eta(self):
         production = "single #eta new tender"
-        inputs = [
+        inputs = (
             DataVault().input(production, "low"),
             DataVault().input(production, "high"),
-        ]
+        )
 
-        data = [
+        data = (
             DataVault().input("data"),
             inputs
-        ]
+        )
 
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(particle="#eta")
