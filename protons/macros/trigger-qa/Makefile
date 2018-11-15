@@ -9,7 +9,7 @@ PROTONS_PATH=../../
 # Run final efficiency for optimized GE scale
 #
 DATASET = LHC16g-pass1
-OUTDIR = results/data/trigger_qa/iteration2
+OUTDIR = results/data/2016/trigger_qa/iteration2/
 TEST_SELECTION = PhysTender
 OUTFILE = TriggerQA
 

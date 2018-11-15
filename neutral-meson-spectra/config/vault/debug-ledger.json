@@ -63,5 +63,14 @@
 			"hsum": "1b9ce813034c8ca430568ee6a6c95578ea5a97d0f8f3d96e752ea538eb9fd2e5",
 			"description": "Raw data without any corrections. Runs are not selected yet"
 		}
+	},
+	"LHC16 trigger qa1": {
+		"LHC17r": {
+			"file": "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root",
+			"default_selection": "Phys",
+			"pt_range": [0, 20],
+			"hsum": "54dbcfda286d24a253c0d1c0a333d90192b53104e5e1093d15bdcafad0be46fc",
+			"description": "Raw data without any corrections. Runs are not selected yet"
+		}
 	}
 }
