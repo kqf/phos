@@ -79,6 +79,10 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
   Float_t trMax = 600.;
 
   fOutputContainer->Add(new TH1F("hNtr", "Number of fired 4x4 regions per event", nTrMax, 0., trMax));
+  
+  Int_t runMin = 254128;
+  Int_t runMax = 254331;
+  fOutputContainer->Add(new TH1F("hRunEvents", "Number events per run; run number", (runMax - runMin), runMin - 0.5, runMax - 0.5));  
 
   for (Int_t sm = 1; sm < 5; sm++) {
 
@@ -122,8 +126,9 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
       fOutputContainer->Add(new TH1F(key, titl, nPtPhot, 0., ptPhotMax));
     }
 
-    Int_t runMin = 254128;
-    Int_t runMax = 254331;
+
+
+
     snprintf(key, 55, "hRunTriggersSM%d", sm);
     snprintf(titl, 55, "SM%d number of triggers per run; run number", 5 - sm);
     fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));  
@@ -164,6 +169,8 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
 
   FillHistogram("hNev", 0.); // all events
   fEventCounter++;
+
+  FillHistogram("hRunEvents", event->GetRunNumber(), 1.);
 
   AliVCaloTrigger* trgESD = event->GetCaloTrigger("PHOS");
   trgESD->Reset();
