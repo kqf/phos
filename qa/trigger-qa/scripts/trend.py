@@ -3,6 +3,13 @@ import ROOT
 filepath = "../../../neutral-meson-spectra/" \
     "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root"
 
+INDEX_COLOR = {
+    1: ROOT.kRed + 1,
+    2: ROOT.kGreen + 1,
+    3: ROOT.kBlue + 1,
+    4: ROOT.kOrange + 1,
+}
+
 
 def remove_empty_runs(hist):
     runs, counts = [], []
@@ -22,12 +29,34 @@ def remove_empty_runs(hist):
     return reduced
 
 
-def main():
+def average(hists):
+    total = hists[0].Clone("average")
+    total.Reset()
+    for hist in hists:
+        total.Add(hist)
+    total.Scale(1. / len(hists))
+    return total
+
+
+def main(nmodules=4):
     l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
     l0.ls()
-    matched_triggers = l0.FindObject("hRunMatchedTriggersSM2")
-    reduced = remove_empty_runs(matched_triggers)
-    reduced.Draw()
+
+    matched_triggers_modules = [
+        l0.FindObject("hRunMatchedTriggersSM{}".format(i))
+        for i in range(1, nmodules + 1)
+    ]
+    reduced = map(remove_empty_runs, matched_triggers_modules)
+    reduced.append(average(reduced))
+    stack = ROOT.THStack()
+
+    for i, hist in enumerate(reduced):
+        print i
+        hist.SetLineColor(INDEX_COLOR.get(i + 1, 1))
+        stack.Add(hist)
+
+    map(stack.Add, reduced)
+    stack.Draw("nostack")
     raw_input("test test test ...")
 
 
