@@ -38,20 +38,32 @@ def average(hists):
     return total
 
 
+def scale_for_acceptance(hists, badmap_fname="BadMap_LHC16-updated.root"):
+    if not badmap_fname:
+        return hists
+    badmap = ROOT.TFile(badmap_fname)
+    for i, hist in enumerate(hists):
+        mod = i + 1
+        sm = badmap.Get("PHOS_BadMap_mod{}".format(mod))
+        bad_channels = sm.GetEntries()
+        all_channels = sm.GetNbinsX() * sm.GetNbinsY()
+        hist.Scale(1. / (all_channels - bad_channels))
+    return hist
+
+
 def main(nmodules=4):
     l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
     l0.ls()
-
     matched_triggers_modules = [
         l0.FindObject("hRunMatchedTriggersSM{}".format(i))
         for i in range(1, nmodules + 1)
     ]
     reduced = map(remove_empty_runs, matched_triggers_modules)
+    scale_for_acceptance(reduced)
     reduced.append(average(reduced))
     stack = ROOT.THStack()
 
     for i, hist in enumerate(reduced):
-        print i
         hist.SetLineColor(INDEX_COLOR.get(i + 1, 1))
         stack.Add(hist)
 
