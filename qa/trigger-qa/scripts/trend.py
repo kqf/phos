@@ -1,14 +1,8 @@
 import ROOT
+import plotting
 
 filepath = "../../../neutral-meson-spectra/" \
     "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root"
-
-INDEX_COLOR = {
-    1: ROOT.kRed + 1,
-    2: ROOT.kGreen + 1,
-    3: ROOT.kBlue + 1,
-    4: ROOT.kOrange + 1,
-}
 
 
 def remove_empty_runs(hist):
@@ -61,15 +55,7 @@ def main(nmodules=4):
     reduced = map(remove_empty_runs, matched_triggers_modules)
     scale_for_acceptance(reduced)
     reduced.append(average(reduced))
-    stack = ROOT.THStack()
-
-    for i, hist in enumerate(reduced):
-        hist.SetLineColor(INDEX_COLOR.get(i + 1, 1))
-        stack.Add(hist)
-
-    map(stack.Add, reduced)
-    stack.Draw("nostack")
-    raw_input("test test test ...")
+    plotting.plot(reduced)
 
 
 if __name__ == '__main__':
