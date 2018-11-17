@@ -41,8 +41,8 @@ def main(nmodules=4):
 
     plotting.plot([
         channels,
-        matched_channels
-    ])
+        matched_channels,
+    ], labels=["trigger patches", "matched triggers"])
 
 
 if __name__ == '__main__':

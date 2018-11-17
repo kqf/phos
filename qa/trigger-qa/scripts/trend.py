@@ -1,5 +1,7 @@
 import ROOT
+import pandas as pd
 import plotting
+pd.set_option('display.expand_frame_repr', False)
 
 filepath = "../../../neutral-meson-spectra/" \
     "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root"
@@ -47,15 +49,19 @@ def scale_for_acceptance(hists, badmap_fname="BadMap_LHC16-updated.root"):
 
 def main(nmodules=4):
     l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
-    l0.ls()
-    matched_triggers_modules = [
-        l0.FindObject("hRunMatchedTriggersSM{}".format(i))
-        for i in range(1, nmodules + 1)
+    outputs = pd.DataFrame(index=map("SM{}".format, range(1, nmodules + 1)))
+    histname = "hRunMatchedTriggers"
+    outputs[histname] = [
+        l0.FindObject("{}{}".format(histname, str(i)))
+        for i in outputs.index
     ]
-    reduced = map(remove_empty_runs, matched_triggers_modules)
-    scale_for_acceptance(reduced)
-    reduced.append(average(reduced))
-    plotting.plot(reduced)
+    outputs["cleaned"] = outputs[histname].apply(remove_empty_runs)
+    scale_for_acceptance(outputs["cleaned"].values)
+    outputs = outputs.append(pd.DataFrame([{
+        "cleaned": average(outputs["cleaned"].values)
+    }], index=["average"]), sort=True)
+
+    plotting.plot(outputs["cleaned"].values, outputs.index)
 
 
 if __name__ == '__main__':
