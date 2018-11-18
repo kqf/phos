@@ -64,12 +64,12 @@
 			"description": "Raw data without any corrections. Runs are not selected yet"
 		}
 	},
-	"LHC16 trigger qa1": {
+	"LHC16 trigger qa2": {
 		"LHC17r": {
 			"file": "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root",
 			"default_selection": "Phys",
 			"pt_range": [0, 20],
-			"hsum": "54dbcfda286d24a253c0d1c0a333d90192b53104e5e1093d15bdcafad0be46fc",
+			"hsum": "5055f44f942cdf267159a8da09d54795290695e8913ac0434020ee4fafd386c8",
 			"description": "Raw data without any corrections. Runs are not selected yet"
 		}
 	}
