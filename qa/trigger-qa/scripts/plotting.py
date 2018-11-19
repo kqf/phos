@@ -16,6 +16,14 @@ def decorate_hist(hist):
     return hist
 
 
+def decorate_pad(pad):
+    pad.SetGridx()
+    pad.SetGridy()
+    pad.SetTickx()
+    pad.SetTicky()
+    return pad
+
+
 def plot(hists, labels=None, pad=None, title=None):
     assert labels is None or len(hists) == len(labels), "Wrong length"
     if pad is not None:
@@ -26,6 +34,7 @@ def plot(hists, labels=None, pad=None, title=None):
     for i, hist in enumerate(hists):
         hist.SetLineColor(INDEX_COLOR.get(i + 1, 1))
         stack.Add(decorate_hist(hist))
+        stack.SetTitle(hist.GetTitle())
 
     if title is not None:
         stack.SetTitle(title)
@@ -45,14 +54,11 @@ def plot(hists, labels=None, pad=None, title=None):
     ROOT.gPad.SetRightMargin(0.02)
     ROOT.gPad.SetTopMargin(0.10)
     ROOT.gPad.SetBottomMargin(0.14)
-
-    ROOT.gPad.SetGridx()
-    ROOT.gPad.SetGridy()
-    ROOT.gPad.SetTickx()
-    ROOT.gPad.SetTicky()
+    decorate_pad(ROOT.gPad)
 
     if pad is not None:
-        return [stack, legend]
+        pad.cached = [stack, legend]
+        return pad.cached
     raw_input("Press enter to continue")
 
 
