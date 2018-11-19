@@ -186,10 +186,12 @@ def main():
 
     triggers = process("hRunTriggers", lst, badmap_fname)
     plotter = plotting.Plotter()
-    plotter.plot(triggers["scaled"], triggers["name"], canvas.cd(1))
+    title = "Number of 4x4 patches per run;; # patches / accepntace/ #events"
+    plotter.plot(triggers["scaled"], triggers["name"], canvas.cd(1), title)
 
     mtriggers = process("hRunMatchedTriggers", lst, badmap_fname)
-    plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2))
+    mtitle = "# matched 4x4 patches per run;; # patches / accepntace/ #events"
+    plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2), mtitle)
     canvas.Update()
     raw_input()
 

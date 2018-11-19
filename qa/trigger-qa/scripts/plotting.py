@@ -16,7 +16,7 @@ def decorate_hist(hist):
     return hist
 
 
-def plot(hists, labels=None, pad=None):
+def plot(hists, labels=None, pad=None, title=None):
     assert labels is None or len(hists) == len(labels), "Wrong length"
     if pad is not None:
         pad.cd()
@@ -26,6 +26,9 @@ def plot(hists, labels=None, pad=None):
     for i, hist in enumerate(hists):
         hist.SetLineColor(INDEX_COLOR.get(i + 1, 1))
         stack.Add(decorate_hist(hist))
+
+    if title is not None:
+        stack.SetTitle(title)
     stack.Draw("nostack")
 
     # Set labels
@@ -58,5 +61,5 @@ class Plotter(object):
         super(Plotter, self).__init__()
         self.cache = []
 
-    def plot(self, hist, labels=None, pad=None):
-        self.cache.append(plot(hist, labels, pad))
+    def plot(self, hist, labels=None, pad=None, title=None):
+        self.cache.append(plot(hist, labels, pad, title))
