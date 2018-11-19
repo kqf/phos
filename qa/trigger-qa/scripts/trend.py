@@ -57,7 +57,6 @@ class EmptyBinRemover(BaseEstimator, TransformerMixin):
 
     def remove_empty_runs(self, hist):
         runs, counts = [], []
-        print self._empty_bins
         for i in self._empty_bins:
             runs.append(hist.GetBinCenter(i))
             counts.append(hist.GetBinContent(i))
@@ -70,6 +69,7 @@ class EmptyBinRemover(BaseEstimator, TransformerMixin):
         for i, (r, c) in enumerate(zip(runs, counts)):
             reduced.SetBinContent(i + 1, c)
             reduced.GetXaxis().SetBinLabel(i + 1, str(int(r)))
+        reduced.LabelsOption("v")
         return reduced
 
     @staticmethod
@@ -97,7 +97,6 @@ class AcceptanceScaler(BaseEstimator, TransformerMixin):
     @staticmethod
     def scale(hist, badmap):
         if not badmap:
-            print "No badmap found for ", hist.GetName()
             return hist
         bad_channels = badmap.GetEntries()
         all_channels = badmap.GetNbinsX() * badmap.GetNbinsY()
@@ -133,7 +132,6 @@ class AverageCalculator(BaseEstimator, TransformerMixin):
         total.Reset()
         for hist in hists:
             total.Add(hist)
-            print hist.GetNbinsX(), total.GetNbinsX()
         total.Scale(1. / len(hists))
         return total
 
@@ -158,12 +156,11 @@ class EventsScaler(EmptyBinRemover):
     def scale(self, hist):
         divided = hist.Clone("{}_{}".format(hist.GetName(), self.out_col))
         divided.Divide(self._eventmap_cleaned)
+        divided.LabelsOption("v")
         return divided
 
 
-def main(nmodules=4):
-    badmap_fname = "BadMap_LHC16-updated.root"
-    hist, lst = "hRunTriggers", "PHOSTriggerQAResultsL0"
+def process(hist, lst, badmap_fname, nmodules=4):
     event_runs = ROOT.TFile(filepath).Get(lst).FindObject("hRunEvents")
     analysis = make_pipeline(
         HistReader("name", "raw", filepath, hist, lst),
@@ -177,8 +174,24 @@ def main(nmodules=4):
 
     outputs = pd.DataFrame(index=map(str, range(1, nmodules + 1)))
     outputs["name"] = outputs.index.map("SM{}".format)
-    outputs = analysis.fit_transform(outputs)
-    plotting.plot(outputs["scaled"], outputs["name"])
+    return analysis.fit_transform(outputs)
+
+
+def main():
+    badmap_fname = "BadMap_LHC16-updated.root"
+    lst = "PHOSTriggerQAResultsL0"
+
+    canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
+    canvas.Divide(1, 2)
+
+    triggers = process("hRunTriggers", lst, badmap_fname)
+    plotter = plotting.Plotter()
+    plotter.plot(triggers["scaled"], triggers["name"], canvas.cd(1))
+
+    mtriggers = process("hRunMatchedTriggers", lst, badmap_fname)
+    plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2))
+    canvas.Update()
+    raw_input()
 
 
 if __name__ == '__main__':
