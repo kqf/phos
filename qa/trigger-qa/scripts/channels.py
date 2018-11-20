@@ -89,9 +89,7 @@ def main(nmodules=4):
     mu, sigma = fit_channels(trigger_patches)
 
     title = "{} good channels: {} < # hits < {}".format(
-        channels.GetTitle(),
-        1,
-        mu + 2 * sigma
+        channels.GetTitle(), 1, mu + 2 * sigma
     )
 
     plotting.plot([
