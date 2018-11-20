@@ -42,7 +42,7 @@ def plot(hists, labels=None, pad=None, title=None):
 
     # Set labels
     if labels is not None:
-        legend = ROOT.TLegend(0.55, 0.8, 0.9, 0.9)
+        legend = ROOT.TLegend(0.55, 0.66, 0.9, 0.86)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         legend.SetTextSize(0.04)

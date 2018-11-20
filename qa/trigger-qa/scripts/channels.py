@@ -3,6 +3,7 @@ import numpy as np
 import root_numpy as rnp
 import plotting
 ROOT.TH1.AddDirectory(False)
+ROOT.gStyle.SetOptStat(0)
 
 filepath = "../../../neutral-meson-spectra/" \
     "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root"
