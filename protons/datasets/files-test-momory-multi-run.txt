@@ -1,0 +1,10 @@
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257682/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257684/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257685/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257687/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257688/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257689/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257692/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257697/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257724/pass1/AOD/001/AliAOD.root
+/afs/cern.ch/work/o/okovalen/private/data/2016/LHC16k/000257725/pass1/AOD/001/AliAOD.root
