@@ -2,7 +2,7 @@ include ../../base.mk
 
 PROTONS_PATH=../../
 
-DATASET = LHC16l-pass1
+DATASET = LHC16k-pass1
 DPART = first
 MC = kFALSE
 OUTDIR = results/mc/pythia/debug_weights
@@ -14,10 +14,10 @@ profiling: | %.cxx
 	valgrind --tool=memcheck \
 	--error-limit=no \
 	--max-stackframe=3060888 \
-	--suppressions=${ROOTSYS}/etc/valgrind-root.supp \
 	--num-callers=40 \
 	--log-file=./profiling_result.log \
 	--leak-check=full \
+	--track-origins=yes \
 	--show-reachable=yes \
 	${PROFILING_TARGET}
 	@$(call funlink) && echo "Directory is clean"
