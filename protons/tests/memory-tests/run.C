@@ -53,8 +53,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    // Bool_t isTest = TString(pluginmode).Contains("test");
-    // AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", isMC, isTest);
+    Bool_t isTest = TString(pluginmode).Contains("test");
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", isMC, isTest);
 
     gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
     AddTaskPIDResponse(kFALSE, kTRUE, kFALSE, "tenderPassData", kFALSE, "", kTRUE, kTRUE, -1);
@@ -62,8 +62,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
     AddTaskPHOSEpRatio(kFALSE);
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
-    AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
+    // AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
 
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C");
     AddTaskPhysPHOSQA();
