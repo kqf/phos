@@ -38,7 +38,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         TString("TriggerQA.root"),
         "PHOSTriggerQAResultsL0"
     );
-    task->SelectCollisionCandidates(AliVEvent::kINT7);
+    task->SelectCollisionCandidates(AliVEvent::kPHI7);
 
   
     // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
