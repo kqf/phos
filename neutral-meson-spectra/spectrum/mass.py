@@ -38,7 +38,7 @@ class SignalExtractor(object):
         # mass.signal.Sumw2(True)
         # mass.signal.Add(mass.mass, mass.background.GetHistogram(), 1, -1.)
         # TODO: SetAxisRange aswell
-        mass.signal.SetAxisRange(*mass.xaxis_range)
+        mass.signal.SetAxisRange(*mass.mass_range)
         mass.signal.GetYaxis().SetTitle("Real - background")
         return mass.signal
 
@@ -113,7 +113,7 @@ class ZeroBinsCleaner(object):
         return mass
 
     def _clean_histogram(self, h, zeros, mass, is_background=False):
-        if 'empty' in mass.opt.average:
+        if not mass.opt.clean_empty_bins:
             return h
 
         if not zeros:
@@ -128,7 +128,7 @@ class ZeroBinsCleaner(object):
         # Delete bin only if it's empty
         def valid(i):
             return h.GetBinContent(i) < mass.opt.tol and \
-                su.in_range(h.GetBinCenter(i), mass.xaxis_range)
+                su.in_range(h.GetBinCenter(i), mass.mass_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
         for i, c in centers.iteritems():
