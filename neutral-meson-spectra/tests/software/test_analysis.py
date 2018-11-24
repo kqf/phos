@@ -11,10 +11,9 @@ from vault.datavault import DataVault
 
 class TestAnalysis(unittest.TestCase):
 
-    @unittest.skip('')
     @pytest.mark.onlylocal
     def test_simple(self):
-        analysis = Analysis(Options())
+        analysis = Analysis(Options(particle="#eta"))
 
         loggs = AnalysisOutput("test the single analysis")
         output = analysis.transform(
@@ -24,6 +23,7 @@ class TestAnalysis(unittest.TestCase):
         loggs.plot()
         self.assertGreater(len(output), 0)
 
+    @unittest.skip('')
     @pytest.mark.onlylocal
     def test_composite(self):
         analysis = Analysis(CompositeOptions("#pi^{0}"))
