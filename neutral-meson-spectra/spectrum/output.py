@@ -4,7 +4,6 @@ from flatten_dict import flatten
 from ptplotter import MulipleOutput
 from vis import Visualizer, MultipleVisualizer
 
-
 # TODO: Introduce more log items for compare etc
 #
 
@@ -25,6 +24,12 @@ def save_item(ofile, name, obj):
                 return
             labels = Comparator(labels=labels, stop=False).compare(hists)
         return
+
+    if obj.__class__.__bases__[0] == tuple:
+        for hist in obj:
+            hist.Write()
+        return
+
     print "Don't know how to handle", obj, type(obj)
 
 
