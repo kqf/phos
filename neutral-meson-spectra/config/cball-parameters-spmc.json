@@ -6,18 +6,18 @@
 
                 "fit_range":         [0.06, 0.22],
                 "prel_area_limits":  1.5,
-                "prel_mass_limits":  [0.1, 0.2],
-                "prel_width_limits": [0.004, 0.030],
-                "prel_range":        [0.105, 0.165],
-                "prel_paremeters":   [0.135, 0.010, 0.0],
-                "fit_mass":          0.135,
-                "fit_mass_limits":   [0.1, 0.2],
-                "fit_width_limits":  [0.001, 0.080],
-                "cb_n":              1.596,
-                "cb_alpha":          1.493,
-                "cb_n_limits":       [1.0, 3.5],
-                "cb_alpha_limits":   [0, 2],
-                "background": "pol3"
+                "prel_mass_limits":  [0.136, 0.139],
+                "prel_width_limits": [0.004, 0.008],
+                "prel_range":        [0.136, 0.139],
+                "prel_paremeters":   [0.137, 0.005, 0.1],
+                "fit_mass":          0.137,
+                "fit_mass_limits":   [0.136, 0.139],
+                "fit_width_limits":  [0.004, 0.008],
+                "cb_n":              3.5,
+                "cb_alpha":          1.25,
+                "cb_n_limits":       [1.0, 10.5],
+                "cb_alpha_limits":   [0, 10],
+                "background": "pol1"
 	},
 
 	"#eta":
@@ -35,6 +35,6 @@
                 "cb_alpha":          1.17161,
                 "cb_n_limits":       [0.1, 4.5],
                 "cb_alpha_limits":   [0, 2],
-                "background": "pol3"
+                "background": "pol1"
 	}
 }
