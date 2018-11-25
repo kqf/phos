@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import humanize
 from parametrisation import PeakParametrisation
 from broot import BROOT as br
 
@@ -20,7 +20,7 @@ class RawMass(object):
         title = "%s GeV/c " % self.pt_label
         title_stat = ' '
         if mass.nevents > 0:
-            title_stat = "#events = {} M ".format(mass.nevents)
+            title_stat = "#events = {}".format(humanize.intword(mass.nevents))
         title_axes_labels = '; M_{#gamma#gamma}, GeV/c^{2}'
         mass.SetTitle(title + title_stat + title_axes_labels)
         mass.SetLineColor(37)

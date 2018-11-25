@@ -6,3 +6,4 @@ root_numpy
 pytest
 tqdm
 flatten_dict
+humanize
