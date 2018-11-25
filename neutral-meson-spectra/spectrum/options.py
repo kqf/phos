@@ -115,8 +115,8 @@ class Options(object):
             particle=particle,
             ptrange=ptrange,
             spectrumconf="config/spectrum-spmc.json",
-            backgroudpconf="config/cball-parameters-spmc-enhanced.json",
-            signalp="config/cball-parameters-spmc-enhanced.json",
+            backgroudpconf="config/cball-parameters-spmc.json",
+            signalp="config/cball-parameters-spmc.json",
             *args,
             **kwargs
         )

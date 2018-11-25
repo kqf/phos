@@ -43,7 +43,7 @@ def evaluate_spmc_efficiency(inputs, particle):
         inputs,
         loggs
     )
-    diff = Comparator()
-    diff.compare(efficiency)
-    loggs.plot()
+    # diff = Comparator()
+    # diff.compare(efficiency)
+    # loggs.plot()
     return efficiency
