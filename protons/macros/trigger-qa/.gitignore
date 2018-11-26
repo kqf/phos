@@ -1,6 +1,6 @@
-trigger_qa_lhc16p-pass1.sh
-trigger_qa_lhc16p-pass1_merge.C
-trigger_qa_lhc16p-pass1_merge.sh
-trigger_qa_lhc16p-pass1_validation.sh
-ttrigger_qa_lhc16p-pass1_validation_merge.sh
-trigger_qa_lhc16p-pass1_validation_merge.sh
+trigger_qa_lhc16*-pass1.sh
+trigger_qa_lhc16*-pass1_merge.C
+trigger_qa_lhc16*-pass1_merge.sh
+trigger_qa_lhc16*-pass1_validation.sh
+ttrigger_qa_lhc16*-pass1_validation_merge.sh
+trigger_qa_lhc16*-pass1_validation_merge.sh
