@@ -4,7 +4,7 @@
 			"file": "input-data/data/LHC16/corrected/LHC16.root",
 			"default_selection": "Phys",
 			"pt_range": [0, 20],
-			"hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
+			"hsum": "bf24898339bd2fd790db8d34de83c812c8a3a0bf6984d406771796b85f4142b7",
 			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
 		},
 		"ep_ratio": {
