@@ -5,9 +5,6 @@ import plotting
 ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat(0)
 
-filepath = "../../../neutral-meson-spectra/" \
-    "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root"
-
 
 def rebin(hists, n=4):
     for hist in hists:
@@ -75,7 +72,7 @@ def draw_line(hist, position):
     return line
 
 
-def main(nmodules=4):
+def channels(filepath, nmodules=4):
     l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
     trigger_patches = rebin([
         l0.FindObject("h4x4SM{}".format(i))
@@ -103,4 +100,4 @@ def main(nmodules=4):
 
 
 if __name__ == '__main__':
-    main()
+    channels()

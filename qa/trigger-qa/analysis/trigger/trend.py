@@ -4,8 +4,6 @@ from sklearn.pipeline import make_pipeline
 import pandas as pd
 import plotting
 ROOT.TH1.AddDirectory(False)
-filepath = "../../../neutral-meson-spectra/" \
-    "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root"
 
 
 def from_list(histname, lst, get=False):
@@ -160,7 +158,7 @@ class EventsScaler(EmptyBinRemover):
         return divided
 
 
-def process(hist, lst, badmap_fname, nmodules=4):
+def process(hist, lst, filepath, badmap_fname, nmodules=4):
     event_runs = ROOT.TFile(filepath).Get(lst).FindObject("hRunEvents")
     analysis = make_pipeline(
         HistReader("name", "raw", filepath, hist, lst),
@@ -177,19 +175,18 @@ def process(hist, lst, badmap_fname, nmodules=4):
     return analysis.fit_transform(outputs)
 
 
-def main():
-    badmap_fname = "BadMap_LHC16-updated.root"
+def trend(filepath, badmap_fname="BadMap_LHC16-updated.root"):
     lst = "PHOSTriggerQAResultsL0"
 
     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
     canvas.Divide(1, 2)
 
-    triggers = process("hRunTriggers", lst, badmap_fname)
+    triggers = process("hRunTriggers", lst, filepath, badmap_fname)
     plotter = plotting.Plotter()
     title = "Number of 4x4 patches per run;; # patches / accepntace/ #events"
     plotter.plot(triggers["scaled"], triggers["name"], canvas.cd(1), title)
 
-    mtriggers = process("hRunMatchedTriggers", lst, badmap_fname)
+    mtriggers = process("hRunMatchedTriggers", lst, filepath, badmap_fname)
     mtitle = "# matched 4x4 patches per run;; # patches / accepntace/ #events"
     plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2), mtitle)
     canvas.Update()
@@ -197,4 +194,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    trend()
