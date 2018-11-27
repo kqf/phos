@@ -59,7 +59,16 @@ def plot(hists, labels=None, pad=None, title=None):
     if pad is not None:
         pad.cached = [stack, legend]
         return pad.cached
+    save_canvas(ROOT.gPad, hists[0].GetName())
     raw_input("Press enter to continue")
+
+
+def save_canvas(canvas, name):
+    canvas.SaveAs(name + ".pdf")
+    canvas.SaveAs(name + ".png")
+    ofile = ROOT.TFile(name + ".root", "recreate")
+    canvas.Write()
+    ofile.Write()
 
 
 class Plotter(object):

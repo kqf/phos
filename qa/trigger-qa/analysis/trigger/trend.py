@@ -175,7 +175,7 @@ def process(hist, lst, filepath, badmap_fname, nmodules=4):
     return analysis.fit_transform(outputs)
 
 
-def trend(filepath, badmap_fname="BadMap_LHC16-updated.root"):
+def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root"):
     lst = "PHOSTriggerQAResultsL0"
 
     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
@@ -190,6 +190,7 @@ def trend(filepath, badmap_fname="BadMap_LHC16-updated.root"):
     mtitle = "# matched 4x4 patches per run;; # patches / accepntace/ #events"
     plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2), mtitle)
     canvas.Update()
+    plotting.save_canvas(canvas, "trending")
     raw_input()
 
 
