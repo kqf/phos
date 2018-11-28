@@ -44,7 +44,8 @@ class SimpleEfficiency(TransformerBase):
 
     def transform(self, data, loggs):
         # NB: Compare pipeline takes the intput two times
-        return super(SimpleEfficiency, self).transform((data, data), loggs=loggs)
+        return super(SimpleEfficiency, self).transform(
+            (data, data), loggs=loggs)
 
 
 class PeakPositionWidthEstimator(TransformerBase):

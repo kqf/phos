@@ -12,8 +12,8 @@ class BackgroundEstimator(object):
             return mass.mass
 
         sigf, bgrf = mass.backgroundp.fit(mass.mass)
-        bgrf.SetLineColor(8)
-        bgrf.SetFillColor(8)
+        bgrf.SetLineColor(ROOT.kRed + 1)
+        bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
         mass.background = bgrf
         mass.background_fitted = sigf

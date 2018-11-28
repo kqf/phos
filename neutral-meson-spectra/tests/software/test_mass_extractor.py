@@ -32,7 +32,7 @@ class TestMassFitter(unittest.TestCase):
         analysis = UpdatedAnalysis(options)
         loggs = AnalysisOutput("test_mass_fitter")
         masses = analysis.transform(
-            DataVault().input("data", label='Test'),
+            DataVault().input("data", histname="MassPtSM0", label='Test'),
             loggs
         )
         self.assertGreater(len(masses), 0)

@@ -14,7 +14,7 @@ class TestCorrectedYieldInterface(unittest.TestCase):
     @pytest.mark.onlylocal
     def test_yield(self):
         yield_data = (
-            DataVault().input("data"),
+            DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
         )
         data = (
@@ -37,7 +37,7 @@ class TestCorrectedYieldInterface(unittest.TestCase):
             DataVault().input(production, "high", "PhysEff"),
         )
         yield_data = (
-            DataVault().input("data"),
+            DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
         )
         data = (

@@ -28,7 +28,7 @@ class TestScan(unittest.TestCase):
         ]
 
         assert estimator.transform(
-            (DataVault().input("data"), mc),
+            (DataVault().input("data", histname="MassPtSM0"), mc),
             loggs=AnalysisOutput("testing the scan interface")
         )
 
@@ -56,6 +56,6 @@ class TestScan(unittest.TestCase):
         mc_data = [(l, h) for l, h in zip(low, high)]
 
         assert estimator.transform(
-            (DataVault().input("data"), mc_data),
+            (DataVault().input("data", histname="MassPtSM0"), mc_data),
             loggs=AnalysisOutput("testing the scan interface")
         )

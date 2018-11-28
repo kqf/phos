@@ -31,6 +31,6 @@ class CheckEmptyBins(unittest.TestCase):
         ], plot=True)
 
         estimator.transform(
-            [DataVault().input("data")] * 2,
+            [DataVault().input("data", histname="MassPtSM0")] * 2,
             loggs=AnalysisOutput("check empty bins")
         )

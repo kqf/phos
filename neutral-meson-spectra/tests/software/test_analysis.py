@@ -17,7 +17,7 @@ class TestAnalysis(unittest.TestCase):
 
         loggs = AnalysisOutput("test the single analysis")
         output = analysis.transform(
-            DataVault().input("data"),
+            DataVault().input("data", histname="MassPtSM0"),
             loggs=loggs
         )
         loggs.plot()
