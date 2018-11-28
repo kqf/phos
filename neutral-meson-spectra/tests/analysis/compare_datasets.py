@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from spectrum.options import Options
 from spectrum.analysis import Analysis
@@ -20,7 +20,10 @@ class CompareAnalysis(TransformerBase):
         )
 
 
-def compare_for_particle(particle):
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
+def test_gives_similar_results(particle):
     data = (
         DataVault().input("data", "ep_ratio", label="2016 new aliphysics"),
         DataVault().input("data", "LHC17 qa1", label="2017"),
@@ -35,13 +38,3 @@ def compare_for_particle(particle):
     loggs = AnalysisOutput("compare different datasets", particle=particle)
     estimator.transform(data, loggs)
     loggs.plot()
-
-
-class TestCompareDatasets(unittest.TestCase):
-
-    def test_gives_similar_results_for_pions(self):
-        compare_for_particle("#pi^{0}")
-
-    @unittest.skip('')
-    def test_gives_similar_results_for_eta(self):
-        compare_for_particle("#eta")

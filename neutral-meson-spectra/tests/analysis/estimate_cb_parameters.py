@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 import ROOT
 from spectrum.analysis import Analysis
@@ -34,8 +34,8 @@ class SelectAndFitHistograms(TransformerBase):
 
     def _fit_histogram(self, histogram, func):
         histogram.Fit(func, 'q')
-        histogram.SetLineColor(37)
-        func.SetLineColor(46)
+        histogram.SetLineColor(ROOT.kBlue + 1)
+        func.SetLineColor(ROOT.kRed + 1)
         val, err = func.GetParameter(0), func.GetParError(0)
         print "The scale is", histogram.GetTitle(), val, err
 
@@ -49,25 +49,18 @@ class CballParametersEstimator(TransformerBase):
         ])
 
 
-class CrystalBallParametersPi0(unittest.TestCase):
-
-    def setUp(self):
-        self.particle = "#pi^{0}"
-
-    def test_parameters(self):
-        options = CbFitOptions(particle=self.particle)
-        estimator = CballParametersEstimator(options, plot=False)
-        hists = estimator.transform(
-            DataVault().input("data"),
-            loggs=AnalysisOutput(
-                "%s #rightarrow #gamma #gamma, ALICE, pp #sqrt{s} = 13 TeV " % self.particle
-            ),
-        )
-        for h in hists:
-            Comparator().compare(h)
-
-
-# class CrystalBallParametersEta(CrystalBallParametersPi0):
-
-#     def setUp(self):
-#         self.particle = "#eta"
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
+def test_cball_parameters(particle):
+    options = CbFitOptions(particle=particle)
+    estimator = CballParametersEstimator(options, plot=False)
+    message = "%s #rightarrow #gamma #gamma, ALICE, pp #sqrt{s} = 13 TeV "
+    hists = estimator.transform(
+        DataVault().input("data", histname="MassPtSM0"),
+        loggs=AnalysisOutput(
+            message % particle
+        ),
+    )
+    for h in hists:
+        Comparator().compare(h)
