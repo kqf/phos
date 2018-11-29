@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from spectrum.spectrum import Spectrum
+from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.input import Input, read_histogram
 from spectrum.comparator import Comparator
@@ -10,6 +10,8 @@ from spectrum.broot import BROOT as br
 
 import unittest
 
+
+# TODO: Add to thesis images
 
 class SingleParticleQA(unittest.TestCase):
 
@@ -84,9 +86,8 @@ class SingleParticleQA(unittest.TestCase):
         part, ptbin = self.particle_ptbin(filename)
         label = '{0} {1}'.format(part, ptbin)
 
-        inp = Input(self.dir + filename, self.selection, label=label)
-        opt = Options(mode='d', particle='pi0' if 'pi' in part else 'eta')
-        reco = Spectrum(inp, opt).evaluate().spectrum
-        reco.SetTitle(reco.GetTitle() + ', ' + ptbin)
-        br.scalew(reco)
-        return reco
+        reconstructed = Analysis(Options()).transform(
+            Input(self.dir + filename, self.selection, label=label), {})
+        reconstructed.SetTitle(reconstructed.GetTitle() + ', ' + ptbin)
+        br.scalew(reconstructed)
+        return reconstructed
