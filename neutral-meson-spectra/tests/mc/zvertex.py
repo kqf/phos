@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import ROOT
-import os.path
 import unittest
 
 

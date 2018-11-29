@@ -1,4 +1,3 @@
-import unittest
 import pytest
 
 from vault.datavault import DataVault
@@ -16,21 +15,19 @@ from spectrum.output import AnalysisOutput
 #          This test compares different solutions
 #
 
-class CheckEmptyBins(unittest.TestCase):
+@pytest.mark.onlylocal
+def test_check_empty_bins():
+    options = []
+    for average in ["standard", "with empty"]:
+        option = Options()
+        option.invmass.average = average
+        options.append(option)
 
-    @pytest.mark.onlylocal
-    def test(self):
-        options = []
-        for average in ["standard", "with empty"]:
-            option = Options()
-            option.invmass.average = average
-            options.append(option)
+    estimator = ComparePipeline([
+        (o.invmass.average, Analysis(o)) for o in options
+    ], plot=True)
 
-        estimator = ComparePipeline([
-            (o.invmass.average, Analysis(o)) for o in options
-        ], plot=True)
-
-        estimator.transform(
-            [DataVault().input("data", histname="MassPtSM0")] * 2,
-            loggs=AnalysisOutput("check empty bins")
-        )
+    estimator.transform(
+        (DataVault().input("data", histname="MassPtSM0")) * 2,
+        loggs=AnalysisOutput("check empty bins")
+    )
