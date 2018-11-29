@@ -1,4 +1,3 @@
-import unittest
 import pytest
 
 from spectrum.analysis import Analysis
@@ -25,21 +24,14 @@ class PileupEstimator(TransformerBase):
         ], plot)
 
 
-class CheckPileup(unittest.TestCase):
+@pytest.mark.onlylocal
+def test_pileup():
+    with_cut = DataVault().input("data", "latest", "Time",
+                                 histname="MassPtMainMain")
 
-    @pytest.mark.onlylocal
-    def test_pileup(self):
-        with_cut = DataVault().input("data",
-                                     "latest",
-                                     "Time",
-                                     histname="MassPtMainMain")
-
-        no_cut = DataVault().input("data",
-                                   "latest",
-                                   "Time"
-                                   )
-        estimator = PileupEstimator(plot=True)
-        estimator.transform(
-            [with_cut, no_cut],
-            loggs=AnalysisOutput("pileup contribution")
-        )
+    no_cut = DataVault().input("data", "latest", "Time")
+    estimator = PileupEstimator(plot=True)
+    estimator.transform(
+        (with_cut, no_cut),
+        loggs=AnalysisOutput("pileup contribution")
+    )
