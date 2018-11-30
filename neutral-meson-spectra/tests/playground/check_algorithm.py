@@ -1,7 +1,7 @@
-#!/usr/bin/python
 import unittest
+import pytest
 
-from spectrum.spectrum import Spectrum
+from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.input import Input
 
@@ -28,36 +28,28 @@ class CheckAlgorithm(test.check_default.CheckDefault):
             flat=True
         )
 
-        def f(x, y, z):
-            return Spectrum(x, options=Options(y, z)).evaluate()
-
         generated = generator.generate(1000)
         generated.logy = 1
         generated.priority = 1
-        reconstructed = f(Input(genfilename, generator.selname),
-                          'reconstructed', 'd').nmesons
+        reconstructed = Analysis(Options()).transform(
+            Input(genfilename, generator.selname), {}
+        )
         self.results = map(br.scalew, [reconstructed, generated])
         # os.remove(genfilename)
 
 
-class GenerateEfficiency(unittest.TestCase):
-
-    def test_generate_mc(self):
-        genfilename = 'LHC16-single.root'
-        infile, conf = (
-            'input-data/mc/single/pi0/nonlin/LHC17j3b1.root',
-            'config/test_algorithm.json'
-        )
-        generator = InclusiveGenerator(
-            infile,
-            conf,
-            selname='PhysEff',
-            genfilename=genfilename,
-            flat=True
-        )
-
-        def f(x, y, z):
-            return Spectrum(x, options=Options(y, z)).evaluate()
-
-        generated = generator.generate(10000)
-        return generated
+@pytest.mark.onlylocal
+def test_generate_mc(self):
+    genfilename = 'LHC16-single.root'
+    infile, conf = (
+        'input-data/mc/single/pi0/nonlin/LHC17j3b1.root',
+        'config/test_algorithm.json'
+    )
+    generator = InclusiveGenerator(
+        infile,
+        conf,
+        selname='PhysEff',
+        genfilename=genfilename,
+        flat=True
+    )
+    generator.generate(10000)

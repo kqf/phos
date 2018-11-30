@@ -8,14 +8,14 @@ from vault.datavault import DataVault
 
 def define_datasets():
     production = "single #pi^{0}"
-    datasets = [
+    datasets = (
         {
             DataVault().input(production, "low"): (0, 7.0),
             DataVault().input(production, "high"): (7.0, 20)
         },
         DataVault().input("pythia8", "stable"),
         DataVault().input("pythia8", "stable"),
-    ]
+    )
     names = "aliphysics", "pythia8", "pythia8"
     return names, datasets
 
@@ -39,7 +39,4 @@ class CompareDifferentEfficiencies(unittest.TestCase):
         ]
 
         estimator = ComparePipeline(options, plot=False)
-        estimator.transform(
-            datasets,
-            "compare different datasts"
-        )
+        estimator.transform(datasets, "compare different datasts")

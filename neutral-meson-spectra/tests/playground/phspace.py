@@ -23,25 +23,25 @@ def particle(pt, mass=0):
 
 
 class BackgroundGenerator(object):
-    def __init__(self, raw_gamma_pectrum, meanphotons=10.):
+    def __init__(self, raw_gamma_pectrum, mean_photons=10.):
         super(BackgroundGenerator, self).__init__()
         self.spectrum = raw_gamma_pectrum
-        self.meanphotons = meanphotons
+        self.mean_photons = mean_photons
 
     def generate(self):
-        if self.meanphotons == 0:
+        if self.mean_photons == 0:
             return []
 
-        nphotons = int(ROOT.gRandom.Exp(1. / self.meanphotons))
+        nphotons = int(ROOT.gRandom.Exp(1. / self.mean_photons))
         return [particle(self.spectrum.GetRandom()) for i in range(nphotons)]
 
 
 class SignalGenerator(object):
-    def __init__(self, config, genhistname, generated=None):
+    def __init__(self, config, gen_histname, generated=None):
         super(SignalGenerator, self).__init__()
         ptbins = self._configure(config)
         self.generated = generated if generated else (
-            output_histogram(genhistname, "Generated spectrum",
+            output_histogram(gen_histname, "Generated spectrum",
                              "").get_hist(ptbins, [])
         )
 
@@ -92,8 +92,8 @@ class SignalGenerator(object):
 
 
 class FlatGenerator(SignalGenerator):
-    def __init__(self, config, genhistname, generated=None):
-        super(FlatGenerator, self).__init__(config, genhistname, generated)
+    def __init__(self, config, gen_histname, generated=None):
+        super(FlatGenerator, self).__init__(config, gen_histname, generated)
 
     def _random_mass(self, pt):
         gen_mass = ROOT.gRandom.Gaus(0.135, 0.005)
@@ -107,27 +107,27 @@ class FlatGenerator(SignalGenerator):
 class InclusiveGenerator(object):
     def __init__(self,
                  fname,
-                 signalconf,
+                 signal_conf,
                  selname='PhysOnlyTender',
                  hnames=['hMassPt', 'hMixMassPt', 'EventCounter'],
                  hpdistr='hClusterPt_SM0',
-                 genfilename='LHC16-fake.root',
-                 genhistname='hPt_#pi^{0}_primary',
-                 meanphotons=0,
+                 gen_filename='LHC16-fake.root',
+                 gen_histname='hPt_#pi^{0}_primary',
+                 mean_photons=0,
                  flat=False
                  ):
         super(InclusiveGenerator, self).__init__()
         self.selname = selname
-        self.genfilename = genfilename
+        self.gen_filename = gen_filename
         self.backgrnd = BackgroundGenerator(
-            self.read(fname, hpdistr), meanphotons=meanphotons)
+            self.read(fname, hpdistr), mean_photons=mean_photons)
         self.data, self.mixed, self.nevents = map(
             lambda y: self.read(fname, y, True), hnames)
-        generated = self.read(fname, genhistname + '_',
-                              True) if genhistname else None
+        generated = self.read(fname, gen_histname + '_',
+                              True) if gen_histname else None
 
         GenType = SignalGenerator if not flat else FlatGenerator
-        self.signal = GenType(signalconf, genhistname, generated)
+        self.signal = GenType(signal_conf, gen_histname, generated)
         self.out = [self.data, self.mixed, self.nevents, self.signal.generated]
         self.update_hists()
 
@@ -140,7 +140,7 @@ class InclusiveGenerator(object):
         return obj
 
     def update_hists(self):
-        ofile = ROOT.TFile(self.genfilename)
+        ofile = ROOT.TFile(self.gen_filename)
         olist = ofile.Get(self.selname)
 
         if not olist:
@@ -156,7 +156,7 @@ class InclusiveGenerator(object):
         ofile.Close()
 
     def save_fake(self):
-        ofile = ROOT.TFile(self.genfilename, 'recreate')
+        ofile = ROOT.TFile(self.gen_filename, 'recreate')
         olist = ROOT.TList()
         olist.SetName(self.selname)
         map(olist.Add, self.out)
