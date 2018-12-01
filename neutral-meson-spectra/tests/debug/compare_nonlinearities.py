@@ -15,7 +15,7 @@ def define_datasets():
     listname = "Phys"
     mclistname = "PhysEff"
     productions = [
-        "single #pi^{0} nonlinearity scan fine",
+        "single #pi^{0}",
         "single #pi^{0} debug7",
         "single #pi^{0} scan nonlinearity",
     ]
@@ -41,34 +41,33 @@ def define_datasets():
     return names, options, mcinput
 
 
-class TestNonlinearities(unittest.TestCase):
+def test_nonlinearity():
+    names, options, datasets = define_datasets()
+    estimator = ComparePipeline([
+        (name, Nonlinearity(opt, False))
+        for name, opt in zip(names, options)
+    ], plot=True)
 
-    def test_nonlinearity(self):
-        names, options, datasets = define_datasets()
-        estimator = ComparePipeline([
-            (name, Nonlinearity(opt, False))
-            for name, opt in zip(names, options)
-        ], plot=True)
+    loggs = AnalysisOutput("compare nonlinearities")
+    estimator.transform(datasets, loggs)
+    loggs.plot()
 
-        loggs = AnalysisOutput("compare nonlinearities")
-        estimator.transform(datasets, loggs)
-        loggs.plot()
 
-    @unittest.skip('')
-    def test_masses(self):
-        def mass(options):
-            return Pipeline([
-                ("", Analysis(options)),
-                ("", HistogramSelector("mass"))
-            ])
+@unittest.skip('')
+def test_masses():
+    def mass(options):
+        return Pipeline([
+            ("", Analysis(options)),
+            ("", HistogramSelector("mass"))
+        ])
 
-        names, options, datasets = define_datasets()
-        _, datasets = zip(*datasets)
-        estimator = ComparePipeline([
-            (name, mass(opt.mc))
-            for name, opt in zip(names, options)
-        ], plot=True)
+    names, options, datasets = define_datasets()
+    _, datasets = zip(*datasets)
+    estimator = ComparePipeline([
+        (name, mass(opt.mc))
+        for name, opt in zip(names, options)
+    ], plot=True)
 
-        loggs = AnalysisOutput("compare masses")
-        estimator.transform(datasets, loggs)
-        loggs.plot()
+    loggs = AnalysisOutput("compare masses")
+    estimator.transform(datasets, loggs)
+    loggs.plot()
