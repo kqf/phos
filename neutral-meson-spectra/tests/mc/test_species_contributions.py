@@ -20,13 +20,14 @@ PARTICLES_SETS = {
 }
 
 
+@pytest.mark.skip("debug")
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("origin", [
     "primary",
     "secondary",
     "feeddown"
 ])
-def test_contributions(origin):
+def test_species_contributions(origin):
     for particle in PARTICLES_SETS[origin]:
         estimator = ComparePipeline([
             (particle, Pipeline([
@@ -40,4 +41,21 @@ def test_contributions(origin):
                                    listname="MCStudy",
                                    histname=histname,
                                    use_mixing=False)
+        estimator.transform((inputs,) * 2, {})
+
+
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("origin", [
+    "primary",
+    "secondary",
+    "feeddown"
+])
+def test_relative_contributions(origin):
+    for particle in PARTICLES_SETS[origin]:
+        histname = 'hPt_#pi^{0}_%s_%s' % (origin, particle)
+        estimator = ComparePipeline([
+            (particle, SingleHistInput(histname, "MCStudy")),
+            ("#pi^0", SingleHistInput("hPt_#pi^{0}", "MCStudy")),
+        ])
+        inputs = DataVault().input("pythia8", listname="MCStudy")
         estimator.transform((inputs,) * 2, {})
