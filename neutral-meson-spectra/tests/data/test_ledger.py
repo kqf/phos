@@ -1,8 +1,8 @@
 import pytest
-
 from vault.datavault import DataVault
 
 
+@pytest.mark.onlylocal
 @pytest.mark.parametrize("ledger", (
     "ledger.json",
     "debug-ledger.json"
