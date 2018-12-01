@@ -3,17 +3,11 @@ import pytest
 from vault.datavault import DataVault
 
 
-@pytest.mark.onlylocal
-def test_input_data_is_valid():
-    check_ledger("ledger.json")
-
-
-@pytest.mark.onlylocal
-def test_debug_data_is_valid():
-    check_ledger("debug-ledger.json")
-
-
-def check_ledger(ledger):
+@pytest.mark.parametrize("ledger", (
+    "ledger.json",
+    "debug-ledger.json"
+))
+def test_ledger(ledger):
     bad_datasets = DataVault(ledger).validate_all_datasets()
     ill_datasets = "\n".join(
         ["{0} {1}. Wrong hash, the actual one: {2}".format(*d)
