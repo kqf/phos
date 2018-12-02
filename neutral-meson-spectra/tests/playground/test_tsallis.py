@@ -5,6 +5,7 @@ from vault.formulas import FVault
 from spectrum.comparator import Comparator
 
 
+@pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_parameters():
     fv = FVault()
@@ -34,6 +35,7 @@ def test_parameters():
         )
 
 
+@pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_integral():
     parameters = [
