@@ -20,7 +20,6 @@ PARTICLES_SETS = {
 }
 
 
-@pytest.mark.skip("debug")
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("origin", [
     "primary",
