@@ -2,7 +2,7 @@
 
 import ROOT
 
-from invariantmass import InvariantMass, RawMass
+from invariantmass import InvariantMass, RawMass, masses2edges
 from outputcreator import analysis_output, SpectrumExtractor
 
 from ptplotter import MulipleOutput
@@ -105,7 +105,7 @@ class RangeEstimator(object):
             values,
             self._output,
             self.opt.ptrange,
-            RawMass.ptedges(masses),
+            masses2edges(masses),
             titles,
             ""
         )
@@ -207,13 +207,12 @@ class DataExtractor(object):
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(self.opt.output_order, masses)
 
-        edges = RawMass.ptedges(masses)
         histos = analysis_output(
             "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
             self.opt.ptrange,
-            edges,
+            masses2edges(masses),
             self.opt.output,
             ""
         )

@@ -1,7 +1,12 @@
-#!/usr/bin/python
 import humanize
 from parametrisation import PeakParametrisation
 from broot import BROOT as br
+
+
+def masses2edges(masses):
+    return sorted(set(
+        sum([list(i.pt_range) for i in masses], [])
+    ))
 
 
 class RawMass(object):
@@ -31,12 +36,6 @@ class RawMass(object):
         if self.nrebin:
             mass.Rebin(self.nrebin)
         return mass
-
-    @staticmethod
-    def ptedges(masses):
-        return sorted(set(
-            sum([list(i.pt_range) for i in masses], [])
-        ))
 
 
 class InvariantMass(object):
