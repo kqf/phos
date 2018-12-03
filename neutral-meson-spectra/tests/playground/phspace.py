@@ -9,17 +9,25 @@ import tqdm
 from array import array
 from itertools import combinations, product
 
-from spectrum.sutils import tsallis
 from spectrum.outputcreator import output_histogram
+from vault.formulas import FVault
+
+
+def tsallis(rrange=(0., 20.)):
+    tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
+    tsallis.SetParameters(0.014960701090585591,
+                          0.287830380417601, 9.921003040859755)
+    tsallis.FixParameter(3, 0.135)
+    tsallis.FixParameter(4, 0.135)
+    tsallis.SetLineColor(ROOT.kRed + 1)
+    return tsallis
 
 
 def particle(pt, mass=0):
-    # x, y, z = ROOT.Double(0), ROOT.Double(0), ROOT.Double(0)
+    x, y, z = ROOT.Double(0), ROOT.Double(0), ROOT.Double(0)
     # pt / cos theta = p
-    # p = pt / random()
-    # ROOT.gRandom.Sphere(x, y, z, p)
-    # return ROOT.TLorentzVector(x, y, z, (p ** 2 + mass ** 2) ** 0.5)
-    return ROOT.TLorentzVector(pt, 0, 0, (pt ** 2 + mass ** 2) ** 0.5)
+    ROOT.gRandom.Sphere(x, y, z, pt)
+    return ROOT.TLorentzVector(x, y, z, (pt ** 2 + mass ** 2) ** 0.5)
 
 
 class BackgroundGenerator(object):
@@ -55,9 +63,7 @@ class SignalGenerator(object):
         self.true_width = ROOT.TF1(*conf['fwidth'])
         self.true_width.SetParameters(*conf['true_width'])
 
-        emin, emax = conf['erange']
-        self.true_spectrum = ROOT.TF1(
-            'fTsallis', lambda x, p: tsallis(x, p), emin, emax, 3)
+        self.true_spectrum = tsallis(conf['erange'])
         self.true_spectrum.SetParameters(*conf['true_spectrum'])
         self.average_nmesons = conf['average_nmesons']
         return conf['pt_edges']

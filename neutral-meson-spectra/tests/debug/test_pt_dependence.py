@@ -7,7 +7,7 @@ from spectrum.broot import BROOT as br
 from vault.datavault import DataVault
 
 
-@pytest.mark.onlyocal
+@pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_pt_ranges():
     inputs = (
