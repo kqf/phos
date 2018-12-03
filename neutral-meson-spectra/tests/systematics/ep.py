@@ -17,44 +17,44 @@ def data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
-class CalculateEpRatio(unittest.TestCase):
+@unittest.skip("")
+def test_ep_ratio_mc():
+    options = EpRatioOptions()
+    estimator = EpRatioEstimator(options, plot=True)
+    output = estimator.transform(
+        data("pythia8", "ep_ratio_1"),
+        loggs="test ep ratio estimator"
+    )
 
-    @unittest.skip("")
-    def test_ep_ratio_mc(self):
-        options = EpRatioOptions()
-        estimator = EpRatioEstimator(options, plot=True)
-        output = estimator.transform(
-            data("pythia8", "ep_ratio_1"),
-            loggs="test ep ratio estimator"
-        )
+    for o in output:
+        Comparator().compare(o)
 
-        for o in output:
-            Comparator().compare(o)
 
-    @unittest.skip("")
-    def test_ep_ratio_data(self):
-        options = EpRatioOptions()
-        estimator = EpRatioEstimator(options, plot=True)
-        output = estimator.transform(
+@unittest.skip("")
+def test_ep_ratio_data():
+    options = EpRatioOptions()
+    estimator = EpRatioEstimator(options, plot=True)
+    output = estimator.transform(
+        data("data"),
+        loggs="test ep ratio estimator"
+    )
+
+    for o in output:
+        Comparator().compare(o)
+
+
+def test_data_mc_ratio():
+    estimator = DataMCEpRatioEstimator(
+        DataMCEpRatioOptions(), plot=True
+    )
+    loggs = AnalysisOutput("test double ep ratio estimator")
+    output = estimator.transform(
+        (
             data("data"),
-            loggs="test ep ratio estimator"
-        )
-
-        for o in output:
-            Comparator().compare(o)
-
-    def test_data_mc_ratio(self):
-        estimator = DataMCEpRatioEstimator(
-            DataMCEpRatioOptions(), plot=True
-        )
-        loggs = AnalysisOutput("test double ep ratio estimator")
-        output = estimator.transform(
-            (
-                data("data"),
-                data("pythia8", "ep_ratio_1"),
-            ),
-            loggs=loggs
-        )
-        # Comparator(stop=True).compare(output)
-        loggs.plot()
-        self.assertGreater(len(output), 0)
+            data("pythia8", "ep_ratio_1"),
+        ),
+        loggs=loggs
+    )
+    # Comparator(stop=True).compare(output)
+    loggs.plot()
+    assert len(output) > 0

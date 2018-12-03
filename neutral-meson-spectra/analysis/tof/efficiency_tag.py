@@ -1,17 +1,33 @@
 import unittest
+import pytest
 
 import ROOT
-import json
 from spectrum.broot import BROOT as br
 from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
-from spectrum.sutils import gcanvas, adjust_canvas
 from vault.datavault import DataVault
 from spectrum.output import AnalysisOutput
 from tools.probe import TagAndProbe
 from tools.validate import validate
 
-ROOT.TH1.AddDirectory(False)
+LATEST_DATASET = (
+    DataVault().input("data",
+                      listname="TagAndProbleTOF",
+                      histname="MassEnergyTOF_SM0"),
+    DataVault().input("data",
+                      listname="TagAndProbleTOF",
+                      histname="MassEnergyAll_SM0"),
+)
+OLD_DATASET = (
+    DataVault().input("data",
+                      "uncorrected",
+                      "TagAndProbleTOFOnlyTender",
+                      histname="MassEnergyTOF_SM0"),
+    DataVault().input("data",
+                      "uncorrected",
+                      "TagAndProbleTOFOnlyTender",
+                      histname="MassEnergyAll_SM0"),
+)
 
 
 def efficincy_function():
@@ -38,22 +54,16 @@ def efficincy_function():
     return tof_eff
 
 
-def fit_tof_efficiency():
+def fit_tof_efficiency(dataset=LATEST_DATASET):
     options = ProbeTofOptions()
     options.fitfunc = efficincy_function()
     probe_estimator = TagAndProbe(options, False)
     efficiency = probe_estimator.transform(
-        [
-            DataVault().input("data", "uncorrected",
-                              "TagAndProbleTOFOnlyTender",
-                              histname="MassEnergyTOF_SM0"),
-            DataVault().input("data", "uncorrected",
-                              "TagAndProbleTOFOnlyTender",
-                              histname="MassEnergyAll_SM0"),
-        ],
+        dataset,
         loggs=AnalysisOutput("tof efficiency")
     )
     efficiency.Fit(options.fitfunc, "R")
+    print "Fitted", options.fitfunc.GetChisquare() / options.fitfunc.GetNDF()
     efficiency.SetTitle(
         "%s %s" % (
             "Timing cut efficiency for efficiency",
@@ -66,48 +76,19 @@ def fit_tof_efficiency():
     return efficiency
 
 
-class TagAndProbeEfficiencyTOF(unittest.TestCase):
-
-    def setUp(self):
-        self.canvas = gcanvas()
-        with open("config/tag-and-probe-tof.json") as f:
-            self.nominal_bins = json.load(f)["test_bins"]
-
+class ValidateDataset(unittest.TestCase):
+    @pytest.mark.interactive
+    @pytest.mark.onlylocal
     def test_estimate_tof_efficiency(self):
-        efficiency = fit_tof_efficiency()
-        validate(self, br.hist2dict(efficiency), "efficiency_tag")
+        efficiency = fit_tof_efficiency(OLD_DATASET)
+        validate(self,
+                 br.hist2dict(efficiency), "efficiency_tag")
 
-    @unittest.skip("Debug")
-    def test_different_modules(self):
-        datafile = DataVault().file("data", "uncorrected")
-        hpatterns = ["MassEnergy%s" + "_SM{0}".format(i) for i in range(1, 5)]
-        estimators = [TagAndProbe(datafile, hpattern=si).eff(False)
-                      for si in hpatterns]
-        for i, e in enumerate(estimators):
-            e.SetTitle(
-                "TOF efficiency in different modules; E, GeV; TOF efficiency")
-            e.label = "SM{0}".format(i + 1)
-            e.logy = 0
 
-        canvas = adjust_canvas(gcanvas())
-        diff = Comparator(crange=(0, 1))
-        diff.compare(estimators)
-
-    # Test new and old tof calibrations
-    @unittest.skip("Debug")
-    def test_efficiencies_different(self):
-        paths = {
-            "/new-calibration/LHC16": "2017",
-            "/uncorrected/LHC16": "2016"
-        }
-
-        def tof(dataset):
-            probe_estimator = TagAndProbe(dataset)
-            return probe_estimator.eff()
-
-        efficiencies = map(tof, paths.keys())
-        for e, l in zip(efficiencies, paths.values()):
-            e.label = l
-
-        diff = Comparator(rrange=(0.5, 1.5))
-        diff.compare(efficiencies)
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_old_results():
+    Comparator(labels=("old", "new")).compare(
+        fit_tof_efficiency(OLD_DATASET),
+        fit_tof_efficiency()
+    )
