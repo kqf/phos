@@ -28,7 +28,7 @@
 			"hsum": "5d9155810eff9f1988a5633b47e8cc58b79773756b03ff93fa8c14cf50012400",
 			"description": "Merged isolated bunches analysis"
 		},
-		"stable": {	
+		"stable old": {	
 			"file": "input-data/data/LHC16.root",	
 			"default_selection": "PhysOnlyTender",	
 			"pt_range": [0, 20],	
