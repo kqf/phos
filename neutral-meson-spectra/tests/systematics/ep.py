@@ -17,6 +17,12 @@ def data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
+DOUBLE_RATIO_DATASET = (
+    data("data"),
+    data("pythia8", "ep_ratio_1"),
+)
+
+
 @unittest.skip("")
 def test_ep_ratio_mc():
     options = EpRatioOptions()
@@ -48,13 +54,8 @@ def test_data_mc_ratio():
         DataMCEpRatioOptions(), plot=True
     )
     loggs = AnalysisOutput("test double ep ratio estimator")
-    output = estimator.transform(
-        (
-            data("data"),
-            data("pythia8", "ep_ratio_1"),
-        ),
-        loggs=loggs
-    )
+
+    output = estimator.transform(DOUBLE_RATIO_DATASET, loggs=loggs)
     # Comparator(stop=True).compare(output)
     loggs.plot()
     assert len(output) > 0
