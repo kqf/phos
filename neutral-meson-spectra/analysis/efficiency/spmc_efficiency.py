@@ -23,7 +23,7 @@ ETA_INPUT = (
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    @unittest.skip("")
+    @unittest.skip("TODO: Update me")
     def test_pi0_efficiency(self):
         efficiency = evaluate_spmc_efficiency(PION_INPUT, "#pi^{0}")
         validate(self, br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
