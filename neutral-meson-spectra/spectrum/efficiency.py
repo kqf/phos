@@ -27,7 +27,7 @@ class SimpleEfficiency(TransformerBase):
 
         generated = Pipeline([
             ("raw", SingleHistInput(options.genname)),
-            ("rebinned", RebinTransformer(options.analysis.pt.ptedges)),
+            ("rebinned", RebinTransformer(options.analysis.pt.ptedges, False)),
         ])
 
         efficiency = ComparePipeline([

@@ -1,4 +1,5 @@
-import unittest
+import pytest
+
 from tools.ep import EpRatioEstimator, DataMCEpRatioEstimator
 
 from vault.datavault import DataVault
@@ -23,7 +24,7 @@ DOUBLE_RATIO_DATASET = (
 )
 
 
-@unittest.skip("")
+@pytest.mark.skip("")
 def test_ep_ratio_mc():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)
@@ -36,7 +37,7 @@ def test_ep_ratio_mc():
         Comparator().compare(o)
 
 
-@unittest.skip("")
+@pytest.mark.skip("")
 def test_ep_ratio_data():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)

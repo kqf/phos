@@ -10,30 +10,29 @@ from spectrum.comparator import Comparator
 from tools.validate import validate
 from vault.datavault import DataVault
 
+PION_INPUT = (
+    DataVault().input("single #pi^{0}", "low", "PhysEff"),
+    DataVault().input("single #pi^{0}", "high", "PhysEff"),
+)
+
+ETA_INPUT = (
+    DataVault().input("single #eta", "low"),
+    DataVault().input("single #eta", "high"),
+)
+
 
 class TestEfficiencyPi0(unittest.TestCase):
 
-    @unittest.skip('')
+    @unittest.skip("")
     def test_pi0_efficiency(self):
-        production = "single #pi^{0}"
-        inputs = (
-            DataVault().input(production, "low", "PhysEff"),
-            DataVault().input(production, "high", "PhysEff"),
-        )
-        efficiency = evaluate_spmc_efficiency(inputs, "#pi^{0}")
+        efficiency = evaluate_spmc_efficiency(PION_INPUT, "#pi^{0}")
         validate(self, br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
 
 
-class TestEfficiencyEta(unittest.TestCase):
-
-    # @unittest.skip('')
-    def test_eta_efficiency(self):
-        production = "single #eta"
-        inputs = [
-            DataVault().input(production, "low"),
-            DataVault().input(production, "high"),
-        ]
-        evaluate_spmc_efficiency(inputs, "#eta")
+# @unittest.skip("")
+# @pytest.mark.skip("")
+def test_eta_efficiency():
+    evaluate_spmc_efficiency(ETA_INPUT, "#eta")
 
 
 def evaluate_spmc_efficiency(inputs, particle):
@@ -45,5 +44,5 @@ def evaluate_spmc_efficiency(inputs, particle):
     )
     # diff = Comparator()
     # diff.compare(efficiency)
-    # loggs.plot()
+    loggs.plot()
     return efficiency
