@@ -1,4 +1,3 @@
-import unittest
 import pytest
 
 import ROOT
@@ -76,14 +75,14 @@ def fit_tof_efficiency(dataset=LATEST_DATASET):
     return efficiency
 
 
-class ValidateDataset(unittest.TestCase):
-    @pytest.mark.interactive
-    @pytest.mark.onlylocal
-    def test_estimate_tof_efficiency(self):
-        efficiency = fit_tof_efficiency(OLD_DATASET)
-        validate(br.hist2dict(efficiency), "efficiency_tag")
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_estimate_tof_efficiency():
+    efficiency = fit_tof_efficiency(OLD_DATASET)
+    validate(br.hist2dict(efficiency), "efficiency_tag")
 
 
+@pytest.mark.skip("")
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_old_results():

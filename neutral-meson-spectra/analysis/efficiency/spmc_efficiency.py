@@ -1,11 +1,11 @@
-import unittest
+import pytest
 
 # from spectrum.comparator import Comparator
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
 from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
+from spectrum.comparator import Comparator  # noqa
 
 from tools.validate import validate
 from vault.datavault import DataVault
@@ -21,12 +21,11 @@ ETA_INPUT = (
 )
 
 
-class TestEfficiencyPi0(unittest.TestCase):
-
-    @unittest.skip("TODO: Update me")
-    def test_pi0_efficiency(self):
-        efficiency = evaluate_spmc_efficiency(PION_INPUT, "#pi^{0}")
-        validate(self, br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
+@pytest.mark.skip("TODO: Update me")
+@pytest.mark.onlylocal
+def test_pi0_efficiency():
+    efficiency = evaluate_spmc_efficiency(PION_INPUT, "#pi^{0}")
+    validate(br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
 
 
 # @unittest.skip("")
@@ -44,5 +43,5 @@ def evaluate_spmc_efficiency(inputs, particle):
     )
     # diff = Comparator()
     # diff.compare(efficiency)
-    loggs.plot()
+    # loggs.plot()
     return efficiency
