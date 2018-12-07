@@ -81,8 +81,7 @@ class ValidateDataset(unittest.TestCase):
     @pytest.mark.onlylocal
     def test_estimate_tof_efficiency(self):
         efficiency = fit_tof_efficiency(OLD_DATASET)
-        validate(self,
-                 br.hist2dict(efficiency), "efficiency_tag")
+        validate(br.hist2dict(efficiency), "efficiency_tag")
 
 
 @pytest.mark.interactive

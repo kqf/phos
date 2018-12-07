@@ -1,9 +1,9 @@
 .PHONY: integrity-test graphs clean
 
 integrity-test:
-	python -m unittest -q analysis.yield.test_observables
-	python -m unittest analysis.tof.efficiency_tag
-	python -m unittest analysis.efficiency.spmc_efficiency
+	pytest analysis/yield/test_observables.py \
+		analysis/tof/efficiency_tag.py \
+		analysis/efficiency/spmc_efficiency.py
 
 graphs:
 	python -m unittest test.analysis.test_quantities

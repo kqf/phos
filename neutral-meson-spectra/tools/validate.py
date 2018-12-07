@@ -1,5 +1,6 @@
 import json
 import sys
+import numpy as np
 
 
 def dump_dict(dictionary):
@@ -10,7 +11,7 @@ def dump_dict(dictionary):
     return formatted.replace("'", '"')
 
 
-def validate(test, output, path,
+def validate(output, path,
              outfile="config/test_values.json"):
     with open(outfile) as f:
         nominal = json.load(f)[sys.platform]
@@ -25,5 +26,4 @@ def validate(test, output, path,
         msg += '"{}": {}\n'.format(label, nominal[label])
         msg += 'Actual values:\n'
         msg += '"{}": {}\n'.format(label, dump_dict(actual))
-        for aa, bb in zip(actual, nominal[label]):
-            test.assertAlmostEqual(aa, bb, msg=msg)
+        np.testing.assert_almost_equal(actual, nominal[label], err_msg=msg)

@@ -26,13 +26,14 @@ class TestSpectrum(unittest.TestCase):
         )
 
         output = estimator.transform(
-            DataVault().input("data", "stable", selection, label='testsignal'),
+            DataVault().input("data", "stable old",
+                              selection, label='testsignal'),
             AnalysisOutput("testing_the_singnal", particle)
         )
         actual = {
             h.GetName(): list(br.bins(h).contents) for h in output
         }
-        validate(self, actual, "test_observables/{}".format(particle))
+        validate(actual, "test_observables/{}".format(particle))
 
     def test_extracts_pi0_spectrum(self):
         self.validate_particle("#pi^{0}", "PhysTender")
