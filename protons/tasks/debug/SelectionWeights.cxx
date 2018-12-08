@@ -88,9 +88,13 @@ SelectionWeights & SelectionWeightsSPMC::SingleEta()
     ws.fW4 = 0.547;
 
     // The latest nonlinarity tested on the simples data
-    ws.fNonA = -0.06;
-    ws.fNonSigma = 0.7;
-    ws.fNonGlobal = 1.015;
+    // ws.fNonA = -0.06;
+    // ws.fNonSigma = 0.7;
+    // ws.fNonGlobal = 1.015;
+    
+    ws.fNonA = -0.035;
+    ws.fNonSigma = 0.95;
+    ws.fNonGlobal = 1.020;
     return ws;
 }
 
