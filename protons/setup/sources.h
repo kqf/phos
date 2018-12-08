@@ -1,10 +1,10 @@
 void LoadAnalysisLibraries()
 {
 	Int_t id = gClassTable->GetID("AliAnalysisTaskPP13");
-	Load analysis libraries for the older versions of aliphysics
-	without the task being manually added
-	if(id != -1)
-		return;
+	// Load analysis libraries for the older versions of aliphysics
+	// without the task being manually added
+	// if(id != -1)
+		// return;
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr)
