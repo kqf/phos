@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityUncertainty
@@ -10,16 +10,16 @@ from uncertainties.nonlinearity import Nonlinearity, define_inputs
 # TODO: Look at generated histogram in different selection
 #       fix this asap
 
-class TestNonliearityUncertainty(unittest.TestCase):
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_nonlinearity_uncertainty():
+    nbins = 2
+    prod = "single #pi^{0}"
+    options = CompositeNonlinearityUncertainty(nbins=nbins)
+    options.factor = 1.
 
-    def test(self):
-        self.nbins = 2
-        prod = "single #pi^{0} scan nonlinearity6"
-        options = CompositeNonlinearityUncertainty(nbins=self.nbins)
-        options.factor = 1.
-
-        chi2ndf = Nonlinearity(options).transform(
-            define_inputs(self.nbins, prod),
-            loggs=AnalysisOutput("testing the scan interface")
-        )
-        Comparator().compare(chi2ndf)
+    chi2ndf = Nonlinearity(options).transform(
+        define_inputs(nbins, prod),
+        loggs=AnalysisOutput("testing the scan interface")
+    )
+    Comparator().compare(chi2ndf)
