@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import AnalysisOutput
@@ -7,28 +7,27 @@ from uncertainties.yields import YieldExtractioin
 from uncertainties.yields import YieldExtractioinUncertanityOptions
 from spectrum.comparator import Comparator
 
+EFFICIENCY_DATA = (
+    DataVault().input("single #pi^{0}", "low"),
+    DataVault().input("single #pi^{0}", "high"),
+)
 
-class TestYieldExtractionUncertanity(unittest.TestCase):
+CYIELD_DATA = (
+    DataVault().input("data"),
+    EFFICIENCY_DATA
+)
 
-    # @unittest.skip("")
-    def test_yield_extraction_uncertanity_pion(self):
-        production = "single #pi^{0}"
-        inputs = (
-            DataVault().input(production, "low"),
-            DataVault().input(production, "high"),
-        )
 
-        data = [
-            DataVault().input("data"),
-            inputs
-        ]
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_yield_extraction_uncertanity_pion():
 
-        options = YieldExtractioinUncertanityOptions(
-            CompositeCorrectedYieldOptions(particle="#pi^{0}")
-        )
-        estimator = YieldExtractioin(options)
-        output = estimator.transform(
-            data,
-            loggs=AnalysisOutput("corrected yield #pi^{0}")
-        )
-        Comparator().compare(output)
+    options = YieldExtractioinUncertanityOptions(
+        CompositeCorrectedYieldOptions(particle="#pi^{0}")
+    )
+    estimator = YieldExtractioin(options)
+    output = estimator.transform(
+        CYIELD_DATA,
+        loggs=AnalysisOutput("corrected yield #pi^{0}")
+    )
+    Comparator().compare(output)

@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
@@ -68,24 +68,24 @@ def data(nbins):
     )
 
 
-class DrawAllSources(unittest.TestCase):
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_draws_all_sources():
+    nbins = 2
+    nonlin_options = CompositeNonlinearityUncertainty(nbins=nbins)
+    nonlin_options.factor = 1.
 
-    def test_all(self):
-        nbins = 2
-        nonlin_options = CompositeNonlinearityUncertainty(nbins=nbins)
-        nonlin_options.factor = 1.
+    cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
 
-        cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
+    estimator = ComparePipeline((
+        ("yield", YieldExtractioin(
+            YieldExtractioinUncertanityOptions(cyield_options))),
+        ("nonlinearity", Nonlinearity(nonlin_options)),
+        ("tof", TofUncertainty(TofUncertaintyOptions())),
+        ("gescale", GScale(GScaleOptions(particle="#pi^{0}"))),
+        ("accepntace", Acceptance(AcceptanceOptions(particle="#pi^{0}"))),
+    ), plot=True)
 
-        estimator = ComparePipeline((
-            ("yield", YieldExtractioin(
-                YieldExtractioinUncertanityOptions(cyield_options))),
-            ("nonlinearity", Nonlinearity(nonlin_options)),
-            ("tof", TofUncertainty(TofUncertaintyOptions())),
-            ("gescale", GScale(GScaleOptions(particle="#pi^{0}"))),
-            ("accepntace", Acceptance(AcceptanceOptions(particle="#pi^{0}"))),
-        ), plot=True)
-
-        loggs = AnalysisOutput("testing the scan interface")
-        estimator.transform(data(nbins), loggs)
-        loggs.plot(True)
+    loggs = AnalysisOutput("testing the scan interface")
+    estimator.transform(data(nbins), loggs)
+    loggs.plot(True)
