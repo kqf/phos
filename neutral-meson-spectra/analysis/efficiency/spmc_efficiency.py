@@ -1,6 +1,5 @@
 import pytest
 
-# from spectrum.comparator import Comparator
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
@@ -28,7 +27,6 @@ def test_pi0_efficiency():
     validate(br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
 
 
-# @unittest.skip("")
 # @pytest.mark.skip("")
 def test_eta_efficiency():
     evaluate_spmc_efficiency(ETA_INPUT, "#eta")
