@@ -7,3 +7,4 @@ pytest
 tqdm
 flatten_dict
 humanize
+lazy-proxy-object

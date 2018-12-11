@@ -6,6 +6,8 @@ from spectrum.options import Options, CompositeOptions
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 
+# from spectrum.comparator import Comparator
+
 
 class TestAnalysis(unittest.TestCase):
 
