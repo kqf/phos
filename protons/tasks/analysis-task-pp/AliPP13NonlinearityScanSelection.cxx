@@ -125,16 +125,6 @@ void AliPP13NonlinearityScanSelection::ConsiderGeneratedParticles(const EventFla
 }
 
 //________________________________________________________________
-Bool_t AliPP13NonlinearityScanSelection::IsPrimary(const AliAODMCParticle * particle) const
-{
-	// Look what particle left vertex (e.g. with vertex with radius <1 cm)
-	Double_t rcut = 1.;
-	Double_t r2 = particle->Xv() * particle->Xv() + particle->Yv() * particle->Yv()	;
-	return r2 < rcut * rcut;
-}
-
-
-//________________________________________________________________
 TLorentzVector AliPP13NonlinearityScanSelection::ClusterMomentum(const AliVCluster * c1, const EventFlags & eflags) const
 {
 	// NB: Intentionally don't apply nonlinearity Correction here
