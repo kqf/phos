@@ -1,4 +1,3 @@
-
 // #include "iterator"
 
 // --- Custom header files ---
@@ -37,16 +36,12 @@ void AliPP13EfficiencySelectionSPMC::ConsiderPair(const AliVCluster * c1, const 
 	Double_t ma12 = psum.M();
 	Double_t pt12 = psum.Pt();
 
-    // AliAODMCParticle * origin = (AliAODMCParticle*)eflags.fMcParticles->At(0);//0 is always generated particle by AliGenBox.
-	// Double_t w = fWeights->Weight(origin->Pt());
 	Double_t w = fWeights->Weights(pt12, eflags);
 	TH2 * hist = dynamic_cast<TH2 *> (fInvMass[eflags.isMixing]);
 	hist->Fill(ma12, pt12, w);
-
-	if (eflags.isMixing)
-		return;
 }
 
+//________________________________________________________________
 void AliPP13EfficiencySelectionSPMC::ConsiderGeneratedParticles(const EventFlags & eflags)
 {
 	if (!eflags.fMcParticles)
@@ -64,11 +59,7 @@ void AliPP13EfficiencySelectionSPMC::ConsiderGeneratedParticles(const EventFlags
 
 
 		Double_t pt = particle->Pt();
-
-	    // AliAODMCParticle * origin = (AliAODMCParticle*)eflags.fMcParticles->At(0);//0 is always generated particle by AliGenBox.
-		// Double_t w = fWeights->Weight(origin->Pt());
 		Double_t w = fWeights->Weights(pt, eflags);
-
 
 		// Use this to remove forward photons that can modify our true efficiency
 		if (TMath::Abs(particle->Y()) > 0.5) // NB: Use rapidity instead of pseudo rapidity!
