@@ -78,7 +78,6 @@ void AliPP13EfficiencySelectionMC::InitSelectionHistograms()
 	}
 }
 
-
 //________________________________________________________________
 void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags & eflags)
 {
