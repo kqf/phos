@@ -7,7 +7,29 @@ Use following command to enable CVMS environment on lxplus machine. It will load
 ./setup-env.sh
 ```
 
-# Setup docker image
+
+# Setup the environment
+Use [`alidock`](https://github.com/dberzano/alidock). It's a set of scripts to automatize all the process connected with docker. It automatically manages images and selects the most recent base image compatible with the alisoft.
+
+# Development
+Copy analysis task to the docker volume
+```bash
+./copy-to-docker.sh
+```
+
+To modify the library structure do the following
+
+```bash
+# Add source files here in alphabetical order
+#
+vim $ALICE_PHYSICS/PWGGA/PHOSTasks/CMakeLists.txt
+
+# Link sources in the hierarchical order
+#
+vim $ALICE_PHYSICS/PWGGA/PHOSTasks/PWGGAPHOSTasksLinkDef.h
+```
+
+# Setup docker image (deprecated)
 
 The first step is to copy your ssh-key to the directory with the `Dockerfile`. Unfortunately `ln -s` doesn't work.
 ```bash
@@ -46,8 +68,7 @@ exit
 docker commit <container ID> aliworker:physics
 ```
 
-
-# Run
+# Run (deprecated)
 To run existing image use following command
 
 ```bash
@@ -58,20 +79,3 @@ docker run -v $HOME/path/to/workdir/:/alice/AliPhysics/PWGGA/PHOSTasks/workdir -
 ./run-in-docker.sh
 ```
 
-# Development
-Copy analysis task to the docker volume
-```bash
-./copy-to-docker.sh
-```
-
-To modify the library structure do the following
-
-```bash
-# Add source files here in alphabetical order
-#
-vim $ALICE_PHYSICS/PWGGA/PHOSTasks/CMakeLists.txt
-
-# Link sources in the hierarchical order
-#
-vim $ALICE_PHYSICS/PWGGA/PHOSTasks/PWGGAPHOSTasksLinkDef.h
-```
