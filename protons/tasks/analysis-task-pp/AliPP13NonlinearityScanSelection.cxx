@@ -106,7 +106,7 @@ void AliPP13NonlinearityScanSelection::ConsiderGeneratedParticles(const EventFla
 
 		// NB: replace this condition by find, if the number of particles will grow
 		//
-		if (code != 111) // Only neutral pions
+		if (code != kPi0) // Only neutral pions
 			continue;
 
 

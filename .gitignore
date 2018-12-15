@@ -62,3 +62,4 @@ Dockerfile.slc
 # SFTP configuration
 sftp-config.json
 .pytest_cache
+.python-version

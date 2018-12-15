@@ -25,11 +25,6 @@
 class AliPP13EfficiencySelectionMC: public AliPP13SpectrumSelectionMC
 {
 public:
-	enum Particles
-	{
-		kGamma = 22, kPi0 = 111, kEta = 221, kK0s = 310
-	};
-
 	AliPP13EfficiencySelectionMC():
 		AliPP13SpectrumSelectionMC(),
 		fInvMass()
