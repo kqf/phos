@@ -1,5 +1,3 @@
-// #include "iterator"
-
 // --- Custom header files ---
 #include "AliPP13EfficiencySelectionMC.h"
 
