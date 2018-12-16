@@ -118,6 +118,5 @@ void AliPP13EfficiencySelectionMC::ConsiderGeneratedParticles(const EventFlags &
 
 		fSpectrums[code]->fPtPrimaries[Int_t(primary)]->Fill(pt, w);
 		fSpectrums[code]->fPtPrimariesStandard[Int_t(primary)]->Fill(pt, w);
-		ConsiderGeneratedParticle(i, pt, primary, eflags);
 	}
 }
