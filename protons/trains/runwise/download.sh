@@ -1,9 +1,9 @@
-# Index corresponds 
+# Index corresponds to each period
 
 declare -a periods=("LHC17c" "LHC17e" "LHC17f" "LHC17g" "LHC17i" "LHC17j" "LHC17k" "LHC17l" "LHC17m" "LHC17o")
 nperiods=${#periods[@]}
 
-echo $nperiods
+echo "Downloading from $nperiods"
 
 function download_from_grid()
 {
@@ -34,7 +34,4 @@ function main() {
 
 main && echo -e "\a"
 
-
 # download_from_grid $1 $2 $3
-
-
