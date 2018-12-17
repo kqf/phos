@@ -1,4 +1,5 @@
 import os
+import pytest
 import unittest
 import tqdm
 
@@ -6,51 +7,52 @@ from spectrum.input import Input, NoMixingInput, read_histogram
 from tests.software.test_broot import write_histograms
 
 
-class TestInput(unittest.TestCase):
+# TOOD: Add fixtures for these methods
 
-    def test_reads_single_histogram(self):
-        ofilename = "test_reads_single.root"
-        selection = "testSelection"
-        myhist = "testHistogram"
-        histnames = myhist, "EventCounter"
-        original = write_histograms(ofilename, selection, histnames)
+def test_reads_single_histogram():
+    ofilename = "test_reads_single.root"
+    selection = "testSelection"
+    myhist = "testHistogram"
+    histnames = myhist, "EventCounter"
+    original = write_histograms(ofilename, selection, histnames)
 
-        fromfile = read_histogram(ofilename, selection, myhist)
+    fromfile = read_histogram(ofilename, selection, myhist)
 
-        self.assertIsNotNone(fromfile)
-        # We are reading different histograms
-        self.assertFalse(fromfile is original[0])
+    assert fromfile is not None
+    # We are reading different histograms
+    assert fromfile is not original[0]
 
-        # And those histograms have the same name
-        self.assertEqual(fromfile.GetEntries(), original[0].GetEntries())
-        os.remove(ofilename)
+    # And those histograms have the same name
+    fromfile.GetEntries() == original[0].GetEntries()
+    os.remove(ofilename)
 
-    def test_reads_standard_input(self):
-        ofilename = "test_reads_standard.root"
-        selection = "testSelection"
-        histnames = "hMassPt", "hMixMassPt", "EventCounter"
 
-        oreal, omixed, cntr = write_histograms(ofilename, selection, histnames)
-        onevents = cntr.GetBinContent(2)
+def test_reads_standard_input():
+    ofilename = "test_reads_standard.root"
+    selection = "testSelection"
+    histnames = "hMassPt", "hMixMassPt", "EventCounter"
 
-        real, mixed = Input(ofilename, selection).read()
+    oreal, omixed, cntr = write_histograms(ofilename, selection, histnames)
+    onevents = cntr.GetBinContent(2)
 
-        self.assertIsNotNone(real)
-        self.assertIsNotNone(mixed)
+    real, mixed = Input(ofilename, selection).read()
 
-        # We are reading different histograms
-        self.assertFalse(real is oreal)
-        self.assertFalse(mixed is omixed)
+    assert real is not None
+    assert mixed is not None
 
-        # And those histograms have the same name
-        self.assertEqual(real.GetEntries(), oreal.GetEntries())
-        self.assertEqual(mixed.GetEntries(), omixed.GetEntries())
+    # We are reading different histograms
+    assert real is not oreal
+    assert mixed is not omixed
 
-        self.assertEqual(real.nevents, onevents)
-        self.assertEqual(real.nevents, mixed.nevents)
-        os.remove(ofilename)
+    # And those histograms have the same name
+    real.GetEntries() == oreal.GetEntries()
+    mixed.GetEntries() == omixed.GetEntries()
 
-    def test_reads_nomixing_input(self):
+    real.nevents == onevents
+    real.nevents == mixed.nevents
+    os.remove(ofilename)
+
+    def test_reads_nomixing_input():
         ofilename = "test_reads_nomixing.root"
         selection = "testSelection"
         histnames = "hMassPt", "EventCounter"
@@ -60,19 +62,20 @@ class TestInput(unittest.TestCase):
 
         real, mixed = NoMixingInput(ofilename, selection).read()
 
-        self.assertIsNotNone(real)
-        self.assertIsNone(mixed)
+        assert real is not None
+        assert mixed is None
 
         # We are reading different histograms
-        self.assertFalse(real is oreal)
+        assert real is not oreal
 
         # And those histograms have the same name
-        self.assertEqual(real.GetEntries(), oreal.GetEntries())
+        real.GetEntries() == oreal.GetEntries()
 
-        self.assertEqual(real.nevents, onevents)
+        real.nevents == onevents
         os.remove(ofilename)
 
 
+# TODO: Update input
 class TestInputMemoryPerformance(unittest.TestCase):
 
     def setUp(self):
@@ -81,6 +84,7 @@ class TestInputMemoryPerformance(unittest.TestCase):
         self.hname = "MassPt_%d_%d"
         self.sbins = 11, 11
 
+    @pytest.mark.onlylocal
     @unittest.skip("These tests are only needed to check memory consumption")
     def test_sequence(self):
         x, y = self.sbins
@@ -89,8 +93,9 @@ class TestInputMemoryPerformance(unittest.TestCase):
                 hists = Input(
                     self.infile,
                     self.sel, self.hname % (i, j)).read()
-                self.assertIsNotNone(hists)
+                assert hists is not None
 
+    @pytest.mark.onlylocal
     @unittest.skip("These tests are only needed to check memory consumption")
     def test_copy(self):
         inp = Input(self.infile, self.sel, self.hname % (0, 0))
