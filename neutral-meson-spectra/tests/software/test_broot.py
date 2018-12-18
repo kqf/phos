@@ -1,5 +1,4 @@
-#!/usr/bin/python
-
+import pytest
 import array
 import os
 import random
@@ -338,11 +337,8 @@ class TestTH(unittest.TestCase):
             for i in range(10):
                 hist.Fill(i, i)
 
-        entries = sum(h.GetEntries() for h in hists)
-
         newlabel = 'average'
         total = br.sum(hists, newlabel)
-
         self.assertEqual(total.GetBinContent(1), hists[0].GetBinContent(1))
         self.assertEqual(total.GetBinContent(10), hists[0].GetBinContent(10))
         self.assertEqual(total.GetBinError(1), hists[0].GetBinError(1))
@@ -363,17 +359,17 @@ class TestTH(unittest.TestCase):
 
         # For normal even binning these numbers are the same
         entries, integral = hist.GetEntries(), hist.Integral()
-        self.assertEqual(entries, integral)
+        assert entries == integral
 
         br.scalew(hist, 1)
-        self.assertEqual(entries, hist.GetEntries())
-        self.assertEqual(hist.Integral(), integral * binwidth)
+        assert entries == hist.GetEntries()
+        assert hist.Integral() == integral * binwidth
 
         # NB: Be careful when applying scalew consecutively
         #     the factors multiply
         br.scalew(hist, 2)
-        self.assertEqual(entries, hist.GetEntries())
-        self.assertEqual(hist.Integral(), integral * binwidth * binwidth * 2)
+        assert pytest.approx(entries) == hist.GetEntries()
+        assert hist.Integral() == integral * binwidth * binwidth * 2
 
     def test_calculates_area_and_error(self):
         nbins, start, stop = 10, 0, 10
@@ -538,23 +534,16 @@ class TestTH(unittest.TestCase):
         for i, b in enumerate(errors):
             self.assertEqual(hist.GetBinError(i + 1), b)
 
-    @unittest.skip("Some Problems with Hepdata The site is not reachable")
     def test_downloads_from_hepdata(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
 
         br.io.hepdata(record, ofile)
-        self.assertTrue(os.path.isfile(ofile))
+        assert os.path.isfile(ofile)
 
         rfile = br.io._read_file(ofile)
-        self.assertTrue(rfile.IsOpen())
-
-        # Now try fake record
-        frecord = 'x'
-        self.assertRaises(IOError, br.io.hepdata, frecord, 'fake_' + ofile)
-
+        assert rfile.IsOpen()
         os.remove(ofile)
 
-    @unittest.skip("Some Problems with Hepdata The site is not reachable")
     def test_reads_from_tdir(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
 
