@@ -7,72 +7,63 @@ from spectrum.input import Input, NoMixingInput, read_histogram
 from tests.software.test_broot import write_histograms
 
 
-# TOOD: Add fixtures for these methods
-
-def test_reads_single_histogram():
+@pytest.fixture(scope="module")
+def single():
     ofilename = "test_reads_single.root"
     selection = "testSelection"
     myhist = "testHistogram"
     histnames = myhist, "EventCounter"
     original = write_histograms(ofilename, selection, histnames)
-
-    fromfile = read_histogram(ofilename, selection, myhist)
-
-    assert fromfile is not None
-    # We are reading different histograms
-    assert fromfile is not original[0]
-
-    # And those histograms have the same name
-    fromfile.GetEntries() == original[0].GetEntries()
+    yield original, ofilename, selection, histnames, myhist
     os.remove(ofilename)
 
 
-def test_reads_standard_input():
+@pytest.fixture(scope="module")
+def standard():
     ofilename = "test_reads_standard.root"
     selection = "testSelection"
     histnames = "hMassPt", "hMixMassPt", "EventCounter"
-
-    oreal, omixed, cntr = write_histograms(ofilename, selection, histnames)
-    onevents = cntr.GetBinContent(2)
-
-    real, mixed = Input(ofilename, selection).read()
-
-    assert real is not None
-    assert mixed is not None
-
-    # We are reading different histograms
-    assert real is not oreal
-    assert mixed is not omixed
-
-    # And those histograms have the same name
-    real.GetEntries() == oreal.GetEntries()
-    mixed.GetEntries() == omixed.GetEntries()
-
-    real.nevents == onevents
-    real.nevents == mixed.nevents
+    oreal, omixed, ocntr = write_histograms(ofilename, selection, histnames)
+    yield oreal, omixed, ocntr, ofilename, selection, histnames
     os.remove(ofilename)
 
-    def test_reads_nomixing_input():
-        ofilename = "test_reads_nomixing.root"
-        selection = "testSelection"
-        histnames = "hMassPt", "EventCounter"
 
-        original = write_histograms(ofilename, selection, histnames)
-        oreal, onevents = original[0], original[-1].GetBinContent(2)
+@pytest.fixture(scope="module")
+def nomixing():
+    ofilename = "test_reads_nomixing.root"
+    selection = "testSelection"
+    histnames = "hMassPt", "EventCounter"
+    oreal, ocntr = write_histograms(ofilename, selection, histnames)
+    yield oreal, None, ocntr, ofilename, selection, histnames
+    os.remove(ofilename)
 
-        real, mixed = NoMixingInput(ofilename, selection).read()
 
-        assert real is not None
-        assert mixed is None
+def test_reads_single_histogram(single):
+    original, ofilename, selection, histnames, myhist = single
+    fromfile = read_histogram(ofilename, selection, myhist)
+    assert fromfile is not None
+    assert fromfile is not original[0], "The histograms the same instance"
+    assert fromfile.GetEntries() == original[0].GetEntries()
 
-        # We are reading different histograms
-        assert real is not oreal
 
-        # And those histograms have the same name
-        real.GetEntries() == oreal.GetEntries()
+def test_reads_standard_input(standard):
+    oreal, omixed, ocntr, ofilename, selection, histnames = standard
+    real, mixed = Input(ofilename, selection).read()
+    assert real is not None
+    assert mixed is not None
+    assert real.GetEntries() == oreal.GetEntries()
+    assert mixed.GetEntries() == omixed.GetEntries()
+    assert real.nevents == ocntr.GetBinContent(2)
+    assert real.nevents == mixed.nevents
 
-        real.nevents == onevents
-        os.remove(ofilename)
+
+def test_reads_nomixing_input(nomixing):
+    oreal, omixed, ocntr, ofilename, selection, histnames = nomixing
+    real, mixed = NoMixingInput(ofilename, selection).read()
+    assert real is not None
+    assert mixed is None
+    assert real.GetEntries() == oreal.GetEntries()
+    assert real.nevents == ocntr.GetBinContent(2)
 
 
 # TODO: Update input
