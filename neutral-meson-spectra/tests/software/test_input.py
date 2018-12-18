@@ -5,6 +5,7 @@ import tqdm
 
 from spectrum.input import Input, NoMixingInput, read_histogram
 from tests.software.test_broot import write_histograms
+from vault.datavault import DataVault
 
 
 @pytest.fixture(scope="module")
@@ -66,34 +67,30 @@ def test_reads_nomixing_input(nomixing):
     assert real.nevents == ocntr.GetBinContent(2)
 
 
-# TODO: Update input
-class TestInputMemoryPerformance(unittest.TestCase):
+@pytest.fixture()
+def multihist_input():
+    return lambda i, j: DataVault().input(
+        "single #pi^{0}", "high",
+        listname="PhysNonlinScan",
+        histname="MassPt_{}_{}".format(i, j))
 
-    def setUp(self):
-        self.infile = "Pythia-new.root"
-        self.sel = "StudyNonlinOnlyTender"
-        self.hname = "MassPt_%d_%d"
-        self.sbins = 11, 11
 
-    @pytest.mark.onlylocal
-    @unittest.skip("These tests are only needed to check memory consumption")
-    def test_sequence(self):
-        x, y = self.sbins
-        for i in range(x):
-            for j in range(y):
-                hists = Input(
-                    self.infile,
-                    self.sel, self.hname % (i, j)).read()
-                assert hists is not None
+@pytest.mark.onlylocal
+@unittest.skip("These tests are only needed to check memory consumption")
+def test_sequence(multihist_input, sbins=(11, 11)):
+    x, y = sbins
+    for i in range(x):
+        for j in range(y):
+            hists = multihist_input(i, j)
+            assert hists is not None
 
-    @pytest.mark.onlylocal
-    @unittest.skip("These tests are only needed to check memory consumption")
-    def test_copy(self):
-        inp = Input(self.infile, self.sel, self.hname % (0, 0))
-        raw, mixed = inp.read()
 
-        cache = []
-        msize = 11 * 11
-        for i in tqdm.tqdm(range(msize)):
-            hists = raw.Clone(), mixed.Clone()
-            cache.append(hists)
+@pytest.mark.onlylocal
+@unittest.skip("These tests are only needed to check memory consumption")
+def test_copy(multihist_input):
+    raw, mixed = multihist_input(0, 0).read()
+    cache = []
+    msize = 11 * 11
+    for i in tqdm.tqdm(range(msize)):
+        hists = raw.Clone(), mixed.Clone()
+        cache.append(hists)
