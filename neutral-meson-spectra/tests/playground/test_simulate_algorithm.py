@@ -1,4 +1,3 @@
-import unittest
 import pytest
 
 from spectrum.analysis import Analysis
@@ -8,16 +7,17 @@ from spectrum.comparator import Comparator
 
 from spectrum.broot import BROOT as br
 from tests.playground.phspace import InclusiveGenerator
+from vault.datavault import DataVault
 
 
-@unittest.skip('')
+@pytest.mark.skip("")
+@pytest.mark.onlylocal
 def test_recreates_the_same_shape():
-    genfilename = 'LHC16-fake.root'
-    infile = 'input-data/data/LHC16.root'
+    gen_file_name = "LHC16-fake.root"
     generator = InclusiveGenerator(
-        infile,
-        'config/test_algorithm.json',
-        genfilename=genfilename,
+        DataVault().file("data"),
+        "config/test_algorithm.json",
+        gen_file_name=gen_file_name,
         flat=True
     )
 
@@ -25,22 +25,21 @@ def test_recreates_the_same_shape():
     generated.priority = 1
     generated.logy = 1
     reconstructed = Analysis(Options()).transform(
-        Input(genfilename, generator.selname), {}
+        Input(gen_file_name, generator.selname), {}
     )
     Comparator.compare(
         map(br.scalew, [reconstructed, generated])
     )
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 def test_generate_mc():
-    genfilename = 'LHC16-single.root'
-    infile = 'input-data/mc/single/pi0/nonlin/LHC17j3b1.root'
     generator = InclusiveGenerator(
-        infile,
-        'config/test_algorithm.json',
-        selname='PhysEff',
-        genfilename=genfilename,
+        DataVault().file("single #pi^{0}", "low"),
+        "config/test_algorithm.json",
+        selname="PhysEff",
+        gen_file_name="LHC16-single.root",
         flat=True
     )
-    generator.generate(10000)
+    generator.generate(1000)
