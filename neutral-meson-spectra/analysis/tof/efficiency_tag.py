@@ -44,12 +44,18 @@ def efficincy_function():
     # tof_eff.SetParameter(3, 1.06068e+00)
     # tof_eff.SetParameter(4, -1.62810e+00)
 
-    tof_eff.SetParameter(0, -1.02802e+00)
+    # Previous
+    # tof_eff.SetParameter(0, -1.02802e+00)
+    # tof_eff.SetParameter(1, 8.51857e+00)
+    # tof_eff.SetParameter(2, 6.19420e-01)
+    # tof_eff.SetParameter(3, 1.30498e+00)
+    # tof_eff.SetParameter(4, -1.78716e+00)
+
+    tof_eff.FixParameter(0, -1.02802e+00)
     tof_eff.SetParameter(1, 8.51857e+00)
     tof_eff.SetParameter(2, 6.19420e-01)
-    tof_eff.SetParameter(3, 1.30498e+00)
-    tof_eff.SetParameter(4, -1.78716e+00)
-
+    tof_eff.SetParameter(3, 2.15384e+00)
+    tof_eff.SetParameter(4, -2.90812e+00)
     return tof_eff
 
 
@@ -89,4 +95,14 @@ def test_old_results():
     Comparator(labels=("old", "new")).compare(
         fit_tof_efficiency(OLD_DATASET),
         fit_tof_efficiency()
+    )
+
+
+# NB: Use the following test to check chi2 value per point
+@pytest.mark.skip("")
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_newest_results():
+    Comparator().compare(
+        br.chi2errors(fit_tof_efficiency(LATEST_DATASET), scale=0.01)
     )
