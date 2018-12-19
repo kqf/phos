@@ -550,3 +550,18 @@ class BROOT(object):
         summed = klass.sum(histograms, label)
         summed.Scale(1. / len(histograms))
         return summed
+
+    @classmethod
+    def chi2errors(klass, histogram, scale=1):
+        functions = histogram.GetListOfFunctions()
+        if functions.GetSize() == 0:
+            raise ValueError("Histogram should be fitted")
+
+        function = functions.At(0)
+        for i in klass.range(histogram):
+            x = histogram.GetBinCenter(i)
+            value = histogram.GetBinContent(i)
+            sigma = histogram.GetBinError(i)
+            chi2 = ((value - function.Eval(x)) / sigma) ** 2
+            histogram.SetBinError(i, chi2 * scale)
+        return histogram

@@ -731,5 +731,20 @@ class TestTH(unittest.TestCase):
         Comparator(stop=self.stop).compare(hist1, hist2)
         hist3 = hist2.Clone(hist2.GetName() + "_scale")
         br.scalew(hist3, hist1.GetBinWidth(0))
-        # print hist3.Integral() / hist2.Integral()
         Comparator(stop=self.stop).compare([hist1, hist2, hist3])
+
+
+@pytest.mark.parametrize("scale", [0.001, 0.1, 1., 10, 100])
+def test_draws_chi2(scale):
+    hist = ROOT.TH1F("testchi2plot", "Testing #chi^{2} plot; x", 10, 0, 10)
+    for i in br.range(hist):
+        hist.SetBinContent(i, 1.)
+        hist.SetBinError(i, 0.1)
+    hist.SetBinContent(5, 2)
+
+    func = ROOT.TF1("func", "pol0", 0, 10)
+    func.SetParameter(0, 1)
+    hist.Fit(func, "RQ")
+    hist = br.chi2errors(hist, scale=scale)
+    calculated = sum(map(hist.GetBinError, br.range(hist)))
+    assert pytest.approx(calculated) == func.GetChisquare() * scale
