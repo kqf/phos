@@ -1,4 +1,4 @@
-import unittest
+# import pytest
 
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions
@@ -60,24 +60,19 @@ class MassComparator(TransformerBase):
         return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
 
 
-class TestMasses(unittest.TestCase):
-
-    # @unittest.skip('')
-    def test_efficiency(self):
-        # production = "single #pi^{0}"
-        particle = "#pi^{0}"
-        production = "single #pi^{0} debug3"
-        options = CompositeEfficiencyOptions(
-            particle,
-            ptrange="config/pt-debug.json"
-        )
-        loggs = AnalysisOutput("mass_test_{}".format(particle))
-        MassComparator(options, plot=True).transform(
-            (
-                DataVault().input(production, "low", "PhysEff"),
-                DataVault().input(production, "high", "PhysEff"),
-            ),
-            loggs
-        )
-        # diff.compare(efficiency)
-        loggs.plot()
+def test_efficiency():
+    production = "single #pi^{0}"
+    particle = "#pi^{0}"
+    options = CompositeEfficiencyOptions(
+        particle,
+        ptrange="config/pt-debug.json"
+    )
+    loggs = AnalysisOutput("mass_test_{}".format(particle))
+    MassComparator(options, plot=True).transform(
+        (
+            DataVault().input(production, "low", "PhysEff"),
+            DataVault().input(production, "high", "PhysEff"),
+        ),
+        loggs
+    )
+    loggs.plot()

@@ -1,5 +1,4 @@
 import unittest
-from collections import OrderedDict
 
 import ROOT
 import spectrum.sutils as su
@@ -24,28 +23,26 @@ def chi2(mc, data):
     return br.chi2ndf(mc, data)
 
 
-class ScanNonlinearities(unittest.TestCase):
+def test_scan_parameters():
+    nbins = 9
+    prod = "single #pi^{0} scan nonlinearity"
+    histnames = form_histnames(nbins)
+    low = DataVault().input(prod, "low", inputs=histnames)
+    high = DataVault().input(prod, "high", inputs=histnames)
 
-    def test(self):
-        nbins = 9
-        prod = "single #pi^{0} scan nonlinearity"
-        histnames = form_histnames(nbins)
-        low = DataVault().input(prod, "low", inputs=histnames)
-        high = DataVault().input(prod, "high", inputs=histnames)
+    options = CompositeNonlinearityScanOptions(
+        (low, high),
+        nbins=nbins
+    )
+    options.factor = 1.
 
-        options = CompositeNonlinearityScanOptions(
-            (low, high),
-            nbins=nbins
-        )
-        options.factor = 1.
+    low, high = low.read_multiple(2), high.read_multiple(2)
+    mc_data = [(l, h) for l, h in zip(low, high)]
 
-        low, high = low.read_multiple(2), high.read_multiple(2)
-        mc_data = [(l, h) for l, h in zip(low, high)]
-
-        chi2ndf = NonlinearityScan(options, chi2_=chi2).transform(
-            [DataVault().input("data"), mc_data],
-            loggs=AnalysisOutput("searching the optimal parameters")
-        )
-        # TODO: Add this to the output
-        su.write(chi2ndf, "search_nonlinearity_scan.root")
-        Comparator().compare(chi2ndf)
+    chi2ndf = NonlinearityScan(options, chi2_=chi2).transform(
+        [DataVault().input("data"), mc_data],
+        loggs=AnalysisOutput("searching the optimal parameters")
+    )
+    # TODO: Add this to the output
+    su.write(chi2ndf, "search_nonlinearity_scan.root")
+    Comparator().compare(chi2ndf)
