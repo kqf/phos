@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import CompositeNonlinearityOptions
@@ -10,7 +10,8 @@ from tools.mc import Nonlinearity
 from vault.datavault import DataVault
 
 
-def define_datasets():
+@pytest.fixture(scope="module")
+def predefined_datasets():
     histname = "MassPt"
     listname = "Phys"
     mclistname = "PhysEff"
@@ -41,8 +42,8 @@ def define_datasets():
     return names, options, mcinput
 
 
-def test_nonlinearity():
-    names, options, datasets = define_datasets()
+def test_nonlinearity(predefined_datasets):
+    names, options, datasets = predefined_datasets
     estimator = ComparePipeline([
         (name, Nonlinearity(opt, False))
         for name, opt in zip(names, options)
@@ -53,15 +54,15 @@ def test_nonlinearity():
     loggs.plot()
 
 
-@unittest.skip('')
-def test_masses():
+@pytest.mark.skip("")
+def test_masses(predefined_datasets):
     def mass(options):
         return Pipeline([
             ("", Analysis(options)),
             ("", HistogramSelector("mass"))
         ])
 
-    names, options, datasets = define_datasets()
+    names, options, datasets = predefined_datasets
     _, datasets = zip(*datasets)
     estimator = ComparePipeline([
         (name, mass(opt.mc))
