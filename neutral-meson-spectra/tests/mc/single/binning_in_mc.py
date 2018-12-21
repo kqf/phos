@@ -80,26 +80,20 @@ class GeneratedValidator(object):
         ])
 
 
-class ValidateGeneratedPi0(unittest.TestCase):
+MC_INPUT = (
+    DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
+    None
+)
 
-    def test_pi0_generated(self):
-        estimator = GeneratedValidator(
-            tsallis(),
-            "hPt_#pi^{0}_primary_standard"
-        )
 
-        loggs = AnalysisOutput(
-            "generated_spectrum_extraction_spmc_{}".format(
-                "#pi^{0}"), "#pi^{0}")
-        output = estimator.transform(
-            (
-                Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-                None
-            ),
-            loggs
-        )
-        loggs.plot(False)
+def test_pi0_generated():
+    estimator = GeneratedValidator(tsallis(), "hPt_#pi^{0}_primary_standard")
 
-        output.logy = False
-        diff = Comparator(stop=True)
-        diff.compare(output)
+    loggs = AnalysisOutput(
+        "generated_spectrum_extraction_spmc_{}".format("#pi^{0}"))
+    output = estimator.transform(MC_INPUT, loggs)
+    loggs.plot(False)
+
+    output.logy = False
+    diff = Comparator(stop=True)
+    diff.compare(output)

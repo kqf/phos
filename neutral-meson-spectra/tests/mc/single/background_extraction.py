@@ -1,18 +1,16 @@
 import random
 import unittest
 
-import ROOT
 import spectrum.sutils as su
-from spectrum.broot import BROOT as br
-from spectrum.comparator import Comparator
+from spectrum.broot import BROOT as br  # noqa
+from spectrum.comparator import Comparator # noqa
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
 from spectrum.parametrisation import PeakParametrisation
 from spectrum.pipeline import Pipeline
-from spectrum.processing import (DataExtractor, DataSlicer, MassFitter,
-                                 RangeEstimator)
-from spectrum.ptplotter import MassesPlot, MultiplePlotter
+from spectrum.processing import DataSlicer, MassFitter
+from spectrum.ptplotter import MassesPlot
 from vault.datavault import DataVault
 
 

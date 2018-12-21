@@ -4,7 +4,7 @@ import unittest
 
 from vault.datavault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
-from spectrum.output import AnalysisOutput
+# from spectrum.output import AnalysisOutput
 from tools.mc import Nonlinearity
 from spectrum.broot import BROOT as br
 # from vault.formulas import FVault
