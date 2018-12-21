@@ -1,4 +1,3 @@
-import unittest
 from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions, Options
@@ -51,40 +50,34 @@ def define_datasets():
     return names, datasets
 
 
-class CompareDifferentEfficiencies(unittest.TestCase):
+def test_efficiencies():
+    names, datasets = define_datasets()
+    particle = "#pi^{0}"
+    estimator = ComparePipeline([
+        (name, Efficiency(CompositeEfficiencyOptions(
+            uinput,
+            particle,
+        )))
+        for name, uinput in zip(names, datasets)
+    ], plot=True)
 
-    def test_efficiencies(self):
-        names, datasets = define_datasets()
-        particle = "#pi^{0}"
-        estimator = ComparePipeline([
-            (name, Efficiency(CompositeEfficiencyOptions(
-                uinput,
-                particle,
-                # ptrange='config/pt-dummy.json'
-            )))
-            for name, uinput in zip(names, datasets)
-        ], plot=True)
-
-        estimator.transform(
-            datasets,
-            loggs=AnalysisOutput("compare different datasts")
-        )
+    estimator.transform(
+        datasets,
+        loggs=AnalysisOutput("compare different datasts")
+    )
 
 
-@unittest.skip('')
-class CompareRawYields(unittest.TestCase):
+def test_yields():
+    names, datasets = define_datasets()
+    particle = "#pi^{0}"
+    data = [('data', Analysis(Options()))]
+    estimator = ComparePipeline(data + [
+        (name,
+         Analysis(CompositeOptions(uinput, particle)))
+        for name, uinput in zip(names, datasets)
+    ], True)
 
-    def test_yields(self):
-        names, datasets = define_datasets()
-        particle = "#pi^{0}"
-        data = [('data', Analysis(Options()))]
-        estimator = ComparePipeline(data + [
-            (name,
-                Analysis(CompositeOptions(uinput, particle)))
-            for name, uinput in zip(names, datasets)
-        ], True)
-
-        estimator.transform(
-            [DataVault().input("data")] + datasets,
-            "compare different datasts"
-        )
+    estimator.transform(
+        define_datasets(),
+        "compare different datasts"
+    )

@@ -1,8 +1,5 @@
-import unittest
-
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
-from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
@@ -28,28 +25,21 @@ class MassExtractor(object):
         return output
 
 
-class TestBackgroundSubtraction(unittest.TestCase):
+MC_HIGH = DataVault().input("single #pi^{0}", "high", listname="PhysEff")
 
-    def test_background_fitting(self):
-        inputs = Input(
-            DataVault().file(
-                "single #pi^{0} iteration d3 nonlin13",
-                "high"
-            ),
-            "PhysEff"
-        )
 
-        loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
-        options = Options.spmc((4.0, 20.0))
+def test_background_fitting():
+    loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
+    options = Options.spmc((4.0, 20.0))
 
-        outputs1 = Analysis(options).transform(inputs, loggs)
+    outputs1 = Analysis(options).transform(MC_HIGH, loggs)
 
-        loggs = AnalysisOutput("relaxed cb parameters", "#pi^{0}")
-        options = Options.spmc((4.0, 20.0))
-        options.signalp.relaxed = True
+    loggs = AnalysisOutput("relaxed cb parameters", "#pi^{0}")
+    options = Options.spmc((4.0, 20.0))
+    options.signalp.relaxed = True
 
-        outputs2 = Analysis(options).transform(inputs, loggs)
+    outputs2 = Analysis(options).transform(MC_HIGH, loggs)
 
-        diff = Comparator()
-        for parameter in zip(outputs1, outputs2):
-            diff.compare(*parameter)
+    diff = Comparator()
+    for parameter in zip(outputs1, outputs2):
+        diff.compare(*parameter)
