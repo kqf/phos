@@ -15,6 +15,9 @@ from spectrum.output import AnalysisOutput
 #          This test compares different solutions
 #
 
+DATASET = DataVault().input("data", histname="MassPtSM0")
+
+
 @pytest.mark.onlylocal
 def test_check_empty_bins():
     options = []
@@ -28,6 +31,6 @@ def test_check_empty_bins():
     ], plot=True)
 
     estimator.transform(
-        (DataVault().input("data", histname="MassPtSM0")) * 2,
+        (DATASET, ) * 2,
         loggs=AnalysisOutput("check empty bins")
     )
