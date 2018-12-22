@@ -1,43 +1,32 @@
-import unittest
-
 import spectrum.vis as vi
 
-from particles import Particles
+
+def test_vis_hub(data, stop):
+    vishub = vi.VisHub((1, 1), (), (), stop, '', None)
+    data[0].SetTitle('Test ViHub: Testing MultipleVisualizer')
+    vishub.compare_visually(data, 1)
+
+    data[0].SetTitle('Test VisHub: MultipleVisualizer')
+    vishub.compare_visually(data[0:2], 1)
+
+    data[0].SetTitle('Test VisHub: Single Visualizer')
+    vishub.compare_visually([data[0]], 1)
 
 
-class TestMultipleVisualizer(unittest.TestCase, Particles):
-    """
-        Develop multiple visualizer
-    """
+def test_draws_multiple_plots(data, stop):
+    vis = vi.VisHub((1, 1), (), (), stop, '', None)
 
-    def setUp(self):
-        self.data, self.stop = self.config()
+    data[0].SetTitle('Test VisMultiple: Testing MultipleVisualizer')
+    vis.compare_visually(data, 1)
 
-    def test_vis_hub(self):
-        vishub = vi.VisHub((1, 1), (), (), self.stop, '', None)
+    data[0].SetTitle('Test VisMultiple: MultipleVisualizer')
+    vis.compare_visually(data[0:2], 1)
 
-        self.data[0].SetTitle('Test ViHub: Testing MultipleVisualizer')
-        vishub.compare_visually(self.data, 1)
+    data[0].SetTitle('Test VisMultiple: Test Single')
+    vis.compare_visually([data[0]], 1)
 
-        self.data[0].SetTitle('Test VisHub: MultipleVisualizer')
-        vishub.compare_visually(self.data[0:2], 1)
 
-        self.data[0].SetTitle('Test VisHub: Single Visualizer')
-        vishub.compare_visually([self.data[0]], 1)
-
-    def test_draws_multiple_plots(self):
-        vis = vi.VisHub((1, 1), (), (), self.stop, '', None)
-
-        self.data[0].SetTitle('Test VisMultiple: Testing MultipleVisualizer')
-        vis.compare_visually(self.data, 1)
-
-        self.data[0].SetTitle('Test VisMultiple: MultipleVisualizer')
-        vis.compare_visually(self.data[0:2], 1)
-
-        self.data[0].SetTitle('Test VisMultiple: Test Single')
-        vis.compare_visually([self.data[0]], 1)
-
-    def test_handles_double_plots(self):
-        vis = vi.VisHub((1, 1), (), (), self.stop, '', None)
-        self.data[0].SetTitle('Test DoubleVis: Visualize two plots')
-        vis.compare_visually(self.data[0:2], 1)
+def test_handles_double_plots(data, stop):
+    vis = vi.VisHub((1, 1), (), (), stop, '', None)
+    data[0].SetTitle('Test DoubleVis: Visualize two plots')
+    vis.compare_visually(data[0:2], 1)
