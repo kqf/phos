@@ -1,5 +1,6 @@
 import pytest
 
+from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.pipeline import ComparePipeline
 from spectrum.analysis import Analysis
@@ -15,7 +16,9 @@ from spectrum.output import AnalysisOutput
 #          This test compares different solutions
 #
 
-DATASET = DataVault().input("data", histname="MassPtSM0")
+DATASET = Proxy(
+    lambda: DataVault().input("data", histname="MassPtSM0")
+)
 
 
 @pytest.mark.onlylocal
@@ -31,6 +34,6 @@ def test_check_empty_bins():
     ], plot=True)
 
     estimator.transform(
-        (DATASET, ) * 2,
+        (DATASET,) * 2,
         loggs=AnalysisOutput("check empty bins")
     )
