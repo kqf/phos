@@ -2,7 +2,7 @@ import pytest
 import spectrum.comparator as cmpr
 
 
-def testCompareOK(data, stop):
+def test_different_argument_inputs(data, stop):
     diff = cmpr.Comparator(stop=stop)
 
     data[0].SetTitle('Compare one single histogram')
@@ -29,7 +29,7 @@ def testCompareOK(data, stop):
     diff.compare(zip(*[data, data]))
 
 
-def testCompareFail(data, stop):
+def test_handles_wrong_arguments(data, stop):
     diff = cmpr.Comparator(stop=stop)
     for d in data:
         d.SetTitle('Fail')
