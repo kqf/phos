@@ -1,29 +1,22 @@
-import unittest
-
 import spectrum.comparator as cmpr
-from particles import Particles
 
 
-class Test(unittest.TestCase, Particles):
+def test_compares_ratios(data, stop):
+    """
+        This one is needed to compare "double ratio" plots.
+    """
+    data[0].SetTitle('Test compare: ratios with common baselines')
+    diff = cmpr.Comparator(stop=stop)
+    diff.compare_ratios(data, data[2])
 
-    def setUp(self):
-        self.data, self.stop = self.config()
 
-    def testCompareRations(self):
-        """
-            This one is needed to compare "double ratio" plots.
-        """
-        self.data[0].SetTitle('Test compare: ratios with common baselines')
-        diff = cmpr.Comparator(stop=self.stop)
-        diff.compare_ratios(self.data, self.data[2])
+def test_compares_multiple_ratios(data, stop):
+    """
+        This one is needed to compare "double ratio"
+        plots with different baselines.
+        The result of this test should give three constant( = 1) graphs.
+    """
 
-    def testCompareMultipleRations(self):
-        """
-            This one is needed to compare "double ratio"
-            plots with different baselines.
-            The result of this test should give three constant( = 1) graphs.
-        """
-
-        self.data[0].SetTitle('Test compare: ratios with different baselines')
-        diff = cmpr.Comparator(stop=self.stop)
-        diff.compare_multiple_ratios(self.data, self.data)
+    data[0].SetTitle('Test compare: ratios with different baselines')
+    diff = cmpr.Comparator(stop=stop)
+    diff.compare_multiple_ratios(data, data)
