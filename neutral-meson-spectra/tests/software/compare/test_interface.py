@@ -1,42 +1,38 @@
-import unittest
+import pytest
 import spectrum.comparator as cmpr
-from particles import Particles
 
 
-class TestComparatorInterface(unittest.TestCase, Particles):
+def testCompareOK(data, stop):
+    diff = cmpr.Comparator(stop=stop)
 
-    def setUp(self):
-        self.data, self.stop = self.config()
+    data[0].SetTitle('Compare one single histogram')
+    diff.compare(data[0])
 
-    def testCompareOK(self):
-        diff = cmpr.Comparator(stop=self.stop)
+    for d in data:
+        d.SetTitle('Compare coma separated arguments')
+    diff.compare(*data)
 
-        self.data[0].SetTitle('Compare one single histogram')
-        diff.compare(self.data[0])
+    diff = cmpr.Comparator(stop=stop)
+    for d in data:
+        d.SetTitle('Compare a single list of arguments')
+    diff.compare(data)
 
-        for d in self.data:
-            d.SetTitle('Compare coma separated arguments')
-        diff.compare(*self.data)
+    diff = cmpr.Comparator(stop=stop)
+    diff = cmpr.Comparator(stop=stop)
+    for d in data:
+        d.SetTitle('Compare two lists of arguments')
+    diff.compare(data, data[::-1])
 
-        diff = cmpr.Comparator(stop=self.stop)
-        for d in self.data:
-            d.SetTitle('Compare a single list of arguments')
-        diff.compare(self.data)
+    diff = cmpr.Comparator(stop=stop)
+    for d in data:
+        d.SetTitle('Compare set of arguments')
+    diff.compare(zip(*[data, data]))
 
-        diff = cmpr.Comparator(stop=self.stop)
-        for d in self.data:
-            d.SetTitle('Compare two lists of arguments')
-        diff.compare(self.data, self.data[::-1])
 
-        diff = cmpr.Comparator(stop=self.stop)
-        for d in self.data:
-            d.SetTitle('Compare set of arguments')
-        diff.compare(zip(*[self.data, self.data]))
+def testCompareFail(data, stop):
+    diff = cmpr.Comparator(stop=stop)
+    for d in data:
+        d.SetTitle('Fail')
 
-    def testCompareFail(self):
-        diff = cmpr.Comparator(stop=self.stop)
-        for d in self.data:
-            d.SetTitle('Fail')
-
-        with self.assertRaises(AssertionError):
-            diff.compare(self.data, [[0]])
+    with pytest.raises(AssertionError):
+        diff.compare(data, [[0]])
