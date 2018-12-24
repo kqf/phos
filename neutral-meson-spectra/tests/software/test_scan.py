@@ -1,61 +1,60 @@
-import unittest
 import pytest
+from tqdm import trange
 
 from spectrum.options import (CompositeNonlinearityScanOptions,
                               NonlinearityScanOptions)
 from spectrum.output import AnalysisOutput
 from tools.scan import NonlinearityScan
-from tqdm import trange
 from vault.datavault import DataVault
 
 
-class TestScan(unittest.TestCase):
+# TODO: Add interface for nonlinearity scan
+@pytest.mark.onlylocal
+def test_interface():
+    nbins = 2
+    estimator = NonlinearityScan(
+        NonlinearityScanOptions(nbins=nbins)
+    )
 
-    @pytest.mark.onlylocal
-    def test_interface(self):
-        nbins = 2
-        estimator = NonlinearityScan(
-            NonlinearityScanOptions(nbins=nbins)
+    mc = [
+        DataVault().input(
+            "pythia8",
+            listname="PhysNonlinScan",
+            histname="MassPt_{}_{}".format(i, j)
         )
+        for j in trange(nbins) for i in trange(nbins)
+    ]
 
-        mc = [
-            DataVault().input(
-                "pythia8",
-                listname="PhysNonlinScan",
-                histname="MassPt_{}_{}".format(i, j)
-            )
-            for j in trange(nbins) for i in trange(nbins)
+    assert estimator.transform(
+        (DataVault().input("data", histname="MassPtSM0"), mc),
+        loggs=AnalysisOutput("testing the scan interface")
+    )
+
+
+@pytest.mark.onlylocal
+def test_composite_interface():
+    prod = "single #pi^{0}"
+    nbins = 2
+    histnames = sum([
+        [
+            "hMassPt_{}_{}".format(i, j),
+            "hMixMassPt_{}_{}".format(i, j),
         ]
+        for j in range(nbins)
+        for i in range(nbins)
+    ], [])
 
-        assert estimator.transform(
-            (DataVault().input("data", histname="MassPtSM0"), mc),
-            loggs=AnalysisOutput("testing the scan interface")
-        )
+    low = DataVault().input(prod, "low", inputs=histnames)
+    high = DataVault().input(prod, "high", inputs=histnames)
 
-    @pytest.mark.onlylocal
-    def test_composite_interface(self):
-        prod = "single #pi^{0}"
-        nbins = 2
-        histnames = sum([
-            [
-                "hMassPt_{}_{}".format(i, j),
-                "hMixMassPt_{}_{}".format(i, j),
-            ]
-            for j in range(nbins)
-            for i in range(nbins)
-        ], [])
+    estimator = NonlinearityScan(
+        CompositeNonlinearityScanOptions(nbins=nbins)
+    )
 
-        low = DataVault().input(prod, "low", inputs=histnames)
-        high = DataVault().input(prod, "high", inputs=histnames)
+    low, high = low.read_multiple(2), high.read_multiple(2)
+    mc_data = [(l, h) for l, h in zip(low, high)]
 
-        estimator = NonlinearityScan(
-            CompositeNonlinearityScanOptions(nbins=nbins)
-        )
-
-        low, high = low.read_multiple(2), high.read_multiple(2)
-        mc_data = [(l, h) for l, h in zip(low, high)]
-
-        assert estimator.transform(
-            (DataVault().input("data", histname="MassPtSM0"), mc_data),
-            loggs=AnalysisOutput("testing the scan interface")
-        )
+    assert estimator.transform(
+        (DataVault().input("data", histname="MassPtSM0"), mc_data),
+        loggs=AnalysisOutput("testing the scan interface")
+    )
