@@ -6,12 +6,16 @@ from vault.datavault import DataVault
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
 
-MC_DATA = Proxy(lambda: DataVault().input("pythia8"))
+MC_DATA = Proxy(
+    lambda: DataVault().input("pythia8")
+)
 
-SPMC_DATA = Proxy(lambda: (
-    DataVault().input("single #pi^{0}", "low", "PhysEff"),
-    DataVault().input("single #pi^{0}", "high", "PhysEff"),
-))
+SPMC_DATA = Proxy(
+    lambda: (
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff"),
+    )
+)
 
 
 @pytest.mark.onlylocal
