@@ -1,6 +1,5 @@
 import sys
 import pytest
-
 import ROOT
 
 import spectrum.sutils as st
@@ -78,5 +77,5 @@ def test_draws_outside_the_scope(stop):
         hist.Draw()
         return hist
 
-    hist = drawfunc()
+    hist = drawfunc()  # noqa root needs this object
     st.wait(stop=stop)
