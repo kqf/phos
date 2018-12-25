@@ -1,5 +1,4 @@
 import ROOT
-import unittest
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import TransformerBase
@@ -18,16 +17,17 @@ class DummyTransformer(TransformerBase):
         return hist
 
 
-class TestOuput(unittest.TestCase):
+DUMMY_DATASET = (
+    None,
+    None
+)
 
-    def test_the_output(self):
-        loggs = AnalysisOutput("test_loggs_output")
-        estimator = Pipeline([
-            ('dummy1', DummyTransformer("histname1")),
-            ('dummy2', DummyTransformer("histname2")),
-        ])
-        estimator.transform(
-            [None, None],
-            loggs
-        )
-        loggs.plot()
+
+def test_the_output():
+    loggs = AnalysisOutput("test_loggs_output")
+    estimator = Pipeline([
+        ('dummy1', DummyTransformer("histname1")),
+        ('dummy2', DummyTransformer("histname2")),
+    ])
+    estimator.transform(DUMMY_DATASET, loggs)
+    loggs.plot()

@@ -49,4 +49,4 @@ def test_compares_multiple(nhist=3):
         loggs=loggs
     )
     loggs.plot()
-    assert output is not None
+    assert output is None
