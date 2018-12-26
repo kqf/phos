@@ -1,4 +1,3 @@
-import unittest
 import pytest
 
 from spectrum.processing import DataSlicer
@@ -24,23 +23,14 @@ class UpdatedAnalysis(TransformerBase):
         ])
 
 
-class TestMassFitter(unittest.TestCase):
-
-    def run_analysis(self, mixed):
-        options = Options()
-        options.pt.use_mixed = mixed
-        analysis = UpdatedAnalysis(options)
-        loggs = AnalysisOutput("test_mass_fitter")
-        masses = analysis.transform(
-            DataVault().input("data", histname="MassPtSM0", label='Test'),
-            loggs
-        )
-        self.assertGreater(len(masses), 0)
-
-    @pytest.mark.onlylocal
-    def test_fits_the_analysis(self):
-        self.run_analysis(mixed=False)
-
-    @pytest.mark.onlylocal
-    def test_fits_the_analysis_mixed(self):
-        self.run_analysis(mixed=True)
+@pytest.mark.parametrize("mixed", [True, False])
+def test_analysis(mixed):
+    options = Options()
+    options.pt.use_mixed = mixed
+    analysis = UpdatedAnalysis(options)
+    loggs = AnalysisOutput("test_mass_fitter")
+    masses = analysis.transform(
+        DataVault().input("data", histname="MassPtSM0", label='Test'),
+        loggs
+    )
+    assert len(masses) > 0
