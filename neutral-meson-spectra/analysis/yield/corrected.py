@@ -1,51 +1,57 @@
-import unittest
-
+import pytest  # noqa
+from lazy_object_proxy import Proxy
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
 
-
-class TestCorrectedYield(unittest.TestCase):
-
-    # @unittest.skip('')
-    def test_corrected_yield_for_pi0(self):
-        production = "single #pi^{0}"
-        inputs = (
-            DataVault().input(production, "low", "PhysEff"),
-            DataVault().input(production, "high", "PhysEff"),
-        )
-        yield_data = (
-            DataVault().input("data"),
+PION_INPUTS = Proxy(
+    lambda:
+    (
+        (
+            DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
+        ),
+        (
+            DataVault().input("single #pi^{0}", "low", "PhysEff"),
+            DataVault().input("single #pi^{0}", "high", "PhysEff"),
         )
-        data = (
-            yield_data,
-            inputs
+    )
+)
+ETA_INPUTS = Proxy(
+    lambda:
+    (
+        (
+            DataVault().input("data", histname="MassPtSM0"),
+            data_feeddown(dummy=True)
+        ),
+        (
+            DataVault().input("single #eta", "low"),
+            DataVault().input("single #eta", "high"),
         )
+    )
+)
 
-        estimator = CorrectedYield(
-            CompositeCorrectedYieldOptions(
-                particle="#pi^{0}"
-            )
-        )
-        estimator.transform(data, "corrected yield #pi^{0}")
 
-    @unittest.skip('')
-    def test_corrected_yield_for_eta(self):
-        production = "single #eta new tender"
-        inputs = (
-            DataVault().input(production, "low"),
-            DataVault().input(production, "high"),
+@pytest.mark.skip("")
+def test_corrected_yield_for_pi0():
+    estimator = CorrectedYield(
+        CompositeCorrectedYieldOptions(
+            particle="#pi^{0}"
         )
+    )
+    estimator.transform(
+        PION_INPUTS,
+        loggs=AnalysisOutput("corrected yield #pi^{0}"))
 
-        data = (
-            DataVault().input("data"),
-            inputs
-        )
 
-        estimator = CorrectedYield(
-            CompositeCorrectedYieldOptions(particle="#eta")
-        )
-        estimator.transform(data, "corrected yield #eta")
+def test_corrected_yield_for_eta():
+    estimator = CorrectedYield(
+        CompositeCorrectedYieldOptions(particle="#eta")
+    )
+    estimator.transform(
+        ETA_INPUTS,
+        loggs=AnalysisOutput("corrected yield #eta")
+    )

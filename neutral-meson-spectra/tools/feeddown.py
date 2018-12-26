@@ -9,7 +9,10 @@ from spectrum.outputcreator import output_histogram
 from vault.datavault import DataVault
 
 
-def data_feeddown():
+def data_feeddown(dummy=False):
+    if dummy:
+        return None
+
     return (
         DataVault().input(
             "pythia8",

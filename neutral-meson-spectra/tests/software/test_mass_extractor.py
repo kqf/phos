@@ -23,14 +23,13 @@ class UpdatedAnalysis(TransformerBase):
         ])
 
 
+@pytest.mark.onlylocal
 @pytest.mark.parametrize("mixed", [True, False])
 def test_analysis(mixed):
     options = Options()
     options.pt.use_mixed = mixed
-    analysis = UpdatedAnalysis(options)
-    loggs = AnalysisOutput("test_mass_fitter")
-    masses = analysis.transform(
+    masses = UpdatedAnalysis(options).transform(
         DataVault().input("data", histname="MassPtSM0", label='Test'),
-        loggs
+        loggs=AnalysisOutput("test_mass_fitter"),
     )
     assert len(masses) > 0
