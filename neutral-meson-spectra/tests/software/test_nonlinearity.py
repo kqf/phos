@@ -1,7 +1,7 @@
-import unittest
 import pytest
 import ROOT
 
+from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput
@@ -22,45 +22,51 @@ def nonlinearity_function():
     return func_nonlin
 
 
-class TestNonlinearityEstimator(unittest.TestCase):
-
-    @pytest.mark.skip("The datafile is missing")
-    @pytest.mark.onlylocal
-    def test_simple(self):
-        options = NonlinearityOptions()
-        options.fitf = nonlinearity_function()
-
-        estimator = Nonlinearity(options)
-        nonlinearity = estimator.transform(
-            (
-                DataVault().input("data", listname="PhysNonlinEst",
-                                  histname="MassPt_SM0"),
-                DataVault().input("pythia8", listname="PhysNonlin",
-                                  histname="MassPt_SM0"),
-            ),
-            loggs=AnalysisOutput("Testing the interface")
+PYTHIA8_DATASET = Proxy(
+    lambda: (
+        DataVault().input("data", listname="Phys",
+                          histname="MassPtSM0"),
+        DataVault().input("pythia8", listname="PhysEff",
+                          histname="MassPt"),
+    )
+)
+SPMC_DATASET = Proxy(
+    lambda: (
+        DataVault().input("data", listname="Phys",
+                          histname="MassPtSM0"),
+        (
+            DataVault().input("single #pi^{0}", "low", "PhysEff",
+                              histname="MassPt"),
+            DataVault().input("single #pi^{0}", "high", "PhysEff",
+                              histname="MassPt")
         )
-        self.assertGreater(nonlinearity.GetEntries(), 0)
+    )
+)
 
-    @pytest.mark.skip("The datafile is missing")
-    @pytest.mark.onlylocal
-    def test_composite(self):
-        options = CompositeNonlinearityOptions()
-        options.fitf = nonlinearity_function()
 
-        estimator = Nonlinearity(options)
-        hist = "MassPt_SM0"
-        nonlinearity = estimator.transform(
-            (
-                DataVault().input("data", listname="PhysNonlinEst",
-                                  histname=hist),
-                (
-                    DataVault().input(
-                        "single #pi^{0}", "low", "PhysNonlin", histname=hist),
-                    DataVault().input(
-                        "single #pi^{0}", "high", "PhysNonlin", histname=hist)
-                )
-            ),
-            loggs=AnalysisOutput("Testing the composite interface")
-        )
-        self.assertGreater(nonlinearity.GetEntries(), 0)
+# @pytest.mark.skip("The datafile is missing")
+@pytest.mark.onlylocal
+def test_simple():
+    options = NonlinearityOptions()
+    options.fitf = nonlinearity_function()
+
+    estimator = Nonlinearity(options)
+    nonlinearity = estimator.transform(
+        PYTHIA8_DATASET,
+        loggs=AnalysisOutput("Testing the interface")
+    )
+    assert nonlinearity.GetEntries() > 0
+
+
+# @pytest.mark.skip("The datafile is missing")
+@pytest.mark.onlylocal
+def test_composite():
+    options = CompositeNonlinearityOptions()
+    options.fitf = nonlinearity_function()
+
+    estimator = Nonlinearity(options)
+    nonlinearity = estimator.transform(
+        SPMC_DATASET,
+        loggs=AnalysisOutput("Testing the composite interface")
+    )
+    assert nonlinearity.GetEntries() > 0

@@ -1,6 +1,5 @@
 import pytest
 import json
-import unittest
 import os
 
 from spectrum.options import Options
