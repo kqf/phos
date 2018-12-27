@@ -23,6 +23,7 @@ def stop():
     return stop
 
 
+@pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta"
