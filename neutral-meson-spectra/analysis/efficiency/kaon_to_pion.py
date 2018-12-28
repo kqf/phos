@@ -1,4 +1,3 @@
-import unittest
 from collections import namedtuple
 
 import ROOT
@@ -98,42 +97,39 @@ class KaonToPionDoubleRatio(TransformerBase):
         ])
 
 
-class TestDoubleKaonToPionRatio(unittest.TestCase):
+def test_ratio():
+    fitfunc = ROOT.TF1(
+        "feeddown_ratio",
+        "[3] * x *(([4] + [5]) * x - [5]) + "
+        "[0] * (1 + [1] * TMath::Exp(-x * x/ [2]))", 0, 20)
+    fitfunc.SetParameter(0, 1.53561e+00)
+    fitfunc.SetParameter(1, -4.69350e-01)
+    fitfunc.SetParameter(2, 2.38042e-01)
+    fitfunc.SetParameter(3, -8.01155e-02)
+    fitfunc.SetParameter(4, 6.30860e-01)
+    fitfunc.SetParameter(5, -7.21683e-01)
 
-    # @unittest.skip("")
-    def test_ratio(self):
-        fitfunc = ROOT.TF1(
-            "feeddown_ratio",
-            "[3] * x *(([4] + [5]) * x - [5]) + "
-            "[0] * (1 + [1] * TMath::Exp(-x * x/ [2]))", 0, 20)
-        fitfunc.SetParameter(0, 1.53561e+00)
-        fitfunc.SetParameter(1, -4.69350e-01)
-        fitfunc.SetParameter(2, 2.38042e-01)
-        fitfunc.SetParameter(3, -8.01155e-02)
-        fitfunc.SetParameter(4, 6.30860e-01)
-        fitfunc.SetParameter(5, -7.21683e-01)
+    options = DoubleK2POptions(
+        data=K2POptions(
+            kaons="hstat_kaon_pp13_sum",
+            pions="hstat_pion_pp13_sum"
+        ),
+        mc=K2POptions(
+            kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
+            pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
+        ),
+        fitfunc=fitfunc
+    )
 
-        options = DoubleK2POptions(
-            data=K2POptions(
-                kaons="hstat_kaon_pp13_sum",
-                pions="hstat_pion_pp13_sum"
-            ),
-            mc=K2POptions(
-                kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
-                pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
-            ),
-            fitfunc=fitfunc
-        )
-
-        estimator = KaonToPionDoubleRatio(options, plot=True)
-        pythia8 = DataVault().input("pythia8", listname="KaonToPionRatio")
-        loggs = AnalysisOutput("pion to kaon", particle="")
-        double_ratio = estimator.transform(
-            [
-                [DataVault().input("kaon2pion")] * 2,
-                [[pythia8] * 2] * 2
-            ],
-            loggs
-        )
-        loggs.plot()
-        Comparator().compare(double_ratio)
+    estimator = KaonToPionDoubleRatio(options, plot=True)
+    pythia8 = DataVault().input("pythia8", listname="KaonToPionRatio")
+    loggs = AnalysisOutput("pion to kaon", particle="")
+    double_ratio = estimator.transform(
+        [
+            [DataVault().input("kaon2pion")] * 2,
+            [[pythia8] * 2] * 2
+        ],
+        loggs
+    )
+    loggs.plot()
+    Comparator().compare(double_ratio)
