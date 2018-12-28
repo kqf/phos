@@ -1,6 +1,6 @@
-import unittest
 import ROOT
 
+from lazy_object_proxy import Proxy
 from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
 
@@ -23,24 +23,26 @@ def feeddown_paramerization():
     return func_feeddown
 
 
-class FeddownTest(unittest.TestCase):
-    def test_feeddown_correction(self):
-        options = FeeddownOptions()
-        options.fitf = feeddown_paramerization()
-        estimator = FeeddownEstimator(options)
-        loggs = AnalysisOutput("feeddown nlo correction")
-        output = estimator.transform(
-            [
-                DataVault().input(
-                    "pythia8",
-                    listname="MCStudy",
-                    use_mixing=False,
-                    histname="MassPt_#pi^{0}_primary_#omega",
-                ),
-                DataVault().input("pythia8", listname="FeeddownSelection"),
-            ],
-            loggs
-        )
-        loggs.plot()
-        Comparator().compare(output)
-        self.assertGreater(output.GetEntries(), 0)
+DATASET = Proxy(
+    lambda:
+    (
+        DataVault().input(
+            "pythia8",
+            listname="MCStudy",
+            use_mixing=False,
+            histname="MassPt_#pi^{0}_primary_#omega",
+        ),
+        DataVault().input("pythia8", listname="FeeddownSelection"),
+    )
+)
+
+
+def test_feeddown_correction():
+    options = FeeddownOptions()
+    options.fitf = feeddown_paramerization()
+    estimator = FeeddownEstimator(options)
+    loggs = AnalysisOutput("feeddown nlo correction")
+    output = estimator.transform(DATASET, loggs)
+    loggs.plot()
+    Comparator().compare(output)
+    assert output.GetEntries() > 0
