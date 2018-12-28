@@ -1,4 +1,3 @@
-import unittest
 import pytest
 
 from spectrum.analysis import Analysis
@@ -23,13 +22,13 @@ def analyze(inputs, particle="#pi^{0}"):
     loggs.plot()
 
 
-class TestCheckModules(unittest.TestCase):
-    @pytest.mark.onlylocal
-    def test_different_modules_pi0(self):
-        inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
-        analyze(inputs, "#pi^{0}")
+@pytest.mark.onlylocal
+def test_different_modules_pi0():
+    inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
+    analyze(inputs, "#pi^{0}")
 
-    @pytest.mark.onlylocal
-    def test_different_modules_eta(self):
-        inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
-        analyze(inputs, "#eta")
+
+@pytest.mark.onlylocal
+def test_different_modules_eta():
+    inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
+    analyze(inputs, "#eta")
