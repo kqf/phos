@@ -20,7 +20,7 @@ def set_pad_logx(hist, pad):
     if 'eff' in hist.GetName().lower():
         return
 
-    if hist.logx:
+    if hist.logx is not None:
         pad.SetLogx(hist.logx)
         hist.GetXaxis().SetMoreLogLabels(hist.logx)
         return

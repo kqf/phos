@@ -1,5 +1,3 @@
-#!/usr/bin/python2
-
 from vis import VisHub
 from broot import BROOT as br
 

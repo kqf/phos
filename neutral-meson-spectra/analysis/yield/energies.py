@@ -14,7 +14,10 @@ class HepdataInput(TransformerBase):
     def transform(self, link, loggs):
         filename = "{}.root".format(link)
         br.io.hepdata(link, filename)
-        return br.io.read(filename, "Table 1", "Hist1D_y1")
+        hist = br.io.read(filename, "Table 1", "Hist1D_y1")
+        hist.logy = True
+        hist.logx = False
+        return hist
 
 
 def define_datasets():
