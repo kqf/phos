@@ -16,8 +16,6 @@ KNOWN_PARTICLES = {
 def pdg2name(x):
     return ROOT.TParticle(x, *[0] * 13).GetName()
 
-# @unittest.skip("")
-
 
 @pytest.mark.parametrize("pdg", PDG_PARTICLES)
 def test_converts_names(pdg):

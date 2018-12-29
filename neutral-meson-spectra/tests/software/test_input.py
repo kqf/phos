@@ -1,6 +1,5 @@
 import os
 import pytest
-import unittest
 import tqdm
 
 from spectrum.input import Input, NoMixingInput, read_histogram
@@ -76,7 +75,7 @@ def multihist_input():
 
 
 @pytest.mark.onlylocal
-@unittest.skip("These tests are only needed to check memory consumption")
+@pytest.mark.skip("These tests are only needed to check memory consumption")
 def test_sequence(multihist_input, sbins=(11, 11)):
     x, y = sbins
     for i in range(x):
@@ -86,7 +85,7 @@ def test_sequence(multihist_input, sbins=(11, 11)):
 
 
 @pytest.mark.onlylocal
-@unittest.skip("These tests are only needed to check memory consumption")
+@pytest.mark.skip("These tests are only needed to check memory consumption")
 def test_copy(multihist_input):
     raw, mixed = multihist_input(0, 0).read()
     cache = []

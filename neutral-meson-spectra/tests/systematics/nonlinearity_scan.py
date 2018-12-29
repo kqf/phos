@@ -53,8 +53,6 @@ def test_scan_nonlinearities(nbins):
     ofile.Close()
     Comparator().compare(chi2ndf)
 
-# @unittest.skip('')
-
 
 def test_draw_most_optimal_nonlinearity(nbins):
     production = "single #pi^{0}"
