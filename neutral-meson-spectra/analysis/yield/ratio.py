@@ -1,10 +1,11 @@
-import unittest
+import pytest
 
 from spectrum.corrected_yield import YieldRatio, CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
 import spectrum.sutils as su
+from tools.feeddown import data_feeddown
 
 from vault.datavault import DataVault
 
@@ -13,12 +14,15 @@ def ratio_input():
     # Define the inputs and the dataset for #eta mesons
     #
     inputs_eta = (
-        DataVault().input("single #eta updated", "low"),
-        DataVault().input("single #eta updated", "high"),
+        DataVault().input("single #eta", "low"),
+        DataVault().input("single #eta", "high"),
     )
 
     data_eta = (
-        DataVault().input("data"),
+        (
+            DataVault().input("data", histname="MassPtSM0"),
+            data_feeddown(dummy=True),
+        ),
         inputs_eta
     )
 
@@ -28,12 +32,15 @@ def ratio_input():
     #
     prod = "single #pi^{0}"
     inputs_pi0 = (
-        DataVault().input(prod, "low"),
-        DataVault().input(prod, "high"),
+        DataVault().input(prod, "low", "PhysEff"),
+        DataVault().input(prod, "high", "PhysEff"),
     )
 
     data_pi0 = (
-        DataVault().input("data"),
+        (
+            DataVault().input("data", histname="MassPtSM0"),
+            data_feeddown(),
+        ),
         inputs_pi0
     )
 
@@ -46,29 +53,28 @@ def ratio_input():
     return data_eta, options_eta, data_pi0, options_pi0
 
 
-class TestNeutralMesonYieldRatio(unittest.TestCase):
+def test_yield_ratio():
+    data_eta, options_eta, data_pi0, options_pi0 = ratio_input()
 
-    def test_yield_ratio(self):
-        data_eta, options_eta, data_pi0, options_pi0 = ratio_input()
+    estimator = YieldRatio(
+        options_eta=options_eta,
+        options_pi0=options_pi0,
+        plot=True
+    )
 
-        estimator = YieldRatio(
-            options_eta=options_eta,
-            options_pi0=options_pi0,
-            plot=True
-        )
+    output = estimator.transform(
+        (data_eta, data_pi0),
+        loggs=AnalysisOutput("eta to pion ratio")
+    )
+    Comparator().compare(output)
 
-        output = estimator.transform(
-            (data_eta, data_pi0),
-            loggs=AnalysisOutput("eta to pion ratio")
-        )
-        Comparator().compare(output)
 
-    @unittest.skip('Something is wrong')
-    def test_debug_ratio(self):
-        data_eta, options_eta, data_pi0, options_pi0 = ratio_input()
-        loggs = AnalysisOutput("")
-        pi0 = CorrectedYield(options_pi0).transform(data_pi0, loggs)
-        eta = CorrectedYield(options_eta).transform(data_eta, loggs)
+@pytest.mark.skip('Something is wrong')
+def test_debug_ratio():
+    data_eta, options_eta, data_pi0, options_pi0 = ratio_input()
+    loggs = AnalysisOutput("")
+    pi0 = CorrectedYield(options_pi0).transform(data_pi0, loggs)
+    eta = CorrectedYield(options_eta).transform(data_eta, loggs)
 
-        su.wait()
-        Comparator().compare(eta, pi0)
+    su.wait()
+    Comparator().compare(eta, pi0)
