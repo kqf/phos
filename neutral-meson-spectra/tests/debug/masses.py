@@ -1,5 +1,5 @@
 import ROOT
-import unittest
+import pytest
 
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions, Options
@@ -76,29 +76,6 @@ class MassComparator(TransformerBase):
         return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
 
 
-class TestMasses(unittest.TestCase):
-
-    @unittest.skip('')
-    def test_efficiency(self):
-        # production = "single #pi^{0}"
-        particle = "#pi^{0}"
-        production = "single #pi^{0} debug3"
-        options = CompositeEfficiencyOptions(
-            particle,
-            ptrange="config/pt-debug.json"
-        )
-        loggs = AnalysisOutput("mass_test_{}".format(particle))
-        MassComparator(options, plot=True).transform(
-            (
-                DataVault().input(production, "low", "PhysEff"),
-                DataVault().input(production, "high", "PhysEff"),
-            ),
-            loggs
-        )
-        # diff.compare(efficiency)
-        loggs.plot()
-
-
 class ReadInvariantMassDistribution(TransformerBase):
     def __init__(self, pattern, plot=False):
         super(ReadInvariantMassDistribution, self).__init__(plot)
@@ -140,33 +117,55 @@ def move_histogram(source, dest):
         dest.SetBinError(i, source.GetBinError(si))
 
 
-class TestDifferentMasses(unittest.TestCase):
+@pytest.mark.skip('')
+@pytest.mark.onlylocal
+def test_masses_efficiency(self):
+    # production = "single #pi^{0}"
+    particle = "#pi^{0}"
+    production = "single #pi^{0} debug3"
+    options = CompositeEfficiencyOptions(
+        particle,
+        ptrange="config/pt-debug.json"
+    )
+    loggs = AnalysisOutput("mass_test_{}".format(particle))
+    MassComparator(options, plot=True).transform(
+        (
+            DataVault().input(production, "low", "PhysEff"),
+            DataVault().input(production, "high", "PhysEff"),
+        ),
+        loggs
+    )
+    # diff.compare(efficiency)
+    loggs.plot()
 
-    def test_efficiency(self):
-        theory = DebugMasses("Same").transform(
-            DataVault().file("debug efficiency", "high"),
-            ""
-        )
-        # production = "single #pi^{0}"
-        production = "single #pi^{0} debug3"
-        ll = "debug-ledger.json"
-        inputs = (
-            DataVault(ll).input(production, "high", "PhysEff"),
-            DataVault(ll).input(production, "high", "PhysEff"),
-        )
-        # theory = SimpleAnalysis(
-        #     Options.spmc((6, 20),
-        #                  ptrange="config/pt-debug.json"
-        #                  )
-        # ).transform(debug_input("high"), "")
-        templates = [h.Clone() for h in theory]
-        for h in templates:
-            h.label = "calculated"
-        experiment = SimpleAnalysis(
-            Options.spmc((6, 20),
-                         ptrange="config/pt-debug.json"
-                         )
-        ).transform(inputs[0], "")
-        for e, t in zip(experiment, templates):
-            move_histogram(e, t)
-        Comparator().compare(theory, templates)
+
+@pytest.mark.skip("")
+@pytest.mark.onlylocal
+def test_different_masses_efficiency(self):
+    theory = DebugMasses("Same").transform(
+        DataVault().file("debug efficiency", "high"),
+        ""
+    )
+    # production = "single #pi^{0}"
+    production = "single #pi^{0} debug3"
+    ll = "debug-ledger.json"
+    inputs = (
+        DataVault(ll).input(production, "high", "PhysEff"),
+        DataVault(ll).input(production, "high", "PhysEff"),
+    )
+    # theory = SimpleAnalysis(
+    #     Options.spmc((6, 20),
+    #                  ptrange="config/pt-debug.json"
+    #                  )
+    # ).transform(debug_input("high"), "")
+    templates = [h.Clone() for h in theory]
+    for h in templates:
+        h.label = "calculated"
+    experiment = SimpleAnalysis(
+        Options.spmc((6, 20),
+                     ptrange="config/pt-debug.json"
+                     )
+    ).transform(inputs[0], "")
+    for e, t in zip(experiment, templates):
+        move_histogram(e, t)
+    Comparator().compare(theory, templates)

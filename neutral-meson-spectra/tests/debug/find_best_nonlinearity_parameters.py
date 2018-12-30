@@ -1,5 +1,3 @@
-import unittest
-
 import ROOT
 import spectrum.sutils as su
 from spectrum.broot import BROOT as br
