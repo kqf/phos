@@ -1,5 +1,6 @@
-import unittest
+import pytest
 
+from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
@@ -30,36 +31,37 @@ def debug_input(prod="low"):
         label=prod)
 
 
-class DebugTheEfficiency(unittest.TestCase):
+DATASETS = Proxy(
+    lambda:
+    (
+        debug_input("low"),
+        debug_input("high"),
+    ),
+    (
+        DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
+        DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
+    )
+)
 
-    def test_efficiency_evaluation(self):
-        particle = "#pi^{0}"
-        doptions = CompositeEfficiencyOptions(
-            particle,
-            genname='hGenPi0Pt_clone',
-            use_particle=False,
-            ptrange="config/pt-spmc.json",
-            scale=0.5
-        )
 
-        moptions = CompositeEfficiencyOptions(
-            particle,
-            genname='hPt_{0}_primary_',
-            ptrange="config/pt-spmc.json"
-        )
+@pytest.mark.onlylocal
+def test_efficiency_evaluation(self):
+    particle = "#pi^{0}"
+    doptions = CompositeEfficiencyOptions(
+        particle,
+        genname='hGenPi0Pt_clone',
+        use_particle=False,
+        ptrange="config/pt-spmc.json",
+        scale=0.5
+    )
 
-        prod = "single #pi^{0} debug9"
-        ll = "debug-ledger.json"
-        CompareEfficiencies(doptions, moptions).transform(
-            (
-                (
-                    debug_input("low"),
-                    debug_input("high"),
-                ),
-                (
-                    DataVault(ll).input(prod, "low", listname="PhysEff"),
-                    DataVault(ll).input(prod, "high", listname="PhysEff"),
-                )
-            ),
-            "compare the debug efficiency"
-        )
+    moptions = CompositeEfficiencyOptions(
+        particle,
+        genname='hPt_{0}_primary_',
+        ptrange="config/pt-spmc.json"
+    )
+
+    CompareEfficiencies(doptions, moptions).transform(
+        DATASETS,
+        "compare the debug efficiency"
+    )
