@@ -1,4 +1,4 @@
-import unittest
+import pytest
 import ROOT
 
 from vault.datavault import DataVault
@@ -89,84 +89,84 @@ def debug_input(prod="low"):
         label=prod)
 
 
-class DebugTheEfficiency(unittest.TestCase):
+def test_efficiency_evaluation():
+    particle = "#pi^{0}"
+    debug_inputs = (
+        debug_input("low"),
+        debug_input("high"),
+    )
 
-    def test_efficiency_evaluation(self):
-        particle = "#pi^{0}"
-        debug_inputs = (
-            debug_input("low"),
-            debug_input("high"),
-        )
+    moptions = CompositeEfficiencyOptions(
+        particle,
+        genname='hGenPi0Pt_clone',
+        use_particle=False,
+        ptrange="config/pt-debug.json",
+        scale=0.5
+    )
+    # moptions.mergeranges = [(0, 6), (6, 20)]
 
-        moptions = CompositeEfficiencyOptions(
-            particle,
-            genname='hGenPi0Pt_clone',
-            use_particle=False,
-            ptrange="config/pt-debug.json",
-            scale=0.5
-        )
-        # moptions.mergeranges = [(0, 6), (6, 20)]
+    # prod = "single #pi^{0} debug3"
+    # ll = "debug-ledger.json"
+    # inputs = (
+    #     DataVault(ll).input(prod, "low", listname="PhysEff"),
+    #     DataVault(ll).input(prod, "high", listname="PhysEff"),
+    # )
 
-        prod = "single #pi^{0} debug3"
-        ll = "debug-ledger.json"
-        # inputs = (
-        #     DataVault(ll).input(prod, "low", listname="PhysEff"),
-        #     DataVault(ll).input(prod, "high", listname="PhysEff"),
-        # )
+    # moptions = CompositeEfficiencyOptions(
+    #     particle,
+    #     genname='hPt_{0}_primary_',
+    #     ptrange="config/pt-debug.json"
+    # )
 
-        # moptions = CompositeEfficiencyOptions(
-        #     particle,
-        #     genname='hPt_{0}_primary_',
-        #     ptrange="config/pt-debug.json"
-        # )
+    # moptions.mergeranges = [(0, 6), (6, 20)]
+    CompareEfficiencies(moptions).transform(
+        [debug_inputs, debug_inputs],
+        "compare the debug efficiency"
+    )
 
-        # moptions.mergeranges = [(0, 6), (6, 20)]
-        CompareEfficiencies(moptions).transform(
-            [debug_inputs, debug_inputs],
-            "compare the debug efficiency"
-        )
 
-    @unittest.skip('')
-    def test_generated_spectrum(self):
-        particle = "#pi^{0}"
-        debug_inputs = (
-            debug_input("low"),
-            debug_input("high"),
-        )
+@pytest.mark.skip('')
+def test_generated_spectrum():
+    particle = "#pi^{0}"
+    debug_inputs = (
+        debug_input("low"),
+        debug_input("high"),
+    )
 
-        prod = "single #pi^{0}"
-        inputs = (
-            DataVault().input(prod, "low"),
-            DataVault().input(prod, "high"),
-        )
+    prod = "single #pi^{0}"
+    inputs = (
+        DataVault().input(prod, "low"),
+        DataVault().input(prod, "high"),
+    )
 
-        moptions = CompositeEfficiencyOptions(particle)
+    moptions = CompositeEfficiencyOptions(particle)
 
-        names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
+    names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
 
-        CompareGeneratedSpectra(moptions, names=names).transform(
-            [inputs.keys()[0], debug_inputs.keys()[0]],
-            "compare the debug efficiency"
-        )
+    CompareGeneratedSpectra(moptions, names=names).transform(
+        [inputs.keys()[0], debug_inputs.keys()[0]],
+        "compare the debug efficiency"
+    )
 
-    @unittest.skip('')
-    def test_weight_like_debug(self):
-        input_low = DataVault().input(
-            "debug efficiency", "low", n_events=1e6,
-            histnames=('hSparseMgg_proj_0_1_3_yx', ''))
 
-        # Define the transformations
-        nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)
+@pytest.mark.skip('')
+def test_weight_like_debug():
+    input_low = DataVault().input(
+        "debug efficiency", "low", n_events=1e6,
+        histnames=('hSparseMgg_proj_0_1_3_yx', ''))
 
-        rrange = 0, 10
-        tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
-        tsallis.SetParameters(0.014960701090585591,
-                              0.287830380417601, 9.921003040859755)
-        tsallis.FixParameter(3, 0.135)
-        tsallis.FixParameter(4, 0.135)
-        tsallis.SetLineColor(46)
+    # Define the transformations
+    nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)
 
-        br.scalew(nominal_low, 1. / nominal_low.Integral())
-        nominal_low.Fit(tsallis)
-        print br.pars(tsallis)
-        Comparator().compare(nominal_low)
+    rrange = 0, 10
+    tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
+    tsallis.SetParameters(0.014960701090585591,
+                          0.287830380417601, 9.921003040859755)
+    tsallis.FixParameter(3, 0.135)
+    tsallis.FixParameter(4, 0.135)
+    tsallis.SetLineColor(46)
+
+    br.scalew(nominal_low, 1. / nominal_low.Integral())
+    nominal_low.Fit(tsallis)
+    print br.pars(tsallis)
+    Comparator().compare(nominal_low)

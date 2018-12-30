@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
@@ -55,49 +55,48 @@ def reduce_chi2(hists):
     return br.chi2(data, mc, (5, 7)) / 6
 
 
-class ScanNonlinearitiesOverlap(unittest.TestCase):
+@pytest.mark.skip("")
+def test(self):
+    nbins = 9
+    prod = "single #pi^{0} scan nonlinearity"
+    histnames = form_histnames(nbins)
+    low = DataVault().input(prod, "low", inputs=histnames)
+    high = DataVault().input(prod, "high", inputs=histnames)
 
-    @unittest.skip('')
-    def test(self):
-        nbins = 9
-        prod = "single #pi^{0} scan nonlinearity"
-        histnames = form_histnames(nbins)
-        low = DataVault().input(prod, "low", inputs=histnames)
-        high = DataVault().input(prod, "high", inputs=histnames)
+    options = CompositeEfficiencyOptions("#pi^{0}")
+    options.reduce_function = reduce_chi2
 
-        options = CompositeEfficiencyOptions("#pi^{0}")
-        options.reduce_function = reduce_chi2
+    low_, high_ = low.read_multiple(2), high.read_multiple(2)
+    low_ = [add_arguments(l, low) for l in low_]
+    high_ = [add_arguments(l, high) for l in high_]
+    mc_data = [(l, h) for l, h in zip(low_, high_)]
 
-        low_, high_ = low.read_multiple(2), high.read_multiple(2)
-        low_ = [add_arguments(l, low) for l in low_]
-        high_ = [add_arguments(l, high) for l in high_]
-        mc_data = [(l, h) for l, h in zip(low_, high_)]
+    chi2ndf = OverlapNonlinearityScan(options, nbins).transform(
+        mc_data,
+        loggs=AnalysisOutput("testing the scan interface")
+    )
+    Comparator().compare(chi2ndf)
 
-        chi2ndf = OverlapNonlinearityScan(options, nbins).transform(
-            mc_data,
-            loggs=AnalysisOutput("testing the scan interface")
-        )
-        Comparator().compare(chi2ndf)
 
-    # @unittest.skip('')
-    def test_optimum(self):
-        nbins = 9
-        prod = "single #pi^{0} scan nonlinearity6"
-        minimum_index = 33
-        minimum_index *= 2
-        histnames = form_histnames(nbins)[minimum_index: minimum_index + 2]
-        low = DataVault().input(prod, "low", inputs=histnames)
-        high = DataVault().input(prod, "high", inputs=histnames)
+# @pytest.mark.skip("")
+def test_optimum(self):
+    nbins = 9
+    prod = "single #pi^{0} scan nonlinearity6"
+    minimum_index = 33
+    minimum_index *= 2
+    histnames = form_histnames(nbins)[minimum_index: minimum_index + 2]
+    low = DataVault().input(prod, "low", inputs=histnames)
+    high = DataVault().input(prod, "high", inputs=histnames)
 
-        options = CompositeEfficiencyOptions("#pi^{0}")
-        options.reduce_function = reduce_chi2
+    options = CompositeEfficiencyOptions("#pi^{0}")
+    options.reduce_function = reduce_chi2
 
-        low_, high_ = low.read_multiple(2), high.read_multiple(2)
-        low_ = [add_arguments(l, low) for l in low_]
-        high_ = [add_arguments(l, high) for l in high_]
-        mc_data = [(l, h) for l, h in zip(low_, high_)]
-        chi2ndf = OverlapNonlinearityScan(options, 1).transform(
-            mc_data,
-            loggs=AnalysisOutput("testing the scan interface")
-        )
-        Comparator().compare(chi2ndf)
+    low_, high_ = low.read_multiple(2), high.read_multiple(2)
+    low_ = [add_arguments(l, low) for l in low_]
+    high_ = [add_arguments(l, high) for l in high_]
+    mc_data = [(l, h) for l, h in zip(low_, high_)]
+    chi2ndf = OverlapNonlinearityScan(options, 1).transform(
+        mc_data,
+        loggs=AnalysisOutput("testing the scan interface")
+    )
+    Comparator().compare(chi2ndf)
