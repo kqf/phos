@@ -1,9 +1,9 @@
 import random
-import unittest
+import pytest  # noqa
 
 import spectrum.sutils as su
 from spectrum.broot import BROOT as br  # noqa
-from spectrum.comparator import Comparator # noqa
+from spectrum.comparator import Comparator  # noqa
 from spectrum.input import Input
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
@@ -44,67 +44,68 @@ class MassExtractor(object):
         return output
 
 
-class TestBackgroundSubtraction(unittest.TestCase):
+@pytest.mark.skip("")
+def test_background_fitting():
+    loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
 
-    @unittest.skip("")
-    def test_background_fitting(self):
-        loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
+    options = Options.spmc((4.0, 20.0))
+    # options.fitf = 'gaus'
+    masses = MassExtractor(options).transform(
+        # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+        Input("LHC16-single.root", "PhysEff"),
+        loggs
+    )
 
-        options = Options.spmc((4.0, 20.0))
-        # options.fitf = 'gaus'
-        masses = MassExtractor(options).transform(
-            # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-            Input("LHC16-single.root", "PhysEff"),
-            loggs
-        )
+    target = masses[8]
+    param = PeakParametrisation.get(options.invmass.backgroundp)
+    fitf, background = param.fit(target.mass)
 
-        target = masses[8]
-        param = PeakParametrisation.get(options.invmass.backgroundp)
-        fitf, background = param.fit(target.mass)
+    canvas = su.canvas("test")
+    MassesPlot().transform(target, canvas)
+    # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
+    # target.mass.Draw()
+    # fitf.Draw("same")
+    canvas.Update()
+    su.wait()
 
-        canvas = su.canvas("test")
-        MassesPlot().transform(target, canvas)
-        # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
-        # target.mass.Draw()
-        # fitf.Draw("same")
-        canvas.Update()
-        su.wait()
+    # signal = ROOT.TF1(
+    #     "pure_peak",
+    #     lambda x, p: fitf.Eval(x[0]) - background.Eval(x[0]), 0, 1, 10)
+    # parameters = [fitf.GetParameter(i) for i in range(fitf.GetNpar())]
+    # signal.SetParameters(*parameters)
+    # for i in range(fitf.GetNpar()):
+    #     signal.SetParameter(i, fitf.GetParameter(i))
 
-        # signal = ROOT.TF1("pure_peak", lambda x, p: fitf.Eval(x[0]) - background.Eval(x[0]), 0, 1, 10)
-        # parameters = [fitf.GetParameter(i) for i in range(fitf.GetNpar())]
-        # signal.SetParameters(*parameters)
-        # for i in range(fitf.GetNpar()):
-        #     signal.SetParameter(i, fitf.GetParameter(i))
+    # print signal.GetParameter(0), fitf.GetParameter(0)
 
-        # print signal.GetParameter(0), fitf.GetParameter(0)
+    # target.mass.Add(signal, -1)
+    # residualb = ROOT.TF1("residual", "pol2(0)", 0.1, 0.16)
+    # target.mass.Fit(residualb)
+    # diff = Comparator()
 
-        # target.mass.Add(signal, -1)
-        # residualb = ROOT.TF1("residual", "pol2(0)", 0.1, 0.16)
-        # target.mass.Fit(residualb)
-        # diff = Comparator()
+    # diff.compare(
+    #     br.rebin_as(target.mass, background.GetHistogram())
+    # )
 
-        # diff.compare(
-        #     br.rebin_as(target.mass, background.GetHistogram())
-        # )
 
-    def test_data_peak(self):
-        loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
+def test_data_peak():
+    loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
 
-        options = Options()
-        # options.fitf = 'gaus'
-        masses = MassExtractor(options).transform(
-            DataVault().input("data"),
-            loggs
-        )
+    options = Options()
+    # options.fitf = 'gaus'
+    masses = MassExtractor(options).transform(
+        DataVault().input("data"),
+        loggs
+    )
 
-        target = masses[12]
-        param = PeakParametrisation.get(options.invmass.backgroundp)
-        fitf, background = param.fit(target.mass)
+    target = masses[12]
+    param = PeakParametrisation.get(options.invmass.backgroundp)
+    fitf, background = param.fit(target.mass)
 
-        canvas = su.canvas("test")
-        MassesPlot().transform(target, canvas)
-        # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
-        # target.mass.Draw()
-        # fitf.Draw("same")
-        canvas.Update()
-        su.wait()
+    canvas = su.canvas("test")
+    MassesPlot().transform(target, canvas)
+    # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
+    # target.mass.Draw()
+    # fitf.Draw("same")
+    canvas.Update()
+    su.wait()
