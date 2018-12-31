@@ -1,3 +1,4 @@
+import pytest
 import ROOT
 
 from spectrum.input import SingleHistInput
@@ -64,6 +65,7 @@ MC_INPUT = Proxy(
 )
 
 
+@pytest.mark.onlylocal
 def test_pi0_reconstructed():
     estimator = ReconstructedValidator(
         tsallis(),
@@ -80,6 +82,7 @@ def test_pi0_reconstructed():
     diff.compare(output)
 
 
+@pytest.mark.onlylocal
 def test_pi0_generated():
     estimator = GeneratedValidator(tsallis(), "hPt_#pi^{0}_primary_standard")
 
