@@ -1,7 +1,7 @@
-import unittest
 import ROOT
 
-from spectrum.input import Input, SingleHistInput
+from spectrum.input import SingleHistInput
+from lazy_object_proxy import Proxy
 from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
@@ -47,30 +47,6 @@ def tsallis():
     return tsallis
 
 
-class ValidateReconstructedPi0(unittest.TestCase):
-
-    def test_pi0_generated(self):
-        estimator = ReconstructedValidator(
-            tsallis(),
-            Options.spmc((8.0, 20.0), particle="#pi^{0}")
-        )
-
-        loggs = AnalysisOutput(
-            "test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
-        output = estimator.transform(
-            (
-                Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-                None
-            ),
-            loggs
-        )
-        loggs.plot(False)
-
-        output.logy = False
-        diff = Comparator(stop=True, crange=(0, 8000))
-        diff.compare(output)
-
-
 class GeneratedValidator(object):
     def __init__(self, func, histname):
         super(GeneratedValidator, self).__init__()
@@ -80,10 +56,28 @@ class GeneratedValidator(object):
         ])
 
 
-MC_INPUT = (
-    DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
-    None
+MC_INPUT = Proxy(
+    lambda: (
+        DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
+        None
+    )
 )
+
+
+def test_pi0_reconstructed():
+    estimator = ReconstructedValidator(
+        tsallis(),
+        Options.spmc((8.0, 20.0), particle="#pi^{0}")
+    )
+
+    loggs = AnalysisOutput(
+        "test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
+    output = estimator.transform(MC_INPUT, loggs)
+    loggs.plot(False)
+
+    output.logy = False
+    diff = Comparator(stop=True, crange=(0, 8000))
+    diff.compare(output)
 
 
 def test_pi0_generated():
