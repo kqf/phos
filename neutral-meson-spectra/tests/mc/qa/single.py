@@ -1,93 +1,67 @@
-#!/usr/bin/python
+import pytest
 
+from lazy_object_proxy import Proxy
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.input import Input, read_histogram
+from spectrum.input import read_histogram
 from spectrum.comparator import Comparator
-
-
-from spectrum.broot import BROOT as br
-
-import unittest
+from vault.datavault import DataVault
 
 
 # TODO: Add to thesis images
+INPUTS = (
+    ("#pi^{0}", Proxy(
+        lambda: DataVault().input("single #pi^{0}", "low",
+                                  "PhysEff", label="low p_{T}")
+    )),
 
-class SingleParticleQA(unittest.TestCase):
+    ("#pi^{0}", Proxy(
+        lambda: DataVault().input("single #pi^{0}", "high",
+                                  "PhysEff", label="high p_{T}")
+    )),
 
-    def particle_ptbin(self, prod):
-        name, bin = prod[:-1], prod[-1]
+    ("#eta", Proxy(
+        lambda: DataVault().input("single #eta", "low",
+                                  "PhysEff", label="low p_{T}")
+    )),
 
-        if bin not in self.ptbin:
-            name, bin = prod, ''
+    ("#eta", Proxy(
+        lambda: DataVault().input("single #eta", "high",
+                                  "PhysEff", label="high p_{T}")
+    )),
+)
 
-        return self.simulation.get(name), self.ptbin.get(bin)
 
-    def setUp(self):
-        # Dataset description
-        #
-        # NB: Always use unscaled version for QA
-        self.dir = 'single/plain/'
-        self.simulation = {'LHC17j3a': '#gamma', 'LHC17j3b': '#pi^{0}',
-                           'LHC17j3c': '#eta', 'scaled-LHC17j3b': '#pi^{0}'}
-        self.ptbin = {'1': 'low p_{T}', '2': 'high p_{T}', '': 'all'}
-
-        # Define input
-        self.selection = 'MCStudyOnlyTender'
-        self.productions = ('LHC17j3a2',
-                            'LHC17j3c2',
-                            'LHC17j3b1',
-                            'LHC17j3a1',
-                            'LHC17j3c1')
-
-    def test_pt_reconstructed(self):
-        for prod in self.productions:
-            reco = self.reconstructed(prod)
-            diff = Comparator(oname=prod + '_reco')
-            diff.compare(reco)
-
-    # @unittest.skip('')
-    def test_pt_generated(self):
-        for prod in self.productions:
-            pt = self.distribution(prod, 'hEtaPhi_{0}', 0)
-            diff = Comparator(oname=prod + '_yphi')
-            diff.compare(pt)
-
-    # @unittest.skip('')
-    def test_eta_phi_distribution(self):
-        for prod in self.productions:
-            etaphi = self.distribution(prod, 'hPt_{0}_primary_')
-            diff = Comparator(oname=prod + '_pt')
-            diff.compare(etaphi)
-
-    def distribution(self, filename, histname, logy=1):
-        part, ptbin = self.particle_ptbin(filename)
-        label = '{0} {1}'.format(part, ptbin)
-        hist = read_histogram(self.dir + filename, self.selection,
-                              histname.format(part), label=label)
-        hist.SetTitle(hist.GetTitle() + ', ' + ptbin)
-
-        hist.logy = logy
-        br.scalew(hist)
-        return hist
-
-    def reconstructed(self, filename):
-        part, ptbin = self.particle_ptbin(filename)
-
-        # NB: Gamma Follows different procedure
-        if 'gamma' in part:
-            hist = self.distribution(filename, 'hPt_{0}')
-            hist.SetTitle('Inclusive ' + hist.GetTitle().lower())
-            return hist
-
-        return self._reconstructed(filename)
-
-    def _reconstructed(self, filename):
-        part, ptbin = self.particle_ptbin(filename)
-        label = '{0} {1}'.format(part, ptbin)
-
-        reconstructed = Analysis(Options()).transform(
-            Input(self.dir + filename, self.selection, label=label), {})
-        reconstructed.SetTitle(reconstructed.GetTitle() + ', ' + ptbin)
-        br.scalew(reconstructed)
+@pytest.mark.parametrize("particle, data", INPUTS)
+def reconstructed(particle, data):
+    if "gamma" in particle:
+        reconstructed = read_histogram(*data)
+        reconstructed.SetTitle("Inclusive " + reconstructed.GetTitle().lower())
         return reconstructed
+
+    reconstructed = Analysis(Options(particle=particle)).transform(data, {})
+    reconstructed = reconstructed.spectrum
+    reconstructed.SetTitle(reconstructed.GetTitle())
+    # br.scalew(reconstructed)
+    return reconstructed
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle, data", INPUTS)
+def test_reconstructed(particle, data):
+    Comparator().compare(reconstructed(particle, data))
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle, data", INPUTS)
+@pytest.mark.parametrize("quantity", [
+    "hEtaPhi_{0}",
+    "hPt_{0}_primary_",
+])
+def test_distribution(particle, data, quantity):
+    hist = data.read_single(quantity.format(particle), norm=True)
+    if "_primary_" in quantity:
+        hist.logy = True
+    Comparator().compare(hist)

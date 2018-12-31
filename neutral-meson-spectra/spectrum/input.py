@@ -110,6 +110,11 @@ class Input(object):
             for h in zip(*(iter(data),) * n_groups)
         ]
 
+    def read_single(self, histname=None, norm=False):
+        histname = histname or self.histname
+        return read_histogram(filename=self.filename, listname=self.listname,
+                              histname=histname, label=self.label, norm=norm)
+
     def transform(self, data=None, outputs=None):
         return self.read()
 
