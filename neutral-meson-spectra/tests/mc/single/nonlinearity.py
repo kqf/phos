@@ -44,6 +44,7 @@ def nonlinearity_function():
     return func_nonlin
 
 
+@pytest.mark.onlylocal
 @pytest.mark.parametrize("data", [
     SPMC_REGULAR,
     # SPMC_NONLIN_SELECTION,

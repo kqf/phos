@@ -1,16 +1,17 @@
-import unittest
+import pytest
 
 from vault.datavault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
-from spectrum.mc import Nonlinearity, Decalibration, Shape
+from tools.mc import Nonlinearity, Decalibration, Shape
 from spectrum.output import AnalysisOutput
 
 
-def define_inputs(production, is_nonlin=False):
+def define_inputs():
+    production = "single #pi^{0}"
     listname = "PhysEff"
     histname = "MassPt"
-
-    inputs = (
+    data = DataVault().input("data", listname="Phys", histname="MassPtSM0")
+    mc_inputs = (
         DataVault().input(production, "low",
                           listname=listname,
                           histname=histname),
@@ -18,61 +19,16 @@ def define_inputs(production, is_nonlin=False):
                           listname=listname,
                           histname=histname)
     )
-    return inputs
+    return data, mc_inputs
 
 
-class TestProductionsPi0(unittest.TestCase):
-
-    def setUp(self):
-        self.production_name = "single #pi^{0}"
-        self.particle = "#pi^{0}"
-        # self.production_name = "single #eta nonlin"
-        # self.particle = "#eta"
-
-    # @unittest.skip('')
-    def test_nonlinearity(self):
-        inputs = define_inputs(self.production_name, is_nonlin=True)
-        options = CompositeNonlinearityOptions(self.particle)
-        options.fitf = None
-        estimator = Nonlinearity(options)
-        nonlinearity = estimator.transform(
-            (
-                DataVault().input("data", listname="Phys", histname="MassPt"),
-                inputs
-            ),
-            "nonlinearity estimation {}".format(self.particle)
-        )
-        self.assertGreater(nonlinearity.GetEntries(), 0)
-
-    @unittest.skip('')
-    def test_decalibration(self):
-        inputs = define_inputs(self.production_name)
-        options = CompositeNonlinearityOptions(self.particle)
-        options.fitf = None
-        estimator = Decalibration(options, plot=True)
-        loggs = AnalysisOutput(
-            "decalibration estimation {}".format(self.particle))
-        nonlinearity = estimator.transform(
-            (
-                DataVault().input("data"),
-                inputs
-            ),
-            loggs
-        )
-        loggs.plot()
-        self.assertGreater(nonlinearity.GetEntries(), 0)
-
-    @unittest.skip('')
-    def test_weights(self):
-        inputs = define_inputs(self.production_name)
-        options = CompositeNonlinearityOptions(particle=self.particle)
-        options.fitf = None
-        estimator = Shape(options)
-        nonlinearity = estimator.transform(
-            (
-                DataVault().input("data"),
-                inputs
-            ),
-            loggs=AnalysisOutput("weight estimation")
-        )
-        self.assertGreater(nonlinearity.GetEntries(), 0)
+@pytest.mark.parametrize("method", [Nonlinearity, Decalibration, Shape])
+def test_calculate_quantities(method):
+    name = method.__class__.__name__.lower()
+    options = CompositeNonlinearityOptions("#pi^{0}")
+    options.fitf = None
+    nonlin = method(options).transform(
+        define_inputs(),
+        loggs=AnalysisOutput("spmc {}".format(name))
+    )
+    assert nonlin.GetEntries() > 0
