@@ -1,21 +1,41 @@
-#!/usr/bin/python
+import ROOT
+import pytest
 
-import unittest
-
+from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
-# from spectrum.output import AnalysisOutput
+from spectrum.output import AnalysisOutput  # noqa
 from tools.mc import Nonlinearity
 from spectrum.broot import BROOT as br
 # from vault.formulas import FVault
 
-import ROOT
+SPMC_REGULAR = Proxy(
+    lambda: (
+        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
+        (
+            DataVault().input("single #pi^{0}", "low", "PhysEff"),
+            DataVault().input("single #pi^{0}", "high", "PhysEff"),
+        )
+    )
+)
+# NB: This may be inactive
+SPMC_NONLIN_SELECTION = Proxy(
+    lambda: (
+        DataVault().input("data", listname="Phys", histname="MassPt_SM0"),
+        (
+            DataVault().input("single #pi^{0}", "low", "PhysEff",
+                              histname="MassPt_SM0"),
+            DataVault().input("single #pi^{0}", "high", "PhysEff",
+                              histname="MassPt_SM0"),
+        )
+    )
+)
 
 
 def nonlinearity_function():
     # func_nonlin = ROOT.TF1(
     #     "func_nonlin", FVault().func("nonlinearity"), 0, 20)
-    # func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
+    # func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
 
     func_nonlin = ROOT.TF1(
         "func_nonlin",
@@ -24,37 +44,15 @@ def nonlinearity_function():
     return func_nonlin
 
 
-class TestNonlinearitySPMC(unittest.TestCase):
+@pytest.mark.parametrize("data", [
+    SPMC_REGULAR,
+    # SPMC_NONLIN_SELECTION,
+])
+def test_spmc_nonlinearity(data):
+    options = CompositeNonlinearityOptions()
+    options.fitf = nonlinearity_function()
 
-    @unittest.skip("")
-    def test_nonlin_photon_level(self):
-        mcsel = "PhysNonlinPlain"
-        selection = "PhysNonlinEst"
-        histname = "MassPt_SM0"
-        self.calculate(selection, mcsel, histname)
-
-    def test_nonlin_pion_level(self):
-        mcsel = "PhysEff"
-        selection = "Phys"
-        histname = "MassPt"
-        self.calculate(selection, mcsel, histname)
-
-    def calculate(self, selection, mcsel, hname):
-        prod = "single #pi^{0} scan nonlinearity5"
-        options = CompositeNonlinearityOptions()
-        options.fitf = nonlinearity_function()
-
-        estimator = Nonlinearity(options, plot=True)
-        nonlinearity = estimator.transform(
-            (
-                DataVault().input('data', listname=selection, histname=hname),
-                (
-                    DataVault().input(prod, "low", mcsel, histname=hname),
-                    DataVault().input(prod, "high", mcsel, histname=hname)
-                )
-            ),
-            # loggs=AnalysisOutput("Testing the composite interface")
-            "Testing the composite interface"
-        )
-        print "Fit parameters:", br.pars(options.fitf)
-        self.assertGreater(nonlinearity.GetEntries(), 0)
+    nonlinearity = Nonlinearity(options, plot=True).transform(
+        data, AnalysisOutput("spmc nonlinearity"))
+    print "Fit parameters:", br.pars(options.fitf)
+    assert nonlinearity.GetEntries() > 0
