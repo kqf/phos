@@ -1,58 +1,53 @@
-import unittest
+import pytest  # noqa
 
-import spectrum.sutils as su
-from spectrum.comparator import Comparator
-from spectrum.input import Input
-from spectrum.options import Options
-from spectrum.spectrum import CompositeSpectrum
+from lazy_object_proxy import Proxy
+from spectrum.analysis import Analysis
+from spectrum.pipeline import TransformerBase
+from spectrum.pipeline import Pipeline
+from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import HistogramSelector
+from spectrum.options import CompositeOptions
+from spectrum.output import AnalysisOutput
+from vault.datavault import DataVault
 
 
-# Check
-class TestPi0EtaMassRatio(unittest.TestCase):
+class MassComparator(TransformerBase):
+    def __init__(self, options_eta, options_pion, plot=False):
+        super(MassComparator, self).__init__(plot)
+        self.pipeline = ComparePipeline([
+            ("#pi^{0}", Pipeline([
+                ("analysis", Analysis(options_eta, plot)),
+                ("spectrum", HistogramSelector("mass"))
+            ])),
+            ("#eta", Pipeline([
+                ("analysis", Analysis(options_pion, plot)),
+                ("spectrum", HistogramSelector("mass"))
+            ])),
+        ])
 
-    def test_mass_ratio(self):
-        compare_range = 0.8, 14
-        inputs_pi0 = {
-            Input("/single/nonlin/LHC17j3b1",
-                  "PhysEffOnlyTender", label="#pi^{0}"): (0, 5.5),
-            Input("/single/nonlin/LHC17j3b2",
-                  "PhysEffOnlyTender", label="#pi^{0}"): (5.5, 20)
-        }
 
-        diff = Comparator()
+PION_DATA = Proxy(
+    lambda:
+    (
+        DataVault().input("single #pi^{0}", "low", "PhysEff", label="#pi^{0}"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff", label="#pi^{0}")
+    )
+)
+ETA_DATA = Proxy(
+    lambda:
+    (
+        DataVault().input("single #eta", "low", "PhysEff", label="#eta"),
+        DataVault().input("single #eta", "high", "PhysEff", label="#eta")
+    )
+)
 
-        pi0 = CompositeSpectrum(inputs_pi0, Options.spmc((0, 5.5), "pi0"))
-        pi0_mass = pi0.evaluate().mass
-        pi0_massf = pi0.RangeEstimator(Options(), "#pi^{0}").fit_mass(pi0_mass)
-        diff.compare(pi0_mass)
 
-        pi0_massf.SetRange(*compare_range)
-        pi0_massf.Draw()
-        su.wait()
-
-        inputs_eta = {
-            Input("/single/nonlin1/LHC17j3c1",
-                  "PhysEffOnlyTender", label="#eta"): (0, 10),
-            Input("/single/nonlin1/LHC17j3c2",
-                  "PhysEffOnlyTender", label="#eta"): (10, 20)
-        }
-
-        options_eta = Options.spmc((0, 10), particle="eta")
-
-        eta = CompositeSpectrum(inputs_eta, options_eta)
-        eta_mass = eta.evaluate().mass
-        eta_massf = eta.RangeEstimator(Options(), "#eta").fit_mass(eta_mass)
-        eta_massf.SetRange(*compare_range)
-        diff.compare(eta_mass)
-
-        eta_mass_approx = eta_massf.GetHistogram()
-        eta_mass_approx.SetTitle("Fitted masses of neutral mesons")
-        eta_mass_approx.label = "m_{#eta}"
-        pi0_mass_approx = pi0_massf.GetHistogram()
-        pi0_mass_approx.label = "m_{#pi^{0}}"
-
-        diff = Comparator(crange=(0.1, 0.7))
-        diff.compare(
-            eta_mass,
-            pi0_mass
-        )
+@pytest.mark.onlylocal
+def test_efficiency_ratio():
+    ptrange = "config/pt-same.json"
+    opt_eta = CompositeOptions("#eta", ptrange=ptrange)
+    opt_pi0 = CompositeOptions("#pi^{0}", ptrange=ptrange)
+    estimator = MassComparator(opt_eta, opt_pi0, plot=False)
+    loggs = AnalysisOutput("mass ratio")
+    estimator.transform((ETA_DATA, PION_DATA), loggs)
+    # loggs.plot()
