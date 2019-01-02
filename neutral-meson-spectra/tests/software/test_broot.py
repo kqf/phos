@@ -210,12 +210,12 @@ class TestTH(unittest.TestCase):
 
         # Now raise exceptions when reading
         # the root file with wrong names
-        self.assertRaises(IOError, br.io.read, 'junk' +
-                          data[0], data[1], data[2])
-        self.assertRaises(IOError, br.io.read,
-                          data[0], 'junk' + data[1], data[2])
-        self.assertRaises(IOError, br.io.read,
-                          data[0], data[1], 'junk' + data[2])
+        with pytest.raises(IOError):
+            br.io.read('junk' + data[0], data[1], data[2])
+        with pytest.raises(IOError):
+            br.io.read(data[0], 'junk' + data[1], data[2])
+        with pytest.raises(IOError):
+            br.io.read(data[0], data[1], 'junk' + data[2])
         os.remove(data[0])
 
     def test_read_multiple(self):
@@ -232,8 +232,8 @@ class TestTH(unittest.TestCase):
 
         # Now feed it with wrong name
         histnames.append('junk')
-        self.assertRaises(IOError, br.io.read_multiple,
-                          ofilename, selection, histnames)
+        with pytest.raises(IOError):
+            br.io.read_multiple(ofilename, selection, histnames)
         os.remove(ofilename)
 
     def test_ratio(self):
@@ -274,7 +274,7 @@ class TestTH(unittest.TestCase):
         # Check if .nevents attribute is OK
         assert hist1.nevents == events
         # Check if we don't mess with area
-        self.assertNotEqual(hist1.Integral(), integral / events)
+        assert hist1.Integral() != integral / events
 
         # Now with normalization
         br.set_nevents(hist1, events, True)
@@ -299,7 +299,7 @@ class TestTH(unittest.TestCase):
 
         rebinned, hist2 = br.rebin_as(hist1, hist2)
 
-        self.assertNotEqual(hist1.GetNbinsX(), hist2.GetNbinsX())
+        assert hist1.GetNbinsX() != hist2.GetNbinsX()
 
         assert rebinned.GetNbinsX() == hist2.GetNbinsX()
 
@@ -400,7 +400,7 @@ class TestTH(unittest.TestCase):
             area, error = br.area_and_error(hist, *interval)
             true = histarea(*interval)
 
-            self.assertNotEqual(area, true)
+            assert area != true
             # There is no need to compare errors
 
     def test_rebins_for_given_ranges(self):
@@ -676,7 +676,7 @@ class TestTH(unittest.TestCase):
         ci = br.confidence_intervals(hist1, function)
 
         assert hist1.GetNbinsX() == ci.GetNbinsX()
-        self.assertNotEqual(hist1.GetEntries(), 0)
+        assert hist1.GetEntries() != 0
 
     def test_subtracts_histogram(self):
         hist = br.BH(ROOT.TH1F, "f2h", "Test BROOT: func2hist", 100, -4, 4)
@@ -698,7 +698,7 @@ class TestTH(unittest.TestCase):
         histogram2.SetBinContent(1, histogram2.GetBinContent(1) + error)
         # The sigma of this datapoint drops as 1 / sqrt(2)
         # because both points have their own errors
-        self.assertAlmostEqual(br.chi2(histogram, histogram2), 0.5, places=5)
+        assert pytest.approx(br.chi2(histogram, histogram2)) == 0.5
 
     # @unittest.skip("")
     def test_scales_with_rebins(self):
