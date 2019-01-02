@@ -69,10 +69,10 @@ class TestTH(unittest.TestCase):
 
     def test_properties(self):
         for p in self.properties:
-            self.assertTrue(p in dir(self.hist))
+            assert p in dir(self.hist)
 
     def test_draw(self):
-        self.assertIsNotNone(self.hist)
+        assert self.hist is not None
         self.hist.Draw()
         wait(stop=self.stop)
 
@@ -85,7 +85,7 @@ class TestTH(unittest.TestCase):
         # Set properties of root object
         br.setp(hist, self.hist)
 
-        self.assertTrue(br.same(hist, self.hist))
+        assert br.same(hist, self.hist)
 
     def test_clone_from_root(self):
         hist = br.BH(
@@ -97,7 +97,7 @@ class TestTH(unittest.TestCase):
 
         # Properties should not copy when using copy constructor
         #
-        self.assertTrue(br.prop.has_properties(hist2))
+        assert br.prop.has_properties(hist2)
 
     def test_clone(self):
         hist = br.BH(
@@ -112,10 +112,10 @@ class TestTH(unittest.TestCase):
         hist2 = br.clone(hist)
 
         # Copy differs clone
-        self.assertTrue(hist.GetEntries() == hist2.GetEntries())
+        assert hist.GetEntries() == hist2.GetEntries()
 
         # Now copy the properties
-        self.assertTrue(br.same(hist2, hist))
+        assert br.same(hist2, hist)
 
     def test_copy(self):
         hist = br.BH(
@@ -132,10 +132,10 @@ class TestTH(unittest.TestCase):
 
         # Copy differs clone
         # These should not equal
-        self.assertFalse(hist.GetEntries() == hist2.GetEntries())
+        assert not hist.GetEntries() == hist2.GetEntries()
 
         # Now copy the properties
-        self.assertTrue(br.same(hist2, hist))
+        assert br.same(hist2, hist)
 
     def test_bh2_draws_projection_range(self):
         hist = br.BH(
@@ -161,7 +161,7 @@ class TestTH(unittest.TestCase):
         wait(stop=self.stop)
 
         # Now copy the properties
-        self.assertTrue(br.same(hist2, hist))
+        assert br.same(hist2, hist)
 
     def test_projection_saves_area(self):
         # NB: Bin according to this sequence https://oeis.org/A000124
@@ -201,12 +201,12 @@ class TestTH(unittest.TestCase):
         # print sum(p.Integral() for p in projections), hist.Integral()
 
         total = sum(p.Integral() for p in projections)
-        self.assertEqual(total, hist.Integral())
+        assert total == hist.Integral()
 
     def test_read(self):
         data = 'test_read.root', 'testSelection', 'testHistogram'
         write_histogram(*data)
-        self.assertIsNotNone(br.io.read(*data))
+        assert br.io.read(*data) is not None
 
         # Now raise exceptions when reading
         # the root file with wrong names
@@ -226,9 +226,9 @@ class TestTH(unittest.TestCase):
         write_histograms(ofilename, selection, histnames)
 
         histograms = br.io.read_multiple(ofilename, selection, histnames)
-        self.assertIsNotNone(histograms)
-        self.assertEqual(len(histograms), len(histnames))
-        self.assertIsNotNone(histograms[0])
+        assert histograms is not None
+        assert len(histograms) == len(histnames)
+        assert histograms[0] is not None
 
         # Now feed it with wrong name
         histnames.append('junk')
@@ -254,10 +254,10 @@ class TestTH(unittest.TestCase):
         ratio = br.ratio(hist1, hist2)
 
         # Check if the numerator and the ratio are the same
-        self.assertTrue(br.same(hist1, ratio))
+        assert br.same(hist1, ratio)
 
         # Check if the numerator and the ratio are not same
-        self.assertFalse(br.same(hist2, ratio))
+        assert not br.same(hist2, ratio)
 
     def test_sets_events(self):
         hist1 = br.BH(
@@ -272,16 +272,16 @@ class TestTH(unittest.TestCase):
         br.set_nevents(hist1, events)
 
         # Check if .nevents attribute is OK
-        self.assertEqual(hist1.nevents, events)
+        assert hist1.nevents == events
         # Check if we don't mess with area
         self.assertNotEqual(hist1.Integral(), integral / events)
 
         # Now with normalization
         br.set_nevents(hist1, events, True)
         # Check if .nevents attribute is OK
-        self.assertEqual(hist1.nevents, events)
+        assert hist1.nevents == events
         # Check if we don't mess with area
-        self.assertTrue(abs(hist1.Integral() - integral / events) < 0.001)
+        assert abs(hist1.Integral() - integral / events) < 0.001
 
     def test_rebins(self):
         hist1 = br.BH(
@@ -301,12 +301,12 @@ class TestTH(unittest.TestCase):
 
         self.assertNotEqual(hist1.GetNbinsX(), hist2.GetNbinsX())
 
-        self.assertEqual(rebinned.GetNbinsX(), hist2.GetNbinsX())
+        assert rebinned.GetNbinsX() == hist2.GetNbinsX()
 
         # Just check if ratio gives warnings
         ratio = br.ratio(rebinned, hist2)
-        self.assertTrue(br.same(rebinned, hist1))
-        self.assertTrue(ratio.GetEntries())
+        assert br.same(rebinned, hist1)
+        assert ratio.GetEntries()
 
     def test_sum(self):
         hists = [br.BH(
@@ -323,8 +323,8 @@ class TestTH(unittest.TestCase):
         newlabel = 'total'
         total = br.sum(hists, newlabel)
 
-        self.assertEqual(total.GetEntries(), entries)
-        self.assertEqual(total.label, newlabel)
+        assert total.GetEntries() == entries
+        assert total.label == newlabel
 
     def test_average(self):
         hists = [br.BH(
@@ -339,10 +339,10 @@ class TestTH(unittest.TestCase):
 
         newlabel = 'average'
         total = br.sum(hists, newlabel)
-        self.assertEqual(total.GetBinContent(1), hists[0].GetBinContent(1))
-        self.assertEqual(total.GetBinContent(10), hists[0].GetBinContent(10))
-        self.assertEqual(total.GetBinError(1), hists[0].GetBinError(1))
-        self.assertEqual(total.GetBinError(10), hists[0].GetBinError(10))
+        assert total.GetBinContent(1) == hists[0].GetBinContent(1)
+        assert total.GetBinContent(10) == hists[0].GetBinContent(10)
+        assert total.GetBinError(1) == hists[0].GetBinError(1)
+        assert total.GetBinError(10) == hists[0].GetBinError(10)
 
     def test_scales_histogram(self):
         nbins, start, stop = 200, -10, 10
@@ -389,8 +389,8 @@ class TestTH(unittest.TestCase):
         for interval in test_areas:
             area, error = br.area_and_error(hist, *interval)
             true = histarea(*interval)
-            self.assertEqual(area, true)
-            self.assertEqual(error, true ** 0.5)
+            assert area == true
+            assert error == true ** 0.5
 
         # NB: ROOT behaviour
         # But these areas don't work according agree with expectations
@@ -416,14 +416,14 @@ class TestTH(unittest.TestCase):
         hist.FillRandom('gaus')
 
         rebinned = br.rebin(hist, new_edges)
-        self.assertEqual(hist.Integral(), rebinned.Integral())
-        self.assertEqual(hist.GetEntries(), rebinned.GetEntries())
-        self.assertTrue(br.same(hist, rebinned))
-        self.assertEqual(rebinned.GetNbinsX(), len(newbins))
+        assert hist.Integral() == rebinned.Integral()
+        assert hist.GetEntries() == rebinned.GetEntries()
+        assert br.same(hist, rebinned)
+        assert rebinned.GetNbinsX() == len(newbins)
 
         for i, bin in enumerate(newbins):
             binw = bin[1] - bin[0]
-            self.assertEqual(rebinned.GetBinWidth(i + 1), binw)
+            assert rebinned.GetBinWidth(i + 1) == binw
 
     def test_saves_histogram(self):
         oname, selection, histname = (
@@ -441,13 +441,13 @@ class TestTH(unittest.TestCase):
 
         # It's important to check if we don't delete
         # the hist accidentally
-        self.assertIsNotNone(hist)
+        assert hist is not None
 
-        self.assertTrue(os.path.isfile(oname))
+        assert os.path.isfile(oname)
 
         ffile = br.io.read(oname, selection, histname)
-        self.assertEqual(ffile.GetEntries(), entries)
-        self.assertEqual(ffile.Integral(), integral)
+        assert ffile.GetEntries() == entries
+        assert ffile.Integral() == integral
         os.remove(oname)
 
     def test_initializes_inputs(self):
@@ -470,18 +470,18 @@ class TestTH(unittest.TestCase):
 
         # There is no porperties
         for hist in inputs:
-            self.assertFalse(br.prop.has_properties(hist))
+            assert not br.prop.has_properties(hist)
 
         data = Empty()
         outputs = data.identity(inputs)
 
         # Decorated method takes alrady modified objects
         for hist in outputs:
-            self.assertTrue(br.prop.has_properties(hist))
+            assert br.prop.has_properties(hist)
 
         # It's the same objects
         for inp, out in zip(inputs, outputs):
-            self.assertTrue(inp is out)
+            assert inp is out
 
     def test_initializes_colors(self):
         ci, colors = br.define_colors()
@@ -507,10 +507,10 @@ class TestTH(unittest.TestCase):
         hist, rms, mean = br.systematic_deviation(hists)
 
         for i, m in enumerate(mean):
-            self.assertEqual(i + 1, m)
+            assert i + 1 == m
 
         for r in rms:
-            self.assertEqual(r, 0)
+            assert r == 0
 
         hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
         hist.Draw()
@@ -522,17 +522,17 @@ class TestTH(unittest.TestCase):
             hist.Fill(i - 0.5, i), hist.GetBinContent(i)
 
         bins, errors, centers = br.bins(hist)
-        self.assertEqual(len(bins), hist.GetNbinsX())
-        self.assertEqual(len(errors), hist.GetNbinsX())
+        assert len(bins) == hist.GetNbinsX()
+        assert len(errors) == hist.GetNbinsX()
 
         for i, b in enumerate(bins):
-            self.assertEqual(hist.GetBinContent(i + 1), b)
+            assert hist.GetBinContent(i + 1) == b
 
         for b, e in zip(bins, errors):
-            self.assertEqual(e, b)
+            assert e == b
 
         for i, b in enumerate(errors):
-            self.assertEqual(hist.GetBinError(i + 1), b)
+            assert hist.GetBinError(i + 1) == b
 
     def test_downloads_from_hepdata(self):
         record, ofile = 'ins1620477', 'test_hepdata.root'
@@ -563,19 +563,19 @@ class TestTH(unittest.TestCase):
             "hIterations1", "Test BROOT: Test iterations", 100, -4, 4)
         for i in br.range(hist):
             hcenter = hist.GetBinCenter(i)
-            self.assertEqual(hist.Fill(hcenter, i), i)
+            assert hist.Fill(hcenter == i), i
 
         hist = ROOT.TH1F(
             "hIterations2", "Test BROOT: Test iterations", 100, 0, 4000)
         for i in br.range(hist):
             hcenter = hist.GetBinCenter(i)
-            self.assertEqual(hist.Fill(hcenter, i), i)
+            assert hist.Fill(hcenter == i), i
 
         hist = ROOT.TH1F(
             "hIterations2", "Test BROOT: Test iterations", 4, 0, 4)
         for i in br.range(hist):
             hcenter = hist.GetBinCenter(i)
-            self.assertEqual(hist.Fill(hcenter, i), i)
+            assert hist.Fill(hcenter == i), i
 
     def test_returns_func_parameters(self):
         func = ROOT.TF1('h', '[1] * x * x  + [0] * x + [2]', 0, 10)
@@ -585,29 +585,28 @@ class TestTH(unittest.TestCase):
         pars, errors = br.pars(func)
 
         for pair in zip(pars, parameters):
-            self.assertEqual(*pair)
-
+            assert pair[0] == pair[1]
         pars, _ = br.pars(func, 2)
 
         for pair in zip(pars, parameters[0:2]):
-            self.assertEqual(*pair)
+            assert pair[0] == pair[1]
 
     def test_diffs_histograms(self):
         hist = ROOT.TH1F("hDiff", "Test BROOT: Test iterations", 100, -4, 4)
         hist.FillRandom('gaus')
 
-        self.assertTrue(br.diff(hist, hist))
+        assert br.diff(hist, hist)
 
         cloned = br.clone(hist)
-        self.assertTrue(br.diff(hist, cloned))
+        assert br.diff(hist, cloned)
 
         # NB: This test will pass as this value
         # doesn't exceed default tolerance
         cloned.Fill(0, 1e-9)
-        self.assertTrue(br.diff(hist, cloned))
+        assert br.diff(hist, cloned)
 
         cloned.Fill(0, 1e-5)
-        self.assertFalse(br.diff(hist, cloned))
+        assert not br.diff(hist, cloned)
 
     def test_sets_to_zero(self):
         hist1 = br.BH(ROOT.TH1F, "hAddTrimm1",
@@ -635,7 +634,7 @@ class TestTH(unittest.TestCase):
                 continue
 
             # print a, bin, b, hist1.GetBinContent(bin)
-            self.assertEqual(hist1.GetBinContent(bin), 0)
+            assert hist1.GetBinContent(bin) == 0
 
     def test_sum_trimm(self):
         hist1 = br.BH(ROOT.TH1F, "hAddTrimm1",
@@ -664,8 +663,7 @@ class TestTH(unittest.TestCase):
             a, b = map(hist.FindBin, rr)
             for bin in range(1, hh.GetNbinsX()):
                 if a < bin < b - 1:
-                    self.assertEqual(hh.GetBinContent(
-                        bin), hist.GetBinContent(bin))
+                    assert hh.GetBinContent(bin), hist.GetBinContent(bin)
                     # print hh.GetBinContent(bin), hist.GetBinContent(bin)
 
         wait(stop=self.stop)
@@ -677,7 +675,7 @@ class TestTH(unittest.TestCase):
 
         ci = br.confidence_intervals(hist1, function)
 
-        self.assertEqual(hist1.GetNbinsX(), ci.GetNbinsX())
+        assert hist1.GetNbinsX() == ci.GetNbinsX()
         self.assertNotEqual(hist1.GetEntries(), 0)
 
     def test_subtracts_histogram(self):
@@ -687,13 +685,13 @@ class TestTH(unittest.TestCase):
         func = ROOT.TF1("testFunc", "5", -4, 4)
         output = br.function2histogram(func, hist)
         output.Add(hist, -1)
-        self.assertEqual(output.Integral(), 0)
+        assert output.Integral() == 0
 
     def test_chi2(self):
         histogram = ROOT.TH1F("TestChi2", "Test BROOT: chi2", 100, -1, 1)
         histogram.Sumw2()
         histogram.FillRandom("gaus")
-        # self.assertEqual(br.chi2(histogram, histogram), 0)
+        # assert br.chi2(histogram == histogram), 0
 
         histogram2 = br.clone(histogram)
         error = histogram2.GetBinError(1)
