@@ -1,8 +1,12 @@
 import ROOT
 import numpy as np
-import root_numpy as rp
 from spectrum.pipeline import TransformerBase
 from spectrum.broot import BROOT as br
+
+try:
+    import root_numpy as rp
+except ValueError:
+    from spectrum.broot import BROOT as rp
 
 
 def max_value(hist, prec):

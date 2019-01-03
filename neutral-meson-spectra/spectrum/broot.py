@@ -565,3 +565,8 @@ class BROOT(object):
             chi2 = ((value - function.Eval(x)) / sigma) ** 2
             histogram.SetBinError(i, chi2 * scale)
         return histogram
+
+    @classmethod
+    def hist2array(klass, hist):
+        data = klass.bins(hist)
+        return data.contents
