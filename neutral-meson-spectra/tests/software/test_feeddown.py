@@ -4,6 +4,10 @@ import numpy as np
 from tools.feeddown import FeeddownEstimator, data_feeddown
 from spectrum.options import FeeddownOptions
 from spectrum.output import AnalysisOutput
+try:
+    import root_numpy as rp
+except ValueError:
+    from spectrum.broot import BROOT as rp
 
 
 @pytest.mark.onlylocal
@@ -23,13 +27,12 @@ def test_handles_non_pions_with_data():
         estimator.transform(data_feeddown(), "")
 
 
-@pytest.mark.skip("fix root_numpy dependencies")
+@pytest.mark.onlylocal
 def test_eta():
     estimator = FeeddownEstimator(FeeddownOptions(particle="#eta"))
     output = estimator.transform(
         None,
         AnalysisOutput("feeddown correction")
     )
-    import root_numpy as rnp
-    answer = rnp.hist2array(output)
+    answer = rp.hist2array(output)
     assert np.all(answer == np.ones_like(answer))

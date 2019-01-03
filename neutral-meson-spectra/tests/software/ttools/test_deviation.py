@@ -2,6 +2,7 @@ import pytest
 import ROOT
 
 from spectrum.broot import BROOT as br
+from tools.deviation import MaxDeviation
 
 
 @pytest.fixture()
@@ -16,8 +17,6 @@ def ratio():
     return ratio
 
 
-@pytest.mark.skip("fix root_numpy")
 def test_interface(ratio):
-    from tools.deviation import MaxDeviation
     output = MaxDeviation().transform(ratio, "test")
     assert output.GetParameter(0) == 1.5 - 1.
