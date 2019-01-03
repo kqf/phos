@@ -735,8 +735,6 @@ def test_chi2(stop):
     # because both points have their own errors
     assert pytest.approx(br.chi2(histogram, histogram2)) == 0.5
 
-# @unittest.skip("")
-
 
 def test_scales_with_rebins(stop):
     hist1 = ROOT.TH1F(
