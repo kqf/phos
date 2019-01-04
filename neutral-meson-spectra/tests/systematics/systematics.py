@@ -32,14 +32,14 @@ def data(nbins):
 
     cyield = (
         (
-            DataVault().input("data"),
+            DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
         ),
         spmc_inputs
     )
 
     tof = (
-        DataVault().input("data"),
+        DataVault().input("data", histname="MassPtSM0"),
         DataVault().input("data", "isolated", histname="MassPtSM0"),
     )
 
