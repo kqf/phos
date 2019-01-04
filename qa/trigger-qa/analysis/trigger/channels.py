@@ -1,7 +1,11 @@
 import ROOT
 import numpy as np
-import root_numpy as rnp
 import plotting
+try:
+    import root_numpy as rnp
+except ValueError:
+    import utils as rnp
+
 ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat(0)
 
