@@ -65,7 +65,7 @@ def plot(hists, labels=None, pad=None, title=None):
 
 def save_canvas(canvas, name):
     canvas.SaveAs(name + ".pdf")
-    canvas.SaveAs(name + ".png")
+    # canvas.SaveAs(name + ".png")
     ofile = ROOT.TFile(name + ".root", "recreate")
     canvas.Write()
     ofile.Write()

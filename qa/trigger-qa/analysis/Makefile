@@ -1,6 +1,6 @@
-DIRECTORY=../results/LHC16/iteration1
+DIRECTORY=../results/LHC16/iteration2
 BASEPATH = ../../../neutral-meson-spectra/input-data/data
-FILEPATH = $(BASEPATH)/LHC16/trigger_qa/iteration2_kphi7/LHC16g-pass1.root
+FILEPATH = $(BASEPATH)/LHC16/trigger_qa/iteration2/LHC16g-pass1.root
 
 
 
@@ -10,7 +10,7 @@ images: | $(DIRECTORY)
 	triggerqa --filepath=$(FILEPATH)
 
 	mv *.pdf $(DIRECTORY)
-	mv *.png $(DIRECTORY)
+	# mv *.png $(DIRECTORY)
 	mv *.root $(DIRECTORY)
 
 

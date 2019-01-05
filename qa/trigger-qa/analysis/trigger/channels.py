@@ -63,6 +63,7 @@ def fit_channels(patches):
     freq.Draw()
     plotting.decorate_pad(ROOT.gPad)
     ROOT.gPad.Update()
+    ROOT.gPad.SaveAs("fitted.pdf")
     raw_input()
     return fitf.GetParameter(1), fitf.GetParameter(2)
 
@@ -86,7 +87,7 @@ def channels(filepath, nmodules=4):
         l0.FindObject("h4x4CluSM{}".format(i))
         for i in range(1, nmodules + 1)
     ])
-    channels = channel_frequency(trigger_patches, "all")
+    channels = channel_frequency(trigger_patches, "frequencies")
     matched_channels = channel_frequency(matched_trigger_patches, "matched")
     mu, sigma = fit_channels(trigger_patches)
 
