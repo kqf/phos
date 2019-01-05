@@ -63,3 +63,4 @@ Dockerfile.slc
 sftp-config.json
 .pytest_cache
 .python-version
+*.egg-*

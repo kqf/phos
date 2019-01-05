@@ -1,1 +1,4 @@
+setuptools
+click
+pytest
 scikit-learn
