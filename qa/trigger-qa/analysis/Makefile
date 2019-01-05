@@ -6,6 +6,8 @@ images: | $(DIRECTORY)
 	mv *.png $(DIRECTORY)
 	mv *.root $(DIRECTORY)
 
+$(DIRECTORY):
+	mkdir -p $@
+
 clean:
 	rm -rf $(DIRECTORY)
-

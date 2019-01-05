@@ -16,3 +16,10 @@ def hist2array(hist):
         return hist2array2d(hist)
     start, stop = 1, hist.GetNbinsX() + 1
     return np.array([hist.GetBinContent(i) for i in range(start, stop)])
+
+
+def array2hist(array, hist):
+    for i in range(hist.GetNbinsX()):
+        for j in range(hist.GetNbinsY()):
+            hist.SetBinContent(i + 1, j + 1, array[i][j])
+    return hist
