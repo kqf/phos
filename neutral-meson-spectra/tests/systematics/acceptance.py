@@ -18,13 +18,14 @@ def cyield_data(data_production="data", mc_production="single #pi^{0}"):
     return data_input, mc_inputs
 
 
-ACCEPTANCE_DATA = (
-    cyield_data(),
-    (
+def acceptance_data():
+    return (
         cyield_data(),
-        cyield_data(),
-    ),
-)
+        (
+            cyield_data(),
+            cyield_data(),
+        ),
+    )
 
 
 @pytest.mark.thesis
@@ -34,7 +35,7 @@ def test_acceptance():
     estimator = Acceptance(
         AcceptanceOptions(particle="#pi^{0}"), plot=False)
     uncertanity = estimator.transform(
-        ACCEPTANCE_DATA,
-        loggs=AnalysisOutput("test composite corr. yield interface")
+        acceptance_data(),
+        loggs=AnalysisOutput("uncertainty acceptance")
     )
     Comparator().compare(uncertanity)
