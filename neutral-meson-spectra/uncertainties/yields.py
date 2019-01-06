@@ -13,7 +13,7 @@ class YieldExtractioinUncertanityOptions(object):
             # "mid": [0.04, 0.20],
             # "wide": [0.08, 0.24]
         }
-        self.backgrounds = ["pol1"]
+        self.backgrounds = ["pol1", "pol2"]
         self.signals = ["CrystalBall"]
         self.nsigmas = [2]
         self.cyield = cyield
@@ -62,8 +62,9 @@ class YieldExtractioin(TransformerBase):
         diff.compare_ratios(spectrums, average)
 
         uncert, rms, mean = br.systematic_deviation(spectrums)
-        uncert.SetTitle(
-            "Systematic uncertanity from yield extraction (RMS/mean)")
-        diff = Comparator(stop=self.plot, oname="syst-error-yield-extraction")
-        diff.compare(uncert)
+        # uncert.SetTitle(
+        #     "Systematic uncertanity from yield extraction (RMS/mean)")
+        # diff = Comparator(stop=self.plot,
+        #                   oname="syst-error-yield-extraction")
+        # diff.compare(uncert)
         return uncert
