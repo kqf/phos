@@ -1,5 +1,6 @@
 import pytest
 
+from lazy_object_proxy import Proxy
 from tools.ep import EpRatioEstimator, DataMCEpRatioEstimator
 
 from vault.datavault import DataVault
@@ -18,9 +19,11 @@ def data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
-DOUBLE_RATIO_DATASET = (
-    data("data"),
-    data("pythia8", "ep_ratio_1"),
+DOUBLE_RATIO_DATASET = Proxy(
+    lambda: (
+        data("data"),
+        data("pythia8", "ep_ratio_1"),
+    )
 )
 
 
