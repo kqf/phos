@@ -1,6 +1,7 @@
 import pytest
 
 import ROOT
+from lazy_object_proxy import Proxy
 from spectrum.broot import BROOT as br
 from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
@@ -9,23 +10,27 @@ from spectrum.output import AnalysisOutput
 from tools.probe import TagAndProbe
 from tools.validate import validate
 
-LATEST_DATASET = (
-    DataVault().input("data",
-                      listname="TagAndProbleTOF",
-                      histname="MassEnergyTOF_SM0"),
-    DataVault().input("data",
-                      listname="TagAndProbleTOF",
-                      histname="MassEnergyAll_SM0"),
+LATEST_DATASET = Proxy(
+    lambda: (
+        DataVault().input("data",
+                          listname="TagAndProbleTOF",
+                          histname="MassEnergyTOF_SM0"),
+        DataVault().input("data",
+                          listname="TagAndProbleTOF",
+                          histname="MassEnergyAll_SM0"),
+    )
 )
-OLD_DATASET = (
-    DataVault().input("data",
-                      "uncorrected",
-                      "TagAndProbleTOFOnlyTender",
-                      histname="MassEnergyTOF_SM0"),
-    DataVault().input("data",
-                      "uncorrected",
-                      "TagAndProbleTOFOnlyTender",
-                      histname="MassEnergyAll_SM0"),
+OLD_DATASET = Proxy(
+    lambda: (
+        DataVault().input("data",
+                          "uncorrected",
+                          "TagAndProbleTOFOnlyTender",
+                          histname="MassEnergyTOF_SM0"),
+        DataVault().input("data",
+                          "uncorrected",
+                          "TagAndProbleTOFOnlyTender",
+                          histname="MassEnergyAll_SM0"),
+    )
 )
 
 
