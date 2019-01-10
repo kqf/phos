@@ -68,6 +68,7 @@ def data(nbins):
     )
 
 
+@pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_draws_all_sources():

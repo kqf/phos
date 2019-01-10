@@ -26,6 +26,9 @@ def nbins():
 
 
 @pytest.mark.skip('')
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_scan_nonlinearities(nbins):
     prod = "single #pi^{0} scan nonlinearity6"
     histnames = form_histnames(nbins)
@@ -54,6 +57,9 @@ def test_scan_nonlinearities(nbins):
     Comparator().compare(chi2ndf)
 
 
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_draw_most_optimal_nonlinearity(nbins):
     production = "single #pi^{0}"
     minimum_index = 70

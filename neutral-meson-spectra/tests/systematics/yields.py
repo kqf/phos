@@ -21,6 +21,7 @@ def cyield_data():
     return data_input, mc_inputs
 
 
+@pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_yield_extraction_uncertanity_pion():
