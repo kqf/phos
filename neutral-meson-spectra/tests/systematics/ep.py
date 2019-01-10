@@ -53,6 +53,9 @@ def test_ep_ratio_data():
         Comparator().compare(o)
 
 
+@pytest.mark.thesis
+@pytest.mark.interactive
+@pytest.mark.onlylocal
 def test_data_mc_ratio():
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True

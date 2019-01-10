@@ -10,6 +10,7 @@ from uncertainties.nonlinearity import Nonlinearity, define_inputs
 # TODO: Look at generated histogram in different selection
 #       fix this asap
 
+@pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_nonlinearity_uncertainty():
