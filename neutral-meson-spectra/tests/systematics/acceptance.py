@@ -6,9 +6,10 @@ from spectrum.comparator import Comparator
 from tools.feeddown import data_feeddown
 
 
-def cyield_data(data_production="data", mc_production="single #pi^{0}"):
+def cyield_data(particle):
+    mc_production = "single %s" % particle
     data_input = (
-        DataVault().input(data_production, histname="MassPtSM0"),
+        DataVault().input("data", histname="MassPtSM0"),
         data_feeddown(),
     )
     mc_inputs = (
@@ -18,12 +19,12 @@ def cyield_data(data_production="data", mc_production="single #pi^{0}"):
     return data_input, mc_inputs
 
 
-def acceptance_data():
+def acceptance_data(particle):
     return (
-        cyield_data(),
+        cyield_data(particle),
         (
-            cyield_data(),
-            cyield_data(),
+            cyield_data(particle),
+            cyield_data(particle),
         ),
     )
 
@@ -31,11 +32,15 @@ def acceptance_data():
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_acceptance():
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta"
+])
+def test_acceptance(particle):
     estimator = Acceptance(
-        AcceptanceOptions(particle="#pi^{0}"), plot=False)
+        AcceptanceOptions(particle=particle), plot=False)
     uncertanity = estimator.transform(
-        acceptance_data(),
+        acceptance_data(particle),
         loggs=AnalysisOutput("uncertainty acceptance")
     )
     Comparator().compare(uncertanity)
