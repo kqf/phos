@@ -16,9 +16,9 @@ def ep_data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
-GE_SCALE_DATA = Proxy(
-    lambda:
-    (
+def ge_scale_data(particle):
+    mcproduction = "single %s" % particle
+    return (
         (
             ep_data("data"),
             ep_data("pythia8", "ep_ratio_1"),
@@ -26,24 +26,27 @@ GE_SCALE_DATA = Proxy(
         (
             (
                 DataVault().input("data", histname="MassPtSM0"),
-                data_feeddown(),
+                data_feeddown(particle == "#eta"),
             ),
             (
-                DataVault().input("single #pi^{0}", "low", "PhysEff"),
-                DataVault().input("single #pi^{0}", "high", "PhysEff"),
+                DataVault().input(mcproduction, "low", "PhysEff"),
+                DataVault().input(mcproduction, "high", "PhysEff"),
             )
         ),
     )
-)
 
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_interface_composite():
-    estimator = GScale(GScaleOptions(particle="#pi^{0}"), plot=False)
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_interface_composite(particle):
+    estimator = GScale(GScaleOptions(particle=particle), plot=False)
     uncertanity = estimator.transform(
-        GE_SCALE_DATA,
+        ge_scale_data(particle),
         loggs=AnalysisOutput("test composite corr. yield interface")
     )
     Comparator().compare(uncertanity)
