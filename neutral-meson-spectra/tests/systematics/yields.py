@@ -9,14 +9,15 @@ from spectrum.comparator import Comparator
 from tools.feeddown import data_feeddown
 
 
-def cyield_data():
+def cyield_data(particle="#pi^{0}"):
     data_input = (
         DataVault().input("data", histname="MassPtSM0"),
-        data_feeddown(),
+        data_feeddown(dummy=particle == "#eta"),
     )
+    production = "single %s" % particle
     mc_inputs = (
-        DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
-        DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
+        DataVault().input(production, "low", listname="PhysEff"),
+        DataVault().input(production, "high", listname="PhysEff"),
     )
     return data_input, mc_inputs
 
@@ -24,13 +25,17 @@ def cyield_data():
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_yield_extraction_uncertanity_pion():
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_yield_extraction_uncertanity_pion(particle):
     options = YieldExtractioinUncertanityOptions(
-        CompositeCorrectedYieldOptions(particle="#pi^{0}")
+        CompositeCorrectedYieldOptions(particle=particle)
     )
     estimator = YieldExtractioin(options)
     output = estimator.transform(
-        cyield_data(),
-        loggs=AnalysisOutput("corrected yield #pi^{0}")
+        cyield_data(particle),
+        loggs=AnalysisOutput("corrected yield %s" % particle)
     )
     Comparator().compare(output)
