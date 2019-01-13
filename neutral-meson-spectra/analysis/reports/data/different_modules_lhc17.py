@@ -1,5 +1,6 @@
 import pytest
 
+from lazy_object_proxy import Proxy
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.output import AnalysisOutput
@@ -7,28 +8,27 @@ from spectrum.pipeline import ComparePipeline
 from vault.datavault import DataVault
 
 
-def analyze(inputs, particle="#pi^{0}"):
+DATASET = Proxy(
+    lambda: DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
+)
+
+
+@pytest.mark.qa
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def analyze(particle):
     options = Options(
         particle=particle,
         ptrange="config/test_different_modules.json"
     )
     estimator = ComparePipeline([
         ('module {0}'.format(i), Analysis(options))
-        for i, _ in enumerate(inputs)
+        for i, _ in enumerate(DATASET)
     ])
 
     loggs = AnalysisOutput("compare_different_modules", particle=particle)
-    estimator.transform(inputs, loggs)
+    estimator.transform(DATASET, loggs)
     loggs.plot()
-
-
-@pytest.mark.onlylocal
-def test_different_modules_pi0():
-    inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
-    analyze(inputs, "#pi^{0}")
-
-
-@pytest.mark.onlylocal
-def test_different_modules_eta():
-    inputs = DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
-    analyze(inputs, "#eta")
