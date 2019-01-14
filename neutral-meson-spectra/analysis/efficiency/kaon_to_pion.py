@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 import ROOT
+from lazy_object_proxy import Proxy
 from spectrum.broot import BROOT as br
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase
@@ -97,6 +98,24 @@ class KaonToPionDoubleRatio(TransformerBase):
         ])
 
 
+DATASET = Proxy(
+    lambda: (
+        (
+            (
+                DataVault().input("kaon2pion"),
+                DataVault().input("kaon2pion"),
+            ),
+            (
+                (
+                    DataVault().input("pythia8", listname="KaonToPionRatio"),
+                    DataVault().input("pythia8", listname="KaonToPionRatio"),
+                ) * 2,
+            ),
+        )
+    )
+)
+
+
 def test_ratio():
     fitfunc = ROOT.TF1(
         "feeddown_ratio",
@@ -122,14 +141,7 @@ def test_ratio():
     )
 
     estimator = KaonToPionDoubleRatio(options, plot=True)
-    pythia8 = DataVault().input("pythia8", listname="KaonToPionRatio")
     loggs = AnalysisOutput("pion to kaon", particle="")
-    double_ratio = estimator.transform(
-        [
-            [DataVault().input("kaon2pion")] * 2,
-            [[pythia8] * 2] * 2
-        ],
-        loggs
-    )
+    double_ratio = estimator.transform(DATASET, loggs)
     loggs.plot()
     Comparator().compare(double_ratio)
