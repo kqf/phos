@@ -153,7 +153,7 @@ class EventsScaler(EmptyBinRemover):
 
     def scale(self, hist):
         divided = hist.Clone("{}_{}".format(hist.GetName(), self.out_col))
-        divided.Divide(self._eventmap_cleaned)
+        divided.Divide(hist, self._eventmap_cleaned, 1, 1, "B")
         divided.LabelsOption("v")
         return divided
 
