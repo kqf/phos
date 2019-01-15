@@ -81,11 +81,16 @@ def test_data_mc_ratio():
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_ep_dataset():
-    estimator = Nonlinearity(NonlinearityOptions(), plot=True)
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_ep_dataset(particle):
+    estimator = Nonlinearity(
+        NonlinearityOptions(particle=particle), plot=True
+    )
     loggs = AnalysisOutput("validate ep ratio")
     output = estimator.transform(VALIDATION_DATA, loggs=loggs)
     # Comparator(stop=True).compare(output)
     # loggs.plot()
-
     assert len(output) > 0
