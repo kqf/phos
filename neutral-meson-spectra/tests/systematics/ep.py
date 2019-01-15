@@ -2,6 +2,8 @@ import pytest
 
 from lazy_object_proxy import Proxy
 from tools.ep import EpRatioEstimator, DataMCEpRatioEstimator
+from tools.mc import Nonlinearity
+from spectrum.options import NonlinearityOptions
 
 from vault.datavault import DataVault
 from spectrum.options import EpRatioOptions, DataMCEpRatioOptions
@@ -23,6 +25,14 @@ DOUBLE_RATIO_DATASET = Proxy(
     lambda: (
         data("data"),
         data("pythia8", "ep_ratio_1"),
+    )
+)
+
+VALIDATION_DATA = Proxy(
+    lambda:
+    (
+        DataVault().input("data", histname="MassPtSM0"),
+        DataVault().input("pythia8")
     )
 )
 
@@ -53,6 +63,7 @@ def test_ep_ratio_data():
         Comparator().compare(o)
 
 
+@pytest.mark.skip("Verifying the production")
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
@@ -65,4 +76,16 @@ def test_data_mc_ratio():
     output = estimator.transform(DOUBLE_RATIO_DATASET, loggs=loggs)
     # Comparator(stop=True).compare(output)
     loggs.plot()
+    assert len(output) > 0
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_ep_dataset():
+    estimator = Nonlinearity(NonlinearityOptions(), plot=True)
+    loggs = AnalysisOutput("validate ep ratio")
+    output = estimator.transform(VALIDATION_DATA, loggs=loggs)
+    # Comparator(stop=True).compare(output)
+    # loggs.plot()
+
     assert len(output) > 0
