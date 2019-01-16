@@ -64,11 +64,12 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 		// selections->Add(new AliPP13NonlinearitySelection("PhysNonlinRaw", "Raw nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
 		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0, &mc_weights));
 
-		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
+		// Don't scan for the moment
+		// selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13KaonToPionRatioMC("KaonToPionRatio", "MC Selection for pion/kaon ratio", cuts_pi0, &mc_weights));
+		// selections->Add(new AliPP13KaonToPionRatioMC("KaonToPionRatio", "MC Selection for pion/kaon ratio", cuts_pi0, &mc_weights));
+		// selections->Add(new AliPP13FeeddownSelection("FeeddownSelectionPlain", "FeeddownSelection", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13EpRatioSelection("EpRatio", "E/p ratio selection for electrons", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13FeeddownSelection("FeeddownSelectionPlain", "FeeddownSelection", cuts_pi0, &mc_weights));
 
 		AliPP13SelectionWeightsMC & mc_weights_feeddown = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kFeeddown);
 		selections->Add(new AliPP13FeeddownSelection("FeeddownSelection", "FeeddownSelection", cuts_pi0, &mc_weights_feeddown));
