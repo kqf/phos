@@ -175,11 +175,22 @@ def process(hist, lst, filepath, badmap_fname, nmodules=4):
     return analysis.fit_transform(outputs)
 
 
+def fired_trigger_fraction(triggers, mtriggers):
+    output = []
+    for trig, mtrig in zip(triggers, mtriggers):
+        fired = mtrig.Clone()
+        fired.Divide(mtrig, trig, 1, 1, "B")
+        title = "Ratio of all trigger clusters to matched triggered clusters"
+        fired.SetTitle(title)
+        output.append(fired)
+    return output
+
+
 def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root"):
     lst = "PHOSTriggerQAResultsL0"
 
     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
-    canvas.Divide(1, 2)
+    canvas.Divide(1, 3)
 
     triggers = process("hRunTriggers", lst, filepath, badmap_fname)
     plotter = plotting.Plotter()
@@ -189,6 +200,13 @@ def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root"):
     mtriggers = process("hRunMatchedTriggers", lst, filepath, badmap_fname)
     mtitle = "# matched 4x4 patches per run;; # patches / accepntace/ #events"
     plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2), mtitle)
+
+    fired_fraction = fired_trigger_fraction(
+        mtriggers["scaled"], triggers["scaled"])
+    plotter.plot(fired_fraction,
+                 ["SM{}".format(i) for i in enumerate(fired_fraction)],
+                 canvas.cd(3),
+                 "Fraction of matched triggers")
     canvas.Update()
     plotting.save_canvas(canvas, "trending")
     raw_input()
