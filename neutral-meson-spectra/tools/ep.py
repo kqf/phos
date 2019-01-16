@@ -28,7 +28,7 @@ class IdentityExtractor(object):
             bkgrnd.SetParameter(i - 3, func.GetParameter(i))
         mass.sigf = func
         mass.bgrf = bkgrnd
-        chi2ndf = func.GetChisquare() / func.GetNDF()
+        chi2ndf = func.GetChisquare() / (func.GetNDF() or 1)
         title = ", #chi^{{2}} / ndf = {:.3f}".format(chi2ndf)
         mass.mass.SetTitle(mass.mass.GetTitle() + title)
         mass.signal.SetTitle(mass.signal.GetTitle() + title)

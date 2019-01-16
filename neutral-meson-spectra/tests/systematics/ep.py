@@ -12,6 +12,15 @@ from spectrum.output import AnalysisOutput
 # from spectrum.output import AnalysisOutput
 
 
+def data_new_selection(prod="data", version="ep_ratio"):
+    return DataVault().input(
+        prod,
+        version=version,
+        listname="EpRatio",
+        histname="EpElectronsESM0",
+        use_mixing=False)
+
+
 def data(prod="data", version="ep_ratio"):
     return DataVault().input(
         prod,
@@ -63,7 +72,6 @@ def test_ep_ratio_data():
         Comparator().compare(o)
 
 
-@pytest.mark.skip("Verifying the production")
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
@@ -79,6 +87,7 @@ def test_data_mc_ratio():
     assert len(output) > 0
 
 
+@pytest.mark.skip("Verifying the production")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
