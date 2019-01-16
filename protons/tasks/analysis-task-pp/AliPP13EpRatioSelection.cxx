@@ -28,9 +28,9 @@ void AliPP13EpRatioSelection::InitSelectionHistograms()
 	Int_t nM       = 50;
 	Double_t nMin  = 0.0;
 	Double_t nMax  = 2.;
-	Int_t nPt      = 400;
+	Int_t nPt      = 1000;
 	Double_t ptMin = 0;
-	Double_t ptMax = 20;
+	Double_t ptMax = 10;
 
 	for (Int_t i = 0; i < 2; ++i)
 	{

@@ -12,16 +12,16 @@ from spectrum.output import AnalysisOutput
 # from spectrum.output import AnalysisOutput
 
 
-def data_new_selection(prod="data", version="ep_ratio"):
+def data(prod="data", version="ep_ratio"):
     return DataVault().input(
         prod,
         version=version,
         listname="EpRatio",
-        histname="EpElectronsESM0",
+        histname="EpElectronsPSM0",
         use_mixing=False)
 
 
-def data(prod="data", version="ep_ratio"):
+def data_old_selection(prod="data", version="ep_ratio"):
     return DataVault().input(
         prod,
         version=version,
