@@ -28,7 +28,7 @@ def test_dataset(particle):
     # Analyze the data
     observables = estimator.transform(
         DATASET,
-        AnalysisOutput("ALICE, \sqrt{s} = 13 TeV", "\pi^{0}")
+        AnalysisOutput("ALICE, #sqrt{s} = 13 TeV", "#pi^{0}")
     )
 
     # c1 = gcanvas(1. / 2, resize=True)

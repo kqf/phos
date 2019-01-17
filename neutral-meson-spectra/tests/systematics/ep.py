@@ -12,7 +12,7 @@ from spectrum.output import AnalysisOutput
 # from spectrum.output import AnalysisOutput
 
 
-def data(prod="data", version="ep_ratio"):
+def data_old_selection(prod="data", version="ep_ratio"):
     return DataVault().input(
         prod,
         version=version,
@@ -21,7 +21,7 @@ def data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
-def data_old_selection(prod="data", version="ep_ratio"):
+def data(prod="data", version="ep_ratio"):
     return DataVault().input(
         prod,
         version=version,

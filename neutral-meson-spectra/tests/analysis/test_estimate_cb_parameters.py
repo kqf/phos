@@ -1,6 +1,7 @@
 import pytest
 
 import ROOT
+from lazy_object_proxy import Proxy
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
 from spectrum.options import Options
@@ -8,6 +9,9 @@ from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import TransformerBase
 from vault.datavault import DataVault
+
+
+DATASET = Proxy(lambda: DataVault().input("data", histname="MassPtSM0"))
 
 
 class CbFitOptions(object):
@@ -51,16 +55,16 @@ class CballParametersEstimator(TransformerBase):
 
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"
+])
 def test_cball_parameters(particle):
     options = CbFitOptions(particle=particle)
     estimator = CballParametersEstimator(options, plot=False)
     message = "%s #rightarrow #gamma #gamma, ALICE, pp #sqrt{s} = 13 TeV "
     hists = estimator.transform(
-        DataVault().input("data", histname="MassPtSM0"),
-        loggs=AnalysisOutput(
-            message % particle
-        ),
-    )
+        DATASET,
+        loggs=AnalysisOutput(message % particle))
     for h in hists:
         Comparator().compare(h)
