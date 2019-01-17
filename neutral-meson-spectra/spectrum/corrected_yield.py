@@ -6,6 +6,7 @@ from pipeline import Pipeline, HistogramSelector, OutputDecorator
 from pipeline import ParallelPipeline, ReducePipeline
 from pipeline import ComparePipeline
 from pipeline import OutputFitter
+from pipeline import HistogramScaler
 from tools.feeddown import FeeddownEstimator
 
 
@@ -31,6 +32,7 @@ class CorrectedYield(TransformerBase):
 
         self.pipeline = Pipeline([
             ("corrected yield", compare),
+            ("normalization", HistogramScaler(options.normalization)),
             ("fix naming", OutputDecorator(options.analysis.particle)),
             ("fitted yield", OutputFitter(options)),
             ("decorate output", OutputDecorator(**options.decorate)),

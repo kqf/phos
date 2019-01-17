@@ -210,6 +210,7 @@ class CorrectedYieldOptions(object):
         self.efficiency = EfficiencyOptions(
             genname="hPt_{0}_primary_".format(particle))
         self.feeddown = FeeddownOptions(particle=particle)
+        self.normalization = 1.
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
