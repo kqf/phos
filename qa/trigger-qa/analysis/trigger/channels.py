@@ -52,8 +52,11 @@ def fit_channels(patches):
     counts = counts[counts > 0]
 
     ROOT.gStyle.SetOptFit(1)
-    fitf = ROOT.TF1("fgaus", "gaus(0)", 2, 40)
+    fitf = ROOT.TF1(
+        "fpoisson",
+        "[1] * TMath::Poisson(x[0], [0])", 0, 40)
     fitf.SetParameter(0, 5)
+    fitf.SetParameter(1, 1000)
     fitf.SetLineColor(ROOT.kGreen + 1)
 
     freq = ROOT.TH1F("freq", "Distribution of 4x4 trigger; hits", 50, 0, 50)
@@ -92,7 +95,7 @@ def channels(filepath, nmodules=4):
     mu, sigma = fit_channels(trigger_patches)
 
     title = "{} good channels: {} < # hits < {}".format(
-        channels.GetTitle(), 1, mu + 2 * sigma
+        channels.GetTitle(), 1, mu + 3 * (sigma ** 0.5)
     )
 
     plotting.plot([

@@ -9,5 +9,5 @@ from channels import channels
               help="Where is the dataset",
               required=True)
 def main(filepath):
-    trend(filepath)
+    # trend(filepath)
     channels(filepath)
