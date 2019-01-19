@@ -1,3 +1,6 @@
+#if !defined (__CINT__) || defined (__CLING__)
+#define gROOT gInterpreter
+#endif
 void LoadAnalysisLibraries()
 {
 	Int_t id = gClassTable->GetID("AliAnalysisTaskPP13");
@@ -123,3 +126,7 @@ void LoadAnalysisLibraries()
 		"AliAnalysisTaskPP13.h "
 	);
 }
+
+#if !defined (__CINT__) || defined (__CLING__)
+#undef gROOT 
+#endif
