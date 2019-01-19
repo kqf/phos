@@ -28,8 +28,11 @@ void SetupEnvironment()
     gSystem->Load( "libPhysics.so" );
 
     //add include path
-    gSystem->AddIncludePath( "-I$ALICE_ROOT/include" );
-    gSystem->AddIncludePath( "-I$ALICE_PHYSICS/include" );
-    gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
+#if !defined (__CINT__) || defined (__CLING__)
+    gInterpreter->ProcessLine(".include $ROOTSYS/include");
+    gInterpreter->ProcessLine(".include $ALICE_ROOT/include");
+#else
+    gROOT->ProcessLine(".include $ROOTSYS/include");
+    gROOT->ProcessLine(".include $ALICE_ROOT/include");
+#endif
 }
-
