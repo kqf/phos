@@ -50,8 +50,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	if (isTest || isMC)
 	{
-		AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
-		AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
+		AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC));
+		AliPP13SelectionWeightsMC & mc_weights_only = dynamic_cast<AliPP13SelectionWeightsMC &>(AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC));
 
 		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
@@ -69,7 +69,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		// selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));
 		// selections->Add(new AliPP13KaonToPionRatioMC("KaonToPionRatio", "MC Selection for kaon/pion ratio", cuts_pi0, &mc_weights));
 		// selections->Add(new AliPP13FeeddownSelection("FeeddownSelectionPlain", "FeeddownSelection", cuts_pi0, &mc_weights));
-		// AliPP13SelectionWeightsMC & mc_weights_feeddown = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kFeeddown);
+		// AliPP13SelectionWeights & mc_weights_feeddown = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kFeeddown);
 		// selections->Add(new AliPP13FeeddownSelection("FeeddownSelection", "FeeddownSelection", cuts_pi0, &mc_weights_feeddown));
 	}
 

@@ -12,7 +12,7 @@ R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 
 #include "../../setup/environment.h"
 #include "CreatePlugin.cc"
-// #include "AddAnalysisTaskPP.C"
+#include "AddAnalysisTaskPP.C"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
@@ -73,7 +73,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
-    // AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", isMC, isTest);
+    gInterpreter->ProcessLine("AddAnalysisTaskPP.C");
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", isMC, isTest);
     AddTaskPHOSEpRatio(isMC);
 
 
