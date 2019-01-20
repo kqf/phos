@@ -11,7 +11,6 @@ R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 
 void SetupEnvironment()
 {
-    //add include path
     gInterpreter->ProcessLine(".include $ROOTSYS/include");
     gInterpreter->ProcessLine(".include $ALICE_ROOT/include");
 }
