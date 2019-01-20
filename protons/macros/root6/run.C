@@ -1,17 +1,6 @@
-#ifdef __CLING__
-
-R__ADD_INCLUDE_PATH($ALICE_ROOT)
-#include <ANALYSIS/macros/AddTaskPIDResponse.C>
-
-R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
-#include <PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C>
-#include <OADB/macros/AddTaskPhysicsSelection.C>
-#include <PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C>
-
 #include "../../setup/environment.h"
-#include "CreatePlugin.cc"
-#include "AddAnalysisTaskPP.C"
-#endif
+#include "plugin.h"
+#include "task.h"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {

@@ -46,7 +46,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	selections->Add(new AliPP13EpRatioSelection("EpRatio", "E/p ratio selection for electrons", cuts_pi0, &data_weights));
 	// TODO: This should be available only in for the data
 	//
-	selections->Add(new AliPP13TriggerEfficiency("TriggerEfficiency", "Trigger efficiency", cuts_pi0, &data_weights));
+	// selections->Add(new AliPP13TriggerEfficiency("TriggerEfficiency", "Trigger efficiency", cuts_pi0, &data_weights));
 
 	if (isTest || isMC)
 	{
