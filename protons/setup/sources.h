@@ -1,6 +1,3 @@
-#if !defined (__CINT__) || defined (__CLING__)
-#define gROOT gInterpreter
-#endif
 void LoadAnalysisLibraries()
 {
 	Int_t id = gClassTable->GetID("AliAnalysisTaskPP13");
@@ -16,31 +13,31 @@ void LoadAnalysisLibraries()
 		return;
 	}
 
-	gROOT->LoadMacro("AliPP13AnalysisCluster.cxx+");
-	gROOT->LoadMacro("AliPP13TriggerProperties.cxx+");
-	gROOT->LoadMacro("AliPP13ClusterCuts.cxx+");
-	gROOT->LoadMacro("AliPP13SelectionWeights.cxx+");
-	gROOT->LoadMacro("AliPP13DetectorHistogram.cxx+");
-	gROOT->LoadMacro("AliPP13PhysicsSelection.cxx+");
-	gROOT->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
-	gROOT->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13AnalysisCluster.cxx+");
+	gInterpreter->LoadMacro("AliPP13TriggerProperties.cxx+");
+	gInterpreter->LoadMacro("AliPP13ClusterCuts.cxx+");
+	gInterpreter->LoadMacro("AliPP13SelectionWeights.cxx+");
+	gInterpreter->LoadMacro("AliPP13DetectorHistogram.cxx+");
+	gInterpreter->LoadMacro("AliPP13PhysicsSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
 	// TODO: Add to particle histogram
-	gROOT->LoadMacro("AliPP13ParticlesHistogram.cxx+");
-	gROOT->LoadMacro("AliPP13PhotonTimecutStudySelection.cxx+");
-	gROOT->LoadMacro("AliPP13SpectrumSelection.cxx+");
-	gROOT->LoadMacro("AliPP13EpRatioSelection.cxx+");
-	gROOT->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
-	gROOT->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
-	gROOT->LoadMacro("AliPP13SpectrumSelectionMC.cxx+");
-	gROOT->LoadMacro("AliPP13KaonToPionRatioMC.cxx+");
-	gROOT->LoadMacro("AliPP13NonlinearitySelection.cxx+");
-	gROOT->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
-	gROOT->LoadMacro("AliPP13MesonSelectionMC.cxx+");
-	gROOT->LoadMacro("AliPP13FeeddownSelection.cxx+");
-	gROOT->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
-	gROOT->LoadMacro("AliPP13TriggerEfficiency.cxx+");
-	gROOT->LoadMacro("AliPP13MixingSample.cxx+");
-	gROOT->LoadMacro("AliAnalysisTaskPP13.cxx+");
+	gInterpreter->LoadMacro("AliPP13ParticlesHistogram.cxx+");
+	gInterpreter->LoadMacro("AliPP13PhotonTimecutStudySelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13SpectrumSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13EpRatioSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13TagAndProbeSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13PythiaInfoSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13SpectrumSelectionMC.cxx+");
+	gInterpreter->LoadMacro("AliPP13KaonToPionRatioMC.cxx+");
+	gInterpreter->LoadMacro("AliPP13NonlinearitySelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13EfficiencySelectionMC.cxx+");
+	gInterpreter->LoadMacro("AliPP13MesonSelectionMC.cxx+");
+	gInterpreter->LoadMacro("AliPP13FeeddownSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13NonlinearityScanSelection.cxx+");
+	gInterpreter->LoadMacro("AliPP13TriggerEfficiency.cxx+");
+	gInterpreter->LoadMacro("AliPP13MixingSample.cxx+");
+	gInterpreter->LoadMacro("AliAnalysisTaskPP13.cxx+");
 
 	AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
 	TString sources = plugin->GetAnalysisSource();
@@ -126,7 +123,3 @@ void LoadAnalysisLibraries()
 		"AliAnalysisTaskPP13.h "
 	);
 }
-
-#if !defined (__CINT__) || defined (__CLING__)
-#undef gROOT 
-#endif

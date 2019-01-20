@@ -8,11 +8,10 @@ R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 #include <OADB/macros/AddTaskPhysicsSelection.C>
 #include <PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C>
 
-#endif
-
 #include "../../setup/environment.h"
 #include "CreatePlugin.cc"
 #include "AddAnalysisTaskPP.C"
+#endif
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
@@ -72,10 +71,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    Bool_t isTest = TString(pluginmode).Contains("test");
-    gInterpreter->ProcessLine("AddAnalysisTaskPP.C");
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", isMC, isTest);
     AddTaskPHOSEpRatio(isMC);
+
+    Bool_t isTest = TString(pluginmode).Contains("test");
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", isMC, isTest);
 
 
     if ( !manager->InitAnalysis( ) ) return;
