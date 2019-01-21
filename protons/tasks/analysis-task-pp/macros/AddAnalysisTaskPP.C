@@ -50,8 +50,8 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 
 	if (isMC)
 	{
-		AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
-		AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
+		AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC));
+		AliPP13SelectionWeightsMC & mc_weights_only =dynamic_cast<AliPP13SelectionWeightsMC &>(AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC));
 
 		mc_weights_only.fNonGlobal = 1.0;
 		mc_weights_only.fNonA = 0.0;
@@ -71,7 +71,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 		// selections->Add(new AliPP13FeeddownSelection("FeeddownSelectionPlain", "FeeddownSelection", cuts_pi0, &mc_weights));
 		selections->Add(new AliPP13EpRatioSelection("EpRatio", "E/p ratio selection for electrons", cuts_pi0, &mc_weights));
 
-		AliPP13SelectionWeightsMC & mc_weights_feeddown = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kFeeddown);
+		AliPP13SelectionWeightsMC & mc_weights_feeddown = dynamic_cast<AliPP13SelectionWeightsMC &>(AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kFeeddown));
 		selections->Add(new AliPP13FeeddownSelection("FeeddownSelection", "FeeddownSelection", cuts_pi0, &mc_weights_feeddown));
 
 		delete & mc_weights;
