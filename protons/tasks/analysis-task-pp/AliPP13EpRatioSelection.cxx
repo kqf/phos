@@ -196,7 +196,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	if ((sm = CheckClusterGetSM(cluster, x1, z1)) < 0)
 		return; //  To be sure that everything is Ok	
 
-	Double_t trackPt = track->Pt() ;
+	Double_t trackPt = track->Pt();
 
 	Int_t charge = track->Charge();
 	Double_t dx = cluster->GetTrackDx();
@@ -217,7 +217,7 @@ void AliPP13EpRatioSelection::FillClusterHistograms(const AliVCluster * cluster,
 	Double_t nSigma = eflags.fPIDResponse->NumberOfSigmasTPC(track, AliPID::kElectron);
 	fTPCSignal[0]->Fill(EpRatio, nSigma);
 
-	Bool_t isElectron = (nsigma_min < nSigma && nSigma < nsigma_max) ;
+	Bool_t isElectron = (nsigma_min < nSigma && nSigma < nsigma_max);
 	if (isElectron)
 	{
 		fPIDCriteria[5]->Fill(EpRatio, r);
