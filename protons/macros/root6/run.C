@@ -1,4 +1,5 @@
 #include "../../setup/environment.h"
+// #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
 #include "plugin.h"
 #include "task.h"
 
@@ -63,6 +64,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddTaskPHOSEpRatio(isMC);
 
     Bool_t isTest = TString(pluginmode).Contains("test");
+    // AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg); // AliPhysics
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", isMC, isTest);
 
 

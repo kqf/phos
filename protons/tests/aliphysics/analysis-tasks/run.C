@@ -1,6 +1,6 @@
 #include "../../../setup/environment.h"
-// #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
-#include "../../../tasks/analysis-task-pp/macros/AddAnalysisTaskPP.C"
+#include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
+// #include "../../../tasks/analysis-task-pp/macros/AddAnalysisTaskPP.C"
 #include "plugin.h"
 
 void run(
