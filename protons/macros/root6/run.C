@@ -1,5 +1,4 @@
 #include "../../setup/environment.h"
-// #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
 #include "plugin.h"
 #include "task.h"
 

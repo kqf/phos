@@ -1,6 +1,6 @@
 #include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", const std::vector<Int_t>  & v, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	LoadAnalysisLibraries();
 
@@ -50,8 +50,12 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	if (isTest || isMC)
 	{
-		AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
-		AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
+		AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
+			AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC)
+		);
+		AliPP13SelectionWeightsMC & mc_weights_only = dynamic_cast<AliPP13SelectionWeightsMC &>(
+			AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC)
+		);
 
 		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
