@@ -1,10 +1,11 @@
 #include "../../setup/environment.h"
+#include "plugin.h"
+#include "task.h"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
-    gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
@@ -21,12 +22,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // Connect plug-in to the analysis manager
     manager->SetGridHandler(alien);
 
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
@@ -34,7 +33,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
     PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
-    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
     AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
         isMC, 
         kTRUE,
@@ -56,7 +54,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
 
-    gROOT->LoadMacro("../../setup/values_for_dataset.h+");
     std::vector<Int_t> cells;
     values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
 
@@ -71,11 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t isTest = TString(pluginmode).Contains("test");
     TString pref =  isMC ? "MC" : "";
 
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "", cells, isMC, isTest);
-
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
-    // AddTaskPHOSEpRatio(isMC);
 
     manager->InitAnalysis();
     manager->PrintStatus();
