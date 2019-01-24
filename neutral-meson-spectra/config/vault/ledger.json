@@ -7,6 +7,13 @@
 			"hsum": "bf24898339bd2fd790db8d34de83c812c8a3a0bf6984d406771796b85f4142b7",
 			"description": "All corrections; ep_ratio"
 		},
+		"fixed_ep": {
+			"file": "input-data/data/LHC16/ep_ratio_4/LHC16.root",
+			"default_selection": "Phys",
+			"pt_range": [0, 20],
+			"hsum": "49b35a837331dd7af0f5604030b2501bc922330c5a4cfb0033b9629b1b3f2916",
+			"description": "Fixed ep ratio, all periods are correctly propagated"
+		},
 		"stable": {
 			"file": "input-data/data/LHC16/corrected-tof/LHC16.root",
 			"default_selection": "Phys",
