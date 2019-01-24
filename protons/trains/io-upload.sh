@@ -1,4 +1,4 @@
-outdir=results/data/LHC16/corrected
+outdir=results/data/LHC16/ep_ratio_4
 ofile=LHC16.root
 # outdir=results/mc/pythia/ep_ratio_1
 # ofile=pythia8.root
