@@ -5,15 +5,20 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
 # run=963_20180809-1020_child_
 # run=971_20180815-1556_child_
 # run=980_20180827-1016_child_
-# run=1046_20180911-0906_child_
-run=1268_20190123-1043_child_
 # Dataset: LHC17_PYT8_13TeV_anchLHC16x_AOD
 # declare -A children=([1]=1 [2]=1 [3]=1 [4]=1 [5]=1 [6]=1 [7]=1 [8]=1 [9]=1 [10]=1)
 # declare -A names=([1]=LHC17f6 [2]=LHC17f9 [3]=LHC17d17 [4]=LHC17f5 [5]=LHC17d3 [6]=LHC17e5 [7]=LHC17d20a1 [8]=LHC17d20a2 [9]=LHC17d16 [10]=LHC17d18)
 
 # Dataset: PYT8_13TeV_anchLHC16_AOD209
-declare -A children=([2]=2 [3]=2 [4]=2)
-declare -A names=([2]=child2 [3]=child3 [4]=child4)
+# run=1046_20180911-0906_child_
+# declare -A children=([2]=2 [3]=2 [4]=2)
+# declare -A names=([2]=child2 [3]=child3 [4]=child4)
+
+# Dataset: PYT8_13TeV_anchLHC16_AOD209_extra
+run=1269_20190123-1043_child_
+declare -A children=([1]=2 [2]=2 [3]=2 [4]=2 [5]=2 [6]=2 [7]=2 [8]=2 [9]=2 [10]=2)
+declare -A names=([1]=child1 [2]=child2 [3]=child3 [4]=child4 [5]=child5 [6]=child6 [7]=child7 [8]=child8 [9]=child9 [10]=child10)
+
 
 # Data trains here
 # train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/

@@ -1,7 +1,7 @@
 # outdir=results/data/LHC16/ep_ratio_4
 # ofile=LHC16.root
 outdir=results/mc/pythia/ep_ratio_2
-ofile=pythia8_LHC16.root
+ofile=pythia8_LHC16_extra.root
 function upload() {
 	hadd $ofile *.root
 	alien_mkdir -p $ALIEN_HOME/$outdir/
