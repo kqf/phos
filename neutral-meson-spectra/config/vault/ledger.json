@@ -79,6 +79,13 @@
 			"hsum": "7c93dbeb8982dee7feda80dcf18dc23f6497e96b3b8ff8efe5a80abdd7c7e51f",
 			"description": "Feeddown corrected for kaon to pion ratio + EP ratio. Move to the latest if feeddown, K/pi, coincide"
 		},
+		"ep_ratio_2": {
+			"file": "input-data/mc/pythia/ep_ratio_2/LHC16.root",
+			"default_selection": "PhysEff",
+			"pt_range": [0, 20],
+			"hsum": "5ec460330496c4f685534cbe9ec1a5ecb9cfc2885bd66037c21177d028b08f3f",
+			"description": "Add nonlinearity correction for E/p task"
+		},
 		"kaon2pion": {
 			"file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
 			"default_selection": "PionToKaonRatioOnlyTender",
