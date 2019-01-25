@@ -32,8 +32,8 @@ def data(prod="data", version="ep_ratio"):
 
 DOUBLE_RATIO_DATASET = Proxy(
     lambda: (
-        data("data"),
-        data("pythia8", "ep_ratio_1"),
+        data_old_selection("data", "fixed_ep"),
+        data_old_selection("pythia8", "ep_ratio_2"),
     )
 )
 

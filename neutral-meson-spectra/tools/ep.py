@@ -34,7 +34,7 @@ class IdentityExtractor(object):
         mass.signal.SetTitle(mass.signal.GetTitle() + title)
         a, b = self.options.fit_range
         mass.signal.GetXaxis().SetRangeUser(a, b)
-        mass.signal.Scale(1. / mass.signal.Integral())
+        # mass.signal.Scale(1. / mass.signal.Integral())
         loggs.update({mass.signal.GetName(): mass.signal})
         return mass
 
