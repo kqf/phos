@@ -4,7 +4,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 {
     SetupEnvironment();
 
-    gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
 
     if (!alienHandler) return;
@@ -21,16 +20,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
 
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
+ 
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
+ 
 
     TString pref =  isMC ? "MC" : "";
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
+ 
 
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
@@ -47,11 +46,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         PHOSSupply->ApplyZeroSuppression(zs_threshold);
     }
 
-
-    gROOT->LoadMacro("../datasets/values_for_dataset.h+");
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
-
     TString msg = "## Real data, no TOF cut efficiency, different time callibration";
 
     if (tenderOption)
@@ -61,8 +55,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC, isTest);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC, isTest);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", isMC, isTest);
 
 
     if ( !mgr->InitAnalysis( ) ) return;
