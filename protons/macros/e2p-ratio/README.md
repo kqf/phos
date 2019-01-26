@@ -37,5 +37,3 @@ make terminate
 # Download, merge and upload back the merged result
 make download
 ```
-
-
