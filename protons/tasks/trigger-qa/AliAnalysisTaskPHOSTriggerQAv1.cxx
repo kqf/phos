@@ -79,10 +79,10 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
   Float_t trMax = 600.;
 
   fOutputContainer->Add(new TH1F("hNtr", "Number of fired 4x4 regions per event", nTrMax, 0., trMax));
-  
+
   Int_t runMin = 254128;
   Int_t runMax = 254331;
-  fOutputContainer->Add(new TH1F("hRunEvents", "Number events per run; run number", (runMax - runMin), runMin - 0.5, runMax - 0.5));  
+  fOutputContainer->Add(new TH1F("hRunEvents", "Number events per run; run number", (runMax - runMin), runMin - 0.5, runMax - 0.5));
 
   for (Int_t sm = 1; sm < 5; sm++) {
 
@@ -124,6 +124,15 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
       snprintf(key, 55, "hPhotTrigSM%dTRU%d", sm, iTRU);
       snprintf(titl, 55, "SM%d: triggered clusters energy in TRU%d", 5 - sm, iTRU);
       fOutputContainer->Add(new TH1F(key, titl, nPtPhot, 0., ptPhotMax));
+
+      snprintf(key, 55, "hRunTriggersSM%dTRU%d", sm, iTRU);
+      snprintf(titl, 55, "SM%d number of triggers per run in TRU%d; run number", 5 - sm, iTRU);
+      fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));
+
+      snprintf(key, 55, "hRunMatchedTriggersSM%dTRU%d", sm, iTRU);
+      snprintf(titl, 55, "SM%d number of matched triggers per run in TRU%d; run number", 5 - sm, iTRU);
+      fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));
+
     }
 
 
@@ -131,11 +140,11 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserCreateOutputObjects()
 
     snprintf(key, 55, "hRunTriggersSM%d", sm);
     snprintf(titl, 55, "SM%d number of triggers per run; run number", 5 - sm);
-    fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));  
+    fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));
 
     snprintf(key, 55, "hRunMatchedTriggersSM%d", sm);
     snprintf(titl, 55, "SM%d number of matched triggers per run; run number", 5 - sm);
-    fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));  
+    fOutputContainer->Add(new TH1F(key, titl, (runMax - runMin), runMin - 0.5, runMax - 0.5));
   }
 
   PostData(1, fOutputContainer);
@@ -219,6 +228,10 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
     snprintf(key, 55, "hRunTriggersSM%d", trelid[0]);
     FillHistogram(key, event->GetRunNumber(), 1.);
 
+    snprintf(key, 55, "hRunTriggersSM%dTRU%d", trelid[0], GetTRUNum(trelid[2] - 1, trelid[3] - 1));
+    FillHistogram(key, event->GetRunNumber(), 1.);
+
+
     inPHOS[trelid[0] - 1]++;
 
     for (Int_t i = 0; i < multClu; i++) {
@@ -245,7 +258,7 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
       snprintf(key, 55, "hCluSM%d", relid[0]);
       FillHistogram(key, relid[2] - 1, relid[3] - 1);
 
-      if( Matched(trelid,relid) ) {
+      if ( Matched(trelid, relid) ) {
 
         kUsedCluster[i] = 1;
 
@@ -259,6 +272,9 @@ void AliAnalysisTaskPHOSTriggerQAv1::UserExec(Option_t *)
         FillHistogram(key, relid[2] - 1, relid[3] - 1);
 
         snprintf(key, 55, "hRunMatchedTriggersSM%d", trelid[0]);
+        FillHistogram(key, event->GetRunNumber(), 1.);
+
+        snprintf(key, 55, "hRunMatchedTriggersSM%dTRU%d", trelid[0], GetTRUNum(relid[2] - 1, relid[3] - 1));
         FillHistogram(key, event->GetRunNumber(), 1.);
 
         if (c1->E() > 2.) { // Eclu > 2 GeV
