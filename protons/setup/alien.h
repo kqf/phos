@@ -84,27 +84,20 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 		plugin->AddRunNumber(v[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
-	// plugin->SetOutputFiles("CaloCellsQA2.root TriggerQA.root");
-	// plugin->SetOutputFiles("TriggerQA.root");
 
 	period.ToLower();
 	plugin->SetGridWorkingDir("pp-phos-" + period);
-	// plugin->SetGridWorkingDir("phos-16h-muon-calo-pass1-good-tender");
 	plugin->SetGridOutputDir("output");
 	// plugin->SetDefaultOutputs();
-	// Now this should be added in your AddTaskMacro.C
 
 
 	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
-	// plugin->SetAnalysisSource("AliAnalysisTaskPi0QA.cxx");
-	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so");// AliAnalysisTaskPi0QA.cxx AliAnalysisTaskPi0QA.h");
-
-	period.ReplaceAll('-', '_');
 
 	// All files are set in the Add*Task.C macros
 	// plugin->SetAnalysisSource();
 	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
+	period.ReplaceAll('-', '_');
 	plugin->SetAnalysisMacro(TString("TaskPP_") + period + ".C");
 	plugin->SetSplitMaxInputFileNumber(100);
 

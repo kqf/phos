@@ -26,8 +26,11 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	TString datasuffix = isMC ? "AOD/" : "/*/";
 	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
+
 	period.ToLower();
 	plugin->SetGridWorkingDir("trigger-qa-" + period);
+
+	period.ReplaceAll("-", "_");
 	plugin->SetExecutable(TString("trigger_qa_") + period + ".sh");
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
     //plugin->SetUseSubmitPolicy();
