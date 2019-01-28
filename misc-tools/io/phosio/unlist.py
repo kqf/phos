@@ -2,13 +2,10 @@ import sys
 import ROOT
 
 # Usage
-# python flatten.py ./path/to/file Phys MassPt
+# python flatten.py ./path/to/file "Phys/MassPt"
 
 
-def main():
-    filename, dirname, histname = sys.argv[1:]
-    print "From file", dirname, "and folder", dirname, "select", histname
-
+def unlist(filename, dirname, histname):
     infile = ROOT.TFile(filename, "update")
     selection = infile.Get(dirname)
     selection.ls()
@@ -19,6 +16,11 @@ def main():
     ofile = ROOT.TFile("flattened.root", "update")
     ohist.Write()
     ofile.Close()
+
+
+def main():
+    filename, path = sys.argv[1:]
+    unlist(filename, *path.split("/"))
 
 
 if __name__ == '__main__':
