@@ -158,7 +158,7 @@ class EventsScaler(EmptyBinRemover):
         return divided
 
 
-def process(hist, lst, filepath, badmap_fname, nmodules=4):
+def process(hist, lst, filepath, badmap_fname, pattern="SM{}", nhists=4):
     event_runs = ROOT.TFile(filepath).Get(lst).FindObject("hRunEvents")
     analysis = make_pipeline(
         HistReader("name", "raw", filepath, hist, lst),
@@ -170,47 +170,59 @@ def process(hist, lst, filepath, badmap_fname, nmodules=4):
         AverageCalculator("scaled", "scaled")
     )
 
-    outputs = pd.DataFrame(index=map(str, range(1, nmodules + 1)))
-    outputs["name"] = outputs.index.map("SM{}".format)
+    outputs = pd.DataFrame(index=map(str, range(1, nhists + 1)))
+    outputs["name"] = outputs.index.map(pattern.format)
     return analysis.fit_transform(outputs)
 
 
-def fired_trigger_fraction(triggers, mtriggers):
+def fired_trigger_fraction(mtriggers, triggers):
     output = []
     for trig, mtrig in zip(triggers, mtriggers):
         fired = mtrig.Clone()
         fired.Divide(mtrig, trig, 1, 1, "B")
-        title = "Ratio of all trigger clusters to matched triggered clusters"
+        title = "Ratio of matched trigger clusters to all triggered clusters"
         fired.SetTitle(title)
         output.append(fired)
     return output
 
 
-def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root"):
-    lst = "PHOSTriggerQAResultsL0"
-
+def trend(filepath, lst="PHOSTriggerQAResultsL0",
+          badmap_fname="../BadMap_LHC16-updated.root"):
+    plotter = plotting.Plotter()
     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
     canvas.Divide(1, 3)
 
     triggers = process("hRunTriggers", lst, filepath, badmap_fname)
-    plotter = plotting.Plotter()
-    title = "Number of 4x4 patches per run;; # patches / accepntace/ #events"
-    plotter.plot(triggers["scaled"], triggers["name"], canvas.cd(1), title)
+    title = "Number of 4x4 patches per run"
+    title += ";; # patches / accepntace/ #events"
+    plotter.plot(triggers["scaled"],
+                 triggers["name"],
+                 canvas.cd(1),
+                 title)
 
     mtriggers = process("hRunMatchedTriggers", lst, filepath, badmap_fname)
-    mtitle = "# matched 4x4 patches per run;; # patches / accepntace/ #events"
-    plotter.plot(mtriggers["scaled"], mtriggers["name"], canvas.cd(2), mtitle)
+    title = "Numbero of matched 4x4 patches per run"
+    title += ";;# patches / accepntace/ #events"
+    plotter.plot(mtriggers["scaled"],
+                 mtriggers["name"],
+                 canvas.cd(2),
+                 title)
 
-    fired_fraction = fired_trigger_fraction(
-        mtriggers["scaled"], triggers["scaled"])
+    fired_fraction = fired_trigger_fraction(mtriggers["scaled"],
+                                            triggers["scaled"])
+
+    title = "Number of matched tirggers / number of all triggers"
+    title += ";;#patches / # matched"
     plotter.plot(fired_fraction,
-                 ["SM{}".format(i) for i in enumerate(fired_fraction)],
+                 triggers["name"],
                  canvas.cd(3),
-                 "Fraction of matched triggers")
-    canvas.Update()
+                 title)
+
     plotting.save_canvas(canvas, "trending")
+    canvas.Update()
     raw_input()
 
 
+path = "../../../neutral-meson-spectra/input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g-pass1.root"  # noqa
 if __name__ == '__main__':
-    trend()
+    trend_tru(path)
