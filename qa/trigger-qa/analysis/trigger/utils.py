@@ -54,3 +54,13 @@ def tru(cell_x, cell_z):
         return 7
 
     return -111
+
+
+def select_tru(hist, number):
+    trumasks = [[
+        tru(i, j)
+        for j in range(hist.shape[1])]
+        for i in range(hist.shape[0])]
+
+    trumask = np.asarray(trumasks) == number
+    return hist * trumask
