@@ -16,6 +16,14 @@ def rebin(hists, n=4):
     return hists
 
 
+def load_channels(filepath, pattern, nmodules=4):
+    l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
+    return rebin([
+        l0.FindObject(pattern.format(i))
+        for i in range(1, nmodules + 1)
+    ])
+
+
 def channel_frequency(patches, name):
     trigchannels = map(rnp.hist2array, patches)
     counts = np.asarray(trigchannels).reshape(-1)
@@ -81,15 +89,9 @@ def draw_line(hist, position):
 
 
 def channels(filepath, nmodules=4):
-    l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
-    trigger_patches = rebin([
-        l0.FindObject("h4x4SM{}".format(i))
-        for i in range(1, nmodules + 1)
-    ])
-    matched_trigger_patches = rebin([
-        l0.FindObject("h4x4CluSM{}".format(i))
-        for i in range(1, nmodules + 1)
-    ])
+    trigger_patches = load_channels(filepath, "h4x4SM{}")
+    matched_trigger_patches = load_channels(filepath, "h4x4CluSM{}")
+
     channels = channel_frequency(trigger_patches, "frequencies")
     matched_channels = channel_frequency(matched_trigger_patches, "matched")
     mu, sigma = fit_channels(trigger_patches)
