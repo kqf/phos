@@ -36,6 +36,7 @@ def plot(hists, labels=None, pad=None, title=None):
     stack = ROOT.THStack()
     for i, hist in enumerate(hists):
         hist.SetLineColor(INDEX_COLOR.get(i + 1, 1))
+        hist.SetMarkerColor(INDEX_COLOR.get(i + 1, 1))
         stack.Add(decorate_hist(hist))
         stack.SetTitle(hist.GetTitle())
 

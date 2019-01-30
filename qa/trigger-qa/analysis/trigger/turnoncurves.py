@@ -5,6 +5,7 @@ from sklearn.pipeline import make_pipeline
 
 import plotting
 from trigger.trend import HistReader
+from trigger.utils import style
 ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat(0)
 
@@ -55,6 +56,7 @@ class RebinTransformer(object):
         for i in range(1, len(self._bins)):
             delta = self._bins[i] - self._bins[i - 1]
             rebinned.SetBinContent(i, rebinned.GetBinContent(i) / delta)
+        style(rebinned)
         return rebinned
 
 

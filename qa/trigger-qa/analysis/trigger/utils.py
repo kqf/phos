@@ -96,3 +96,13 @@ def select_tru(hist, number):
         for i in range(hist.shape[0])]
     trumask = np.asarray(trumasks) == number
     return hist * trumask
+
+
+def style(histo):
+    histo.SetLineWidth(2)
+    histo.SetMarkerStyle(20)
+    histo.SetMarkerSize(0.5)
+    histo.SetNdivisions(530)
+    histo.SetAxisRange(0., 39.)
+    histo.SetXTitle("E, GeV")
+    return histo
