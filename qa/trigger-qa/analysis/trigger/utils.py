@@ -1,5 +1,7 @@
 import numpy as np
 
+TRIGGER_MODULE_SHAPE = (16, 28)
+
 
 def hist2array2d(hist):
     data = [[
@@ -56,12 +58,41 @@ def tru(cell_x, cell_z):
     return -111
 
 
+def tru_from_patch(patch_x, patch_z):
+    # Return TRU region number for given cell.
+    # patch_x: [0-63], patch_z: [0-55]
+
+    # RCU0: TRU 1,2
+    if 0 <= patch_x < 4:
+        if 0 <= patch_z < 14:
+            return 2
+        return 1
+
+    # RCU1: TRU 3,4
+    if 4 <= patch_x < 8:
+        if 0 <= patch_z < 14:
+            return 4
+        return 3
+
+    # RCU2: TRU 5,6
+    if 8 <= patch_x < 12:
+        if 0 <= patch_z < 14:
+            return 6
+        return 5
+
+    # RCU3: TRU 7,8
+    if 12 <= patch_x < 16:
+        if 0 <= patch_z < 14:
+            return 8
+        return 7
+
+    return -111
+
+
 def select_tru(hist, number):
     trumasks = [[
-        tru(i, j)
+        tru_from_patch(i, j)
         for j in range(hist.shape[1])]
         for i in range(hist.shape[0])]
-    print(trumasks)
-
     trumask = np.asarray(trumasks) == number
     return hist * trumask

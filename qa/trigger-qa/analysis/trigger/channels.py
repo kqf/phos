@@ -56,7 +56,7 @@ def save_maps(patches, filename="trigger-bad-map.root"):
     ofile.Close()
 
 
-def fit_channels(triggers):
+def fit_channels(triggers, filename):
     counts = np.asarray(triggers).reshape(-1)
     counts = counts[counts > 0]
 
@@ -75,9 +75,8 @@ def fit_channels(triggers):
     freq.Draw()
     plotting.decorate_pad(ROOT.gPad)
     ROOT.gPad.Update()
-    ROOT.gPad.SaveAs("fitted.pdf")
-    raw_input()
-    return fitf.GetParameter(1), fitf.GetParameter(2)
+    ROOT.gPad.SaveAs(filename)
+    return fitf.GetParameter(0), fitf.GetParameter(0)
 
 
 def draw_line(hist, position):
@@ -122,7 +121,9 @@ def channels_tru(filepath, nmodules=4, ntrus=8):
     for sm_index, patches in enumerate(trigger_patches):
         for itru in range(1, ntrus + 1):
             tru = select_tru(patches, itru)
-            mu, sigma = fit_channels(tru)
+            # plot_matrix(tru, histograms[0])
+            filename = "fitted-sm{}-tru{}.pdf".format(sm_index + 1, itru)
+            mu, sigma = fit_channels(tru, filename)
             title = "{} good channels: {} < # hits < {}".format(
                 "TRU", 1, mu + 3 * (sigma ** 0.5)
             )

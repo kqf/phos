@@ -1,4 +1,4 @@
-DIRECTORY=../results/LHC16/iteration2
+DIRECTORY=../results/LHC16/iteration3
 BASEPATH = ../../../neutral-meson-spectra/input-data/data
 FILEPATH = $(BASEPATH)/LHC16/trigger_qa/iteration3_kphi7/LHC16g-pass1.root
 
