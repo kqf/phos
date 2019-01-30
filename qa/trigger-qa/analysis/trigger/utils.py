@@ -61,6 +61,7 @@ def select_tru(hist, number):
         tru(i, j)
         for j in range(hist.shape[1])]
         for i in range(hist.shape[0])]
+    print(trumasks)
 
     trumask = np.asarray(trumasks) == number
     return hist * trumask

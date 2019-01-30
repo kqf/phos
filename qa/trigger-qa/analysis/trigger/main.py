@@ -1,6 +1,6 @@
 import click
 from trend import trend
-from channels import channels
+from channels import channels, channels_tru
 
 
 @click.command()
@@ -10,4 +10,4 @@ from channels import channels
               required=True)
 def main(filepath):
     # trend(filepath)
-    channels(filepath)
+    channels_tru(filepath)

@@ -1,10 +1,13 @@
 import ROOT
 import numpy as np
 import plotting
+
 try:
     import root_numpy as rnp
 except ValueError:
     import utils as rnp
+
+from utils import select_tru
 
 ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat(0)
@@ -107,27 +110,23 @@ def channels(filepath, nmodules=4):
     save_maps(maps)
 
 
+def plot_matrix(matrix, hist):
+    hist = rnp.array2hist(matrix, hist)
+    hist.Draw("colz")
+    ROOT.gPad.Update()
+    raw_input()
+
+
 def channels_tru(filepath, nmodules=4, ntrus=8):
-    trigger_patches = load_channels(filepath, "h4x4SM{}")
+    histograms, trigger_patches = load_channels(filepath, "h4x4SM{}")
     for sm_index, patches in enumerate(trigger_patches):
-        for tru in range(1, ntrus):
-            pass
-
-            # channels = channel_frequency(trigger_patches, "frequencies")
-            # matched_channels = channel_frequency(matched_trigger_patches, "matched")
-            # mu, sigma = fit_channels(trigger_patches)
-
-            # title = "{} good channels: {} < # hits < {}".format(
-            #     channels.GetTitle(), 1, mu + 3 * (sigma ** 0.5)
-            # )
-
-            # plotting.plot([
-            #     channels,
-            #     matched_channels,
-            # ], labels=["trigger patches", "matched triggers"], title=title)
-
-            # maps = channel_badmap(trigger_patches, 1, mu + 3 * sigma)
-            # save_maps(maps)
+        for itru in range(1, ntrus + 1):
+            tru = select_tru(patches, itru)
+            mu, sigma = fit_channels(tru)
+            title = "{} good channels: {} < # hits < {}".format(
+                "TRU", 1, mu + 3 * (sigma ** 0.5)
+            )
+            print(title)
 
 
 if __name__ == '__main__':

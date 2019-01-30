@@ -2,3 +2,4 @@ setuptools
 click
 pytest
 scikit-learn
+pandas
