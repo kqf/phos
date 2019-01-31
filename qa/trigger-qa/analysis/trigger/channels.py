@@ -67,15 +67,15 @@ def fit_channels(triggers, filename):
     fitf.SetParameter(0, 5)
     fitf.SetParameter(1, 1000)
     fitf.SetLineColor(ROOT.kGreen + 1)
-
-    freq = ROOT.TH1F("freq", "Distribution of 4x4 trigger; hits", 50, 0, 50)
+    title = "Distribution of 4x4 trigger {}; cells".format(filename)
+    freq = ROOT.TH1F("freq", title, 50, 0, 50)
     map(freq.Fill, counts)
     freq.SetLineColor(ROOT.kBlue + 1)
     freq.Fit(fitf, "R")
     freq.Draw()
     plotting.decorate_pad(ROOT.gPad)
     ROOT.gPad.Update()
-    ROOT.gPad.SaveAs(filename)
+    ROOT.gPad.SaveAs("fitted-{}.pdf".format(filename.replace(" ", "-")))
     return fitf.GetParameter(0), fitf.GetParameter(0)
 
 
@@ -122,7 +122,7 @@ def channels_tru(filepath, nmodules=4, ntrus=8):
         for itru in range(1, ntrus + 1):
             tru = select_tru(patches, itru)
             # plot_matrix(tru, histograms[0])
-            filename = "fitted-sm{}-tru{}.pdf".format(sm_index + 1, itru)
+            filename = "sm{} tru{}".format(sm_index + 1, itru)
             mu, sigma = fit_channels(tru, filename)
             title = "{} good channels: {} < # hits < {}".format(
                 "TRU", 1, mu + 3 * (sigma ** 0.5)

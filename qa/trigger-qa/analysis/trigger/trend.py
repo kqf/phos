@@ -233,7 +233,7 @@ def trend_tru(filepath, lst="PHOSTriggerQAResultsL0",
         triggers = process("hRunTriggersSM{}".format(sm),
                            lst, filepath, badmap_fname,
                            pattern="TRU{}", nhists=8, sm=sm)
-        title = "Number of 4x4 patches per run"
+        title = "Number of 4x4 patches per run SM{}".format(sm)
         title += ";; # patches / accepntace/ #events"
         plotter.plot(triggers["scaled"],
                      triggers["name"],
@@ -243,7 +243,7 @@ def trend_tru(filepath, lst="PHOSTriggerQAResultsL0",
         mtriggers = process("hRunMatchedTriggersSM{}".format(sm),
                             lst, filepath, badmap_fname,
                             pattern="TRU{}", nhists=8, sm=sm)
-        title = "Numbero of matched 4x4 patches per run"
+        title = "Numbero of matched 4x4 patches per run SM{}".format(sm)
         title += ";;# patches / accepntace/ #events"
         plotter.plot(mtriggers["scaled"],
                      mtriggers["name"],
@@ -253,7 +253,8 @@ def trend_tru(filepath, lst="PHOSTriggerQAResultsL0",
         fired_fraction = fired_trigger_fraction(mtriggers["scaled"],
                                                 triggers["scaled"])
 
-        title = "Number of matched tirggers / number of all triggers"
+        title = "Number of matched tirggers"
+        title += " / number of all triggers SM{}".format(sm)
         title += ";;#patches / # matched"
         plotter.plot(fired_fraction,
                      triggers["name"],

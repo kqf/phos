@@ -82,6 +82,6 @@ def turn_on_curves(filepath, lst="PHOSTriggerQAResultsL0", n_modules=4):
         output = analyze_module(filepath, lst, sm=sm)
         title = "Triggered clusters / All clusters in SM{}; E, GeV".format(sm)
         plotter.plot(output["turnon"], output["name"], canvas, title)
-        plotting.save_canvas(canvas, "turn-on-curveu-sm-{}".format(sm))
+        plotting.save_canvas(canvas, "turn-on-curve-sm-{}".format(sm))
         canvas.Update()
         raw_input()
