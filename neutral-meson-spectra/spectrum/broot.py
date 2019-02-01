@@ -331,6 +331,9 @@ class BROOT(object):
         edges = array.array('d', edges)
         rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
 
+        if not rebin.GetSumw2N():
+            rebin.Sumw2()
+
         for i in range(1, len(edges)):
             delta = edges[i] - edges[i - 1]
             rebin.SetBinContent(i, rebin.GetBinContent(i) / delta)

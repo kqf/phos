@@ -3,6 +3,7 @@ import array
 import os
 import random
 import sys
+import json
 
 import ROOT
 from spectrum.broot import BROOT as br
@@ -14,6 +15,17 @@ from spectrum.sutils import wait
 # NB: Don't use broot in write functions
 #     as it's important to test without broot
 #
+
+@pytest.fixture
+def settings():
+    with open("config/test_software.json") as f:
+        data = json.load(f)
+    return data
+
+
+@pytest.fixture
+def edges(settings):
+    return settings["edges"]
 
 
 def write_histogram(filename, selection, histname):
@@ -298,33 +310,19 @@ def test_sets_events(stop):
     assert abs(hist1.Integral() - integral / events) < 0.001
 
 
-def test_rebins_proba(stop=True):
+def test_rebins_proba(edges, stop=True):
     hist1 = br.BH(
             ROOT.TH1F,
-        "refhistRebinProba1", "Testing rebins proba", 200, -10, 10,
+        "refhistRebinProba1", "Testing rebins proba", 200, 0, 20,
         label="test ratio", logy=True, logx=False, priority=3)
-    # hist1.Sumw2()
-
-    hist2 = br.BH(
-            ROOT.TH1F,
-        "refhistRebin2", "Testing rebins", 100, -10, 10,
-        label="test ratio", logy=True, logx=False, priority=3)
-    # hist2.Sumw2()
-
+    hist1.Sumw2()
     hist1.FillRandom("pol0")
-    hist2.FillRandom("pol0")
-
-    Comparator().compare(hist1, hist2)
-
-    rebinned, hist2 = br.rebin_as(hist1, hist2)
-
-    Comparator().compare(hist1, hist2)
-    assert hist1.GetNbinsX() != hist2.GetNbinsX()
-
-    assert rebinned.GetNbinsX() == hist2.GetNbinsX()
+    rebinned = br.rebin_proba(hist1, edges=edges)
+    Comparator().compare(hist1, rebinned)
+    assert hist1.GetNbinsX() != rebinned.GetNbinsX()
 
     # Just check if ratio gives warnings
-    ratio = br.ratio(rebinned, hist2)
+    ratio = br.ratio(rebinned, rebinned)
     assert br.same(rebinned, hist1)
     assert ratio.GetEntries()
 
