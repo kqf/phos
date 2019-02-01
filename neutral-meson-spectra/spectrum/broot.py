@@ -327,6 +327,19 @@ class BROOT(object):
         return rebin
 
     @classmethod
+    def rebin_proba(klass, hist, edges, name="_rebinned"):
+        edges = array.array('d', edges)
+        rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
+
+        for i in range(1, len(edges)):
+            delta = edges[i] - edges[i - 1]
+            rebin.SetBinContent(i, rebin.GetBinContent(i) / delta)
+
+        if klass.prop.has_properties(hist):
+            klass.setp(rebin, hist, force=True)
+        return rebin
+
+    @classmethod
     def sum(klass, histograms, label=None):
         if not histograms:
             raise ValueError("You are trying to sum 0 histograms")
