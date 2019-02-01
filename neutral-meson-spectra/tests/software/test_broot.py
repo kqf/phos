@@ -3,7 +3,6 @@ import array
 import os
 import random
 import sys
-import json
 
 import ROOT
 from spectrum.broot import BROOT as br
@@ -17,15 +16,8 @@ from spectrum.sutils import wait
 #
 
 @pytest.fixture
-def settings():
-    with open("config/test_software.json") as f:
-        data = json.load(f)
-    return data
-
-
-@pytest.fixture
 def edges(settings):
-    return settings["edges"]
+    return settings["test_broot"]["edges"]
 
 
 def write_histogram(filename, selection, histname):
@@ -310,7 +302,7 @@ def test_sets_events(stop):
     assert abs(hist1.Integral() - integral / events) < 0.001
 
 
-def test_rebins_proba(edges, stop=True):
+def test_rebins_proba(stop, edges):
     hist1 = br.BH(
             ROOT.TH1F,
         "refhistRebinProba1", "Testing rebins proba", 200, 0, 20,
@@ -318,7 +310,7 @@ def test_rebins_proba(edges, stop=True):
     hist1.Sumw2()
     hist1.FillRandom("pol0")
     rebinned = br.rebin_proba(hist1, edges=edges)
-    Comparator().compare(hist1, rebinned)
+    Comparator(stop=stop).compare(hist1, rebinned)
     assert hist1.GetNbinsX() != rebinned.GetNbinsX()
 
     # Just check if ratio gives warnings
