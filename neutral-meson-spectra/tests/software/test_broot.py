@@ -444,29 +444,6 @@ def test_calculates_area_and_error(stop):
         # There is no need to compare errors
 
 
-def test_rebins_for_given_ranges(stop):
-    nbins, start, stop = 200, -10, 10
-
-    new_edges = [-10, -3, -2, 0, 1, 4, 6, 10]
-    newbins = zip(new_edges[:-1], new_edges[1:])
-
-    hist = br.BH(
-        ROOT.TH1F,
-        "refhistEdges", "Testing scalew", nbins, start, stop,
-        label="scale", logy=True, logx=False, priority=3)
-    hist.FillRandom('gaus')
-
-    rebinned = br.rebin(hist, new_edges)
-    assert hist.Integral() == rebinned.Integral()
-    assert hist.GetEntries() == rebinned.GetEntries()
-    assert br.same(hist, rebinned)
-    assert rebinned.GetNbinsX() == len(newbins)
-
-    for i, bin in enumerate(newbins):
-        binw = bin[1] - bin[0]
-        assert rebinned.GetBinWidth(i + 1) == binw
-
-
 def test_saves_histogram(stop):
     oname, selection, histname = (
         'testSave.root', 'testSelection', 'refhistSave')

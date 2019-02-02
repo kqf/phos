@@ -317,14 +317,6 @@ class BROOT(object):
         return (rebinned, b) if a == hist1 else (b, rebinned)
 
     @classmethod
-    def rebin(klass, hist, edges, name="_rebinned"):
-        edges = array.array('d', edges)
-        rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
-        if klass.prop.has_properties(hist):
-            klass.setp(rebin, hist, force=True)
-        return rebin
-
-    @classmethod
     def rebin_proba(klass, hist, edges, name="_rebinned"):
         edges = array.array('d', edges)
         rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
