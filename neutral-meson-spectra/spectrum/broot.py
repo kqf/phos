@@ -313,9 +313,7 @@ class BROOT(object):
 
         a, b = (hist1, hist2) if nbins(
             hist1) > nbins(hist2) else (hist2, hist1)
-        rebinned = klass.rebin(a, lbins(b))
-        original_width = min(a.GetBinWidth(i) for i in klass.range(a))
-        klass.scalew(rebinned, original_width)
+        rebinned = klass.rebin_proba(a, lbins(b))
         return (rebinned, b) if a == hist1 else (b, rebinned)
 
     @classmethod

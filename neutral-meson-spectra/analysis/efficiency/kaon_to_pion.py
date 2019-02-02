@@ -137,15 +137,16 @@ def test_draw_ratio_mc():
     return KaonToPionRatioMC(options).transform(DATASET_MC, {})
 
 
+@pytest.mark.thesis
 def test_ratio():
     fitfunc = ROOT.TF1(
         "feeddown_ratio",
         "[3] * x *(([4] + [5]) * x - [5]) + "
         "[0] * (1 + [1] * TMath::Exp(-x * x/ [2]))", 0, 20)
-    fitfunc.SetParameter(0, 1.53561e+00)
+    fitfunc.SetParameter(0, 1.53561e-02)
     fitfunc.SetParameter(1, -4.69350e-01)
     fitfunc.SetParameter(2, 2.38042e-01)
-    fitfunc.SetParameter(3, -8.01155e-02)
+    fitfunc.SetParameter(3, -8.01155e-04)
     fitfunc.SetParameter(4, 6.30860e-01)
     fitfunc.SetParameter(5, -7.21683e-01)
 
@@ -164,5 +165,5 @@ def test_ratio():
     estimator = KaonToPionDoubleRatio(options, plot=True)
     loggs = AnalysisOutput("pion to kaon", particle="")
     double_ratio = estimator.transform(DATASET, loggs)
-    loggs.plot()
     Comparator().compare(double_ratio)
+    loggs.plot()
