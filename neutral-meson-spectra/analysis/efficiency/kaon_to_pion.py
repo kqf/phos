@@ -1,3 +1,4 @@
+import pytest
 from collections import namedtuple
 
 import ROOT
@@ -60,7 +61,7 @@ def rebin_compare(inputs, loggs):
     mc.SetAxisRange(0.2, 20, "X")
     mc, data = br.rebin_as(mc, data)
     data.SetAxisRange(0.2, 20, "X")
-    return Comparator(loggs=loggs).compare(data, mc)
+    return Comparator().compare(data, mc, loggs=loggs)
 
 
 class DoubleRatioFitter(TransformerBase):
@@ -98,22 +99,42 @@ class KaonToPionDoubleRatio(TransformerBase):
         ])
 
 
-DATASET = Proxy(
-    lambda: (
-        (
-            (
-                DataVault().input("kaon2pion"),
-                DataVault().input("kaon2pion"),
-            ),
-            (
-                (
-                    DataVault().input("pythia8", listname="KaonToPionRatio"),
-                    DataVault().input("pythia8", listname="KaonToPionRatio"),
-                ) * 2,
-            ),
-        )
+DATASET_DATA = Proxy(
+    lambda:
+    (
+        DataVault().input("kaon2pion"),
+        DataVault().input("kaon2pion"),
     )
 )
+
+DATASET_MC = Proxy(
+    lambda: (
+        (
+            DataVault().input("pythia8", listname="KaonToPionRatio"),
+            DataVault().input("pythia8", listname="KaonToPionRatio"),
+        ),
+        (
+            DataVault().input("pythia8", listname="KaonToPionRatio"),
+            DataVault().input("pythia8", listname="KaonToPionRatio"),
+        ),
+    )
+)
+
+DATASET = Proxy(
+    lambda: (
+        DATASET_DATA,
+        DATASET_MC
+    )
+)
+
+
+@pytest.mark.skip("")
+def test_draw_ratio_mc():
+    options = K2POptions(
+        kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
+        pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
+    )
+    return KaonToPionRatioMC(options).transform(DATASET_MC, {})
 
 
 def test_ratio():
