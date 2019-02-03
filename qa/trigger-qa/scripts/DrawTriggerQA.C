@@ -1,31 +1,6 @@
-//-----------------------------------------------------------------------------
-void SetMyStyle(TH1F * histo, const Int_t color = kRed)
-{
-  histo->SetLineWidth(2);
-  histo->SetLineColor(color);
-  histo->SetMarkerStyle(20);
-  histo->SetMarkerSize(0.5);
-  histo->SetMarkerColor(color);
-  histo->SetXTitle("E, GeV");
-  histo->SetNdivisions(530);
-  histo->SetAxisRange(0.,39.);
-}
-//-----------------------------------------------------------------------------
-void SetMyStyle(TH1F * histo, const Int_t color, char *title, const char *ytitle)
-{
-  histo->SetLineWidth(2);
-  histo->SetLineColor(color);
-  histo->SetMarkerStyle(20);
-  histo->SetMarkerSize(0.5);
-  histo->SetMarkerColor(color);
-  histo->SetXTitle("E, GeV");
-  histo->SetNdivisions(520);
-  histo->SetTitle(title);
-  histo->SetYTitle(ytitle);
-  histo->SetTitleOffset(1.3,"Y");
-  histo->SetAxisRange(0.,19.,"X");
-  histo->SetAxisRange(0.,1.29,"Y");
-}
+void SetMyStyle(TH1F *, const Int_t);
+void SetMyStyle(TH1F *, const Int_t, const char *, const char *);
+
 //-----------------------------------------------------------------------------
 void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.root",
 	      const char* trigger="L0")
@@ -64,6 +39,33 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   h4x4CluSM2->Rebin2D(2,2);  
   h4x4CluSM3->Rebin2D(2,2);  
   h4x4CluSM4->Rebin2D(2,2);  
+
+  h4x4SM1->SetNdivisions(540,"XY");;
+  h4x4SM2->SetNdivisions(540,"XY");;
+  h4x4SM3->SetNdivisions(540,"XY");;
+  h4x4SM4->SetNdivisions(540,"XY");;
+  h4x4CluSM1->SetNdivisions(540,"XY");;
+  h4x4CluSM2->SetNdivisions(540,"XY");;
+  h4x4CluSM3->SetNdivisions(540,"XY");;
+  h4x4CluSM4->SetNdivisions(540,"XY");;
+  
+  Double_t nMax;
+
+  nMax = TMath::Max(h4x4SM1->GetMaximum(),h4x4SM2->GetMaximum());
+  nMax = TMath::Max(h4x4SM3->GetMaximum(),nMax);
+  nMax = TMath::Max(h4x4SM4->GetMaximum(),nMax);
+  h4x4SM1->SetMaximum(nMax);
+  h4x4SM2->SetMaximum(nMax);
+  h4x4SM3->SetMaximum(nMax);
+  h4x4SM4->SetMaximum(nMax);
+
+  nMax = TMath::Max(h4x4CluSM1->GetMaximum(),h4x4CluSM2->GetMaximum());
+  nMax = TMath::Max(h4x4CluSM3->GetMaximum(),nMax);
+  nMax = TMath::Max(h4x4CluSM4->GetMaximum(),nMax);
+  h4x4CluSM1->SetMaximum(nMax);
+  h4x4CluSM2->SetMaximum(nMax);
+  h4x4CluSM3->SetMaximum(nMax);
+  h4x4CluSM4->SetMaximum(nMax);
 
   Double_t ptBins[] = {0.0,0.2,0.4,0.6,0.8, 1.0,1.2,1.4,1.6,1.8,
 		       2.0,2.2,2.4,2.6,2.8, 3.0,3.2,3.4,3.6,3.8,
@@ -148,7 +150,8 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   gStyle->SetPadGridX(1);
   gStyle->SetPadGridY(1);
   
-  TCanvas * c1 = new TCanvas("c1","c1",0,0,1000,600);
+  gStyle->SetPadRightMargin(0.10);
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,600);
   c1->Divide(2,2);
   c1->cd(1);
   gPad->SetLogz();
@@ -239,6 +242,7 @@ void DrawTriggerQA(const char* filename="../results/LHC17/LHC17c/default/LHC17c.
   rTrigRatioSM4->Draw();
   c5->Print(Form("TrigPhotE_ratio_%s.pdf",trigger));
 }
+//-----------------------------------------------------------------------------
 void DrawTriggerQATRU(const char* filename="TriggerQA_253436-253591.root",
 		 const char* trigger ="L0",
 		 const char* module  ="M2")
@@ -571,3 +575,32 @@ void DrawTriggerEff(const char* filename="TriggerQA_253436-253591.root")
   hRatioL1L0SM4->Draw();
   c14->Print("TrigEfficiency.pdf");
 }  
+
+//-----------------------------------------------------------------------------
+void SetMyStyle(TH1F * histo, const Int_t color = kRed)
+{
+  histo->SetLineWidth(2);
+  histo->SetLineColor(color);
+  histo->SetMarkerStyle(20);
+  histo->SetMarkerSize(0.5);
+  histo->SetMarkerColor(color);
+  histo->SetXTitle("E, GeV");
+  histo->SetNdivisions(530);
+  histo->SetAxisRange(0.,39.);
+}
+//-----------------------------------------------------------------------------
+void SetMyStyle(TH1F * histo, const Int_t color, char *title, const char *ytitle)
+{
+  histo->SetLineWidth(2);
+  histo->SetLineColor(color);
+  histo->SetMarkerStyle(20);
+  histo->SetMarkerSize(0.5);
+  histo->SetMarkerColor(color);
+  histo->SetXTitle("E, GeV");
+  histo->SetNdivisions(520);
+  histo->SetTitle(title);
+  histo->SetYTitle(ytitle);
+  histo->SetTitleOffset(1.3,"Y");
+  histo->SetAxisRange(0.,19.,"X");
+  histo->SetAxisRange(0.,1.29,"Y");
+}
