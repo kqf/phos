@@ -1,10 +1,12 @@
 import array
 from collections import defaultdict
+
 from flatten_dict import flatten, unflatten
-from broot import BROOT as br
-from output import AnalysisOutput
+
 import sutils as st
+from broot import BROOT as br
 from comparator import Comparator
+from output import AnalysisOutput
 
 
 class TransformerBase(object):
@@ -40,14 +42,14 @@ class ComparePipeline(TransformerBase):
 
 
 class RebinTransformer(TransformerBase):
-    def __init__(self, bins, plot=False, width=True):
+    def __init__(self, edges, plot=False, width=True):
         super(RebinTransformer, self).__init__(plot)
-        self.bins = array.array('d', bins)
+        self.edges = array.array('d', edges)
         self.width = width
 
     def transform(self, data, loggs):
         newname = "{0}_rebinned".format(data.GetName())
-        rebinned = data.Rebin(len(self.bins) - 1, newname, self.bins)
+        rebinned = data.Rebin(len(self.edges) - 1, newname, self.edges)
         if self.width:
             rebinned.Scale(data.GetBinWidth(1), "width")
         loggs.update({"rebinned": rebinned})
