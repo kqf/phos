@@ -27,25 +27,14 @@ ETA_INPUT = Proxy(
 )
 
 
-
-# @pytest.mark.skip("TODO: Update me")
 @pytest.mark.onlylocal
-def test_pi0_efficiency():
-    efficiency = evaluate_spmc_efficiency(PION_INPUT, "#pi^{0}")
-    # Comparator().compare(efficiency)
-    validate(br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
-
-
-@pytest.mark.skip("")
-def test_eta_efficiency():
-    evaluate_spmc_efficiency(ETA_INPUT, "#eta")
-
-
-def evaluate_spmc_efficiency(inputs, particle):
+@pytest.mark.parametrize("data, particle", [
+    (PION_INPUT, "#pi^{0}"),
+    (ETA_INPUT, "#eta"),
+])
+def test_spmc_efficiency(data, particle):
     options = CompositeEfficiencyOptions(particle)
     loggs = AnalysisOutput("efficiency_spmc_{}".format(particle))
-    efficiency = Efficiency(options).transform(
-        inputs,
-        loggs
-    )
+    efficiency = Efficiency(options).transform(data, loggs)
+    validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
     return efficiency
