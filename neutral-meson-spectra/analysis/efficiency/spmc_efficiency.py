@@ -27,10 +27,12 @@ ETA_INPUT = Proxy(
 )
 
 
+
 # @pytest.mark.skip("TODO: Update me")
 @pytest.mark.onlylocal
 def test_pi0_efficiency():
     efficiency = evaluate_spmc_efficiency(PION_INPUT, "#pi^{0}")
+    # Comparator().compare(efficiency)
     validate(br.hist2dict(efficiency), "spmc_efficiency/#pi^{0}")
 
 
