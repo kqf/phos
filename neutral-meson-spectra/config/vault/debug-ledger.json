@@ -64,22 +64,6 @@
 			"description": "Raw data without any corrections. Runs are not selected yet"
 		}
 	},
-	"LHC16 trigger qa2": {
-		"LHC16g": {
-			"file": "input-data/data/LHC16/trigger_qa/iteration2/LHC16g-pass1.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "5055f44f942cdf267159a8da09d54795290695e8913ac0434020ee4fafd386c8",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC16g_kphi7": {
-			"file": "input-data/data/LHC16/trigger_qa/iteration2_kphi7/LHC16g-pass1.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "10a90c8cdad1b99e4ff540a0643785dd0fd8a94785bc55c700f03cca12715db7",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		}
-	},
 	"LHC16 trigger qa3": {
 		"LHC16g": {
 			"file": "input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g-pass1.root",
