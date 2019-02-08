@@ -1,10 +1,11 @@
+#include "../../setup/environment.h"
+#include "plugin.h"
+#include "task.h"
 #include "../setup/environment.h"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
-
-    gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
 
     if (!alienHandler) return;
@@ -29,11 +30,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     TString files = "";
     TString pref =  isMC ? "MC" : "";
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
@@ -54,9 +53,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
 
-    gROOT->LoadMacro("../datasets/values_for_dataset.h+");
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
     // There is no need to download QA when we use don't use JDL
     // if (useJDL)
     // files += AddTaskCaloCellsQAPt(AliVEvent::kINT7, cells);
@@ -69,10 +65,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", cells, isMC);
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", "", std::vector<Int_t>(), isMC);
-    //files += AddAnalysisTaskTrackAverages(good_runs, nruns);
-
+    files += AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "Tender", "", isMC);
 
     if ( !manager->InitAnalysis( ) ) return;
     manager->PrintStatus();
