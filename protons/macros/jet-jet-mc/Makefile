@@ -112,5 +112,3 @@ endef
 define upload_result
 	-alien_cp -n $(1) alien:$(ALIEN_HOME)@ALICE::GSI::SE2
 endef
-
-
