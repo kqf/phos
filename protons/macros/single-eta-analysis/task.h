@@ -23,8 +23,13 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	cuts_eta.fNContributors = 0;
 	cuts_eta.fAsymmetryCut = 0.7;
 
-	AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC);
-	AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC);
+	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
+		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC)
+	);
+	AliPP13SelectionWeightsMC & mc_weights_only = dynamic_cast<AliPP13SelectionWeightsMC &>(
+		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC)
+	);
+
 	mc_weights.fNonA = -0.035;
 	mc_weights.fNonSigma = 0.95;
 	mc_weights.fNonGlobal = 1.021; // Take into account the right scale
