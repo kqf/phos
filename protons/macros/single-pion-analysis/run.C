@@ -1,10 +1,10 @@
 #include "../../setup/environment.h"
+#include "plugin.h"
+#include "task.h"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
-
-    gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL);
 
     AliAODInputHandler * aod = new AliAODInputHandler();
@@ -20,7 +20,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         enablePileupCuts
     );
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     TString decalibration = "Run2Default";
     AliPHOSTenderTask * tender = AddAODPHOSTender(
@@ -42,7 +41,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // supply->SetNonlinearityParams(3, par);
 
 
-    gROOT->LoadMacro("../../setup/values_for_dataset.h+");
 
     TString msg = "Nonlinearity Scan";
     msg += " with tender option: ";
@@ -53,7 +51,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "");
     // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
     manager->InitAnalysis();
