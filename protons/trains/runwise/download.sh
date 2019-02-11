@@ -28,8 +28,8 @@ function main() {
         period=${names[$child]}
         echo "Processing: " ${period}
         mkdir -p ${period}
-        download_from_grid ${period} $child
-        echo ${period}.root ${period}/*.root
+        # download_from_grid ${period} $child
+        root -l -b -q merge.C"(\"${period}\")"
     done
 }
 
