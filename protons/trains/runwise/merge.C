@@ -6,20 +6,20 @@ void ProcessRun(TSystemFile * file, const char * ext = ".root")
         cout << fname.Data() << endl;
     cout << "Processing " << file->GetName() << endl;
 
-    // TFile * oldRootFile = TFile::Open(run, "read");
-    // histAnyInt = (TObjArray*)oldRootFile->Get("PHOSCellsQA_AnyInt");
-    // histPHI7   = (TObjArray*)oldRootFile->Get("PHOSCellsQA_PHI7");
-    // histTrigL0 = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL0");
-    // histTrigL1L = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL1Low");
-    // histTrigL1M = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL1Medium");
-    // histTrigL1H = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL1High");
-    // if (histAnyInt == 0 || histPHI7 == 0) {
-    //     printf(" does not contain PHOSCellQA histograms\n");
-    //     continue;
-    // }
-    // else {
-    //     printf(" contains PHOSCellQA histograms\n");
-    // }
+    TFile * oldRootFile = TFile::Open(run, "read");
+    histAnyInt = (TObjArray*)oldRootFile->Get("PHOSCellsQA_AnyInt");
+    histPHI7   = (TObjArray*)oldRootFile->Get("PHOSCellsQA_PHI7");
+    histTrigL0 = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL0");
+    histTrigL1L = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL1Low");
+    histTrigL1M = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL1Medium");
+    histTrigL1H = (TList*)oldRootFile->Get("PHOSTriggerQAResultsL1High");
+    if (histAnyInt == 0 || histPHI7 == 0) {
+        printf(" does not contain PHOSCellQA histograms\n");
+        continue;
+    }
+    else {
+        printf(" contains PHOSCellQA histograms\n");
+    }
 
     // char *runNum = strtok(rootFileName + 35, "/");
 
@@ -50,7 +50,7 @@ void ProcessRun(TSystemFile * file, const char * ext = ".root")
     // histAnyInt->Clear();
     // histPHI7->Clear();
 
-    // oldRootFile->Close();
+    oldRootFile->Close();
 }
 
 void merge(const TString  dirname)
