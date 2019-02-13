@@ -23,8 +23,8 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	if (isTest || !isMC)
 	{
 		// TODO: Add plain selections
-		AliPP13SelectionWeights & data_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kData);
-		AliPP13SelectionWeights & data_weights_plain = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain);
+		AliPP13SelectionWeights & data_weights = (AliPP13SelectionWeights &) AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kData);
+		AliPP13SelectionWeights & data_weights_plain = (AliPP13SelectionWeights &)  AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain);
 
 		selections->Add(new AliPP13SpectrumSelection("Phys", "Physics Selection", cuts_pi0, &data_weights));
 		// selections->Add(new AliPP13SpectrumSelection("PhysPlain", "Physics Selection no TOF cut efficiency", cuts_pi0, &data_weights_plain));
@@ -51,8 +51,12 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	//
 	if (isTest || isMC)
 	{
-		AliPP13SelectionWeightsMC & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
-		AliPP13SelectionWeightsMC & mc_weights_only = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC);
+		AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
+			AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC)
+		);
+		AliPP13SelectionWeightsMC & mc_weights_only = dynamic_cast<AliPP13SelectionWeightsMC &>(
+			AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kMC)
+		);
 
 		mc_weights_only.fNonGlobal = 1.0;
 		mc_weights_only.fNonA = 0.0;
