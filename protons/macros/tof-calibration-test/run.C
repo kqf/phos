@@ -24,9 +24,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
-
- 
-
     TString pref =  isMC ? "MC" : "";
 
  
@@ -35,9 +32,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
     PHOSSupply->ForceUsingCalibration("../datasets/Calib2016Time2017.root");
-
+    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
     if (isMC)
     {
         // Important: Keep track of this variable
