@@ -15,7 +15,7 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
 # declare -A names=([2]=child2 [3]=child3 [4]=child4)
 
 # Dataset: PYT8_13TeV_anchLHC16_AOD209_extra
-run=1269_20190123-1043_child_
+run=1295_20190206-0948_child_
 declare -A children=([1]=2 [2]=2 [3]=2 [4]=2 [5]=2 [6]=2 [7]=2 [8]=2 [9]=2 [10]=2)
 declare -A names=([1]=child1 [2]=child2 [3]=child3 [4]=child4 [5]=child5 [6]=child6 [7]=child7 [8]=child8 [9]=child9 [10]=child10)
 
