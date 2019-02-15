@@ -86,11 +86,11 @@
 			"hsum": "5ec460330496c4f685534cbe9ec1a5ecb9cfc2885bd66037c21177d028b08f3f",
 			"description": "Add nonlinearity correction for E/p task"
 		},
-		"ep_ratio_3 LHC16 extra": {
-			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16_extra.root",
+		"ep_ratio_3 LHC16": {
+			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16.root",
 			"default_selection": "PhysEff",
 			"pt_range": [0, 20],
-			"hsum": "3bff19db2529fb2397cca0db2dd1b782bdbbf91b43a4133e192f89ab6eb1f638",
+			"hsum": "1699e08a7573cae11fcce65eb87dc5ba6f9bf8af37d8fa7eeae757e2c5d3af10",
 			"description": "Fix nonlinearity correction for E/p task"
 		},
 		"kaon2pion": {
