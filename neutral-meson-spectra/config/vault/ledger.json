@@ -86,6 +86,13 @@
 			"hsum": "5ec460330496c4f685534cbe9ec1a5ecb9cfc2885bd66037c21177d028b08f3f",
 			"description": "Add nonlinearity correction for E/p task"
 		},
+		"ep_ratio_3": {
+			"file": "input-data/mc/pythia/ep_ratio_3/pythia8.root",
+			"default_selection": "PhysEff",
+			"pt_range": [0, 20],
+			"hsum": "eaeee3cb36c5edac3e1e95eae64fd93f15864e9123d91b088cd5a85b8ff5d1c4",
+			"description": "Add nonlinearity correction for E/p task, all 13 TeV datasets merged"
+		},
 		"ep_ratio_3 LHC16": {
 			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16.root",
 			"default_selection": "PhysEff",
