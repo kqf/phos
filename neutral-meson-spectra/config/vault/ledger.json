@@ -107,6 +107,13 @@
 			"hsum": "14a67edb10029ec283faf298eda6ea2383f32433e299597bf333e2b699fafb65",
 			"description": "Fix nonlinearity correction for E/p task"
 		},
+		"ep_ratio_3 LHC18": {
+			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC18.root",
+			"default_selection": "PhysEff",
+			"pt_range": [0, 20],
+			"hsum": "d9ab151bf400d3cef2eb5defb330bb2172d8d4a71b8931bbe2fb874d19e1bdf7",
+			"description": "Fix nonlinearity correction for E/p task"
+		},
 		"kaon2pion": {
 			"file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
 			"default_selection": "PionToKaonRatioOnlyTender",
