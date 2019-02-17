@@ -72,5 +72,14 @@
 			"hsum": "9730f3f025f7677d418dfa0181657c5dc64650b336e1e5c05faa293c4be38335",
 			"description": "Add number of clusters per run per TRU"
 		}
+	},
+	"LHC16 trigger qa3": {
+		"LHC16g kint7": {
+			"file": "input-data/data/LHC16/trigger_qa/iteration3/LHC16g.root",
+			"default_selection": "Phys",
+			"pt_range": [0, 20],
+			"hsum": "ba4cffda4d34c2c19b3542dc875a2a043923186680662364a914a76d070a534f",
+			"description": "Add number of clusters per run per TRU"
+		}
 	}
 }

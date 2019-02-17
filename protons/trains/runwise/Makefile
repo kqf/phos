@@ -1,6 +1,6 @@
 OUTFILE := LHC16g.root
 DATASET := LHC16g
-OUTDIR = results/data/trigger_qa4
+OUTDIR = results/data/LHC16/trigger_qa/iteration3
 
 all:
 	./download.sh
