@@ -24,6 +24,21 @@ class RatioCalculator(object):
         return divided
 
 
+class FunctionTransformer(object):
+    def __init__(self, in_cols, out_col, func):
+        super(FunctionTransformer, self).__init__()
+        self.in_cols = in_cols
+        self.out_col = out_col
+        self.func = func
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X[self.out_col] = X[self.in_cols].apply(self.func)
+        return X
+
+
 class RebinTransformer(object):
     _bins = np.array([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8,
                       2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8,
