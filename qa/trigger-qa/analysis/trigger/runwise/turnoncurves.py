@@ -12,8 +12,9 @@ def row_decoder(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
     for sm in range(sm_start, sm_stop + 1):
         for tru in range(tru_start, tru_stop + 1):
             output.append({
-                "name": listkey.GetName(),
+                "run": int(listkey.GetName()),
                 "module": "SM{}".format(sm),
+                "tru": "TRU{}".format(tru),
                 "hPhotAll": lst.FindObject(
                     "hPhotAllSM{}TRU{}".format(sm, tru)),
                 "hPhotTrig": lst.FindObject(
@@ -49,13 +50,21 @@ def read_dataset(filepath, rules):
     return pd.DataFrame(outputs)
 
 
+def report(x):
+    d = {}
+    d["nruns"] = len(x["run"])
+    d["turnon_value"] = x["integral"].mean()
+    d["efficiency_value"] = x["efficiency"].mean()
+    return pd.Series(d, index=["nruns", "turnon_value", "efficiency_value"])
+
+
 def turnon_stats(filepath):
     df = read_dataset(filepath, rules=row_decoder)
     analysis = make_pipeline(
         RebinTransformer("hPhotAll", "all_rebinned"),
         RebinTransformer("hPhotTrig", "matched_rebinned"),
         RatioCalculator(["matched_rebinned", "all_rebinned"], "turnon"),
-        # FunctionTransformer("turnon", "integral", integrate),
+        FunctionTransformer("turnon", "integral", integrate),
         FunctionTransformer("turnon", "efficiency", turnon_level)
     )
-    print analysis.fit_transform(df)
+    print analysis.fit_transform(df).groupby(["module", "tru"]).apply(report)

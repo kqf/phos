@@ -1,3 +1,4 @@
+import ROOT
 import numpy as np
 
 TRIGGER_MODULE_SHAPE = (16, 28)
@@ -106,3 +107,14 @@ def style(histo):
     histo.SetAxisRange(0., 39.)
     histo.SetXTitle("E, GeV")
     return histo
+
+
+def trendhist(bins, contents):
+    hist = ROOT.TH1F("trending", "", len(bins), 0, len(bins))
+    for i, (b, c) in enumerate(sorted(zip(bins, contents))):
+        hist.SetBinContent(i + 1, c)
+        hist.GetXaxis().SetBinLabel(i + 1, str(b))
+    hist.Draw()
+    ROOT.gPad.Update()
+    raw_input()
+    return hist
