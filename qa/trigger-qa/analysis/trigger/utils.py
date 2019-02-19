@@ -99,14 +99,14 @@ def select_tru(hist, number):
     return hist * trumask
 
 
-def style(histo):
-    histo.SetLineWidth(2)
-    histo.SetMarkerStyle(20)
-    histo.SetMarkerSize(0.5)
-    histo.SetNdivisions(530)
-    histo.SetAxisRange(0., 39.)
-    histo.SetXTitle("E, GeV")
-    return histo
+def style(hist):
+    hist.SetLineWidth(2)
+    hist.SetMarkerStyle(20)
+    hist.SetMarkerSize(0.5)
+    hist.SetNdivisions(530)
+    hist.SetAxisRange(0., 39.)
+    hist.SetXTitle("E, GeV")
+    return hist
 
 
 def trendhist(bins, contents):
@@ -114,4 +114,7 @@ def trendhist(bins, contents):
     for i, (b, c) in enumerate(sorted(zip(bins, contents))):
         hist.SetBinContent(i + 1, c)
         hist.GetXaxis().SetBinLabel(i + 1, str(b))
+    hist.SetLineWidth(2)
+    hist.GetXaxis().LabelsOption("v")
+    hist.GetXaxis().SetLabelSize(0.05)
     return hist

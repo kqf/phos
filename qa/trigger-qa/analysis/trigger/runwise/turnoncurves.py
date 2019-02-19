@@ -33,8 +33,9 @@ def integrate(hist, trigger_threshold=4):
 def turnon_level(hist, trigger_threshold=4, trigger_max=50):
     func = ROOT.TF1("func", "pol0", trigger_threshold, trigger_max)
     func.SetParameter(0, 1)
+    func.SetParLimits(0, 0, 1.02)
     # hist.GetXaxis().SetRangeUser(trigger_threshold, trigger_max)
-    hist.Fit(func, "RL")
+    hist.Fit(func, "qRL")
     # hist.Draw()
     # ROOT.gPad.Update()
     # raw_input()
@@ -45,7 +46,7 @@ def turnon_level(hist, trigger_threshold=4, trigger_max=50):
 
 def read_dataset(filepath, rules):
     infile = ROOT.TFile(filepath)
-    infile.ls()
+    # infile.ls()
     outputs = []
     for key in infile.GetListOfKeys():
         outputs += row_decoder(key)
@@ -55,9 +56,9 @@ def read_dataset(filepath, rules):
 def report(x):
     d = {}
     d["nruns"] = len(x["run"])
-    d["integra_hist"] = trendhist(x["run"], x["integral"])
+    d["integral_hist"] = trendhist(x["run"], x["integral"])
     d["efficiency_hist"] = trendhist(x["run"], x["efficiency"])
-    return pd.Series(d, index=["nruns", "integra_hist", "efficiency_hist"])
+    return pd.Series(d, index=["nruns", "integral_hist", "efficiency_hist"])
 
 
 def runwise_histograms(filepath):
@@ -81,20 +82,21 @@ def turnon_stats(filepath, n_modules=4):
         canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
         canvas.Divide(1, 2)
 
-        title = "Number of 4x4 patches per run SM{}".format(sm)
-        title += ";; # patches / accepntace/ #events"
-
+        title = "Turn-on curve fitted above the 4 GeV/c, SM{}".format(sm)
+        title += ";; efficiency"
         plotter = Plotter()
-        plotter.plot(sm_hists["integra_hist"],
+        plotter.plot(sm_hists["efficiency_hist"],
                      sm_hists["tru"],
                      canvas.cd(1),
-                     title)
+                     title, runwise=True)
 
-        plotter.plot(sm_hists["integra_hist"],
+        title = "Area under turnon curve above 4 GeV/c, SM{}".format(sm)
+        title += ";; integral"
+        plotter.plot(sm_hists["integral_hist"],
                      sm_hists["tru"],
                      canvas.cd(2),
-                     title)
+                     title, runwise=True)
 
-        save_canvas(canvas, "trending-tru-sm-{}".format(sm))
+        save_canvas(canvas, "trending-turnon-tru-sm-{}".format(sm))
         canvas.Update()
         raw_input()

@@ -27,7 +27,7 @@ def decorate_pad(pad):
     return pad
 
 
-def plot(hists, labels=None, pad=None, title=None):
+def plot(hists, labels=None, pad=None, title=None, runwise=False):
     assert labels is None or len(hists) == len(labels), "Wrong length"
     if pad is not None:
         pad.cd()
@@ -43,6 +43,9 @@ def plot(hists, labels=None, pad=None, title=None):
     if title is not None:
         stack.SetTitle(title)
     stack.Draw("nostack")
+    if runwise:
+        stack.GetXaxis().LabelsOption("v")
+    stack.GetXaxis().SetLabelSize(hist.GetXaxis().GetLabelSize())
 
     # Set labels
     if labels is not None:
@@ -80,5 +83,5 @@ class Plotter(object):
         super(Plotter, self).__init__()
         self.cache = []
 
-    def plot(self, hist, labels=None, pad=None, title=None):
-        self.cache.append(plot(hist, labels, pad, title))
+    def plot(self, hist, labels=None, pad=None, title=None, runwise=False):
+        self.cache.append(plot(hist, labels, pad, title, runwise))
