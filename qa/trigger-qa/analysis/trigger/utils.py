@@ -114,7 +114,4 @@ def trendhist(bins, contents):
     for i, (b, c) in enumerate(sorted(zip(bins, contents))):
         hist.SetBinContent(i + 1, c)
         hist.GetXaxis().SetBinLabel(i + 1, str(b))
-    hist.Draw()
-    ROOT.gPad.Update()
-    raw_input()
     return hist

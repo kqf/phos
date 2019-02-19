@@ -4,6 +4,8 @@ from sklearn.pipeline import make_pipeline
 from trigger.transformators import RatioCalculator
 from trigger.transformators import RebinTransformer
 from trigger.transformators import FunctionTransformer
+from trigger.utils import trendhist
+from trigger.plotting import Plotter, save_canvas
 
 
 def row_decoder(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
@@ -53,12 +55,12 @@ def read_dataset(filepath, rules):
 def report(x):
     d = {}
     d["nruns"] = len(x["run"])
-    d["turnon_value"] = x["integral"].mean()
-    d["efficiency_value"] = x["efficiency"].mean()
-    return pd.Series(d, index=["nruns", "turnon_value", "efficiency_value"])
+    d["integra_hist"] = trendhist(x["run"], x["integral"])
+    d["efficiency_hist"] = trendhist(x["run"], x["efficiency"])
+    return pd.Series(d, index=["nruns", "integra_hist", "efficiency_hist"])
 
 
-def turnon_stats(filepath):
+def runwise_histograms(filepath):
     df = read_dataset(filepath, rules=row_decoder)
     analysis = make_pipeline(
         RebinTransformer("hPhotAll", "all_rebinned"),
@@ -67,4 +69,32 @@ def turnon_stats(filepath):
         FunctionTransformer("turnon", "integral", integrate),
         FunctionTransformer("turnon", "efficiency", turnon_level)
     )
-    print analysis.fit_transform(df).groupby(["module", "tru"]).apply(report)
+    return analysis.fit_transform(df).groupby(["module", "tru"]).apply(report)
+
+
+def turnon_stats(filepath, n_modules=4):
+    histograms = runwise_histograms(filepath)
+    histograms.reset_index(inplace=True)
+    for sm in range(1, n_modules + 1):
+        current_module = "SM{}".format(sm)
+        sm_hists = histograms[histograms["module"] == current_module]
+        canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
+        canvas.Divide(1, 2)
+
+        title = "Number of 4x4 patches per run SM{}".format(sm)
+        title += ";; # patches / accepntace/ #events"
+
+        plotter = Plotter()
+        plotter.plot(sm_hists["integra_hist"],
+                     sm_hists["tru"],
+                     canvas.cd(1),
+                     title)
+
+        plotter.plot(sm_hists["integra_hist"],
+                     sm_hists["tru"],
+                     canvas.cd(2),
+                     title)
+
+        save_canvas(canvas, "trending-tru-sm-{}".format(sm))
+        canvas.Update()
+        raw_input()
