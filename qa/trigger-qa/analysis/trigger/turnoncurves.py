@@ -1,10 +1,11 @@
 import ROOT
 import pandas as pd
 from sklearn.pipeline import make_pipeline
+
 from transformators import RatioCalculator, RebinTransformer
+from utils import HistReader
 
 import plotting
-from trigger.trend import HistReader
 ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat(0)
 

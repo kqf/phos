@@ -1,7 +1,18 @@
 import ROOT
 import numpy as np
+import pandas as pd
+from sklearn.base import BaseEstimator, TransformerMixin
 
 TRIGGER_MODULE_SHAPE = (16, 28)
+
+
+def from_list(histname, lst):
+    def reader(index):
+        try:
+            return lst.Get("{}{}".format(histname, str(index)))
+        except AttributeError:
+            return lst.FindObject("{}{}".format(histname, str(index)))
+    return reader
 
 
 def hist2array2d(hist):
@@ -118,3 +129,49 @@ def trendhist(bins, contents):
     hist.GetXaxis().LabelsOption("v")
     hist.GetXaxis().SetLabelSize(0.05)
     return hist
+
+
+def row_decoder(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
+    lst, output = listkey.ReadObj(), []
+
+    for sm in range(sm_start, sm_stop + 1):
+        for tru in range(tru_start, tru_stop + 1):
+            output.append({
+                "run": int(listkey.GetName()),
+                "module": "SM{}".format(sm),
+                "tru": "TRU{}".format(tru),
+                "hPhotAll": lst.FindObject(
+                    "hPhotAllSM{}TRU{}".format(sm, tru)),
+                "hPhotTrig": lst.FindObject(
+                    "hPhotTrigSM{}TRU{}".format(sm, tru))
+            })
+
+    return output
+
+
+class HistReader(BaseEstimator, TransformerMixin):
+    def __init__(self, in_col, out_col,
+                 filepath, pattern, listpath=None):
+        self.in_col = in_col
+        self.out_col = out_col
+        self.filepath = filepath
+        self.pattern = pattern
+        self.listpath = listpath
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        infile = ROOT.TFile(self.filepath)
+        lst = infile.Get(self.listpath) if self.listpath else infile
+        X[self.out_col] = X[self.in_col].apply(from_list(self.pattern, lst))
+        return X
+
+
+def read_dataset(filepath, rules):
+    infile = ROOT.TFile(filepath)
+    # infile.ls()
+    outputs = []
+    for key in infile.GetListOfKeys():
+        outputs += row_decoder(key)
+    return pd.DataFrame(outputs)

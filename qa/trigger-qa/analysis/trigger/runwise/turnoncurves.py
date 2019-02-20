@@ -5,25 +5,9 @@ from trigger.transformators import RatioCalculator
 from trigger.transformators import RebinTransformer
 from trigger.transformators import FunctionTransformer
 from trigger.utils import trendhist
+from trigger.utils import row_decoder
+from trigger.utils import read_dataset
 from trigger.plotting import Plotter, save_canvas
-
-
-def row_decoder(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
-    lst, output = listkey.ReadObj(), []
-
-    for sm in range(sm_start, sm_stop + 1):
-        for tru in range(tru_start, tru_stop + 1):
-            output.append({
-                "run": int(listkey.GetName()),
-                "module": "SM{}".format(sm),
-                "tru": "TRU{}".format(tru),
-                "hPhotAll": lst.FindObject(
-                    "hPhotAllSM{}TRU{}".format(sm, tru)),
-                "hPhotTrig": lst.FindObject(
-                    "hPhotTrigSM{}TRU{}".format(sm, tru))
-            })
-
-    return output
 
 
 def integrate(hist, trigger_threshold=4):
@@ -42,15 +26,6 @@ def turnon_level(hist, trigger_threshold=4, trigger_max=50):
     # print func.GetParameter(0)
     # assert False
     return func.GetParameter(0)
-
-
-def read_dataset(filepath, rules):
-    infile = ROOT.TFile(filepath)
-    # infile.ls()
-    outputs = []
-    for key in infile.GetListOfKeys():
-        outputs += row_decoder(key)
-    return pd.DataFrame(outputs)
 
 
 def report(x):
