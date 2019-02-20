@@ -1,10 +1,14 @@
 #include "../../setup/environment.h"
+#include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
+#include "plugin.h"
+// #include "task.h"
+
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
 
-    gROOT->LoadMacro("CreatePlugin.cc+");
+    // gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
@@ -53,9 +57,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    Bool_t isTest = TString(pluginmode).Contains("test");
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "OnlyTender", isMC, isTest);
-
     gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
     AddTaskPIDResponse(kFALSE, kTRUE, kFALSE, "tenderPassData", kFALSE, "", kTRUE, kTRUE, -1);
 
@@ -63,13 +64,13 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddTaskPHOSEpRatio(kFALSE);
 
     // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
-    // AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
+    AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C");
-    AddTaskPhysPHOSQA();
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C");
+    // AddTaskPhysPHOSQA();
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
+    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
+    // AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
 
 
     if ( !manager->InitAnalysis( ) ) return;
