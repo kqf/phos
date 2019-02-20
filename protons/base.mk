@@ -65,7 +65,7 @@ upload:
 
 clean:
 	$(call funlink)
-	rm -f *.so *.d *~ Task*
+	rm -f *.so *.d *~ Task* *.pcm
 	rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
 
 unlink:
@@ -102,4 +102,3 @@ define upload_test
 	mv $(1).root $(2).root
 	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
 endef
-

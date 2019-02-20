@@ -1,5 +1,8 @@
 #include "../../setup/environment.h"
+R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
+#include <PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C>
+#include <PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C>
 #include "plugin.h"
 // #include "task.h"
 
@@ -8,7 +11,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 {
     SetupEnvironment();
 
-    // gROOT->LoadMacro("CreatePlugin.cc+");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
@@ -21,19 +23,13 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         mchandler->SetReadTR ( kFALSE ); // Don't read track references
         manager->SetMCtruthEventHandler ( mchandler );
     }
-
     // Connect plug-in to the analysis manager
     manager->SetGridHandler(alien);
-
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    gROOT->LoadMacro("AddAnalysisTaskPP.C");
     TString pref =  isMC ? "MC" : "";
-
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
@@ -57,26 +53,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
     AddTaskPIDResponse(kFALSE, kTRUE, kFALSE, "tenderPassData", kFALSE, "", kTRUE, kTRUE, -1);
-
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C");
     AddTaskPHOSEpRatio(kFALSE);
-
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C");
     AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
+    AddTaskPhysPHOSQA();
+    AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
 
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C");
-    // AddTaskPhysPHOSQA();
+    if (!manager->InitAnalysis())
+        return;
 
-    // gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C");
-    // AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
-
-
-    if ( !manager->InitAnalysis( ) ) return;
     manager->PrintStatus();
-
-
     alien->SetOutputFiles("AnalysisResults.root");
     manager->StartAnalysis (runmode);
     gObjectTable->Print( );
