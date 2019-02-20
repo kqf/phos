@@ -12,7 +12,7 @@ from runwise.turnoncurves import turnon_stats
               required=True)
 def main(filepath):
     # trend(filepath)
-    # trend_tru(filepath)
+    trend_tru(filepath)
     # channels_tru(filepath)
     # turn_on_curves(filepath)
-    turnon_stats(filepath)
+    # turnon_stats(filepath)

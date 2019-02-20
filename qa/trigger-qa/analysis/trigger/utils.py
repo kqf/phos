@@ -143,7 +143,8 @@ def row_decoder(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
                 "hPhotAll": lst.FindObject(
                     "hPhotAllSM{}TRU{}".format(sm, tru)),
                 "hPhotTrig": lst.FindObject(
-                    "hPhotTrigSM{}TRU{}".format(sm, tru))
+                    "hPhotTrigSM{}TRU{}".format(sm, tru)),
+                "events": lst.FindObject("hNev").GetBinContent(1)
             })
 
     return output
