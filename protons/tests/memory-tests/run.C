@@ -53,11 +53,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    AddTaskPIDResponse(kFALSE, kTRUE, kFALSE, "tenderPassData", kFALSE, "", kTRUE, kTRUE, -1);
-    AddTaskPHOSEpRatio(kFALSE);
+    // AddTaskPIDResponse(kFALSE, kTRUE, kFALSE, "tenderPassData", kFALSE, "", kTRUE, kTRUE, -1);
+    // AddTaskPHOSEpRatio(kFALSE);
     AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
-    AddTaskPhysPHOSQA();
-    AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
+    // AddTaskPhysPHOSQA();
+    // AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
 
     if (!manager->InitAnalysis())
         return;

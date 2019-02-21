@@ -10,7 +10,8 @@ OUTDIR = results/mc/pythia/debug_weights
 PROFILING_TARGET = root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
 TEST_SELECTION = PhysTender
 
-profiling: | %.cxx
+# profiling: | %.cxx
+profiling:
 	valgrind --tool=memcheck \
 	--error-limit=no \
 	--max-stackframe=3060888 \

@@ -27,7 +27,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
-	plugin->SetFileForTestMode("../../datasets/files-test-momory-signle-run.txt");
+	plugin->SetFileForTestMode("../../datasets/files-test-momory-multiple-run.txt");
     //plugin->SetUseSubmitPolicy();
 	return plugin;
 }
