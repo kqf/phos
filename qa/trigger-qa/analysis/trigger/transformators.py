@@ -35,7 +35,11 @@ class FunctionTransformer(object):
         return self
 
     def transform(self, X):
-        X[self.out_col] = X[self.in_cols].apply(self.func)
+        if type(self.in_cols) == str:
+            X[self.out_col] = X[self.in_cols].apply(self.func)
+        else:
+            X[self.out_col] = X[self.in_cols].apply(self.func, axis=1)
+
         return X
 
 

@@ -140,11 +140,11 @@ def row_decoder_tru(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
                 "run": int(listkey.GetName()),
                 "module": "SM{}".format(sm),
                 "tru": "TRU{}".format(tru),
+                "events": lst.FindObject("hNev").GetBinContent(1),
                 "hPhotAll": lst.FindObject(
                     "hPhotAllSM{}TRU{}".format(sm, tru)),
                 "hPhotTrig": lst.FindObject(
                     "hPhotTrigSM{}TRU{}".format(sm, tru)),
-                "events": lst.FindObject("hNev").GetBinContent(1)
             })
 
     return output

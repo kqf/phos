@@ -99,6 +99,7 @@ def agg_hists(x):
     d["nruns"] = len(x["run"])
     d["matched"] = trendhist(x["run"], x["matched"])
     d["all"] = trendhist(x["run"], x["all"])
+    d["events"] = trendhist(x["run"], x["events"])
     return pd.Series(d, index=["nruns", "matched", "all"])
 
 
@@ -106,10 +107,10 @@ def process(filepath, badmap_fname, rules):
     df = read_dataset(filepath, rules=rules)
     query = make_pipeline(
         FunctionTransformer("hPhotAll", "all", lambda x: x.GetEntries()),
-        FunctionTransformer("hPhotTrig", "matched", lambda x: x.GetEntries())
-        # AcceptanceScaler(["cleaned", "badmap"], "acceptance"),
-        # EventsScaler("acceptance", "scaled",
-        #              raw_col="raw", eventmap=event_runs),
+        FunctionTransformer("hPhotTrig", "matched", lambda x: x.GetEntries()),
+        # FunctionTransformer(["all", "events"], "all", lambda x: x['all'] / x['events'])
+        # AcceptanceScaler(["cleaned", "module"], "acceptance"),
+        # EventsScaler("acceptance", "scaled"),
         # AverageCalculator("scaled", "scaled")
     )
 
