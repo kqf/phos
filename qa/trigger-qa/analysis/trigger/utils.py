@@ -150,6 +150,21 @@ def row_decoder_tru(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
     return output
 
 
+def row_decoder_sm(listkey, sm_start=1, sm_stop=4):
+    lst, output = listkey.ReadObj(), []
+
+    for sm in range(sm_start, sm_stop + 1):
+        output.append({
+            "run": int(listkey.GetName()),
+            "module": "SM{}".format(sm),
+            "events": lst.FindObject("hNev").GetBinContent(1),
+            "hPhotAll": lst.FindObject("hPhotAllSM{}".format(sm)),
+            "hPhotTrig": lst.FindObject("hPhotTrigSM{}".format(sm))
+        })
+
+    return output
+
+
 class HistReader(BaseEstimator, TransformerMixin):
     def __init__(self, in_col, out_col,
                  filepath, pattern, listpath=None):

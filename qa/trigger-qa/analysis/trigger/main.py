@@ -11,7 +11,7 @@ from runwise.turnoncurves import turnon_stats
               help="Where is the dataset",
               required=True)
 def main(filepath):
-    # trend(filepath)
+    trend(filepath)
     trend_tru(filepath)
     # channels_tru(filepath)
     # turn_on_curves(filepath)

@@ -7,6 +7,7 @@ from sklearn.pipeline import make_pipeline
 
 import plotting
 from utils import read_dataset
+from utils import row_decoder_sm
 from utils import row_decoder_tru
 from utils import trendhist
 from transformators import FunctionTransformer
@@ -101,8 +102,8 @@ def agg_hists(x):
     return pd.Series(d, index=["nruns", "matched", "all"])
 
 
-def process(filepath, badmap_fname):
-    df = read_dataset(filepath, rules=row_decoder_tru)
+def process(filepath, badmap_fname, rules):
+    df = read_dataset(filepath, rules=rules)
     query = make_pipeline(
         FunctionTransformer("hPhotAll", "all", lambda x: x.GetEntries()),
         FunctionTransformer("hPhotTrig", "matched", lambda x: x.GetEntries())
@@ -112,7 +113,7 @@ def process(filepath, badmap_fname):
         # AverageCalculator("scaled", "scaled")
     )
 
-    return query.fit_transform(df).groupby(["module", "tru"]).apply(agg_hists)
+    return query.fit_transform(df)
 
 
 def fired_trigger_fraction(mtriggers, triggers):
@@ -126,50 +127,55 @@ def fired_trigger_fraction(mtriggers, triggers):
     return output
 
 
-def trend(filepath, lst="PHOSTriggerQAResultsL0",
-          badmap_fname="../BadMap_LHC16-updated.root"):
-    plotter = plotting.Plotter()
+def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root", n_modules=4):
+    histograms = process(filepath, badmap_fname=badmap_fname,
+                         rules=row_decoder_sm)
+
+    groupped = histograms.groupby(["module"]).apply(agg_hists)
+    groupped.reset_index(inplace=True)
     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
     canvas.Divide(1, 3)
 
-    triggers = process("hRunTriggers", lst, filepath, badmap_fname)
     title = "Number of 4x4 patches per run"
     title += ";; # patches / accepntace/ #events"
-    plotter.plot(triggers["scaled"],
-                 triggers["name"],
+    plotter = plotting.Plotter()
+    plotter.plot(groupped["matched"],
+                 groupped["module"],
                  canvas.cd(1),
-                 title)
+                 title, runwise=True)
 
-    mtriggers = process("hRunMatchedTriggers", lst, filepath, badmap_fname)
     title = "Numbero of matched 4x4 patches per run"
     title += ";;# patches / accepntace/ #events"
-    plotter.plot(mtriggers["scaled"],
-                 mtriggers["name"],
+    plotter.plot(groupped["all"],
+                 groupped["module"],
                  canvas.cd(2),
-                 title)
+                 title, runwise=True)
+    fired_fraction = fired_trigger_fraction(groupped["matched"],
+                                            groupped["all"])
 
-    fired_fraction = fired_trigger_fraction(mtriggers["scaled"],
-                                            triggers["scaled"])
-
-    title = "Number of matched tirggers / number of all triggers"
+    title = "Number of matched tirggers"
+    title += " / number of all triggers"
     title += ";;#patches / # matched"
     plotter.plot(fired_fraction,
-                 triggers["name"],
+                 groupped["module"],
                  canvas.cd(3),
                  title)
 
-    plotting.save_canvas(canvas, "trending")
+    plotting.save_canvas(canvas, "trending-sm")
     canvas.Update()
     raw_input()
 
 
 def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
               n_modules=4):
-    histograms = process(filepath, badmap_fname=badmap_fname)
-    histograms.reset_index(inplace=True)
+    histograms = process(filepath, badmap_fname=badmap_fname,
+                         rules=row_decoder_tru)
+
+    groupped = histograms.groupby(["module", "tru"]).apply(agg_hists)
+    groupped.reset_index(inplace=True)
     for sm in range(1, n_modules + 1):
         current_module = "SM{}".format(sm)
-        sm_hists = histograms[histograms["module"] == current_module]
+        sm_hists = groupped[groupped["module"] == current_module]
         canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
         canvas.Divide(1, 3)
 
@@ -201,43 +207,3 @@ def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
         plotting.save_canvas(canvas, "trending-tru-sm-{}".format(sm))
         canvas.Update()
         raw_input()
-
-    # for sm in range(1, n_modules + 1):
-    #     plotter = plotting.Plotter()
-    #     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
-    #     canvas.Divide(1, 3)
-
-    #     triggers = process("hRunTriggersSM{}".format(sm),
-    #                        lst, filepath, badmap_fname,
-    #                        pattern="TRU{}", nhists=8, sm=sm)
-    #     title = "Number of 4x4 patches per run SM{}".format(sm)
-    #     title += ";; # patches / accepntace/ #events"
-    #     plotter.plot(triggers["scaled"],
-    #                  triggers["name"],
-    #                  canvas.cd(1),
-    #                  title)
-
-    #     mtriggers = process("hRunMatchedTriggersSM{}".format(sm),
-    #                         lst, filepath, badmap_fname,
-    #                         pattern="TRU{}", nhists=8, sm=sm)
-    #     title = "Numbero of matched 4x4 patches per run SM{}".format(sm)
-    #     title += ";;# patches / accepntace/ #events"
-    #     plotter.plot(mtriggers["scaled"],
-    #                  mtriggers["name"],
-    #                  canvas.cd(2),
-    #                  title)
-
-    #     fired_fraction = fired_trigger_fraction(mtriggers["scaled"],
-    #                                             triggers["scaled"])
-
-    #     title = "Number of matched tirggers"
-    #     title += " / number of all triggers SM{}".format(sm)
-    #     title += ";;#patches / # matched"
-    #     plotter.plot(fired_fraction,
-    #                  triggers["name"],
-    #                  canvas.cd(3),
-    #                  title)
-
-    #     plotting.save_canvas(canvas, "trending-tru-sm-{}".format(sm))
-    #     canvas.Update()
-    #     raw_input()
