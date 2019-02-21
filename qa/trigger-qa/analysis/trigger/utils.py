@@ -131,7 +131,7 @@ def trendhist(bins, contents):
     return hist
 
 
-def row_decoder(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
+def row_decoder_tru(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
     lst, output = listkey.ReadObj(), []
 
     for sm in range(sm_start, sm_stop + 1):
@@ -169,10 +169,10 @@ class HistReader(BaseEstimator, TransformerMixin):
         return X
 
 
-def read_dataset(filepath, rules):
+def read_dataset(filepath, rules=row_decoder_tru):
     infile = ROOT.TFile(filepath)
     # infile.ls()
     outputs = []
     for key in infile.GetListOfKeys():
-        outputs += row_decoder(key)
+        outputs += rules(key)
     return pd.DataFrame(outputs)

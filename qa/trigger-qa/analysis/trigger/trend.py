@@ -7,10 +7,10 @@ from sklearn.pipeline import make_pipeline
 
 import plotting
 from utils import read_dataset
-from utils import row_decoder
+from utils import row_decoder_tru
 from utils import trendhist
 from transformators import FunctionTransformer
-# from utils import row_decoder
+# from utils import row_decoder_tru
 ROOT.TH1.AddDirectory(False)
 
 
@@ -102,7 +102,7 @@ def agg_hists(x):
 
 
 def process(filepath, badmap_fname):
-    df = read_dataset(filepath, rules=row_decoder)
+    df = read_dataset(filepath, rules=row_decoder_tru)
     query = make_pipeline(
         FunctionTransformer("hPhotAll", "all", lambda x: x.GetEntries()),
         FunctionTransformer("hPhotTrig", "matched", lambda x: x.GetEntries())

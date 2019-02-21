@@ -5,7 +5,7 @@ from trigger.transformators import RatioCalculator
 from trigger.transformators import RebinTransformer
 from trigger.transformators import FunctionTransformer
 from trigger.utils import trendhist
-from trigger.utils import row_decoder
+from trigger.utils import row_decoder_tru
 from trigger.utils import read_dataset
 from trigger.plotting import Plotter, save_canvas
 
@@ -37,7 +37,7 @@ def report(x):
 
 
 def runwise_histograms(filepath):
-    df = read_dataset(filepath, rules=row_decoder)
+    df = read_dataset(filepath, rules=row_decoder_tru)
     analysis = make_pipeline(
         RebinTransformer("hPhotAll", "all_rebinned"),
         RebinTransformer("hPhotTrig", "matched_rebinned"),
