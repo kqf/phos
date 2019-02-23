@@ -1,5 +1,86 @@
 import numpy as np
+import pandas as pd
 from trigger.utils import style
+from sklearn.base import BaseEstimator, TransformerMixin
+
+
+class AcceptanceScaler(BaseEstimator, TransformerMixin):
+
+    def __init__(self, in_cols, out_col):
+        self.in_cols = in_cols
+        self.out_col = out_col
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X[self.out_col] = X[self.in_cols].apply(
+            lambda x: self.scale(*x), axis=1)
+        return X
+
+    @staticmethod
+    def scale(hist, badmap):
+        if not badmap:
+            return hist
+        bad_channels = badmap.GetEntries()
+        all_channels = badmap.GetNbinsX() * badmap.GetNbinsY()
+
+        scaled = hist.Clone("{}_acceptance".format(hist.GetName()))
+        scaled.SetTitle("{} scaled for acceptance".format(hist.GetTitle()))
+        scaled.Scale(1. / (all_channels - bad_channels))
+        return scaled
+
+
+class AverageCalculator(BaseEstimator, TransformerMixin):
+    def __init__(self, in_col, out_col, info=None):
+        self.in_col = in_col
+        self.out_col = out_col
+        self.info = info
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        average = self.average(X[self.in_col])
+        payload = pd.DataFrame(
+            [{
+                self.out_col: average,
+                "name": "average"
+            }],
+            index=["average"])
+        return X.append(payload, sort=True)
+
+    @staticmethod
+    def average(hists):
+        total = hists[0].Clone("average")
+        total.Reset()
+        for hist in hists:
+            total.Add(hist)
+        total.Scale(1. / len(hists))
+        return total
+
+
+class EventsScaler(BaseEstimator, TransformerMixin):
+    def __init__(self, in_col, out_col, raw_col, eventmap):
+        super(EventsScaler, self).__init__(raw_col, out_col)
+        self.input = in_col
+        self.out_col = out_col
+        self.eventmap = eventmap
+        self._eventmap_cleaned = None
+
+    def fit(self, X, y=None):
+        super(EventsScaler, self).fit(X, y)
+        return self
+
+    def transform(self, X):
+        X[self.out_col] = X[self.input].apply(self.scale)
+        return X
+
+    def scale(self, hist):
+        divided = hist.Clone("{}_{}".format(hist.GetName(), self.out_col))
+        divided.Divide(hist, self._eventmap_cleaned, 1, 1, "B")
+        divided.LabelsOption("v")
+        return divided
 
 
 class RatioCalculator(object):
