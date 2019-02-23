@@ -7,8 +7,9 @@ DPART = first
 MC = kFALSE
 OUTDIR = results/mc/pythia/debug_weights
 
-PROFILING_TARGET = root -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
+PROFILING_TARGET = root -b -l -q 'run.C("$(DATASET)", "local", "test", "$(DPART)", $(MC))'
 TEST_SELECTION = PhysTender
+
 
 # profiling: | %.cxx
 profiling:
@@ -17,7 +18,7 @@ profiling:
 	--max-stackframe=3060888 \
 	--num-callers=40 \
 	--log-file=./profiling_result.log \
-	--leak-check=full \
+	--leak-check=no \
 	--track-origins=yes \
 	--show-reachable=yes \
 	${PROFILING_TARGET}
@@ -28,3 +29,13 @@ profiling:
 %.cxx:
 	@$(call funlink)
 	@$(call link_sources,../../tasks/analysis-task-pp/, "*.h" "*.cxx")
+
+main: main.cc
+	g++ main.cc -o main `root-config --cflags --libs` \
+		-I${ALICE_ROOT} \
+		-I${ALICE_ROOT}/include \
+		-I${ALICE_PHYSICS} \
+		-I${ALICE_PHYSICS}/include \
+		-L${ALICE_ROOT}/lib \
+		-L${ALICE_PHYSICS}/lib
+	rm main
