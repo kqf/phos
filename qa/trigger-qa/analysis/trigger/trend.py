@@ -3,6 +3,7 @@ from __future__ import print_function
 import ROOT
 import pandas as pd
 from sklearn.pipeline import make_pipeline
+from sklearn.base import BaseEstimator, TransformerMixin
 
 import plotting
 from utils import read_dataset
@@ -10,8 +11,32 @@ from utils import row_decoder_sm
 from utils import row_decoder_tru
 from utils import trendhist
 from transformators import FunctionTransformer
-# from utils import row_decoder_tru
+from transformators import RatioCalculator
 ROOT.TH1.AddDirectory(False)
+
+
+class BadMapCalculator(BaseEstimator, TransformerMixin):
+    def __init__(self, in_col, out_col,
+                 filepath, pattern, listpath=None):
+        self.in_col = in_col
+        self.out_col = out_col
+        self.filepath = filepath
+        self.pattern = pattern
+        self.listpath = listpath
+
+    def fit(self, X, y=None):
+        modules = X[self.in_col].unique()
+        infile = ROOT.TFile(self.filepath)
+        self.mapping_ = {
+            mod_name:
+            infile.Get("{}{}".format(self.pattern, mod_name[-1])).GetEntries()
+            for mod_name in modules
+        }
+        return self
+
+    def transform(self, X):
+        X[self.out_col] = X[self.in_col].map(self.mapping_)
+        return X
 
 
 def agg_hists(x):
@@ -20,7 +45,9 @@ def agg_hists(x):
     d["matched"] = trendhist(x["run"], x["matched"])
     d["all"] = trendhist(x["run"], x["all"])
     d["events"] = trendhist(x["run"], x["events"])
-    return pd.Series(d, index=["nruns", "matched", "all"])
+    d["acceptance"] = trendhist(x["run"], x["acceptance"])
+    return pd.Series(d, index=["nruns", "matched", "all",
+                               "acceptance", "events"])
 
 
 def process(filepath, badmap_fname, rules):
@@ -32,23 +59,25 @@ def process(filepath, badmap_fname, rules):
                             lambda x: x['all'] / x['events']),
         FunctionTransformer(["matched", "events"], "matched",
                             lambda x: x['matched'] / x['events']),
-        # AcceptanceScaler(["cleaned", "module"], "acceptance"),
-        # EventsScaler("acceptance", "scaled"),
-        # AverageCalculator("scaled", "scaled")
+        BadMapCalculator("module", "acceptance",
+                         filepath=badmap_fname,
+                         pattern="PHOS_BadMap_mod",
+                         ),
     )
 
     return query.fit_transform(df)
 
 
-def fired_trigger_fraction(mtriggers, triggers):
-    output = []
-    for trig, mtrig in zip(triggers, mtriggers):
-        fired = mtrig.Clone()
-        fired.Divide(mtrig, trig, 1, 1, "B")
-        title = "Ratio of matched trigger clusters to all triggered clusters"
-        fired.SetTitle(title)
-        output.append(fired)
-    return output
+def postprocess(df):
+    query = make_pipeline(
+        RatioCalculator(["all", "acceptance"], "all"),
+        RatioCalculator(["all", "events"], "all"),
+        RatioCalculator(["matched", "acceptance"], "matched"),
+        RatioCalculator(["matched", "events"], "matched"),
+        RatioCalculator(["matched", "all"], "matched_all"),
+    )
+
+    return query.fit_transform(df)
 
 
 def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root", n_modules=4):
@@ -57,6 +86,8 @@ def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root", n_modules=4):
 
     groupped = histograms.groupby(["module"]).apply(agg_hists)
     groupped.reset_index(inplace=True)
+    groupped = postprocess(groupped)
+
     canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
     canvas.Divide(1, 3)
 
@@ -74,13 +105,11 @@ def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root", n_modules=4):
                  groupped["module"],
                  canvas.cd(2),
                  title, runwise=True)
-    fired_fraction = fired_trigger_fraction(groupped["matched"],
-                                            groupped["all"])
 
     title = "Number of matched tirggers"
     title += " / number of all triggers"
     title += ";;#patches / # matched"
-    plotter.plot(fired_fraction,
+    plotter.plot(groupped["matched_all"],
                  groupped["module"],
                  canvas.cd(3),
                  title)
@@ -97,6 +126,7 @@ def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
 
     groupped = histograms.groupby(["module", "tru"]).apply(agg_hists)
     groupped.reset_index(inplace=True)
+    groupped = postprocess(groupped)
     for sm in range(1, n_modules + 1):
         current_module = "SM{}".format(sm)
         sm_hists = groupped[groupped["module"] == current_module]
@@ -117,13 +147,11 @@ def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
                      sm_hists["tru"],
                      canvas.cd(2),
                      title, runwise=True)
-        fired_fraction = fired_trigger_fraction(sm_hists["matched"],
-                                                sm_hists["all"])
 
         title = "Number of matched tirggers"
         title += " / number of all triggers SM{}".format(sm)
         title += ";;#patches / # matched"
-        plotter.plot(fired_fraction,
+        plotter.plot(sm_hists["matched_all"],
                      sm_hists["tru"],
                      canvas.cd(3),
                      title)

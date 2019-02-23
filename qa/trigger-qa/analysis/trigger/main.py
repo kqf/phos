@@ -15,4 +15,4 @@ def main(filepath):
     trend_tru(filepath)
     # channels_tru(filepath)
     # turn_on_curves(filepath)
-    # turnon_stats(filepath)
+    turnon_stats(filepath)
