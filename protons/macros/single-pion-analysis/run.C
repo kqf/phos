@@ -31,7 +31,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                  );
 
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
-    // supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
+    supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
+
+    TString nonlinearity = isMC ? "Run2" : "Run2MC";
+    supply->SetNonlinearityVersion(nonlinearity); 
 
     // ZS threshold in unit of GeV
     Double_t zs_threshold = 0.020;
@@ -46,6 +49,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";
+    msg += " Nonlinearity version:";
+    msg += nonlinearity;
     msg += gSystem->Getenv("ALIPHYSICS_VERSION");
 
     TString pref = "MC";
