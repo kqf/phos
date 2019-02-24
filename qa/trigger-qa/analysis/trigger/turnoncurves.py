@@ -1,37 +1,79 @@
+from __future__ import print_function
+
 import ROOT
 import pandas as pd
 from sklearn.pipeline import make_pipeline
+from trigger.transformators import RatioCalculator
+from trigger.transformators import RebinTransformer
+from trigger.transformators import FunctionTransformer
+from trigger.utils import trendhist
+from trigger.utils import row_decoder_tru
+from trigger.utils import read_dataset
+from trigger.plotting import Plotter, save_canvas
 
-from transformators import RatioCalculator, RebinTransformer
-from utils import HistReader
 
-import plotting
-ROOT.TH1.AddDirectory(False)
-ROOT.gStyle.SetOptStat(0)
+def integrate(hist, trigger_threshold=4):
+    return hist.Integral(hist.FindBin(trigger_threshold), hist.GetNbinsX())
 
 
-def analyze_module(filepath, lst, nhists=8, pattern="TRU{}", sm=None):
+def turnon_level(hist, trigger_threshold=4, trigger_max=50):
+    func = ROOT.TF1("func", "pol0", trigger_threshold, trigger_max)
+    func.SetParameter(0, 1)
+    func.SetParLimits(0, 0, 1.02)
+    # hist.GetXaxis().SetRangeUser(trigger_threshold, trigger_max)
+    hist.Fit(func, "qRL")
+    # hist.Draw()
+    # ROOT.gPad.Update()
+    # raw_input()
+    # print func.GetParameter(0)
+    # assert False
+    return func.GetParameter(0)
+
+
+def report(x):
+    d = {}
+    d["nruns"] = len(x["run"])
+    d["integral_hist"] = trendhist(x["run"], x["integral"])
+    d["efficiency_hist"] = trendhist(x["run"], x["efficiency"])
+    return pd.Series(d, index=["nruns", "integral_hist", "efficiency_hist"])
+
+
+def runwise_histograms(filepath):
+    df = read_dataset(filepath, rules=row_decoder_tru)
     analysis = make_pipeline(
-        HistReader("name", "all", filepath, "hPhotAllSM{}".format(sm), lst),
-        RebinTransformer("all", "all_rebinned"),
-        HistReader("name", "matched", filepath,
-                   "hPhotTrigSM{}".format(sm), lst),
-        RebinTransformer("matched", "matched_rebinned"),
+        RebinTransformer("hPhotAll", "all_rebinned"),
+        RebinTransformer("hPhotTrig", "matched_rebinned"),
         RatioCalculator(["matched_rebinned", "all_rebinned"], "turnon"),
+        FunctionTransformer("turnon", "integral", integrate),
+        FunctionTransformer("turnon", "efficiency", turnon_level)
     )
-    outputs = pd.DataFrame(index=map(str, range(1, nhists + 1)))
-    outputs["module_number"] = sm or outputs.index
-    outputs["name"] = outputs.index.map(pattern.format)
-    return analysis.fit_transform(outputs)
+    return analysis.fit_transform(df).groupby(["module", "tru"]).apply(report)
 
 
-def turn_on_curves(filepath, lst="PHOSTriggerQAResultsL0", n_modules=4):
+def turnon_stats(filepath, n_modules=4):
+    histograms = runwise_histograms(filepath)
+    histograms.reset_index(inplace=True)
     for sm in range(1, n_modules + 1):
-        plotter = plotting.Plotter()
+        current_module = "SM{}".format(sm)
+        sm_hists = histograms[histograms["module"] == current_module]
         canvas = ROOT.TCanvas("TrendPlots", "TrendPlots", 1000, 500)
-        output = analyze_module(filepath, lst, sm=sm)
-        title = "Triggered clusters / All clusters in SM{}; E, GeV".format(sm)
-        plotter.plot(output["turnon"], output["name"], canvas, title)
-        plotting.save_canvas(canvas, "turn-on-curve-sm-{}".format(sm))
+        canvas.Divide(1, 2)
+
+        title = "Turn-on curve fitted above the 4 GeV/c, SM{}".format(sm)
+        title += ";; efficiency"
+        plotter = Plotter()
+        plotter.plot(sm_hists["efficiency_hist"],
+                     sm_hists["tru"],
+                     canvas.cd(1),
+                     title, runwise=True)
+
+        title = "Area under turnon curve above 4 GeV/c, SM{}".format(sm)
+        title += ";; integral"
+        plotter.plot(sm_hists["integral_hist"],
+                     sm_hists["tru"],
+                     canvas.cd(2),
+                     title, runwise=True)
+
+        save_canvas(canvas, "trending-turnon-tru-sm-{}".format(sm))
         canvas.Update()
         raw_input()
