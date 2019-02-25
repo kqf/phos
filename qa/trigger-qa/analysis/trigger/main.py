@@ -15,3 +15,12 @@ def main(filepath):
     trend_tru(filepath)
     # channels_tru(filepath)
     turnon_stats(filepath)
+
+
+@click.command()
+@click.option("--filepath",
+              type=click.Path(exists=True),
+              help="Where is the dataset",
+              required=True)
+def cahnnels(filepath):
+    channels_tru(filepath)
