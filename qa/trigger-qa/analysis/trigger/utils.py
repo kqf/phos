@@ -15,6 +15,17 @@ def from_list(histname, lst):
     return reader
 
 
+def sumhists(hists):
+    if len(hists) < 1:
+        return []
+    total = hists[0].Clone()
+    total.Reset()
+    total.Sumw2()
+    for hist in hists:
+        total.Add(hist)
+    return total
+
+
 def hist2array2d(hist):
     data = [[
         hist.GetBinContent(i + 1, j + 1)
@@ -140,7 +151,7 @@ def row_decoder_tru(listkey, sm_start=1, sm_stop=4, tru_start=1, tru_stop=8):
                 "run": int(listkey.GetName()),
                 "module": "SM{}".format(sm),
                 "tru": "TRU{}".format(tru),
-                "events": lst.FindObject("hNev").GetBinContent(1),
+                "events": lst.FindObject("hNev").GetBinContent(2),
                 "hPhotAll": lst.FindObject(
                     "hPhotAllSM{}TRU{}".format(sm, tru)),
                 "hPhotTrig": lst.FindObject(
@@ -157,7 +168,7 @@ def row_decoder_sm(listkey, sm_start=1, sm_stop=4):
         output.append({
             "run": int(listkey.GetName()),
             "module": "SM{}".format(sm),
-            "events": lst.FindObject("hNev").GetBinContent(1),
+            "events": lst.FindObject("hNev").GetBinContent(2),
             "hPhotAll": lst.FindObject("hPhotAllSM{}".format(sm)),
             "hPhotTrig": lst.FindObject("hPhotTrigSM{}".format(sm))
         })
