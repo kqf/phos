@@ -7,7 +7,7 @@ setup(
     entry_points={
         "console_scripts": [
             "triggerqa=trigger.main:main",
-            "triggerqa=trigger.main:channels",
+            "channels=trigger.main:channels",
         ],
     }
 )
