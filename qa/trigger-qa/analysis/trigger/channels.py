@@ -13,6 +13,24 @@ ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat(0)
 
 
+def sumhists(hists):
+    if len(hists) < 1:
+        return []
+    total = hists[0].Clone()
+    total.Reset()
+    total.Sumw2()
+    for hist in hists:
+        total.Add(hist)
+    return total
+
+
+def plot_matrix(matrix, hist):
+    hist = rnp.array2hist(matrix, hist)
+    hist.Draw("colz")
+    ROOT.gPad.Update()
+    raw_input()
+
+
 def rebin(hists, n=4):
     for hist in hists:
         hist.Rebin2D(n)
@@ -25,7 +43,20 @@ def load_channels(filepath, pattern, nmodules=4):
         l0.FindObject(pattern.format(i))
         for i in range(1, nmodules + 1)
     ])
-    return modules, map(rnp.hist2array, modules)
+    return modules
+
+
+def load_channels_multiruns(filepath, pattern, nmodules=4):
+    total = []
+    file = ROOT.TFile(filepath)
+    for key in file.GetListOfKeys():
+        l0 = key.ReadObj()
+        modules = rebin([
+            l0.FindObject(pattern.format(i))
+            for i in range(1, nmodules + 1)
+        ])
+        total.append(modules)
+    return [sumhists(hists) for hists in zip(*total)]
 
 
 def channel_frequency(triggers, name):
@@ -88,12 +119,12 @@ def draw_line(hist, position):
     return line
 
 
-def channels(filepath, nmodules=4):
-    hists, triggers = load_channels(filepath, "h4x4SM{}")
-    mhists, matched_triggers = load_channels(filepath, "h4x4CluSM{}")
+def channels(thists, mhists):
+    triggers = map(rnp.hist2array, thists)
+    mtriggers = map(rnp.hist2array, mhists)
 
     channels = channel_frequency(triggers, "frequencies")
-    matched_channels = channel_frequency(matched_triggers, "matched")
+    matched_channels = channel_frequency(mtriggers, "matched")
     mu, sigma = fit_channels(triggers)
 
     title = "{} good channels: {} < # hits < {}".format(
@@ -105,23 +136,15 @@ def channels(filepath, nmodules=4):
         matched_channels,
     ], labels=["trigger patches", "matched triggers"], title=title)
 
-    maps = channel_badmap(hists, triggers, 1, mu + 3 * sigma)
+    maps = channel_badmap(thists, triggers, 1, mu + 3 * sigma)
     save_maps(maps)
 
 
-def plot_matrix(matrix, hist):
-    hist = rnp.array2hist(matrix, hist)
-    hist.Draw("colz")
-    ROOT.gPad.Update()
-    raw_input()
-
-
-def channels_tru(filepath, nmodules=4, ntrus=8):
-    histograms, trigger_patches = load_channels(filepath, "h4x4SM{}")
+def channels_tru(histograms, n_trus=8):
+    trigger_patches = map(rnp.hist2array, histograms)
     for sm_index, patches in enumerate(trigger_patches):
-        for itru in range(1, ntrus + 1):
+        for itru in range(1, n_trus + 1):
             tru = select_tru(patches, itru)
-            # plot_matrix(tru, histograms[0])
             filename = "sm{} tru{}".format(sm_index + 1, itru)
             mu, sigma = fit_channels(tru, filename)
             title = "{} good channels: {} < # hits < {}".format(
@@ -130,5 +153,19 @@ def channels_tru(filepath, nmodules=4, ntrus=8):
             print(title)
 
 
-if __name__ == '__main__':
-    channels()
+def channels_period(filepath):
+    thists = load_channels(filepath, "h4x4SM{}")
+    mhists = load_channels(filepath, "h4x4CluSM{}")
+    channels(thists, mhists)
+
+
+def channels_tru_period(filepath):
+    thists = load_channels(filepath, "h4x4SM{}")
+    channels_tru(thists)
+
+
+def channels_tru_total(filepaths):
+    total_hists = [load_channels_multiruns(period, "h4x4SM{}")
+                   for period in filepaths]
+    thists = [sumhists(h) for h in zip(*total_hists)]
+    channels_tru(thists)

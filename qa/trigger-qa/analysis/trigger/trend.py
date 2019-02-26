@@ -27,14 +27,22 @@ class BadMapCalculator(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         modules = X[self.in_col].unique()
         infile = ROOT.TFile(self.filepath)
+
+        hists = {
+            mod_name:
+            infile.Get("{}{}".format(self.pattern, mod_name[-1]))
+            for mod_name in modules
+        }
+
         self.mapping_ = {
             mod_name:
-            infile.Get("{}{}".format(self.pattern, mod_name[-1])).GetEntries()
-            for mod_name in modules
+                h.GetNbinsX() * h.GetNbinsY() - h.GetEntries()
+                for mod_name, h in hists.iteritems()
         }
         return self
 
     def transform(self, X):
+        print(self.mapping_)
         X[self.out_col] = X[self.in_col].map(self.mapping_)
         return X
 
@@ -55,10 +63,6 @@ def process(filepath, badmap_fname, rules):
     query = make_pipeline(
         FunctionTransformer("hPhotAll", "all", lambda x: x.GetEntries()),
         FunctionTransformer("hPhotTrig", "matched", lambda x: x.GetEntries()),
-        FunctionTransformer(["all", "events"], "all",
-                            lambda x: x['all'] / x['events']),
-        FunctionTransformer(["matched", "events"], "matched",
-                            lambda x: x['matched'] / x['events']),
         BadMapCalculator("module", "acceptance",
                          filepath=badmap_fname,
                          pattern="PHOS_BadMap_mod",
@@ -92,16 +96,16 @@ def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root", n_modules=4):
     canvas.Divide(1, 3)
 
     title = "Number of 4x4 patches per run"
-    title += ";; # patches / accepntace/ #events"
+    title += ";; # patches / accepntace / #events"
     plotter = plotting.Plotter()
-    plotter.plot(groupped["matched"],
+    plotter.plot(groupped["all"],
                  groupped["module"],
                  canvas.cd(1),
                  title, runwise=True)
 
     title = "Numbero of matched 4x4 patches per run"
-    title += ";;# patches / accepntace/ #events"
-    plotter.plot(groupped["all"],
+    title += ";;# patches / accepntace / #events"
+    plotter.plot(groupped["matched"],
                  groupped["module"],
                  canvas.cd(2),
                  title, runwise=True)
@@ -134,16 +138,16 @@ def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
         canvas.Divide(1, 3)
 
         title = "Number of 4x4 patches per run SM{}".format(sm)
-        title += ";; # patches / accepntace/ #events"
+        title += ";; # patches / accepntace / #events"
         plotter = plotting.Plotter()
-        plotter.plot(sm_hists["matched"],
+        plotter.plot(sm_hists["all"],
                      sm_hists["tru"],
                      canvas.cd(1),
                      title, runwise=True)
 
         title = "Numbero of matched 4x4 patches per run SM{}".format(sm)
-        title += ";;# patches / accepntace/ #events"
-        plotter.plot(sm_hists["all"],
+        title += ";;# patches / accepntace / #events"
+        plotter.plot(sm_hists["matched"],
                      sm_hists["tru"],
                      canvas.cd(2),
                      title, runwise=True)
