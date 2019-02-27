@@ -118,7 +118,7 @@ def select_tru(hist, number):
         for j in range(hist.shape[1])]
         for i in range(hist.shape[0])]
     trumask = np.asarray(trumasks) == number
-    return hist * trumask
+    return hist * trumask[:, :, np.newaxis]
 
 
 def style(hist):

@@ -10,7 +10,7 @@ except ValueError:
 from utils import select_tru
 
 ROOT.TH1.AddDirectory(False)
-ROOT.gStyle.SetOptStat(0)
+# ROOT.gStyle.SetOptStat(0)
 
 
 def sumhists(hists):
@@ -56,7 +56,11 @@ def load_channels_multiruns(filepath, pattern, nmodules=4):
             for i in range(1, nmodules + 1)
         ])
         total.append(modules)
-    return [sumhists(hists) for hists in zip(*total)]
+    return total
+
+
+def module_hists_to_matrix(hists):
+    return np.array([map(rnp.hist2array, modules) for modules in hists])
 
 
 def channel_frequency(triggers, name):
@@ -87,7 +91,7 @@ def save_maps(patches, filename="trigger-bad-map.root"):
     ofile.Close()
 
 
-def fit_channels(triggers, filename):
+def fit_channels(triggers, sm, tru):
     counts = np.asarray(triggers).reshape(-1)
     counts = counts[counts > 0]
 
@@ -98,6 +102,7 @@ def fit_channels(triggers, filename):
     fitf.SetParameter(0, 5)
     fitf.SetParameter(1, 1000)
     fitf.SetLineColor(ROOT.kGreen + 1)
+    filename = "sm{} tru{}".format(sm, tru)
     title = "Distribution of 4x4 trigger {}; cells".format(filename)
     freq = ROOT.TH1F("freq", title, 50, 0, 50)
     map(freq.Fill, counts)
@@ -145,6 +150,7 @@ def channels_tru(histograms, n_trus=8):
     for sm_index, patches in enumerate(trigger_patches):
         for itru in range(1, n_trus + 1):
             tru = select_tru(patches, itru)
+            plot_matrix(tru, histograms[0])
             filename = "sm{} tru{}".format(sm_index + 1, itru)
             mu, sigma = fit_channels(tru, filename)
             title = "{} good channels: {} < # hits < {}".format(
@@ -159,9 +165,27 @@ def channels_period(filepath):
     channels(thists, mhists)
 
 
-def channels_tru_period(filepath):
-    thists = load_channels(filepath, "h4x4SM{}")
-    channels_tru(thists)
+def channels_tru_period(filepath, n_trus=8):
+    thists = load_channels_multiruns(filepath, "h4x4SM{}")
+    data = module_hists_to_matrix(thists)
+    data = np.moveaxis(data, 0, -1)
+    maps = []
+    for sm_index, patches in enumerate(data):
+        bad_sm = np.zeros_like(patches)
+        for itru in range(1, n_trus + 1):
+            tru = select_tru(patches, itru)
+            mu, sigma = fit_channels(tru, sm_index + 1, itru)
+            bad = (tru < 0) | (tru > mu + 3 * (sigma ** 0.5))
+            bad_sm += bad
+
+        # Select only the worst channels
+        bad_module = bad_sm.sum(axis=-1) > 0.1 * bad_sm.shape[-1]
+        maps.append(bad_module)
+
+    badmap = [rnp.array2hist(matrix, hist)
+              for matrix, hist in zip(maps, thists[-1])]
+    save_maps(badmap)
+    return maps
 
 
 def channels_tru_total(filepaths):

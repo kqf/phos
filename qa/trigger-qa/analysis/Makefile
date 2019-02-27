@@ -7,19 +7,25 @@ odirs := $(patsubst $(FILEPATH)/%.root,$(DIRECTORY)/%.dir,$(INPUTS))
 badmap := $(DIRECTORY)/badmap
 
 
-all: $(odirs) $(badmap)
-	echo $(odirs)
+all: $(odirs)
 
 $(badmap):
 	mkdir -p $@
 	@which channels > /dev/null || pip install -e .
 	channels --filepath=$(FILEPATH)
 	mv *.pdf $@
+	
 
 %.dir:
 	@# Install trigger qa only when it's needed
 	@which triggerqa > /dev/null || pip install -e .
 	triggerqa --filepath=$(patsubst $(DIRECTORY)/%.dir,$(FILEPATH)/%.root,$@)
+
+	# Merge badmaps
+	pdfunite fitted-sm1-tru*.pdf fitted-sm1.pdf
+	pdfunite fitted-sm2-tru*.pdf fitted-sm2.pdf
+	pdfunite fitted-sm3-tru*.pdf fitted-sm3.pdf
+	pdfunite fitted-sm4-tru*.pdf fitted-sm4.pdf
 
 	pdfunite trending-tru-sm*.pdf trending-modules.pdf
 	pdfunite trending-turnon-tru-sm*.pdf trending-turnon.pdf
