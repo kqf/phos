@@ -7,13 +7,20 @@ odirs := $(patsubst $(FILEPATH)/%.root,$(DIRECTORY)/%.dir,$(INPUTS))
 badmap := $(DIRECTORY)/badmap
 
 
-all: $(odirs)
+all: $(badmap)
 
 $(badmap):
-	mkdir -p $@
 	@which channels > /dev/null || pip install -e .
 	channels --filepath=$(FILEPATH)
+
+	pdfunite fitted-sm1-tru*.pdf fitted-sm1.pdf
+	pdfunite fitted-sm2-tru*.pdf fitted-sm2.pdf
+	pdfunite fitted-sm3-tru*.pdf fitted-sm3.pdf
+	pdfunite fitted-sm4-tru*.pdf fitted-sm4.pdf
+
+	mkdir -p $@
 	mv *.pdf $@
+	mv *.root $@
 	
 
 %.dir:

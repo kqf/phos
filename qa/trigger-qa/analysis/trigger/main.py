@@ -26,8 +26,7 @@ def main(filepath):
               help="Where is the dataset",
               required=True)
 def channels(filepath):
-    # files = [fname for fname in os.listdir(filepath)
-    #          if fname.endswith(".root")]
-    # paths = [os.path.join(filepath, f) for f in files]
-    # channels_tru_total(paths)
-    channels_tru_period(filepath + "/LHC16g.root")
+    files = [fname for fname in os.listdir(filepath)
+             if fname.endswith(".root")]
+    paths = [os.path.join(filepath, f) for f in files]
+    channels_tru_total(paths)

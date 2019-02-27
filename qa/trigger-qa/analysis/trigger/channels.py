@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import ROOT
 import numpy as np
 import plotting
@@ -165,9 +167,7 @@ def channels_period(filepath):
     channels(thists, mhists)
 
 
-def channels_tru_period(filepath, n_trus=8):
-    thists = load_channels_multiruns(filepath, "h4x4SM{}")
-    data = module_hists_to_matrix(thists)
+def extract_bad_channels(data, hists, n_trus=8):
     data = np.moveaxis(data, 0, -1)
     maps = []
     for sm_index, patches in enumerate(data):
@@ -183,13 +183,20 @@ def channels_tru_period(filepath, n_trus=8):
         maps.append(bad_module)
 
     badmap = [rnp.array2hist(matrix, hist)
-              for matrix, hist in zip(maps, thists[-1])]
+              for matrix, hist in zip(maps, hists)]
     save_maps(badmap)
     return maps
+
+
+def channels_tru_period(filepath, n_trus=8):
+    thists = load_channels_multiruns(filepath, "h4x4SM{}")
+    data = module_hists_to_matrix(thists)
+    extract_bad_channels(data, thists[-1], n_trus=8)
 
 
 def channels_tru_total(filepaths):
     total_hists = [load_channels_multiruns(period, "h4x4SM{}")
                    for period in filepaths]
-    thists = [sumhists(h) for h in zip(*total_hists)]
-    channels_tru(thists)
+    thists = sum(total_hists, [])
+    data = module_hists_to_matrix(thists)
+    extract_bad_channels(data, thists[-1])
