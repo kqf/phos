@@ -2,12 +2,12 @@ import ROOT
 
 INDEX_COLOR = {
     1: ROOT.kRed + 1,
-    2: ROOT.kOrange + 1,
+    2: ROOT.kBlue + 1,
+    3: ROOT.kGreen + 1,
     4: ROOT.kYellow + 1,
-    5: ROOT.kGreen + 1,
-    6: ROOT.kBlue + 1,
-    7: ROOT.kViolet + 1,
-    8: ROOT.kPink + 1,
+    5: ROOT.kOrange + 1,
+    6: ROOT.kViolet + 1,
+    7: ROOT.kPink + 1,
 }
 
 

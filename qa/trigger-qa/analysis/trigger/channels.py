@@ -15,17 +15,6 @@ ROOT.TH1.AddDirectory(False)
 # ROOT.gStyle.SetOptStat(0)
 
 
-def sumhists(hists):
-    if len(hists) < 1:
-        return []
-    total = hists[0].Clone()
-    total.Reset()
-    total.Sumw2()
-    for hist in hists:
-        total.Add(hist)
-    return total
-
-
 def plot_matrix(matrix, hist):
     hist = rnp.array2hist(matrix, hist)
     hist.Draw("colz")
@@ -37,15 +26,6 @@ def rebin(hists, n=4):
     for hist in hists:
         hist.Rebin2D(n)
     return hists
-
-
-def load_channels(filepath, pattern, nmodules=4):
-    l0 = ROOT.TFile(filepath).Get("PHOSTriggerQAResultsL0")
-    modules = rebin([
-        l0.FindObject(pattern.format(i))
-        for i in range(1, nmodules + 1)
-    ])
-    return modules
 
 
 def load_channels_multiruns(filepath, pattern, nmodules=4):
@@ -159,12 +139,6 @@ def channels_tru(histograms, n_trus=8):
                 "TRU", 1, mu + 3 * (sigma ** 0.5)
             )
             print(title)
-
-
-def channels_period(filepath):
-    thists = load_channels(filepath, "h4x4SM{}")
-    mhists = load_channels(filepath, "h4x4CluSM{}")
-    channels(thists, mhists)
 
 
 def extract_bad_channels(data, hists, n_trus=8):

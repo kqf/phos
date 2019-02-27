@@ -7,7 +7,7 @@ odirs := $(patsubst $(FILEPATH)/%.root,$(DIRECTORY)/%.dir,$(INPUTS))
 badmap := $(DIRECTORY)/badmap
 
 
-all: $(badmap)
+all: $(odirs) $(badmap)
 
 $(badmap):
 	@which channels > /dev/null || pip install -e .
