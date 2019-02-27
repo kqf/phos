@@ -8,6 +8,7 @@ badmap := $(DIRECTORY)/badmap
 
 
 all: $(odirs) $(badmap)
+	echo $(odirs)
 
 $(badmap):
 	mkdir -p $@
@@ -20,20 +21,12 @@ $(badmap):
 	@which triggerqa > /dev/null || pip install -e .
 	triggerqa --filepath=$(patsubst $(DIRECTORY)/%.dir,$(FILEPATH)/%.root,$@)
 
-	pdfunite fitted-sm1*.pdf fitted-sm1.pdf
-	pdfunite fitted-sm2*.pdf fitted-sm2.pdf
-	pdfunite fitted-sm3*.pdf fitted-sm3.pdf
-	pdfunite fitted-sm4*.pdf fitted-sm4.pdf
-
-	# pdfunite turn-on-curve-sm*.pdf turn-on-curve.pdf
-	# pdfunite trending-tru-sm-*.pdf trending-modules.pdf
-
-	@-rm *-tru*
-	@-rm *turn-on-curve-sm*.pdf
+	pdfunite trending-tru-sm*.pdf trending-modules.pdf
+	pdfunite trending-turnon-tru-sm*.pdf trending-turnon.pdf
+	@-rm *-tru*.pdf
 
 	mkdir -p $@
 	mv *.pdf $@
-	mv *.png $@
 	mv *.root $@
 
 clean:

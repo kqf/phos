@@ -136,7 +136,7 @@ def trendhist(bins, contents):
     for i, (b, c) in enumerate(sorted(zip(bins, contents))):
         hist.SetBinContent(i + 1, c)
         hist.GetXaxis().SetBinLabel(i + 1, str(b))
-    hist.SetLineWidth(2)
+    hist.SetLineWidth(1)
     hist.GetXaxis().LabelsOption("v")
     hist.GetXaxis().SetLabelSize(0.05)
     return hist

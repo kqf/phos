@@ -74,6 +74,6 @@ def turnon_stats(filepath, n_modules=4):
                      canvas.cd(2),
                      title, runwise=True)
 
-        save_canvas(canvas, "trending-turnon-tru-sm-{}".format(sm))
+        save_canvas(canvas, "trending-turnon-tru-sm{}".format(sm))
         canvas.Update()
-        raw_input()
+        # raw_input()

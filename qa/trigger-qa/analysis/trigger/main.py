@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 import click
 from trigger.trend import trend, trend_tru
-from trigger.channels import channels_tru_period
+# from trigger.channels import channels_tru_period
 from trigger.channels import channels_tru_total
 # from turnoncurves import turn_on_curves
 from trigger.turnoncurves import turnon_stats
@@ -17,7 +17,7 @@ from trigger.turnoncurves import turnon_stats
 def main(filepath):
     trend(filepath)
     trend_tru(filepath)
-    channels_tru_period(filepath)
+    # channels_tru_period(filepath)
     turnon_stats(filepath)
 
 

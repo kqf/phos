@@ -120,7 +120,7 @@ def trend(filepath, badmap_fname="../BadMap_LHC16-updated.root", n_modules=4):
 
     plotting.save_canvas(canvas, "trending-sm")
     canvas.Update()
-    raw_input()
+    # raw_input()
 
 
 def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
@@ -160,6 +160,6 @@ def trend_tru(filepath, badmap_fname="../BadMap_LHC16-updated.root",
                      canvas.cd(3),
                      title)
 
-        plotting.save_canvas(canvas, "trending-tru-sm-{}".format(sm))
+        plotting.save_canvas(canvas, "trending-tru-sm{}".format(sm))
         canvas.Update()
-        raw_input()
+        # raw_input()
