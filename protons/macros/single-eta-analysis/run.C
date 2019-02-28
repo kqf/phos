@@ -6,15 +6,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 {
     SetupEnvironment();
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL);
-
     AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
     manager->SetInputEventHandler(aod);
     manager->SetGridHandler(alien);
 
     Bool_t enablePileupCuts = kTRUE;
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-
     AddTaskPhysicsSelection(
         kTRUE,  //false for data, true for MC
         enablePileupCuts
@@ -38,6 +35,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Double_t zs_threshold = 0.020; // ZS threshold in unit of GeV
     supply->ApplyZeroSuppression(zs_threshold);
 
+    TString nonlinearity = isMC ? "Run2" : "Run2MC";
+    supply->SetNonlinearityVersion(nonlinearity); 
 
 
     TString msg = "Correct #eta nonlinearity";
