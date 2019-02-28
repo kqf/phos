@@ -2,9 +2,9 @@ include ../../../base.mk
 
 PROTONS_PATH=../../../
 
-DATASET = LHC17d20a2_extra
+DATASET = LHC16g
 DPART = first
-MC = kTRUE
+MC = kFALSE
 OUTDIR = results/mc/pythia/debug_weights
 
 
