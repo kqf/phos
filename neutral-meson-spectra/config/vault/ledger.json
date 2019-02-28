@@ -146,6 +146,23 @@
 			"description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02"
 		}
 	},
+	"single #pi^{0} new calibration":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/newest_calibration_1/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"pt_range": [0.0, 8.0],
+			"hsum": "7bacd3f87d1f59d9cf033270a973161a326917f1cc9290ef4ba35d55e41fe34c",
+			"description": "Update calibration, keep old nonlinearity for comparison"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/newest_calibration_1/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"pt_range": [4.0, 20.0],
+			"hsum": "5870962088f5b9d10bcf19afce9e53a839c6e3f90530c38ea51744232368d236",
+			"description": "Update calibration, keep old nonlinearity for comparison"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
