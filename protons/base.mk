@@ -94,11 +94,11 @@ endef
 define upload_result
 	mv $(1).root $(2).root
 	-alien_mkdir -p $(ALIEN_HOME)/$(OUTDIR)/
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)/@ALICE::GSI::SE2
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)/@ALICE::NIHAM::EOS
 endef
 
 
 define upload_test
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::GSI::SE2
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::NIHAM::EOS
 endef
