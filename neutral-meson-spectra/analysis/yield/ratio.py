@@ -62,11 +62,13 @@ def test_yield_ratio():
         plot=True
     )
 
+    loggs = AnalysisOutput("eta to pion ratio")
     output = estimator.transform(
         (data_eta, data_pi0),
-        loggs=AnalysisOutput("eta to pion ratio")
+        loggs=loggs
     )
     Comparator().compare(output)
+    loggs.plot()
 
 
 @pytest.mark.skip('Something is wrong')

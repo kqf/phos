@@ -250,6 +250,7 @@ class CompositeCorrectedYieldOptions(object):
             "title": out_title,
             "label": "ALICE, pp \sqrt{s} = 13 TeV",
         }
+        self.normalization = 1.
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
