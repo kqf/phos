@@ -1,10 +1,11 @@
 #include "../../setup/environment.h"
 #include "plugin.h"
-#include "task.h"
+#include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
+// #include "task.h"
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
-    SetupEnvironment();
+    // SetupEnvironment();
 
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
@@ -21,15 +22,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     // Connect plug-in to the analysis manager
     manager->SetGridHandler(alien);
-
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     TString pref =  isMC ? "MC" : "";
-
-
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
@@ -64,7 +60,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "", isMC, isTest);
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, period + pref + msg);
+    task->SelectCollisionCandidates(AliVEvent::kINT7);
     AddTaskPHOSEpRatio(isMC);
 
 
