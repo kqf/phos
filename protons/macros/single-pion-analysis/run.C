@@ -32,17 +32,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
-    TString nonlinearity = isMC ? "Run2Tune" : "Run2TuneMC";
-    supply->SetNonlinearityVersion(nonlinearity); 
-
     // ZS threshold in unit of GeV
     Double_t zs_threshold = 0.020;
     supply->ApplyZeroSuppression(zs_threshold);
-    // supply->SetNonlinearityVersion("MC");
-    // Double_t par[3] = {9.54582e-01, 3.25219e-02, 5.41188e+00};
-    // supply->SetNonlinearityParams(3, par);
 
-
+    TString nonlinearity = isMC ? "Run2Tune" : "Run2TuneMC";
+    supply->SetNonlinearityVersion(nonlinearity); 
 
     TString msg = "Nonlinearity Scan";
     msg += " with tender option: ";
@@ -56,10 +51,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     // NB: This is a local copy of steering macro
     AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "");
-    // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
+
     manager->InitAnalysis();
     manager->PrintStatus();
-
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
     alien->SetOutputFiles(files);
