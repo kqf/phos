@@ -14,7 +14,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->SetGridHandler(alien);
 
     Bool_t enablePileupCuts = kTRUE;
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection(
         kTRUE,             //false for data, true for MC
         enablePileupCuts
@@ -33,7 +32,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
-    TString nonlinearity = isMC ? "Run2" : "Run2MC";
+    TString nonlinearity = isMC ? "Run2Tune" : "Run2TuneMC";
     supply->SetNonlinearityVersion(nonlinearity); 
 
     // ZS threshold in unit of GeV

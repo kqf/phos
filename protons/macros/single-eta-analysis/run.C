@@ -30,7 +30,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     // Configure Tender
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
-    supply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
+    supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
     Double_t zs_threshold = 0.020; // ZS threshold in unit of GeV
     supply->ApplyZeroSuppression(zs_threshold);

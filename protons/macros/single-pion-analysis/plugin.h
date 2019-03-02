@@ -17,7 +17,6 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString period, TString
 	
 	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
 
-	// DataDir = /alice/sim/2017/LHC17i7b2/ , DataPettern = /*/AliAOD.root
 	TString datadir = "/alice/sim/2017/" + dir + "/";
 	plugin->SetGridDataDir(datadir);
 
@@ -25,10 +24,7 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString period, TString
 	plugin->SetDataPattern(datapattern);
 
 	cout << "DataDir " <<  datadir << " pattern " << datapattern << endl;
-
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
     plugin->SetOutputFiles(AliAnalysisManager::GetCommonFileName());
-
-    //plugin->SetUseSubmitPolicy();
 	return plugin;
 }
