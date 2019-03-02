@@ -9,7 +9,7 @@ PROTONS_PATH=../../
 
 # Run the analysis on the newest nonlinearity function
 #
-DATASET = LHC17j3c2
+DATASET = LHC17j3c1
 OUTDIR = results/mc/single/eta/newest_calibration_1
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks

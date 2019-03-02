@@ -35,11 +35,11 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Double_t zs_threshold = 0.020; // ZS threshold in unit of GeV
     supply->ApplyZeroSuppression(zs_threshold);
 
-    TString nonlinearity = isMC ? "Run2" : "Run2MC";
+    TString nonlinearity = isMC ? "Run2Tune" : "Run2TuneMC";
     supply->SetNonlinearityVersion(nonlinearity); 
 
 
-    TString msg = "Correct #eta nonlinearity";
+    TString msg = "Tuned nonlinearity";
     msg += " with tender option: ";
     msg += decalibration;
     msg += " AliPhysics version:";
