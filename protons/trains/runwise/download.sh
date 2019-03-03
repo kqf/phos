@@ -1,6 +1,7 @@
 # Index corresponds to each period
 MAINDIR=/alice/data/2016
-TRAIN=696_20190205-1725
+# TRAIN=696_20190205-1725
+TRAIN=728_20190227-1303 
 TRAIN_PATH=pass1/AOD208/PWGGA/GA_pp_AOD/${TRAIN}_child_
 TARGET_FILE=TriggerQA.root
 
