@@ -6,6 +6,7 @@ R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 #include <OADB/macros/AddTaskPhysicsSelection.C>
 #include <PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C>
 #include <PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C>
+#include <PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C>
 #endif
 
 

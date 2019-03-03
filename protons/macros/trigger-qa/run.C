@@ -1,6 +1,6 @@
 #include "../../setup/environment.h"
 #include "plugin.h"
-#include "task.h"
+// #include "task.h"
 
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
@@ -30,22 +30,20 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                      1,                 // Important: reco pass
                                      isMC              // Important: is MC?
                                  );
-    // AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
-    AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
-        TString("TriggerQA.root"),
-        "PHOSTriggerQAResultsL0"
-    );
+    AliAnalysisTaskPHOSTriggerQA * task = AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
+    // AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
+    //     TString("TriggerQA.root"),
+    //     "PHOSTriggerQAResultsL0"
+    // );
     task->SelectCollisionCandidates(AliVEvent::kPHI7);
 
   
     // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
-    manager->InitAnalysis();
-    manager->PrintStatus();
-
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
     
-
+    manager->InitAnalysis();
+    manager->PrintStatus();
     manager->StartAnalysis(runmode);
     gObjectTable->Print();
 }
