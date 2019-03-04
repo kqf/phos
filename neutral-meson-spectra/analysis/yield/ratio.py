@@ -68,7 +68,7 @@ def test_yield_ratio():
         loggs=loggs
     )
     Comparator().compare(output)
-    loggs.plot()
+    # loggs.plot()
 
 
 @pytest.mark.skip('Something is wrong')
