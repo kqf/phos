@@ -52,6 +52,7 @@ class RebinTransformer(TransformerBase):
         rebinned = data.Rebin(len(self.edges) - 1, newname, self.edges)
         if self.width:
             rebinned.Scale(data.GetBinWidth(1), "width")
+            # br.scalewidth(rebinned)
         loggs.update({"rebinned": rebinned})
         return rebinned
 

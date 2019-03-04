@@ -411,6 +411,34 @@ def test_scales_histogram(stop):
     assert hist.Integral() == integral * binwidth * binwidth * 2
 
 
+def test_scales_for_binwith(stop):
+    nbins, start, stop = 200, -10, 10
+
+    hist = br.BH(
+        ROOT.TH1F,
+        "refhistScale", "Testing scalew", nbins, start, stop,
+        label="scale", logy=True, logx=False, priority=3)
+
+    hist.FillRandom('gaus')
+
+    # Calculate bin width
+    binwidth = nbins * 1. / (stop - start)
+
+    # For normal even binning these numbers are the same
+    entries, integral = hist.GetEntries(), hist.Integral()
+    assert entries == integral
+
+    br.scalew(hist, 1)
+    assert entries == hist.GetEntries()
+    assert hist.Integral() == integral * binwidth
+
+    # NB: Be careful when applying scalew consecutively
+    #     the factors multiply
+    br.scalew(hist, 2)
+    assert pytest.approx(entries) == hist.GetEntries()
+    assert hist.Integral() == integral * binwidth * binwidth * 2
+
+
 def test_calculates_area_and_error(stop):
     nbins, start, stop = 10, 0, 10
     hist = br.BH(

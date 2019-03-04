@@ -361,6 +361,16 @@ class BROOT(object):
         hist.Scale(factor, "width")
         return hist
 
+    @classmethod
+    def scalewidth(klass, hist):
+        if not hist.GetSumw2N():
+            hist.Sumw2()
+
+        for i in klass.range(hist):
+            width = hist.GetBinWidth(i)
+            hist.SetBinContent(i, hist.GetBinContent(i) / width)
+        return hist
+
     @staticmethod
     def bincenterf(hist, isxaxis=True):
         axis = hist.GetXaxis() if isxaxis else hist.GetYaxis()
