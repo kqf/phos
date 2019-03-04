@@ -1,16 +1,11 @@
 #include "../../setup/environment.h"
-R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
-#include <PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C>
-#include <PWGGA/PHOSTasks/PHOS_TriggerQA/macros/AddTaskPHOSTriggerQA.C>
 #include "plugin.h"
 // #include "task.h"
-
+// #include <cstdlib>
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
-    SetupEnvironment();
-
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
@@ -65,5 +60,5 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->PrintStatus();
     alien->SetOutputFiles("AnalysisResults.root");
     manager->StartAnalysis (runmode);
-    gObjectTable->Print( );
+    gObjectTable->Print();
 }
