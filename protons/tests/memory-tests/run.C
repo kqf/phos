@@ -1,8 +1,9 @@
 #include "../../setup/environment.h"
 #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
 #include "plugin.h"
-// #include "task.h"
-// #include <cstdlib>
+#include "task.h"
+#include <cstdlib>
+#include <TString.h>
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
@@ -12,17 +13,17 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     manager->SetInputEventHandler(aod);
 
-    if ( isMC )
+    if (isMC)
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Don't read track references
-        manager->SetMCtruthEventHandler ( mchandler );
+        mchandler->SetReadTR(kFALSE); // Don't read track references
+        manager->SetMCtruthEventHandler( mchandler );
     }
     // Connect plug-in to the analysis manager
     manager->SetGridHandler(alien);
 
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
+    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
 
     TString pref =  isMC ? "MC" : "";
 
@@ -30,7 +31,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("../datasets/BadMap_LHC16-updated.root");
+    PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
     if (isMC)
     {
@@ -59,6 +60,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     manager->PrintStatus();
     alien->SetOutputFiles("AnalysisResults.root");
-    manager->StartAnalysis (runmode);
+    manager->StartAnalysis(runmode);
     gObjectTable->Print();
 }

@@ -15,7 +15,6 @@ TEST_SELECTION = PhysTender
 profiling:
 	valgrind --tool=massif \
 	--error-limit=no \
-	--max-stackframe=3060888 \
 	--num-callers=40 \
 	--log-file=./profiling_result.log \
 	--suppressions=${ROOTSYS}/etc/valgrind-root.supp \
@@ -29,11 +28,13 @@ profiling:
 	@$(call link_sources,../../tasks/analysis-task-pp/, "*.h" "*.cxx")
 
 main: main.cc
-	g++ main.cc -o main `root-config --cflags --libs` \
+	g++ main.cc -g -o main `root-config --cflags --libs` \
+		-I./ \
 		-I${ALICE_ROOT} \
 		-I${ALICE_ROOT}/include \
 		-I${ALICE_PHYSICS} \
 		-I${ALICE_PHYSICS}/include \
+		-I${ALICE_PHYSICS}/PWGGA/PHOSTasks/PHOS_LHC16_pp/\
 		-L${ALICE_ROOT}/lib \
 		-L${ALICE_PHYSICS}/lib
-	rm main
+	# rm main
