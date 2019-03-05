@@ -1,8 +1,10 @@
 #include <AliAnalysisManager.h>
-#include <AliPIDResponseInputHandler.h>
+// #include <AliPIDResponseInputHandler.h>
 #include <AliMultiInputEventHandler.h>
 #include <AliAnalysisTaskPIDResponse.h>
-#include <ANALYSIS/macros/AddTaskPIDResponse.C>
+#include "AliAnalysisTaskPP13.h"
+#include <maintask.h>
+// #include <ANALYSIS/macros/AddTaskPIDResponse.C>
 // #include <OADB/macros/AddTaskPhysicsSelection.C>
 // #include <PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C>
 // #include <PWGGA/PHOSTasks/PHOS_EpRatio/AddTaskPHOSEpRatio.C>
