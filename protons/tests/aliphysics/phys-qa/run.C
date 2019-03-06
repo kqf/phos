@@ -1,4 +1,5 @@
-// #include "../setup/sources.h"
+// #include "../../../setup/environment.h"
+#include "plugin.h"
 
 void run(
     TString period,
@@ -10,8 +11,6 @@ void run(
 )
 {
     SetupEnvironment();
-    gROOT->LoadMacro("CreatePlugin.cc+");
-
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
 
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
@@ -28,9 +27,7 @@ void run(
     manager->SetInputEventHandler(aodH);
 
     // LoadAnalysisLibraries(); // Local tests
-    // gROOT->LoadMacro("AddAnalysisTaskPP.C"); // Local tests
 
-    gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C");
     TString pref =  isMC ? "MC" : "";
     AddTaskPhysPHOSQA();
 
@@ -77,4 +74,3 @@ void SetupEnvironment()
     gSystem->AddIncludePath( "-I$ALICE_PHYSICS/include" );
     gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
 }
-
