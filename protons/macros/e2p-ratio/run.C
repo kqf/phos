@@ -12,7 +12,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     manager->SetInputEventHandler(aod);
 
-    if ( isMC )
+    if (isMC)
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
         mchandler->SetReadTR ( kFALSE ); // Don't read track references
@@ -36,16 +36,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
     AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
-        isMC, 
-        kTRUE,
-        kTRUE, 
-        1,          // reco pass
-        kFALSE, 
-        "",
-        kTRUE,
-        kFALSE,
-        1           // reco pass
-    );
+            isMC,
+            kTRUE,
+            kTRUE,
+            1,          // reco pass
+            kFALSE,
+            "",
+            kTRUE,
+            kFALSE,
+            1           // reco pass
+                                          );
 
     if (isMC)
     {
@@ -55,12 +55,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         PHOSSupply->ApplyZeroSuppression(zs_threshold);
     }
 
-
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
-
     TString msg = "## Real data, no TOF cut efficiency.";
-
     if (tenderOption)
     {
         msg += " with tender option ";
@@ -73,7 +68,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddTaskPHOSEpRatio(isMC);
 
 
-    if ( !manager->InitAnalysis( ) ) return;
+    if (!manager->InitAnalysis()) return;
     manager->PrintStatus();
 
 

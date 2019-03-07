@@ -53,12 +53,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         PHOSSupply->ApplyZeroSuppression(zs_threshold);
     }
 
-
-    std::vector<Int_t> cells;
-    values_for_dataset(cells, "BadCells_LHC16", "../datasets/");
-
     TString msg = "## Real data, no TOF cut efficiency.";
-
     if (tenderOption)
     {
         msg += " with tender option ";
