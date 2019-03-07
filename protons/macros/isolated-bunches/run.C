@@ -63,8 +63,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t isTest = TString(pluginmode).Contains("test");
     TString pref =  isMC ? "MC" : "";
 
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "", cells, isMC, isTest);
-
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, isMC, isTest);
     manager->InitAnalysis();
     manager->PrintStatus();
 

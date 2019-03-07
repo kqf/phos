@@ -1,5 +1,4 @@
 #include "../../setup/environment.h"
-#include "../../setup/environment.h"
 #include "plugin.h"
 #include "task.h"
 
