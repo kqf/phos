@@ -1,15 +1,15 @@
 import pytest
 
 from lazy_object_proxy import Proxy
-from spectrum.output import AnalysisOutput
-from spectrum.options import Options, CompositeOptions
+from spectrum.output import AnalysisOutput # noqa
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
 from spectrum.options import CompositeOptions
-from spectrum.analysis import Analysis
-from spectrum.options import CorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.efficiency import Efficiency
+from spectrum.options import CompositeEfficiencyOptions
 
 
 from spectrum.comparator import Comparator
@@ -39,10 +39,14 @@ SPMC_PION = Proxy(
     # "#eta",
 ])
 def test_simple(particle):
-    estimator = Analysis(Options(particle=particle))
-    estimator.transform(INPUT_DATA, {})
+    estimator = Analysis(CompositeOptions(particle=particle))
+    pion = estimator.transform(INPUT_DATA, {})
+
+    estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
+    efficiency = estimator.transform(SPMC_PION, {})
 
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle="#pi^{0}")
     )
-    estimator.transform((YIELD_DATA, SPMC_DATA), {})
+    ypion = estimator.transform((YIELD_DATA, SPMC_PION), {})
+    Comparator().compare([pion, efficiency, ypion])
