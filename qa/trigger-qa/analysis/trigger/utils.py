@@ -1,7 +1,6 @@
 import ROOT
 import numpy as np
 import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
 
 TRIGGER_MODULE_SHAPE = (16, 28)
 
@@ -174,25 +173,6 @@ def row_decoder_sm(listkey, sm_start=1, sm_stop=4):
         })
 
     return output
-
-
-class HistReader(BaseEstimator, TransformerMixin):
-    def __init__(self, in_col, out_col,
-                 filepath, pattern, listpath=None):
-        self.in_col = in_col
-        self.out_col = out_col
-        self.filepath = filepath
-        self.pattern = pattern
-        self.listpath = listpath
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X):
-        infile = ROOT.TFile(self.filepath)
-        lst = infile.Get(self.listpath) if self.listpath else infile
-        X[self.out_col] = X[self.in_col].apply(from_list(self.pattern, lst))
-        return X
 
 
 def read_dataset(filepath, rules=row_decoder_tru):
