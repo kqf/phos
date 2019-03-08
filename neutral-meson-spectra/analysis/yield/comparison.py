@@ -33,20 +33,28 @@ SPMC_PION = Proxy(
 )
 
 
+SPMC_ETA = Proxy(
+    lambda: (
+        DataVault().input("single #eta", "low", "PhysEff"),
+        DataVault().input("single #eta", "high", "PhysEff"),
+    )
+)
+
+
 @pytest.mark.onlylocal
-@pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+@pytest.mark.parametrize("particle, spmc", [
+    ("#pi^{0}", SPMC_PION),
+    ("#eta", SPMC_ETA),
 ])
-def test_simple(particle):
+def test_simple(particle, spmc):
     estimator = Analysis(CompositeOptions(particle=particle))
     pion = estimator.transform(INPUT_DATA, {})
 
     estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
-    efficiency = estimator.transform(SPMC_PION, {})
+    efficiency = estimator.transform(spmc, {})
 
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle="#pi^{0}")
     )
-    ypion = estimator.transform((YIELD_DATA, SPMC_PION), {})
+    ypion = estimator.transform((YIELD_DATA, spmc), {})
     Comparator().compare([pion, efficiency, ypion])
