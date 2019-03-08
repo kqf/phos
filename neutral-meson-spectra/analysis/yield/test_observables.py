@@ -34,9 +34,9 @@ def validate_particle(particle="#pi^{0}", selection="PhysTender"):
     validate(actual, "test_observables/{}".format(particle))
 
 
-def test_extracts_pi0_spectrum(minuit_config):
-    validate_particle("#pi^{0}", "PhysTender")
-
-
-def test_extracts_eta_spectrum(minuit_config):
-    validate_particle("#eta", "EtaTender")
+@pytest.mark.parametrize(("particle, dataset"), [
+    ("#pi^{0}", "PhysTender"),
+    ("#eta", "EtaTender"),
+])
+def test_extracts_eta_spectrum(particle, dataset, minuit_config):
+    validate_particle(particle, dataset)
