@@ -1,3 +1,7 @@
+#include "../../setup/environment.h"
+#include "AliAnalysisTaskPi0v4.cxx"
+#include "task.h"
+
 void run(const char * runmode = "local", const char * pluginmode = "test", bool mergeJDL = kTRUE, bool isMC = kFALSE)
 {
     SetupEnvironment();
@@ -9,13 +13,7 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     Int_t * good_runs;
     Int_t nexc;
     Int_t nruns;
-    gROOT->LoadMacro("../../qa/qa-task/getRunsBadCells.C");
-    getRunsBadCells(period, good_runs, nruns, excells, nexc);
 
-
-
-
-    gROOT->LoadMacro("CreatePlugin.C");
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period);
     if (!alienHandler) return;
 
@@ -38,12 +36,8 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     // Connect plug-in to the analysis manager
     mgr->SetGridHandler(alienHandler);
     // mgr->SetDebugLevel(999999);
-
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
     AddTaskPhysicsSelection ( isMC, kTRUE, 0, kTRUE);  //false for data, kTRUE for MC
 
-    gROOT->LoadMacro("AliAnalysisTaskPi0v4.cxx+");
-    gROOT->LoadMacro("AddMyTask.C");
 
     // Add task without tender
     // Tender doesn't allow us to run the macro before and after TENDER Task
@@ -52,7 +46,6 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     // Add tender
     if (useTender)
     {
-        gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
         AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender") ;
         AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
         PHOSSupply->ForceUsingBadMap("BadMap_LHC16k.root");
@@ -103,4 +96,3 @@ void SetupEnvironment()
     gSystem->AddIncludePath( "-I$ALICE_PHYSICS/include" );
     gSystem->SetMakeSharedLib(TString(gSystem->GetMakeSharedLib()).Insert(19, " -Wall ") );
 }
-
