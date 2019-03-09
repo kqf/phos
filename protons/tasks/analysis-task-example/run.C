@@ -9,12 +9,10 @@ void run(const char * runmode = "local", const char * pluginmode = "test", bool 
     bool useTender = kTRUE;
     // TString period = "LHC16h";
     TString period = "LHC16k";
-    Int_t * excells;
     Int_t * good_runs;
-    Int_t nexc;
     Int_t nruns;
 
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, mergeJDL, good_runs, nruns, period);
+    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     if (!alienHandler) return;
 
     AliAnalysisManager * mgr  = new AliAnalysisManager("PHOS_Pi0_Spectrum");

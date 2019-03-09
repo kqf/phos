@@ -1,69 +1,33 @@
-AliAnalysisGrid * CreatePlugin(TString pluginmode = "test", Bool_t mergeJDL = kTRUE, Int_t * runs, Int_t nruns, TString period)
+#include "../setup/alien.h"	
+#include "iostream"
+
+using std::cout;
+using std::endl;
+
+AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC)
 {
+	// Maximal size of the dataset that shouldn't be slitted on two halves
+	Int_t msize = 80;	
 
-	AliAnalysisAlien * plugin = new AliAnalysisAlien();
-	plugin->SetOverwriteMode(kTRUE);
+	// Use default setup for the plugin
+	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
 
-	plugin->SetMergeViaJDL(mergeJDL); 
-
-	plugin->SetOutputToRunNo(kTRUE); 
+	// Extract period and reconstruction pass
+	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
 	
-	plugin->SetRunMode(pluginmode);
+	TString reconstruction(period);
+	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
+	reconstruction.ReplaceAll("-", "_");
 
-	plugin->SetAPIVersion("V1.1x");
-	plugin->SetAliPhysicsVersion("vAN-20170222-1");
+	TString globaldir = isMC ? "/alice/sim/2017/" : "/alice/data/2016/";
+	plugin->SetGridDataDir(globaldir + dir);
+	cout << "/alice/data/2016/" + dir << endl;
 
+	TString datasuffix = isMC ? "AOD/" : "/*.";
+	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
+	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
-	plugin->SetExecutableCommand("aliroot");
-	plugin->SetExecutableArgs("-b -q -x");
-
-	plugin->SetCheckCopy(kFALSE);
-
-	plugin->SetGridDataDir("/alice/data/2016/" + period);
-	plugin->SetDataPattern("/muon_calo_pass1/*.*/AliAOD.root");
-	// plugin->SetDataPattern("/muon_calo_pass1/*.*/AliESDs.root");
-	plugin->SetRunPrefix("000");
-
-	cout << "We are trying to analyse " << nruns << " runs" << endl;
-
-    for (Int_t i = 0; i < nruns; ++i)
-		plugin->AddRunNumber(runs[i]);
-
-	plugin->SetDefaultOutputs(kFALSE);
-	plugin->SetOutputFiles("AnalysisResults.root");
-
-	plugin->SetGridWorkingDir("phos-protons-example");
-	plugin->SetGridOutputDir(period);
-	// plugin->SetDefaultOutputs();
-
-
-	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
-	plugin->SetAnalysisSource("AliAnalysisTaskPi0v4.cxx");
-	plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so AliAnalysisTaskPi0v4.cxx AliAnalysisTaskPi0v4.h");
-
-	plugin->SetAnalysisMacro("TaskProtonsExample.C");
-	plugin->SetSplitMaxInputFileNumber(100);
-	plugin->SetExecutable("TaskProtonsExample.sh");
-
-	plugin->SetTTL(30000);
-	plugin->SetInputFormat("xml-single");
-	plugin->SetJDLName("TaskProtonsExample.jdl");
-	plugin->SetPrice(1);
-	plugin->SetSplitMode("se");
-
-
-	plugin->SetProofCluster ( "alice-caf.cern.ch" );
-	plugin->SetProofDataSet ( "/alice/data/LHC10h_000138150_p2" );
-	plugin->SetProofReset ( 0 );
-	plugin->SetNproofWorkers ( 0 );
-
-
-	plugin->SetAliRootMode ( "default" );
-	plugin->SetClearPackages ( kFALSE );
-	plugin->SetFileForTestMode ( "files.txt" );
-	plugin->SetProofConnectGrid ( kFALSE );
-	plugin->SetDropToShell(kFALSE);
-	if (!plugin)
-		cout << "Warning \n";
+	plugin->SetFileForTestMode ( "filesmc.txt" );
+    //plugin->SetUseSubmitPolicy();
 	return plugin;
 }
