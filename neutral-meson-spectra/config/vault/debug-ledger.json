@@ -66,14 +66,14 @@
 	},
 	"LHC16 trigger qa3": {
 		"LHC16g": {
-			"file": "input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g-pass1.root",
+			"file": "input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g.root",
 			"default_selection": "Phys",
 			"pt_range": [0, 20],
-			"hsum": "9730f3f025f7677d418dfa0181657c5dc64650b336e1e5c05faa293c4be38335",
-			"description": "Add number of clusters per run per TRU"
+			"hsum": "cec9baeab09eb50427132d099d5ae26161d5c760ba59428f1ec7c7e0fd13200c",
+			"description": "Recalculate the quantities with the official task"
 		}
 	},
-	"LHC16 trigger qa3": {
+	"LHC16 trigger qa3 int7": {
 		"LHC16g kint7": {
 			"file": "input-data/data/LHC16/trigger_qa/iteration3/LHC16g.root",
 			"default_selection": "Phys",
