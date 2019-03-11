@@ -1,6 +1,6 @@
 #include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "")
+void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description)
 {
 	LoadAnalysisLibraries();
 
@@ -23,15 +23,14 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 	cuts_eta.fAsymmetryCut = 0.7;
 
 	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
-		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC)
+		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC)
 	);
 	AliPP13SelectionWeightsMC & mc_weights_only = dynamic_cast<AliPP13SelectionWeightsMC &>(
-		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC)
+		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC)
 	);
-	mc_weights.fNonA = -0.035;
-	mc_weights.fNonSigma = 0.95;
-	mc_weights.fNonGlobal = 1.020; // Take into account the right scale
 
+	mc_weights.fNonA = 0;
+	mc_weights.fNonGlobal = 1.0; // Take into account the right scale
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 
@@ -47,7 +46,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		fSel->SetTitle(description);
 		cout << fSel->GetTitle() << endl;
 
-		coutput = mgr->CreateContainer(fSel->GetName() + suff,
+		coutput = mgr->CreateContainer(fSel->GetName(),
 									   TList::Class(),
 									   AliAnalysisManager::kOutputContainer,
 									   AliAnalysisManager::GetCommonFileName());

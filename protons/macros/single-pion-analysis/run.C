@@ -50,14 +50,13 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, "", "");
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg);
 
     manager->InitAnalysis();
     manager->PrintStatus();
     TString files = AliAnalysisManager::GetCommonFileName();
     cout << "Output files " << files << endl;
     alien->SetOutputFiles(files);
-
     manager->StartAnalysis(runmode);
     gObjectTable->Print();
 }
