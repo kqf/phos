@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ROOT
 import pytest
 
@@ -7,14 +8,18 @@ from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput  # noqa
 from tools.mc import Nonlinearity
 from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator  # noqa
 # from vault.formulas import FVault
 
 SPMC_REGULAR = Proxy(
     lambda: (
-        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
+        DataVault().input("data", "nonlinearity",
+                          listname="PhysPlain", histname="MassPtSM0"),
         (
-            DataVault().input("single #pi^{0}", "low", "PhysEff"),
-            DataVault().input("single #pi^{0}", "high", "PhysEff"),
+            DataVault().input("single #pi^{0} new calibration", "low",
+                              "PhysEff"),
+            DataVault().input("single #pi^{0} new calibration", "high",
+                              "PhysEff"),
         )
     )
 )
@@ -55,5 +60,6 @@ def test_spmc_nonlinearity(data):
 
     nonlinearity = Nonlinearity(options, plot=True).transform(
         data, AnalysisOutput("spmc nonlinearity"))
-    print "Fit parameters:", br.pars(options.fitf)
+    print("Fit parameters:", br.pars(options.fitf))
+    Comparator().compare(nonlinearity)
     assert nonlinearity.GetEntries() > 0
