@@ -7,6 +7,7 @@ from vault.datavault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput  # noqa
 from tools.mc import Nonlinearity
+from tools.mc import Decalibration
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator  # noqa
 # from vault.formulas import FVault
@@ -62,4 +63,8 @@ def test_spmc_nonlinearity(data):
         data, AnalysisOutput("spmc nonlinearity"))
     print("Fit parameters:", br.pars(options.fitf))
     Comparator().compare(nonlinearity)
-    assert nonlinearity.GetEntries() > 0
+
+    width = Decalibration(options, plot=True).transform(
+        data, AnalysisOutput("spmc width"))
+    Comparator().compare(width)
+    assert width.GetEntries() > 0

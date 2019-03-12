@@ -22,7 +22,11 @@ def define_inputs():
     return data, mc_inputs
 
 
-@pytest.mark.parametrize("method", [Nonlinearity, Decalibration, Shape])
+@pytest.mark.parametrize("method", [
+    Nonlinearity,
+    Decalibration,
+    Shape
+])
 def test_calculate_quantities(method):
     name = method.__class__.__name__.lower()
     options = CompositeNonlinearityOptions("#pi^{0}")
