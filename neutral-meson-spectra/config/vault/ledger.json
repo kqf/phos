@@ -193,14 +193,14 @@
 			"file": "input-data/mc/single/eta/newest_calibration_1/LHC17j3c1.root",
 			"default_selection": "PhysEffNoA",
 			"pt_range": [0.0, 10.0],
-			"hsum": "90bad848bed13852db5c7ab22d0f6d85646f4fc1917347d6da6e5523df8653c5",
+			"hsum": "ff46767456ba8105b89f82b81fb34ce719c354730943e1601440f4d873c0ab99",
 			"description": "Update calibration, keep old nonlinearity for comparison"
 		},
 		"high": {
 			"file": "input-data/mc/single/eta/newest_calibration_1/LHC17j3c2.root",
 			"default_selection": "PhysEffNoA",
 			"pt_range": [4.0, 20.0],
-			"hsum": "eeb8f6a1350ec2039d1707825fdf8a01182331af87abd0bd67f132d195984cc6",
+			"hsum": "fea730feed07a73804c0efc6da3eb25ce772b5596613c491824b134c95bf2ec2",
 			"description": "Update calibration, keep old nonlinearity for comparison"
 		}
 	},
