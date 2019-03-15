@@ -1,7 +1,8 @@
 AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 	Bool_t isMC = kFALSE,
 	TString description = "",
-	TString suff = ""
+	TString suff = "",
+	Int_t minDistanceMaximum = 4 
 )
 {
 	AliAnalysisManager * manager = AliAnalysisManager::GetAnalysisManager();
@@ -11,7 +12,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(
 	TList * selections = new TList();
 
 	AliPP13SelectionWeights & data_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kData);
-	for(Int_t i = 0; i < 3; ++i)
+	for(Int_t i = 0; i < minDistanceMaximum; ++i)
 	{
 		AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 		cuts_pi0.fMinimalDistance = i;
