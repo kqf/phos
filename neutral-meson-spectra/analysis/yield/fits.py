@@ -21,6 +21,12 @@ def fitfunction():
     return tsallis
 
 
+def fitfunction_tcm():
+    tsallis = ROOT.TF1("tcm", FVault().func("tcm"), 0, 10)
+    tsallis.SetParameters(0.02270, 0.36292, 11.0977)
+    return tsallis
+
+
 PION_INPUTS = Proxy(
     lambda:
     (
@@ -60,7 +66,7 @@ def test_tsallis_fit(particle, data):
         CompositeCorrectedYieldOptions(particle=particle)
     )
     cyield = estimator.transform(data, loggs={})
-    cyield.Fit(fitfunction())
+    cyield.Fit(fitfunction_tcm())
     cyield.logy = True
     cyield.logx = True
     Comparator().compare(cyield)
