@@ -11,7 +11,7 @@ from tools.feeddown import data_feeddown
 from vault.formulas import FVault
 
 
-def fitfunction():
+def fitfunction_tsallis():
     tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 10)
     tsallis.SetParameters(0.014960701090585591,
                           0.287830380417601,
@@ -53,6 +53,23 @@ ETA_INPUTS = Proxy(
         )
     )
 )
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle, data", [
+    ("#pi^{0}", PION_INPUTS),
+    # ("#eta", ETA_INPUTS),
+])
+def test_tsallis_fit(particle, data):
+    estimator = CorrectedYield(
+        CompositeCorrectedYieldOptions(particle=particle)
+    )
+    cyield = estimator.transform(data, loggs={})
+    cyield.Fit(fitfunction_tsallis())
+    cyield.logy = True
+    cyield.logx = True
+    Comparator().compare(cyield)
 
 
 @pytest.mark.thesis
