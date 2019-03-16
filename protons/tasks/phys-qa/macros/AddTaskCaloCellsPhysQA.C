@@ -1,48 +1,6 @@
 AliAnalysisTaskCaloCellsQA* AddTaskCaloCellsPhysQA(Int_t nmods = 10, Int_t det = 0,
                                                TString fname = "CellsQA.root", TString contname = "")
 {
-  // Task to add EMCAL/PHOS cellsQA/runsQA to your analysis.
-  //
-  // Usage example for EMCAL:
-  //
-  //   gSystem->Load("libPWGGAPHOSTasks");
-  //   gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/macros/AddTaskCaloCellsPhysQA.C");
-  //   AliAnalysisTaskCaloCellsQA *taskQA = AddTaskCaloCellsPhysQA(10); // 10 supermodules
-  //   taskQA->SelectCollisionCandidates(AliVEvent::kMB); // if necessary
-  //   // taskQA->SetAvoidPileup(kFALSE); // some customization
-  //   // taskQA->GetCaloCellsQA()->ActivateFullAnalysis(); // more histograms, not usually necessary
-  //   // Int_t badcells[] = {74,103,917};
-  //   // taskQA->SetBadCells(badcells, 3); // reject clusters containing any of these cells
-  //
-  // Usage example for PHOS:
-  //
-  //   gSystem->Load("libPWGAPHOSTasks");
-  //   gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/CaloCellQA/macros/AddTaskCaloCellsPhysQA.C");
-  //   AliAnalysisTaskCaloCellsQA *taskQA = AddTaskCaloCellsPhysQA(5, 1);
-  //   taskQA->SelectCollisionCandidates(AliVEvent::kMB); // if necessary
-  //   taskQA->GetCaloCellsQA()->SetClusterEnergyCuts(0.3,0.1); // increase statistics
-  //   // taskQA->SetAvoidPileup(kFALSE); // some customization
-  //   // taskQA->GetCaloCellsQA()->ActivateFullAnalysis(); // more histograms, not usually necessary
-  //   // Int_t badcells[] = {1234};
-  //   // taskQA->SetBadCells(badcells, 1); // reject clusters containing any of these cells
-  //
-  // nmods -- maximum supermodule number + 1:
-  //   use 4 for EMCAL <= 2010;
-  //   use 4 for PHOS <=2013 (Run I), use 5 for PHOS >=2015 (PHOS numbers start from 1, not from zero);
-  //   use 10 for EMCAL >= 2011;
-  // det -- detector, 0/EMCAL, 1/PHOS;
-  // fname -- output file name;
-  //   if NULL, the output will be written into mgr->GetCommonFileName() + container;
-  // contname -- TObjArray container name in the output file;
-  //   if not NULL (or fname = NULL), the output will be written into output container and
-  //   cannot be later merged for different run numbers;
-  //   contname must be unique, if you are going to call AddTaskCaloCellsPhysQA() several times.
-  //
-  // Note that if fname = NULL and contname = NULL, the output will be written into
-  //   file mgr->GetCommonFileName() with container name CellsQAResults.
-
-  // get manager instance
-
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
   if (!mgr) {
     ::Error("AddTaskCaloCellsPhysQA", "No analysis manager to connect to");
