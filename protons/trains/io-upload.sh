@@ -1,7 +1,7 @@
 # outdir=results/data/LHC16/final_nonlinearity_1
 # ofile=LHC16.root
 outdir=results/mc/pythia/final_nonlinearity_1
-ofile=pythia8_LHC17.root
+ofile=pythia8_LHC17_extra.root
 
 function folders2lists() {
 	root -l -b -q folder2list.C"(\"$1\", \"PHOSEpRatio/PHOSEpRatioCoutput1\")"
