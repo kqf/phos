@@ -128,6 +128,13 @@
 			"hsum": "d9ab151bf400d3cef2eb5defb330bb2172d8d4a71b8931bbe2fb874d19e1bdf7",
 			"description": "Fix nonlinearity correction for E/p task"
 		},
+		"final_nonlinearity_1": {
+			"file": "input-data/mc/pythia/final_nonlinearity_1/pythia8.root",
+			"default_selection": "PhysEff",
+			"pt_range": [0, 20],
+			"hsum": "7cc982693581c0161693331712aefc8f3dda2634f8bc2581647a59600ac158cf",
+			"description": "Add MC production with official nonlinearity"
+		},
 		"kaon2pion": {
 			"file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
 			"default_selection": "PionToKaonRatioOnlyTender",
