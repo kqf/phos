@@ -25,7 +25,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
 
     TString pref =  isMC ? "MC" : "";
-    TString tenderOption = isMC ? "Run2Tuned" : "Run2TunedMC";
+    TString tenderOption = isMC ? "Run2Tune" : "Run2TuneMC";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();

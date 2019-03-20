@@ -1,6 +1,6 @@
 #include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString period, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	LoadAnalysisLibraries();
 
@@ -14,7 +14,13 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, Bool_t is
 	// Applying no weights
 	//
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
-	cuts_pi0.fTimingCut = 500e-9;
+
+	if(period.Contains("LHC16l") || period.Contains("LHC16o"))
+		cuts_pi0.fTimingCut = 1250e-9;
+	if(period.Contains("LHC16h"))
+		cuts_pi0.fTimingCut = 500e-9;
+	else
+		return;
 
 	// TODO: Add plain selections
 	AliPP13SelectionWeights & data_weights_plain = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain);
@@ -38,7 +44,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, Bool_t is
 		cout << fSel->GetTitle() << endl;
 
 		cout << "Selection " << fSel->GetName() << " " << i << endl;
-		coutput = mgr->CreateContainer(fSel->GetName() + suff,
+		coutput = mgr->CreateContainer(fSel->GetName(),
 									   TList::Class(),
 									   AliAnalysisManager::kOutputContainer,
 									   AliAnalysisManager::GetCommonFileName());

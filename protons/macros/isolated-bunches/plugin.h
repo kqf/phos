@@ -11,8 +11,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period_raw, TStr
 
 	// Use default setup for the plugin
 	AliAnalysisGrid * plugin = GetPlugin(pluginmode, period_raw, dpart, useJDL, isMC, msize);
-    TString period = period_raw.ReplaceAll("-isolated", "");
-    cout << " *****  " << period << endl;
+	TString period = period_raw.ReplaceAll("-isolated", "");
 
 	// Extract period and reconstruction pass
 	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
@@ -30,6 +29,6 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period_raw, TStr
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
-    //plugin->SetUseSubmitPolicy();
+	//plugin->SetUseSubmitPolicy();
 	return plugin;
 }

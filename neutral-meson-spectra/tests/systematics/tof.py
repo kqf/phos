@@ -9,7 +9,7 @@ from vault.datavault import DataVault
 
 TOF_DATASET = Proxy(
     lambda: (
-        DataVault().input("data", histname="MassPtSM0"),
+        DataVault().input("data", "nonlinearity", histname="MassPtSM0"),
         DataVault().input("data", "isolated", histname="MassPtSM0"),
     )
 )
@@ -28,6 +28,6 @@ STABLE_TOF_DATASET = Proxy(
 def test_tof():
     tof = TofUncertainty(TofUncertaintyOptions())
     loggs = AnalysisOutput("tof uncertainty")
-    output = tof.transform(STABLE_TOF_DATASET, loggs=loggs)
+    output = tof.transform(TOF_DATASET, loggs=loggs)
     loggs.plot()
     assert len(output) > 0

@@ -4,19 +4,19 @@
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
-    SetupEnvironment();
+    // SetupEnvironment();
 
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
-    AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
+    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
 
     manager->SetInputEventHandler(aod);
 
-    if ( isMC )
+    if(isMC)
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR ( kFALSE ); // Don't read track references
-        manager->SetMCtruthEventHandler ( mchandler );
+        mchandler->SetReadTR(kFALSE); // Don't read track references
+        manager->SetMCtruthEventHandler(mchandler);
     }
 
     // Connect plug-in to the analysis manager
@@ -24,14 +24,18 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
 
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
+    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
 
 
     TString tenderOption = isMC ? "Run2Default" : "";
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
-    AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    PHOSSupply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
+    AliPHOSTenderSupply * supply = tenderPHOS->GetPHOSTenderSupply();
+    supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
+
+    TString nonlinearity = isMC ? "Run2Tune" : "Run2TuneMC";
+    supply->SetNonlinearityVersion(nonlinearity); 
+
 
     AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
         isMC, 
@@ -45,16 +49,16 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         1           // reco pass
     );
 
-    if (isMC)
+    if(isMC)
     {
         // Important: Keep track of this variable
         // ZS threshold in unit of GeV
         Double_t zs_threshold = 0.020;
-        PHOSSupply->ApplyZeroSuppression(zs_threshold);
+        supply->ApplyZeroSuppression(zs_threshold);
     }
 
     TString msg = "## Real data, no TOF cut efficiency.";
-    if (tenderOption)
+    if(tenderOption)
     {
         msg += " with tender option ";
         msg += tenderOption;
@@ -63,7 +67,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t isTest = TString(pluginmode).Contains("test");
     TString pref =  isMC ? "MC" : "";
 
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, isMC, isTest);
+    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, period,isMC, isTest);
     manager->InitAnalysis();
     manager->PrintStatus();
 
