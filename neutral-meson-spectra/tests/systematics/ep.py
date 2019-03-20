@@ -1,14 +1,14 @@
 import pytest
-
 from lazy_object_proxy import Proxy
-from tools.ep import EpRatioEstimator, DataMCEpRatioEstimator
-from tools.mc import Nonlinearity
-from spectrum.options import NonlinearityOptions
-
-from vault.datavault import DataVault
-from spectrum.options import EpRatioOptions, DataMCEpRatioOptions
 from spectrum.comparator import Comparator
+from spectrum.options import (DataMCEpRatioOptions, EpRatioOptions,
+                              NonlinearityOptions)
 from spectrum.output import AnalysisOutput
+from tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
+from tools.mc import Nonlinearity
+from vault.datavault import DataVault
+
+
 # from spectrum.output import AnalysisOutput
 
 
@@ -32,8 +32,8 @@ def data(prod="data", version="ep_ratio"):
 
 DOUBLE_RATIO_DATASET = Proxy(
     lambda: (
-        data_old_selection("data", "fixed_ep"),
-        data_old_selection("pythia8", "ep_ratio_2"),
+        data_old_selection("data", "nonlinearity"),
+        data_old_selection("pythia8", "nonlinearity"),
     )
 )
 

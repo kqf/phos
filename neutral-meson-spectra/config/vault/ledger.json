@@ -128,7 +128,7 @@
 			"hsum": "d9ab151bf400d3cef2eb5defb330bb2172d8d4a71b8931bbe2fb874d19e1bdf7",
 			"description": "Fix nonlinearity correction for E/p task"
 		},
-		"final_nonlinearity_1": {
+		"nonlinearity": {
 			"file": "input-data/mc/pythia/final_nonlinearity_1/pythia8.root",
 			"default_selection": "PhysEff",
 			"pt_range": [0, 20],

@@ -15,7 +15,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     {
         AliMCEventHandler * mchandler = new AliMCEventHandler();
         mchandler->SetReadTR(kFALSE); // Don't read track references
-        manager->SetMCtruthEventHandler( mchandler );
+        manager->SetMCtruthEventHandler(mchandler);
     }
 
     // Connect plug-in to the analysis manager
@@ -29,7 +29,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
 
     AliPHOSTenderSupply * PHOSSupply = tenderPHOS->GetPHOSTenderSupply();
-    // PHOSSupply->ForceUsingBadMap("../../../datasets/BadMap_LHC16-updated.root");
+    PHOSSupply->ForceUsingBadMap("../../../datasets/BadMap_LHC16-updated.root");
 
     AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
             isMC,
@@ -41,7 +41,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
             kTRUE,
             kFALSE,
             1           // reco pass
-                                          );
+    );
 
     if(isMC)
     {
