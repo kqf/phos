@@ -79,7 +79,7 @@ def test_data_mc_ratio():
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True
     )
-    loggs = AnalysisOutput("test double ep ratio estimator")
+    loggs = AnalysisOutput("double ep ratio")
 
     output = estimator.transform(DOUBLE_RATIO_DATASET, loggs=loggs)
     # Comparator(stop=True).compare(output)
