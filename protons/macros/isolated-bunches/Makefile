@@ -2,10 +2,10 @@ include ../../base.mk
 
 PROTONS_PATH=../../
 
-DATASET = LHC16l-pass1-isolated
+DATASET = LHC16h-pass1-isolated
 DPART = first
 MC = kFALSE
-OUTDIR = results/data/LHC16/isolated_2
+OUTDIR = results/data/LHC16/isolated_3
 
 
 TEST_SELECTION = PhysTender

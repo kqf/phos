@@ -64,10 +64,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         msg += tenderOption;
     }
 
-    Bool_t isTest = TString(pluginmode).Contains("test");
-    TString pref =  isMC ? "MC" : "";
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + msg, period);
+    task->SelectCollisionCandidates(AliVEvent::kINT7);
 
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, period,isMC, isTest);
     manager->InitAnalysis();
     manager->PrintStatus();
 
