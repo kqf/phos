@@ -9,7 +9,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();
-
     manager->SetInputEventHandler(aod);
 
     if (isMC)
@@ -45,7 +44,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
             kTRUE,
             kFALSE,
             1           // reco pass
-                                          );
+    );
 
     if (isMC)
     {
@@ -63,9 +62,13 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     Bool_t isTest = TString(pluginmode).Contains("test");
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg, isMC, isTest);
-    AddTaskPHOSEpRatio(isMC);
 
+    // Add custom task pp
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + pref + msg);
+    task->SelectCollisionCandidates(AliVEvent::kINT7);
+
+    // Add the official task
+    AddTaskPHOSEpRatio(isMC);
 
     if (!manager->InitAnalysis()) return;
     manager->PrintStatus();
