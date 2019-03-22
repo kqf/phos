@@ -1,4 +1,4 @@
-#include "../../setup/alien.h"
+#include "../../../setup/alien.h"
 #include "iostream"
 
 using std::cout;
@@ -27,7 +27,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
-	plugin->SetFileForTestMode("../../datasets/files.txt");
+	plugin->SetFileForTestMode("../../../datasets/files.txt");
     //plugin->SetUseSubmitPolicy();
 
 	plugin->SetAliPhysicsVersion("vAN-20171120-1");
