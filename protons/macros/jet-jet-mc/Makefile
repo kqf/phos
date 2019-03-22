@@ -1,4 +1,4 @@
-DATASET = LHC17f8f
+DATASET = LHC17f7f
 DPART = second
 MC = kTRUE
 PAUSE = 10m

@@ -7,8 +7,7 @@ void scaleBins(TString fileToScale = "LHC17f8a_10.root", TString paths = "LHC17f
 
 	if(scaleFactor < 0)
 	{
-		cout << "Fatal error!!! Can't read scaled factor " << scaleFactor << endl;
-		return;
+		throw Format("Fatal error!!! Can't read scaled factor %d", scaleFactor);
 	}
 
 	for (int i = 0; i < keys->GetEntries(); ++i)

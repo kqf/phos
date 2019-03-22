@@ -7,29 +7,22 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     SetupEnvironment();
     AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
 
-    if (!alienHandler) return;
+    if(!alienHandler) return;
 
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
-    AliESDInputHandler * esdH = new AliESDInputHandler();
     AliAODInputHandler * aodH = new AliAODInputHandler();
-
-    esdH->SetReadFriends(isMC);
-    esdH->SetNeedField();
     manager->SetInputEventHandler(aodH);
 
-    AliMCEventHandler * mchandler = new AliMCEventHandler();
-    mchandler->SetReadTR ( kFALSE ); // Don't read track references
-    manager->SetMCtruthEventHandler ( mchandler );
+    AliMCEventHandler * mcHandler = new AliMCEventHandler();
+    mcHandler->SetReadTR(kFALSE); // Don't read track references
+    manager->SetMCtruthEventHandler(mcHandler);
 
     // Connect plug-in to the analysis manager
     manager->SetGridHandler(alienHandler);
 
-    gROOT->LoadMacro ("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
+    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
 
-    TString files = "";
     TString pref =  isMC ? "MC" : "";
 
     TString tenderOption = isMC ? "Run2Default" : "";
@@ -38,7 +31,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliPHOSTenderSupply * supply = tenderPHOS->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
-    if (isMC)
+    if(isMC)
     {
         // Important: Keep track of this variable
         // ZS threshold in unit of GeV
@@ -47,7 +40,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     }
 
     TString msg = "## Jet-Jet MC ## nonlinearity applied, 20 MeV Zero Supression ";
-    if (tenderOption)
+    if(tenderOption)
     {
         msg += " with tender option ";
         msg += tenderOption;
@@ -56,12 +49,10 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, period + pref + msg);
     task->SetCollisionCandidates(AliVEvent::kINT7);
 
-    if (!manager->InitAnalysis()) return;
+    if(!manager->InitAnalysis())
+        return;
+
     manager->PrintStatus();
-
-
-    cout << "Downloading files " << files << endl;
-    alienHandler->SetOutputFiles(files);
-    manager->StartAnalysis (runmode);
-    gObjectTable->Print( );
+    manager->StartAnalysis(runmode);
+    gObjectTable->Print();
 }
