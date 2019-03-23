@@ -36,11 +36,11 @@
 			"description": "Updated E/p ratio analysis"
 		},
 		"isolated": {
-			"file": "input-data/data/LHC16/isolated_1/LHC16.root",
+			"file": "input-data/data/LHC16/isolated_3/LHC16-isolated.root",
 			"default_selection": "Phys",
 			"pt_range": [0, 20],
-			"hsum": "5d9155810eff9f1988a5633b47e8cc58b79773756b03ff93fa8c14cf50012400",
-			"description": "Merged isolated bunches analysis"
+			"hsum": "dd3828aad5e9bf8283ce3638c7f54a0c1bfbb60900f16c2eef1edd310de7f4b4",
+			"description": "Merged isolated bunches analysis with updated nonlinearity"
 		},
 		"stable old": {	
 			"file": "input-data/data/LHC16.root",	
