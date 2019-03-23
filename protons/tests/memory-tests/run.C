@@ -51,7 +51,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     // AddTaskPIDResponse(kFALSE, kTRUE, kFALSE, "tenderPassData", kFALSE, "", kTRUE, kTRUE, -1);
     // AddTaskPHOSEpRatio(kFALSE);
-    AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(kFALSE, "Corrected for TOF");
+    task->SelectCollisionCandidates(AliVEvent::kINT7);
+
     // AddTaskPhysPHOSQA();
     // AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
 

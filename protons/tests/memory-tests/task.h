@@ -1,14 +1,13 @@
 #include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+AliAnalysisTaskPP13 *  AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	LoadAnalysisLibraries();
 	
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) 
 	{
-		cerr << "Fatal: There is no analysis manager" << endl;
-		return;
+		throw "Fatal: There is no analysis manager";
 	}	
 	// Setup Selections
 	TList * selections = new TList();
@@ -36,12 +35,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		selections->Add(new AliPP13TagAndProbeSelection("TagAndProbleTOF", "Cluster p_{T} Selection", cuts_pi0, &data_weights));
 		selections->Add(new AliPP13NonlinearitySelection("PhysNonlin", "Physics efficiency for neutral particles", cuts_pi0, &data_weights));
 		selections->Add(new AliPP13NonlinearitySelection("PhysNonlinPlain", "Physics efficiency for neutral particles", cuts_pi0, &data_weights_plain));
-
-		selections->Add(new AliPP13QualityPhotonSelection("Qual", "Cluster quality Selection", cuts_pi0, &data_weights));
-		selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsTime", "Cluster p_{T} Selection with timing cut", cuts_pi0, &data_weights, 10., 3.));
-		
-		selections->Add(new AliPP13PhotonSpectrumSelection("Photons", "Cluster p_{T} Selection", cuts_pi0, &data_weights));
-		selections->Add(new AliPP13PhotonSpectrumSelection("PhotonsPlain", "Cluster p_{T} Selection", cuts_pi0, &data_weights_plain));
 
 		delete &data_weights;
 		delete &data_weights_plain;
@@ -75,7 +68,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		selections->Add(new AliPP13NonlinearitySelection("PhysNonlinRaw", "Raw nonlinearity for neutral particles", cuts_pi0, &mc_weights_only, kTRUE));
 
 		selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
-		selections->Add(new AliPP13MesonSelectionMC("MCStudy", "MC Selection with timing cut", cuts_pi0, &mc_weights));	
 
 		delete & mc_weights;
 		delete & mc_weights_only;
@@ -83,7 +75,6 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
-	task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;
@@ -99,4 +90,5 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		                               AliAnalysisManager::GetCommonFileName());
 		mgr->ConnectOutput(task, i + 1, coutput);
 	}
+	return task;
 }
