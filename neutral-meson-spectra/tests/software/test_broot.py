@@ -544,8 +544,7 @@ def test_initializes_colors(stop):
         hist.SetMarkerColor(c)
         hist.SetMarkerStyle(20)
         hists.append(hist)
-    Comparator(stop=True).compare(hists)
-    wait(stop=stop)
+    Comparator(stop=stop).compare(hists)
 
 
 def test_caclulates_syst_deviation(stop):
