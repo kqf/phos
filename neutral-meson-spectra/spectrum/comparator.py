@@ -3,9 +3,6 @@ from broot import BROOT as br
 
 
 class Comparator(object):
-
-    ci = br.define_colors()
-
     def __init__(self, size=(1, 1), rrange=(), crange=(),
                  stop=True, oname='', labels=None, **kwargs):
         super(Comparator, self).__init__()
@@ -18,12 +15,12 @@ class Comparator(object):
         # Halndle coma separated histograms "obj"
         #
         if contains_objs(args):
-            return self.vi.compare_visually(args, self.ci, **kwargs)
+            return self.vi.compare_visually(args, **kwargs)
 
         # Halndle single list of histograms "[obj]"
         #
         if len(args) == 1 and contains_objs(args[0]):
-            return self.vi.compare_visually(args[0], self.ci, **kwargs)
+            return self.vi.compare_visually(args[0], **kwargs)
 
         # Halndle two lists of histograms "[[obj, obj, ...], [obj, obj, ...]]"
         #
@@ -43,7 +40,7 @@ class Comparator(object):
                                 comparef=None, **kwargs):
         if not comparef:
             comparef = self.vi.compare_visually
-        comparef(map(br.ratio, hists, baselines), self.ci, **kwargs)
+        comparef(map(br.ratio, hists, baselines), **kwargs)
 
     def compare_ratios(self, hists, baseline,
                        comparef=None, logy=False, **kwargs):
@@ -52,11 +49,11 @@ class Comparator(object):
 
         def ratio(x):
             return br.ratio(x, baseline)
-        comparef(map(ratio, hists), self.ci)
+        comparef(map(ratio, hists))
 
     def compare_set_of_histograms(self, l, comparef=None, **kwargs):
         if not comparef:
             comparef = self.vi.compare_visually
 
-        result = [comparef(hists, self.ci, **kwargs) for hists in zip(*l)]
+        result = [comparef(hists, **kwargs) for hists in zip(*l)]
         return result if len(result) > 1 else result[0]

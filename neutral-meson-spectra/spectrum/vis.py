@@ -37,27 +37,30 @@ def set_pad_logx(hist, pad):
 
 class VisHub(object):
 
+    ci = br.define_colors()
+
     def __init__(self, *args, **kwargs):
         super(VisHub, self).__init__()
         self.args = args
         self.kwargs = kwargs
         su.gcanvas().Clear()
 
-    def compare_visually(self, hists, ci, loggs=None):
+    def compare_visually(self, hists, loggs=None):
         vis = Visualizer(*self.args, **self.kwargs)
         neglimits = any(i < 0 for i in vis.rrange)
         ignoreratio = neglimits and vis.rrange
 
         if len(hists) != 2 or ignoreratio:
             vis = MultipleVisualizer(*self.args, **self.kwargs)
-            return vis.compare_visually(hists, ci, loggs=loggs)
+            return vis.compare_visually(hists, loggs=loggs)
 
-        return vis.compare_visually(hists, ci, loggs=loggs)
+        return vis.compare_visually(hists, loggs=loggs)
 
 
 class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
+    ci = br.define_colors()
 
     def __init__(self, size, rrange, crange, stop, oname, labels, **kwargs):
         super(MultipleVisualizer, self).__init__()
@@ -68,8 +71,8 @@ class MultipleVisualizer(object):
         self.stop = stop
         self.labels = labels
 
-    def decorate_hist(self, hist, ci, index=0):
-        color, marker = self._color_marker(ci, index, hist)
+    def decorate_hist(self, hist, index=0):
+        color, marker = self._color_marker(index, hist)
         hist.SetLineColor(color)
         hist.SetFillColor(color)
         hist.SetMarkerStyle(marker)
@@ -77,10 +80,9 @@ class MultipleVisualizer(object):
         return hist
 
     @br.init_inputs
-    def compare_visually(self, hists, ci, pad=None, loggs=None, canvas=None):
+    def compare_visually(self, hists, pad=None, loggs=None, canvas=None):
         if loggs is not None:
             self.cached_hists = hists
-            self.cached_ci = ci
             loggs.update({"compare": self})
             return
 
@@ -109,7 +111,7 @@ class MultipleVisualizer(object):
             mainpad.SetLogy(first_hist.logy)
 
         for i, h in enumerate(hists):
-            self.decorate_hist(h, ci, index=i)
+            self.decorate_hist(h, index=i)
             if self.crange:
                 h.SetAxisRange(self.crange[0], self.crange[1], 'Y')
             h.DrawCopy('colz same ' + h.GetOption())
@@ -156,12 +158,12 @@ class MultipleVisualizer(object):
         self.cache.extend(hists)
         return stack
 
-    def _color_marker(self, ci, i, h):
-        color = ci[i % len(ci)]
+    def _color_marker(self, i, h):
+        color = self.ci[i % len(self.ci)]
         if h.marker:
             return color, 20 + h.marker
 
-        return color, 20 + i // len(ci)
+        return color, 20 + i // len(self.ci)
 
     def io(self, canvas, hists, loggs):
         cloned = canvas.Clone()
@@ -170,7 +172,7 @@ class MultipleVisualizer(object):
         su.wait(stop=self.stop)
 
     def Write(self):
-        return self.compare_visually(self.cached_hists, self.cached_ci)
+        return self.compare_visually(self.cached_hists)
 
 
 class Visualizer(MultipleVisualizer):
@@ -198,7 +200,7 @@ class Visualizer(MultipleVisualizer):
         su.ticks(ratiopad)
         return c1, mainpad, ratiopad
 
-    def draw_ratio(self, ratio, ci, pad):
+    def draw_ratio(self, ratio, pad):
         self.cache.append(ratio)
         pad.cd()
         su.adjust_labels(ratio, ratio, scale=7. / 3)
@@ -209,7 +211,7 @@ class Visualizer(MultipleVisualizer):
 
         self.fit_ratio(ratio)
         self.set_ratio_yaxis(ratio)
-        self.decorate_hist(ratio, ci)
+        self.decorate_hist(ratio)
         return ratio
 
     def set_ratio_yaxis(self, ratio, n=3):
@@ -262,21 +264,20 @@ class Visualizer(MultipleVisualizer):
             return
 
     @br.init_inputs
-    def compare_visually(self, hists, ci, loggs=None):
+    def compare_visually(self, hists, loggs=None):
         a, b = hists
         ratio = br.ratio(a, b, self.ratio)
         if loggs is not None:
             self.cached_ratio = ratio
             self.cached_hists = hists
-            self.cached_ci = ci
             loggs.update({"ratio": self})
             return ratio
-        return self.compare_show_ratio(hists, ratio, ci)
+        return self.compare_show_ratio(hists, ratio)
 
-    def compare_show_ratio(self, hists, ratio, ci, loggs=None):
+    def compare_show_ratio(self, hists, ratio, loggs=None):
         canvas, mainpad, ratiopad = self._canvas(hists)
-        super(Visualizer, self).compare_visually(hists, ci, mainpad)
-        ratio = self.draw_ratio(ratio, ci, ratiopad)
+        super(Visualizer, self).compare_visually(hists, mainpad)
+        ratio = self.draw_ratio(ratio, ratiopad)
         # ctrl+alt+f4 closes enire canvas not just a pad.
         canvas.Update()
         ratiopad.Update()
@@ -287,5 +288,4 @@ class Visualizer(MultipleVisualizer):
     def Write(self):
         return self.compare_show_ratio(
             self.cached_hists,
-            self.cached_ratio,
-            self.cached_ci)
+            self.cached_ratio)

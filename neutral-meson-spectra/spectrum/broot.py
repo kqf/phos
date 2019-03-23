@@ -1,7 +1,6 @@
 import ROOT
 
 import os
-import json
 import copy
 import array
 import urllib2
@@ -12,7 +11,6 @@ import numpy as np
 from repoze.lru import lru_cache
 
 ROOT.TH1.AddDirectory(False)
-MAX_CACHE = 128
 
 
 class BROOT(object):
@@ -118,7 +116,7 @@ class BROOT(object):
             return klass._dir_to_list(lst)
 
         @classmethod
-        @lru_cache(MAX_CACHE)
+        @lru_cache(maxsize=None)
         def read(klass, filename, selection, histname):
             lst = klass._read_list(filename, selection)
             hist = lst.FindObject(histname)
@@ -403,7 +401,7 @@ class BROOT(object):
             ROOT.kGreen + 1,
             ROOT.kYellow + 1,
             ROOT.kOrange + 1,
-            ROOT.kMagenta + 1,
+            ROOT.kBlack + 1,
         ]
         return rcolors
 
