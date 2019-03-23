@@ -4,7 +4,7 @@ from broot import BROOT as br
 
 class Comparator(object):
 
-    ci, colors = br.define_colors()
+    ci = br.define_colors()
 
     def __init__(self, size=(1, 1), rrange=(), crange=(),
                  stop=True, oname='', labels=None, **kwargs):

@@ -11,7 +11,7 @@ class MassesPlot(object):
         if not imass.signal:
             return
 
-        ci, _ = br.define_colors()
+        ci = br.define_colors()
         pad.cd()
 
         self._set_axis_limits(imass)

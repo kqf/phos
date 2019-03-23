@@ -533,16 +533,18 @@ def test_initializes_inputs(stop):
 
 
 def test_initializes_colors(stop):
-    ci, colors = br.define_colors()
-    hist = ROOT.TH1F(
-        "hColored", "Test BROOT: This should be nicely colored", 40, -4, 4)
-
-    hist.FillRandom('gaus')
-    hist.SetLineColor(ci)
-    hist.SetFillColor(ci + 1)
-    hist.SetMarkerColor(ci + 2)
-    hist.SetMarkerStyle(20)
-    hist.Draw()
+    ci = br.define_colors()
+    hists = []
+    for i, c in enumerate(ci):
+        hist = ROOT.TH1F("hCol{}".format(i), "Test BROOT: Colors", 40, -4, 4)
+        hist.FillRandom('gaus')
+        hist.Scale(1 + 1. / (i + 1))
+        hist.SetLineColor(c)
+        hist.SetFillColor(c)
+        hist.SetMarkerColor(c)
+        hist.SetMarkerStyle(20)
+        hists.append(hist)
+    Comparator(stop=True).compare(hists)
     wait(stop=stop)
 
 

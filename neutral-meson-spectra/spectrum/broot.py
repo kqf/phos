@@ -396,15 +396,16 @@ class BROOT(object):
         return f
 
     @staticmethod
-    def define_colors(ci=10000):
-        with open("config/colors.json") as f:
-            conf = json.load(f)
-
-        colors = conf["colors"]
-        rcolors = [[b / 255. for b in c] for c in colors]
-        rcolors = [ROOT.TColor(ci + i, *color)
-                   for i, color in enumerate(rcolors)]
-        return ci, rcolors
+    def define_colors():
+        rcolors = [
+            ROOT.kRed + 1,
+            ROOT.kBlue - 3,
+            ROOT.kGreen + 1,
+            ROOT.kYellow + 1,
+            ROOT.kOrange + 1,
+            ROOT.kMagenta + 1,
+        ]
+        return rcolors
 
     @classmethod
     def bins(klass, hist):

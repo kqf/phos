@@ -157,11 +157,11 @@ class MultipleVisualizer(object):
         return stack
 
     def _color_marker(self, ci, i, h):
-        color = ci + i % self.ncolors
+        color = ci[i % len(ci)]
         if h.marker:
             return color, 20 + h.marker
 
-        return color, 20 + i // self.ncolors
+        return color, 20 + i // len(ci)
 
     def io(self, canvas, hists, loggs):
         cloned = canvas.Clone()
