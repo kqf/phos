@@ -2,7 +2,7 @@
 #include "AliAnalysisAlien.h"
 
 #include "iostream"
-#include "values_for_dataset.h"
+#include "read_csv.h"
 
 using std::cerr;
 using std::cout;
@@ -43,8 +43,8 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	if (!isMC)
 		plugin->SetRunPrefix("000");
 
-	std::vector<Int_t> v; //
-	values_for_dataset(v, period);
+	std::vector<Int_t> v;
+	read_csv(v, period);
 
 	// This is to avoid limitation on grid jobs
 	//

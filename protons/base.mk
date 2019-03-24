@@ -65,8 +65,14 @@ upload:
 
 clean:
 	$(call funlink)
-	rm -f *.so *.d *~ Task* *.pcm
-	rm -f $(PROTONS_PATH)/setup/values_for_dataset_h.*
+	@# Delete generate macros
+	rm -f Task* *.log
+	@# Delete binaries
+	rm -f *.so *.d *~ *.pcm
+	@# Remove all data files
+	rm -rf event_stat.root EventStat_*.root *.xml
+	@# Remove supplementary functions
+	rm -f $(PROTONS_PATH)/setup/read_csv_h.*
 
 unlink:
 	$(call funlink)
