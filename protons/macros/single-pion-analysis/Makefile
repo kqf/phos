@@ -8,7 +8,7 @@ PROTONS_PATH=../../
 
 # Run final efficiency for optimized GE scale
 #
-DATASET = LHC17j3b2
+DATASET = LHC17j3b1
 OUTDIR = results/mc/single/pi0/newest_calibration_1
 TEST_SELECTION = PhysTender
 

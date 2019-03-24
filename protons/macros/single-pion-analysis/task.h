@@ -1,14 +1,13 @@
 #include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description)
+AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description)
 {
-	LoadAnalysisLibraries();
+	// LoadAnalysisLibraries();
 
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr)
 	{
-		cerr << "Fatal: There is no analysis manager" << endl;
-		return;
+		throw "Fatal: There is no analysis manager";
 	}
 	// Setup Selections
 	TList * selections = new TList();
@@ -52,4 +51,5 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description)
 									   AliAnalysisManager::GetCommonFileName());
 		mgr->ConnectOutput(task, i + 1, coutput);
 	}
+	return task;
 }
