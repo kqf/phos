@@ -4,20 +4,16 @@
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
 {
-    SetupEnvironment();
-    AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL);
+    // SetupEnvironment();
     AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
-    AliAODInputHandler * aod = new AliAODInputHandler();
-    manager->SetInputEventHandler(aod);
-    manager->SetGridHandler(alien);
+    manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL));
+    manager->SetInputEventHandler(new AliAODInputHandler());
 
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection(
         kTRUE,  //false for data, true for MC
         enablePileupCuts
     );
-
-
 
     TString decalibration = "Run2Default";
     AliPHOSTenderTask * tender = AddAODPHOSTender(
@@ -47,15 +43,13 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro
-    AddAnalysisTaskPP(AliVEvent::kINT7, period + pref + msg);
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + pref + msg);
+    // Don't apply PhysicsSelection for SPMC
+    // task->SelectCollisionCandidates(AliVEvent::kINT7);
 
     manager->InitAnalysis();
     manager->PrintStatus();
-
-    TString files = AliAnalysisManager::GetCommonFileName();
-    cout << "Output files " << files << endl;
-    alien->SetOutputFiles(files);
-
     manager->StartAnalysis(runmode);
+
     gObjectTable->Print();
 }
