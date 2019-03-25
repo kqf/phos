@@ -40,6 +40,28 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description)
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEffNoA", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_eta, &mc_weights_only));
 
+	Int_t scale = 1;
+	Int_t minDistanceMaximum = 4;
+	for (Int_t i = 0; i < minDistanceMaximum; ++i)
+	{
+		AliPP13SelectionWeights & mc_weights = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC);
+		mc_weights.fNonA = 0.;
+		mc_weights.fNonSigma = 1.;
+		mc_weights.fNonGlobal = 1.; // Take into account the right scale
+
+
+		AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
+		cuts_pi0.fMinimalDistance = i * scale;
+
+		AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
+		cuts_eta.fAsymmetryCut = 0.7;
+		cuts_eta.fMinimalDistance = i * scale;
+
+		// TODO: Add plain selections
+		selections->Add(new AliPP13SpectrumSelection(Form("Phys%d", i), "Physics Selection", cuts_pi0, &mc_weights));
+		selections->Add(new AliPP13SpectrumSelection(Form("Eta%d", i), "Physics Selection for eta meson", cuts_eta, &mc_weights));
+		delete &mc_weights;
+	}
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
