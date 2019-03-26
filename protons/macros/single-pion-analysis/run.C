@@ -44,7 +44,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     TString pref = "MC";
 
     // NB: This is a local copy of steering macro
-    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + pref + msg);
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + pref + msg, kTRUE);
     // Don't apply PhysicsSelection for SPMC
     // task->SelectCollisionCandidates(AliVEvent::kINT7);
 
