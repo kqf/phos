@@ -1,5 +1,5 @@
 # MC trains here
-train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
+# train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
 # run=831_20180530-1028_child_
 # run=861_20180608-1521_child_
 # run=963_20180809-1020_child_
@@ -42,12 +42,12 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_MC_AOD/
 
 # Dataset: PYT8_13TeV_anchLHC18_AOD209_extra
 # run=1298_20190206-0950_child_
-run=1388_20190315-1049_child_
-declare -A children=([1]=1 [2]=1 [3]=1 [4]=1 [5]=1 [6]=1 [7]=1 [8]=1 [9]=1 [10]=1)
-declare -A names=([1]=LHC18g4_extra [2]=LHC18g5_extra [3]=LHC18g6_extra [4]=LHC18h2_extra [5]=LHC18h4_extra [6]=LHC18j1_extra [7]=LHC18j4_extra [8]=LHC18k1_extra [9]=LHC18k2_extra [10]=LHC18k3_extra)
+# run=1388_20190315-1049_child_
+# declare -A children=([1]=1 [2]=1 [3]=1 [4]=1 [5]=1 [6]=1 [7]=1 [8]=1 [9]=1 [10]=1)
+# declare -A names=([1]=LHC18g4_extra [2]=LHC18g5_extra [3]=LHC18g6_extra [4]=LHC18h2_extra [5]=LHC18h4_extra [6]=LHC18j1_extra [7]=LHC18j4_extra [8]=LHC18k1_extra [9]=LHC18k2_extra [10]=LHC18k3_extra)
 
 # Data trains here
-# train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/
+train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/
 # run=326_20180209-1536_child_
 # run=334_20180217-1427_child_
 # run=345_20180305-1550_child_
@@ -56,10 +56,11 @@ declare -A names=([1]=LHC18g4_extra [2]=LHC18g5_extra [3]=LHC18g6_extra [4]=LHC1
 # run=555_20181122-1020_child_
 # run=613_20190122-1924_child_
 # run=736_20190307-1551_child_
+run=745_20190322-1658_child_
 # This scheme is valid for LHC16 data.
 # fill the map in the following way ([child number]=runlist number)
-# declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
-# declare -A names=([4]=LHC16g [5]=LHC16h [6]=LHC16i [7]=LHC16j [8]=LHC16k [9]=LHC16l [10]=LHC16o [11]=LHC16p)
+declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
+declare -A names=([4]=LHC16g [5]=LHC16h [6]=LHC16i [7]=LHC16j [8]=LHC16k [9]=LHC16l [10]=LHC16o [11]=LHC16p)
 
 # LHC17 data
 #
