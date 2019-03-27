@@ -184,6 +184,23 @@
 			"description": "Update calibration, keep old nonlinearity for comparison"
 		}
 	},
+	"single #pi^{0} acceptance":
+	{
+		"low": {
+			"file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b1.root",
+			"default_selection": "PhysNonlinScan",
+			"pt_range": [0.0, 8.0],
+			"hsum": "3914f804db84733a534de20dd328537f7c2eea328fedd129cba296cac6a06e2f",
+			"description": "Update calibration, keep old nonlinearity for comparison"
+		},
+		"high": {
+			"file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b2.root",
+			"default_selection": "PhysNonlinScan",
+			"pt_range": [4.0, 20.0],
+			"hsum": "05bfc3e73b40ee88259cf256fe431e6d86d4d19b1ef6c92abd1a90a2595ea623",
+			"description": "Update calibration, keep old nonlinearity for comparison"
+		}
+	},
 	"single #eta":
 	{
 		"low": {
