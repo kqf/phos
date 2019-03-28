@@ -79,27 +79,6 @@
 			"hsum": "4bb9f7c32247a54e2a5d96f0f1b0a86f3fa47e9a02b0f76f1e5f952d53adb139",
 			"description": "Feeddown corrected for kaon to pion ratio"
 		},
-		"ep_ratio": {
-			"file": "input-data/mc/pythia/ep_ratio/pythia8.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "9f70fa635a3e2fa163196d70ca27ba6c55ef4c4ffbd7e9b731e94cea48583630",
-			"description": "Feeddown corrected for kaon to pion ratio + EP ratio. Move to the latest if feeddown, K/pi, coincide"
-		},
-		"ep_ratio_1": {
-			"file": "input-data/mc/pythia/ep_ratio_1/pythia8.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "7c93dbeb8982dee7feda80dcf18dc23f6497e96b3b8ff8efe5a80abdd7c7e51f",
-			"description": "Feeddown corrected for kaon to pion ratio + EP ratio. Move to the latest if feeddown, K/pi, coincide"
-		},
-		"ep_ratio_2": {
-			"file": "input-data/mc/pythia/ep_ratio_2/LHC16.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "5ec460330496c4f685534cbe9ec1a5ecb9cfc2885bd66037c21177d028b08f3f",
-			"description": "Add nonlinearity correction for E/p task"
-		},
 		"ep_ratio_3": {
 			"file": "input-data/mc/pythia/ep_ratio_3/pythia8.root",
 			"default_selection": "PhysEff",
