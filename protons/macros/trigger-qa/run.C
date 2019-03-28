@@ -6,12 +6,10 @@
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
     SetupEnvironment();
-
+    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     alien->SetOutputFiles("TriggerQA.root");
-
     AliAODInputHandler * aod = new AliAODInputHandler();
-    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
 
     manager->SetInputEventHandler(aod);
     manager->SetGridHandler(alien);
@@ -30,18 +28,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
                                      1,                 // Important: reco pass
                                      isMC              // Important: is MC?
                                  );
-    AliAnalysisTaskPHOSTriggerQA * task = AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
-    // AliAnalysisTaskPHOSTriggerQAv1 * task = AddTaskPHOSTriggerQAv1(
-    //     TString("TriggerQA.root"),
-    //     "PHOSTriggerQAResultsL0"
-    // );
-    task->SelectCollisionCandidates(AliVEvent::kPHI7);
 
-  
-    // AddAnalysisTaskPP(period + pref + msg, "OnlyTender", "", std::vector<Int_t>());
-    TString files = AliAnalysisManager::GetCommonFileName();
-    cout << "Output files " << files << endl;
-    
+    AliAnalysisTaskPHOSTriggerQA * task = AddTaskPHOSTriggerQA("TriggerQA.root", "PHOSTriggerQAResultsL0");
+    task->SelectCollisionCandidates(AliVEvent::kPHI7);
     manager->InitAnalysis();
     manager->PrintStatus();
     manager->StartAnalysis(runmode);
