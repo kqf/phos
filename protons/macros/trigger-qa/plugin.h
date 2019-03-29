@@ -33,6 +33,6 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	period.ReplaceAll("-", "_");
 	plugin->SetExecutable(TString("trigger_qa_") + period + ".sh");
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
-    //plugin->SetUseSubmitPolicy();
+    plugin->SetOutputFiles("TriggerQA.root");
 	return plugin;
 }

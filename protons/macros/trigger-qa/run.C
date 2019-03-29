@@ -8,7 +8,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     SetupEnvironment();
     AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
-    alien->SetOutputFiles("TriggerQA.root");
     AliAODInputHandler * aod = new AliAODInputHandler();
 
     manager->SetInputEventHandler(aod);
@@ -19,7 +18,6 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
         isMC,             //false for data, true for MC
         enablePileupCuts
     );
-
 
     AliPHOSTenderTask * tender = AddAODPHOSTender(
                                      "PHOSTenderTask",  // Task Name
