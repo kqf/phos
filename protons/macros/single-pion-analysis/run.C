@@ -19,7 +19,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddPHOSTender(isMC, msg);
 
     // NB: This is a local copy of steering macro
-    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + msg, kTRUE);
+    Bool_t acceptance = kTRUE;
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + msg, acceptance);
     // Don't apply PhysicsSelection for SPMC
     // task->SelectCollisionCandidates(AliVEvent::kINT7);
 

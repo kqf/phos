@@ -11,26 +11,21 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->SetInputEventHandler(new AliAODInputHandler());
 
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection(
-        kTRUE,  //false for data, true for MC
-        enablePileupCuts
-    );
+    AddTaskPhysicsSelection(isMC, enablePileupCuts);
 
-    TString msg = "Tuned nonlinearity";
-    msg += " with tender option: ";
-    msg += decalibration;
+    TString msg = "Nonlinearity Scan";
     msg += " AliPhysics version:";
     msg += gSystem->Getenv("ALIPHYSICS_VERSION");
-    TString pref = "MC";
+    AddPHOSTender(isMC, msg);
 
     // NB: This is a local copy of steering macro
-    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + pref + msg, kTRUE);
+    Bool_t acceptacne = kTRUE;
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(period + msg, acceptacne);
     // Don't apply PhysicsSelection for SPMC
     // task->SelectCollisionCandidates(AliVEvent::kINT7);
 
     manager->InitAnalysis();
     manager->PrintStatus();
     manager->StartAnalysis(runmode);
-
     gObjectTable->Print();
 }
