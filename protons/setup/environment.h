@@ -15,3 +15,18 @@ void SetupEnvironment()
     gInterpreter->ProcessLine(".include $ROOTSYS/include");
     gInterpreter->ProcessLine(".include $ALICE_ROOT/include");
 }
+
+
+TString message(const char * title, TString period = "")
+{
+	TString msg;
+	if(period.Length() > 0)
+	{
+	    msg += period + ", ";
+	}
+
+    msg += title;
+    msg += ", AliPhysics version:";
+    msg += gSystem->Getenv("ALIPHYSICS_VERSION");	
+    return msg;
+}

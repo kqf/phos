@@ -66,7 +66,7 @@ upload:
 clean:
 	$(call funlink)
 	@# Delete generate macros
-	rm -f Task* *.log
+	rm -f Task* *.log outputs_valid
 	@# Delete binaries
 	rm -f *.so *.d *~ *.pcm
 	@# Remove all data files
