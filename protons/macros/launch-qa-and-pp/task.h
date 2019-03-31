@@ -1,5 +1,8 @@
-AliAnalysisTaskPP13 * AddAnalysisTaskPP(Bool_t isMC = kFALSE, TString description="test")
+#include "../../setup/sources.h"
+
+AliAnalysisTaskPP13 * AddAnalysisTaskPPDebug(Bool_t isMC = kFALSE, TString description="test")
 {
+	LoadAnalysisLibraries();
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr)
 	{
