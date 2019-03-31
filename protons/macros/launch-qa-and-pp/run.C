@@ -1,5 +1,6 @@
 #include "../../setup/environment.h"
 #include "../../setup/tender.h"
+#include "../../setup/pid.h"
 #include "plugin.h"
 #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
 // #include "task.h"
@@ -15,18 +16,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     TString msg = message("Real data", period);
     AddPHOSTender(isMC, msg);
-
-    AliAnalysisTaskPIDResponse *taskPID = AddTaskPIDResponse(
-        isMC,
-        kTRUE,
-        kTRUE,
-        1,          // reco pass
-        kFALSE,
-        "",
-        kTRUE,
-        kFALSE,
-        1           // reco pass
-    );
+    AddPIDResponse(isMC);
 
     AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, msg);
     task->SelectCollisionCandidates(AliVEvent::kINT7);
