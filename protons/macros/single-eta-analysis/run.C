@@ -13,9 +13,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t enablePileupCuts = kTRUE;
     AddTaskPhysicsSelection(isMC, enablePileupCuts);
 
-    TString msg = "Nonlinearity Scan";
-    msg += " AliPhysics version:";
-    msg += gSystem->Getenv("ALIPHYSICS_VERSION");
+    TString msg = message("Acceptance scan", period);
     AddPHOSTender(isMC, msg);
 
     // NB: This is a local copy of steering macro
