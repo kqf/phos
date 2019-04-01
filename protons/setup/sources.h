@@ -1,3 +1,7 @@
+#ifndef SOURCES_H
+#define SOURCES_H
+
+
 void LoadAnalysisLibraries()
 {
 	Int_t id = gClassTable->GetID("AliAnalysisTaskPP13");
@@ -123,3 +127,5 @@ void LoadAnalysisLibraries()
 		"AliAnalysisTaskPP13.h "
 	);
 }
+
+#endif
