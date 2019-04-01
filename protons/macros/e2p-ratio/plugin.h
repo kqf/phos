@@ -28,6 +28,6 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
 
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
-    //plugin->SetUseSubmitPolicy();
+    plugin->SetOutputFiles("AnalysisResults.root");
 	return plugin;
 }
