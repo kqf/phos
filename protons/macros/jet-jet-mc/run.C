@@ -4,54 +4,21 @@
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
-    SetupEnvironment();
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
-
-    if(!alienHandler) return;
-
-    AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
-    AliAODInputHandler * aodH = new AliAODInputHandler();
-    manager->SetInputEventHandler(aodH);
-
-    AliMCEventHandler * mcHandler = new AliMCEventHandler();
-    mcHandler->SetReadTR(kFALSE); // Don't read track references
-    manager->SetMCtruthEventHandler(mcHandler);
-
-    // Connect plug-in to the analysis manager
-    manager->SetGridHandler(alienHandler);
+    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
+    manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL, isMC));
+    manager->SetInputEventHandler(new AliAODInputHandler());
 
     Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection(isMC, enablePileupCuts);  //false for data, true for MC
+    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
-    TString pref =  isMC ? "MC" : "";
+    TString msg = message("Jet-Jet MC", period);
+    AddPHOSTender(isMC, msg);
+    AddPIDResponse(isMC);
 
-    TString tenderOption = isMC ? "Run2Default" : "";
-    AliPHOSTenderTask * tenderPHOS = AddAODPHOSTender("PHOSTenderTask", "PHOStender", tenderOption, 1, isMC);
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(msg);
+    task->SelectCollisionCandidates(AliVEvent::kINT7);
 
-    AliPHOSTenderSupply * supply = tenderPHOS->GetPHOSTenderSupply();
-    supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
-
-    if(isMC)
-    {
-        // Important: Keep track of this variable
-        // ZS threshold in unit of GeV
-        Double_t zs_threshold = 0.020;
-        supply->ApplyZeroSuppression(zs_threshold);
-    }
-
-    TString msg = "## Jet-Jet MC ## nonlinearity applied, 20 MeV Zero Supression ";
-    if(tenderOption)
-    {
-        msg += " with tender option ";
-        msg += tenderOption;
-    }
-
-    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, period + pref + msg);
-    task->SetCollisionCandidates(AliVEvent::kINT7);
-
-    if(!manager->InitAnalysis())
-        return;
-
+    manager->InitAnalysis();
     manager->PrintStatus();
     manager->StartAnalysis(runmode);
     gObjectTable->Print();
