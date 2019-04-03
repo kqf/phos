@@ -14,25 +14,13 @@ from spectrum.comparator import Comparator  # noqa
 
 SPMC_REGULAR = Proxy(
     lambda: (
-        DataVault().input("data", "nonlinearity",
-                          listname="PhysPlain", histname="MassPtSM0"),
+        DataVault().input("data", "acceptance",
+                          listname="Phys0", histname="MassPtSM0"),
         (
             DataVault().input("single #pi^{0} new calibration", "low",
                               "PhysEff"),
             DataVault().input("single #pi^{0} new calibration", "high",
-                              "PhysEff"),
-        )
-    )
-)
-# NB: This may be inactive
-SPMC_NONLIN_SELECTION = Proxy(
-    lambda: (
-        DataVault().input("data", listname="Phys", histname="MassPt_SM0"),
-        (
-            DataVault().input("single #pi^{0}", "low", "PhysEff",
-                              histname="MassPt_SM0"),
-            DataVault().input("single #pi^{0}", "high", "PhysEff",
-                              histname="MassPt_SM0"),
+                              "PhysEff")
         )
     )
 )
