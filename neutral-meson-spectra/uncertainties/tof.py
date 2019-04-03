@@ -36,6 +36,15 @@ class RatioFitter(TransformerBase):
         )
 
 
+class RangeSetter(TransformerBase):
+    def __init__(self, fit_range):
+        self.fit_range = fit_range
+
+    def transform(self, hist, loggs):
+        hist.GetXaxis().SetRangeUser(*self.fit_range)
+        return hist
+
+
 class TofUncertainty(TransformerBase):
 
     def __init__(self, options, plot=False):
@@ -44,11 +53,13 @@ class TofUncertainty(TransformerBase):
             ('25ns', Pipeline([
                 ("reconstruction", Analysis(options.data, plot)),
                 ("spectrum", HistogramSelector("spectrum", plot)),
+                ("range", RangeSetter(options.fit_range)),
                 ("FitF", FitfunctionAssigner(options.fitf, plot)),
             ])),
             ('isolated', Pipeline([
                 ("ReconstructMesons", Analysis(options.isolated, plot)),
                 ("spectrum", HistogramSelector("spectrum", plot)),
+                ("range", RangeSetter(options.fit_range)),
                 ("decorate", OutputDecorator(*options.decorate)),
             ])),
         ], True)

@@ -93,7 +93,12 @@ def fit_channels(triggers, sm, tru):
     freq.Draw()
     plotting.decorate_pad(ROOT.gPad)
     ROOT.gPad.Update()
-    ROOT.gPad.SaveAs("fitted-{}.pdf".format(filename.replace(" ", "-")))
+    stem = filename.replace(" ", "-")
+
+    ROOT.gPad.SaveAs("fitted-{}.pdf".format(stem))
+    ofile = ROOT.TFile("fitted-{}.root".format(stem), "recreate")
+    freq.Write()
+    ofile.Close()
     return fitf.GetParameter(0), fitf.GetParameter(0)
 
 
