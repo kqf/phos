@@ -8,8 +8,6 @@ void LoadAnalysisLibraries()
     cerr << "Fatal: There is no analysis manager" << endl;
     return;
   }
-
-  gInterpreter->LoadMacro("AliAnalysisTaskPHOSTriggerQAv1.cxx+");
   AliAnalysisAlien * plugin = dynamic_cast<AliAnalysisAlien * >(mgr->GetGridHandler());
   TString sources = plugin->GetAnalysisSource();
   TString libs   = plugin->GetAdditionalLibs();
