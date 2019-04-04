@@ -19,7 +19,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     Bool_t acceptance = kTRUE;
     AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(msg, acceptance);
     // Don't apply PhysicsSelection for SPMC
-    task->SelectCollisionCandidates(AliVEvent::kINT7);
+    // task->SelectCollisionCandidates(AliVEvent::kINT7);
 
     manager->InitAnalysis();
     manager->PrintStatus();
