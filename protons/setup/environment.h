@@ -1,3 +1,6 @@
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
+
 #ifdef __CLING__
 R__ADD_INCLUDE_PATH($ALICE_ROOT)
 #include <ANALYSIS/macros/AddTaskPIDResponse.C>
@@ -30,3 +33,5 @@ TString message(const char * title, TString period = "")
     msg += gSystem->Getenv("ALIPHYSICS_VERSION");	
     return msg;
 }
+
+#endif

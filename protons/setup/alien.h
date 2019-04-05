@@ -1,3 +1,6 @@
+#ifndef ALIEN_H
+#define ALIEN_H
+
 #include "TSystem.h"
 #include "AliAnalysisAlien.h"
 
@@ -10,8 +13,8 @@ using std::endl;
 
 AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dpart, Bool_t useJDL, Bool_t isMC, Int_t msize = 200)
 {
-	if (period.Length() < 6)
-		cerr << "Error: Wrong run period (too short)" << period << endl;
+	if(period.Length() < 6)
+		cerr << "Error: Wrong run period(too short)" << period << endl;
 
 	AliAnalysisAlien * plugin = new AliAnalysisAlien();
 	plugin->SetOverwriteMode(kTRUE);
@@ -40,30 +43,28 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetCheckCopy(kTRUE);
 
 
-	if (!isMC)
+	if(!isMC)
+	{
 		plugin->SetRunPrefix("000");
+	}
 
 	std::vector<Int_t> v;
 	read_csv(v, period);
 
 	// This is to avoid limitation on grid jobs
 	//
-
-	// Int_t msize = 200;
 	Int_t vsize = v.size();
-	Int_t start = (dpart.Contains("first") || vsize < msize) ? 0 : vsize / 2;
-	Int_t stop =  (dpart.Contains("first") && !(vsize <  msize)) ? vsize / 2 : vsize;
-
-
+	Int_t start =(dpart.Contains("first") || vsize < msize) ? 0 : vsize / 2;
+	Int_t stop = (dpart.Contains("first") && !(vsize <  msize)) ? vsize / 2 : vsize;
 
 
 	TString info = dpart.Contains("first") ? "first" :  "second";
 
 	// Don't add any endings if we have only one
-	if (vsize > msize && TString(pluginmode).Contains("full"))
+	if(vsize > msize && TString(pluginmode).Contains("full"))
 	{
 		// Repeat the message othervise it's not visible in the logs.
-		for (int i = 0; i < 5; ++i)
+		for(int i = 0; i < 5; ++i)
 		{
 			cout << "mWarning: remember to analyse the second part of the dataset " << period << endl;
 			cerr << "mWarning: remember to analyse the second part of the dataset " << period << endl;
@@ -73,14 +74,14 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 
 
 	// Terminate all datasets simultaneously
-	if (TString(pluginmode).Contains("terminate"))
+	if(TString(pluginmode).Contains("terminate"))
 	{
 		start = 0;
 		stop = v.size();
 	}
 
 
-	for (Int_t i = start; i < stop; ++i)
+	for(Int_t i = start; i < stop; ++i)
 		plugin->AddRunNumber(v[i]);
 
 	plugin->SetDefaultOutputs(kFALSE);
@@ -88,14 +89,7 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	period.ToLower();
 	plugin->SetGridWorkingDir("pp-phos-" + period);
 	plugin->SetGridOutputDir("output");
-	// plugin->SetDefaultOutputs();
-
-
 	plugin->AddIncludePath("-I$ALICE_PHYSICS/include");
-
-	// All files are set in the Add*Task.C macros
-	// plugin->SetAnalysisSource();
-	// plugin->SetAdditionalLibs("libPWGGAPHOSTasks.so ");
 
 	period.ReplaceAll('-', '_');
 	plugin->SetAnalysisMacro(TString("TaskPP_") + period + ".C");
@@ -110,15 +104,17 @@ AliAnalysisAlien * GetPlugin(const char * pluginmode, TString period, TString dp
 	plugin->SetJDLName(TString("TaskPP_") + period + ".jdl");
 	plugin->SetPrice(1);
 	plugin->SetSplitMode("se");
-	plugin->SetProofCluster ( "alice-caf.cern.ch" );
-	plugin->SetProofDataSet ( "/alice/data/LHC10h_000138150_p2" );
-	plugin->SetProofReset ( 0 );
-	plugin->SetNproofWorkers ( 0 );
+	plugin->SetProofCluster("alice-caf.cern.ch");
+	plugin->SetProofDataSet("/alice/data/LHC10h_000138150_p2");
+	plugin->SetProofReset(0);
+	plugin->SetNproofWorkers(0);
 
 
-	plugin->SetAliRootMode ( "default" );
-	plugin->SetClearPackages ( kFALSE );
-	plugin->SetProofConnectGrid ( kFALSE );
+	plugin->SetAliRootMode("default");
+	plugin->SetClearPackages(kFALSE);
+	plugin->SetProofConnectGrid(kFALSE);
 	plugin->SetDropToShell(kFALSE);
 	return plugin;
 }
+
+#endif
