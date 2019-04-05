@@ -5,7 +5,6 @@
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kTRUE, Bool_t useJDL = kTRUE)
 {
-    // SetupEnvironment();
     AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
     manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL));
     manager->SetInputEventHandler(new AliAODInputHandler());

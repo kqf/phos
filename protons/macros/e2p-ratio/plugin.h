@@ -15,17 +15,16 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
 	// Extract period and reconstruction pass
 	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
 
-	TString reconstruction(period);
-	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
-	reconstruction.ReplaceAll("-", "_");
+	TString reco(period);
+	reco.ReplaceAll(dir + (reco.Contains(dir + "-") ? "-" : "") , "");
+	reco.ReplaceAll("-", "_");
 
 	TString globaldir = isMC ? "/alice/sim/2017/" : "/alice/data/2016/";
 	plugin->SetGridDataDir(globaldir + dir);
-	cout << "/alice/data/2016/" + dir << endl;
 
 	TString datasuffix = isMC ? "AOD/" : "/*.";
-	plugin->SetDataPattern("/" + reconstruction + datasuffix + "*/AliAOD.root");
-	cout << "Data pattern " << "/" + reconstruction + "/*.*/AliAOD.root" << endl;
+	plugin->SetDataPattern("/" + reco + datasuffix + "*/AliAOD.root");
+	cout << "Data pattern " << "/" + reco + "/*.*/AliAOD.root" << endl;
 
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
     plugin->SetOutputFiles("AnalysisResults.root");
