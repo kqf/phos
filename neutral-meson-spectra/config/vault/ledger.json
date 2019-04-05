@@ -162,14 +162,14 @@
 			"file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b1.root",
 			"default_selection": "PhysNonlinScan",
 			"pt_range": [0.0, 8.0],
-			"hsum": "04420f5413f4a30b162764f4a9506efad1b1714350f1380418dee9ed04a7dd86",
+			"hsum": "df76b155eb9e889e2b51e46ef70083125d5c9c2a5ca236baa187437441801fb5",
 			"description": "Update calibration, keep old nonlinearity for comparison"
 		},
 		"high": {
 			"file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b2.root",
 			"default_selection": "PhysNonlinScan",
 			"pt_range": [4.0, 20.0],
-			"hsum": "57f92da7a30c54bf47a7531c91df73f07ad4fbe51f80bbf3bc4a88d74eb0a545",
+			"hsum": "635b892ee371a8b907b0dd6e76dc236a8f729faa5da9f3d2934b1a37a48cc40b",
 			"description": "Update calibration, keep old nonlinearity for comparison"
 		}
 	},
