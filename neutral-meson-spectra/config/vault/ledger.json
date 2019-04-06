@@ -23,7 +23,7 @@
 		},
 		"acceptance": {
 			"file": "input-data/data/LHC16/acceptance_1/LHC16.root",
-			"default_selection": "Phys",
+			"default_selection": "Phys0",
 			"pt_range": [0, 20],
 			"hsum": "6c74a54aa0a2b7c907cfb06e639bd133bebe37526a9cc1e22bf790048722d319",
 			"description": "Prodcution with the official nonlinearity"
