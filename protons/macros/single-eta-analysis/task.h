@@ -46,8 +46,8 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t acceptance=k
 			cuts_eta.fMinimalDistance = i * scale;
 
 			// TODO: Add plain selections
-			selections->Add(new AliPP13SpectrumSelection(Form("Phys%d", i), "Physics Selection", cuts_pi0, &mc_weights));
-			selections->Add(new AliPP13SpectrumSelection(Form("Eta%d", i), "Physics Selection for eta meson", cuts_eta, &mc_weights));
+			selections->Add(new AliPP13EfficiencySelectionMC(Form("PhysEff%d", i), "Physics Selection", cuts_pi0, &mc_weights));
+			selections->Add(new AliPP13EfficiencySelectionMC(Form("PhysEffEta%d", i), "Physics Selection for eta meson", cuts_eta, &mc_weights));
 		}
 	}
 

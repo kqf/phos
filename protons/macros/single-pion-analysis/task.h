@@ -41,7 +41,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 		{
 			AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 			cuts_pi0.fMinimalDistance = i * scale;
-			selections->Add(new AliPP13SpectrumSelection(Form("Phys%d", i), "Physics Selection", cuts_pi0, &mc_weights));
+			selections->Add(new AliPP13EfficiencySelectionMC(Form("PhysEff%d", i), "Physics Selection", cuts_pi0, &mc_weights));
 		}
 		delete &mc_weights;
 	}
