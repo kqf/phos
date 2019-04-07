@@ -9,20 +9,23 @@ from tools.feeddown import data_feeddown
 def cyield_data(particle, cut):
     mc_production = "single %s acceptance" % particle
     data_input = (
-        DataVault().input("data", "acceptance",
-                          listname="Phys{}".format(cut),
-                          histname="MassPtSM0"),
+        DataVault().input(
+            "data", "acceptance",
+            listname="Phys{}".format(cut),
+            histname="MassPtSM0"),
         data_feeddown(),
     )
     mc_inputs = (
-        DataVault().input(mc_production, "low",
-                          listname="Phys{}".format(cut),
-                          histname="MassPtSM0"
-                          ),
-        DataVault().input(mc_production, "high",
-                          listname="Phys{}".format(cut),
-                          histname="MassPtSM0"
-                          ),
+        DataVault().input(
+            mc_production, "low",
+            listname="Phys{}".format(cut),
+            histname="MassPtSM0"
+        ),
+        DataVault().input(
+            mc_production, "high",
+            listname="Phys{}".format(cut),
+            histname="MassPtSM0"
+        ),
     )
     return data_input, mc_inputs
 

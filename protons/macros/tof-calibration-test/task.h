@@ -1,14 +1,13 @@
-#include "../setup/sources.h"
+#include "../../setup/sources.h"
 
-void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", TString badmap = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+AliAnalysisTaskPP13 *  AddAnalysisTaskPP(TString description, Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
-	LoadAnalysisLibraries();
-	
+	// LoadAnalysisLibraries();
 	AliAnalysisManager * mgr = AliAnalysisManager::GetAnalysisManager();
 	if (!mgr) 
 	{
 		cerr << "Fatal: There is no analysis manager" << endl;
-		return;
+		return 0;
 	}	
 	// Setup Selections
 	TList * selections = new TList();
@@ -72,7 +71,7 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
-	task->SelectCollisionCandidates(offlineTriggerMask);
+	// task->SelectCollisionCandidates(offlineTriggerMask);
 	mgr->AddTask(task);
 	mgr->ConnectInput (task, 0, mgr->GetCommonInputContainer());
 	AliAnalysisDataContainer * coutput = 0;
@@ -82,10 +81,11 @@ void AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString s
 		fSel->SetTitle(description);
 		cout << fSel->GetTitle() << endl;
 
-		coutput = mgr->CreateContainer(fSel->GetName() + suff,
+		coutput = mgr->CreateContainer(fSel->GetName(),
 		                               TList::Class(),
 		                               AliAnalysisManager::kOutputContainer,
 		                               AliAnalysisManager::GetCommonFileName());
 		mgr->ConnectOutput(task, i + 1, coutput);
 	}
+	return task;
 }

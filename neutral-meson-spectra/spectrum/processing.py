@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import ROOT
 
 from invariantmass import InvariantMass, RawMass, masses2edges

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from broot import BROOT as br
 from collections import OrderedDict
 
