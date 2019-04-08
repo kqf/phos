@@ -28,6 +28,7 @@ class Acceptance(TransformerBase):
             ParallelPipeline([
                 ("dist 1", CorrectedYield(options.cyield)),
                 ("dist 2", CorrectedYield(options.cyield)),
+                ("dist 3", CorrectedYield(options.cyield)),
             ]),
             CorrectedYield(options.cyield),
             self.fitratio

@@ -18,13 +18,13 @@ def cyield_data(particle, cut):
     mc_inputs = (
         DataVault().input(
             mc_production, "low",
-            listname="Phys{}".format(cut),
-            histname="MassPtSM0"
+            listname="PhysEff{}".format(cut),
+            # histname="MassPtSM0"
         ),
         DataVault().input(
             mc_production, "high",
-            listname="Phys{}".format(cut),
-            histname="MassPtSM0"
+            listname="PhysEff{}".format(cut),
+            # histname="MassPtSM0"
         ),
     )
     return data_input, mc_inputs
@@ -51,8 +51,10 @@ def acceptance_data(particle):
 def test_acceptance(particle):
     estimator = Acceptance(
         AcceptanceOptions(particle=particle), plot=False)
+    loggs = AnalysisOutput("uncertainty acceptance")
     uncertanity = estimator.transform(
         acceptance_data(particle),
-        loggs=AnalysisOutput("uncertainty acceptance")
+        loggs=loggs
     )
     Comparator().compare(uncertanity)
+    loggs.plot()
