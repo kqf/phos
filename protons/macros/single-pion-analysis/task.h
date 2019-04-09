@@ -15,11 +15,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 	// Applying no weights
 	//
 	AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
-	AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
-
 	cuts_pi0.fNContributors = 0;
-	cuts_eta.fNContributors = 0;
-	cuts_eta.fAsymmetryCut = 0.7;
 
 	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
 		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC)
@@ -40,7 +36,8 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 		for (Int_t i = 0; i < minDistanceMaximum; ++i)
 		{
 			AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
-			// cuts_pi0.fMinimalDistance = i * scale;
+			cuts_pi0.fNContributors = 0;
+			cuts_pi0.fMinimalDistance = i * scale;
 			selections->Add(new AliPP13EfficiencySelectionMC(Form("PhysEff%d", i), "Physics Selection", cuts_pi0, &mc_weights));
 		}
 	}

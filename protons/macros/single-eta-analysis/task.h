@@ -39,9 +39,11 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t acceptance=k
 		{
 
 			AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
+			cuts_pi0.fNContributors = 0;
 			cuts_pi0.fMinimalDistance = i * scale;
 
 			AliPP13ClusterCuts cuts_eta = AliPP13ClusterCuts::GetClusterCuts();
+			cuts_eta.fNContributors = 0;
 			cuts_eta.fAsymmetryCut = 0.7;
 			cuts_eta.fMinimalDistance = i * scale;
 
