@@ -40,11 +40,11 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 		for (Int_t i = 0; i < minDistanceMaximum; ++i)
 		{
 			AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
-			cuts_pi0.fMinimalDistance = i * scale;
+			// cuts_pi0.fMinimalDistance = i * scale;
 			selections->Add(new AliPP13EfficiencySelectionMC(Form("PhysEff%d", i), "Physics Selection", cuts_pi0, &mc_weights));
 		}
-		delete &mc_weights;
 	}
+	delete &mc_weights;
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);

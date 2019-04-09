@@ -9,8 +9,8 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL));
     manager->SetInputEventHandler(new AliAODInputHandler());
 
-    Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection(isMC, enablePileupCuts);
+    // Bool_t enablePileupCuts = kTRUE;
+    // AddTaskPhysicsSelection(isMC, enablePileupCuts);
 
     TString msg = message("Acceptance scan", period);
     AddPHOSTender(isMC, msg);
