@@ -1,5 +1,3 @@
-#!/usr/bin/python2
-
 import ROOT
 import sys
 from drawtools.badmap import badmap
@@ -46,14 +44,14 @@ def find_similar_in(lst, ref):
         print msg.format(ref.GetName())
         return None
     if len(candidates) > 1:
-        msg = "Warning: you have multiple histograms with the same name!!! Act!!"
+        msg = "Warning: you have multiple histograms with the same name!!! Act!!"  # noqa
         print
     return candidates[0]
 
 
 def compare_visually(hist1, hist2):
-    c1 = ROOT.TCanvas("c1", "test", 3 * hist1.GetNbinsX()
-                      * 8, hist1.GetNbinsY() * 8)
+    c1 = ROOT.TCanvas("c1", "test",
+                      3 * hist1.GetNbinsX() * 8, hist1.GetNbinsY() * 8)
     c1.Divide(3, 1)
     c1.cd(1)
 
@@ -74,7 +72,7 @@ def compare_visually(hist1, hist2):
 
 def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_visually):
     if len(l1) != len(l2):
-        print bcolors.FAIL + "Warning files have different size"
+        print "Warning files have different size"
 
     diffs = []
     for h in l1:
@@ -93,9 +91,17 @@ def compare_histograms():
         print "Usage compare-bmaps.py file1.root file2.root"
 
     hists1, hists2 = map(get_my_list, sys.argv[1:])
-    not_reliable = ["hCluEXZM3_0", "hAsymPtEta", "hAsymPtPi0M2", "hAsymPtPi0M23",
-                    "hMassPtCA10_both", "hMassPtCA07_both", "hMassPtM1", "hMassPtM23", "hMassPtN6"]
-
+    not_reliable = [
+        "hCluEXZM3_0",
+        "hAsymPtEta",
+        "hAsymPtPi0M2",
+        "hAsymPtPi0M23",
+        "hMassPtCA10_both",
+        "hMassPtCA07_both",
+        "hMassPtM1",
+        "hMassPtM23",
+        "hMassPtN6"
+    ]
     compare_lists_of_histograms(hists1, hists2, not_reliable, compare_visually)
 
 

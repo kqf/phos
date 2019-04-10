@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import ROOT
 import sys
 ROOT.gROOT.cd()

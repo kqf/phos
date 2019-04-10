@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from drawtools.style import SingleStyler
 
 import ROOT
