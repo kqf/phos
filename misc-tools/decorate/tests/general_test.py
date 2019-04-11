@@ -1,6 +1,3 @@
-#!/usr/bin/python
-
-
 import ROOT
 import unittest
 import os
