@@ -22,8 +22,7 @@ def draw_and_save(name, draw=False, save=True):
 def hist_cut(h, namecut=lambda x: True):
     res = namecut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
     if not res:
-        msg = "Warning: Empty histogram found: {}"
-        print msg.format(h.GetName())
+        print "Warning: Empty histogram found: {}".format(h.GetName())
     return res
 
 
