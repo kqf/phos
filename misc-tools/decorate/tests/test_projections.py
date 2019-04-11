@@ -3,7 +3,7 @@
 import ROOT
 import json
 import random
-from test.general_test import TestImages, GeneralTest
+from tests.general_test import TestImages, GeneralTest
 
 
 class TestProjections(TestImages, GeneralTest):

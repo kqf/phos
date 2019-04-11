@@ -2,7 +2,7 @@
 
 import ROOT
 import json
-from test.test_multiple import TestImages, GeneralTest
+from tests.test_multiple import TestImages, GeneralTest
 
 
 class TestMultipleSequential(TestImages, GeneralTest):

@@ -2,7 +2,7 @@
 
 import ROOT
 import json
-from test.general_test import TestImages, GeneralTest
+from tests.general_test import TestImages, GeneralTest
 
 
 class TestMultipleMixed(TestImages, GeneralTest):
