@@ -2,19 +2,8 @@ import ROOT
 import sys
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
 def error(s):
-    print bcolors.FAIL
+    print s
 
 
 def draw_and_save(name, draw=False, save=True):
@@ -33,8 +22,8 @@ def draw_and_save(name, draw=False, save=True):
 def hist_cut(h, namecut=lambda x: True):
     res = namecut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
     if not res:
-        msg = "{}Warning: Empty histogram found: {}{}"
-        print msg.format(bcolors.WARNING, h.GetName(), bcolors.ENDC)
+        msg = "Warning: Empty histogram found: {}"
+        print msg.format(h.GetName())
     return res
 
 
