@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import ROOT
 import json
 from tests.test_multiple import TestImages, GeneralTest
