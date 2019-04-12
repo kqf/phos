@@ -46,7 +46,8 @@ class GeneralTest(object):
 class TestImages(unittest.TestCase):
 
     def setUp(self):
-        # Different values in some pt-bins can be explained by limited statistics in those bins.
+        # Different values in some pt-bins can be explained by
+        # limited statistics in those bins.
         #
         # This one should be changed later
         self.conffile, self.infile, histname = self.save_config()

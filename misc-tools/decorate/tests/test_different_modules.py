@@ -2,6 +2,7 @@ import os
 import pytest
 import ROOT
 import json
+from drawtools.style import Styler
 
 
 @pytest.fixture
@@ -33,15 +34,7 @@ def config():
     with open(conffile, 'w') as outfile:
         json.dump(data, outfile)
 
-    yield conffile, rfile, [histname, suff, nruns]
-    os.remove(conffile)
-    os.remove(rfile)
-
-
-def test_saves_histogram(config):
-    conffile, rfile, histnames = config
-    histname, suff, nruns = histnames
-    ofile = ROOT.TFile(rfile, "update")
+    ofile = ROOT.TFile(rfile, "recreate")
     f1 = ROOT.TF1(
         'mfunc', "TMath::Exp( -1 * (x - [0]) * (x - [0]) / [1] / [1] )")
 
@@ -55,3 +48,12 @@ def test_saves_histogram(config):
             histogram.FillRandom('mfunc', 10000)
             histogram.Write()
     ofile.Close()
+
+    yield conffile
+    os.remove(conffile)
+    os.remove(rfile)
+
+
+def testDrawing(config):
+    style = Styler(config)
+    style.draw()
