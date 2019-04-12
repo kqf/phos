@@ -54,6 +54,6 @@ def config():
     os.remove(rfile)
 
 
-def testDrawing(config):
+def test_styles(config):
     style = Styler(config)
     style.draw()

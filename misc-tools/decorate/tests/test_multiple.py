@@ -1,45 +1,53 @@
-#!/usr/bin/python
-
+import os
 import ROOT
 import json
-from tests.general_test import TestImages, GeneralTest
+import pytest
+from drawtools.style import Styler
+from tests.mc import fill_random
 
 
-class TestMultipleImages(TestImages, GeneralTest):
+@pytest.fixture
+def config():
+    conffile = 'config/test_single.json'
+    rfile = 'input/testfile_multiple_hists.root'
+    histname = 'hSomeHistInModule_%d/'
+    pfile = 'results/test_multiple_hists.pdf'
 
-    def save_config(self):
-        conffile = 'config/test_single.json'
-        rfile = 'input/testfile_multiple_hists.root'
-        histname = 'hSomeHistInModule_%d/'
-        pfile = 'results/test_multiple_hists.pdf'
-
-        data = {
-            "multiplot":
+    data = {
+        "multiplot":
+        {
+            rfile + '/' + histname:
             {
-                rfile + '/' + histname:
-                {
-                    "option": "colz",
-                    "title": "Random distribution; #alpha; #beta"
-                }
-            },
-            "canvas":
-            {
-                "size": 5,
-                "logy": 0,
-                "gridx": 0,
-                "output": pfile
+                "option": "colz",
+                "title": "Random distribution; #alpha; #beta"
             }
+        },
+        "canvas":
+        {
+            "size": 5,
+            "logy": 0,
+            "gridx": 0,
+            "output": pfile
         }
+    }
 
-        with open(conffile, 'w') as outfile:
-            json.dump(data, outfile)
-        return conffile, rfile, histname
+    with open(conffile, 'w') as outfile:
+        json.dump(data, outfile)
 
-    def save_histogram(self, filename, histname):
-        ofile = ROOT.TFile(filename, "update")
-        for i in range(1, 5):
-            histogram = ROOT.TH2F(
-                histname % i, "Testing ...", 20 * i, 0, 100, 20 * i, 0, 100)
-            self.fill_random(histogram, None)
-            histogram.Write()
-        ofile.Close()
+    ofile = ROOT.TFile(rfile, "update")
+    for i in range(1, 5):
+        histogram = ROOT.TH2F(
+            histname % i, "Testing ...", 20 * i, 0, 100, 20 * i, 0, 100)
+        fill_random(histogram, None)
+        histogram.Write()
+    ofile.Close()
+
+    yield conffile
+    os.remove(conffile)
+    os.remove(rfile)
+
+
+@pytest.mark.skip("Don't use multihist plots")
+def test_styles(config):
+    style = Styler(config)
+    style.draw()
