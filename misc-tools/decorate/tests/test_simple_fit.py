@@ -10,7 +10,7 @@ class SimpleFit(TestImages, GeneralTest):
 
     def save_config(self):
         conffile = 'config/test_simple_fit.json'
-        rfile = 'input/testfile_fit.root'
+        filename = 'input/testfile_fit.root'
         histname = 'hHistogram'
         pfile = 'results/test_fit.pdf'
         self.range = [1, 10]
@@ -19,7 +19,7 @@ class SimpleFit(TestImages, GeneralTest):
         data = {
             "histograms":
             {
-                rfile + '/' + histname:
+                filename + '/' + histname:
                 {
                     "title": "Test fitting; x, GeV; y",
                     "label": "test data",
@@ -45,7 +45,7 @@ class SimpleFit(TestImages, GeneralTest):
 
         with open(conffile, 'w') as outfile:
             json.dump(data, outfile)
-        return conffile, rfile, histname
+        return conffile, filename, histname
 
     def save_histogram(self, filename, histname):
         ofile = ROOT.TFile(filename, "update")

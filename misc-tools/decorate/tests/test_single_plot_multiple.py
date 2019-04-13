@@ -10,13 +10,13 @@ class SingleImageMultiplePlots(TestImages, GeneralTest):
 
     def save_config(self):
         conffile = 'config/test_single_multiple.json'
-        rfile = 'input/testfile_singlemultiple.root'
+        filename = 'input/testfile_singlemultiple.root'
         histnames = ['hFirst', 'hSecond', 'hThird', 'hFourth']
         pfile = 'results/test.pdf'
         data = {
             "histograms":
             {
-                rfile + '/' + histname:
+                filename + '/' + histname:
                 {
                     "label": "plot %d" % i,
                     "color": 1000 + i,
@@ -37,7 +37,7 @@ class SingleImageMultiplePlots(TestImages, GeneralTest):
         with open(conffile, 'w') as outfile:
             json.dump(data, outfile)
 
-        return conffile, rfile, histnames
+        return conffile, filename, histnames
 
     def save_histogram(self, filename, histnames):
         ofile = ROOT.TFile(filename, "update")

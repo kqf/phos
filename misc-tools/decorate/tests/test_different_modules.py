@@ -8,7 +8,7 @@ from drawtools.style import Styler
 @pytest.fixture
 def config():
     conffile = 'config/test_different_modules.json'
-    rfile = 'input/testfile_multiple_modules.root'
+    filename = 'input/testfile_multiple_modules.root'
     histname = 'hHistInModule_%d'
     pfile = 'results/test_multiple_modules.pdf'
     suff = '_run_%d'
@@ -16,7 +16,7 @@ def config():
     data = {
         "multiplot":
         {
-            rfile + '/' + histname + suff % i:
+            filename + '/' + histname + suff % i:
             {
 
                 "title": "Random distribution; variable; counts",
@@ -34,7 +34,7 @@ def config():
     with open(conffile, 'w') as outfile:
         json.dump(data, outfile)
 
-    ofile = ROOT.TFile(rfile, "recreate")
+    ofile = ROOT.TFile(filename, "recreate")
     f1 = ROOT.TF1(
         'mfunc', "TMath::Exp( -1 * (x - [0]) * (x - [0]) / [1] / [1] )")
 
@@ -51,7 +51,7 @@ def config():
 
     yield conffile
     os.remove(conffile)
-    os.remove(rfile)
+    os.remove(filename)
 
 
 def test_styles(config):

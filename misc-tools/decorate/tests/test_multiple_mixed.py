@@ -9,7 +9,7 @@ import pytest
 @pytest.fixture
 def config():
     conffile = 'config/test_multiple_mixed.json'
-    rfile = 'input/testfile_multiple_hists_mixed.root'
+    filename = 'input/testfile_multiple_hists_mixed.root'
     histnames = [
         'hSomeHistInModule_%d',
         'hAnotherHistInTheModule_%d',
@@ -20,7 +20,7 @@ def config():
     data = {
         "multiplot":
         {
-            rfile + '/' + histname:
+            filename + '/' + histname:
             {
                 "option": drawoptions[i],
                 "priority": len(histnames) - i,
@@ -43,10 +43,10 @@ def config():
     with open(conffile, 'w') as outfile:
         json.dump(data, outfile)
 
-    save_histogram(rfile, histnames)
+    save_histogram(filename, histnames)
     yield conffile
     os.remove(conffile)
-    os.remove(rfile)
+    os.remove(filename)
 
 
 def save_histogram(filename, histnames):

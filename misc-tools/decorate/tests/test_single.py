@@ -10,13 +10,13 @@ class SingleImage(TestImages, GeneralTest):
 
     def save_config(self):
         conffile = 'config/test_single.json'
-        rfile = 'input/testfile.root'
+        filename = 'input/testfile.root'
         histname = 'hHistogram'
         pfile = 'results/test.pdf'
         data = {
             "histograms":
             {
-                rfile + '/' + histname:
+                filename + '/' + histname:
                 {
                     "label": "test 1",
                     "color": 37,
@@ -37,7 +37,7 @@ class SingleImage(TestImages, GeneralTest):
 
         with open(conffile, 'w') as outfile:
             json.dump(data, outfile)
-        return conffile, rfile, histname
+        return conffile, filename, histname
 
     def save_histogram(self, filename, histname):
         ofile = ROOT.TFile(filename, "update")

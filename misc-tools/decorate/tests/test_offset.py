@@ -8,13 +8,13 @@ from drawtools.offset import Offset
 @pytest.fixture
 def config():
     conffile = 'config/test_offset.json'
-    rfile = 'input/testfile_offset.root'
+    filename = 'input/testfile_offset.root'
     histnames = ['data', 'mixing']
     pfile = 'results/test.pdf'
     data = {
         "histograms":
         {
-            rfile + '/' + histname:
+            filename + '/' + histname:
             {
                 "xofset": 1.5,
                 "xofset": 1.7,
@@ -44,10 +44,10 @@ def config():
     with open(conffile, 'w') as outfile:
         json.dump(data, outfile)
 
-    save_histogram(rfile, histnames)
+    save_histogram(filename, histnames)
     yield conffile
     os.remove(conffile)
-    os.remove(rfile)
+    os.remove(filename)
 
 
 def save_histogram(filename, histnames):

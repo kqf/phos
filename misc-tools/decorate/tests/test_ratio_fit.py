@@ -10,13 +10,13 @@ class TestFitRatio(TestImages, GeneralTest):
 
     def save_config(self):
         conffile = 'config/test_ratio_fit.json'
-        rfile = 'input/testfile_ratio_fit.root'
+        filename = 'input/testfile_ratio_fit.root'
         histnames = ['data', 'mixing']
         pfile = 'results/test.pdf'
         data = {
             "histograms":
             {
-                rfile + '/' + histname:
+                filename + '/' + histname:
                 {
                     "label": histname,
                     "color": 1001 + i,
@@ -44,7 +44,7 @@ class TestFitRatio(TestImages, GeneralTest):
         with open(conffile, 'w') as outfile:
             json.dump(data, outfile)
 
-        return conffile, rfile, histnames
+        return conffile, filename, histnames
 
     def save_histogram(self, filename, histnames):
         ofile = ROOT.TFile(filename, "update")

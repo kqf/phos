@@ -9,14 +9,14 @@ from tests.mc import fill_random
 @pytest.fixture
 def config():
     conffile = 'config/test_single.json'
-    rfile = 'input/testfile_multiple_hists.root'
+    filename = 'input/testfile_multiple_hists.root'
     histname = 'hSomeHistInModule_%d/'
     pfile = 'results/test_multiple_hists.pdf'
 
     data = {
         "multiplot":
         {
-            rfile + '/' + histname:
+            filename + '/' + histname:
             {
                 "option": "colz",
                 "title": "Random distribution; #alpha; #beta"
@@ -34,7 +34,7 @@ def config():
     with open(conffile, 'w') as outfile:
         json.dump(data, outfile)
 
-    ofile = ROOT.TFile(rfile, "update")
+    ofile = ROOT.TFile(filename, "update")
     for i in range(1, 5):
         histogram = ROOT.TH2F(
             histname % i, "Testing ...", 20 * i, 0, 100, 20 * i, 0, 100)
@@ -44,7 +44,7 @@ def config():
 
     yield conffile
     os.remove(conffile)
-    os.remove(rfile)
+    os.remove(filename)
 
 
 @pytest.mark.skip("Don't use multihist plots")

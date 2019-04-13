@@ -1,0 +1,1 @@
+{"canvas": {"output": "results/test_projections.pdf", "logy": 0, "gridy": 0, "gridx": 0, "size": 5}, "histograms": {"input/testfile_projections.root/hSomeHistogram": {"option": "colz", "projectx": 50, "title": "Trying projections; #alpha; #beta"}}}
