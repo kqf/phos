@@ -30,7 +30,7 @@ def nbins():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_scan_nonlinearities(nbins):
-    prod = "single #pi^{0} scan nonlinearity6"
+    prod = "single #pi^{0} nonlinearity scan"
     histnames = form_histnames(nbins)
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)
@@ -61,7 +61,7 @@ def test_scan_nonlinearities(nbins):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_draw_most_optimal_nonlinearity(nbins):
-    production = "single #pi^{0}"
+    production = "single #pi^{0} nonlinearity scan"
     minimum_index = 70
     minimum_index *= 2
     histname = form_histnames(nbins)[minimum_index]

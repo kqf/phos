@@ -15,7 +15,7 @@ from uncertainties.nonlinearity import Nonlinearity, define_inputs
 @pytest.mark.onlylocal
 def test_nonlinearity_uncertainty():
     nbins = 2
-    prod = "single #pi^{0}"
+    prod = "single #pi^{0} nonlinearity scan"
     options = CompositeNonlinearityUncertainty(nbins=nbins)
     options.factor = 1.
 
