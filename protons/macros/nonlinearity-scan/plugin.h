@@ -26,5 +26,6 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString period, TString
 	cout << "DataDir " <<  datadir << " pattern " << datapattern << endl;
 	plugin->SetFileForTestMode("../../datasets/filesmc.txt");
     plugin->SetOutputFiles(AliAnalysisManager::GetCommonFileName());
+    plugin->SetGridWorkingDir("pp-phos-nonlinearity-scan" + period);
 	return plugin;
 }
