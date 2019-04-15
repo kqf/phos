@@ -10,7 +10,7 @@ from tests.mc import fill_random
 def config():
     conffile = 'config/test_single.json'
     filename = 'input/testfile_multiple_hists.root'
-    histname = 'hSomeHistInModule_%d/'
+    histname = 'hSomeHistInModule_%d'
     pfile = 'results/test_multiple_hists.pdf'
 
     data = {
@@ -47,7 +47,5 @@ def config():
     os.remove(filename)
 
 
-@pytest.mark.skip("Don't use multihist plots")
 def test_styles(config):
-    style = Styler(config)
-    style.draw()
+    Styler(config).draw()

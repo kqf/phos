@@ -35,6 +35,7 @@ def config():
     with open(conffile, 'w') as outfile:
         json.dump(data, outfile)
 
+    save_histogram(filename, histnames)
     yield conffile, histnames
 
     os.remove(conffile)
@@ -53,7 +54,6 @@ def save_histogram(filename, histnames):
     ofile.Close()
 
 
-@pytest.mark.skip("")
 def test_styles(config):
     conffile, histnames = config
-    Styler(config).draw()
+    Styler(conffile).draw()

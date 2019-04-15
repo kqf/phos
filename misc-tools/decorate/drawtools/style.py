@@ -1,6 +1,7 @@
 import sys
 import ROOT
 import json
+import pprint
 
 ROOT.TH1.AddDirectory(False)
 
@@ -13,9 +14,9 @@ class Styler(object):
         with open(filename) as f:
             data = json.load(f)
 
-        self.stylers = self.get_stylers(data)
+        self.stylers = self.select_stylers(data)
 
-    def get_stylers(self, data):
+    def select_stylers(self, data):
         known_stylers = [SingleStyler, MultipleStyler]
 
         return [k(data) for k in known_stylers if k.keyname in data]
@@ -50,6 +51,7 @@ class SingleStyler(object):
 
     def read_histogram(self, rpath, properties):
         # Extract root file
+        pprint.pprint(rpath)
         filename, path = rpath.split('.root/')
         path = path.strip().split('/')
 
