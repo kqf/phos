@@ -1,58 +1,65 @@
-#!/usr/bin/python
-
-
+import os
 import ROOT
 import json
-from tests.general_test import TestImages, GeneralTest
+import pytest
+from drawtools.style import Styler
 
 
-class SimpleFit(TestImages, GeneralTest):
-
-    def save_config(self):
-        conffile = 'config/test_simple_fit.json'
-        filename = 'input/testfile_fit.root'
-        histname = 'hHistogram'
-        pfile = 'results/test_fit.pdf'
-        self.range = [1, 10]
-        self.func = "[0] * sin ([1] * x) / x + [2]"
-        self.pars = [1., 3.14, 1.]
-        data = {
-            "histograms":
+@pytest.fixture
+def config():
+    conffile = 'config/test_simple_fit.json'
+    filename = 'input/testfile_fit.root'
+    histname = 'hHistogram'
+    pfile = 'results/test_fit.pdf'
+    rrange = [1, 10]
+    func = "[0] * sin ([1] * x) / x + [2]"
+    pars = [1., 3.14, 1.]
+    data = {
+        "histograms":
+        {
+            filename + '/' + histname:
             {
-                filename + '/' + histname:
-                {
-                    "title": "Test fitting; x, GeV; y",
-                    "label": "test data",
-                    "yprecision": " counts per %s GeV",
-                    "stats": "e",
-                    "color": 37,
-                    "fit": "",
-                    "fitrange": self.range,
-                    "fitfunc": self.func,
-                    "fitpars": self.pars
-                }
-            },
-            "canvas":
-            {
-                "size": 5,
-                "logy": 1,
-                "gridx": 1,
-                "gridy": 1,
-                "legend": [0.14, 0.7, 0.34, 0.88],
-                "output": pfile
+                "title": "Test fitting; x, GeV; y",
+                "label": "test data",
+                "yprecision": " counts per %s GeV",
+                "stats": "e",
+                "color": 37,
+                "fit": "",
+                "fitrange": rrange,
+                "fitfunc": func,
+                "fitpars": pars
             }
+        },
+        "canvas":
+        {
+            "size": 5,
+            "logy": 1,
+            "gridx": 1,
+            "gridy": 1,
+            "legend": [0.14, 0.7, 0.34, 0.88],
+            "output": pfile
         }
+    }
 
-        with open(conffile, 'w') as outfile:
-            json.dump(data, outfile)
-        return conffile, filename, histname
+    with open(conffile, 'w') as outfile:
+        json.dump(data, outfile)
 
-    def save_histogram(self, filename, histname):
-        ofile = ROOT.TFile(filename, "update")
-        histogram = ROOT.TH1F(histname, "Testing ...", 1000, -3, 3)
-        function = ROOT.TF1('htest', self.func, *self.range)
-        function.SetParameters(*self.pars)
+    save_histogram(filename, histname, pars, func, rrange)
 
-        histogram.FillRandom('htest', 100000)
-        histogram.Write()
-        ofile.Close()
+    yield conffile
+    os.remove(conffile)
+    os.remove(filename)
+
+
+def save_histogram(filename, histname, pars, func, rrange):
+    ofile = ROOT.TFile(filename, "update")
+    histogram = ROOT.TH1F(histname, "Testing ...", 1000, -3, 3)
+    function = ROOT.TF1('htest', func, *rrange)
+    function.SetParameters(*pars)
+    histogram.FillRandom('htest', 100000)
+    histogram.Write()
+    ofile.Close()
+
+
+def test_styles(config):
+    Styler(config).draw()
