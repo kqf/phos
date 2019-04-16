@@ -1,5 +1,6 @@
 import ROOT
 import sys
+import click
 
 
 def error(s):
@@ -26,7 +27,7 @@ def hist_cut(h, namecut=lambda x: True):
     return res
 
 
-def get_my_list(filename='AnalysisResults.root'):
+def extract_data_lists(filename='AnalysisResults.root'):
     print 'Processing %s file:' % filename
     mfile = ROOT.TFile(filename)
     # Without this line your Clones are created inside FILENAME directory.
@@ -121,21 +122,33 @@ def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_chi):
     print "That's it!! Your computation is done"
 
 
-def compare_histograms():
+def compare_histograms(left, right):
     ROOT.gROOT.cd()
     ROOT.gStyle.SetOptStat(False)
 
-    hists1 = get_my_list(sys.argv[1])
-    hists2 = get_my_list(sys.argv[2])
+    hists1 = extract_data_lists(left)
+    hists2 = extract_data_lists(right)
 
     not_reliable = []
     compare_lists_of_histograms(
         hists1, hists2, not_reliable, compare_bin_by_bin)
 
 
-def main():
-    assert len(sys.argv) > 2, 'Usage: diff-results file1.root file2.root'
-    compare_histograms()
+@click.command()
+@click.option('--left', '-l',
+              type=click.Path(exists=True),
+              help='Path to the first file',
+              required=True)
+@click.option('--right', '-r',
+              type=click.Path(exists=True),
+              help='Path to the second file')
+def main(left, right):
+    """
+    Use this script to compare the root files.
+    Usage:
+    python diff-resuts.py --left file1.root --right file2.root
+    """
+    compare_histograms(left, right)
 
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@ def hist_cut(h, namecut=lambda x: True):
     return res
 
 
-def get_my_list(filename="AnalysisResults.root"):
+def extract_data_lists(filename="AnalysisResults.root"):
     print "Processing %s file:" % filename
     mfile = ROOT.TFile(filename)
     ROOT.gROOT.cd()
@@ -90,7 +90,7 @@ def compare_histograms():
     if len(sys.argv) < 3:
         print "Usage compare-bmaps.py file1.root file2.root"
 
-    hists1, hists2 = map(get_my_list, sys.argv[1:])
+    hists1, hists2 = map(extract_data_lists, sys.argv[1:])
     not_reliable = [
         "hCluEXZM3_0",
         "hAsymPtEta",
