@@ -1,5 +1,4 @@
 import ROOT
-import sys
 import click
 
 
