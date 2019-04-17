@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'rstyle=drawtools.style:main',
+            'style=drawtools.style:main',
+            'badmaps=drawtools.badmap:main',
         ],
     },
 )
