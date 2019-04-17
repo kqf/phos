@@ -2,6 +2,7 @@ import sys
 import ROOT
 import json
 import pprint
+import click
 
 ROOT.TH1.AddDirectory(False)
 
@@ -316,11 +317,15 @@ class MultipleStyler(SingleStyler):
             sm.Draw(sm.option)
 
 
-def main():
-    assert len(sys.argv) == 2, "Usage: style.py rules.json"
-    s = Styler(sys.argv[1])
-    s.draw()
-
-
-if __name__ == '__main__':
-    main()
+@click.command()
+@click.option('--config', '-c',
+              type=click.Path(exists=True),
+              help='Path to the config file',
+              required=True)
+def main(config):
+    """
+    Draw plots according to predefined rules. Usage:
+    rstyle --config style.json
+    Where style.json contains the rules and the paths to the data
+    """
+    s = Styler(config).draw()
