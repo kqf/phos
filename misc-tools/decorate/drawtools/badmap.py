@@ -1,5 +1,6 @@
-import sys
+import click
 import ROOT
+
 
 def badmap(hists, canvas=None, scale=5):
     if not canvas:

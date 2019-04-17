@@ -1,6 +1,18 @@
+import click
 import ROOT
-import sys
 from drawtools.badmap import badmap
+
+NOT_RELIABLE = [
+    "hCluEXZM3_0",
+    "hAsymPtEta",
+    "hAsymPtPi0M2",
+    "hAsymPtPi0M23",
+    "hMassPtCA10_both",
+    "hMassPtCA07_both",
+    "hMassPtM1",
+    "hMassPtM23",
+    "hMassPtN6"
+]
 
 
 def warning(message):
@@ -50,18 +62,18 @@ def find_similar_in(lst, ref):
 
 
 def compare_visually(hist1, hist2):
-    c1 = ROOT.TCanvas("c1", "test",
-                      3 * hist1.GetNbinsX() * 8, hist1.GetNbinsY() * 8)
-    c1.Divide(3, 1)
-    c1.cd(1)
+    canvas = ROOT.TCanvas("c1", "test",
+                          3 * hist1.GetNbinsX() * 8, hist1.GetNbinsY() * 8)
+    canvas.Divide(3, 1)
+    canvas.cd(1)
 
     hist1.Draw("colz")
 
-    c1.cd(2)
+    canvas.cd(2)
     hist2.Draw("colz")
     hist2.SetTitle("Original " + hist2.GetTitle())
 
-    c1.cd(3)
+    canvas.cd(3)
     hist = hist1.Clone("diff")
     hist.SetTitle(hist1.GetTitle())
     hist.Add(hist2, -1)
@@ -83,31 +95,19 @@ def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_visually):
     badmap(diffs)
 
 
-def compare_histograms():
+@click.command()
+@click.option('--file1',
+              type=click.Path(exists=True),
+              help='Path to the first .root file',
+              required=True)
+@click.option('--file2',
+              type=click.Path(exists=True),
+              help='Path to the second .root file',
+              required=True)
+def main(file1, file2):
     ROOT.gROOT.cd()
     ROOT.gStyle.SetOptStat(False)
 
-    if len(sys.argv) < 3:
-        print "Usage compare-bmaps.py file1.root file2.root"
-
-    hists1, hists2 = map(extract_data_lists, sys.argv[1:])
-    not_reliable = [
-        "hCluEXZM3_0",
-        "hAsymPtEta",
-        "hAsymPtPi0M2",
-        "hAsymPtPi0M23",
-        "hMassPtCA10_both",
-        "hMassPtCA07_both",
-        "hMassPtM1",
-        "hMassPtM23",
-        "hMassPtN6"
-    ]
-    compare_lists_of_histograms(hists1, hists2, not_reliable, compare_visually)
-
-
-def main():
-    compare_histograms()
-
-
-if __name__ == "__main__":
-    main()
+    hists1 = extract_data_lists(file1)
+    hists2 = extract_data_lists(file2)
+    compare_lists_of_histograms(hists1, hists2, NOT_RELIABLE, compare_visually)
