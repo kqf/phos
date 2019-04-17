@@ -1,6 +1,8 @@
 import click
 import ROOT
+
 from drawtools.badmap import badmap
+from drawtools.utils import extract_data_lists, draw_and_save, find_similar_in
 
 NOT_RELIABLE = [
     "hCluEXZM3_0",
@@ -13,52 +15,6 @@ NOT_RELIABLE = [
     "hMassPtM23",
     "hMassPtN6"
 ]
-
-
-def warning(message):
-    return "Warning: {}".format(message)
-
-
-def draw_and_save(name, draw=False, save=True):
-    canvas = ROOT.gROOT.FindObject("c1")
-    if not canvas:
-        return
-    canvas.Update()
-    if save:
-        canvas.SaveAs(name + ".png")
-    canvas.Connect("Closed()", "TApplication",
-                   ROOT.gApplication, "Terminate()")
-    if draw:  # raw_input("Enter some data ...")
-        ROOT.gApplication.Run(True)
-
-
-def hist_cut(h, namecut=lambda x: True):
-    res = namecut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
-    if not res:
-        print "Warning: Empty histogram found: ", h.GetName()
-    return res
-
-
-def extract_data_lists(filename="AnalysisResults.root"):
-    print "Processing %s file:" % filename
-    mfile = ROOT.TFile(filename)
-    ROOT.gROOT.cd()
-    mlist = [key.ReadObj().Clone() for key in mfile.GetListOfKeys()]
-    hists = [h for h in mlist if hist_cut(h)]  # Don"t take empty histograms
-    return hists
-
-
-def find_similar_in(lst, ref):
-    candidates = [h for h in lst if h.GetName() == ref.GetName()]
-    if not candidates:
-        msg = "Warning: There is no such histogram {}"
-        msg += " in second file or it's empty"
-        print msg.format(ref.GetName())
-        return None
-    if len(candidates) > 1:
-        msg = "Warning: you have multiple histograms with the same name!!! Act!!"  # noqa
-        print
-    return candidates[0]
 
 
 def compare_visually(hist1, hist2):
@@ -78,7 +34,7 @@ def compare_visually(hist1, hist2):
     hist.SetTitle(hist1.GetTitle())
     hist.Add(hist2, -1)
     hist.Draw("colz")
-    # draw_and_save(hist1.GetName(), True, True)
+    draw_and_save(hist1.GetName(), True, True)
     return hist
 
 

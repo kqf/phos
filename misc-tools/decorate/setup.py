@@ -8,6 +8,7 @@ setup(
         'console_scripts': [
             'style=drawtools.style:main',
             'badmaps=drawtools.badmap:main',
+            "fdiff=drawtools.filediff:main"
         ],
     },
 )
