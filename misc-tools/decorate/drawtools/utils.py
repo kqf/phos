@@ -6,7 +6,7 @@ def error(s):
 
 
 def warning(message):
-    return "Warning: {}".format(message)
+    print "Warning  {}".format(message)
 
 
 def draw_and_save(name, draw=False, save=True):
@@ -25,7 +25,7 @@ def draw_and_save(name, draw=False, save=True):
 def hist_cut(h, namecut=lambda x: True):
     res = namecut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
     if not res:
-        print "Warning: Empty histogram found: {}".format(h.GetName())
+        warning("Empty histogram found: {}".format(h.GetName()))
     return res
 
 
@@ -46,11 +46,9 @@ def extract_data_lists(filename='AnalysisResults.root'):
 def find_similar_in(lst, ref):
     candidates = [h for h in lst if h.GetName() == ref.GetName()]
     if not candidates:
-        print 'Warning: There is no such histogram {} in 2 file'.format(
-            ref.GetName()
-        )
+        warning('No such histogram {} in 2 file'.format(ref.GetName()))
         return None
 
     if len(candidates) > 1:
-        print 'Warning: you have multiple histograms with the same name!!!'
+        warning('you have multiple histograms with the same name!!!')
     return candidates[0]

@@ -1,4 +1,3 @@
-import sys
 import ROOT
 import json
 import pprint
@@ -328,4 +327,4 @@ def main(config):
     rstyle --config style.json
     Where style.json contains the rules and the paths to the data
     """
-    s = Styler(config).draw()
+    Styler(config).draw()
