@@ -1,6 +1,6 @@
 import click
-from drawtools.utils import draw_and_save, warning, error, find_similar_in
-from drawtools.utils import extract_selection
+from drawtools.utils import draw_and_save, error, find_similar_in
+from drawtools.utils import extract_selection, compare_chi
 
 
 def compare_visually(hist1, hist2):
@@ -11,14 +11,6 @@ def compare_visually(hist1, hist2):
     hist1.Draw()
     hist2.Draw("same")
     draw_and_save(hist1.GetName(), True, True)
-
-
-def compare_chi(hist1, hist2, rel_tol=1e-09):
-    percentile = hist1.Chi2Test(hist2)
-    if abs(1 - percentile) <= rel_tol:
-        return ""
-    message = "Rate of change of {} is {}".format(hist1.GetName(), percentile)
-    warning(message)
 
 
 class Comparator(object):
@@ -65,7 +57,3 @@ def main(first, second, selection):
     not_reliable = [""]
     diff = Comparator(not_reliable)
     diff.compare_files(first, second, selection, compare_chi)
-
-
-if __name__ == "__main__":
-    main()

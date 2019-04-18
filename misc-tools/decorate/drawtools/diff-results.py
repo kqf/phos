@@ -1,18 +1,7 @@
 import ROOT
 import click
 from drawtools.utils import extract_data_lists, draw_and_save, find_similar_in
-from drawtools.utils import error
-
-
-def isclose(a, b, rel_tol=1e-09):
-    return abs(a - b) <= rel_tol
-
-
-def compare_chi(hist1, hist2):
-    percentile = hist1.Chi2Test(hist2)
-    if isclose(1., percentile):
-        return  # everything is fine
-    print 'Rate of change of {} is {}'.format(hist1.GetName(), percentile)
+from drawtools.utils import error, compare_chi
 
 
 def compare_bin_by_bin(hist1, hist2):

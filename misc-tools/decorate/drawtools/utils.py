@@ -67,3 +67,11 @@ def extract_selection(filename="AnalysisResults.root",
         return res
 
     return [h for h in mlist if hist_cut(h)]
+
+
+def compare_chi(hist1, hist2, rel_tol=1e-09):
+    percentile = hist1.Chi2Test(hist2)
+    if abs(1 - percentile) <= rel_tol:
+        return
+    message = "Rate of change of {} is {}".format(hist1.GetName(), percentile)
+    warning(message)
