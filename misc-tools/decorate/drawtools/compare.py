@@ -13,28 +13,24 @@ def compare_visually(hist1, hist2):
     draw_and_save(hist1.GetName(), True, True)
 
 
-class Comparator(object):
-    def __init__(self, ignore):
-        super(Comparator, self).__init__()
-        self.ignore = ignore
+def compare_lists_of_histograms(l1, l2, ignore, compare=compare_chi):
+    # NB: Don't raise any assertions/exceptions, as it's expected to happen
+    if len(l1) != len(l2):
+        error("files have different size")
 
-    def compare_lists_of_histograms(self, l1, l2, compare=compare_chi):
-        # NB: Don't raise any assertions/exceptions, as it's expected to happen
-        if len(l1) != len(l2):
-            error("files have different size")
+    for h in l1:
+        candidate = find_similar_in(l2, h)
 
-        for h in l1:
-            candidate = find_similar_in(l2, h)
+        if (not candidate) or candidate.GetName() in ignore:
+            continue
+        compare(h, candidate)
+    print "That's it!! The comparison is over."
 
-            if (not candidate) or candidate.GetName() in self.ignore:
-                continue
-            compare(h, candidate)
-        print "That's it!! The comparison is over."
 
-    def compare_files(self, file1, file2, selection, comparator):
-        hists1 = extract_selection(file1, selection)
-        hists2 = extract_selection(file2, selection)
-        self.compare_lists_of_histograms(hists1, hists2, comparator)
+def compare_files(file1, file2, selection, ignore, comparator):
+    hists1 = extract_selection(file1, selection)
+    hists2 = extract_selection(file2, selection)
+    compare_lists_of_histograms(hists1, hists2, ignore, comparator)
 
 
 @click.command()
@@ -55,5 +51,4 @@ def main(first, second, selection):
     python diff-resuts.py --first file1.root --second file2.root -selection SelectionName
     """  # noqa
     not_reliable = [""]
-    diff = Comparator(not_reliable)
-    diff.compare_files(first, second, selection, compare_chi)
+    compare_files(first, second, selection, not_reliable, compare_chi)
