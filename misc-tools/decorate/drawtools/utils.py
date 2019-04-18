@@ -1,12 +1,12 @@
 import ROOT
 
 
-def error(s):
-    print s
+def error(message):
+    print "Warning  {}".format(message)
 
 
 def warning(message):
-    print "Warning  {}".format(message)
+    print "Warning: {}".format(message)
 
 
 def draw_and_save(name, draw=False, save=True):
@@ -16,14 +16,14 @@ def draw_and_save(name, draw=False, save=True):
     canvas.Update()
     if save:
         canvas.SaveAs(name + '.png')
-    canvas.Connect("Closed()", "TApplication",
-                   ROOT.gApplication, "Terminate()")
+    canvas.Cfind_similar_inonnect("Closed()", "TApplication",
+                                  ROOT.gApplication, "Terminate()")
     if draw:  # raw_input('Enter some data ...')
         ROOT.gApplication.Run(True)
 
 
-def hist_cut(h, namecut=lambda x: True):
-    res = namecut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
+def hist_cut(h, name_cut=lambda x: True):
+    res = name_cut(h.GetName()) and h.GetEntries() > 0 and h.Integral() > 0
     if not res:
         warning("Empty histogram found: {}".format(h.GetName()))
     return res
@@ -52,3 +52,18 @@ def find_similar_in(lst, ref):
     if len(candidates) > 1:
         warning('you have multiple histograms with the same name!!!')
     return candidates[0]
+
+
+def extract_selection(filename="AnalysisResults.root",
+                      selection="PhysTender"):
+    print "Processing  file:".format(filename)
+    mfile = ROOT.TFile(filename)
+    mlist = mfile.Get(selection)
+
+    def hist_cut(h):
+        res = h.GetEntries() > 0 and h.Integral() > 0
+        if not res:
+            warning("Empty histogram found: {}".format(h.GetName()))
+        return res
+
+    return [h for h in mlist if hist_cut(h)]
