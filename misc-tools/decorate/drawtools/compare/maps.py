@@ -20,9 +20,9 @@ def badmap(hists, canvas=None, scale=5):
 
 
 @click.command()
-@click.option('--file', '-c',
+@click.option("--file", "-c",
               type=click.Path(exists=True),
-              help='Path to the .root file',
+              help="Path to the .root file",
               required=True)
 def main(file):
     infile = ROOT.TFile(file)

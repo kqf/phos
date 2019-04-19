@@ -5,10 +5,12 @@ setup(
     version="0.0.1",
     packages=find_packages(),
     entry_points={
-        'console_scripts': [
-            'style=drawtools.style:main',
-            'badmaps=drawtools.badmap:main',
-            "fdiff=drawtools.filediff:main"
+        "console_scripts": [
+            "style=drawtools.style:main",
+            "badmaps=drawtools.compare.maps:main",
+            "correlation=drawtools.compare.correlation:main",
+            "chi2=drawtools.compare.chi2:main",
+            "cbins=drawtools.compare.bins:main",
         ],
     },
 )

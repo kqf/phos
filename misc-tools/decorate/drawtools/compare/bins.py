@@ -8,24 +8,24 @@ def compare_bin_by_bin(hist1, hist2):
     i1, i2 = hist1.Integral(), hist2.Integral()
     if int(i1 - i2) != 0:
         return error(
-            'The histograms {} are different. Int1 - Int2 = {}'.format(
+            "The histograms {} are different. Int1 - Int2 = {}".format(
                 hist1.GetName(), str(i1 - i2)))
 
     def f(x):
         return [x.GetBinContent(i + 1) for i in range(x.GetNbinsX())]
     if not f(hist1) == [i for i in f(hist2)]:
-        error('Some bins are different in ' + hist1.GetName())
-    print 'Histograms are'.format(hist1.GetName())
+        error("Some bins are different in " + hist1.GetName())
+    print "Histograms are".format(hist1.GetName())
 
 
 @click.command()
-@click.option('--left', '-l',
+@click.option("--left", "-l",
               type=click.Path(exists=True),
-              help='Path to the first file',
+              help="Path to the first file",
               required=True)
-@click.option('--right', '-r',
+@click.option("--right", "-r",
               type=click.Path(exists=True),
-              help='Path to the second file')
+              help="Path to the second file")
 def main(left, right):
     """
     Use this script to compare the root files.
