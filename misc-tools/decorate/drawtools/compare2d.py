@@ -2,7 +2,8 @@ import click
 import ROOT
 
 from drawtools.badmap import badmap
-from drawtools.utils import extract_data_lists, draw_and_save, find_similar_in
+from drawtools.utils import compare_lists_of_histograms, draw_and_save
+from drawtools.utils import extract_data_lists
 
 NOT_RELIABLE = [
     "hCluEXZM3_0",
@@ -17,12 +18,12 @@ NOT_RELIABLE = [
 ]
 
 
-def compare_visually(hist1, hist2):
-    canvas = ROOT.TCanvas("c1", "test",
-                          3 * hist1.GetNbinsX() * 8, hist1.GetNbinsY() * 8)
+def compare_visually(hist1, hist2, scale=8, aspect_ratio=3):
+    canvas = ROOT.TCanvas("c1", "canvas",
+                          hist1.GetNbinsX() * scale * aspect_ratio,
+                          hist1.GetNbinsY() * scale)
     canvas.Divide(3, 1)
     canvas.cd(1)
-
     hist1.Draw("colz")
 
     canvas.cd(2)
@@ -36,19 +37,6 @@ def compare_visually(hist1, hist2):
     hist.Draw("colz")
     draw_and_save(hist1.GetName(), True, True)
     return hist
-
-
-def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_visually):
-    if len(l1) != len(l2):
-        print "Warning files have different size"
-
-    diffs = []
-    for h in l1:
-        candidate = find_similar_in(l2, h)
-        if not candidate or candidate.GetName() in ignore:
-            continue
-        diffs.append(compare(h, candidate))
-    badmap(diffs)
 
 
 @click.command()
@@ -66,4 +54,7 @@ def main(file1, file2):
 
     hists1 = extract_data_lists(file1)
     hists2 = extract_data_lists(file2)
-    compare_lists_of_histograms(hists1, hists2, NOT_RELIABLE, compare_visually)
+    diff = compare_lists_of_histograms(
+        hists1, hists2,
+        NOT_RELIABLE, compare_visually)
+    badmap(diff)

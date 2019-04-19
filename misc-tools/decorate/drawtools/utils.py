@@ -84,14 +84,17 @@ def fsum(lst):
 def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_chi):
     if len(l1) != len(l2):
         print 'Warning files have different shape'
+
     if fsum(l1) != fsum(l2):
         print 'Total entries in the the lists: {} {}'.format(
             fsum(l1), fsum(l2))
 
+    diffs = []
     for h in l1:
         candidate = find_similar_in(l2, h)
         if not candidate or candidate.GetName() in ignore:
             continue
-        compare(h, candidate)
+        diffs.append(compare(h, candidate))
 
     print "That's it!! Your computation is done"
+    return diffs
