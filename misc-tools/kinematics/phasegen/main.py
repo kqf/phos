@@ -1,5 +1,5 @@
 import ROOT
-from phasegen.generators import Analysis
+from phasegen.analysis import Analysis
 from math import pi
 
 

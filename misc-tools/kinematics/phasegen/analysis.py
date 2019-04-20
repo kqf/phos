@@ -1,5 +1,4 @@
 import json
-
 import ROOT
 import tqdm
 from phasegen.generators import EventGeneratorRandomized
@@ -12,7 +11,6 @@ class AnalysisOptions(object):
             self.conf = json.load(f)
         self.n_events = self.conf["n_events"]
         self.generator = self.conf["generator"]
-        self.type = EventGeneratorRandomized
 
         # Setup the momentum generation function
         momentum = self.conf["momentum_distribution"]
@@ -20,12 +18,15 @@ class AnalysisOptions(object):
         function.SetParameters(*momentum["parameters"])
         self.generator["function"] = function
 
+    def create_generator(self):
+        return EventGeneratorRandomized(**self.generator)
+
 
 class Analysis(object):
     def __init__(self, config=AnalysisOptions()):
         super(Analysis, self).__init__()
         self.n_events = config.n_events
-        self.generator = config.type(**config.generator)
+        self.generator = config.create_generator()
 
     def transform(self, selections):
         for _ in tqdm.trange(self.n_events):

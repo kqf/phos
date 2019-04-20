@@ -1,4 +1,5 @@
 .PHONY: all
 
-all: *.py generator/*.py
-	python .
+all:
+	@which generate > /dev/null || pip install -e .
+	generate

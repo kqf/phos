@@ -27,7 +27,7 @@ class EventGenerator(object):
         return ROOT.TLorentzVector(0., 0., p, energy)
 
 
-class EventGeneratorRandomized(object):
+class EventGeneratorRandomized(EventGenerator):
     def _generate_original(self):
         p = self.function.GetRandom()
         mass = np.random.normal(self.original_mass, 0.01)
