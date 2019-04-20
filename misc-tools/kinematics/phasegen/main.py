@@ -1,6 +1,6 @@
 import ROOT
-from generator.generator import Analysis
-from math import pi 
+from phasegen.generators import Analysis
+from math import pi
 
 
 class AngleSelection(object):

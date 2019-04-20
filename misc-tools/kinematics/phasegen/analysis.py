@@ -2,7 +2,7 @@ import json
 
 import ROOT
 import tqdm
-from generator.generator import EventGeneratorRandomized
+from phasegen.generators import EventGeneratorRandomized
 
 
 class AnalysisOptions(object):
