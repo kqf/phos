@@ -1,8 +1,4 @@
-import sys
 import ROOT
-
-# Usage
-# python flatten.py ./path/to/file "Phys/MassPt"
 
 
 def unlist(filename, dirname, histname):
@@ -16,12 +12,3 @@ def unlist(filename, dirname, histname):
     ofile = ROOT.TFile("flattened.root", "update")
     ohist.Write()
     ofile.Close()
-
-
-def main():
-    filename, path = sys.argv[1:]
-    unlist(filename, *path.split("/"))
-
-
-if __name__ == '__main__':
-    main()
