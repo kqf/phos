@@ -32,11 +32,12 @@ class AngleSelection(object):
 
 
 def main():
-    angle_distribution = AngleSelection()
-    Analysis().transform(
-        [angle_distribution]
-    )
-    angle_distribution.write()
+    selections = Analysis().transform([
+        AngleSelection()
+    ])
+
+    for selection in selections:
+        selection.write()
 
 
 if __name__ == '__main__':
