@@ -64,6 +64,9 @@ sftp-config.json
 .pytest_cache
 .python-version
 *.egg-*
+.hypothesis
+.coverage
+
 
 # ROOT6 object files
 *.pcm
