@@ -33,3 +33,4 @@ class Analysis(object):
             particles = self.generator.event()
             for selection in selections:
                 selection.transform(particles)
+        return selections
