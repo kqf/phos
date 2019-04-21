@@ -4,9 +4,9 @@ import tqdm
 from phasegen.generators import EventGeneratorRandomized
 
 
-class AnalysisOptions(object):
+class AnalysisBuilder(object):
     def __init__(self, cfile="config/angle-analysis.json"):
-        super(AnalysisOptions, self).__init__()
+        super(AnalysisBuilder, self).__init__()
         with open(cfile) as f:
             self.conf = json.load(f)
         self.n_events = self.conf["n_events"]
@@ -23,7 +23,7 @@ class AnalysisOptions(object):
 
 
 class Analysis(object):
-    def __init__(self, config=AnalysisOptions()):
+    def __init__(self, config=AnalysisBuilder()):
         super(Analysis, self).__init__()
         self.n_events = config.n_events
         self.generator = config.create_generator()
