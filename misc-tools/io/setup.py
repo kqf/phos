@@ -6,8 +6,8 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'unlist=phosio.main:munlist',
-            'remove2dir=phosio.main:mremove2dir',
+            'unlist=phos.main:munlist',
+            'remove2dir=phos.main:mremove2dir',
         ],
     },
 )
