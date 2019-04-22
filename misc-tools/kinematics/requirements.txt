@@ -1,0 +1,5 @@
+setuptools
+tqdm
+numpy
+pytest
+pytest-cov
