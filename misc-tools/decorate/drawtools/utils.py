@@ -16,8 +16,8 @@ def draw_and_save(name, draw=False, save=True):
     canvas.Update()
     if save:
         canvas.SaveAs(name + '.png')
-    canvas.Cfind_similar_inonnect("Closed()", "TApplication",
-                                  ROOT.gApplication, "Terminate()")
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
     if draw:  # raw_input('Enter some data ...')
         ROOT.gApplication.Run(True)
 
