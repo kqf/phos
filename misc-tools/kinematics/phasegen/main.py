@@ -1,5 +1,5 @@
 import ROOT
-from phasegen.analysis import Analysis
+from phasegen.analysis import Analysis, root_file
 from math import pi
 
 
@@ -24,11 +24,10 @@ class AngleSelection(object):
         self.original.Fill(original.P())
 
     def write(self):
-        ofile = ROOT.TFile(self.ofile, "recreate")
-        self.angle.Write()
-        self.angle_p.Write()
-        self.original.Write()
-        ofile.Close()
+        with root_file(self.ofile):
+            self.angle.Write()
+            self.angle_p.Write()
+            self.original.Write()
 
 
 def main():

@@ -1,7 +1,18 @@
+from contextlib import contextmanager
+
 import json
 import ROOT
 import tqdm
 from phasegen.generators import EventGeneratorRandomized
+
+
+@contextmanager
+def root_file(ofile):
+    ofile = ROOT.TFile(ofile, "recreate")
+    try:
+        yield ofile
+    finally:
+        ofile.Close()
 
 
 class AnalysisBuilder(object):

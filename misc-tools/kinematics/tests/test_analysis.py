@@ -1,6 +1,7 @@
 import ROOT
 
 from phasegen.analysis import Analysis
+from phasegen.analysis import root_file
 
 
 class SimpleAnalysis(object):
@@ -14,9 +15,8 @@ class SimpleAnalysis(object):
         self.hist.Fill(original.P())
 
     def write(self):
-        ofile = ROOT.TFile(self.ofile, "recreate")
-        self.hist.Write()
-        ofile.Close()
+        with root_file(self.ofile):
+            self.hist.Write()
 
 
 def test_analysis(config):
