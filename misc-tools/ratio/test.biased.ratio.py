@@ -1,11 +1,27 @@
+from contextlib import contextmanager
 import ROOT
 import numpy as np
+
+
+@contextmanager
+def canvas(scale=6):
+    canvas = ROOT.TCanvas("canvas", "canvas", 128 * scale, 96 * scale)
+    try:
+        yield canvas
+    finally:
+        canvas.Update()
+        raw_input("Press enter...")
 
 
 def data(a, b, size=1e6, ratio=0.9):
     data = np.random.uniform(a, b, size=int(size))
     sampled = np.random.choice(data, int(ratio * size), False)
     return data, sampled
+
+
+def asymm_ratio(numerator, denominator):
+    ratio = ROOT.TGraphAsymmErrors(numerator, denominator)
+    return ratio
 
 
 def main():
@@ -18,17 +34,19 @@ def main():
 
     sampled = original.Clone()
     sampled.SetTitle("sampled")
-    sampled.Sumw2()
     sampled.Reset()
+    sampled.Sumw2()
     map(sampled.Fill, subsample)
-    # sampled.Draw("same")
 
-    ratio = ROOT.TGraphAsymmErrors(sampled, original)
-    ratio.Draw()
+    with canvas() as cnv:
+        cnv.Divide(1, 2)
+        cnv.cd(1)
+        original.Draw()
+        sampled.Draw("same")
 
-    canvas = ROOT.gROOT.FindObject("c1")
-    canvas.Update()
-    raw_input("Press enter.")
+        cnv.cd(2)
+        ratio = asymm_ratio(sampled, original)
+        ratio.Draw()
 
 
 if __name__ == "__main__":
