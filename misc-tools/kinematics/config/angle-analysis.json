@@ -1,4 +1,5 @@
 {
+    "generator_type": "randomized",
     "generator": {
         "decay_masses": [
             0,

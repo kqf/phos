@@ -2,7 +2,7 @@ import ROOT
 
 
 def error(message):
-    print "Warning  {}".format(message)
+    print "Error:  {}".format(message)
 
 
 def warning(message):
