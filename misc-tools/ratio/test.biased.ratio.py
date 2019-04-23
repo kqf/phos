@@ -3,6 +3,14 @@ import ROOT
 import numpy as np
 
 
+def std_ratio(a, b, option="B"):
+    ratio = a.Clone('ratio' + a.GetName())
+    ratio.Divide(a, b, 1, 1, option)
+    if not ratio.GetSumw2N():
+        ratio.Sumw2()
+    return ratio
+
+
 @contextmanager
 def canvas(scale=6):
     canvas = ROOT.TCanvas("canvas", "canvas", 128 * scale, 96 * scale)
@@ -45,8 +53,13 @@ def main():
         sampled.Draw("same")
 
         cnv.cd(2)
-        ratio = asymm_ratio(sampled, original)
-        ratio.Draw()
+        ratio_asymm = asymm_ratio(sampled, original)
+        ratio_asymm.SetLineColor(ROOT.kRed + 1)
+        ratio_asymm.Draw()
+
+        ratio = std_ratio(sampled, original)
+        ratio.SetLineColor(ROOT.kBlue + 1)
+        ratio.Draw("same")
 
 
 if __name__ == "__main__":
