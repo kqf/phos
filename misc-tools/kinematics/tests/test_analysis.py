@@ -1,6 +1,7 @@
+import pytest
 import ROOT
 
-from phasegen.analysis import Analysis
+from phasegen.analysis import Analysis, AnalysisBuilder
 from phasegen.analysis import root_file
 
 
@@ -19,8 +20,15 @@ class SimpleAnalysis(object):
             self.hist.Write()
 
 
-def test_analysis(config):
-    selections = Analysis().transform([
+@pytest.mark.parametrize("generator_type", [
+    "normal",
+    "randomized"
+])
+def test_analysis(generator_type, config):
+    builder = AnalysisBuilder(config)
+    builder.generator_type = generator_type
+
+    selections = Analysis(builder).transform([
         SimpleAnalysis()
     ])
 
