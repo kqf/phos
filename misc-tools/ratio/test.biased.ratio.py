@@ -1,3 +1,4 @@
+from __future__ import print_function
 from contextlib import contextmanager
 import ROOT
 import numpy as np
@@ -29,7 +30,31 @@ def data(a, b, size=1e6, ratio=0.9):
 
 def asymm_ratio(numerator, denominator):
     ratio = ROOT.TGraphAsymmErrors(numerator, denominator)
-    return ratio
+    edges, contents = [], []
+    x, y = ROOT.Double(0), ROOT.Double(0)
+    for i in range(ratio.GetN()):
+        ratio.GetPoint(i, x, y)
+        print(x, y)
+        xe = ratio.GetErrorX(i)
+        ye = ratio.GetErrorY(i)
+        edges.append(x - xe)
+        contents.append([y, ye])
+
+    edges.append(x + xe)
+
+    hist = ROOT.TH1F(
+        "asym_ratio_{}".format(numerator.GetName()),
+        numerator.GetTitle(),
+        len(edges) - 1,
+        np.array(edges)
+    )
+    # hist.Sumw2()
+    print(contents)
+    for i, (y, y_err) in enumerate(contents):
+        hist.SetBinContent(i + 1, y)
+        hist.SetBinError(i + 1, y_err ** 0.5)
+
+    return ratio, hist
 
 
 def main():
@@ -53,13 +78,14 @@ def main():
         sampled.Draw("same")
 
         cnv.cd(2)
-        ratio_asymm = asymm_ratio(sampled, original)
+        ratio_asymm, hist_asymm = asymm_ratio(sampled, original)
         ratio_asymm.SetLineColor(ROOT.kRed + 1)
         ratio_asymm.Draw()
+        hist_asymm.Draw("same")
 
-        ratio = std_ratio(sampled, original)
-        ratio.SetLineColor(ROOT.kBlue + 1)
-        ratio.Draw("same")
+        # ratio = std_ratio(sampled, original)
+        # ratio.SetLineColor(ROOT.kBlue + 1)
+        # ratio.Draw("same")
 
 
 if __name__ == "__main__":
