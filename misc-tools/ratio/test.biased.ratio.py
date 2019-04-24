@@ -13,7 +13,7 @@ def std_ratio(a, b, option="B"):
 
 
 @contextmanager
-def canvas(scale=6):
+def draw_canvas(scale=6):
     canvas = ROOT.TCanvas("canvas", "canvas", 128 * scale, 96 * scale)
     try:
         yield canvas
@@ -69,20 +69,25 @@ def main():
     sampled.Sumw2()
     map(sampled.Fill, subsample)
 
-    with canvas() as cnv:
-        cnv.Divide(1, 2)
-        cnv.cd(1)
+    with draw_canvas() as canvas:
+        canvas.Divide(1, 2)
+
+        canvas.cd(1)
         original.Draw()
         sampled.Draw("same")
 
-        cnv.cd(2)
-        ratio_asymm = asymm_ratio(sampled, original)
-        ratio_asymm.SetLineColor(ROOT.kRed + 1)
-        ratio_asymm.Draw()
+        canvas.cd(2)
+        ratio_simple = std_ratio(sampled, original, option="")
+        ratio_simple.SetLineColor(ROOT.kGreen + 1)
+        ratio_simple.Draw("same")
 
         ratio = std_ratio(sampled, original)
         ratio.SetLineColor(ROOT.kBlue + 1)
         ratio.Draw("same")
+
+        ratio_asymm = asymm_ratio(sampled, original)
+        ratio_asymm.SetLineColor(ROOT.kRed + 1)
+        ratio_asymm.Draw("same")
 
 
 if __name__ == "__main__":
