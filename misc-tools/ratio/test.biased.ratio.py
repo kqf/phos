@@ -34,11 +34,10 @@ def asymm_ratio(numerator, denominator):
     x, y = ROOT.Double(0), ROOT.Double(0)
     for i in range(ratio.GetN()):
         ratio.GetPoint(i, x, y)
-        print(x, y)
         xe = ratio.GetErrorX(i)
         ye = ratio.GetErrorY(i)
         edges.append(x - xe)
-        contents.append([y, ye])
+        contents.append([float(y), float(ye)])
 
     edges.append(x + xe)
 
@@ -48,13 +47,12 @@ def asymm_ratio(numerator, denominator):
         len(edges) - 1,
         np.array(edges)
     )
-    # hist.Sumw2()
-    print(contents)
+    hist.Sumw2()
     for i, (y, y_err) in enumerate(contents):
         hist.SetBinContent(i + 1, y)
-        hist.SetBinError(i + 1, y_err ** 0.5)
+        hist.SetBinError(i + 1, y_err)
 
-    return ratio, hist
+    return hist
 
 
 def main():
@@ -78,14 +76,13 @@ def main():
         sampled.Draw("same")
 
         cnv.cd(2)
-        ratio_asymm, hist_asymm = asymm_ratio(sampled, original)
+        ratio_asymm = asymm_ratio(sampled, original)
         ratio_asymm.SetLineColor(ROOT.kRed + 1)
         ratio_asymm.Draw()
-        hist_asymm.Draw("same")
 
-        # ratio = std_ratio(sampled, original)
-        # ratio.SetLineColor(ROOT.kBlue + 1)
-        # ratio.Draw("same")
+        ratio = std_ratio(sampled, original)
+        ratio.SetLineColor(ROOT.kBlue + 1)
+        ratio.Draw("same")
 
 
 if __name__ == "__main__":
