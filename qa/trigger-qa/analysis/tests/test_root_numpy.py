@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import ROOT
 import pytest
 from trigger.utils import hist2array
@@ -27,7 +29,7 @@ def test_hist2array(hist):
     try:
         import root_numpy as rnp
     except BaseException as e:
-        print e
+        print(e)
         return  # Skip checks for the machines that don't support root_numpy
 
     np.testing.assert_almost_equal(rnp.hist2array(hist), hist2array(hist))

@@ -12,6 +12,9 @@ INDEX_COLOR = {
 
 
 def decorate_hist(hist):
+    hist.SetLineWidth(2)
+    hist.SetMarkerStyle(20)
+    hist.SetMarkerSize(0.5)
     hist.SetTitleOffset(0.3, "Y")
     hist.SetTickLength(0.01, "Y")
     hist.SetLabelSize(0.06, "XY")
