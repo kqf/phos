@@ -1,13 +1,18 @@
+from contextlib import contextmanager
 import ROOT
 
-FILE = "../../../neutral-meson-spectra/input-data/data/LHC16/corrected/LHC16.root"
+FILE = "../../../neutral-meson-spectra/input-data/data/LHC16/final_nonlinearity_1/LHC16.root"  # noqa
 
 
-def wait(logy=True):
-    canvas = ROOT.gROOT.FindObject("c1")
-    canvas.SetLogy(logy)
-    canvas.Update()
-    raw_input()
+@contextmanager
+def create_canvas(logy=True, scale=5):
+    canvas = ROOT.TCanvas("c1", "c1", 192 * scale, 98 * scale)
+    try:
+        yield canvas
+    finally:
+        canvas.SetLogy(logy)
+        canvas.Update()
+        raw_input()
 
 
 def approximate(mixing):
@@ -26,10 +31,10 @@ def approximate(mixing):
     func.SetParameter(6, 1.46215e+01)
     func.SetParameter(7, -5.66055e+00)
     mixing.Fit(func, "R")
-    mixing.Draw("lego")
-    func.Draw("lego same")
-    print(func.GetChisquare() / func.GetNDF())
-    wait(False)
+    with create_canvas(logy=False):
+        mixing.Draw("lego")
+        func.Draw("lego same")
+        print(func.GetChisquare() / func.GetNDF())
 
 
 def approximate_pt(mixing):
@@ -42,21 +47,22 @@ def approximate_pt(mixing):
     func.SetParameter(5, -5.12771e-01)
     pt = mixing.ProjectionY()
     pt.Fit(func, "R")
-    pt.Draw()
-    wait()
+    with create_canvas():
+        pt.Draw()
 
 
 def approximate_mass(mixing):
     func = ROOT.TF1('mass', "expo(0)", 0.2, 1.5)
     mass = mixing.ProjectionX()
     mass.Fit(func, "R")
-    mass.Draw()
-    wait()
+
+    with create_canvas():
+        mass.Draw()
 
 
 def main():
     infile = ROOT.TFile(FILE)
-    mixing = infile.Get("Phys").FindObject("hMixMassPt")
+    mixing = infile.Get("Phys").FindObject("hMixMassPtSM0")
 
     # approximate_pt(mixing)
     # approximate_mass(mixing)
