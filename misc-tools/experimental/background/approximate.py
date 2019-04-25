@@ -16,12 +16,14 @@ def create_canvas(logy=True, scale=5):
 
 
 def approximate(mixing):
-    func = ROOT.TF2(
-        "func",
-        "([0] * TMath::Exp([1] * x[1])"
-        "+[2] * TMath::Exp([3] * x[1])"
-        "+[4] * TMath::Exp([5] * x[1])) * "
-        "[6] * TMath::Exp([7] * x[0])", 0, 1.5, 4, 20)
+    formula = """
+        [6] * TMath::Exp([7] * x[0] + [8] * x[0] * x[0]) * (
+            [0] * TMath::Exp([1] * x[1])
+          + [2] * TMath::Exp([3] * x[1])
+          + [4] * TMath::Exp([5] * x[1])
+        )
+    """
+    func = ROOT.TF2("func", formula, 0, 1.5, 4, 20)
     func.SetParameter(0, 1.76156e+01)
     func.SetParameter(1, -1.75769e+00)
     func.SetParameter(2, 1.24408e+01)
@@ -30,7 +32,9 @@ def approximate(mixing):
     func.SetParameter(5, -5.12771e-01)
     func.SetParameter(6, 1.46215e+01)
     func.SetParameter(7, -5.66055e+00)
+    func.SetParameter(8, 0)
     mixing.Fit(func, "R")
+
     with create_canvas(logy=False):
         mixing.Draw("lego")
         func.Draw("lego same")
