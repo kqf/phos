@@ -1,6 +1,6 @@
 import ROOT
 
-FILE = "../../neutral-meson-spectra/input-data/data/LHC16/corrected/LHC16.root"
+FILE = "../../../neutral-meson-spectra/input-data/data/LHC16/corrected/LHC16.root"
 
 
 def wait(logy=True):
