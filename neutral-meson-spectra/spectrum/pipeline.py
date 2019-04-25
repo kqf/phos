@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import array
 from collections import defaultdict
 
@@ -87,8 +89,8 @@ class OutputFitter(TransformerBase):
         # Comparator(stop=self.plot).compare(histogram)
         ndf = self.fitf.GetNDF()
         chi2_ndf = self.fitf.GetChisquare() / ndf if ndf else 0.
-        print "The chi2:", chi2_ndf
-        print "The parameters", br.pars(self.fitf)
+        print("The chi2:", chi2_ndf)
+        print("The parameters", br.pars(self.fitf))
         Comparator().compare(histogram)
         return histogram
 

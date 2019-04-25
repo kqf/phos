@@ -142,25 +142,6 @@ def in_range(x, somerange):
     return a < x < b
 
 
-class Cc:
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-
-    @staticmethod
-    def fail(s):
-        return '{0}{1}{2}'.format(Cc.FAIL, s, Cc.ENDC)
-
-    @staticmethod
-    def warning(s):
-        return '{0}{1}{2}'.format(Cc.warning, s, Cc.ENDC)
-
-    @staticmethod
-    def ok(s):
-        return '{0}{1}{2}'.format(Cc.OKGREEN, s, Cc.ENDC)
-
-
 def write(tobject, filename, option="recreate"):
     ofile = ROOT.TFile(filename, option)
     tobject.Write()
