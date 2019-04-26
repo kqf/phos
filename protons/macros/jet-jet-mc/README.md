@@ -5,12 +5,6 @@ These datasets follow a bit different logic.
 It's cruicial to run the code on all the datasets therefore it's better to split steering macros.
 
 
-# TODO: 
-
-- Move all bad maps in all `run.C` to separate directory
-- Fix run.C for Jet-Jet as it doesn't have all necessary selections.
- 
-
 ## Run
 
 ```bash
@@ -44,6 +38,3 @@ make terminate
 # Download, merge and upload back the merged result
 make download
 ```
-
-
-
