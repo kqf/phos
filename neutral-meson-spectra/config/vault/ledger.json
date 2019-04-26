@@ -1,271 +1,262 @@
 {
-	"data": {
-		"latest": {
-			"file": "input-data/data/LHC16/ep_ratio_3/LHC16.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "bf24898339bd2fd790db8d34de83c812c8a3a0bf6984d406771796b85f4142b7",
-			"description": "All corrections; ep_ratio"
-		},
-		"fixed_ep": {
-			"file": "input-data/data/LHC16/ep_ratio_4/LHC16.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "49b35a837331dd7af0f5604030b2501bc922330c5a4cfb0033b9629b1b3f2916",
-			"description": "Fixed ep ratio, all periods are correctly propagated"
-		},
-		"nonlinearity": {
-			"file": "input-data/data/LHC16/final_nonlinearity_1/LHC16.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "c4523e28235e8c5b68c94d67ec7c5236b6b7fe3ded7a60bed36cd745e8fc24ab",
-			"description": "Prodcution with the official nonlinearity"
-		},
-		"acceptance": {
-			"file": "input-data/data/LHC16/acceptance_1/LHC16.root",
-			"default_selection": "Phys0",
-			"pt_range": [0, 20],
-			"hsum": "6c74a54aa0a2b7c907cfb06e639bd133bebe37526a9cc1e22bf790048722d319",
-			"description": "Prodcution with the official nonlinearity"
-		},
-		"stable": {
-			"file": "input-data/data/LHC16/corrected-tof/LHC16.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
-			"description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction"
-		},
-		"isolated": {
-			"file": "input-data/data/LHC16/isolated_3/LHC16-isolated.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "dd3828aad5e9bf8283ce3638c7f54a0c1bfbb60900f16c2eef1edd310de7f4b4",
-			"description": "Merged isolated bunches analysis with updated nonlinearity"
-		},
-		"stable old": {	
-			"file": "input-data/data/LHC16.root",	
-			"default_selection": "PhysOnlyTender",	
-			"pt_range": [0, 20],	
-			"hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",	
-			"description": "Raw data without TOF correction"	
-		},
-		"uncorrected": {	
-			"file": "input-data/data/LHC16/uncorrected/LHC16.root",	
-			"default_selection": "Phys",	
-			"pt_range": [0, 20],	
-			"hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",	
-			"description": "Raw data without TOF correction"	
-		},
-		"LHC17 qa1": {
-			"file": "input-data/data/LHC17/qa1/LHC17.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "816349a7246b6e6d8f348151882d64dc88887fad03331c0a23647464a8e4b7e4",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		}
-	},
-	"pythia8": {
-		"latest": {
-			"file": "input-data/mc/pythia/feeddown/pythia8.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "4bb9f7c32247a54e2a5d96f0f1b0a86f3fa47e9a02b0f76f1e5f952d53adb139",
-			"description": "Feeddown corrected for kaon to pion ratio"
-		},
-		"ep_ratio_3": {
-			"file": "input-data/mc/pythia/ep_ratio_3/pythia8.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "eaeee3cb36c5edac3e1e95eae64fd93f15864e9123d91b088cd5a85b8ff5d1c4",
-			"description": "Add nonlinearity correction for E/p task, all 13 TeV datasets merged"
-		},
-		"ep_ratio_3 LHC16": {
-			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "1699e08a7573cae11fcce65eb87dc5ba6f9bf8af37d8fa7eeae757e2c5d3af10",
-			"description": "Fix nonlinearity correction for E/p task"
-		},
-		"ep_ratio_3 LHC16 extra": {
-			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16_extra.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "8defcd1a0c23ef9c6f7599f7a393c0000ae31467ddac995e31ccbf531040a5a4",
-			"description": "Fix nonlinearity correction for E/p task"
-		},
-		"ep_ratio_3 LHC17": {
-			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC17.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "14a67edb10029ec283faf298eda6ea2383f32433e299597bf333e2b699fafb65",
-			"description": "Fix nonlinearity correction for E/p task"
-		},
-		"ep_ratio_3 LHC18": {
-			"file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC18.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "d9ab151bf400d3cef2eb5defb330bb2172d8d4a71b8931bbe2fb874d19e1bdf7",
-			"description": "Fix nonlinearity correction for E/p task"
-		},
-		"nonlinearity": {
-			"file": "input-data/mc/pythia/final_nonlinearity_1/pythia8.root",
-			"default_selection": "PhysEff",
-			"pt_range": [0, 20],
-			"hsum": "7cc982693581c0161693331712aefc8f3dda2634f8bc2581647a59600ac158cf",
-			"description": "Add MC production with official nonlinearity"
-		},
-		"kaon2pion": {
-			"file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
-			"default_selection": "PionToKaonRatioOnlyTender",
-			"pt_range": [0, 20],
-			"hsum": "b0b8a2935494c7d99d3008e8ff05311bf46b725934b6e3b1f0fc3292d26aac1b",
-			"description": "Pythia8 with all corrections, for feeddown correction"
-		}
-	},
-	"single #pi^{0}":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b1.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [0.0, 8.0],
-			"hsum": "f30ce0bb39d3a081a2b911670f7239daa697103bddafb45df9200263a4fef1c9",
-			"description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b2.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [4.0, 20.0],
-			"hsum": "e2e72541b7d464e4f651d0ebe146a58c0a23220db993dbb9a23d90623576c544",
-			"description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02"
-		}
-	},
-	"single #pi^{0} new calibration":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/newest_calibration_1/LHC17j3b1.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [0.0, 8.0],
-			"hsum": "d150bbf26dd0f02706717457cc864c8b618951c9c788c6cc8d6754e6a5542fec",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/newest_calibration_1/LHC17j3b2.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [4.0, 20.0],
-			"hsum": "2ff6f4bd888b9781f97c13c0e4aa94820f86f804aaa979df33a3c39b76a9b3ff",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		}
-	},
-	"single #pi^{0} acceptance":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b1.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [0.0, 8.0],
-			"hsum": "d2e19911f285e21aeff19ceb2a761f8e37486718b3c77889876a70be6bc5565c",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b2.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [4.0, 20.0],
-			"hsum": "27c576b85da688a96e74726811cd2637948b9cbdaba481abf1681771f0fae389",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		}
-	},
-	"single #pi^{0} nonlinearity scan":
-	{
-		"low": {
-			"file": "input-data/mc/single/pi0/final_nonlinearity_scan_1/LHC17j3b1.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [0.0, 8.0],
-			"hsum": "88ac2818f9cda90d7f6054a958a64f320cf705bab70ec0a55128d622e0a0b3b7",
-			"description": "Nonlinearity scan for the newest nonlinearity"
-		},
-		"high": {
-			"file": "input-data/mc/single/pi0/final_nonlinearity_scan_1/LHC17j3b2.root",
-			"default_selection": "PhysNonlinScan",
-			"pt_range": [4.0, 20.0],
-			"hsum": "fa4fbc6e6ef0d6341134a2448231c090bcffae9c3d5bf62e2c154502ce370de1",
-			"description": "Nonlinearity scan for the newest nonlinearity"
-		}
-	},
-	"single #eta":
-	{
-		"low": {
-			"file": "input-data/mc/single/eta/nonlinearity_asymmetry/LHC17j3c1.root",
-			"default_selection": "PhysEffNoA",
-			"pt_range": [0.0, 10.0],
-			"hsum": "d18fbc1a18b05c3d1b68d61e7d47eaca33bd26363d958dc3f392e483232b979d",
-			"description": "Single #eta simulations with all correctons"
-		},
-		"high": {
-			"file": "input-data/mc/single/eta/nonlinearity_asymmetry/LHC17j3c2.root",
-			"default_selection": "PhysEffNoA",
-			"pt_range": [4.0, 20.0],
-			"hsum": "e12c607f29879222ee6b7fd3d4a64327d9527fd104cfef66ee8a8617f6439e29",
-			"description": "Single #eta simulations with all correctons"
-		}
-	},
-	"single #eta new calibration":
-	{
-		"low": {
-			"file": "input-data/mc/single/eta/newest_calibration_1/LHC17j3c1.root",
-			"default_selection": "PhysEffNoA",
-			"pt_range": [0.0, 10.0],
-			"hsum": "130fbca7e81219efc7e1b725f60cce75a099b3d53009469634a39a11aa3367db",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		},
-		"high": {
-			"file": "input-data/mc/single/eta/newest_calibration_1/LHC17j3c2.root",
-			"default_selection": "PhysEffNoA",
-			"pt_range": [4.0, 20.0],
-			"hsum": "1c19cc4120996f086e5458f79e5e9b0694dd07972a6afc5cbab6a8b577d44744",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		}
-	},
-	"single #eta acceptance":
-	{
-		"low": {
-			"file": "input-data/mc/single/eta/acceptance_1/LHC17j3c1.root",
-			"default_selection": "PhysEffNoA",
-			"pt_range": [0.0, 10.0],
-			"hsum": "554d03c342efa8277f33ad48368069e4000ddeb07255350c1c878199ff4a4293",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		},
-		"high": {
-			"file": "input-data/mc/single/eta/acceptance_1/LHC17j3c2.root",
-			"default_selection": "PhysEffNoA",
-			"pt_range": [4.0, 20.0],
-			"hsum": "0580057c61f67480abf57cc7a256bfeae87f27cb3f3ab71bb813c34af631e40d",
-			"description": "Update calibration, keep old nonlinearity for comparison"
-		}
-	},
-	"debug efficiency":
-	{
-		"low": {
-			"file": "input-data/debug/efficiency/20180331_single_pi0_efficiency_low.root",
-			"default_selection": "",
-			"pt_range": [0.0, 10.0],
-			"hsum": "2eebf53c43a7162ea6069d790ee503b198697eff7f94cf0f6445d5cf3a06a3af",
-			"description": "Single #eta simulations with all correctons"
-		},
-		"high": {
-			"file": "input-data/debug/efficiency/20180331_single_pi0_efficiency_high.root",
-			"default_selection": "",
-			"pt_range": [4.0, 20.0],
-			"hsum": "1b4975bf824aadb0a0305d128a029e1d1817b697b97d7af1bbf1a7791f6ca4fe",
-			"description": "Single #eta simulations with all correctons"
-		}
-	},
-	"kaon2pion":
-	{
-		"latest": {
-			"file": "input-data/data/alice/HIST_pp.13TeV.mb.INEL.PREL_12062017.root",
-			"default_selection": "",
-			"pt_range": [0, 20],
-			"hsum": "b96b7a46cbb1b516318b9197f340085619379d2d18c029bad3ac625da96ea459",
-			"description": "HADRON production measurements (ALICE) preliminary"
-		}
-	}
+    "data": {
+        "LHC17 qa1": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17.root",
+            "hsum": "816349a7246b6e6d8f348151882d64dc88887fad03331c0a23647464a8e4b7e4",
+            "pt_range": [0, 20]
+        },
+        "acceptance": {
+            "default_selection": "Phys0",
+            "description": "Prodcution with the official nonlinearity",
+            "file": "input-data/data/LHC16/acceptance_1/LHC16.root",
+            "hsum": "6c74a54aa0a2b7c907cfb06e639bd133bebe37526a9cc1e22bf790048722d319",
+            "pt_range": [0, 20]
+        },
+        "fixed_ep": {
+            "default_selection": "Phys",
+            "description": "Fixed ep ratio, all periods are correctly propagated",
+            "file": "input-data/data/LHC16/ep_ratio_4/LHC16.root",
+            "hsum": "49b35a837331dd7af0f5604030b2501bc922330c5a4cfb0033b9629b1b3f2916",
+            "pt_range": [0, 20]
+        },
+        "isolated": {
+            "default_selection": "Phys",
+            "description": "Merged isolated bunches analysis with updated nonlinearity",
+            "file": "input-data/data/LHC16/isolated_3/LHC16-isolated.root",
+            "hsum": "dd3828aad5e9bf8283ce3638c7f54a0c1bfbb60900f16c2eef1edd310de7f4b4",
+            "pt_range": [0, 20]
+        },
+        "latest": {
+            "default_selection": "Phys",
+            "description": "All corrections; ep_ratio",
+            "file": "input-data/data/LHC16/ep_ratio_3/LHC16.root",
+            "hsum": "bf24898339bd2fd790db8d34de83c812c8a3a0bf6984d406771796b85f4142b7",
+            "pt_range": [0, 20]
+        },
+        "nonlinearity": {
+            "default_selection": "Phys",
+            "description": "Prodcution with the official nonlinearity",
+            "file": "input-data/data/LHC16/final_nonlinearity_1/LHC16.root",
+            "hsum": "c4523e28235e8c5b68c94d67ec7c5236b6b7fe3ded7a60bed36cd745e8fc24ab",
+            "pt_range": [0, 20]
+        },
+        "stable": {
+            "default_selection": "Phys",
+            "description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction",
+            "file": "input-data/data/LHC16/corrected-tof/LHC16.root",
+            "hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
+            "pt_range": [0, 20]
+        },
+        "stable old": {
+            "default_selection": "PhysOnlyTender",
+            "description": "Raw data without TOF correction",
+            "file": "input-data/data/LHC16.root",
+            "hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",
+            "pt_range": [0, 20]
+        },
+        "uncorrected": {
+            "default_selection": "Phys",
+            "description": "Raw data without TOF correction",
+            "file": "input-data/data/LHC16/uncorrected/LHC16.root",
+            "hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",
+            "pt_range": [0, 20]
+        }
+    },
+    "debug efficiency": {
+        "high": {
+            "default_selection": "",
+            "description": "Single #eta simulations with all correctons",
+            "file": "input-data/debug/efficiency/20180331_single_pi0_efficiency_high.root",
+            "hsum": "1b4975bf824aadb0a0305d128a029e1d1817b697b97d7af1bbf1a7791f6ca4fe",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "",
+            "description": "Single #eta simulations with all correctons",
+            "file": "input-data/debug/efficiency/20180331_single_pi0_efficiency_low.root",
+            "hsum": "2eebf53c43a7162ea6069d790ee503b198697eff7f94cf0f6445d5cf3a06a3af",
+            "pt_range": [0.0, 10.0]
+        }
+    },
+    "kaon2pion": {
+        "latest": {
+            "default_selection": "",
+            "description": "HADRON production measurements (ALICE) preliminary",
+            "file": "input-data/data/alice/HIST_pp.13TeV.mb.INEL.PREL_12062017.root",
+            "hsum": "b96b7a46cbb1b516318b9197f340085619379d2d18c029bad3ac625da96ea459",
+            "pt_range": [0, 20]
+        }
+    },
+    "pythia8": {
+        "ep_ratio_3": {
+            "default_selection": "PhysEff",
+            "description": "Add nonlinearity correction for E/p task, all 13 TeV datasets merged",
+            "file": "input-data/mc/pythia/ep_ratio_3/pythia8.root",
+            "hsum": "eaeee3cb36c5edac3e1e95eae64fd93f15864e9123d91b088cd5a85b8ff5d1c4",
+            "pt_range": [0, 20]
+        },
+        "ep_ratio_3 LHC16": {
+            "default_selection": "PhysEff",
+            "description": "Fix nonlinearity correction for E/p task",
+            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16.root",
+            "hsum": "1699e08a7573cae11fcce65eb87dc5ba6f9bf8af37d8fa7eeae757e2c5d3af10",
+            "pt_range": [0, 20]
+        },
+        "ep_ratio_3 LHC16 extra": {
+            "default_selection": "PhysEff",
+            "description": "Fix nonlinearity correction for E/p task",
+            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16_extra.root",
+            "hsum": "8defcd1a0c23ef9c6f7599f7a393c0000ae31467ddac995e31ccbf531040a5a4",
+            "pt_range": [0, 20]
+        },
+        "ep_ratio_3 LHC17": {
+            "default_selection": "PhysEff",
+            "description": "Fix nonlinearity correction for E/p task",
+            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC17.root",
+            "hsum": "14a67edb10029ec283faf298eda6ea2383f32433e299597bf333e2b699fafb65",
+            "pt_range": [0, 20]
+        },
+        "ep_ratio_3 LHC18": {
+            "default_selection": "PhysEff",
+            "description": "Fix nonlinearity correction for E/p task",
+            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC18.root",
+            "hsum": "d9ab151bf400d3cef2eb5defb330bb2172d8d4a71b8931bbe2fb874d19e1bdf7",
+            "pt_range": [0, 20]
+        },
+        "kaon2pion": {
+            "default_selection": "PionToKaonRatioOnlyTender",
+            "description": "Pythia8 with all corrections, for feeddown correction",
+            "file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
+            "hsum": "b0b8a2935494c7d99d3008e8ff05311bf46b725934b6e3b1f0fc3292d26aac1b",
+            "pt_range": [0, 20]
+        },
+        "latest": {
+            "default_selection": "PhysEff",
+            "description": "Feeddown corrected for kaon to pion ratio",
+            "file": "input-data/mc/pythia/feeddown/pythia8.root",
+            "hsum": "4bb9f7c32247a54e2a5d96f0f1b0a86f3fa47e9a02b0f76f1e5f952d53adb139",
+            "pt_range": [0, 20]
+        },
+        "nonlinearity": {
+            "default_selection": "PhysEff",
+            "description": "Add MC production with official nonlinearity",
+            "file": "input-data/mc/pythia/final_nonlinearity_1/pythia8.root",
+            "hsum": "7cc982693581c0161693331712aefc8f3dda2634f8bc2581647a59600ac158cf",
+            "pt_range": [0, 20]
+        }
+    },
+    "single #eta": {
+        "high": {
+            "default_selection": "PhysEffNoA",
+            "description": "Single #eta simulations with all correctons",
+            "file": "input-data/mc/single/eta/nonlinearity_asymmetry/LHC17j3c2.root",
+            "hsum": "e12c607f29879222ee6b7fd3d4a64327d9527fd104cfef66ee8a8617f6439e29",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysEffNoA",
+            "description": "Single #eta simulations with all correctons",
+            "file": "input-data/mc/single/eta/nonlinearity_asymmetry/LHC17j3c1.root",
+            "hsum": "d18fbc1a18b05c3d1b68d61e7d47eaca33bd26363d958dc3f392e483232b979d",
+            "pt_range": [0.0, 10.0]
+        }
+    },
+    "single #eta acceptance": {
+        "high": {
+            "default_selection": "PhysEffNoA",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/eta/acceptance_1/LHC17j3c2.root",
+            "hsum": "0580057c61f67480abf57cc7a256bfeae87f27cb3f3ab71bb813c34af631e40d",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysEffNoA",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/eta/acceptance_1/LHC17j3c1.root",
+            "hsum": "554d03c342efa8277f33ad48368069e4000ddeb07255350c1c878199ff4a4293",
+            "pt_range": [0.0, 10.0]
+        }
+    },
+    "single #eta new calibration": {
+        "high": {
+            "default_selection": "PhysEffNoA",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/eta/newest_calibration_1/LHC17j3c2.root",
+            "hsum": "1c19cc4120996f086e5458f79e5e9b0694dd07972a6afc5cbab6a8b577d44744",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysEffNoA",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/eta/newest_calibration_1/LHC17j3c1.root",
+            "hsum": "130fbca7e81219efc7e1b725f60cce75a099b3d53009469634a39a11aa3367db",
+            "pt_range": [0.0, 10.0]
+        }
+    },
+    "single #pi^{0}": {
+        "high": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02",
+            "file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b2.root",
+            "hsum": "e2e72541b7d464e4f651d0ebe146a58c0a23220db993dbb9a23d90623576c544",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02",
+            "file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b1.root",
+            "hsum": "f30ce0bb39d3a081a2b911670f7239daa697103bddafb45df9200263a4fef1c9",
+            "pt_range": [0.0, 8.0]
+        }
+    },
+    "single #pi^{0} acceptance": {
+        "high": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b2.root",
+            "hsum": "27c576b85da688a96e74726811cd2637948b9cbdaba481abf1681771f0fae389",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b1.root",
+            "hsum": "d2e19911f285e21aeff19ceb2a761f8e37486718b3c77889876a70be6bc5565c",
+            "pt_range": [0.0, 8.0]
+        }
+    },
+    "single #pi^{0} new calibration": {
+        "high": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/pi0/newest_calibration_1/LHC17j3b2.root",
+            "hsum": "2ff6f4bd888b9781f97c13c0e4aa94820f86f804aaa979df33a3c39b76a9b3ff",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Update calibration, keep old nonlinearity for comparison",
+            "file": "input-data/mc/single/pi0/newest_calibration_1/LHC17j3b1.root",
+            "hsum": "d150bbf26dd0f02706717457cc864c8b618951c9c788c6cc8d6754e6a5542fec",
+            "pt_range": [0.0, 8.0]
+        }
+    },
+    "single #pi^{0} nonlinearity scan": {
+        "high": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Nonlinearity scan for the newest nonlinearity",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_1/LHC17j3b2.root",
+            "hsum": "fa4fbc6e6ef0d6341134a2448231c090bcffae9c3d5bf62e2c154502ce370de1",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Nonlinearity scan for the newest nonlinearity",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_1/LHC17j3b1.root",
+            "hsum": "88ac2818f9cda90d7f6054a958a64f320cf705bab70ec0a55128d622e0a0b3b7",
+            "pt_range": [0.0, 8.0]
+        }
+    }
 }

@@ -1,85 +1,85 @@
 {
-	"LHC17 qa1": {
-		"LHC17e": {
-			"file": "input-data/data/LHC17/qa1/LHC17e.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "f506fc12005e18a17bff819aa06d3a1fcc9be2091aa034e54830522ed0de22dc",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17g": {
-			"file": "input-data/data/LHC17/qa1/LHC17g.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "32b2b1fbbddd780b0445907cfb0c3d15bb637624825613d259738c2df50b859f",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17i": {
-			"file": "input-data/data/LHC17/qa1/LHC17i.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "6c9028de2905096ed89d9d895de932c1efdd17246968d98f8e1dcc0e74403044",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17j": {
-		"file": "input-data/data/LHC17/qa1/LHC17j.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "ab8490ac0ecc3b4a305e70f8a78a68ef94c88f4212c0b349f338a8b667b73cc3",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17k": {
-			"file": "input-data/data/LHC17/qa1/LHC17k.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "550ae17354ce159bfeadbb69bdf0e94eb8e89ca9b25d072d8114e5ab71a5e977",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17l": {
-			"file": "input-data/data/LHC17/qa1/LHC17l.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "32efc7e03aeed24f252f94733cf596b74733faec0c6f1fb5581ceb54596c4ff4",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17m": {
-			"file": "input-data/data/LHC17/qa1/LHC17m.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "073d6d6280f844a2dcc5a8fb991efd13cb6a8ccf6032e1ac4cae5ec25e33fb59",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17o": {
-			"file": "input-data/data/LHC17/qa1/LHC17o.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "357be16726e8b3d477ef019f5b96fa1da746871b9b3b4d3444cf696feb3f6716",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		},
-		"LHC17r": {
-			"file": "input-data/data/LHC17/qa1/LHC17r.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "1b9ce813034c8ca430568ee6a6c95578ea5a97d0f8f3d96e752ea538eb9fd2e5",
-			"description": "Raw data without any corrections. Runs are not selected yet"
-		}
-	},
-	"LHC16 trigger qa3": {
-		"LHC16g": {
-			"file": "input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "cec9baeab09eb50427132d099d5ae26161d5c760ba59428f1ec7c7e0fd13200c",
-			"description": "Recalculate the quantities with the official task"
-		}
-	},
-	"LHC16 trigger qa3 int7": {
-		"LHC16g kint7": {
-			"file": "input-data/data/LHC16/trigger_qa/iteration3/LHC16g.root",
-			"default_selection": "Phys",
-			"pt_range": [0, 20],
-			"hsum": "ba4cffda4d34c2c19b3542dc875a2a043923186680662364a914a76d070a534f",
-			"description": "Add number of clusters per run per TRU"
-		}
-	}
+    "LHC16 trigger qa3": {
+        "LHC16g": {
+            "default_selection": "Phys",
+            "description": "Recalculate the quantities with the official task",
+            "file": "input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g.root",
+            "hsum": "cec9baeab09eb50427132d099d5ae26161d5c760ba59428f1ec7c7e0fd13200c",
+            "pt_range": [0, 20]
+        }
+    },
+    "LHC16 trigger qa3 int7": {
+        "LHC16g kint7": {
+            "default_selection": "Phys",
+            "description": "Add number of clusters per run per TRU",
+            "file": "input-data/data/LHC16/trigger_qa/iteration3/LHC16g.root",
+            "hsum": "ba4cffda4d34c2c19b3542dc875a2a043923186680662364a914a76d070a534f",
+            "pt_range": [0, 20]
+        }
+    },
+    "LHC17 qa1": {
+        "LHC17e": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17e.root",
+            "hsum": "f506fc12005e18a17bff819aa06d3a1fcc9be2091aa034e54830522ed0de22dc",
+            "pt_range": [0, 20]
+        },
+        "LHC17g": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17g.root",
+            "hsum": "32b2b1fbbddd780b0445907cfb0c3d15bb637624825613d259738c2df50b859f",
+            "pt_range": [0, 20]
+        },
+        "LHC17i": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17i.root",
+            "hsum": "6c9028de2905096ed89d9d895de932c1efdd17246968d98f8e1dcc0e74403044",
+            "pt_range": [0, 20]
+        },
+        "LHC17j": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17j.root",
+            "hsum": "ab8490ac0ecc3b4a305e70f8a78a68ef94c88f4212c0b349f338a8b667b73cc3",
+            "pt_range": [0, 20]
+        },
+        "LHC17k": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17k.root",
+            "hsum": "550ae17354ce159bfeadbb69bdf0e94eb8e89ca9b25d072d8114e5ab71a5e977",
+            "pt_range": [0, 20]
+        },
+        "LHC17l": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17l.root",
+            "hsum": "32efc7e03aeed24f252f94733cf596b74733faec0c6f1fb5581ceb54596c4ff4",
+            "pt_range": [0, 20]
+        },
+        "LHC17m": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17m.root",
+            "hsum": "073d6d6280f844a2dcc5a8fb991efd13cb6a8ccf6032e1ac4cae5ec25e33fb59",
+            "pt_range": [0, 20]
+        },
+        "LHC17o": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17o.root",
+            "hsum": "357be16726e8b3d477ef019f5b96fa1da746871b9b3b4d3444cf696feb3f6716",
+            "pt_range": [0, 20]
+        },
+        "LHC17r": {
+            "default_selection": "Phys",
+            "description": "Raw data without any corrections. Runs are not selected yet",
+            "file": "input-data/data/LHC17/qa1/LHC17r.root",
+            "hsum": "1b9ce813034c8ca430568ee6a6c95578ea5a97d0f8f3d96e752ea538eb9fd2e5",
+            "pt_range": [0, 20]
+        }
+    }
 }
