@@ -1,72 +1,73 @@
+# Analysis task auto generated macros
 Task*.C
 Task*.sh
-*.jdl
+Task*.C
+Task*.sh*.jdl
 *.xml
+*.jdl
+
+# C++ object files
 *.o
 *.d
+*.so
 *.pdf
 *.eps
 *.swp
-*.so
+
+# ROOT6 object files
+*.pcm
+
+
+# Data files
+*.root
+*.root.inp
+*.root.*
 event_stat.root
 EventStat_temp.root
-*.root
 .runhistory
 outputs_valid
 deleteme*
 DELETEME*
-Task*.C
-Task*.sh
-*.jdl
-*.xml
-*.o
-*.d
-*.pdf
-*.swp
-*.so
-event_stat.root
-EventStat_temp.root
-*.root
-.runhistory
-outputs_valid
-*.log
 
+# logs and images
+*.log
+.runhistory
 *.ps
 *.pdf
 *.png
 *.jpeg
 *.jpg
-*.root
-*.pyc
 *.DS_Store
 */images/Makefile
-nnl-code/
-result.out
-*.out
-analysis-task-test
-OCDBdrain/
-gphysi.dat
-*.tar.gz
-*.gz
-*.tar
-*.zip
-*.sublime*
-*.root.inp
-*.root.*
-*/.ipynb_checkpoints
-*.tgz
-id_rsa
-Dockerfile.slc
-*/test_pp_task/*
 
-# SFTP configuration
-sftp-config.json
+# Side projects and experiments
+OCDBdrain/
+analysis-task-test
+test_pp_task/
+nnl-code/
+Dockerfile.slc
+id_rsa
+*.out
+gphysi.dat
+
+# Archives
+*.tar.gz
+*.tar
+*.gz
+*.zip
+
+*.tgz
+
+# Python related
+*.pyc
 .pytest_cache
 .python-version
 *.egg-*
 .hypothesis
 .coverage
+.ipynb_checkpoints
 
-
-# ROOT6 object files
-*.pcm
+# Editors
+*.sublime*
+sftp-config.json
+.vscode
