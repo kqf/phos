@@ -26,7 +26,7 @@ def scale_data(data, scale=2):
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta",
+    "#eta",
 ])
 def test_simple(particle):
     loggs = AnalysisOutput("test the single analysis")
@@ -37,4 +37,4 @@ def test_simple(particle):
     scaled = Analysis(Options(particle=particle)).transform(
         scale_data(INPUT_DATA), loggs=loggs)
 
-    Comparator().compare(original.spectrum, scaled.spectrum)
+    Comparator().compare(original, scaled)
