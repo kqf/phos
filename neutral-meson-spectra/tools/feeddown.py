@@ -18,7 +18,7 @@ def data_feeddown(dummy=False):
             "pythia8",
             listname="FeeddownSelection",
             use_mixing=False,
-            histname="MassPt_#pi^{0}_feeddown_K^{s}_{0}",
+            histname="hMassPt_#pi^{0}_feeddown_K^{s}_{0}",
             prefix=""
         ),
         DataVault().input("pythia8", listname="FeeddownSelection"),

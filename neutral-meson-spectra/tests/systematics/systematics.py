@@ -14,7 +14,7 @@ from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from vault.datavault import DataVault
 
 
-def ep_data(prod="data", version="fixed_ep"):
+def ep_data(prod="data", version="latest"):
     return DataVault().input(
         prod,
         version=version,
@@ -46,7 +46,7 @@ def data(nbins):
     gscale = (
         (
             ep_data("data"),
-            ep_data("pythia8", "nonlinearity"),
+            ep_data("pythia8"),
         ),
         cyield,
     )

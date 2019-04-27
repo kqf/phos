@@ -90,41 +90,6 @@
         }
     },
     "pythia8": {
-        "ep_ratio_3": {
-            "default_selection": "PhysEff",
-            "description": "Add nonlinearity correction for E/p task, all 13 TeV datasets merged",
-            "file": "input-data/mc/pythia/ep_ratio_3/pythia8.root",
-            "hsum": "eaeee3cb36c5edac3e1e95eae64fd93f15864e9123d91b088cd5a85b8ff5d1c4",
-            "pt_range": [0, 20]
-        },
-        "ep_ratio_3 LHC16": {
-            "default_selection": "PhysEff",
-            "description": "Fix nonlinearity correction for E/p task",
-            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16.root",
-            "hsum": "1699e08a7573cae11fcce65eb87dc5ba6f9bf8af37d8fa7eeae757e2c5d3af10",
-            "pt_range": [0, 20]
-        },
-        "ep_ratio_3 LHC16 extra": {
-            "default_selection": "PhysEff",
-            "description": "Fix nonlinearity correction for E/p task",
-            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC16_extra.root",
-            "hsum": "8defcd1a0c23ef9c6f7599f7a393c0000ae31467ddac995e31ccbf531040a5a4",
-            "pt_range": [0, 20]
-        },
-        "ep_ratio_3 LHC17": {
-            "default_selection": "PhysEff",
-            "description": "Fix nonlinearity correction for E/p task",
-            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC17.root",
-            "hsum": "14a67edb10029ec283faf298eda6ea2383f32433e299597bf333e2b699fafb65",
-            "pt_range": [0, 20]
-        },
-        "ep_ratio_3 LHC18": {
-            "default_selection": "PhysEff",
-            "description": "Fix nonlinearity correction for E/p task",
-            "file": "input-data/mc/pythia/ep_ratio_3/pythia8_LHC18.root",
-            "hsum": "d9ab151bf400d3cef2eb5defb330bb2172d8d4a71b8931bbe2fb874d19e1bdf7",
-            "pt_range": [0, 20]
-        },
         "kaon2pion": {
             "default_selection": "PionToKaonRatioOnlyTender",
             "description": "Pythia8 with all corrections, for feeddown correction",
@@ -133,13 +98,6 @@
             "pt_range": [0, 20]
         },
         "latest": {
-            "default_selection": "PhysEff",
-            "description": "Feeddown corrected for kaon to pion ratio",
-            "file": "input-data/mc/pythia/feeddown/pythia8.root",
-            "hsum": "4bb9f7c32247a54e2a5d96f0f1b0a86f3fa47e9a02b0f76f1e5f952d53adb139",
-            "pt_range": [0, 20]
-        },
-        "nonlinearity": {
             "default_selection": "PhysEff",
             "description": "Add MC production with official nonlinearity",
             "file": "input-data/mc/pythia/final_nonlinearity_1/pythia8.root",
