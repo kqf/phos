@@ -14,7 +14,7 @@ from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from vault.datavault import DataVault
 
 
-def ep_data(prod="data", version="ep_ratio"):
+def ep_data(prod="data", version="fixed_ep"):
     return DataVault().input(
         prod,
         version=version,
@@ -46,7 +46,7 @@ def data(nbins):
     gscale = (
         (
             ep_data("data"),
-            ep_data("pythia8", "ep_ratio_1"),
+            ep_data("pythia8", "nonlinearity"),
         ),
         cyield,
     )
@@ -56,6 +56,7 @@ def data(nbins):
         (
             cyield,  # 1 cm distance to a bad cell
             cyield,  # 2 cm distance to a bad cell
+            cyield,  # 3 cm distance to a bad cell
         )
     )
 
