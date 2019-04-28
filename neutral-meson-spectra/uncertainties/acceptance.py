@@ -34,7 +34,7 @@ def cyield_data(particle, cut):
     return data_input, mc_inputs
 
 
-def acceptance_data(particle):
+def acceptance_data(particle="#pi^{0}"):
     return (
         cyield_data(particle, cut=0),
         (

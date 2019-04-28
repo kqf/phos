@@ -1,14 +1,19 @@
+from __future__ import print_function
+
 import ROOT
+import tqdm
+
+import sutils as su
 from comparator import Comparator
 from flatten_dict import flatten
 from ptplotter import MulipleOutput
 from vis import Visualizer, MultipleVisualizer
 
-# TODO: Introduce more log items for compare etc
+# TODO: Introduce more log items for compare etc.
 #
 
 
-def save_item(ofile, name, obj):
+def save_item(ofile, name, obj, stop=False):
     ofile.mkdir(name)
     ofile.cd(name)
 
@@ -22,7 +27,9 @@ def save_item(ofile, name, obj):
             labels, hists = zip(*obj)
             if type(hists[0]) not in {ROOT.TH1F, ROOT.TH1D}:
                 return
-            labels = Comparator(labels=labels, stop=False).compare(hists)
+
+            if stop:
+                Comparator(labels=labels, stop=False).compare(hists)
         return
 
     if obj.__class__.__bases__[0] == tuple:
@@ -30,7 +37,7 @@ def save_item(ofile, name, obj):
             hist.Write()
         return
 
-    print "Don't know how to handle", obj, type(obj)
+    print("Don't know how to handle", obj, type(obj))
 
 
 class AnalysisOutput(dict):
@@ -40,12 +47,10 @@ class AnalysisOutput(dict):
         self.particle = particle
 
     def plot(self, stop=False):
-        print
-        ofile = ROOT.TFile(self._ofile(), "recreate")
-        flattened = flatten(self, reducer="path")
-        for k, v in flattened.iteritems():
-            save_item(ofile, k, v)
-        ofile.Write()
+        with su.rfile(self._ofile(), mode="recreate") as ofile:
+            flat = flatten(self, reducer="path")
+            for k, v in tqdm.tqdm(flat.iteritems()):
+                save_item(ofile, k, v, stop=stop)
 
     def _ofile(self):
         name = self.label.lower().replace(" ", "-")

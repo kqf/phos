@@ -1,6 +1,15 @@
 import os
-import ROOT
 from collections import Iterable
+from contextlib import contextmanager
+
+import ROOT
+
+
+@contextmanager
+def rfile(filename, mode="recreate"):
+    fileio = ROOT.TFile(filename, mode)
+    yield fileio
+    fileio.Close()
 
 
 def prepare_directory(name):

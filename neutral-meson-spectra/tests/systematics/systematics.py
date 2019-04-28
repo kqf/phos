@@ -40,11 +40,6 @@ def data(nbins):
         spmc_inputs
     )
 
-    tof = (
-        DataVault().input("data", histname="MassPtSM0"),
-        DataVault().input("data", "isolated", histname="MassPtSM0"),
-    )
-
     gscale = (
         (
             ep_data("data"),
