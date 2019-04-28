@@ -1,44 +1,8 @@
 import pytest
-from vault.datavault import DataVault
 from spectrum.output import AnalysisOutput
 from uncertainties.acceptance import Acceptance, AcceptanceOptions
+from uncertainties.acceptance import acceptance_data
 from spectrum.comparator import Comparator
-from tools.feeddown import data_feeddown
-
-
-def cyield_data(particle, cut):
-    mc_production = "single %s acceptance" % particle
-    data_input = (
-        DataVault().input(
-            "data", "acceptance",
-            listname="Phys{}".format(cut),
-            histname="MassPtSM0"),
-        data_feeddown(),
-    )
-    mc_inputs = (
-        DataVault().input(
-            mc_production, "low",
-            listname="PhysEff{}".format(cut),
-            # histname="MassPtSM0"
-        ),
-        DataVault().input(
-            mc_production, "high",
-            listname="PhysEff{}".format(cut),
-            # histname="MassPtSM0"
-        ),
-    )
-    return data_input, mc_inputs
-
-
-def acceptance_data(particle):
-    return (
-        cyield_data(particle, cut=0),
-        (
-            cyield_data(particle, cut=1),
-            cyield_data(particle, cut=2),
-            cyield_data(particle, cut=3),
-        ),
-    )
 
 
 @pytest.mark.thesis

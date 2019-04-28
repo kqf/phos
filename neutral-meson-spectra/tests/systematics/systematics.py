@@ -11,6 +11,7 @@ from uncertainties.nonlinearity import Nonlinearity, define_inputs
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
 from uncertainties.gscale import GScale, GScaleOptions
 from uncertainties.acceptance import Acceptance, AcceptanceOptions
+from uncertainties.acceptance import acceptance_data
 from vault.datavault import DataVault
 
 
@@ -51,21 +52,12 @@ def data(nbins):
         cyield,
     )
 
-    acceptance = (
-        cyield,  # Original corrected yield data
-        (
-            cyield,  # 1 cm distance to a bad cell
-            cyield,  # 2 cm distance to a bad cell
-            cyield,  # 3 cm distance to a bad cell
-        )
-    )
-
     return (
         cyield,
         define_inputs(nbins, "single #pi^{0}"),
         tof,
         gscale,
-        acceptance,
+        acceptance_data(),
     )
 
 

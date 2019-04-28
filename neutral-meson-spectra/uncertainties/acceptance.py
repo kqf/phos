@@ -6,6 +6,43 @@ from spectrum.pipeline import Pipeline
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.broot import BROOT as br
 from tools.unityfit import unityfit
+from tools.feeddown import data_feeddown
+from vault.datavault import DataVault
+
+
+def cyield_data(particle, cut):
+    mc_production = "single %s acceptance" % particle
+    data_input = (
+        DataVault().input(
+            "data", "acceptance",
+            listname="Phys{}".format(cut),
+            histname="MassPtSM0"),
+        data_feeddown(),
+    )
+    mc_inputs = (
+        DataVault().input(
+            mc_production, "low",
+            listname="PhysEff{}".format(cut),
+            # histname="MassPtSM0"
+        ),
+        DataVault().input(
+            mc_production, "high",
+            listname="PhysEff{}".format(cut),
+            # histname="MassPtSM0"
+        ),
+    )
+    return data_input, mc_inputs
+
+
+def acceptance_data(particle):
+    return (
+        cyield_data(particle, cut=0),
+        (
+            cyield_data(particle, cut=1),
+            cyield_data(particle, cut=2),
+            cyield_data(particle, cut=3),
+        ),
+    )
 
 
 class AcceptanceOptions(object):
