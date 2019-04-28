@@ -8,6 +8,21 @@ from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputDecorator
 from tools.unityfit import unityfit
+from vault.datavault import DataVault
+
+
+def tof_data():
+    return (
+        DataVault().input("data", "nonlinearity", histname="MassPtSM0"),
+        DataVault().input("data", "isolated", histname="MassPtSM0"),
+    )
+
+
+def tof_data_stable():
+    return (
+        DataVault().input("data", "stable"),
+        DataVault().input("data", "isolated", histname="MassPtSM0"),
+    )
 
 
 class TofUncertaintyOptions(object):

@@ -1,25 +1,10 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.output import AnalysisOutput
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
-from vault.datavault import DataVault
+from uncertainties.tof import tof_data
 
 # from spectrum.comparator import Comparator
-
-TOF_DATASET = Proxy(
-    lambda: (
-        DataVault().input("data", "nonlinearity", histname="MassPtSM0"),
-        DataVault().input("data", "isolated", histname="MassPtSM0"),
-    )
-)
-
-STABLE_TOF_DATASET = Proxy(
-    lambda: (
-        DataVault().input("data", "stable"),
-        DataVault().input("data", "isolated", histname="MassPtSM0"),
-    )
-)
 
 
 @pytest.mark.thesis
@@ -28,6 +13,6 @@ STABLE_TOF_DATASET = Proxy(
 def test_tof():
     tof = TofUncertainty(TofUncertaintyOptions())
     loggs = AnalysisOutput("tof uncertainty")
-    output = tof.transform(TOF_DATASET, loggs=loggs)
+    output = tof.transform(tof_data(), loggs=loggs)
     loggs.plot()
     assert len(output) > 0

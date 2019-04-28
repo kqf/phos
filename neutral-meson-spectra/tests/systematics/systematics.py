@@ -9,6 +9,7 @@ from uncertainties.yields import YieldExtractioin
 from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, define_inputs
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
+from uncertainties.tof import tof_data
 from uncertainties.gscale import GScale, GScaleOptions
 from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from uncertainties.acceptance import acceptance_data
@@ -55,7 +56,7 @@ def data(nbins):
     return (
         cyield,
         define_inputs(nbins, "single #pi^{0}"),
-        tof,
+        tof_data(),
         gscale,
         acceptance_data(),
     )
