@@ -14,7 +14,7 @@ from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
 
 
-def ep_data(prod="data", version="ep_ratio"):
+def ep_data(prod="data", version="latest"):
     return DataVault().input(
         prod,
         version=version,
@@ -28,7 +28,7 @@ def ge_scale_data(particle):
     return (
         (
             ep_data("data"),
-            ep_data("pythia8", "ep_ratio_1"),
+            ep_data("pythia8"),
         ),
         (
             (
