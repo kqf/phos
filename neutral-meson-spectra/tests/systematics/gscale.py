@@ -1,39 +1,7 @@
 import pytest
-from lazy_object_proxy import Proxy
-from vault.datavault import DataVault
 from spectrum.output import AnalysisOutput
-from uncertainties.gscale import GScale, GScaleOptions
+from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
 from spectrum.comparator import Comparator
-from tools.feeddown import data_feeddown
-
-
-def ep_data(prod="data", version="ep_ratio"):
-    return DataVault().input(
-        prod,
-        version=version,
-        listname="PHOSEpRatioCoutput1",
-        histname="Ep_ele",
-        use_mixing=False)
-
-
-def ge_scale_data(particle):
-    mcproduction = "single %s" % particle
-    return (
-        (
-            ep_data("data"),
-            ep_data("pythia8", "ep_ratio_1"),
-        ),
-        (
-            (
-                DataVault().input("data", histname="MassPtSM0"),
-                data_feeddown(particle == "#eta"),
-            ),
-            (
-                DataVault().input(mcproduction, "low", "PhysEff"),
-                DataVault().input(mcproduction, "high", "PhysEff"),
-            )
-        ),
-    )
 
 
 @pytest.mark.thesis

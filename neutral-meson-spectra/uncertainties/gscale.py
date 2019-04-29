@@ -10,6 +10,38 @@ from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import Pipeline
 from vault.formulas import FVault
 
+from vault.datavault import DataVault
+from tools.feeddown import data_feeddown
+
+
+def ep_data(prod="data", version="ep_ratio"):
+    return DataVault().input(
+        prod,
+        version=version,
+        listname="PHOSEpRatioCoutput1",
+        histname="Ep_ele",
+        use_mixing=False)
+
+
+def ge_scale_data(particle):
+    mcproduction = "single %s" % particle
+    return (
+        (
+            ep_data("data"),
+            ep_data("pythia8", "ep_ratio_1"),
+        ),
+        (
+            (
+                DataVault().input("data", histname="MassPtSM0"),
+                data_feeddown(particle == "#eta"),
+            ),
+            (
+                DataVault().input(mcproduction, "low", "PhysEff"),
+                DataVault().input(mcproduction, "high", "PhysEff"),
+            )
+        ),
+    )
+
 
 class GScaleOptions(object):
     def __init__(self, particle="#pi^{0}"):
