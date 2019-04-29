@@ -10,7 +10,7 @@ from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, define_inputs
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
 from uncertainties.tof import tof_data
-from uncertainties.gscale import GScale, GScaleOptions
+from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
 from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from uncertainties.acceptance import acceptance_data
 from vault.datavault import DataVault
@@ -40,19 +40,11 @@ def data(nbins):
         spmc_inputs
     )
 
-    gscale = (
-        (
-            ep_data("data"),
-            ep_data("pythia8"),
-        ),
-        cyield,
-    )
-
     return (
         cyield,
         define_inputs(nbins, "single #pi^{0}"),
         tof_data(),
-        gscale,
+        ge_scale_data(),
         acceptance_data(),
     )
 
