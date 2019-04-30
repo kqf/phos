@@ -2,10 +2,11 @@ import pytest
 
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
+
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import CompositeNonlinearityUncertainty
-from tools.feeddown import data_feeddown
-from uncertainties.yields import YieldExtractioin
+
+from uncertainties.yields import YieldExtractioin, yield_extraction_data
 from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
@@ -13,35 +14,11 @@ from uncertainties.tof import tof_data
 from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
 from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from uncertainties.acceptance import acceptance_data
-from vault.datavault import DataVault
-
-
-def ep_data(prod="data", version="latest"):
-    return DataVault().input(
-        prod,
-        version=version,
-        listname="PHOSEpRatioCoutput1",
-        histname="Ep_ele",
-        use_mixing=False)
 
 
 def data(nbins):
-    production = "single #pi^{0}"
-    spmc_inputs = (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
-
-    cyield = (
-        (
-            DataVault().input("data", histname="MassPtSM0"),
-            data_feeddown(),
-        ),
-        spmc_inputs
-    )
-
     return (
-        cyield,
+        yield_extraction_data(),
         nonlinearity_scan_data(nbins, "single #pi^{0}"),
         tof_data(),
         ge_scale_data(),

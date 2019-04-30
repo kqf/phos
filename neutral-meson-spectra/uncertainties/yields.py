@@ -4,6 +4,25 @@ from spectrum.options import Options
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.pipeline import TransformerBase
+from tools.feeddown import data_feeddown
+from vault.datavault import DataVault
+
+
+def yield_extraction_data():
+    production = "single #pi^{0}"
+    spmc_inputs = (
+        DataVault().input(production, "low", "PhysEff"),
+        DataVault().input(production, "high", "PhysEff"),
+    )
+
+    cyield = (
+        (
+            DataVault().input("data", histname="MassPtSM0"),
+            data_feeddown(),
+        ),
+        spmc_inputs
+    )
+    return cyield
 
 
 class YieldExtractioinUncertanityOptions(object):
