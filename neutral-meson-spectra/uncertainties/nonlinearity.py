@@ -47,7 +47,7 @@ def form_histnames(nbins=4):
 
 # TODO: Add Generated Histogram to the nonlinearity scan selection
 #
-def define_inputs(nbins, prod, eff_prod="PhysEff"):
+def nonlinearity_scan_data(nbins, prod, eff_prod="PhysEff"):
     histnames = form_histnames(nbins)
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)

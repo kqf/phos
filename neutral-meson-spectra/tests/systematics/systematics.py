@@ -7,7 +7,7 @@ from spectrum.options import CompositeNonlinearityUncertainty
 from tools.feeddown import data_feeddown
 from uncertainties.yields import YieldExtractioin
 from uncertainties.yields import YieldExtractioinUncertanityOptions
-from uncertainties.nonlinearity import Nonlinearity, define_inputs
+from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
 from uncertainties.tof import tof_data
 from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
@@ -42,7 +42,7 @@ def data(nbins):
 
     return (
         cyield,
-        define_inputs(nbins, "single #pi^{0}"),
+        nonlinearity_scan_data(nbins, "single #pi^{0}"),
         tof_data(),
         ge_scale_data(),
         acceptance_data(),
