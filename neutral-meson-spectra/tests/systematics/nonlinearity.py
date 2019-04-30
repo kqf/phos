@@ -3,8 +3,7 @@ import pytest
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityUncertainty
 from spectrum.output import AnalysisOutput
-from uncertainties.nonlinearity import Nonlinearity, define_inputs
-# from vault.datavault import DataVault
+from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
 
 
 # TODO: Look at generated histogram in different selection
@@ -20,7 +19,7 @@ def test_nonlinearity_uncertainty():
     options.factor = 1.
 
     chi2ndf = Nonlinearity(options).transform(
-        define_inputs(nbins, prod),
+        nonlinearity_scan_data(nbins, prod),
         loggs=AnalysisOutput("testing the scan interface")
     )
     Comparator().compare(chi2ndf)
