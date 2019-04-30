@@ -35,23 +35,16 @@ ETA_INPUTS = Proxy(
 )
 
 
-@pytest.mark.skip("")
-def test_corrected_yield_for_pi0():
+@pytest.mark.parametrize("data, particle", [
+    (PION_INPUTS, "#pi^{0}"),
+    # (ETA_INPUTS, "#eta"),
+])
+def test_corrected_yield_for_pi0(data, particle):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(
-            particle="#pi^{0}"
+            particle=particle
         )
     )
-    estimator.transform(
-        PION_INPUTS,
-        loggs=AnalysisOutput("corrected yield #pi^{0}"))
-
-
-def test_corrected_yield_for_eta():
-    estimator = CorrectedYield(
-        CompositeCorrectedYieldOptions(particle="#eta")
-    )
-    estimator.transform(
-        ETA_INPUTS,
-        loggs=AnalysisOutput("corrected yield #eta")
-    )
+    loggs = AnalysisOutput("corrected yield {}".format(particle))
+    estimator.transform(data, loggs=loggs)
+    loggs.plot()
