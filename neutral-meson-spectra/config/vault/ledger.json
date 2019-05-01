@@ -14,7 +14,7 @@
             "hsum": "6c74a54aa0a2b7c907cfb06e639bd133bebe37526a9cc1e22bf790048722d319",
             "pt_range": [0, 20]
         },
-        "fixed_ep": {
+        "latest": {
             "default_selection": "Phys",
             "description": "Fixed ep ratio, all periods are correctly propagated",
             "file": "input-data/data/LHC16/ep_ratio_4/LHC16.root",
@@ -29,13 +29,6 @@
             "pt_range": [0, 20]
         },
         "latest": {
-            "default_selection": "Phys",
-            "description": "All corrections; ep_ratio",
-            "file": "input-data/data/LHC16/ep_ratio_3/LHC16.root",
-            "hsum": "bf24898339bd2fd790db8d34de83c812c8a3a0bf6984d406771796b85f4142b7",
-            "pt_range": [0, 20]
-        },
-        "nonlinearity": {
             "default_selection": "Phys",
             "description": "Prodcution with the official nonlinearity",
             "file": "input-data/data/LHC16/final_nonlinearity_1/LHC16.root",

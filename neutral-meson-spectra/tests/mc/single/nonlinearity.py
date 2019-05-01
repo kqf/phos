@@ -14,8 +14,7 @@ from spectrum.comparator import Comparator  # noqa
 
 SPMC_REGULAR = Proxy(
     lambda: (
-        DataVault().input("data", "acceptance",
-                          listname="Phys0", histname="MassPtSM0"),
+        DataVault().input("data", histname="MassPtSM0"),
         (
             DataVault().input("single #pi^{0} new calibration", "low",
                               "PhysEff"),
