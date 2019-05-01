@@ -8,8 +8,8 @@ from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 
-def yield_extraction_data():
-    production = "single #pi^{0}"
+def yield_extraction_data(particle="#pi^{0}"):
+    production = "single {particle}".format(particle=particle)
     spmc_inputs = (
         DataVault().input(production, "low", "PhysEff"),
         DataVault().input(production, "high", "PhysEff"),

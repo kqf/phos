@@ -20,7 +20,7 @@ def test_yield_extraction_uncertanity_pion(particle):
     )
     estimator = YieldExtractioin(options)
     output = estimator.transform(
-        yield_extraction_data(),
-        loggs=AnalysisOutput("corrected yield %s" % particle)
+        yield_extraction_data(particle=particle),
+        loggs=AnalysisOutput("corrected yield {}".format(particle))
     )
     Comparator().compare(output)
