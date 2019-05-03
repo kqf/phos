@@ -1,5 +1,6 @@
 #include "../../setup/environment.h"
 #include "../../setup/tender.h"
+#include "../../setup/pid.h"
 #include "plugin.h"
 #include "task.h"
 
