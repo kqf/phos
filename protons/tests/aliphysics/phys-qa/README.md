@@ -1,3 +1,3 @@
 Test phys QA analysis task
 =============================
-Use these macros for debuggin and performance tests only.
+Use these macros for debugging and performance tests only.

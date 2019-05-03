@@ -10,30 +10,15 @@ void run(
     Bool_t useJDL = kTRUE
 )
 {
-    SetupEnvironment();
-    AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
-
-    AliAnalysisGrid * alienHandler = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
-    if(isMC)
-    {
-        AliMCEventHandler * mchandler = new AliMCEventHandler();
-        mchandler->SetReadTR(kFALSE); // Don't read track references
-        manager->SetMCtruthEventHandler(mchandler);
-    }
-    // Connect plug-in to the analysis manager
+    AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
+    manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL, isMC));
+    manager->SetInputEventHandler(new AliAODInputHandler());    // Connect plug-in to the analysis manager
     manager->SetGridHandler(alienHandler);
 
-    AliAODInputHandler * aodH = new AliAODInputHandler();
-    manager->SetInputEventHandler(aodH);
-
-    TString pref =  isMC ? "MC" : "";
     AddTaskPhysPHOSQA();
 
-    if(!manager->InitAnalysis())
-        return;
-
+    manager->InitAnalysis();
     manager->PrintStatus();
-    alienHandler->SetOutputFiles("CaloCellsQA.root");
     manager->StartAnalysis(runmode);
     gObjectTable->Print();
 }

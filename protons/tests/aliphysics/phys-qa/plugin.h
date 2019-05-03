@@ -31,5 +31,6 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period, TString 
     //plugin->SetUseSubmitPolicy();
 
 	plugin->SetAliPhysicsVersion("vAN-20171120-1");
+    plugin->SetOutputFiles("CaloCellsQA.root");
 	return plugin;
 }
