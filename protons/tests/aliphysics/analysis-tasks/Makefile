@@ -4,7 +4,7 @@ PROTONS_PATH=../../../
 
 DATASET = LHC16g
 DPART = first
-MC = kFALSE
+MC = kTRUE
 OUTDIR = results/mc/pythia/debug_weights
 
 
