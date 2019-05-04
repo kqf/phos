@@ -1,4 +1,5 @@
 #include "../../../setup/environment.h"
+#include <PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C>
 #include "plugin.h"
 
 void run(
@@ -13,7 +14,6 @@ void run(
     AliAnalysisManager * manager = new AliAnalysisManager("PHOS_PP");
     manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL, isMC));
     manager->SetInputEventHandler(new AliAODInputHandler());    // Connect plug-in to the analysis manager
-    manager->SetGridHandler(alienHandler);
 
     AddTaskPhysPHOSQA();
 
