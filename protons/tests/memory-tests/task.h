@@ -1,6 +1,6 @@
 #include "../../setup/sources.h"
 
-AliAnalysisTaskPP13 *  AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
+AliAnalysisTaskPP13 * AddAnalysisTaskPP(UInt_t offlineTriggerMask, TString description, TString suff = "", Bool_t isMC = kFALSE, Bool_t isTest = kFALSE)
 {
 	LoadAnalysisLibraries();
 	
