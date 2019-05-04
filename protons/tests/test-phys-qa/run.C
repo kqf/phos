@@ -4,8 +4,6 @@
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
-    SetupEnvironment();
-
     AliAnalysisGrid * alien = CreatePlugin(pluginmode, period, dpart, useJDL, isMC);
     AliAnalysisManager * manager  = new AliAnalysisManager("PHOS_PP");
     AliAODInputHandler * aod = new AliAODInputHandler();

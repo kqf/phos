@@ -13,13 +13,6 @@ R__ADD_INCLUDE_PATH($ALICE_PHYSICS)
 #endif
 
 
-void SetupEnvironment()
-{
-    // gInterpreter->ProcessLine(".include $ROOTSYS/include");
-    // gInterpreter->ProcessLine(".include $ALICE_ROOT/include");
-}
-
-
 TString message(const char * title, TString period = "")
 {
 	TString msg;
@@ -31,6 +24,7 @@ TString message(const char * title, TString period = "")
     msg += title;
     msg += ", AliPhysics version:";
     msg += gSystem->Getenv("ALIPHYSICS_VERSION");	
+
     return msg;
 }
 

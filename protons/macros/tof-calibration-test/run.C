@@ -27,5 +27,4 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->PrintStatus();
     manager->StartAnalysis(runmode);
     gObjectTable->Print(); 
-    SetupEnvironment();
 }
