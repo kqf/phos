@@ -1,7 +1,7 @@
 #include "../../setup/environment.h"
 #include "../../setup/tender.h"
 #include "plugin.h"
-#include "task.h"
+#include <PWGGA/PHOSTasks/CaloCellQA/phys/macros/AddTaskPhysPHOSQA.C>
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
@@ -13,7 +13,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     TString msg = message("Test the memory consumption", period);
-    AddPHOSTender(isMC, msg);
+    AddTaskPhysPHOSQA();
 
     AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(msg);
     task->SelectCollisionCandidates(AliVEvent::kINT7);
@@ -21,5 +21,4 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->InitAnalysis();
     manager->PrintStatus();
     manager->StartAnalysis(runmode);
-    gObjectTable->Print();
 }
