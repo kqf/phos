@@ -225,5 +225,21 @@
             "hsum": "a3a79fe032a9ae5903ca88b460a996c966766e6ad59de08a87415ae3649cb5b4",
             "pt_range": [0.0, 8.0]
         }
+    },
+    "single #pi^{0} nonlinearity scan 2": {
+        "high": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Nonlinearity scan for the newest nonlinearity corrected",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_2/LHC17j3b2.root",
+            "hsum": "dfdd0b5aba81b782363e6e446fb88831d8ba3a1ca9307f9bff0b91e0c869f393",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Nonlinearity scan for the newest nonlinearity corrected",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_2/LHC17j3b1.root",
+            "hsum": "7ad9bc15f928e2d202dbcb1c75aed372c84a0572b3ef22523cd3e01815939d5a",
+            "pt_range": [0.0, 8.0]
+        }
     }
 }
