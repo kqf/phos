@@ -5,10 +5,9 @@ from vault.formulas import FVault
 from spectrum.comparator import Comparator
 
 
-@pytest.mark.interactive
-@pytest.mark.onlylocal
-def test_nonlin_function():
-    parameters = {
+@pytest.fixture
+def parameters():
+    return {
         "old": [
 
             -0.014719244288611932,
@@ -32,6 +31,10 @@ def test_nonlin_function():
         ]
     }
 
+
+@pytest.mark.interactive
+@pytest.mark.onlylocal
+def test_nonlin_function(parameters):
     fv = FVault()
     functions = [
         ROOT.TF1('f' + str(i), fv.func("nonlinearity"), 0, 20)

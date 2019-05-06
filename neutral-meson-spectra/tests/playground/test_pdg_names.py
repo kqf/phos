@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import ROOT
 import pytest
 import re
@@ -20,7 +22,7 @@ def pdg2name(x):
 @pytest.mark.parametrize("pdg", PDG_PARTICLES)
 def test_converts_names(pdg):
     pname = pdg2name(pdg)
-    print pdg, pname, name2rootname(pname)
+    print(pdg, pname, name2rootname(pname))
 
 
 def name2rootname(name):

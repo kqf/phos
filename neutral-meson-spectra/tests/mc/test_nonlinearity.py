@@ -5,6 +5,7 @@ from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions
 from spectrum.output import AnalysisOutput
 from tools.mc import Nonlinearity
+from spectrum.comparator import Comparator
 
 
 def nonlinearity_function():
@@ -36,4 +37,6 @@ def test_calculate_nonlinearity():
         ),
         loggs=AnalysisOutput("calculate the nonlinearity")
     )
+
+    Comparator().compare(nonlinearity)
     assert nonlinearity.GetEntries() > 0

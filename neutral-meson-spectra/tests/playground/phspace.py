@@ -1,6 +1,4 @@
-#!/usr/bin/python
-
-
+from __future__ import print_function
 import ROOT
 
 import json
@@ -138,7 +136,7 @@ class InclusiveGenerator(object):
         self.update_hists()
 
     def read(self, fname, name, reset=False):
-        print fname, name, reset
+        print(fname, name, reset)
         lst = ROOT.TFile(fname).Get(self.selname)
         obj = lst.FindObject(name)
         if reset:
@@ -152,7 +150,7 @@ class InclusiveGenerator(object):
         if not olist:
             return
 
-        print 'WARNING: You are trying to update the old histograms.'
+        print('WARNING: You are trying to update the old histograms.')
 
         def process(hist):
             ohist = olist.FindObject(hist.GetName())
