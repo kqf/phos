@@ -103,6 +103,13 @@
             "file": "input-data/mc/pythia/final_nonlinearity_2/pythia8_LHC16.root",
             "hsum": "c0af8c3971223de76fb86874e61f6eb8387e93843f3d5d5b8b8ed2bf2178b3f3",
             "pt_range": [0, 20]
+        },
+        "fixed LHC17": {
+            "default_selection": "PhysEff",
+            "description": "Production with the fixed nonlinearity",
+            "file": "input-data/mc/pythia/final_nonlinearity_2/pythia8_LHC17.root",
+            "hsum": "7f81628e955ae9c7af7563e73b94dfce941d7c12359e36cf0a53eb70ba9395d1",
+            "pt_range": [0, 20]
         }
     },
     "single #eta": {
