@@ -14,7 +14,7 @@ def nonlinearity_function():
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
         0, 100
     )
-    func_nonlin.SetParNames('A', '#sigma', 'E_{scale}')
+    func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
     func_nonlin.SetParameter(0, -0.05)
     func_nonlin.SetParameter(1, 0.6)
     func_nonlin.SetParLimits(1, 0, 10)
@@ -30,9 +30,9 @@ def test_calculate_nonlinearity():
     estimator = Nonlinearity(options, plot=True)
     nonlinearity = estimator.transform(
         (
-            DataVault().input('data', listname="Phys",
+            DataVault().input("data", listname="Phys",
                               histname="MassPtSM0"),
-            DataVault().input('pythia8', listname="PhysEff",
+            DataVault().input("fixed LHC16 extra", listname="PhysEff",
                               histname="MassPt"),
         ),
         loggs=AnalysisOutput("calculate the nonlinearity")

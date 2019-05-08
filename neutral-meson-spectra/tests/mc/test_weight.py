@@ -34,7 +34,7 @@ def fit_function():
     func_feeddown = ROOT.TF1(
         "func_feeddown",
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100)
-    func_feeddown.SetParNames('A', '#sigma', 'scale')
+    func_feeddown.SetParNames("A", "#sigma", "scale")
     func_feeddown.SetParameter(0, -1.063)
     func_feeddown.SetParameter(1, 0.855)
     func_feeddown.SetParameter(2, 2.0)

@@ -27,9 +27,9 @@ def test_efficiencies():
     options = [(names[0], Efficiency(composite_options))]
 
     general_options = EfficiencyOptions(
-        genname='hPt_#pi^{0}_primary_',
+        genname="hPt_#pi^{0}_primary_",
         scale=1.8,
-        ptrange='config/pt-same-truncated.json'
+        ptrange="config/pt-same-truncated.json"
     )
 
     options += [
