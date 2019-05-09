@@ -21,12 +21,12 @@ PI0_INPUTS = Proxy(
 def test_compare_raw_yields():
     ptrange = "config/pt-same.json"
     estimator = ComparePipeline([
-        ("#eta", Pipeline([
-            "analysis", Analysis(Options(particle="#pi^{0}", ptrange=ptrange)),
-            "spectrum", HistogramSelector("spectrum")
-        ])),
         ("#pi^{0}", Pipeline([
             "analysis", Analysis(Options(particle="#eta", ptrange=ptrange)),
+            "spectrum", HistogramSelector("spectrum")
+        ])),
+        ("#eta", Pipeline([
+            "analysis", Analysis(Options(particle="#pi^{0}", ptrange=ptrange)),
             "spectrum", HistogramSelector("spectrum")
         ])),
     ])
