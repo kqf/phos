@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.analysis import Analysis
 from spectrum.pipeline import Pipeline, ComparePipeline, HistogramSelector
 from spectrum.options import Options
@@ -8,17 +7,17 @@ from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 
-ETA_INPUTS = Proxy(
-    lambda x: DataVault().input("single #eta", "high", "PhysEff")
-)
 
-PI0_INPUTS = Proxy(
-    lambda x: DataVault().input("single #pi^{0}", "low", "PhysEff")
-)
+@pytest.fixture
+def dataset():
+    return (
+        DataVault().input("pythia8", "high", "PhysEff"),
+        DataVault().input("pythia8", "low", "PhysEff")
+    )
 
 
 @pytest.mark.onlylocal
-def test_compare_raw_yields():
+def test_compare_raw_yields(dataset):
     ptrange = "config/pt-same.json"
     estimator = ComparePipeline([
         ("#pi^{0}", Pipeline([
@@ -31,5 +30,5 @@ def test_compare_raw_yields():
         ])),
     ])
     loggs = AnalysisOutput("efficiency_ratio")
-    estimator.transform((ETA_INPUTS, PI0_INPUTS), loggs)
+    estimator.transform(dataset, loggs)
     loggs.plot()
