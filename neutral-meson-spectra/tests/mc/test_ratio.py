@@ -12,8 +12,8 @@ from vault.datavault import DataVault
 @pytest.fixture
 def dataset():
     return (
-        DataVault().input("pythia8", "high", "PhysEff"),
-        DataVault().input("pythia8", "low", "PhysEff")
+        DataVault().input("pythia8", listname="PhysEff"),
+        DataVault().input("pythia8", listname="PhysEff")
     )
 
 

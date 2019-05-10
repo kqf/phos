@@ -1,14 +1,17 @@
 import pytest
-from lazy_object_proxy import Proxy
 from spectrum.comparator import Comparator
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import TransformerBase
 from vault.datavault import DataVault
 
-DATASET = Proxy(
-    lambda: DataVault().input("pythia8", "ep_ratio_3")
-)
+
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("pythia8", "ep_ratio_3"),
+        DataVault().input("pythia8", "ep_ratio_3"),
+    )
 
 
 class EtaPionRatio(TransformerBase):
@@ -21,6 +24,6 @@ class EtaPionRatio(TransformerBase):
 
 
 @pytest.mark.onlylocal
-def test_calculate_eta_pion_ratio():
-    ratio = EtaPionRatio(None).transform((DATASET, DATASET), {})
+def test_calculate_eta_pion_ratio(data):
+    ratio = EtaPionRatio(None).transform(data, {})
     Comparator().compare(ratio)
