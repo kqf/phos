@@ -26,13 +26,14 @@ def dataset():
 def test_compare_raw_yields(dataset):
     ptrange = "config/pt-same.json"
     estimator = ComparePipeline([
-        ("#pi^{0}", Pipeline([
-            "analysis", Analysis(Options(particle="#eta", ptrange=ptrange)),
-            "spectrum", HistogramSelector("spectrum")
-        ])),
         ("#eta", Pipeline([
-            "analysis", Analysis(Options(particle="#pi^{0}", ptrange=ptrange)),
-            "spectrum", HistogramSelector("spectrum")
+            ("analysis", Analysis(
+                Options(particle="#pi^{0}", ptrange=ptrange))),
+            ("spectrum", HistogramSelector("spectrum")),
+        ])),
+        ("#pi^{0}", Pipeline([
+            ("analysis", Analysis(Options(particle="#eta", ptrange=ptrange))),
+            ("spectrum", HistogramSelector("spectrum")),
         ])),
     ])
     loggs = AnalysisOutput("raw_yield_ratio")
@@ -40,6 +41,7 @@ def test_compare_raw_yields(dataset):
     loggs.plot()
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 def test_efficiency(dataset):
     ptrange = "config/pt-same.json"
@@ -88,6 +90,7 @@ def ratio_inputs():
     return data_eta, options_eta, data_pi0, options_pi0
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 def test_yield_ratio(ratio_inputs):
     data_eta, options_eta, data_pi0, options_pi0 = ratio_inputs
