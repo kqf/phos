@@ -54,6 +54,7 @@ def test_efficiency(dataset):
     loggs.plot()
 
 
+@pytest.fixture
 def ratio_inputs():
 
     # Define the inputs and the dataset for #eta mesons
@@ -98,6 +99,7 @@ def ratio_inputs():
     return data_eta, options_eta, data_pi0, options_pi0
 
 
+@pytest.mark.onlylocal
 def test_yield_ratio(ratio_inputs):
     data_eta, options_eta, data_pi0, options_pi0 = ratio_inputs
 
