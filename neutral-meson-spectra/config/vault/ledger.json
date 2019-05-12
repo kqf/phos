@@ -14,13 +14,6 @@
             "hsum": "6c74a54aa0a2b7c907cfb06e639bd133bebe37526a9cc1e22bf790048722d319",
             "pt_range": [0, 20]
         },
-        "latest": {
-            "default_selection": "Phys",
-            "description": "Fixed ep ratio, all periods are correctly propagated",
-            "file": "input-data/data/LHC16/ep_ratio_4/LHC16.root",
-            "hsum": "49b35a837331dd7af0f5604030b2501bc922330c5a4cfb0033b9629b1b3f2916",
-            "pt_range": [0, 20]
-        },
         "isolated": {
             "default_selection": "Phys",
             "description": "Merged isolated bunches analysis with updated nonlinearity",
