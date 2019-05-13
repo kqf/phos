@@ -22,19 +22,24 @@ def nonlinearity_function():
     return func_nonlin
 
 
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("data", "fixed latest", listname="Phys",
+                          histname="MassPtSM0"),
+        DataVault().input("pythia8", "fixed latest", listname="PhysEff",
+                          histname="MassPt"),
+    )
+
+
 @pytest.mark.onlylocal
-def test_calculate_nonlinearity():
+def test_calculate_nonlinearity(data):
     options = NonlinearityOptions()
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options, plot=True)
     nonlinearity = estimator.transform(
-        (
-            DataVault().input("data", listname="Phys",
-                              histname="MassPtSM0"),
-            DataVault().input("fixed LHC16 extra", listname="PhysEff",
-                              histname="MassPt"),
-        ),
+        data,
         loggs=AnalysisOutput("calculate the nonlinearity")
     )
 
