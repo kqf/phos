@@ -97,6 +97,13 @@
             "hsum": "7cc982693581c0161693331712aefc8f3dda2634f8bc2581647a59600ac158cf",
             "pt_range": [0, 20]
         },
+        "fixed latest": {
+            "default_selection": "PhysEff",
+            "description": "Production with the fixed nonlinearity",
+            "file": "input-data/mc/pythia/final_nonlinearity_2/pythia8.root",
+            "hsum": "4ab83f22bde3a39638bcad2b74a78982f762cbacdff45f90bbf11e3ed03a0f58",
+            "pt_range": [0, 20]
+        },
         "fixed LHC16": {
             "default_selection": "PhysEff",
             "description": "Production with the fixed nonlinearity",
