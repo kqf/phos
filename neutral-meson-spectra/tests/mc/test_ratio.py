@@ -22,6 +22,7 @@ def dataset():
     )
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 def test_compare_raw_yields(dataset):
     ptrange = "config/pt-same.json"

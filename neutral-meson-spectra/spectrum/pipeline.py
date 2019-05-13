@@ -134,7 +134,8 @@ class HistogramScaler(object):
 
     def transform(self, inputs, loggs):
         if self.width:
-            br.scalew(inputs, self.factor)
+            # br.scalew(inputs, self.factor)
+            raise IOError("Don't use this option")
         else:
             inputs.Scale(self.factor)
         return inputs
@@ -159,11 +160,14 @@ class Pipeline(object):
 
     def transform(self, inputs, loggs):
         updated = inputs
-        for name, step in self.steps:
-            local_logs = {}
-            updated = step.transform(updated, local_logs)
-            loggs[name] = local_logs
-        return updated
+        try:
+            for name, step in self.steps:
+                local_logs = {}
+                updated = step.transform(updated, local_logs)
+                loggs[name] = local_logs
+            return updated
+        except ValueError:
+            import ipdb; ipdb.set_trace()
 
 
 def merge(data):

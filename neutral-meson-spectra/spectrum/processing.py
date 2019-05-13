@@ -194,8 +194,8 @@ class DataExtractor(object):
     def _decorate_hists(self, histograms, nevents):
         # Scale by the number of events
         if self.opt.scalew_spectrum:
-            br.scalew(histograms.spectrum)
-            br.scalew(histograms.nmesons)
+            br.scalewidth(histograms.spectrum)
+            br.scalewidth(histograms.nmesons)
 
         histograms.spectrum.Scale(1. / nevents)
         histograms.spectrum.logy = True

@@ -21,14 +21,14 @@
             "hsum": "dd3828aad5e9bf8283ce3638c7f54a0c1bfbb60900f16c2eef1edd310de7f4b4",
             "pt_range": [0, 20]
         },
-        "latest": {
+        "latest old": {
             "default_selection": "Phys",
             "description": "Prodcution with the official nonlinearity",
             "file": "input-data/data/LHC16/final_nonlinearity_1/LHC16.root",
             "hsum": "c4523e28235e8c5b68c94d67ec7c5236b6b7fe3ded7a60bed36cd745e8fc24ab",
             "pt_range": [0, 20]
         },
-        "fixed latest": {
+        "fixed": {
             "default_selection": "Phys",
             "description": "Prodcution with the official nonlinearity",
             "file": "input-data/data/LHC16/final_nonlinearity_2/LHC16.root",
@@ -90,14 +90,14 @@
             "hsum": "b0b8a2935494c7d99d3008e8ff05311bf46b725934b6e3b1f0fc3292d26aac1b",
             "pt_range": [0, 20]
         },
-        "latest": {
+        "latest old": {
             "default_selection": "PhysEff",
             "description": "Add MC production with official nonlinearity",
             "file": "input-data/mc/pythia/final_nonlinearity_1/pythia8.root",
             "hsum": "7cc982693581c0161693331712aefc8f3dda2634f8bc2581647a59600ac158cf",
             "pt_range": [0, 20]
         },
-        "fixed latest": {
+        "latest": {
             "default_selection": "PhysEff",
             "description": "Production with the fixed nonlinearity",
             "file": "input-data/mc/pythia/final_nonlinearity_2/pythia8.root",
