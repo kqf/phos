@@ -28,7 +28,7 @@
             "hsum": "c4523e28235e8c5b68c94d67ec7c5236b6b7fe3ded7a60bed36cd745e8fc24ab",
             "pt_range": [0, 20]
         },
-        "fixed": {
+        "latest": {
             "default_selection": "Phys",
             "description": "Prodcution with the official nonlinearity",
             "file": "input-data/data/LHC16/final_nonlinearity_2/LHC16.root",
