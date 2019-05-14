@@ -19,11 +19,14 @@ def validate(output, path,
     for p in path.split('/'):
         nominal = nominal[p]
 
+    msg = '\n\n'
+    # for label, actual in output.iteritems():
+    #     msg += 'Nominal values:\n'
+    #     msg += '"{}": {}\n'.format(label, nominal[label])
+    msg += 'Actual values:\n'
+    for label, actual in output.iteritems():
+        msg += '"{}": {},\n'.format(label, dump_dict(actual))
+
     for label, actual in output.iteritems():
         print 'Checking {}'.format(label)
-        msg = '\n\n'
-        msg += 'Nominal values:\n'
-        msg += '"{}": {}\n'.format(label, nominal[label])
-        msg += 'Actual values:\n'
-        msg += '"{}": {}\n'.format(label, dump_dict(actual))
         np.testing.assert_almost_equal(actual, nominal[label], err_msg=msg)
