@@ -1,6 +1,5 @@
 import pytest  # noqa
 
-from lazy_object_proxy import Proxy
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
@@ -26,28 +25,33 @@ class MassComparator(TransformerBase):
         ])
 
 
-PION_DATA = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def pion_data():
+    return (
         DataVault().input("single #pi^{0}", "low", "PhysEff", label="#pi^{0}"),
         DataVault().input("single #pi^{0}", "high", "PhysEff", label="#pi^{0}")
     )
-)
-ETA_DATA = Proxy(
-    lambda:
-    (
+
+
+@pytest.fixture
+def eta_data():
+    return (
         DataVault().input("single #eta", "low", "PhysEff", label="#eta"),
         DataVault().input("single #eta", "high", "PhysEff", label="#eta")
     )
-)
+
+
+@pytest.fixture
+def data(pion_data, eta_data):
+    return (eta_data, pion_data)
 
 
 @pytest.mark.onlylocal
-def test_efficiency_ratio():
+def test_efficiency_ratio(data):
     ptrange = "config/pt-same.json"
     opt_eta = CompositeOptions("#eta", ptrange=ptrange)
     opt_pi0 = CompositeOptions("#pi^{0}", ptrange=ptrange)
     estimator = MassComparator(opt_eta, opt_pi0, plot=False)
     loggs = AnalysisOutput("mass ratio")
-    estimator.transform((ETA_DATA, PION_DATA), loggs)
+    estimator.transform(data, loggs)
     # loggs.plot()
