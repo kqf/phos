@@ -7,13 +7,6 @@
             "hsum": "816349a7246b6e6d8f348151882d64dc88887fad03331c0a23647464a8e4b7e4",
             "pt_range": [0, 20]
         },
-        "acceptance": {
-            "default_selection": "Phys0",
-            "description": "Prodcution with the official nonlinearity",
-            "file": "input-data/data/LHC16/acceptance_1/LHC16.root",
-            "hsum": "6c74a54aa0a2b7c907cfb06e639bd133bebe37526a9cc1e22bf790048722d319",
-            "pt_range": [0, 20]
-        },
         "isolated": {
             "default_selection": "Phys",
             "description": "Merged isolated bunches analysis with updated nonlinearity",
@@ -47,13 +40,6 @@
             "description": "Raw data without TOF correction",
             "file": "input-data/data/LHC16.root",
             "hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",
-            "pt_range": [0, 20]
-        },
-        "uncorrected": {
-            "default_selection": "Phys",
-            "description": "Raw data without TOF correction",
-            "file": "input-data/data/LHC16/uncorrected/LHC16.root",
-            "hsum": "1a592e5a4d652b540dbee87212a23ed9280437c565f088de96fa6c1e7cdaf46b",
             "pt_range": [0, 20]
         }
     },
