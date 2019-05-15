@@ -11,7 +11,7 @@ from vault.datavault import DataVault
 
 
 def cyield_data(particle, cut):
-    mc_production = "single %s acceptance" % particle
+    mc_production = "single %s final nonlinearity 2" % particle
     data_input = (
         DataVault().input(
             "data", "latest",

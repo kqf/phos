@@ -19,9 +19,9 @@ def data():
     return (
         DataVault().input("data", "latest", histname="MassPtSM0"),
         (
-            DataVault().input("single #pi^{0} final nonlinearity", "low",
+            DataVault().input("single #pi^{0} final nonlinearity 2", "low",
                               "PhysEff"),
-            DataVault().input("single #pi^{0} final nonlinearity", "high",
+            DataVault().input("single #pi^{0} final nonlinearity 2", "high",
                               "PhysEff")
         )
     )

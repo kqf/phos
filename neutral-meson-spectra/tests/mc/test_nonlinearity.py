@@ -25,9 +25,9 @@ def nonlinearity_function():
 @pytest.fixture
 def data():
     return (
-        DataVault().input("data", "fixed latest", listname="Phys",
+        DataVault().input("data", "latest", listname="Phys",
                           histname="MassPtSM0"),
-        DataVault().input("pythia8", "fixed latest", listname="PhysEff",
+        DataVault().input("pythia8", "latest", listname="PhysEff",
                           histname="MassPt"),
     )
 

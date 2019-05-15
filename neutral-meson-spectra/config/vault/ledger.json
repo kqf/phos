@@ -261,7 +261,7 @@
             "pt_range": [0.0, 8.0]
         }
     },
-    "single #pi^{0} final nonlinearity": {
+    "single #pi^{0} final nonlinearity 2": {
         "high": {
             "default_selection": "PhysNonlinScan",
             "description": "Efficiency selection + acceptance for corrected nonlinearity",
