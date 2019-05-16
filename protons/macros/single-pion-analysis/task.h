@@ -20,9 +20,6 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
 		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC)
 	);
-	AliPP13SelectionWeightsMC & mc_weights_only = dynamic_cast<AliPP13SelectionWeightsMC &>(
-		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC)
-	);
 
 	// mc_weights.fNonA = 0;
 	// mc_weights.fNonGlobal = 1.0; // Take into account the right scale
