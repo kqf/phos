@@ -100,22 +100,6 @@
             "pt_range": [0.0, 10.0]
         }
     },
-    "single #eta acceptance": {
-        "high": {
-            "default_selection": "PhysEffNoA",
-            "description": "Update calibration, keep old nonlinearity for comparison",
-            "file": "input-data/mc/single/eta/acceptance_1/LHC17j3c2.root",
-            "hsum": "0580057c61f67480abf57cc7a256bfeae87f27cb3f3ab71bb813c34af631e40d",
-            "pt_range": [4.0, 20.0]
-        },
-        "low": {
-            "default_selection": "PhysEffNoA",
-            "description": "Update calibration, keep old nonlinearity for comparison",
-            "file": "input-data/mc/single/eta/acceptance_1/LHC17j3c1.root",
-            "hsum": "554d03c342efa8277f33ad48368069e4000ddeb07255350c1c878199ff4a4293",
-            "pt_range": [0.0, 10.0]
-        }
-    },
     "single #eta new calibration": {
         "high": {
             "default_selection": "PhysEffNoA",
@@ -161,22 +145,6 @@
             "description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02",
             "file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b1.root",
             "hsum": "f30ce0bb39d3a081a2b911670f7239daa697103bddafb45df9200263a4fef1c9",
-            "pt_range": [0.0, 8.0]
-        }
-    },
-    "single #pi^{0} acceptance": {
-        "high": {
-            "default_selection": "PhysNonlinScan",
-            "description": "Update calibration, keep old nonlinearity for comparison",
-            "file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b2.root",
-            "hsum": "27c576b85da688a96e74726811cd2637948b9cbdaba481abf1681771f0fae389",
-            "pt_range": [4.0, 20.0]
-        },
-        "low": {
-            "default_selection": "PhysNonlinScan",
-            "description": "Update calibration, keep old nonlinearity for comparison",
-            "file": "input-data/mc/single/pi0/acceptance_1/LHC17j3b1.root",
-            "hsum": "d2e19911f285e21aeff19ceb2a761f8e37486718b3c77889876a70be6bc5565c",
             "pt_range": [0.0, 8.0]
         }
     },
