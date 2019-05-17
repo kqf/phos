@@ -1,7 +1,6 @@
 import ROOT
 import pytest  # noqa
 
-from lazy_object_proxy import Proxy
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.output import AnalysisOutput
@@ -11,9 +10,9 @@ from vault.formulas import FVault
 from tools.feeddown import data_feeddown
 
 
-DATASET = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def data():
+    return (
         (
             DataVault().input("data", listname="Phys", histname="MassPtSM0"),
             data_feeddown(),
@@ -23,7 +22,6 @@ DATASET = Proxy(
             DataVault().input("single #pi^{0}", "high", "PhysEff"),
         )
     )
-)
 
 
 def fitfunction():
@@ -37,9 +35,9 @@ def fitfunction():
 
 
 @pytest.mark.onlylocal
-def test_corrected_yield_for_pi0():
+def test_corrected_yield_for_pi0(data):
     options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
     options.fitfunc = fitfunction()
     CorrectedYield(options).transform(
-        DATASET,
+        data,
         loggs=AnalysisOutput("corrected yield #pi^{0}"))

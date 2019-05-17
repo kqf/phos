@@ -1,3 +1,5 @@
+import pytest
+
 import ROOT
 from spectrum.output import AnalysisOutput
 from spectrum.pipeline import Pipeline
@@ -17,17 +19,16 @@ class DummyTransformer(TransformerBase):
         return hist
 
 
-DUMMY_DATASET = (
-    None,
-    None
-)
+@pytest.fixture
+def data():
+    return (None, None)
 
 
-def test_the_output():
+def test_the_output(data):
     loggs = AnalysisOutput("test_loggs_output")
     estimator = Pipeline([
         ('dummy1', DummyTransformer("histname1")),
         ('dummy2', DummyTransformer("histname2")),
     ])
-    estimator.transform(DUMMY_DATASET, loggs)
+    estimator.transform(data, loggs)
     loggs.plot()

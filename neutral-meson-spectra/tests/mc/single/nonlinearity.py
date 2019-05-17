@@ -9,9 +9,6 @@ from tools.mc import Nonlinearity
 from tools.mc import Decalibration
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator  # noqa
-# from vault.formulas import FVault
-
-# SPMC_REGULAR = Proxy(
 
 
 @pytest.fixture
