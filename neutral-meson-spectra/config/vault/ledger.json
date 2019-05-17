@@ -120,15 +120,15 @@
         "high": {
             "default_selection": "PhysEffNoA",
             "description": "Efficiency + acceptance for corrected nonlinearity",
-            "file": "input-data/mc/single/eta/newest_calibration_2/LHC17j3c2.root",
-            "hsum": "1c19cc4120996f086e5458f79e5e9b0694dd07972a6afc5cbab6a8b577d44744",
+            "file": "input-data/mc/single/eta/final_nonlinearity_2/LHC17j3c2.root",
+            "hsum": "f75f345980eafcdef0bfff402ef93207513a8a53c6a2f763abc854cbef14195d",
             "pt_range": [4.0, 20.0]
         },
         "low": {
             "default_selection": "PhysEffNoA",
             "description": "Efficiency + acceptance for corrected nonlinearity",
-            "file": "input-data/mc/single/eta/newest_calibration_2/LHC17j3c1.root",
-            "hsum": "130fbca7e81219efc7e1b725f60cce75a099b3d53009469634a39a11aa3367db",
+            "file": "input-data/mc/single/eta/final_nonlinearity_2/LHC17j3c1.root",
+            "hsum": "034db34ab96a1a846e96675ef3b9b0809aa1e32b7e5ae58d4c257935a41b6bae",
             "pt_range": [0.0, 10.0]
         }
     },
