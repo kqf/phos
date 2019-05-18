@@ -1,7 +1,6 @@
 import sys
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.options import Options
 from spectrum.processing import DataSlicer, MassFitter, RangeEstimator
 from spectrum.processing import InvariantMassExtractor
@@ -11,9 +10,9 @@ from spectrum.pipeline import Pipeline
 from vault.datavault import DataVault
 
 
-DATASET = Proxy(
-    lambda: DataVault().input("data", "stable")
-)
+@pytest.fixture
+def data():
+    return DataVault().input("data")
 
 
 @pytest.fixture()
@@ -28,7 +27,7 @@ def stop():
     "#pi^{0}",
     "#eta"
 ])
-def test_draws_multiple(stop, particle):
+def test_draws_multiple(stop, particle, data):
     option = Options(particle=particle)
 
     pipeline = Pipeline([
@@ -39,6 +38,6 @@ def test_draws_multiple(stop, particle):
     ])
 
     loggs = AnalysisOutput("test multirage plotter")
-    masses = pipeline.transform(DATASET, loggs)
+    masses = pipeline.transform(data, loggs)
     loggs.update({"invariant-masses": masses})
     loggs.plot(stop=stop)
