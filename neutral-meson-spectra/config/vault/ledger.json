@@ -103,22 +103,6 @@
     "single #pi^{0}": {
         "high": {
             "default_selection": "PhysNonlinScan",
-            "description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02",
-            "file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b2.root",
-            "hsum": "e2e72541b7d464e4f651d0ebe146a58c0a23220db993dbb9a23d90623576c544",
-            "pt_range": [4.0, 20.0]
-        },
-        "low": {
-            "default_selection": "PhysNonlinScan",
-            "description": "Scan nonlinearities around the minimum for new parametriztion ge = 1.02",
-            "file": "input-data/mc/single/pi0/scan_nonlinearity7/LHC17j3b1.root",
-            "hsum": "f30ce0bb39d3a081a2b911670f7239daa697103bddafb45df9200263a4fef1c9",
-            "pt_range": [0.0, 8.0]
-        }
-    },
-    "single #pi^{0}": {
-        "high": {
-            "default_selection": "PhysNonlinScan",
             "description": "Efficiency selection + acceptance for corrected nonlinearity",
             "file": "input-data/mc/single/pi0/final_nonlinearity_2/LHC17j3b2.root",
             "hsum": "dfdd0b5aba81b782363e6e446fb88831d8ba3a1ca9307f9bff0b91e0c869f393",
