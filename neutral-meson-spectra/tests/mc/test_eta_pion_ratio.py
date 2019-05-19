@@ -9,8 +9,8 @@ from vault.datavault import DataVault
 @pytest.fixture
 def data():
     return (
-        DataVault().input("pythia8", "ep_ratio_3"),
-        DataVault().input("pythia8", "ep_ratio_3"),
+        DataVault().input("pythia8"),
+        DataVault().input("pythia8"),
     )
 
 
