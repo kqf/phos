@@ -33,6 +33,7 @@ def data():
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_calculate_nonlinearity(data):
     options = NonlinearityOptions()
     options.fitf = nonlinearity_function()

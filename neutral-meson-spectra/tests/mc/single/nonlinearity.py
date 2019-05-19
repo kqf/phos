@@ -16,10 +16,8 @@ def data():
     return (
         DataVault().input("data", "latest", histname="MassPtSM0"),
         (
-            DataVault().input("single #pi^{0} final nonlinearity 2", "low",
-                              "PhysEff"),
-            DataVault().input("single #pi^{0} final nonlinearity 2", "high",
-                              "PhysEff")
+            DataVault().input("single #pi^{0}", "low", "PhysEff"),
+            DataVault().input("single #pi^{0}", "high", "PhysEff")
         )
     )
 
@@ -37,6 +35,7 @@ def nonlinearity_function():
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_spmc_nonlinearity(data):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinearity_function()

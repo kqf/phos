@@ -24,6 +24,7 @@ def scale_data(data, scale=2):
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
