@@ -8,9 +8,15 @@ from tools.scan import NonlinearityScan
 from vault.datavault import DataVault
 
 
+@pytest.fixture
+def nbins():
+    return 2
+
+
 # TODO: Add interface for nonlinearity scan
 @pytest.mark.onlylocal
-def test_interface():
+@pytest.mark.skip("Don't do nonlinearity scan for pythia8")
+def test_interface(nbins):
     nbins = 2
     estimator = NonlinearityScan(
         NonlinearityScanOptions(nbins=nbins)
@@ -32,9 +38,8 @@ def test_interface():
 
 
 @pytest.mark.onlylocal
-def test_composite_interface():
+def test_composite_interface(nbins):
     prod = "single #pi^{0}"
-    nbins = 2
     histnames = sum([
         [
             "hMassPt_{}_{}".format(i, j),
