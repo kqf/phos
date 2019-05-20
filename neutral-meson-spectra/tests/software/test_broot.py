@@ -587,6 +587,7 @@ def test_extracts_bins(stop):
         assert hist.GetBinError(i + 1) == b
 
 
+@pytest.mark.skip("Don't rely on external traffic")
 def test_downloads_from_hepdata(stop):
     record, ofile = 'ins1620477', 'test_hepdata.root'
 
@@ -598,6 +599,7 @@ def test_downloads_from_hepdata(stop):
     os.remove(ofile)
 
 
+@pytest.mark.skip("Don't rely on external traffic")
 def test_reads_from_tdir(stop):
     record, ofile = 'ins1620477', 'test_hepdata.root'
 
