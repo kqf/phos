@@ -21,6 +21,7 @@ SPMC_DATA = Proxy(
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     # "#eta",
@@ -35,6 +36,7 @@ def test_simple(particle):
 
 
 @pytest.mark.skip("")
+@pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_composite():
     analysis = Analysis(CompositeOptions("#pi^{0}"))

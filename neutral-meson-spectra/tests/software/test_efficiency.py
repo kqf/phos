@@ -21,6 +21,7 @@ SPMC_DATA = Proxy(
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("name, options, data", [
     ("simple", EfficiencyOptions(), MC_DATA),
     ("composite", CompositeEfficiencyOptions("#pi^{0}"), SPMC_DATA),

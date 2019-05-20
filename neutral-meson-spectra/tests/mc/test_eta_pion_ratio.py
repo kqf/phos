@@ -24,6 +24,7 @@ class EtaPionRatio(TransformerBase):
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_calculate_eta_pion_ratio(data):
     ratio = EtaPionRatio(None).transform(data, {})
     Comparator().compare(ratio)
