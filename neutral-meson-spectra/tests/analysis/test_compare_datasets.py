@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.options import Options
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
@@ -21,25 +20,23 @@ class CompareAnalysis(TransformerBase):
         )
 
 
-DATASETS = Proxy(
-    lambda: (
-        DataVault().input("data", "ep_ratio", histname="MassPtSM0",
-                          label="2016 new aliphysics"),
+@pytest.fixture
+def data():
+    return (
         DataVault().input("data", "LHC17 qa1", label="2017"),
         DataVault().input("data", label="2016", histname="MassPtSM0"),
     )
-)
 
 
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
-def test_gives_similar_results(particle):
+def test_gives_similar_results(particle, data):
     estimator = CompareAnalysis(
-        steps=[d.label for d in DATASETS],
+        steps=[d.label for d in data],
         particle=particle
     )
 
     loggs = AnalysisOutput("compare different datasets", particle=particle)
-    estimator.transform(DATASETS, loggs)
+    estimator.transform(data, loggs)
     loggs.plot()
