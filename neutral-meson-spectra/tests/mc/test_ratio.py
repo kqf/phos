@@ -22,8 +22,9 @@ def dataset():
     )
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_compare_raw_yields(dataset):
     ptrange = "config/pt-same.json"
     estimator = ComparePipeline([
@@ -38,12 +39,14 @@ def test_compare_raw_yields(dataset):
         ])),
     ])
     loggs = AnalysisOutput("raw_yield_ratio")
-    estimator.transform(dataset, loggs)
-    loggs.plot()
+    output = estimator.transform(dataset, loggs)
+    Comparator().compare(output)
+    # loggs.plot()
 
 
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_efficiency(dataset):
     ptrange = "config/pt-same.json"
     estimator = ComparePipeline([
@@ -93,6 +96,7 @@ def ratio_inputs():
 
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_yield_ratio(ratio_inputs):
     data_eta, options_eta, data_pi0, options_pi0 = ratio_inputs
 
