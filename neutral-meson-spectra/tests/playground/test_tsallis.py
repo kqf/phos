@@ -7,6 +7,7 @@ from vault.formulas import FVault
 from spectrum.comparator import Comparator
 
 
+@pytest.fixture
 def parameters():
     return [
         0.014960701090585591,
@@ -39,6 +40,7 @@ def test_parameters(parameters):
         )
 
 
+@pytest.fixture
 def parameters_normalized():
     return [
         0.2622666593790998 / 0.0119143016137,
