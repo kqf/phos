@@ -22,7 +22,7 @@ def dataset():
     )
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_compare_raw_yields(dataset):
@@ -56,12 +56,13 @@ def test_efficiency(dataset):
             EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange))),
     ])
     loggs = AnalysisOutput("efficiency_ratio")
-    estimator.transform(dataset, loggs)
-    loggs.plot()
+    output = estimator.transform(dataset, loggs)
+    # loggs.plot()
+    Comparator().compare(output)
 
 
 @pytest.fixture
-def ratio_inputs():
+def data():
 
     # Define the inputs and the dataset for #eta mesons
     #
@@ -73,8 +74,6 @@ def ratio_inputs():
         DataVault().input("pythia8", listname="PhysEff")
     )
 
-    options_eta = CorrectedYieldOptions(particle="#eta")
-
     # Define the inputs and the dataset for #pi^{0}
     #
     data_pi0 = (
@@ -84,21 +83,25 @@ def ratio_inputs():
         ),
         DataVault().input("pythia8", listname="PhysEff"),
     )
+    return data_eta, data_pi0
 
+
+@pytest.fixture
+def options():
+    options_eta = CorrectedYieldOptions(particle="#eta")
     options_pi0 = CorrectedYieldOptions(particle="#pi^{0}")
-    # Make same binning for all neutral mesons
     options_pi0.set_binning(
         options_eta.analysis.pt.ptedges,
         options_eta.analysis.pt.rebins
     )
-    return data_eta, options_eta, data_pi0, options_pi0
+    return options_eta, options_pi0
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_yield_ratio(ratio_inputs):
-    data_eta, options_eta, data_pi0, options_pi0 = ratio_inputs
+def test_yield_ratio(data, options):
+    options_eta, options_pi0 = options
 
     estimator = YieldRatio(
         options_eta=options_eta,
@@ -107,8 +110,5 @@ def test_yield_ratio(ratio_inputs):
     )
 
     loggs = AnalysisOutput("eta to pion ratio")
-    output = estimator.transform(
-        (data_eta, data_pi0),
-        loggs=loggs
-    )
+    output = estimator.transform(data, loggs=loggs)
     Comparator().compare(output)
