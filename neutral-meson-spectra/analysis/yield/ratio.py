@@ -10,7 +10,7 @@ from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 
-def ratio_input():
+def data():
     # Define the inputs and the dataset for #eta mesons
     #
     inputs_eta = (
@@ -25,8 +25,6 @@ def ratio_input():
         ),
         inputs_eta
     )
-
-    options_eta = CompositeCorrectedYieldOptions(particle="#eta")
 
     # Define the inputs and the dataset for #pi^{0}
     #
@@ -44,17 +42,23 @@ def ratio_input():
         inputs_pi0
     )
 
+    return data_eta, data_pi0
+
+
+@pytest.fixture
+def options():
+    options_eta = CompositeCorrectedYieldOptions(particle="#eta")
     options_pi0 = CompositeCorrectedYieldOptions(particle="#pi^{0}")
     # Make same binning for all neutral mesons
     options_pi0.set_binning(
         options_eta.analysis.pt.ptedges,
         options_eta.analysis.pt.rebins
     )
-    return data_eta, options_eta, data_pi0, options_pi0
+    return options_eta, options_pi0
 
 
-def test_yield_ratio():
-    data_eta, options_eta, data_pi0, options_pi0 = ratio_input()
+def test_yield_ratio(data, options):
+    options_eta, options_pi0 = options
 
     estimator = YieldRatio(
         options_eta=options_eta,
@@ -64,7 +68,7 @@ def test_yield_ratio():
 
     loggs = AnalysisOutput("eta to pion ratio")
     output = estimator.transform(
-        (data_eta, data_pi0),
+        data,
         loggs=loggs
     )
     Comparator().compare(output)
@@ -72,8 +76,10 @@ def test_yield_ratio():
 
 
 @pytest.mark.skip('Something is wrong')
-def test_debug_ratio():
-    data_eta, options_eta, data_pi0, options_pi0 = ratio_input()
+def test_debug_yield_ratio(data, options):
+    options_eta, options_pi0 = options
+    data_eta, data_pi0 = data
+
     loggs = AnalysisOutput("")
     pi0 = CorrectedYield(options_pi0).transform(data_pi0, loggs)
     eta = CorrectedYield(options_eta).transform(data_eta, loggs)
