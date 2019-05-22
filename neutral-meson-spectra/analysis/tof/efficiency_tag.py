@@ -1,7 +1,6 @@
 import pytest
 
 import ROOT
-from lazy_object_proxy import Proxy
 from spectrum.broot import BROOT as br
 from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
@@ -10,28 +9,27 @@ from spectrum.output import AnalysisOutput
 from tools.probe import TagAndProbe
 from tools.validate import validate
 
-LATEST_DATASET = Proxy(
-    lambda: (
-        DataVault().input("data",
-                          listname="TagAndProbleTOF",
+
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("data", listname="TagAndProbleTOF",
                           histname="MassEnergyTOF_SM0"),
-        DataVault().input("data",
-                          listname="TagAndProbleTOF",
+        DataVault().input("data", listname="TagAndProbleTOF",
                           histname="MassEnergyAll_SM0"),
     )
-)
-OLD_DATASET = Proxy(
-    lambda: (
-        DataVault().input("data",
-                          "uncorrected",
+
+
+@pytest.fixture
+def data_old():
+    return (
+        DataVault().input("data", "uncorrected",
                           "TagAndProbleTOFOnlyTender",
                           histname="MassEnergyTOF_SM0"),
-        DataVault().input("data",
-                          "uncorrected",
+        DataVault().input("data", "uncorrected",
                           "TagAndProbleTOFOnlyTender",
                           histname="MassEnergyAll_SM0"),
     )
-)
 
 
 def efficincy_function():
@@ -64,7 +62,7 @@ def efficincy_function():
     return tof_eff
 
 
-def fit_tof_efficiency(dataset=LATEST_DATASET):
+def fit_tof_efficiency(dataset):
     options = ProbeTofOptions()
     options.fitfunc = efficincy_function()
     probe_estimator = TagAndProbe(options, False)
@@ -88,18 +86,18 @@ def fit_tof_efficiency(dataset=LATEST_DATASET):
 
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_estimate_tof_efficiency():
-    efficiency = fit_tof_efficiency(OLD_DATASET)
+def test_estimate_tof_efficiency(data_old):
+    efficiency = fit_tof_efficiency(data_old)
     validate(br.hist2dict(efficiency), "efficiency_tag")
 
 
 @pytest.mark.skip("")
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_old_results():
+def test_old_results(data, data_old):
     Comparator(labels=("old", "new")).compare(
-        fit_tof_efficiency(OLD_DATASET),
-        fit_tof_efficiency()
+        fit_tof_efficiency(data_old),
+        fit_tof_efficiency(data),
     )
 
 
@@ -107,7 +105,7 @@ def test_old_results():
 @pytest.mark.skip("")
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_newest_results():
+def test_newest_results(data):
     Comparator().compare(
-        br.chi2errors(fit_tof_efficiency(LATEST_DATASET), scale=0.01)
+        br.chi2errors(fit_tof_efficiency(data), scale=0.01)
     )
