@@ -31,13 +31,17 @@ class ModuleAnalysis(TransformerBase):
         ])
 
 
+@pytest.fixture
+def periods():
+    return "egijklmor"
+
+
 @pytest.mark.skip("")
 @pytest.mark.parametrize("atype", [
     "mass",
     "width"
 ])
-def test_calibration(atype):
-    periods = "egijklmor"
+def test_calibration(atype, periods):
     options = Options(ptrange="config/pt-periods.json")
     masses = [
         CalibrationAnalysis(atype, options).transform(
@@ -59,9 +63,7 @@ def test_calibration(atype):
     loggs.plot()
 
 
-def test_mass_different_modules():
-    periods = "egijklmor"
-
+def test_mass_different_modules(periods):
     def data(period):
         vault = DataVault("debug-ledger.json")
         period_name = "LHC17{}".format(period)
