@@ -11,10 +11,11 @@ from spectrum.comparator import Comparator  # noqa
 from vault.datavault import DataVault
 
 DATASET = Proxy(
-    lambda: DataVault().input("pythia8", "ep_ratio_3", "PhysEff")
+    lambda: DataVault().input("pythia8", listname="PhysEff")
 )
 
 
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("data, particle", [
     (DATASET, "#pi^{0}"),
