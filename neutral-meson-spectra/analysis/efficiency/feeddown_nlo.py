@@ -1,6 +1,6 @@
+import pytest
 import ROOT
 
-from lazy_object_proxy import Proxy
 from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
 
@@ -23,9 +23,9 @@ def feeddown_paramerization():
     return func_feeddown
 
 
-DATASET = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def data():
+    return (
         DataVault().input(
             "pythia8",
             listname="MCStudy",
@@ -34,15 +34,15 @@ DATASET = Proxy(
         ),
         DataVault().input("pythia8", listname="FeeddownSelection"),
     )
-)
 
 
-def test_feeddown_correction():
+@pytest.mark.interactive
+def test_feeddown_correction(data):
     options = FeeddownOptions()
     options.fitf = feeddown_paramerization()
     estimator = FeeddownEstimator(options)
     loggs = AnalysisOutput("feeddown nlo correction")
-    output = estimator.transform(DATASET, loggs)
+    output = estimator.transform(data, loggs)
     loggs.plot()
     Comparator().compare(output)
     assert output.GetEntries() > 0
