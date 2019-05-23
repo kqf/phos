@@ -2,7 +2,6 @@ import pytest
 from collections import namedtuple
 
 import ROOT
-from lazy_object_proxy import Proxy
 from spectrum.broot import BROOT as br
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase
@@ -99,16 +98,17 @@ class KaonToPionDoubleRatio(TransformerBase):
         ])
 
 
-DATASET_DATA = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def real_data():
+    return (
         DataVault().input("kaon2pion"),
         DataVault().input("kaon2pion"),
     )
-)
 
-DATASET_MC = Proxy(
-    lambda: (
+
+@pytest.fixture
+def mc_data():
+    return (
         (
             DataVault().input("pythia8", listname="KaonToPionRatio"),
             DataVault().input("pythia8", listname="KaonToPionRatio"),
@@ -118,27 +118,24 @@ DATASET_MC = Proxy(
             DataVault().input("pythia8", listname="KaonToPionRatio"),
         ),
     )
-)
 
-DATASET = Proxy(
-    lambda: (
-        DATASET_DATA,
-        DATASET_MC
-    )
-)
+
+@pytest.fixture
+def data(real_data, mc_data):
+    return (real_data, mc_data)
 
 
 @pytest.mark.skip("")
-def test_draw_ratio_mc():
+def test_draw_ratio_mc(mc_data):
     options = K2POptions(
         kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
         pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
     )
-    return KaonToPionRatioMC(options).transform(DATASET_MC, {})
+    return KaonToPionRatioMC(options).transform(mc_data, {})
 
 
 @pytest.mark.thesis
-def test_ratio():
+def test_ratio(data):
     fitfunc = ROOT.TF1(
         "feeddown_ratio",
         "[3] * x *(([4] + [5]) * x - [5]) + "
@@ -164,6 +161,6 @@ def test_ratio():
 
     estimator = KaonToPionDoubleRatio(options, plot=True)
     loggs = AnalysisOutput("pion to kaon", particle="")
-    double_ratio = estimator.transform(DATASET, loggs)
+    double_ratio = estimator.transform(data, loggs)
     Comparator().compare(double_ratio)
     loggs.plot()
