@@ -1,11 +1,11 @@
 import pytest
 
 from lazy_object_proxy import Proxy
-from spectrum.output import AnalysisOutput # noqa
+from spectrum.output import AnalysisOutput  # noqa
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
-from spectrum.options import CompositeOptions
+from spectrum.options import Options
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.efficiency import Efficiency
@@ -14,16 +14,16 @@ from spectrum.options import CompositeEfficiencyOptions
 
 from spectrum.comparator import Comparator
 
-INPUT_DATA = Proxy(
-    lambda: DataVault().input("data", histname="MassPtSM0")
-)
 
-YIELD_DATA = Proxy(
-    lambda: (
-        INPUT_DATA,
-        data_feeddown(),
-    )
-)
+@pytest.fixture
+def data():
+    return DataVault().input("data", histname="MassPtSM0")
+
+
+@pytest.fixture
+def yield_data(data):
+    return data, data_feeddown()
+
 
 SPMC_PION = Proxy(
     lambda: (
@@ -42,13 +42,14 @@ SPMC_ETA = Proxy(
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle, spmc", [
     ("#pi^{0}", SPMC_PION),
     ("#eta", SPMC_ETA),
 ])
-def test_simple(particle, spmc):
-    estimator = Analysis(CompositeOptions(particle=particle))
-    pion = estimator.transform(INPUT_DATA, {})
+def test_simple(particle, spmc, data, yield_data):
+    estimator = Analysis(Options(particle=particle))
+    meson = estimator.transform(data, {})
 
     estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
     efficiency = estimator.transform(spmc, {})
@@ -56,5 +57,5 @@ def test_simple(particle, spmc):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle="#pi^{0}")
     )
-    ypion = estimator.transform((YIELD_DATA, spmc), {})
-    Comparator().compare([pion, efficiency, ypion])
+    corr_meson = estimator.transform((yield_data, spmc), {})
+    Comparator().compare([meson, efficiency, corr_meson])
