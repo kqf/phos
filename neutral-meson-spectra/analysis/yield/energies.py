@@ -1,3 +1,4 @@
+import pytest
 import json
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase
@@ -20,16 +21,18 @@ class HepdataInput(TransformerBase):
         return hist
 
 
-def define_datasets():
+@pytest.fixture
+def datasets():
     with open("config/different-energies.json") as f:
         data = json.load(f)
     labels, links = zip(*data.iteritems())
-    return labels, links
+    steps = [(l, HepdataInput()) for l in labels]
+    return steps, links
 
 
-def test_downloads_from_hepdata():
-    labels, links = define_datasets()
-    previous = [(l, HepdataInput()) for l in labels]
+@pytest.mark.interactive
+def test_downloads_from_hepdata(datasets):
+    steps, links = datasets
     loggs = AnalysisOutput("compare yields")
-    ComparePipeline(previous, plot=True).transform(links, loggs=loggs)
+    ComparePipeline(steps, plot=True).transform(links, loggs=loggs)
     loggs.plot()

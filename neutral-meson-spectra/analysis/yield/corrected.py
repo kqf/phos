@@ -35,6 +35,7 @@ ETA_INPUTS = Proxy(
 )
 
 
+@pytest.mark.interactive
 @pytest.mark.parametrize("data, particle", [
     (PION_INPUTS, "#pi^{0}"),
     # (ETA_INPUTS, "#eta"),
