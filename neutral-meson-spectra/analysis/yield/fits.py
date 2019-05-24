@@ -11,7 +11,8 @@ from tools.feeddown import data_feeddown
 from vault.formulas import FVault
 
 
-def fitfunction_tsallis():
+@pytest.fixture
+def tsallisf():
     tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 10)
     tsallis.SetParameters(0.014960701090585591,
                           0.287830380417601,
@@ -21,7 +22,8 @@ def fitfunction_tsallis():
     return tsallis
 
 
-def fitfunction_tcm():
+@pytest.fixture
+def tcmf():
     tsallis = ROOT.TF1("tcm", FVault().func("tcm"), 0, 10)
     tsallis.SetParameters(0.02270, 0.36292, 11.0977)
     return tsallis
@@ -57,33 +59,36 @@ ETA_INPUTS = Proxy(
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle, data", [
     ("#pi^{0}", PION_INPUTS),
     # ("#eta", ETA_INPUTS),
 ])
-def test_tsallis_fit(particle, data):
+def test_tsallis_fit(particle, data, tsallisf):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle=particle)
     )
     cyield = estimator.transform(data, loggs={})
-    cyield.Fit(fitfunction_tsallis())
+    cyield.Fit(tsallisf)
     cyield.logy = True
     cyield.logx = True
     Comparator().compare(cyield)
 
 
+@pytest.mark.skip("Don't something is wrong with tcm formula")
 @pytest.mark.thesis
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle, data", [
     ("#pi^{0}", PION_INPUTS),
     # ("#eta", ETA_INPUTS),
 ])
-def test_tsallis_fit(particle, data):
+def test_tcm_fit(particle, data, tcmf):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle=particle)
     )
     cyield = estimator.transform(data, loggs={})
-    cyield.Fit(fitfunction_tcm())
+    cyield.Fit(tcmf)
     cyield.logy = True
     cyield.logx = True
     Comparator().compare(cyield)
