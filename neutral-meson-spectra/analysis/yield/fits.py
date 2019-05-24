@@ -24,9 +24,13 @@ def tsallisf():
 
 @pytest.fixture
 def tcmf():
-    tsallis = ROOT.TF1("tcm", FVault().func("tcm"), 0, 10)
-    tsallis.SetParameters(0.02270, 0.36292, 11.0977)
-    return tsallis
+    tcm = ROOT.TF1("tcm", FVault().func("tcm"), 0, 10)
+    tcm.SetParameters(
+        0.1,
+        4.35526e-01,
+        8.02315e-01,
+        9.20052e-01)
+    return tcm
 
 
 PION_INPUTS = Proxy(
@@ -60,6 +64,7 @@ ETA_INPUTS = Proxy(
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.skip("Don't something is wrong with tcm formula")
 @pytest.mark.parametrize("particle, data", [
     ("#pi^{0}", PION_INPUTS),
     # ("#eta", ETA_INPUTS),
@@ -75,7 +80,7 @@ def test_tsallis_fit(particle, data, tsallisf):
     Comparator().compare(cyield)
 
 
-@pytest.mark.skip("Don't something is wrong with tcm formula")
+# @pytest.mark.skip("Don't something is wrong with tcm formula")
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
