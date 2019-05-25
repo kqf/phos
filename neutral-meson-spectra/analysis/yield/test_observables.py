@@ -18,25 +18,22 @@ def minuit_config():
     ROOT.TVirtualFitter.SetDefaultFitter('Minuit')
 
 
-def validate_particle(particle="#pi^{0}", selection="PhysTender"):
-    estimator = Analysis(
-        Options(particle=particle)
-    )
+def data(selection):
+    return DataVault().input("data", "stable old", selection, label='test')
 
-    output = estimator.transform(
-        DataVault().input("data", "stable old",
-                          selection, label='testsignal'),
+
+@pytest.mark.parametrize(("particle, selection"), [
+    ("#pi^{0}", "PhysTender"),
+    ("#eta", "EtaTender"),
+])
+def test_extracts_spectrum(particle, selection, minuit_config):
+    output = Analysis(Options(particle=particle)).transform(
+        data(selection),
         AnalysisOutput("testing_the_singnal", particle)
     )
+
     actual = {
         h.GetName(): list(br.bins(h).contents) for h in output
     }
     validate(actual, "test_observables/{}".format(particle))
-
-
-@pytest.mark.parametrize(("particle, dataset"), [
-    ("#pi^{0}", "PhysTender"),
-    ("#eta", "EtaTender"),
-])
-def test_extracts_eta_spectrum(particle, dataset, minuit_config):
-    validate_particle(particle, dataset)
+    # validate_particle(particle, dataset)
