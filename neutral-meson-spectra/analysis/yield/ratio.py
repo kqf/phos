@@ -10,22 +10,27 @@ from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 
-def data():
+@pytest.fixture
+def data_eta():
     # Define the inputs and the dataset for #eta mesons
     #
     inputs_eta = (
-        DataVault().input("single #eta", "low"),
-        DataVault().input("single #eta", "high"),
+        DataVault().input("single #eta", "low", "PhysEff"),
+        DataVault().input("single #eta", "high", "PhysEff"),
     )
 
-    data_eta = (
+    data = (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(dummy=True),
         ),
         inputs_eta
     )
+    return data
 
+
+@pytest.fixture
+def data_pion():
     # Define the inputs and the dataset for #pi^{0}
     #
     prod = "single #pi^{0}"
@@ -34,7 +39,7 @@ def data():
         DataVault().input(prod, "high", "PhysEff"),
     )
 
-    data_pi0 = (
+    data = (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
@@ -42,7 +47,12 @@ def data():
         inputs_pi0
     )
 
-    return data_eta, data_pi0
+    return data
+
+
+@pytest.fixture
+def data(data_eta, data_pion):
+    return data_eta, data_pion
 
 
 @pytest.fixture
@@ -76,12 +86,11 @@ def test_yield_ratio(data, options):
 
 
 @pytest.mark.skip('Something is wrong')
-def test_debug_yield_ratio(data, options):
+def test_debug_yield_ratio(data_pion, data_eta, options):
     options_eta, options_pi0 = options
-    data_eta, data_pi0 = data
 
     loggs = AnalysisOutput("")
-    pi0 = CorrectedYield(options_pi0).transform(data_pi0, loggs)
+    pi0 = CorrectedYield(options_pi0).transform(data_pion, loggs)
     eta = CorrectedYield(options_eta).transform(data_eta, loggs)
 
     su.wait()
