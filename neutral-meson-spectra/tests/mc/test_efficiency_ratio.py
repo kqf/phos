@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.efficiency import Efficiency
 from spectrum.pipeline import ComparePipeline
-from spectrum.options import EfficiencyOptions
+from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
 from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
@@ -19,10 +19,15 @@ def pythia():
 
 @pytest.fixture
 def spmc():
-    return (
-        DataVault().input("single #pi^{0}", listname="PhysEff"),
-        DataVault().input("single #pi^{0}", listname="PhysEff")
+    eta = (
+        DataVault().input("single #eta", "low", listname="PhysEff"),
+        DataVault().input("single #eta", "high", listname="PhysEff")
     )
+    pion = (
+        DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
+        DataVault().input("single #pi^{0}", "high", listname="PhysEff")
+    )
+    return (eta, pion)
 
 
 def efficiency_ratio(data, name):
@@ -43,6 +48,28 @@ def efficiency_ratio(data, name):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency(pythia, spmc):
-    spmc_ratio = efficiency_ratio(spmc, "spmc")
-    pythia_ratio = efficiency_ratio(pythia, "pythia")
-    Comparator().compare(spmc_ratio, pythia_ratio)
+    ptrange = "config/pt-same.json"
+    estimator = ComparePipeline([
+        ("#eta", Efficiency(
+            EfficiencyOptions(particle="#eta", ptrange=ptrange, scale=1))),
+        ("#pi^{0}", Efficiency(
+            EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
+    ], plot=True)
+
+    loggs = AnalysisOutput("efficiency_ratio_spmc")
+    pythia_ratio = estimator.transform(pythia, loggs)
+    # loggs.plot()
+
+    # Now the similar code for SPMC
+    estimator = ComparePipeline([
+        ("#eta", Efficiency(
+            CompositeEfficiencyOptions(particle="#eta", ptrange=ptrange,
+                                       scale=1))),
+        ("#pi^{0}", Efficiency(
+            CompositeEfficiencyOptions(particle="#pi^{0}", ptrange=ptrange,
+                                       scale=1))),
+    ], plot=True)
+    loggs = AnalysisOutput("efficiency_ratio_spmc")
+    spmc_ratio = estimator.transform(spmc, loggs)
+    # loggs.plot()
+    Comparator(labels=["spmc", "pythia"]).compare(spmc_ratio, pythia_ratio)
