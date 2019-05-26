@@ -32,7 +32,8 @@ class CorrectedYield(TransformerBase):
 
         self.pipeline = Pipeline([
             ("corrected yield", compare),
-            ("normalization", HistogramScaler(options.normalization)),
+            ("normalization", HistogramScaler(
+                options.normalization / options.branching_ratio)),
             ("fix naming", OutputDecorator(options.analysis.particle)),
             ("fitted yield", OutputFitter(options)),
             ("decorate output", OutputDecorator(**options.decorate)),

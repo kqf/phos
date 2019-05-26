@@ -211,6 +211,7 @@ class CorrectedYieldOptions(object):
             genname="hPt_{0}_primary_".format(particle))
         self.feeddown = FeeddownOptions(particle=particle)
         self.normalization = 1.
+        self.branching_ratio = 0.9882 if particle == "#pi^{0}" else 0.3931
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
@@ -251,6 +252,7 @@ class CompositeCorrectedYieldOptions(object):
             "label": "ALICE, pp \sqrt{s} = 13 TeV",
         }
         self.normalization = 1.
+        self.branching_ratio = 0.9882 if particle == "#pi^{0}" else 0.3931
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
