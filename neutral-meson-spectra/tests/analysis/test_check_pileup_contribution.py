@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.pipeline import TransformerBase
@@ -10,15 +9,13 @@ from vault.datavault import DataVault
 from spectrum.output import AnalysisOutput
 
 
-DATASET = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def data():
+    return (
         DataVault().input("data", "latest", "Time",
                           histname="MassPtMainMain"),  # cut
         DataVault().input("data", "latest", "Time"),  # no cut
     )
-
-)
 
 
 class PileupEstimator(TransformerBase):
@@ -37,6 +34,6 @@ class PileupEstimator(TransformerBase):
 
 
 @pytest.mark.onlylocal
-def test_pileup():
+def test_pileup(data):
     estimator = PileupEstimator(plot=True)
-    estimator.transform(DATASET, loggs=AnalysisOutput("pileup contribution"))
+    estimator.transform(data, loggs=AnalysisOutput("pileup contribution"))
