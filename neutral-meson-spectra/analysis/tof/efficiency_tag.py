@@ -86,19 +86,10 @@ def fit_tof_efficiency(dataset):
 
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_estimate_tof_efficiency(data_old):
-    efficiency = fit_tof_efficiency(data_old)
+def test_estimate_tof_efficiency(data):
+    efficiency = fit_tof_efficiency(data)
     validate(br.hist2dict(efficiency), "efficiency_tag")
-
-
-@pytest.mark.skip("")
-@pytest.mark.interactive
-@pytest.mark.onlylocal
-def test_old_results(data, data_old):
-    Comparator(labels=("old", "new")).compare(
-        fit_tof_efficiency(data_old),
-        fit_tof_efficiency(data),
-    )
+    # Comparator().compare(efficiency)
 
 
 # NB: Use the following test to check chi2 value per point

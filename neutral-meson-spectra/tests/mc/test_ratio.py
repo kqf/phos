@@ -22,7 +22,7 @@ def dataset():
     )
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_compare_raw_yields(dataset):
@@ -34,8 +34,8 @@ def test_compare_raw_yields(dataset):
             ("spectrum", HistogramSelector("spectrum")),
         ])),
         ("#pi^{0}", Pipeline([
-            ("analysis", Analysis(Options(particle="#pi^{0}",
-                                          ptrange=ptrange))),
+            ("analysis", Analysis(
+                Options(particle="#pi^{0}", ptrange=ptrange))),
             ("spectrum", HistogramSelector("spectrum")),
         ])),
     ])
@@ -45,7 +45,7 @@ def test_compare_raw_yields(dataset):
     # loggs.plot()
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")    
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency(dataset):
