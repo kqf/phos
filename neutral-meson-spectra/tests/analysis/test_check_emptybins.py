@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.pipeline import ComparePipeline
 from spectrum.analysis import Analysis
@@ -16,13 +15,13 @@ from spectrum.output import AnalysisOutput
 #          This test compares different solutions
 #
 
-DATASET = Proxy(
-    lambda: DataVault().input("data", histname="MassPtSM0")
-)
+@pytest.fixture
+def data():
+    return (DataVault().input("data", histname="MassPtSM0"), ) * 2
 
 
 @pytest.mark.onlylocal
-def test_check_empty_bins():
+def test_check_empty_bins(data):
     options = []
     for average in ["standard", "with empty"]:
         option = Options()
@@ -33,7 +32,4 @@ def test_check_empty_bins():
         (o.invmass.average, Analysis(o)) for o in options
     ], plot=True)
 
-    estimator.transform(
-        (DATASET,) * 2,
-        loggs=AnalysisOutput("check empty bins")
-    )
+    estimator.transform(data, loggs=AnalysisOutput("check empty bins"))

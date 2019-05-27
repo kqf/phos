@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 import spectrum.comparator as cmpr
 from spectrum.analysis import Analysis
 from spectrum.options import Options
@@ -11,15 +10,15 @@ from vault.datavault import DataVault
 # This test is needed to check if the dataset does contain
 # correct spectrum, invariant mass distribution is ok, etc.
 
-DATASET = Proxy(
-    lambda: DataVault().input('data', histname="MassPtSM0")
-)
+@pytest.fixture
+def data():
+    return DataVault().input('data', histname="MassPtSM0")
 
 
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
-def test_dataset(particle):
+def test_dataset(particle, data):
     # Configure the analysis
     options = Options(particle=particle)
     options.output.scalew_spectrum = True
@@ -27,7 +26,7 @@ def test_dataset(particle):
 
     # Analyze the data
     observables = estimator.transform(
-        DATASET,
+        data,
         AnalysisOutput("ALICE, #sqrt{s} = 13 TeV", "#pi^{0}")
     )
 
