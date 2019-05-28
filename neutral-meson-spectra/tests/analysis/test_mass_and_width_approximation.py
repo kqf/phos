@@ -16,13 +16,21 @@ def fit_quantity(quantity, formula):
     Comparator().compare(quantity)
 
 
-@pytest.mark.interactive
+@pytest.fixture
+def data():
+    return DataVault().input("data", histname="MassPtSM0")
+
+
 @pytest.mark.onlylocal
-@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
-def test_mass_width_parametrization(particle):
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"]
+)
+def test_mass_width_parametrization(particle, data):
     options = Options(particle=particle)
     output = Analysis(options).transform(
-        DataVault().input("data", histname="MassPtSM0"),
+        data,
         loggs=AnalysisOutput("test the single analysis")
     )
 
