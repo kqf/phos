@@ -89,17 +89,21 @@ def debug_input(prod="low"):
         label=prod)
 
 
+@pytest.fixture
+def debug_inputs():
+    return (
+        debug_input("low"),
+        debug_input("high"),
+    )
+
+
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta"
 ])
-def test_efficiency_evaluation(particle):
-    debug_inputs = (
-        debug_input("low"),
-        debug_input("high"),
-    )
+def test_efficiency_evaluation(particle, debug_inputs):
 
     moptions = CompositeEfficiencyOptions(
         particle,
@@ -130,41 +134,39 @@ def test_efficiency_evaluation(particle):
     )
 
 
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("single #pi^{0}", "low"),
+        DataVault().input("single #pi^{0}", "high"),
+    )
+
+
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_generated_spectrum(particle):
-    debug_inputs = (
-        debug_input("low"),
-        debug_input("high"),
-    )
-
-    prod = "single #pi^{0}"
-    inputs = (
-        DataVault().input(prod, "low"),
-        DataVault().input(prod, "high"),
-    )
-
-    moptions = CompositeEfficiencyOptions(particle)
-
+def test_generated_spectrum(particle, debug_inputs, data):
     names = "hPt_#pi^{0}_primary_standard", "hGenPi0Pt_clone"
-
-    CompareGeneratedSpectra(moptions, names=names).transform(
-        [inputs.keys()[0], debug_inputs.keys()[0]],
+    CompareGeneratedSpectra(
+        CompositeEfficiencyOptions(particle), names=names).transform(
+        [data[0], debug_inputs[0]],
         "compare the debug efficiency"
     )
 
 
-@pytest.mark.skip("")
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_weight_like_debug():
-    input_low = DataVault().input(
+@pytest.fixture
+def data_debug_low():
+    return DataVault().input(
         "debug efficiency", "low", n_events=1e6,
         histnames=("hSparseMgg_proj_0_1_3_yx", ""))
 
+
+@pytest.mark.skip("")
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_weight_like_debug(data_debug_low):
     # Define the transformations
-    nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)
+    nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(data_debug_low)
 
     rrange = 0, 10
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
