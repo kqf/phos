@@ -25,7 +25,7 @@ class StanadrtizeOutput(TransformerBase):
             histogram.GetName() + histogram.label,
             histogram.GetTitle(),
             len(self.ptedges) - 1,
-            array('d', self.ptedges)
+            array("d", self.ptedges)
         )
         for (content, error, center) in zip(*br.bins(histogram)):
             ibin = ohist.FindBin(center)
@@ -37,7 +37,7 @@ class StanadrtizeOutput(TransformerBase):
 
 
 class ReadCompositeDistribution(TransformerBase):
-    def __init__(self, options, plot=False, name='h1efficiency'):
+    def __init__(self, options, plot=False, name="h1efficiency"):
         super(ReadCompositeDistribution, self).__init__()
         self.pipeline = ReducePipeline(
             ParallelPipeline([
@@ -85,14 +85,17 @@ def debug_input(prod="low"):
         "debug efficiency",
         prod,
         n_events=1,
-        inputs=('hSparseMgg_proj_0_1_3_yx', ''),
+        inputs=("hSparseMgg_proj_0_1_3_yx", ""),
         label=prod)
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_efficiency_evaluation():
-    particle = "#pi^{0}"
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"
+])
+def test_efficiency_evaluation(particle):
     debug_inputs = (
         debug_input("low"),
         debug_input("high"),
@@ -100,7 +103,7 @@ def test_efficiency_evaluation():
 
     moptions = CompositeEfficiencyOptions(
         particle,
-        genname='hGenPi0Pt_clone',
+        genname="hGenPi0Pt_clone",
         use_particle=False,
         ptrange="config/pt-debug.json",
         scale=0.5
@@ -116,7 +119,7 @@ def test_efficiency_evaluation():
 
     # moptions = CompositeEfficiencyOptions(
     #     particle,
-    #     genname='hPt_{0}_primary_',
+    #     genname="hPt_{0}_primary_",
     #     ptrange="config/pt-debug.json"
     # )
 
@@ -127,11 +130,10 @@ def test_efficiency_evaluation():
     )
 
 
-@pytest.mark.skip('')
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_generated_spectrum():
-    particle = "#pi^{0}"
+def test_generated_spectrum(particle):
     debug_inputs = (
         debug_input("low"),
         debug_input("high"),
@@ -145,7 +147,7 @@ def test_generated_spectrum():
 
     moptions = CompositeEfficiencyOptions(particle)
 
-    names = 'hPt_#pi^{0}_primary_standard', 'hGenPi0Pt_clone'
+    names = "hPt_#pi^{0}_primary_standard", "hGenPi0Pt_clone"
 
     CompareGeneratedSpectra(moptions, names=names).transform(
         [inputs.keys()[0], debug_inputs.keys()[0]],
@@ -153,13 +155,13 @@ def test_generated_spectrum():
     )
 
 
-@pytest.mark.skip('')
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_weight_like_debug():
     input_low = DataVault().input(
         "debug efficiency", "low", n_events=1e6,
-        histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        histnames=("hSparseMgg_proj_0_1_3_yx", ""))
 
     # Define the transformations
     nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(input_low)
