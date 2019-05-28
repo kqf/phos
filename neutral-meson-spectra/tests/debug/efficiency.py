@@ -89,6 +89,8 @@ def debug_input(prod="low"):
         label=prod)
 
 
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_efficiency_evaluation():
     particle = "#pi^{0}"
     debug_inputs = (
@@ -105,7 +107,7 @@ def test_efficiency_evaluation():
     )
     # moptions.mergeranges = [(0, 6), (6, 20)]
 
-    # prod = "single #pi^{0} debug3"
+    # prod = "single #pi^{0}"
     # ll = "debug-ledger.json"
     # inputs = (
     #     DataVault(ll).input(prod, "low", listname="PhysEff"),
@@ -126,6 +128,8 @@ def test_efficiency_evaluation():
 
 
 @pytest.mark.skip('')
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_generated_spectrum():
     particle = "#pi^{0}"
     debug_inputs = (
@@ -150,6 +154,8 @@ def test_generated_spectrum():
 
 
 @pytest.mark.skip('')
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_weight_like_debug():
     input_low = DataVault().input(
         "debug efficiency", "low", n_events=1e6,
