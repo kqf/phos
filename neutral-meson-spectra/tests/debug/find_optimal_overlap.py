@@ -55,24 +55,32 @@ def reduce_chi2(hists):
     return br.chi2(data, mc, (5, 7)) / 6
 
 
-@pytest.mark.skip("")
-def test(self):
-    nbins = 9
-    prod = "single #pi^{0} scan nonlinearity"
+@pytest.fixture
+def nbins():
+    return 9
+
+
+@pytest.fixture
+def data(nbins):
+    prod = "single #pi^{0} nonlinearity scan"
     histnames = form_histnames(nbins)
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)
-
-    options = CompositeEfficiencyOptions("#pi^{0}")
-    options.reduce_function = reduce_chi2
 
     low_, high_ = low.read_multiple(2), high.read_multiple(2)
     low_ = [add_arguments(l, low) for l in low_]
     high_ = [add_arguments(l, high) for l in high_]
     mc_data = [(l, h) for l, h in zip(low_, high_)]
+    return mc_data
+
+
+@pytest.mark.skip("")
+def test_calculates_overlap(data):
+    options = CompositeEfficiencyOptions("#pi^{0}")
+    options.reduce_function = reduce_chi2
 
     chi2ndf = OverlapNonlinearityScan(options, nbins).transform(
-        mc_data,
+        data,
         loggs=AnalysisOutput("testing the scan interface")
     )
     Comparator().compare(chi2ndf)
