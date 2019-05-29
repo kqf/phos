@@ -1,3 +1,4 @@
+import pytest
 import ROOT
 import spectrum.sutils as su
 from spectrum.broot import BROOT as br
@@ -21,15 +22,14 @@ def chi2(mc, data):
     return br.chi2ndf(mc, data)
 
 
-def test_scan_parameters():
-    nbins = 9
-    prod = "single #pi^{0} scan nonlinearity"
+def test_scan_parameters(data, nbins=9):
+    prod = "single #pi^{0} nonlinearity scan"
     histnames = form_histnames(nbins)
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)
 
     options = CompositeNonlinearityScanOptions(
-        (low, high),
+        particle="#pi^{0}",
         nbins=nbins
     )
     options.factor = 1.
