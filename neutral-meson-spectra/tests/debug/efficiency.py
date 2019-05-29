@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pytest
 import ROOT
 
@@ -97,38 +98,37 @@ def debug_inputs():
     )
 
 
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-@pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    "#eta"
-])
-def test_efficiency_evaluation(particle, debug_inputs):
-
-    moptions = CompositeEfficiencyOptions(
+def debug_options(particle):
+    return CompositeEfficiencyOptions(
         particle,
         genname="hGenPi0Pt_clone",
         use_particle=False,
         ptrange="config/pt-debug.json",
         scale=0.5
     )
-    # moptions.mergeranges = [(0, 6), (6, 20)]
 
-    # prod = "single #pi^{0}"
-    # ll = "debug-ledger.json"
-    # inputs = (
-    #     DataVault(ll).input(prod, "low", listname="PhysEff"),
-    #     DataVault(ll).input(prod, "high", listname="PhysEff"),
-    # )
 
-    # moptions = CompositeEfficiencyOptions(
-    #     particle,
-    #     genname="hPt_{0}_primary_",
-    #     ptrange="config/pt-debug.json"
-    # )
+def spmc_options(particle):
+    options = CompositeEfficiencyOptions(
+        particle,
+        genname="hPt_{0}_primary_",
+        ptrange="config/pt-debug.json"
+    )
+    return options
 
-    # moptions.mergeranges = [(0, 6), (6, 20)]
-    CompareEfficiencies(moptions).transform(
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta"
+])
+@pytest.mark.parametrize("options", [
+    debug_options,
+    spmc_options,
+])
+def test_efficiency_evaluation(particle, debug_inputs, options):
+    CompareEfficiencies(options=options(particle=particle)).transform(
         [debug_inputs, debug_inputs],
         "compare the debug efficiency"
     )
@@ -178,5 +178,5 @@ def test_weight_like_debug(data_debug_low):
 
     br.scalew(nominal_low, 1. / nominal_low.Integral())
     nominal_low.Fit(tsallis)
-    print br.pars(tsallis)
+    print(br.pars(tsallis))
     Comparator().compare(nominal_low)
