@@ -22,23 +22,42 @@ def chi2(mc, data):
     return br.chi2ndf(mc, data)
 
 
-def test_scan_parameters(data, nbins=9):
+@pytest.fixture
+def nbins():
+    return 9
+
+
+@pytest.fixture
+def mc_data(nbins):
     prod = "single #pi^{0} nonlinearity scan"
     histnames = form_histnames(nbins)
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)
 
+    low, high = low.read_multiple(2), high.read_multiple(2)
+    mc_data = [(l, h) for l, h in zip(low, high)]
+    return mc_data
+
+
+@pytest.fixture
+def real_data():
+    return DataVault().input("data")
+
+
+@pytest.fixture
+def data():
+    return (real_data, mc_data)
+
+
+def test_scan_parameters(data, nbins=9):
     options = CompositeNonlinearityScanOptions(
         particle="#pi^{0}",
         nbins=nbins
     )
     options.factor = 1.
 
-    low, high = low.read_multiple(2), high.read_multiple(2)
-    mc_data = [(l, h) for l, h in zip(low, high)]
-
     chi2ndf = NonlinearityScan(options, chi2_=chi2).transform(
-        [DataVault().input("data"), mc_data],
+        data,
         loggs=AnalysisOutput("searching the optimal parameters")
     )
     # TODO: Add this to the output
