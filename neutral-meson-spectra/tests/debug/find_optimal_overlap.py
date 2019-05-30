@@ -88,27 +88,30 @@ def test_calculates_overlap(data):
     Comparator().compare(chi2ndf)
 
 
-# @pytest.mark.skip("")
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_optimum(self):
-    nbins = 9
-    prod = "single #pi^{0} scan nonlinearity6"
+@pytest.fixture
+def optimal_data(nbins, minimum_index=33):
     minimum_index = 33
     minimum_index *= 2
     histnames = form_histnames(nbins)[minimum_index: minimum_index + 2]
+
+    prod = "single #pi^{0} nonlinearity scan"
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)
-
-    options = CompositeEfficiencyOptions("#pi^{0}")
-    options.reduce_function = reduce_chi2
 
     low_, high_ = low.read_multiple(2), high.read_multiple(2)
     low_ = [add_arguments(l, low) for l in low_]
     high_ = [add_arguments(l, high) for l in high_]
-    mc_data = [(l, h) for l, h in zip(low_, high_)]
+    return [(l, h) for l, h in zip(low_, high_)]
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_optimum(nbins, optimal_data):
+    options = CompositeEfficiencyOptions("#pi^{0}")
+    options.reduce_function = reduce_chi2
+
     chi2ndf = OverlapNonlinearityScan(options, 1).transform(
-        mc_data,
+        optimal_data,
         loggs=AnalysisOutput("testing the scan interface")
     )
     Comparator().compare(chi2ndf)

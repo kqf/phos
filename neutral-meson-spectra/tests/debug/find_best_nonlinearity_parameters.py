@@ -29,14 +29,14 @@ def nbins():
 
 @pytest.fixture
 def mc_data(nbins):
-    prod = "single #pi^{0} nonlinearity scan"
-    histnames = form_histnames(nbins)
-    low = DataVault().input(prod, "low", inputs=histnames)
-    high = DataVault().input(prod, "high", inputs=histnames)
 
-    low, high = low.read_multiple(2), high.read_multiple(2)
-    mc_data = [(l, h) for l, h in zip(low, high)]
-    return mc_data
+    def multiple(part, n_hisits=2):
+        prod = "single #pi^{0} nonlinearity scan"
+        histnames = form_histnames(nbins)
+        data = DataVault().input(prod, part, inputs=histnames)
+        return data.read_multiple(n_hisits)
+    low, high = multiple("low"), multiple("high")
+    return [(l, h) for l, h in zip(low, high)]
 
 
 @pytest.fixture
