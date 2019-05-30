@@ -117,25 +117,29 @@ def move_histogram(source, dest):
         dest.SetBinError(i, source.GetBinError(si))
 
 
+@pytest.fixture
+def spmc():
+    production = "single #pi^{0}"
+    return (
+        DataVault().input(production, "low", "PhysEff"),
+        DataVault().input(production, "high", "PhysEff"),
+    )
+
+
 @pytest.mark.skip('')
 @pytest.mark.onlylocal
-def test_masses_efficiency(self):
-    # production = "single #pi^{0}"
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"
+])
+def test_masses_efficiency(spmc, particle):
     particle = "#pi^{0}"
-    production = "single #pi^{0} debug3"
     options = CompositeEfficiencyOptions(
         particle,
         ptrange="config/pt-debug.json"
     )
     loggs = AnalysisOutput("mass_test_{}".format(particle))
-    MassComparator(options, plot=True).transform(
-        (
-            DataVault().input(production, "low", "PhysEff"),
-            DataVault().input(production, "high", "PhysEff"),
-        ),
-        loggs
-    )
-    # diff.compare(efficiency)
+    MassComparator(options, plot=True).transform(spmc, loggs)
     loggs.plot()
 
 
