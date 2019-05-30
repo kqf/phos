@@ -75,6 +75,8 @@ def data(nbins):
 
 
 @pytest.mark.skip("")
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_calculates_overlap(data):
     options = CompositeEfficiencyOptions("#pi^{0}")
     options.reduce_function = reduce_chi2
@@ -87,6 +89,8 @@ def test_calculates_overlap(data):
 
 
 # @pytest.mark.skip("")
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_optimum(self):
     nbins = 9
     prod = "single #pi^{0} scan nonlinearity6"

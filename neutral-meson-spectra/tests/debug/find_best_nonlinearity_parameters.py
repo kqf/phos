@@ -49,6 +49,8 @@ def data():
     return (real_data, mc_data)
 
 
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_scan_parameters(data, nbins=9):
     options = CompositeNonlinearityScanOptions(
         particle="#pi^{0}",
@@ -60,6 +62,5 @@ def test_scan_parameters(data, nbins=9):
         data,
         loggs=AnalysisOutput("searching the optimal parameters")
     )
-    # TODO: Add this to the output
     su.write(chi2ndf, "search_nonlinearity_scan.root")
     Comparator().compare(chi2ndf)
