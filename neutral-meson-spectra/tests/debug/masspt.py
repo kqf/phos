@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
@@ -31,22 +30,24 @@ def debug_input(prod="low"):
         label=prod)
 
 
-DATASETS = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def data():
+    debug_set = (
         debug_input("low"),
         debug_input("high"),
-    ),
-    (
+    )
+    prod_set = (
         DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
         DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
     )
-)
+    return debug_set, prod_set
 
 
 @pytest.mark.onlylocal
-def test_efficiency_evaluation(self):
-    particle = "#pi^{0}"
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}"
+])
+def test_efficiency_evaluation(particle, data):
     doptions = CompositeEfficiencyOptions(
         particle,
         genname='hGenPi0Pt_clone',
@@ -62,6 +63,6 @@ def test_efficiency_evaluation(self):
     )
 
     CompareEfficiencies(doptions, moptions).transform(
-        DATASETS,
+        data,
         "compare the debug efficiency"
     )
