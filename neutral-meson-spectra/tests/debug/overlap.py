@@ -1,4 +1,4 @@
-# import pytest
+import pytest
 
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions
@@ -60,19 +60,26 @@ class MassComparator(TransformerBase):
         return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
 
 
-def test_efficiency():
-    production = "single #pi^{0}"
-    particle = "#pi^{0}"
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff"),
+    )
+
+
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_efficiency(particle, data):
     options = CompositeEfficiencyOptions(
         particle,
         ptrange="config/pt-debug.json"
     )
     loggs = AnalysisOutput("mass_test_{}".format(particle))
     MassComparator(options, plot=True).transform(
-        (
-            DataVault().input(production, "low", "PhysEff"),
-            DataVault().input(production, "high", "PhysEff"),
-        ),
+        data,
         loggs
     )
     loggs.plot()

@@ -45,7 +45,8 @@ def data():
 
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}"
+    "#pi^{0}",
+    # "#eta",
 ])
 def test_efficiency_evaluation(particle, data):
     doptions = CompositeEfficiencyOptions(
