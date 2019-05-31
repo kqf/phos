@@ -4,7 +4,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
@@ -77,9 +77,6 @@ def test_efficiency(particle, data):
         particle,
         ptrange="config/pt-debug.json"
     )
-    loggs = AnalysisOutput("mass_test_{}".format(particle))
-    MassComparator(options, plot=True).transform(
-        data,
-        loggs
-    )
-    loggs.plot()
+
+    with open_loggs("mass_test_{}".format(particle)) as loggs:
+        MassComparator(options, plot=True).transform(data, loggs)

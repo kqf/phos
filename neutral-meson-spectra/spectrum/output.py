@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import ROOT
 import tqdm
+from contextlib import contextmanager
 
 import sutils as su
 from comparator import Comparator
@@ -60,3 +61,14 @@ class AnalysisOutput(dict):
         normal = super(AnalysisOutput, self).__repr__()
         message = 'AnalysisOutput(label="{}", particle="{}"): {}'
         return message.format(self.label, self.particle, normal)
+
+
+@contextmanager
+def open_loggs(name, stop=False, plot=True):
+    loggs = AnalysisOutput(name)
+    try:
+        yield loggs
+    finally:
+        if not plot:
+            return
+        loggs.plot(stop=stop)
