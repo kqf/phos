@@ -1,6 +1,7 @@
+from __future__ import print_function
 import pytest
 
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.efficiency import PeakPositionWidthEstimator
 from spectrum.comparator import Comparator
@@ -22,9 +23,8 @@ def test_pt_ranges(data):
     estimator = PeakPositionWidthEstimator(
         CompositeEfficiencyOptions("#pi^{0}")
     )
-    loggs = AnalysisOutput("test ranges")
-    mass, massf, width, widthf = estimator._estimate(data, loggs)
-    # loggs.plot()
-    Comparator().compare(mass)
-    # Comparator().compare(width)
-    print br.pars(massf)
+    with open_loggs("test ranges") as loggs:
+        mass, massf, width, widthf = estimator._estimate(data, loggs)
+        Comparator().compare(mass)
+        # Comparator().compare(width)
+        print(br.pars(massf))

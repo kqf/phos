@@ -49,9 +49,7 @@ def test_weight_like_debug(low_pt, rrange=(0, 20)):
 
 @pytest.fixture
 def data():
-    prod = "single #pi^{0} debug7"
-    ll = "debug-ledger.json"
-    return DataVault(ll).input(prod, "high", listname="PhysEff")
+    return DataVault().input("single #pi^{0}", "high", listname="PhysEff")
 
 
 @pytest.fixture
