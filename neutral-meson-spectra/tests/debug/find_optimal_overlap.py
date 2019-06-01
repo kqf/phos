@@ -4,7 +4,7 @@ from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import ParallelPipeline, Pipeline
 from spectrum.pipeline import TransformerBase
 from tools.scan import NonlinearityParamExtractor, form_histnames
@@ -81,15 +81,15 @@ def test_calculates_overlap(data):
     options = CompositeEfficiencyOptions("#pi^{0}")
     options.reduce_function = reduce_chi2
 
-    chi2ndf = OverlapNonlinearityScan(options, nbins).transform(
-        data,
-        loggs=AnalysisOutput("testing the scan interface")
-    )
-    Comparator().compare(chi2ndf)
+    with open_loggs("testing the scan interface") as loggs:
+        estimator = OverlapNonlinearityScan(options, nbins)
+
+        chi2ndf = estimator.transform(data, loggs)
+        Comparator().compare(chi2ndf)
 
 
 @pytest.fixture
-def optimal_data(nbins, minimum_index=33):
+def optimum(nbins, minimum_index=33):
     minimum_index = 33
     minimum_index *= 2
     histnames = form_histnames(nbins)[minimum_index: minimum_index + 2]
@@ -106,12 +106,10 @@ def optimal_data(nbins, minimum_index=33):
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_optimum(nbins, optimal_data):
+def test_optimum(nbins, optimum):
     options = CompositeEfficiencyOptions("#pi^{0}")
     options.reduce_function = reduce_chi2
 
-    chi2ndf = OverlapNonlinearityScan(options, 1).transform(
-        optimal_data,
-        loggs=AnalysisOutput("testing the scan interface")
-    )
-    Comparator().compare(chi2ndf)
+    with open_loggs("testing the scan interface") as loggs:
+        chi2ndf = OverlapNonlinearityScan(options, 1).transform(optimum, loggs)
+        Comparator().compare(chi2ndf)

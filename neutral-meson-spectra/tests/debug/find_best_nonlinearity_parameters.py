@@ -4,7 +4,7 @@ import spectrum.sutils as su
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from tools.scan import NonlinearityScan, form_histnames
 from vault.datavault import DataVault
 
@@ -58,9 +58,7 @@ def test_scan_parameters(data, nbins=9):
     )
     options.factor = 1.
 
-    chi2ndf = NonlinearityScan(options, chi2_=chi2).transform(
-        data,
-        loggs=AnalysisOutput("searching the optimal parameters")
-    )
-    su.write(chi2ndf, "search_nonlinearity_scan.root")
-    Comparator().compare(chi2ndf)
+    with open_loggs("searching the optimal parameters") as loggs:
+        chi2ndf = NonlinearityScan(options, chi2_=chi2).transform(data, loggs)
+        su.write(chi2ndf, "search_nonlinearity_scan.root")
+        Comparator().compare(chi2ndf)
