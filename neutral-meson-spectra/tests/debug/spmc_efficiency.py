@@ -2,9 +2,9 @@ import pytest
 
 from spectrum.comparator import Comparator
 
+from spectrum.output import open_loggs
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.output import AnalysisOutput
 
 from vault.datavault import DataVault
 
@@ -45,8 +45,6 @@ def test_spmc_efficiency(inputs, particle):
     # options.analysis.signalp.relaxed = True
     # options.analysis.backgroundp.relaxed = True
 
-    loggs = AnalysisOutput("composite_efficiency_spmc_{}".format(particle))
-    efficiency = Efficiency(options).transform(inputs, loggs)
-    diff = Comparator()
-    diff.compare(efficiency)
-    loggs.plot()
+    with open_loggs("composite efficiency spmc {}".format(particle)) as loggs:
+        efficiency = Efficiency(options).transform(inputs, loggs)
+        Comparator().compare(efficiency)

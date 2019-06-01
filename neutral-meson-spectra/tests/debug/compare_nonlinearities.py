@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import CompositeNonlinearityOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
@@ -42,6 +42,7 @@ def predefined_datasets():
     return names, options, mcinput
 
 
+@pytest.mark.onlylocal
 def test_nonlinearity(predefined_datasets):
     names, options, datasets = predefined_datasets
     estimator = ComparePipeline([
@@ -49,12 +50,12 @@ def test_nonlinearity(predefined_datasets):
         for name, opt in zip(names, options)
     ], plot=True)
 
-    loggs = AnalysisOutput("compare nonlinearities")
-    estimator.transform(datasets, loggs)
-    loggs.plot()
+    with open_loggs("compare_nonlinearities") as loggs:
+        estimator.transform(datasets, loggs)
 
 
 @pytest.mark.skip("")
+@pytest.mark.onlylocal
 def test_masses(predefined_datasets):
     def mass(options):
         return Pipeline([
@@ -69,6 +70,5 @@ def test_masses(predefined_datasets):
         for name, opt in zip(names, options)
     ], plot=True)
 
-    loggs = AnalysisOutput("compare masses")
-    estimator.transform(datasets, loggs)
-    loggs.plot()
+    with open_loggs("compare masses") as loggs:
+        estimator.transform(datasets, loggs)
