@@ -4,7 +4,7 @@ from spectrum.options import Options
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
@@ -28,8 +28,8 @@ def data():
     )
 
 
-@pytest.mark.interactive
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
 def test_gives_similar_results(particle, data):
     estimator = CompareAnalysis(
@@ -37,6 +37,5 @@ def test_gives_similar_results(particle, data):
         particle=particle
     )
 
-    loggs = AnalysisOutput("compare different datasets", particle=particle)
-    estimator.transform(data, loggs)
-    loggs.plot()
+    with open_loggs("compare different datasets") as loggs:
+        estimator.transform(data, loggs)

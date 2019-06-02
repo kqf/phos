@@ -4,7 +4,7 @@ import ROOT
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import TransformerBase
 from vault.datavault import DataVault
@@ -61,11 +61,11 @@ class CballParametersEstimator(TransformerBase):
     "#eta"
 ])
 def test_cball_parameters(particle, data):
-    options = CbFitOptions(particle=particle)
-    estimator = CballParametersEstimator(options, plot=False)
-    message = "%s #rightarrow #gamma #gamma, ALICE, pp #sqrt{s} = 13 TeV "
-    hists = estimator.transform(
-        data,
-        loggs=AnalysisOutput(message % particle))
+    estimator = CballParametersEstimator(
+        CbFitOptions(particle=particle), plot=False)
+
+    with open_loggs("test cball parameters {}".format(particle)) as loggs:
+        hists = estimator.transform(data, loggs=loggs)
+
     for h in hists:
         Comparator().compare(h)

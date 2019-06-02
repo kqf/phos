@@ -1,7 +1,7 @@
 import ROOT
 import pytest
 
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
@@ -29,10 +29,8 @@ def data():
 )
 def test_mass_width_parametrization(particle, data):
     options = Options(particle=particle)
-    output = Analysis(options).transform(
-        data,
-        loggs=AnalysisOutput("test the single analysis")
-    )
+    with open_loggs("test mass width parameters") as loggs:
+        output = Analysis(options).transform(data, loggs)
 
     fit_quantity(output.mass, options.spectrum.mass_func)
     fit_quantity(output.width, options.spectrum.width_func)
