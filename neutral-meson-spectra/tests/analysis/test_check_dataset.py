@@ -3,7 +3,7 @@ import pytest
 import spectrum.comparator as cmpr
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 
 
@@ -25,12 +25,9 @@ def test_dataset(particle, data):
     estimator = Analysis(options)
 
     # Analyze the data
-    observables = estimator.transform(
-        data,
-        AnalysisOutput("ALICE, #sqrt{s} = 13 TeV", "#pi^{0}")
-    )
-
-    # c1 = gcanvas(1. / 2, resize=True)
-    diff = cmpr.Comparator()
-    for obs in observables:
-        diff.compare(obs)
+    with open_loggs("ALICE, #sqrt{s} = 13 TeV", "#pi^{0}") as loggs:
+        observables = estimator.transform(data, loggs)
+        # c1 = gcanvas(1. / 2, resize=True)
+        diff = cmpr.Comparator()
+        for obs in observables:
+            diff.compare(obs)

@@ -4,7 +4,7 @@ from vault.datavault import DataVault
 from spectrum.pipeline import ComparePipeline
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 
 # Problem: There are some bins in invariant mass histogram
@@ -32,4 +32,5 @@ def test_check_empty_bins(data):
         (o.invmass.average, Analysis(o)) for o in options
     ], plot=True)
 
-    estimator.transform(data, loggs=AnalysisOutput("check empty bins"))
+    with open_loggs("check empty bins") as loggs:
+        estimator.transform(data, loggs)

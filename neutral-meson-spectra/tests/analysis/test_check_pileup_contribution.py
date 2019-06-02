@@ -6,7 +6,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import ComparePipeline
 from vault.datavault import DataVault
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 
 @pytest.fixture
@@ -36,4 +36,5 @@ class PileupEstimator(TransformerBase):
 @pytest.mark.onlylocal
 def test_pileup(data):
     estimator = PileupEstimator(plot=True)
-    estimator.transform(data, loggs=AnalysisOutput("pileup contribution"))
+    with open_loggs("pileup contribution") as loggs:
+        estimator.transform(data, loggs)
