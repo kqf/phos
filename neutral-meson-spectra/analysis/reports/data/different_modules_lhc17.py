@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline
 from vault.datavault import DataVault
 
@@ -28,6 +28,5 @@ def analyze(particle, data):
         for i, _ in enumerate(data)
     ])
 
-    loggs = AnalysisOutput("compare_different_modules", particle=particle)
-    estimator.transform(data, loggs)
-    loggs.plot()
+    with open_loggs("different modules {}".format(particle)) as loggs:
+        estimator.transform(data, loggs)

@@ -8,7 +8,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import Pipeline
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
 
@@ -160,7 +160,6 @@ def test_ratio(data):
     )
 
     estimator = KaonToPionDoubleRatio(options, plot=True)
-    loggs = AnalysisOutput("pion to kaon", particle="")
-    double_ratio = estimator.transform(data, loggs)
-    Comparator().compare(double_ratio)
-    loggs.plot()
+    with open_loggs("pion to kaon") as loggs:
+        double_ratio = estimator.transform(data, loggs)
+        Comparator().compare(double_ratio)

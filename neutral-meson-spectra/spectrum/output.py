@@ -42,10 +42,9 @@ def save_item(ofile, name, obj, stop=False):
 
 
 class AnalysisOutput(dict):
-    def __init__(self, label, particle="", *args, **kwargs):
+    def __init__(self, label, *args, **kwargs):
         super(AnalysisOutput, self).__init__(*args, **kwargs)
         self.label = label.replace("#", "")
-        self.particle = particle
 
     def plot(self, stop=False):
         with su.rfile(self._ofile(), mode="recreate") as ofile:
@@ -59,8 +58,8 @@ class AnalysisOutput(dict):
 
     def __repr__(self):
         normal = super(AnalysisOutput, self).__repr__()
-        message = 'AnalysisOutput(label="{}", particle="{}"): {}'
-        return message.format(self.label, self.particle, normal)
+        message = 'AnalysisOutput(label="{}"): {}'
+        return message.format(self.label, normal)
 
 
 @contextmanager
