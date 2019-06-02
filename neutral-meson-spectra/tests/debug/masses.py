@@ -5,7 +5,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
 from spectrum.broot import BROOT as br
@@ -138,25 +138,22 @@ def test_masses_efficiency(spmc, particle):
         particle,
         ptrange="config/pt-debug.json"
     )
-    loggs = AnalysisOutput("mass_test_{}".format(particle))
-    MassComparator(options, plot=True).transform(spmc, loggs)
-    loggs.plot()
+    with open_loggs("mass_test_{}".format(particle)) as loggs:
+        MassComparator(options, plot=True).transform(spmc, loggs)
 
 
-@pytest.mark.skip("")
+@pytest.fixture
+def theory_data():
+    return DataVault().file("debug efficiency", "high")
+
+
 @pytest.mark.onlylocal
-def test_different_masses_efficiency(self):
+@pytest.mark.interactive
+def test_different_masses_efficiency(data, theory_data):
     theory = DebugMasses("Same").transform(
-        DataVault().file("debug efficiency", "high"),
         ""
     )
     # production = "single #pi^{0}"
-    production = "single #pi^{0} debug3"
-    ll = "debug-ledger.json"
-    inputs = (
-        DataVault(ll).input(production, "high", "PhysEff"),
-        DataVault(ll).input(production, "high", "PhysEff"),
-    )
     # theory = SimpleAnalysis(
     #     Options.spmc((6, 20),
     #                  ptrange="config/pt-debug.json"
@@ -165,11 +162,10 @@ def test_different_masses_efficiency(self):
     templates = [h.Clone() for h in theory]
     for h in templates:
         h.label = "calculated"
+
     experiment = SimpleAnalysis(
-        Options.spmc((6, 20),
-                     ptrange="config/pt-debug.json"
-                     )
-    ).transform(inputs[0], "")
+        Options.spmc((6, 20), ptrange="config/pt-debug.json")
+    ).transform(data[0], "")
     for e, t in zip(experiment, templates):
         move_histogram(e, t)
     Comparator().compare(theory, templates)
