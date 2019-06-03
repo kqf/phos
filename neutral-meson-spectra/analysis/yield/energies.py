@@ -3,7 +3,7 @@ import json
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 
 class HepdataInput(TransformerBase):
@@ -33,6 +33,5 @@ def datasets():
 @pytest.mark.interactive
 def test_downloads_from_hepdata(datasets):
     steps, links = datasets
-    loggs = AnalysisOutput("compare yields")
-    ComparePipeline(steps, plot=True).transform(links, loggs=loggs)
-    loggs.plot()
+    with open_loggs("compare yields") as loggs:
+        ComparePipeline(steps, plot=True).transform(links, loggs)

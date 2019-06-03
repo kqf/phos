@@ -5,6 +5,7 @@ from lazy_object_proxy import Proxy
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.comparator import Comparator
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
@@ -73,11 +74,12 @@ def test_tsallis_fit(particle, data, tsallisf):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle=particle)
     )
-    cyield = estimator.transform(data, loggs={})
-    cyield.Fit(tsallisf)
-    cyield.logy = True
-    cyield.logx = True
-    Comparator().compare(cyield)
+    with open_loggs("test tsallis fit {}".foramt(particle)) as loggs:
+        cyield = estimator.transform(data, loggs)
+        cyield.Fit(tsallisf)
+        cyield.logy = True
+        cyield.logx = True
+        Comparator().compare(cyield)
 
 
 # @pytest.mark.skip("Don't something is wrong with tcm formula")
@@ -92,8 +94,9 @@ def test_tcm_fit(particle, data, tcmf):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle=particle)
     )
-    cyield = estimator.transform(data, loggs={})
-    cyield.Fit(tcmf)
-    cyield.logy = True
-    cyield.logx = True
-    Comparator().compare(cyield)
+    with open_loggs("test tcm fit {}".foramt(particle)) as loggs:
+        cyield = estimator.transform(data, loggs)
+        cyield.Fit(tcmf)
+        cyield.logy = True
+        cyield.logx = True
+        Comparator().compare(cyield)
