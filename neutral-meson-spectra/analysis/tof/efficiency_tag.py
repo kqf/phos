@@ -5,7 +5,7 @@ from spectrum.broot import BROOT as br
 from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from tools.probe import TagAndProbe
 from tools.validate import validate
 
@@ -63,13 +63,12 @@ def efficincy_function():
 
 
 def fit_tof_efficiency(dataset):
-    options = ProbeTofOptions()
-    options.fitfunc = efficincy_function()
-    probe_estimator = TagAndProbe(options, False)
-    efficiency = probe_estimator.transform(
-        dataset,
-        loggs=AnalysisOutput("tof efficiency")
-    )
+    with open_loggs("tof efficiency") as loggs:
+        options = ProbeTofOptions()
+        options.fitfunc = efficincy_function()
+        probe_estimator = TagAndProbe(options, False)
+        efficiency = probe_estimator.transform(dataset, loggs)
+
     efficiency.Fit(options.fitfunc, "R")
     print "Fitted", options.fitfunc.GetChisquare() / options.fitfunc.GetNDF()
     efficiency.SetTitle(
