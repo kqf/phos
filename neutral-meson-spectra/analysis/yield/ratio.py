@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.corrected_yield import YieldRatio, CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 import spectrum.sutils as su
 from tools.feeddown import data_feeddown
@@ -67,6 +67,8 @@ def options():
     return options_eta, options_pi0
 
 
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_yield_ratio(data, options):
     options_eta, options_pi0 = options
 
@@ -77,12 +79,9 @@ def test_yield_ratio(data, options):
     )
 
     loggs = AnalysisOutput("eta to pion ratio")
-    output = estimator.transform(
-        data,
-        loggs=loggs
-    )
-    Comparator().compare(output)
-    # loggs.plot()
+    with open_loggs("eta to pion ratio", save=False) as loggs:
+        output = estimator.transform(data, loggs)
+        Comparator().compare(output)
 
 
 @pytest.mark.skip('Something is wrong')

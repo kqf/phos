@@ -4,7 +4,7 @@ import ROOT
 from spectrum.analysis import Analysis
 from spectrum.broot import BROOT as br
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from tools.validate import validate
 from vault.datavault import DataVault
@@ -27,10 +27,11 @@ def data(selection):
     ("#eta", "EtaTender"),
 ])
 def test_extracts_spectrum(particle, selection, minuit_config):
-    output = Analysis(Options(particle=particle)).transform(
-        data(selection),
-        AnalysisOutput("testing_the_singnal", particle)
-    )
+    with open_loggs("signal {}".format(particle), save=False) as loggs:
+        output = Analysis(Options(particle=particle)).transform(
+            data(selection),
+            loggs
+        )
 
     actual = {
         h.GetName(): list(br.bins(h).contents) for h in output
