@@ -1,7 +1,7 @@
 import pytest
 
 from lazy_object_proxy import Proxy
-from spectrum.output import AnalysisOutput  # noqa
+from spectrum.output import open_loggs
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
@@ -49,13 +49,14 @@ SPMC_ETA = Proxy(
 ])
 def test_simple(particle, spmc, data, yield_data):
     estimator = Analysis(Options(particle=particle))
-    meson = estimator.transform(data, {})
+    with open_loggs("simple test", save=False) as loggs:
+        meson = estimator.transform(data, loggs)
 
-    estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
-    efficiency = estimator.transform(spmc, {})
+        estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
+        efficiency = estimator.transform(spmc, loggs)
 
-    estimator = CorrectedYield(
-        CompositeCorrectedYieldOptions(particle="#pi^{0}")
-    )
-    corr_meson = estimator.transform((yield_data, spmc), {})
-    Comparator().compare([meson, efficiency, corr_meson])
+        estimator = CorrectedYield(
+            CompositeCorrectedYieldOptions(particle="#pi^{0}")
+        )
+        corr_meson = estimator.transform((yield_data, spmc), loggs)
+        Comparator().compare([meson, efficiency, corr_meson])

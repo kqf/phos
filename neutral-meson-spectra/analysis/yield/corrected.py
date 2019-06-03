@@ -2,7 +2,7 @@ import pytest  # noqa
 from lazy_object_proxy import Proxy
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
@@ -38,14 +38,13 @@ ETA_INPUTS = Proxy(
 @pytest.mark.interactive
 @pytest.mark.parametrize("data, particle", [
     (PION_INPUTS, "#pi^{0}"),
-    # (ETA_INPUTS, "#eta"),
+    (ETA_INPUTS, "#eta"),
 ])
 def test_corrected_yield_for_pi0(data, particle):
-    estimator = CorrectedYield(
-        CompositeCorrectedYieldOptions(
-            particle=particle
+    with open_loggs("corrected yield {}".format(particle)) as loggs:
+        estimator = CorrectedYield(
+            CompositeCorrectedYieldOptions(
+                particle=particle
+            )
         )
-    )
-    loggs = AnalysisOutput("corrected yield {}".format(particle))
-    estimator.transform(data, loggs=loggs)
-    loggs.plot()
+        estimator.transform(data, loggs)
