@@ -5,7 +5,7 @@ from tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
 
 from spectrum.options import FeeddownOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
 
@@ -36,13 +36,13 @@ def data():
     )
 
 
+@pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_feeddown_correction(data):
     options = FeeddownOptions()
     options.fitf = feeddown_paramerization()
     estimator = FeeddownEstimator(options)
-    loggs = AnalysisOutput("feeddown nlo correction")
-    output = estimator.transform(data, loggs)
-    loggs.plot()
-    Comparator().compare(output)
+    with open_loggs("feeddown nlo correction") as loggs:
+        output = estimator.transform(data, loggs)
+        Comparator().compare(output)
     assert output.GetEntries() > 0
