@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pytest
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
@@ -6,7 +7,7 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.options import Options
 from spectrum.comparator import Comparator
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
@@ -54,13 +55,12 @@ def test_calibration(atype, periods):
         DataVault().input("data"),
         {}
     )
-    loggs = AnalysisOutput("calibration lhc17 {}".format(atype))
-    for mass, p in zip(masses, periods):
-        diff = Comparator(labels=("LHC17" + p, "LHC16"))
-        local_loggs = {}
-        diff.compare(mass, mass_2016, loggs=local_loggs)
-        loggs["LHC17" + p] = local_loggs
-    loggs.plot()
+    with open_loggs("calibration lhc17 {}".format(atype)) as loggs:
+        for mass, p in zip(masses, periods):
+            diff = Comparator(labels=("LHC17" + p, "LHC16"))
+            local_loggs = {}
+            diff.compare(mass, mass_2016, loggs=local_loggs)
+            loggs["LHC17" + p] = local_loggs
 
 
 def test_mass_different_modules(periods):
@@ -73,12 +73,10 @@ def test_mass_different_modules(periods):
     masses = [
         ModuleAnalysis(options).transform(data(p), {}) for p in periods
     ]
-    loggs = AnalysisOutput("calibration lhc17 different modules")
-    for mass, p in zip(masses, periods):
-        labels = ["SM {}".format(i) for i, _ in enumerate(mass)]
-        diff = Comparator(labels=labels)
-        local_loggs = {}
-        diff.compare(mass, loggs=local_loggs)
-        loggs["LHC17" + p] = local_loggs
-    print loggs
-    loggs.plot()
+    with open_loggs("calibration lhc17 different modules") as loggs:
+        for mass, p in zip(masses, periods):
+            labels = ["SM {}".format(i) for i, _ in enumerate(mass)]
+            diff = Comparator(labels=labels)
+            local_loggs = {}
+            diff.compare(mass, loggs=local_loggs)
+            loggs["LHC17" + p] = local_loggs
