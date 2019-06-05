@@ -3,7 +3,7 @@ import pytest
 from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
@@ -31,6 +31,5 @@ def test_efficiency_ratio(data):
         ("#eta", Efficiency(opt_eta)),
         ("#pi^{0}", Efficiency(opt_pi0)),
     ])
-    loggs = AnalysisOutput("efficiency_ratio")
-    estimator.transform(data, loggs)
-    loggs.plot()
+    with open_loggs("efficiency_ratio") as loggs:
+        estimator.transform(data, loggs)

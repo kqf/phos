@@ -3,11 +3,11 @@ import pytest
 from lazy_object_proxy import Proxy
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.output import AnalysisOutput
-from spectrum.broot import BROOT as br
+from spectrum.output import open_loggs
+from spectrum.broot import BROOT as br  # noqa
 from spectrum.comparator import Comparator  # noqa
 
-from tools.validate import validate
+from tools.validate import validate  # noqa
 from vault.datavault import DataVault
 
 PION_INPUT = Proxy(
@@ -34,8 +34,7 @@ ETA_INPUT = Proxy(
 ])
 def test_spmc_efficiency(data, particle):
     options = CompositeEfficiencyOptions(particle)
-    loggs = AnalysisOutput("efficiency_spmc_{}".format(particle))
-    efficiency = Efficiency(options).transform(data, loggs)
-    # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
-    Comparator().compare(efficiency)
-    return efficiency
+    with open_loggs("efficiency spmc {}".format(particle)) as loggs:
+        efficiency = Efficiency(options).transform(data, loggs)
+        # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
+        Comparator().compare(efficiency)
