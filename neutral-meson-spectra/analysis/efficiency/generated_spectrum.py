@@ -1,3 +1,5 @@
+from __future__ import print_function
+import pytest
 import ROOT
 
 from spectrum.comparator import Comparator
@@ -16,14 +18,23 @@ def fit_function(particle):
     return tsallis
 
 
-def test_generated_distribution():
-    data = "low", "high"
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("single #pi^{0}", "low"),
+        DataVault().input("single #pi^{0}", "high")
+    )
+
+
+@pytest.fixture
+def target_hist():
+    return "hPt_#pi^{0}_primary_standard"
+
+
+def test_generated_distribution(target_hist, data):
     for prod in data:
         function = fit_function("#pi^{0}")
-        generated = SingleHistInput(
-            'hPt_#pi^{0}_primary_standard').transform(
-            DataVault().input("single #pi^{0}", prod)
-        )
+        generated = SingleHistInput(target_hist).transform(data)
         generated.Scale(1. / generated.Integral())
         diff = Comparator()
         diff.compare(generated, function)
@@ -31,4 +42,4 @@ def test_generated_distribution():
 
 def test_integral_over_tsallis_curve():
     tsallis = fit_function("#pi^{0}")
-    print tsallis.Integral(0, 20)
+    print(tsallis.Integral(0, 20))
