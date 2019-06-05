@@ -4,7 +4,6 @@ from spectrum.corrected_yield import YieldRatio, CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
-import spectrum.sutils as su
 from tools.feeddown import data_feeddown
 
 from vault.datavault import DataVault
@@ -78,7 +77,6 @@ def test_yield_ratio(data, options):
         plot=True
     )
 
-    loggs = AnalysisOutput("eta to pion ratio")
     with open_loggs("eta to pion ratio", save=False) as loggs:
         output = estimator.transform(data, loggs)
         Comparator().compare(output)
@@ -88,9 +86,8 @@ def test_yield_ratio(data, options):
 def test_debug_yield_ratio(data_pion, data_eta, options):
     options_eta, options_pi0 = options
 
-    loggs = AnalysisOutput("")
-    pi0 = CorrectedYield(options_pi0).transform(data_pion, loggs)
-    eta = CorrectedYield(options_eta).transform(data_eta, loggs)
+    with open_loggs("eta and pion yields", save=False) as loggs:
+        eta = CorrectedYield(options_eta).transform(data_eta, loggs)
+        pi0 = CorrectedYield(options_pi0).transform(data_pion, loggs)
 
-    su.wait()
     Comparator().compare(eta, pi0)
