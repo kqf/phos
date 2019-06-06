@@ -3,7 +3,7 @@ import pytest
 from spectrum.efficiency import Efficiency
 from spectrum.pipeline import ComparePipeline
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
@@ -42,9 +42,8 @@ def test_efficiency_ratio(pythia, spmc):
             EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
     ], plot=True)
 
-    loggs = AnalysisOutput("efficiency_ratio_spmc")
-    pythia_ratio = estimator.transform(pythia, loggs)
-    # loggs.plot()
+    with open_loggs("efficiency ratio pythia8") as loggs:
+        pythia_ratio = estimator.transform(pythia, loggs)
 
     # Now the similar code for SPMC
     estimator = ComparePipeline([
@@ -55,7 +54,7 @@ def test_efficiency_ratio(pythia, spmc):
             CompositeEfficiencyOptions(particle="#pi^{0}", ptrange=ptrange,
                                        scale=1))),
     ], plot=True)
-    loggs = AnalysisOutput("efficiency_ratio_spmc")
-    spmc_ratio = estimator.transform(spmc, loggs)
-    # loggs.plot()
+    with open_loggs("efficiency ratio spmc") as loggs:
+        spmc_ratio = estimator.transform(spmc, loggs)
+
     Comparator(labels=["spmc", "pythia"]).compare(spmc_ratio, pythia_ratio)
