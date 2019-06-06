@@ -3,6 +3,7 @@ from spectrum.comparator import Comparator
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import TransformerBase
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 
 
@@ -26,5 +27,6 @@ class EtaPionRatio(TransformerBase):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_calculate_eta_pion_ratio(data):
-    ratio = EtaPionRatio(None).transform(data, {})
-    Comparator().compare(ratio)
+    with open_loggs("eta pion ratio generated") as loggs:
+        ratio = EtaPionRatio(None).transform(data, loggs)
+        Comparator().compare(ratio)
