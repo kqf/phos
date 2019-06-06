@@ -30,24 +30,10 @@ def spmc():
     return (eta, pion)
 
 
-def efficiency_ratio(data, name):
-    ptrange = "config/pt-same.json"
-    estimator = ComparePipeline([
-        ("#eta", Efficiency(
-            EfficiencyOptions(particle="#eta", ptrange=ptrange, scale=1))),
-        ("#pi^{0}", Efficiency(
-            EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
-    ], plot=True)
-    loggs = AnalysisOutput("efficiency_ratio_{}".format(name))
-    output = estimator.transform(data, loggs)
-    loggs.plot()
-    return output
-
-
 # @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_efficiency(pythia, spmc):
+def test_efficiency_ratio(pythia, spmc):
     ptrange = "config/pt-same.json"
     estimator = ComparePipeline([
         ("#eta", Efficiency(
