@@ -3,7 +3,7 @@ import ROOT
 
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from tools.mc import Nonlinearity
 from spectrum.comparator import Comparator
 
@@ -25,10 +25,8 @@ def nonlinearity_function():
 @pytest.fixture
 def data():
     return (
-        DataVault().input("data", "latest", listname="Phys",
-                          histname="MassPtSM0"),
-        DataVault().input("pythia8", "latest", listname="PhysEff",
-                          histname="MassPt"),
+        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
+        DataVault().input("pythia8", listname="PhysEff", histname="MassPt"),
     )
 
 
@@ -39,10 +37,8 @@ def test_calculate_nonlinearity(data):
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options, plot=True)
-    nonlinearity = estimator.transform(
-        data,
-        loggs=AnalysisOutput("calculate the nonlinearity")
-    )
+    with open_loggs("nonlinearity") as loggs:
+        nonlinearity = estimator.transform(data, loggs)
+        Comparator().compare(nonlinearity)
 
-    Comparator().compare(nonlinearity)
     assert nonlinearity.GetEntries() > 0
