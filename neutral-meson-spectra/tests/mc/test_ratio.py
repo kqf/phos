@@ -4,7 +4,7 @@ from spectrum.analysis import Analysis
 from spectrum.efficiency import Efficiency
 from spectrum.pipeline import Pipeline, ComparePipeline, HistogramSelector
 from spectrum.options import Options, EfficiencyOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
@@ -39,13 +39,12 @@ def test_compare_raw_yields(dataset):
             ("spectrum", HistogramSelector("spectrum")),
         ])),
     ])
-    loggs = AnalysisOutput("raw_yield_ratio")
-    output = estimator.transform(dataset, loggs)
-    Comparator().compare(output)
-    # loggs.plot()
+    with open_loggs("mc raw yield ratio") as loggs:
+        output = estimator.transform(dataset, loggs)
+        Comparator().compare(output)
 
 
-# @pytest.mark.skip("")    
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency(dataset):
@@ -56,10 +55,9 @@ def test_efficiency(dataset):
         ("#pi^{0}", Efficiency(
             EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
     ], plot=True)
-    loggs = AnalysisOutput("efficiency_ratio")
-    output = estimator.transform(dataset, loggs)
-    loggs.plot()
-    Comparator().compare(output)
+    with open_loggs("efficiency_ratio") as loggs:
+        output = estimator.transform(dataset, loggs)
+        Comparator().compare(output)
 
 
 @pytest.fixture
@@ -110,6 +108,6 @@ def test_yield_ratio(data, options):
         plot=True
     )
 
-    loggs = AnalysisOutput("eta to pion ratio")
-    output = estimator.transform(data, loggs=loggs)
-    Comparator().compare(output)
+    with open_loggs("eta to pion ratio") as loggs:
+        output = estimator.transform(data, loggs=loggs)
+        Comparator().compare(output)

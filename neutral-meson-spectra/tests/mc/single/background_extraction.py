@@ -11,6 +11,7 @@ from spectrum.parametrisation import PeakParametrisation
 from spectrum.pipeline import Pipeline
 from spectrum.processing import DataSlicer, MassFitter
 from spectrum.ptplotter import MassesPlot
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 
 
@@ -48,13 +49,14 @@ class MassExtractor(object):
 def test_background_fitting():
     loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
 
-    options = Options.spmc((4.0, 20.0))
-    # options.fitf = 'gaus'
-    masses = MassExtractor(options).transform(
-        # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-        Input("LHC16-single.root", "PhysEff"),
-        loggs
-    )
+    with open_loggs("test spmc background") as loggs:
+        options = Options.spmc((4.0, 20.0))
+        # options.fitf = 'gaus'
+        masses = MassExtractor(options).transform(
+            # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
+            Input("LHC16-single.root", "PhysEff"),
+            loggs
+        )
 
     target = masses[8]
     param = PeakParametrisation.get(options.invmass.backgroundp)
@@ -89,14 +91,13 @@ def test_background_fitting():
 
 
 def test_data_peak():
-    loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
-
-    options = Options()
-    # options.fitf = 'gaus'
-    masses = MassExtractor(options).transform(
-        DataVault().input("data"),
-        loggs
-    )
+    with open_loggs("test_spmc_background") as loggs:
+        options = Options()
+        # options.fitf = 'gaus'
+        masses = MassExtractor(options).transform(
+            DataVault().input("data"),
+            loggs
+        )
 
     target = masses[12]
     param = PeakParametrisation.get(options.invmass.backgroundp)
