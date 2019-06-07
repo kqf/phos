@@ -1,9 +1,11 @@
+import pytest
+
 from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
@@ -50,6 +52,7 @@ def define_datasets():
     return names, datasets
 
 
+@pytest.mark.onlylocal
 def test_efficiencies():
     names, datasets = define_datasets()
     particle = "#pi^{0}"
@@ -61,12 +64,11 @@ def test_efficiencies():
         for name, uinput in zip(names, datasets)
     ], plot=True)
 
-    estimator.transform(
-        datasets,
-        loggs=AnalysisOutput("compare different datasts")
-    )
+    with open_loggs("compare different productions") as loggs:
+        estimator.transform(datasets, loggs=loggs)
 
 
+@pytest.mark.onlylocal
 def test_yields():
     names, datasets = define_datasets()
     particle = "#pi^{0}"
@@ -77,7 +79,5 @@ def test_yields():
         for name, uinput in zip(names, datasets)
     ], True)
 
-    estimator.transform(
-        define_datasets(),
-        "compare different datasts"
-    )
+    with open_loggs("compare yields") as loggs:
+        estimator.transform(define_datasets(), loggs)
