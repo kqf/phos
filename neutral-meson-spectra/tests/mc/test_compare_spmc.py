@@ -3,38 +3,45 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
 from spectrum.options import EfficiencyOptions
 from spectrum.options import CompositeEfficiencyOptions
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 
 
-def define_datasets():
-    production = "single #pi^{0}"
-    datasets = (
-        (
-            DataVault().input(production, "low", "PhysEff"),
-            DataVault().input(production, "high", "PhysEff"),
-        ),
-        DataVault().input("pythia8"),
+@pytest.fixture
+def spmc():
+    return (
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff"),
     )
-    names = "spmc", "pythia8"
-    return names, datasets
+
+
+@pytest.fixture
+def pythia8():
+    return DataVault().input("pythia8")
+
+
+@pytest.fixture
+def data(spmc, pythia8):
+    return spmc, pythia8
 
 
 @pytest.mark.onlylocal
-def test_efficiencies():
-    names, datasets = define_datasets()
-    particle = "#pi^{0}"
-    composite_options = CompositeEfficiencyOptions(particle)
-    options = [(names[0], Efficiency(composite_options))]
-
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_efficiencies(particle, data):
     general_options = EfficiencyOptions(
         genname="hPt_#pi^{0}_primary_",
-        scale=1.8,
+        scale=2,
         ptrange="config/pt-same-truncated.json"
     )
 
-    options += [
-        (name, Efficiency(general_options)) for name in names[1:]
+    steps = [
+        ("spmc", Efficiency(CompositeEfficiencyOptions(particle)))
+        ("pythia8", Efficiency(general_options))
     ]
 
-    estimator = ComparePipeline(options, plot=False)
-    estimator.transform(datasets, {})
+    with open_loggs("pythia8 spmc ratio") as loggs:
+        estimator = ComparePipeline(steps, plot=False)
+        estimator.transform(data, loggs)
