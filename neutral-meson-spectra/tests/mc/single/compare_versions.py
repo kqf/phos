@@ -17,16 +17,9 @@ def data():
             DataVault().input("single #pi^{0}", "low", listname="PhysEff" + i),
             DataVault().input("single #pi^{0}", "high", listname="PhysEff" + i)
         )
-        for i in ["", "3"]
+        for i in ["", "1", "3"]
     ]
 
-    reference = [
-        (
-            DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
-            DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
-        ),
-    ]
-    datasets = datasets + reference
     names = "old", "new", "the oldest one"
     return names, datasets
 

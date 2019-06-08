@@ -2,7 +2,6 @@ import pytest
 import ROOT
 
 from spectrum.input import SingleHistInput
-from lazy_object_proxy import Proxy
 from spectrum.output import AnalysisOutput
 from spectrum.comparator import Comparator
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
@@ -57,24 +56,21 @@ class GeneratedValidator(object):
         ])
 
 
-MC_INPUT = Proxy(
-    lambda: (
+@pytest.fixture
+def data():
+    return (
         DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
         None
     )
-)
 
 
 @pytest.mark.onlylocal
-def test_pi0_reconstructed():
-    estimator = ReconstructedValidator(
-        tsallis(),
-        Options.spmc((8.0, 20.0), particle="#pi^{0}")
-    )
+def test_pi0_reconstructed(data):
+    estimator = ReconstructedValidator(tsallis(), Options(particle="#pi^{0}"))
 
     loggs = AnalysisOutput(
         "test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
-    output = estimator.transform(MC_INPUT, loggs)
+    output = estimator.transform(data, loggs)
     loggs.plot(False)
 
     output.logy = False
@@ -83,12 +79,12 @@ def test_pi0_reconstructed():
 
 
 @pytest.mark.onlylocal
-def test_pi0_generated():
+def test_pi0_generated(data):
     estimator = GeneratedValidator(tsallis(), "hPt_#pi^{0}_primary_standard")
 
     loggs = AnalysisOutput(
         "generated_spectrum_extraction_spmc_{}".format("#pi^{0}"))
-    output = estimator.transform(MC_INPUT, loggs)
+    output = estimator.transform(data, loggs)
     loggs.plot(False)
 
     output.logy = False
