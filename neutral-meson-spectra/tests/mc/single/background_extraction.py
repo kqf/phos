@@ -6,7 +6,6 @@ from spectrum.broot import BROOT as br  # noqa
 from spectrum.comparator import Comparator  # noqa
 from spectrum.input import Input
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
 from spectrum.parametrisation import PeakParametrisation
 from spectrum.pipeline import Pipeline
 from spectrum.processing import DataSlicer, MassFitter
@@ -45,18 +44,17 @@ class MassExtractor(object):
         return output
 
 
-@pytest.mark.skip("")
-def test_background_fitting():
-    loggs = AnalysisOutput("test_spmc_background", "#pi^{0}")
+@pytest.fixture
+def single_input():
+    return Input("LHC16-single.root", "PhysEff")
 
+
+@pytest.mark.skip("")
+def test_background_fitting(single_input):
     with open_loggs("test spmc background") as loggs:
-        options = Options.spmc((4.0, 20.0))
+        options = Options()
         # options.fitf = 'gaus'
-        masses = MassExtractor(options).transform(
-            # Input(DataVault().file("single #pi^{0}", "high"), "PhysEff"),
-            Input("LHC16-single.root", "PhysEff"),
-            loggs
-        )
+        masses = MassExtractor(options).transform(single_input, loggs)
 
     target = masses[8]
     param = PeakParametrisation.get(options.invmass.backgroundp)
@@ -64,40 +62,19 @@ def test_background_fitting():
 
     canvas = su.canvas("test")
     MassesPlot().transform(target, canvas)
-    # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
-    # target.mass.Draw()
-    # fitf.Draw("same")
     canvas.Update()
     su.wait()
 
-    # signal = ROOT.TF1(
-    #     "pure_peak",
-    #     lambda x, p: fitf.Eval(x[0]) - background.Eval(x[0]), 0, 1, 10)
-    # parameters = [fitf.GetParameter(i) for i in range(fitf.GetNpar())]
-    # signal.SetParameters(*parameters)
-    # for i in range(fitf.GetNpar()):
-    #     signal.SetParameter(i, fitf.GetParameter(i))
 
-    # print signal.GetParameter(0), fitf.GetParameter(0)
-
-    # target.mass.Add(signal, -1)
-    # residualb = ROOT.TF1("residual", "pol2(0)", 0.1, 0.16)
-    # target.mass.Fit(residualb)
-    # diff = Comparator()
-
-    # diff.compare(
-    #     br.rebin_as(target.mass, background.GetHistogram())
-    # )
+@pytest.fixture
+def data():
+    return DataVault().input("data")
 
 
-def test_data_peak():
-    with open_loggs("test_spmc_background") as loggs:
+def test_data_peak(data):
+    with open_loggs("test spmc background") as loggs:
         options = Options()
-        # options.fitf = 'gaus'
-        masses = MassExtractor(options).transform(
-            DataVault().input("data"),
-            loggs
-        )
+        masses = MassExtractor(options).transform(data, loggs)
 
     target = masses[12]
     param = PeakParametrisation.get(options.invmass.backgroundp)
@@ -105,8 +82,5 @@ def test_data_peak():
 
     canvas = su.canvas("test")
     MassesPlot().transform(target, canvas)
-    # target.mass.GetXaxis().SetRangeUser(*target.initial_fitting_region)
-    # target.mass.Draw()
-    # fitf.Draw("same")
     canvas.Update()
     su.wait()
