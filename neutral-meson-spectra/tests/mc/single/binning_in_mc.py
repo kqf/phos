@@ -2,7 +2,7 @@ import pytest
 import ROOT
 
 from spectrum.input import SingleHistInput
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
@@ -36,11 +36,13 @@ class ReconstructedValidator(object):
         ])
 
 
+@pytest.fixture
 def tsallis():
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), 0, 100)
-    tsallis.SetParameters(0.014960701090585591,
-                          0.287830380417601, 9.921003040859755)
-    # [0.014850211992453644, 0.28695967166609104, 9.90060126848571
+    tsallis.SetParameters(
+        0.0149,
+        0.2878,
+        9.9210)
     tsallis.FixParameter(3, 0.135)
     tsallis.FixParameter(4, 0.135)
     tsallis.label = "tsallis"
@@ -65,28 +67,22 @@ def data():
 
 
 @pytest.mark.onlylocal
-def test_pi0_reconstructed(data):
-    estimator = ReconstructedValidator(tsallis(), Options(particle="#pi^{0}"))
+def test_pi0_reconstructed(data, tsallis):
+    estimator = ReconstructedValidator(tsallis, Options(particle="#pi^{0}"))
 
-    loggs = AnalysisOutput(
-        "test_spectrum_extraction_spmc_{}".format("#pi^{0}"), "#pi^{0}")
-    output = estimator.transform(data, loggs)
-    loggs.plot(False)
-
-    output.logy = False
-    diff = Comparator(stop=True, crange=(0, 8000))
-    diff.compare(output)
+    with open_loggs("extraction spmc {}".format("#pi^{0}")) as loggs:
+        output = estimator.transform(data, loggs)
+        output.logy = False
+        diff = Comparator(stop=True, crange=(0, 8000))
+        diff.compare(output)
 
 
 @pytest.mark.onlylocal
-def test_pi0_generated(data):
-    estimator = GeneratedValidator(tsallis(), "hPt_#pi^{0}_primary_standard")
+def test_pi0_generated(data, tsallis):
+    estimator = GeneratedValidator(tsallis, "hPt_#pi^{0}_primary_standard")
 
-    loggs = AnalysisOutput(
-        "generated_spectrum_extraction_spmc_{}".format("#pi^{0}"))
-    output = estimator.transform(data, loggs)
-    loggs.plot(False)
-
-    output.logy = False
-    diff = Comparator(stop=True)
-    diff.compare(output)
+    with open_loggs("spectrum extraction spmc {}".format("#pi^{0}")) as loggs:
+        output = estimator.transform(data, loggs)
+        output.logy = False
+        diff = Comparator(stop=True)
+        diff.compare(output)
