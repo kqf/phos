@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.pipeline import ComparePipeline
 from spectrum.efficiency import Efficiency
-from spectrum.options import CompositeEfficiencyOptions, Options
+from spectrum.options import CompositeEfficiencyOptions
 from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
 from spectrum.output import open_loggs
@@ -10,42 +10,21 @@ from spectrum.output import open_loggs
 from vault.datavault import DataVault
 
 
-def define_datasets():
+@pytest.fixture
+def data():
     datasets = [
-        {
-            DataVault().input("single #pi^{0} iteration d3 nonlin13",
-                              "low",
-                              listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0} iteration d3 nonlin13",
-                              "high",
-                              listname="PhysEff" + i): (7.0, 20)
-        }
-        for i in ["3"]
-    ]
-
-    datasets = datasets + [
-        {
-            DataVault().input("single #pi^{0}",
-                              "low",
-                              listname="PhysEff" + i): (0, 7.0),
-            DataVault().input("single #pi^{0}",
-                              "high",
-                              listname="PhysEff" + i): (7.0, 20)
-        }
-        for i in [""]
+        (
+            DataVault().input("single #pi^{0}", "low", listname="PhysEff" + i),
+            DataVault().input("single #pi^{0}", "high", listname="PhysEff" + i)
+        )
+        for i in ["", "3"]
     ]
 
     reference = [
-        {
-            DataVault().input("single #pi^{0}",
-                              "low",
-                              listname="PhysEff",
-                              ): (0, 7.0),
-            DataVault().input("single #pi^{0}",
-                              "high",
-                              listname="PhysEff",
-                              ): (7.0, 20)
-        },
+        (
+            DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
+            DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
+        ),
     ]
     datasets = datasets + reference
     names = "old", "new", "the oldest one"
@@ -53,9 +32,12 @@ def define_datasets():
 
 
 @pytest.mark.onlylocal
-def test_efficiencies():
-    names, datasets = define_datasets()
-    particle = "#pi^{0}"
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_efficiencies(data, particle):
+    names, datasets = data
     estimator = ComparePipeline([
         (name, Efficiency(CompositeEfficiencyOptions(
             uinput,
@@ -65,19 +47,20 @@ def test_efficiencies():
     ], plot=True)
 
     with open_loggs("compare different productions") as loggs:
-        estimator.transform(datasets, loggs=loggs)
+        estimator.transform(datasets, loggs)
 
 
 @pytest.mark.onlylocal
-def test_yields():
-    names, datasets = define_datasets()
-    particle = "#pi^{0}"
-    data = [('data', Analysis(Options()))]
-    estimator = ComparePipeline(data + [
-        (name,
-         Analysis(CompositeOptions(uinput, particle)))
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_yields(data, particle):
+    names, datasets = data
+    estimator = ComparePipeline([
+        (name, Analysis(CompositeOptions(uinput, particle)))
         for name, uinput in zip(names, datasets)
     ], True)
 
     with open_loggs("compare yields") as loggs:
-        estimator.transform(define_datasets(), loggs)
+        estimator.transform(datasets, loggs)
