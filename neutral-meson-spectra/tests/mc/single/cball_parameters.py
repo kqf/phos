@@ -1,7 +1,9 @@
+import pytest
+
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.processing import DataSlicer, MassFitter
 from vault.datavault import DataVault
@@ -25,20 +27,22 @@ class MassExtractor(object):
         return output
 
 
-MC_HIGH = DataVault().input("single #pi^{0}", "high", listname="PhysEff")
+@pytest.fixture
+def data():
+    return DataVault().input("single #pi^{0}", "high", listname="PhysEff")
 
 
-def test_background_fitting():
-    loggs = AnalysisOutput("fixed cb parameters", "#pi^{0}")
-    options = Options.spmc((4.0, 20.0))
+@pytest.onlylocal
+@pytest.interactive
+def test_background_fitting(data):
+    with open_loggs("fixed cb parameters") as loggs:
+        options = Options()
+        outputs1 = Analysis(options).transform(data, loggs)
 
-    outputs1 = Analysis(options).transform(MC_HIGH, loggs)
-
-    loggs = AnalysisOutput("relaxed cb parameters", "#pi^{0}")
-    options = Options.spmc((4.0, 20.0))
-    options.signalp.relaxed = True
-
-    outputs2 = Analysis(options).transform(MC_HIGH, loggs)
+    with open_loggs("relaxed cb parameters") as loggs:
+        options = Options()
+        options.signalp.relaxed = True
+        outputs2 = Analysis(options).transform(data, loggs)
 
     diff = Comparator()
     for parameter in zip(outputs1, outputs2):
