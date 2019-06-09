@@ -1,4 +1,4 @@
-import pytest  # noqa
+import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
@@ -6,7 +6,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.options import CompositeOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from vault.datavault import DataVault
 
 
@@ -43,7 +43,7 @@ def eta_data():
 
 @pytest.fixture
 def data(pion_data, eta_data):
-    return (eta_data, pion_data)
+    return eta_data, pion_data
 
 
 @pytest.mark.onlylocal
@@ -52,6 +52,6 @@ def test_efficiency_ratio(data):
     opt_eta = CompositeOptions("#eta", ptrange=ptrange)
     opt_pi0 = CompositeOptions("#pi^{0}", ptrange=ptrange)
     estimator = MassComparator(opt_eta, opt_pi0, plot=False)
-    loggs = AnalysisOutput("mass ratio")
-    estimator.transform(data, loggs)
-    # loggs.plot()
+
+    with open_loggs("mass ratio") as loggs:
+        estimator.transform(data, loggs)
