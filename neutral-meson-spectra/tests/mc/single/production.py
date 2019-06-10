@@ -1,3 +1,4 @@
+import ROOT
 import pytest
 
 from vault.datavault import DataVault
@@ -23,14 +24,21 @@ def data():
     return data, mc_inputs
 
 
+@pytest.fixture
+def deviationf():
+    func_nonlin = ROOT.TF1("func_nonlin", "[0] * x + [1]", 0, 100)
+    func_nonlin.SetParameters(1.001, 0.03)
+    return func_nonlin
+
+
 @pytest.mark.parametrize("method", [
     Nonlinearity,
     Decalibration,
     Shape
 ])
-def test_calculate_quantities(method, data):
+def test_calculate_quantities(method, data, deviationf):
     options = CompositeNonlinearityOptions("#pi^{0}")
-    options.fitf = None
+    options.fitf = deviationf
     with open_loggs("spmc production check") as loggs:
         nonlin = method(options).transform(data, loggs)
     assert nonlin.GetEntries() > 0
