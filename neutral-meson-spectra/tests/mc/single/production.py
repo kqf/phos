@@ -3,10 +3,11 @@ import pytest
 from vault.datavault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
 from tools.mc import Nonlinearity, Decalibration, Shape
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 
-def define_inputs():
+@pytest.fixture
+def data():
     production = "single #pi^{0}"
     listname = "PhysEff"
     histname = "MassPt"
@@ -27,12 +28,9 @@ def define_inputs():
     Decalibration,
     Shape
 ])
-def test_calculate_quantities(method):
-    name = method.__class__.__name__.lower()
+def test_calculate_quantities(method, data):
     options = CompositeNonlinearityOptions("#pi^{0}")
     options.fitf = None
-    nonlin = method(options).transform(
-        define_inputs(),
-        loggs=AnalysisOutput("spmc {}".format(name))
-    )
+    with open_loggs("spmc production check") as loggs:
+        nonlin = method(options).transform(data, loggs)
     assert nonlin.GetEntries() > 0
