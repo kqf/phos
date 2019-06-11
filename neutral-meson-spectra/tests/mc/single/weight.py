@@ -3,7 +3,7 @@ import pytest  # noqa
 
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from vault.formulas import FVault
@@ -24,20 +24,18 @@ def data():
     )
 
 
-def fitfunction():
-    tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 10)
-    tsallis.SetParameters(0.014960701090585591,
-                          0.287830380417601,
-                          9.921003040859755)
+@pytest.fixture
+def yieldf():
+    tsallis = ROOT.TF1("tsallis", FVault().func("tsallis"), 0.8, 10)
+    tsallis.SetParameters(0.015, 0.288, 9.921)
     tsallis.FixParameter(3, 0.135)
     tsallis.FixParameter(4, 0.135)
     return tsallis
 
 
 @pytest.mark.onlylocal
-def test_corrected_yield_for_pi0(data):
+def test_corrected_yield_for_pi0(data, yieldf):
     options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
-    options.fitfunc = fitfunction()
-    CorrectedYield(options).transform(
-        data,
-        loggs=AnalysisOutput("corrected yield #pi^{0}"))
+    options.fitfunc = yieldf
+    with open_loggs("corrected yield #pi^{0}") as loggs:
+        CorrectedYield(options).transform(data, loggs)
