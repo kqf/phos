@@ -9,6 +9,7 @@ from tools.mc import Nonlinearity
 from tools.mc import Decalibration
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator  # noqa
+from vault.formulas import FVault
 
 
 @pytest.fixture
@@ -23,11 +24,16 @@ def data():
 
 
 @pytest.fixture
-def nonlinearity_function():
-    # func_nonlin = ROOT.TF1(
-    #     "func_nonlin", FVault().func("nonlinearity"), 0, 20)
-    # func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
+def nonlinearity_function_official():
+    func_nonlin = ROOT.TF1(
+        "func_nonlin", FVault().func("nonlinearity"), 0, 20)
+    func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
+    func_nonlin.SetParameters(1., 0.6, 1.04)
+    return func_nonlin
 
+
+@pytest.fixture
+def nonlinearity_function():
     func_nonlin = ROOT.TF1(
         "func_nonlin",
         "[2]*(1.+[0]/(1. + TMath::Power(x/[1],2)))", 0, 100)
