@@ -7,7 +7,7 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
 from spectrum.input import SingleHistInput
-from spectrum.pipeline import open_loggs
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
