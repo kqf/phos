@@ -34,19 +34,16 @@ class Attributes(TransformerBase):
         return data
 
 
-def fitfunc():
+@pytest.fixture
+def spectrumf():
     tsallis = ROOT.TF1(
         "tsallis",
         FVault().func("tsallis", "standard"), 0, 8)
 
-    parameters = [0.2622666606436988,
-                  0.08435275173194286,
-                  7.356520553419461]
-
+    parameters = [0.260, 0.085, 7.372]
     for i, par in enumerate(parameters):
         tsallis.FixParameter(i, par)
     # tsallis.SetParameter(0, parameters[0])
-
     # tsallis.SetParameters(0.014960701090585591,
     # 0.287830380417601, 9.921003040859755)
     tsallis.FixParameter(3, 0.135)
@@ -55,9 +52,9 @@ def fitfunc():
 
 
 @pytest.mark.onlylocal
-def test_corrected_yield_for_pi0(data):
+def test_corrected_yield_for_pi0(data, spectrumf):
     options = Options()
-    options.fitfunc = fitfunc()
+    options.fitfunc = spectrumf
     estimator = Pipeline([
         ("data", SingleHistInput(
             "hPt_#pi^{0}_primary_standard", norm=True)),
