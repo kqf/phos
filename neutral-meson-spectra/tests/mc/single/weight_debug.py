@@ -18,12 +18,11 @@ DATASET = Proxy(
     lambda: DataVault().input("single #pi^{0}", "low", listname="PhysEff")
 )
 
-# NB: This dataset is now obsolete
 COMPARE_DATASETS = Proxy(
     lambda:
     (
         DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
-        DataVault().input("single alternative", "low", listname="PhysEff"),
+        DataVault().input("single #eta", "low", listname="PhysEff"),
     )
 )
 

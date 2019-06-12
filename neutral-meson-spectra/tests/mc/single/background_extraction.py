@@ -71,6 +71,8 @@ def data():
     return DataVault().input("data")
 
 
+@pytest.mark.onlylocal
+@pytest.mark.onlylocal
 def test_data_peak(data):
     with open_loggs("test spmc background") as loggs:
         options = Options()
