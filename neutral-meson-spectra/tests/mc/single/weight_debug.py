@@ -5,8 +5,8 @@ from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.pipeline import OutputFitter
 from spectrum.input import SingleHistInput
 from spectrum.options import Options
-from spectrum.output import AnalysisOutput
 from spectrum.pipeline import TransformerBase
+from spectrum.output import open_loggs
 # from spectrum.comparator import Comparator
 # from spectrum.broot import BROOT as br
 
@@ -65,17 +65,18 @@ def test_corrected_yield_for_pi0(data):
         ("fit", OutputFitter(options)),
     ])
 
-    estimator.transform(data, AnalysisOutput("corrected yield #pi^{0}"))
+    with open_loggs("corrected yield #pi{0}") as loggs:
+        estimator.transform(data, loggs)
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_corrected_different_spectra():
+def test_corrected_different_spectra(compare_data):
     estimator = ComparePipeline([
         ("mcdata", SingleHistInput(
             "hPt_#pi^{0}_primary_standard", norm=False)),
         ("original", SingleHistInput(
             "hPt_#pi^{0}_primary_standard", norm=False)),
     ], True)
-    estimator.transform(compare_data,
-                        AnalysisOutput("corrected yield #pi^{0}"))
+    with open_loggs("corrected yield #pi^{0}") as loggs:
+        estimator.transform(compare_data, loggs)
