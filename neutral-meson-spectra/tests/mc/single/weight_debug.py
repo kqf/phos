@@ -1,7 +1,6 @@
 import ROOT
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.pipeline import OutputFitter
 from spectrum.input import SingleHistInput
@@ -14,17 +13,18 @@ from spectrum.pipeline import TransformerBase
 from vault.datavault import DataVault
 from vault.formulas import FVault
 
-DATASET = Proxy(
-    lambda: DataVault().input("single #pi^{0}", "low", listname="PhysEff")
-)
 
-COMPARE_DATASETS = Proxy(
-    lambda:
-    (
+@pytest.fixture
+def data():
+    return DataVault().input("single #pi^{0}", "low", listname="PhysEff")
+
+
+@pytest.fixture
+def compare_data():
+    return (
         DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
         DataVault().input("single #eta", "low", listname="PhysEff"),
     )
-)
 
 
 class Attributes(TransformerBase):
@@ -54,7 +54,8 @@ def fitfunc():
     return tsallis
 
 
-def test_corrected_yield_for_pi0():
+@pytest.mark.onlylocal
+def test_corrected_yield_for_pi0(data):
     options = Options()
     options.fitfunc = fitfunc()
     estimator = Pipeline([
@@ -64,10 +65,11 @@ def test_corrected_yield_for_pi0():
         ("fit", OutputFitter(options)),
     ])
 
-    estimator.transform(DATASET, AnalysisOutput("corrected yield #pi^{0}"))
+    estimator.transform(data, AnalysisOutput("corrected yield #pi^{0}"))
 
 
-@pytest.mark.skip('Obsolete dataset')
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_corrected_different_spectra():
     estimator = ComparePipeline([
         ("mcdata", SingleHistInput(
@@ -75,6 +77,5 @@ def test_corrected_different_spectra():
         ("original", SingleHistInput(
             "hPt_#pi^{0}_primary_standard", norm=False)),
     ], True)
-    estimator.transform(
-        COMPARE_DATASETS,
-        AnalysisOutput("corrected yield #pi^{0}"))
+    estimator.transform(compare_data,
+                        AnalysisOutput("corrected yield #pi^{0}"))
