@@ -8,6 +8,7 @@ from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
 from spectrum.input import SingleHistInput
 from spectrum.output import open_loggs
+from spectrum.comparator import Comparator
 
 from vault.datavault import DataVault
 
@@ -24,6 +25,19 @@ def data():
     )
 
 
+@pytest.fixture
+def spectrumf():
+    func_feeddown = ROOT.TF1(
+        "func_feeddown",
+        "[2] * (1. + [0] * TMath::Exp(-x * x / 8./ [1] / [1]))",
+        0, 100)
+    func_feeddown.SetParNames("A", "#sigma", "scale")
+    func_feeddown.SetParameter(0, -1.063)
+    func_feeddown.SetParameter(1, 0.855)
+    func_feeddown.SetParameter(2, 2.0)
+    return func_feeddown
+
+
 @pytest.mark.onlylocal
 def test_species_contributions(data):
     estimator = ComparePipeline([
@@ -34,15 +48,6 @@ def test_species_contributions(data):
         ("generated", SingleHistInput("hPt_#pi^{0}_primary_")),
     ])
     with open_loggs("relative particle contribution") as loggs:
-        estimator.transform(data, loggs)
-
-
-def fit_function():
-    func_feeddown = ROOT.TF1(
-        "func_feeddown",
-        "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))", 0, 100)
-    func_feeddown.SetParNames("A", "#sigma", "scale")
-    func_feeddown.SetParameter(0, -1.063)
-    func_feeddown.SetParameter(1, 0.855)
-    func_feeddown.SetParameter(2, 2.0)
-    return func_feeddown
+        spectrum = estimator.transform(data, loggs)
+        spectrum.Fit(spectrumf)
+        Comparator().compare(spectrum)
