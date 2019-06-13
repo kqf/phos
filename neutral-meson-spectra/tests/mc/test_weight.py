@@ -15,8 +15,16 @@ from vault.datavault import DataVault
 #     affect the efficiency
 
 
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("data", histname="MassPtSM0"),
+        DataVault().input("pythia8"),
+    )
+
+
 @pytest.mark.onlylocal
-def test_species_contributions():
+def test_species_contributions(data):
     estimator = ComparePipeline([
         ("data", Pipeline([
             ("analysis", Analysis(Options())),
@@ -24,10 +32,7 @@ def test_species_contributions():
         ])),
         ("generated", SingleHistInput("hPt_#pi^{0}_primary_")),
     ])
-    estimator.transform((
-        DataVault().input("data", histname="MassPtSM0"),
-        DataVault().input("pythia8"),
-    ), {})
+    estimator.transform(data, {})
 
 
 def fit_function():
