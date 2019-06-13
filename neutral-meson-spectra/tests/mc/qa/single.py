@@ -7,8 +7,6 @@ from spectrum.input import read_histogram
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
 
-
-# TODO: Add to thesis images
 INPUTS = (
     ("#pi^{0}", Proxy(
         lambda: DataVault().input("single #pi^{0}", "low",

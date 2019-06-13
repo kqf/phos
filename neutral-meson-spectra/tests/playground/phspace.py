@@ -13,8 +13,7 @@ from vault.formulas import FVault
 
 def tsallis(rrange=(0., 20.)):
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
-    tsallis.SetParameters(0.014960701090585591,
-                          0.287830380417601, 9.921003040859755)
+    tsallis.SetParameters(0.0149, 0.2878, 9.9210)
     tsallis.FixParameter(3, 0.135)
     tsallis.FixParameter(4, 0.135)
     tsallis.SetLineColor(ROOT.kRed + 1)

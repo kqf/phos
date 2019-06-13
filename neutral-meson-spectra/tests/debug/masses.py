@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ROOT
 import pytest
 
@@ -43,7 +44,7 @@ class SignalScaler(TransformerBase):
 
     def transform(self, data, loggs):
         for h in data:
-            print h.GetName(), h.GetBinWidth(0), h.GetNbinsX()
+            print(h.GetName(), h.GetBinWidth(0), h.GetNbinsX())
             h.Scale(self.scale)
         return data
 
@@ -87,7 +88,7 @@ class ReadInvariantMassDistribution(TransformerBase):
                       if self.pattern in k.GetName()]
         histograms = sorted(histograms, key=lambda x: x.GetName())
         names = [h.GetName() for h in histograms]
-        print names
+        print(names)
         return histograms
 
 

@@ -9,7 +9,6 @@ from spectrum.comparator import Comparator
 def parameters():
     return {
         "old": [
-
             -0.014719244288611932,
             2 * 0.8017501954719543,
             1.050000000000015,
