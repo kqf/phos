@@ -7,6 +7,7 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
 from spectrum.input import SingleHistInput
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
@@ -32,7 +33,8 @@ def test_species_contributions(data):
         ])),
         ("generated", SingleHistInput("hPt_#pi^{0}_primary_")),
     ])
-    estimator.transform(data, {})
+    with open_loggs("relative particle contribution") as loggs:
+        estimator.transform(data, loggs)
 
 
 def fit_function():
