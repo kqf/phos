@@ -1,16 +1,16 @@
 import pytest
 
-from lazy_object_proxy import Proxy
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 
 from spectrum.comparator import Comparator
 
-INPUT_DATA = Proxy(
-    lambda: DataVault().input("data", histname="MassPtSM0")
-)
+
+@pytest.fixture
+def data():
+    return DataVault().input("data", histname="MassPtSM0")
 
 
 def scale_data(data, scale=2):
@@ -29,13 +29,13 @@ def scale_data(data, scale=2):
     "#pi^{0}",
     "#eta",
 ])
-def test_simple(particle):
-    loggs = AnalysisOutput("test the single analysis")
+def test_simple(particle, data):
 
-    original = Analysis(Options(particle=particle)).transform(
-        INPUT_DATA, loggs=loggs)
+    with open_loggs("test the single analysis") as loggs:
+        original = Analysis(Options(particle=particle)).transform(
+            data, loggs)
 
-    scaled = Analysis(Options(particle=particle)).transform(
-        scale_data(INPUT_DATA), loggs=loggs)
+        scaled = Analysis(Options(particle=particle)).transform(
+            scale_data(data), loggs)
 
     Comparator().compare(original, scaled)
