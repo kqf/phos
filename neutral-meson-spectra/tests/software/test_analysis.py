@@ -37,10 +37,14 @@ def test_simple(particle, data):
 
 
 @pytest.mark.skip("")
-@pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_composite(data_spmc):
-    analysis = Analysis(CompositeOptions("#pi^{0}"))
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_composite(particle, data_spmc):
+    analysis = Analysis(CompositeOptions(particle=particle))
     loggs = AnalysisOutput("test the composite analysis")
     output = analysis.transform(data_spmc, loggs=loggs)
     # loggs.plot()
