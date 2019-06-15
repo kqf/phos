@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.output import AnalysisOutput
 from spectrum.options import Options, CompositeOptions
 from spectrum.analysis import Analysis
@@ -8,16 +7,18 @@ from vault.datavault import DataVault
 
 from spectrum.comparator import Comparator
 
-INPUT_DATA = Proxy(
-    lambda: DataVault().input("data", histname="MassPtSM0")
-)
 
-SPMC_DATA = Proxy(
-    lambda: (
+@pytest.fixture
+def data():
+    return DataVault().input("data", histname="MassPtSM0")
+
+
+@pytest.fixture
+def data_spmc():
+    return (
         DataVault().input("single #pi^{0}", "low", "PhysEff"),
         DataVault().input("single #pi^{0}", "high", "PhysEff"),
     )
-)
 
 
 @pytest.mark.onlylocal
@@ -26,10 +27,10 @@ SPMC_DATA = Proxy(
     "#pi^{0}",
     # "#eta",
 ])
-def test_simple(particle):
+def test_simple(particle, data):
     analysis = Analysis(Options(particle=particle))
     loggs = AnalysisOutput("test the single analysis")
-    output = analysis.transform(INPUT_DATA, loggs=loggs)
+    output = analysis.transform(data, loggs=loggs)
     # loggs.plot()
     Comparator().compare(output.spectrum)
     assert len(output) > 0
@@ -38,9 +39,9 @@ def test_simple(particle):
 @pytest.mark.skip("")
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_composite():
+def test_composite(data_spmc):
     analysis = Analysis(CompositeOptions("#pi^{0}"))
     loggs = AnalysisOutput("test the composite analysis")
-    output = analysis.transform(SPMC_DATA, loggs=loggs)
+    output = analysis.transform(data_spmc, loggs=loggs)
     # loggs.plot()
     assert len(output) > 0
