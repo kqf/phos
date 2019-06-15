@@ -1,6 +1,6 @@
 import pytest
 
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.options import Options, CompositeOptions
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
@@ -29,23 +29,20 @@ def data_spmc():
 ])
 def test_simple(particle, data):
     analysis = Analysis(Options(particle=particle))
-    loggs = AnalysisOutput("test the single analysis")
-    output = analysis.transform(data, loggs=loggs)
-    # loggs.plot()
-    Comparator().compare(output.spectrum)
+    with open_loggs("test the single analysis") as loggs:
+        output = analysis.transform(data, loggs=loggs)
+        Comparator().compare(output.spectrum)
     assert len(output) > 0
 
 
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
-@pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta",
+    "#eta",
 ])
 def test_composite(particle, data_spmc):
     analysis = Analysis(CompositeOptions(particle=particle))
-    loggs = AnalysisOutput("test the composite analysis")
-    output = analysis.transform(data_spmc, loggs=loggs)
-    # loggs.plot()
+    with open_loggs("test the composite analysis") as loggs:
+        output = analysis.transform(data_spmc, loggs=loggs)
     assert len(output) > 0

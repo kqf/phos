@@ -4,6 +4,7 @@ from lazy_object_proxy import Proxy
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import CorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
@@ -36,7 +37,8 @@ def test_corrected_yield():
     estimator = CorrectedYield(
         CorrectedYieldOptions(particle="#pi^{0}")
     )
-    estimator.transform(PYTHIA8_DATA, {})
+    with open_loggs("tmp") as loggs:
+        estimator.transform(PYTHIA8_DATA, loggs)
 
 
 @pytest.mark.onlylocal
@@ -44,4 +46,5 @@ def test_composite_yield():
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle="#pi^{0}")
     )
-    estimator.transform(SPMC_DATA, {})
+    with open_loggs("tmp") as loggs:
+        estimator.transform(SPMC_DATA, loggs)
