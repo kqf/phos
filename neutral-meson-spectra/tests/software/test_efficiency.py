@@ -5,7 +5,7 @@ from spectrum.efficiency import Efficiency
 from vault.datavault import DataVault
 from spectrum.options import EfficiencyOptions
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
 MC_DATA = Proxy(
@@ -26,9 +26,10 @@ SPMC_DATA = Proxy(
     ("simple", EfficiencyOptions(), MC_DATA),
     ("composite", CompositeEfficiencyOptions("#pi^{0}"), SPMC_DATA),
 ])
-def test_simple(name, options, data):
-    loggs = AnalysisOutput("test {} efficiency".format(name))
-    efficiency = Efficiency(options).transform(data, loggs=loggs)
+def test_efficiency(name, options, data):
+    estimator = Efficiency(options)
+    with open_loggs("test {} efficiency".format(name)) as loggs:
+        efficiency = estimator.transform(data, loggs)
+
     Comparator().compare(efficiency)
-    # loggs.plot()
     assert efficiency.GetEntries() > 0
