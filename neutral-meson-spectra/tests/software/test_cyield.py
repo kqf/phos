@@ -41,7 +41,7 @@ def test_corrected_yield(pythia_data):
     estimator = CorrectedYield(
         CorrectedYieldOptions(particle="#pi^{0}")
     )
-    with open_loggs("tmp") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(pythia_data, loggs)
 
 
@@ -50,5 +50,5 @@ def test_composite_yield(spmc_data):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle="#pi^{0}")
     )
-    with open_loggs("tmp") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(spmc_data, loggs)

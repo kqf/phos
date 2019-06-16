@@ -63,11 +63,11 @@ class AnalysisOutput(dict):
 
 
 @contextmanager
-def open_loggs(name, stop=False, plot=True):
+def open_loggs(name="", stop=False):
     loggs = AnalysisOutput(name)
     try:
         yield loggs
     finally:
-        if not plot:
+        if not name:
             return
         loggs.plot(stop=stop)
