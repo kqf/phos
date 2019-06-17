@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.processing import DataSlicer
 from spectrum.processing import MassFitter
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.processing import InvariantMassExtractor
@@ -23,13 +23,16 @@ class UpdatedAnalysis(TransformerBase):
         ])
 
 
+@pytest.fixture
+def data():
+    return DataVault().input("data", histname="MassPtSM0", label='Test')
+
+
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("mixed", [True, False])
 def test_analysis(mixed):
     options = Options()
     options.pt.use_mixed = mixed
-    masses = UpdatedAnalysis(options).transform(
-        DataVault().input("data", histname="MassPtSM0", label='Test'),
-        loggs=AnalysisOutput("test_mass_fitter"),
-    )
+    with open_loggs() as loggs:
+        masses = UpdatedAnalysis(options).transform(data, loggs)
     assert len(masses) > 0
