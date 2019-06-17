@@ -4,7 +4,7 @@ import pytest
 from spectrum.options import Options
 from spectrum.processing import DataSlicer, MassFitter, RangeEstimator
 from spectrum.processing import InvariantMassExtractor
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 
 from vault.datavault import DataVault
@@ -37,7 +37,6 @@ def test_draws_multiple(stop, particle, data):
         ("ranges", RangeEstimator(option.spectrum)),
     ])
 
-    loggs = AnalysisOutput("test multirage plotter")
-    masses = pipeline.transform(data, loggs)
-    loggs.update({"invariant-masses": masses})
-    loggs.plot(stop=stop)
+    with open_loggs("multirange plotter", stop=stop) as loggs:
+        masses = pipeline.transform(data, loggs)
+        loggs.update({"invariant-masses": masses})
