@@ -8,8 +8,8 @@ from spectrum.ptplotter import MassesPlot
 
 
 @pytest.fixture
-def imass():
-    data = ROOT.TH1F("test", "Test hist", 100, 0, 1.5)
+def mass():
+    data = ROOT.TH1F("test", "Test hist", 1000, -1.5, 1.5)
     data.FillRandom("gaus")
     func = ROOT.TF1("fitf", "gaus")
     data.Fit(func, "Q0")
@@ -30,7 +30,7 @@ def stop():
     return stop
 
 
-def test_plots_ivnariatmass(imass, stop):
+def test_plots_ivnariatmass(mass, stop):
     canvas = su.gcanvas()
-    MassesPlot().transform(imass, canvas)
+    MassesPlot().transform(mass, canvas)
     su.wait(stop=stop)
