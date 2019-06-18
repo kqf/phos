@@ -77,15 +77,16 @@ def save_canvas_root(canvas, outdir, name):
     ofile.Close()
 
 
-def canvas(name, x=1., y=1., scale=6):
-    canvas = ROOT.TCanvas("c1", "Canvas", int(
+def canvas(name="c1", x=1., y=1., scale=6):
+    canvas = ROOT.TCanvas(name, "Canvas", int(
         128 * x * scale), int(96 * y * scale))
     ticks(canvas)
     return adjust_canvas(canvas)
 
 
-def gcanvas(x=1., y=1, resize=False, scale=6):
-    ccanvas = ROOT.gROOT.FindObject("c1")
+# TODO: Change the definition
+def gcanvas(x=1., y=1, resize=False, scale=6, name="c1"):
+    ccanvas = ROOT.gROOT.FindObject(name)
     if ccanvas:
         if not resize:
             ccanvas.cd()
@@ -95,7 +96,17 @@ def gcanvas(x=1., y=1, resize=False, scale=6):
         ccanvas.SetWindowSize(cx, cy)
         ccanvas.SetCanvasSize(cx, cy)
         return adjust_canvas(ccanvas)
-    return canvas("c1", x, y, scale)
+    return canvas(name, x, y, scale)
+
+
+@contextmanager
+def tcanvas(name="c1", x=1., y=1., resize=False, scale=6, stop=True):
+    canvas = gcanvas(name=name, x=x, y=y, resize=resize, scale=scale)
+    try:
+        yield canvas
+    finally:
+        canvas.Update()
+        show_canvas(canvas, stop=stop)
 
 
 def fitstat_style():
