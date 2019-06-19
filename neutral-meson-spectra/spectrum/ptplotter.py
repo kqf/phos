@@ -102,7 +102,7 @@ class MultiplePlotter(object):
     def all_bins(self, masses, show):
         n_plots = mul(*self.multcanvas[0:2])
         for i in range(0, len(masses), n_plots):
-            canvas = su.gcanvas(1, 1, True)
+            canvas = su.gcanvas(x=1, y=1, resize=True)
             canvas.Clear()
             canvas.Divide(*self.multcanvas)
             plotter = MassesPlot()

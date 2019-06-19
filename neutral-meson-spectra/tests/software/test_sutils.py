@@ -23,14 +23,14 @@ def test_draws_histogram(stop):
 
 
 def test_draws_rescaled(stop):
-    st.gcanvas(1., resize=True)
+    st.gcanvas(x=1., resize=True)
     hist = ROOT.TH1F(
         'histNormal', 'Test: Drawing normal scale first', 600, -3, 3)
     hist.FillRandom('gaus')
     hist.Draw()
     st.wait(stop=stop)
 
-    st.gcanvas(1. / 2, resize=True)
+    st.gcanvas(x=1. / 2, resize=True)
     hist = ROOT.TH1F(
         'histHalfSize', 'Test: Drawing half-size scale', 600, -3, 3)
     hist.FillRandom('gaus')
@@ -38,7 +38,7 @@ def test_draws_rescaled(stop):
     hist.Draw()
     st.wait(stop=stop)
 
-    st.gcanvas(1., resize=True)
+    st.gcanvas(x=1., resize=True)
     hist = ROOT.TH1F('histNormalAgain',
                      'Test: Drawing normal scale again', 600, -3, 3)
     hist.FillRandom('gaus')
@@ -49,7 +49,7 @@ def test_draws_rescaled(stop):
 
 def test_doesnt_draw_outiside_the_scope(stop):
     def drawfunc():
-        st.gcanvas(1., resize=True)
+        st.gcanvas(x=1., resize=True)
         hist = ROOT.TH1F(
             'histInnerScopeFail',
             'Test: you are not supposed to see this histogram',
@@ -68,7 +68,7 @@ def test_doesnt_draw_outiside_the_scope(stop):
 
 def test_draws_outside_the_scope(stop):
     def drawfunc():
-        st.gcanvas(1., resize=True)
+        st.gcanvas(x=1., resize=True)
         hist = ROOT.TH1F(
             'histInnerScopeOk',
             'Test: Drawing histogram outiside the inner scope',
