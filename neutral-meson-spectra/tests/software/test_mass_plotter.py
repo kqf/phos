@@ -31,5 +31,5 @@ def stop():
 
 
 def test_plots_ivnariatmass(mass, stop):
-    with su.tcanvas() as canvas:
+    with su.tcanvas(stop=stop) as canvas:
         MassesPlot().transform(mass, canvas)
