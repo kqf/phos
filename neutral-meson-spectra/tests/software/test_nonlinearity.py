@@ -22,17 +22,22 @@ def nonlinearity_function():
 
 
 @pytest.fixture
-def pythia8():
+def data():
+    return DataVault().input("data", listname="Phys", histname="MassPtSM0")
+
+
+@pytest.fixture
+def pythia8(data):
     return (
-        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
+        data,
         DataVault().input("pythia8", listname="PhysEff", histname="MassPt"),
     )
 
 
 @pytest.fixture
-def data():
+def spmc(data):
     return (
-        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
+        data,
         (
             DataVault().input("single #pi^{0}", "low", "PhysEff",
                               histname="MassPt"),
@@ -58,13 +63,13 @@ def test_simple(pythia8):
 
 # @pytest.mark.skip("The datafile is missing")
 @pytest.mark.onlylocal
-def test_composite(data):
+def test_composite(spmc):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options)
     nonlinearity = estimator.transform(
-        data,
+        spmc,
         loggs=AnalysisOutput("Testing the composite interface")
     )
     assert nonlinearity.GetEntries() > 0
