@@ -3,7 +3,7 @@ import ROOT
 
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from tools.mc import Nonlinearity
 
 
@@ -47,29 +47,23 @@ def spmc(data):
     )
 
 
-# @pytest.mark.skip("The datafile is missing")
 @pytest.mark.onlylocal
 def test_simple(pythia8):
     options = NonlinearityOptions()
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options)
-    nonlinearity = estimator.transform(
-        pythia8,
-        loggs=AnalysisOutput("Testing the interface")
-    )
+    with open_loggs() as loggs:
+        nonlinearity = estimator.transform(pythia8, loggs)
     assert nonlinearity.GetEntries() > 0
 
 
-# @pytest.mark.skip("The datafile is missing")
 @pytest.mark.onlylocal
 def test_composite(spmc):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options)
-    nonlinearity = estimator.transform(
-        spmc,
-        loggs=AnalysisOutput("Testing the composite interface")
-    )
+    with open_loggs() as loggs:
+        nonlinearity = estimator.transform(spmc, loggs)
     assert nonlinearity.GetEntries() > 0
