@@ -7,17 +7,18 @@ from spectrum.output import open_loggs
 from tools.mc import Nonlinearity
 
 
-def nonlinearity_function():
+@pytest.fixture
+def nonlinf():
     func_nonlin = ROOT.TF1(
         "func_nonlin",
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
         0, 100
     )
     func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
-    func_nonlin.SetParameter(0, -0.05)
+    func_nonlin.SetParameter(0, -0.04)
     func_nonlin.SetParameter(1, 0.6)
-    func_nonlin.SetParLimits(1, 0, 10)
-    func_nonlin.SetParameter(2, 1.04)
+    func_nonlin.SetParLimits(1, 0, 11)
+    func_nonlin.SetParameter(2, 1.05)
     return func_nonlin
 
 
@@ -48,9 +49,9 @@ def spmc(data):
 
 
 @pytest.mark.onlylocal
-def test_simple(pythia8):
+def test_simple(pythia8, nonlinf):
     options = NonlinearityOptions()
-    options.fitf = nonlinearity_function()
+    options.fitf = nonlinf
 
     estimator = Nonlinearity(options)
     with open_loggs() as loggs:
@@ -59,9 +60,9 @@ def test_simple(pythia8):
 
 
 @pytest.mark.onlylocal
-def test_composite(spmc):
+def test_composite(spmc, nonlinf):
     options = CompositeNonlinearityOptions()
-    options.fitf = nonlinearity_function()
+    options.fitf = nonlinf
 
     estimator = Nonlinearity(options)
     with open_loggs() as loggs:
