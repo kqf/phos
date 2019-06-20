@@ -1,7 +1,6 @@
 import pytest
 import ROOT
 
-from lazy_object_proxy import Proxy
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
 from spectrum.output import AnalysisOutput
@@ -22,18 +21,18 @@ def nonlinearity_function():
     return func_nonlin
 
 
-PYTHIA8_DATASET = Proxy(
-    lambda: (
-        DataVault().input("data", listname="Phys",
-                          histname="MassPtSM0"),
-        DataVault().input("pythia8", listname="PhysEff",
-                          histname="MassPt"),
+@pytest.fixture
+def pythia8():
+    return (
+        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
+        DataVault().input("pythia8", listname="PhysEff", histname="MassPt"),
     )
-)
-SPMC_DATASET = Proxy(
-    lambda: (
-        DataVault().input("data", listname="Phys",
-                          histname="MassPtSM0"),
+
+
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
         (
             DataVault().input("single #pi^{0}", "low", "PhysEff",
                               histname="MassPt"),
@@ -41,18 +40,17 @@ SPMC_DATASET = Proxy(
                               histname="MassPt")
         )
     )
-)
 
 
 # @pytest.mark.skip("The datafile is missing")
 @pytest.mark.onlylocal
-def test_simple():
+def test_simple(pythia8):
     options = NonlinearityOptions()
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options)
     nonlinearity = estimator.transform(
-        PYTHIA8_DATASET,
+        pythia8,
         loggs=AnalysisOutput("Testing the interface")
     )
     assert nonlinearity.GetEntries() > 0
@@ -60,13 +58,13 @@ def test_simple():
 
 # @pytest.mark.skip("The datafile is missing")
 @pytest.mark.onlylocal
-def test_composite():
+def test_composite(data):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinearity_function()
 
     estimator = Nonlinearity(options)
     nonlinearity = estimator.transform(
-        SPMC_DATASET,
+        data,
         loggs=AnalysisOutput("Testing the composite interface")
     )
     assert nonlinearity.GetEntries() > 0
