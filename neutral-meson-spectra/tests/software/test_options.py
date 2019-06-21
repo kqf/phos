@@ -42,38 +42,25 @@ def props(conffile):
     with open(conffile, "w") as outfile:
         json.dump(data, outfile)
     yield props
-    try:
-        os.remove(conffile)
-    except OSError:
-        pass
+    os.remove(conffile)
 
 
-def check(target, props, name):
+@pytest.mark.parametrize("name, target", [
+    ("spectrum", lambda x: Options(spectrumconf=x).spectrum),
+    ("output", lambda x: Options(outconf=x).output),
+    ("invmass", lambda x: Options(invmassconf=x).invmass),
+])
+def test_check_properties(name, target, props, conffile):
     # Test keys
     for opt in props:
         msg = "Key {} is missing in %s configuration" % name
-        res = opt in dir(target)
+        res = opt in dir(target(conffile))
         assert res, msg.format(opt)
 
     for opt, val in props.iteritems():
         msg = "The value of key {} differs in %s configuration" % name
-        res = target.__dict__[opt]
+        res = target(conffile).__dict__[opt]
         assert res == val, msg.format(opt, res)
-
-
-def test_spectrum(conffile, props):
-    options = Options(spectrumconf=conffile)
-    check(options.spectrum, props, "spectrum")
-
-
-def test_pt(conffile, props):
-    options = Options(outconf=conffile)
-    check(options.output, props, "output")
-
-
-def test_invmass(conffile, props):
-    options = Options(invmassconf=conffile)
-    check(options.invmass, props, "invmass")
 
 
 def test_rebins():
