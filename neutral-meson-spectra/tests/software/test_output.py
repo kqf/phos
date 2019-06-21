@@ -1,7 +1,7 @@
 import pytest
 
 import ROOT
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import TransformerBase
 
@@ -25,10 +25,9 @@ def data():
 
 
 def test_the_output(data):
-    loggs = AnalysisOutput("test_loggs_output")
     estimator = Pipeline([
         ('dummy1', DummyTransformer("histname1")),
         ('dummy2', DummyTransformer("histname2")),
     ])
-    estimator.transform(data, loggs)
-    loggs.plot()
+    with open_loggs("test loggs") as loggs:
+        estimator.transform(data, loggs)
