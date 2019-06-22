@@ -21,8 +21,21 @@ class MockInput(TransformerBase):
         return out
 
 
+@pytest.fixture
+def data():
+    return (
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+    )
+
+
+@pytest.fixture
+def empty_data(nhist=3):
+    return (None, ) * nhist
+
+
 @pytest.mark.onlylocal
-def test_compares_single_inputs():
+def test_compares_single_inputs(data):
     estimator = ComparePipeline([
         ('normal1', SingleHistInput("hPt_#pi^{0}_primary_")),
         ('normal2', SingleHistInput("hPt_#pi^{0}_primary_standard")),
@@ -30,22 +43,22 @@ def test_compares_single_inputs():
 
     loggs = AnalysisOutput("Test the compare pipeline")
     output = estimator.transform(
-        (DataVault().input("single #pi^{0}", "low", "PhysEff"), ) * 2,
+        data,
         loggs=loggs
     )
     loggs.plot()
     assert output.GetEntries() > 0
 
 
-def test_compares_multiple(nhist=3):
+def test_compares_multiple(empty_data):
     estimator = ComparePipeline([
         ('normal{}'.format(i), MockInput("no option"))
-        for i in range(nhist)
+        for i, _ in enumerate(empty_data)
     ])
 
     loggs = AnalysisOutput("Test the compare pipeline multiple")
     output = estimator.transform(
-        (None, ) * nhist,
+        empty_data,
         loggs=loggs
     )
     loggs.plot()
