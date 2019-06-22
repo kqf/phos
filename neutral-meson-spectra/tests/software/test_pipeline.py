@@ -4,7 +4,7 @@ import pytest
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline
 from spectrum.input import SingleHistInput
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 import array
 
 
@@ -41,12 +41,9 @@ def test_compares_single_inputs(data):
         ('normal2', SingleHistInput("hPt_#pi^{0}_primary_standard")),
     ])
 
-    loggs = AnalysisOutput("Test the compare pipeline")
-    output = estimator.transform(
-        data,
-        loggs=loggs
-    )
-    loggs.plot()
+    with open_loggs() as loggs:
+        output = estimator.transform(data, loggs)
+
     assert output.GetEntries() > 0
 
 
@@ -56,10 +53,7 @@ def test_compares_multiple(empty_data):
         for i, _ in enumerate(empty_data)
     ])
 
-    loggs = AnalysisOutput("Test the compare pipeline multiple")
-    output = estimator.transform(
-        empty_data,
-        loggs=loggs
-    )
-    loggs.plot()
+    with open_loggs() as loggs:
+        output = estimator.transform(empty_data, loggs)
+
     assert output is None

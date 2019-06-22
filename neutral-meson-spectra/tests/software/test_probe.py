@@ -3,7 +3,7 @@ import pytest
 from tools.probe import TagAndProbe
 from vault.datavault import DataVault
 from spectrum.options import ProbeTofOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 
 
 @pytest.fixture
@@ -19,8 +19,8 @@ def data():
 @pytest.mark.onlylocal
 def test_interface(data):
     probe = TagAndProbe(ProbeTofOptions())
-    eff = probe.transform(
-        data,
-        loggs=AnalysisOutput("Test the tag and probe interface")
-    )
+
+    with open_loggs() as loggs:
+        eff = probe.transform(data, loggs)
+
     assert eff.GetEntries() > 0
