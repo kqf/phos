@@ -15,7 +15,7 @@ def stop():
 
 
 def test_draws_histogram(stop):
-    with st.canvas():
+    with st.canvas(stop=stop):
         hist = ROOT.TH1F(
             'histWait', 'Test: Drawing with no global canvas', 600, -3, 3)
         hist.FillRandom('gaus')
@@ -46,7 +46,7 @@ def test_draws_rescaled(stop):
 
 def test_doesnt_draw_outiside_the_scope(stop):
     def drawfunc():
-        with st.canvas():
+        with st.canvas(stop=stop):
             hist = ROOT.TH1F(
                 'histInnerScopeFail',
                 'Test: you are not supposed to see this histogram',
@@ -65,7 +65,7 @@ def test_doesnt_draw_outiside_the_scope(stop):
 
 def test_draws_outside_the_scope(stop):
     def drawfunc():
-        with st.canvas():
+        with st.canvas(stop=stop):
             hist = ROOT.TH1F(
                 'histInnerScopeOk',
                 'Test: Drawing histogram outiside the inner scope',
