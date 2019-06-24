@@ -1,20 +1,17 @@
-import sys
 import pytest
 import ROOT
 
 import spectrum.sutils as st
 
 
-@pytest.fixture()
-def stop():
+@pytest.fixture
+def background():
     # NB: this is needed to create c1 first from root
-    hist = ROOT.TH1F(
-        'histWait', 'Test: Drawing with no global canvas', 600, -3, 3)
+    hist = ROOT.TH1F('histWait', 'Test: No global canvas', 600, -3, 3)
     hist.Draw()
-    return not ('discover' in sys.argv or 'pytest' in sys.argv[0])
 
 
-def test_draws_histogram(stop):
+def test_draws_histogram(stop, background):
     with st.canvas(stop=stop):
         hist = ROOT.TH1F(
             'histWait', 'Test: Drawing with no global canvas', 600, -3, 3)
@@ -22,7 +19,7 @@ def test_draws_histogram(stop):
         hist.Draw()
 
 
-def test_draws_rescaled(stop):
+def test_draws_rescaled(stop, background):
     with st.canvas(x=1., resize=True, stop=stop):
         hist = ROOT.TH1F(
             'histNormal', 'Test: Drawing normal scale first', 600, -3, 3)
@@ -44,7 +41,7 @@ def test_draws_rescaled(stop):
         hist.Draw()
 
 
-def test_doesnt_draw_outiside_the_scope(stop):
+def test_doesnt_draw_outiside_the_scope(stop, background):
     def drawfunc():
         with st.canvas(stop=stop):
             hist = ROOT.TH1F(
@@ -63,7 +60,7 @@ def test_doesnt_draw_outiside_the_scope(stop):
     st.wait(stop=stop)
 
 
-def test_draws_outside_the_scope(stop):
+def test_draws_outside_the_scope(stop, background):
     def drawfunc():
         with st.canvas(stop=stop):
             hist = ROOT.TH1F(
