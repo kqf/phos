@@ -1,10 +1,10 @@
-import pytest
 import array
 import os
 import random
-import sys
 
+import pytest
 import ROOT
+
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.options import Options
@@ -55,13 +55,6 @@ def write_histograms(filename, selection, histnames):
     tlist.Write(selection, 1)
     ofile.Close()
     return map(br.clone, hists)
-
-
-@pytest.fixture(scope="module")
-def stop():
-    stop = 'discover' not in sys.argv
-    stop = stop and 'pytest' not in sys.argv[0]
-    return stop
 
 
 @pytest.fixture(scope="module")

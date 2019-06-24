@@ -1,8 +1,7 @@
-import pytest
-import ROOT
 import json
 
-import sys
+import pytest
+import ROOT
 from vault.formulas import FVault
 
 
@@ -15,15 +14,6 @@ def data():
     for hist in data:
         hist.logy = 1
     return data
-
-
-@pytest.fixture()
-def stop():
-    pytest = 'pytest' in sys.argv[0]
-    discover = 'discover' in sys.argv
-    compare = 'test.software.compare' in sys.argv
-    skip = discover and not compare or pytest
-    return not skip
 
 
 def _spectrum(name, par):
