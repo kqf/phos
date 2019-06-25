@@ -11,8 +11,10 @@ def stop():
 
 def pytest_configure(config):
     config.addinivalue_line(
-        "markers", """
-            onlylocal: mark test to run only as they require the data
-            interactive: exclude scripts with ROOT pop-up windows
-        """,
+        "markers",
+        "onlylocal: mark test to run only as they require the data ",
+    )
+    config.addinivalue_line(
+        "markers",
+        "interactive: exclude scripts with ROOT pop-up windows",
     )
