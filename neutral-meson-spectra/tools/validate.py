@@ -28,5 +28,5 @@ def validate(output, path,
         msg += '"{}": {},\n'.format(label, dump_dict(actual))
 
     for label, actual in output.iteritems():
-        print 'Checking {}'.format(label)
+        print('Checking {}'.format(label))
         np.testing.assert_almost_equal(actual, nominal[label], err_msg=msg)

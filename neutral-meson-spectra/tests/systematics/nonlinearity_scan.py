@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ROOT
 import pytest
 
@@ -66,7 +67,7 @@ def test_draw_most_optimal_nonlinearity(nbins):
     minimum_index *= 2
     histname = form_histnames(nbins)[minimum_index]
     histname = histname[1:]  # Remove first h
-    print histname
+    print(histname)
     # production = "single #pi^{0}"
     # histname = "MassPt"
     options = CompositeNonlinearityOptions()

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pytest
 import json
 import os
@@ -65,10 +66,10 @@ def test_check_properties(name, target, props, conffile):
 
 def test_rebins():
     option = Options()
-    # print "ptedges before", option.pt.ptedges
+    # print("ptedges before", option.pt.ptedges)
     edg_before = len(option.pt.ptedges)
     Options.coarse_binning(option)
-    # print "ptedges edges", option.pt.ptedges
+    # print("ptedges edges", option.pt.ptedges)
 
     edg_after = len(option.pt.ptedges)
     reb_after = len(option.pt.rebins)

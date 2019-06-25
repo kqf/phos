@@ -535,7 +535,6 @@ class BROOT(object):
             for b, err, center in zip(*klass.bins(difference))
             if within_range(center)
         ]
-        # print chi2
         chi2 = sum(chi2)
         return chi2
 

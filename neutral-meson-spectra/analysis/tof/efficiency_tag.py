@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pytest
 
 import ROOT
@@ -70,7 +71,7 @@ def fit_tof_efficiency(dataset):
         efficiency = probe_estimator.transform(dataset, loggs)
 
     efficiency.Fit(options.fitfunc, "R")
-    print "Fitted", options.fitfunc.GetChisquare() / options.fitfunc.GetNDF()
+    print("Fitted", options.fitfunc.GetChisquare() / options.fitfunc.GetNDF())
     efficiency.SetTitle(
         "%s %s" % (
             "Timing cut efficiency for efficiency",

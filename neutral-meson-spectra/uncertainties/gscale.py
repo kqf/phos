@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import ROOT
 from spectrum.broot import BROOT as br
 # from spectrum.comparator import Comparator
@@ -119,6 +121,6 @@ class GScale(TransformerBase):
         bins = [lower.Eval(c) - upper.Eval(c) for c in bins]
         for i, b in enumerate(bins):
             if b < 0:
-                print 'Warning: negative global energy scale corrections'
+                print('Warning: negative global energy scale corrections')
             syst_error.SetBinContent(i + 1, abs(b))
         return syst_error

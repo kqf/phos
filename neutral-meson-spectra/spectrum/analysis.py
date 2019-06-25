@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
 from processing import InvariantMassExtractor
 from options import Options, CompositeOptions

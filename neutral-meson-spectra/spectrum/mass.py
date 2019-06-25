@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ROOT
 from broot import BROOT as br
 import sutils as su
@@ -135,7 +136,7 @@ class ZeroBinsCleaner(object):
             res = fitf.Eval(c)
             if res < 0:
                 # msg  = 'Warning zero bin found at '
-                # print msg, mass.pt_label, ', mass: ', c
+                # print(msg, mass.pt_label, ', mass: ', c)
                 res = 0
             h.SetBinError(i, res ** 0.5)
         return h

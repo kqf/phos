@@ -1,3 +1,4 @@
+from __future__ import print_function
 import array
 import os
 import random
@@ -204,8 +205,8 @@ def test_projection_saves_area(stop):
 
     # print
     # for b, p in zip(bins, projections):
-    # print b, p.Integral()
-    # print sum(p.Integral() for p in projections), hist.Integral()
+    # print(b, p.Integral())
+    # print(sum(p.Integral() for p in projections), hist.Integral())
 
     total = sum(p.Integral() for p in projections)
     assert total == hist.Integral()
@@ -686,7 +687,7 @@ def test_sets_to_zero(stop):
         if a - 1 < bin < b:
             continue
 
-        # print a, bin, b, hist1.GetBinContent(bin)
+        # print(a, bin, b, hist1.GetBinContent(bin))
         assert hist1.GetBinContent(bin) == 0
 
 
@@ -718,7 +719,7 @@ def test_sum_trimm(stop):
         for bin in range(1, hh.GetNbinsX()):
             if a < bin < b - 1:
                 assert hh.GetBinContent(bin), hist.GetBinContent(bin)
-                # print hh.GetBinContent(bin), hist.GetBinContent(bin)
+                # print(hh.GetBinContent(bin), hist.GetBinContent(bin))
 
     wait(stop=stop)
 

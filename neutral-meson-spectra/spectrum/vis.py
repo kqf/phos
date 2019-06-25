@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ROOT
 import numpy as np
 
@@ -32,7 +33,7 @@ def set_pad_logx(hist, pad):
     hist.GetXaxis().SetMoreLogLabels()
 
     if hist.GetName() == 'testtest':
-        print hist, start_width < stop_width
+        print(hist, start_width < stop_width)
 
 
 class VisHub(object):
@@ -185,7 +186,7 @@ class Visualizer(MultipleVisualizer):
     def _canvas(self, hists):
         c1 = su.gcanvas(x=self.size[0], y=self.size[1], resize=True)
         c1.Clear()
-        # print br.chi2ndf(*hists)
+        # print(br.chi2ndf(*hists))
 
         mainpad = ROOT.TPad("mainpad", "main plot", 0, 0.3, 1, 1)
         mainpad.SetBottomMargin(0)
@@ -220,7 +221,7 @@ class Visualizer(MultipleVisualizer):
             ymin, ymax = self.rrange
             ratio.SetAxisRange(ymin, ymax, 'Y')
             return
-            # print ymin, ymax
+            # print(ymin, ymax)
             if any(ymin < b < ymax for b in bins):
                 ratio.SetAxisRange(ymin, ymax, 'Y')
                 return

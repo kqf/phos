@@ -42,7 +42,7 @@ class SelectAndFitHistograms(TransformerBase):
         histogram.SetLineColor(ROOT.kBlue + 1)
         func.SetLineColor(ROOT.kRed + 1)
         val, err = func.GetParameter(0), func.GetParError(0)
-        print "The scale is", histogram.GetTitle(), val, err
+        print("The scale is", histogram.GetTitle(), val, err)
 
 
 class CballParametersEstimator(TransformerBase):
