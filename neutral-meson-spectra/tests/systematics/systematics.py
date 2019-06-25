@@ -4,8 +4,8 @@ from spectrum.output import AnalysisOutput
 from spectrum.pipeline import ComparePipeline
 
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.options import CompositeNonlinearityUncertainty
 
+from uncertainties.nonlinearity import CompositeNonlinearityUncertaintyOptions
 from uncertainties.yields import YieldExtractioin, yield_extraction_data
 from uncertainties.yields import YieldExtractioinUncertanityOptions
 from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
@@ -31,7 +31,7 @@ def data(nbins):
 @pytest.mark.onlylocal
 def test_draws_all_sources():
     nbins = 2
-    nonlin_options = CompositeNonlinearityUncertainty(nbins=nbins)
+    nonlin_options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
     nonlin_options.factor = 1.
 
     cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")

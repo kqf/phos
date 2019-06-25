@@ -1,9 +1,10 @@
 import pytest
 
 from spectrum.comparator import Comparator
-from spectrum.options import CompositeNonlinearityUncertainty
 from spectrum.output import AnalysisOutput
+
 from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
+from uncertainties.nonlinearity import CompositeNonlinearityUncertaintyOptions
 
 
 # TODO: Look at generated histogram in different selection
@@ -15,7 +16,7 @@ from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
 def test_nonlinearity_uncertainty():
     nbins = 2
     prod = "single #pi^{0} nonlinearity scan"
-    options = CompositeNonlinearityUncertainty(nbins=nbins)
+    options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
     options.factor = 1.
 
     chi2ndf = Nonlinearity(options).transform(

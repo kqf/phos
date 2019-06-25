@@ -4,9 +4,18 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.efficiency import Efficiency
 from spectrum.broot import BROOT as br
-from vault.datavault import DataVault
+from spectrum.options import CompositeEfficiencyOptions
 
+from vault.datavault import DataVault
 from tools.deviation import MaxDeviationVector
+
+
+class CompositeNonlinearityUncertaintyOptions(object):
+
+    def __init__(self, particle="#pi^{0}", nbins=11, n_ranges=2):
+        super(CompositeNonlinearityUncertaintyOptions, self).__init__()
+        self.nbins = nbins
+        self.eff = CompositeEfficiencyOptions(particle)
 
 
 def chi2_func(hist1, hist2, loggs):
@@ -14,7 +23,9 @@ def chi2_func(hist1, hist2, loggs):
 
 
 class Nonlinearity(TransformerBase):
-    def __init__(self, options, chi2_=chi2_func, plot=True):
+    def __init__(self, options=CompositeNonlinearityUncertaintyOptions(),
+                 chi2_=chi2_func,
+                 plot=True):
         super(Nonlinearity, self).__init__()
         main = Pipeline([
             ('efficiency_main', Efficiency(options.eff, plot))
