@@ -49,7 +49,7 @@ SPMC_ETA = Proxy(
 ])
 def test_simple(particle, spmc, data, yield_data):
     estimator = Analysis(Options(particle=particle))
-    with open_loggs("simple test", save=False) as loggs:
+    with open_loggs("simple test") as loggs:
         meson = estimator.transform(data, loggs)
 
         estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))

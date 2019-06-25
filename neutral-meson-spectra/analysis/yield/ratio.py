@@ -77,7 +77,7 @@ def test_yield_ratio(data, options):
         plot=True
     )
 
-    with open_loggs("eta to pion ratio", save=False) as loggs:
+    with open_loggs("eta to pion ratio") as loggs:
         output = estimator.transform(data, loggs)
         Comparator().compare(output)
 
@@ -86,7 +86,7 @@ def test_yield_ratio(data, options):
 def test_debug_yield_ratio(data_pion, data_eta, options):
     options_eta, options_pi0 = options
 
-    with open_loggs("eta and pion yields", save=False) as loggs:
+    with open_loggs("eta and pion yields") as loggs:
         eta = CorrectedYield(options_eta).transform(data_eta, loggs)
         pi0 = CorrectedYield(options_pi0).transform(data_pion, loggs)
 
