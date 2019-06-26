@@ -2,13 +2,10 @@ import pytest
 from spectrum.comparator import Comparator
 from spectrum.options import (DataMCEpRatioOptions, EpRatioOptions,
                               NonlinearityOptions)
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
 from tools.mc import Nonlinearity
 from vault.datavault import DataVault
-
-
-# from spectrum.output import AnalysisOutput
 
 
 def data_old_selection(prod="data", version="ep_ratio"):
@@ -78,11 +75,8 @@ def test_data_mc_ratio(double_ratio_data):
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True
     )
-    loggs = AnalysisOutput("double ep ratio")
-
-    output = estimator.transform(double_ratio_data, loggs=loggs)
-    # Comparator(stop=True).compare(output)
-    loggs.plot()
+    with open("double ep ratio") as loggs:
+        output = estimator.transform(double_ratio_data, loggs)
     assert len(output) > 0
 
 
@@ -97,8 +91,6 @@ def test_ep_dataset(particle, validation_data):
     estimator = Nonlinearity(
         NonlinearityOptions(particle=particle), plot=True
     )
-    loggs = AnalysisOutput("validate ep ratio")
-    output = estimator.transform(validation_data, loggs=loggs)
-    # Comparator(stop=True).compare(output)
-    # loggs.plot()
+    with open_loggs("validate ep ratio") as loggs:
+        output = estimator.transform(validation_data, loggs)
     assert len(output) > 0
