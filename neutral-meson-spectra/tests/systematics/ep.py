@@ -1,5 +1,4 @@
 import pytest
-from lazy_object_proxy import Proxy
 from spectrum.comparator import Comparator
 from spectrum.options import (DataMCEpRatioOptions, EpRatioOptions,
                               NonlinearityOptions)
@@ -30,20 +29,20 @@ def data(prod="data", version="ep_ratio"):
         use_mixing=False)
 
 
-DOUBLE_RATIO_DATASET = Proxy(
-    lambda: (
+@pytest.fixture
+def double_ratio_data():
+    return (
         data_old_selection("data", "nonlinearity"),
         data_old_selection("pythia8", "nonlinearity"),
     )
-)
 
-VALIDATION_DATA = Proxy(
-    lambda:
-    (
+
+@pytest.fixture
+def validation_data():
+    return (
         DataVault().input("data", histname="MassPtSM0"),
         DataVault().input("pythia8")
     )
-)
 
 
 @pytest.mark.skip("")
@@ -75,13 +74,13 @@ def test_ep_ratio_data():
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_data_mc_ratio():
+def test_data_mc_ratio(double_ratio_data):
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True
     )
     loggs = AnalysisOutput("double ep ratio")
 
-    output = estimator.transform(DOUBLE_RATIO_DATASET, loggs=loggs)
+    output = estimator.transform(double_ratio_data, loggs=loggs)
     # Comparator(stop=True).compare(output)
     loggs.plot()
     assert len(output) > 0
@@ -94,12 +93,12 @@ def test_data_mc_ratio():
     "#pi^{0}",
     "#eta",
 ])
-def test_ep_dataset(particle):
+def test_ep_dataset(particle, validation_data):
     estimator = Nonlinearity(
         NonlinearityOptions(particle=particle), plot=True
     )
     loggs = AnalysisOutput("validate ep ratio")
-    output = estimator.transform(VALIDATION_DATA, loggs=loggs)
+    output = estimator.transform(validation_data, loggs=loggs)
     # Comparator(stop=True).compare(output)
     # loggs.plot()
     assert len(output) > 0
