@@ -18,3 +18,7 @@ def pytest_configure(config):
         "markers",
         "interactive: exclude scripts with ROOT pop-up windows",
     )
+    config.addinivalue_line(
+        "markers",
+        "thesis: script produces the final images",
+    )
