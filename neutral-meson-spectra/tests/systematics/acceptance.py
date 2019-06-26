@@ -1,8 +1,10 @@
 import pytest
-from spectrum.output import AnalysisOutput
+
+from spectrum.output import open_loggs
+from spectrum.comparator import Comparator
+
 from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from uncertainties.acceptance import acceptance_data
-from spectrum.comparator import Comparator
 
 
 @pytest.mark.thesis
@@ -14,11 +16,9 @@ from spectrum.comparator import Comparator
 ])
 def test_acceptance(particle):
     estimator = Acceptance(
-        AcceptanceOptions(particle=particle), plot=False)
-    loggs = AnalysisOutput("uncertainty acceptance")
-    uncertanity = estimator.transform(
-        acceptance_data(particle),
-        loggs=loggs
-    )
+        AcceptanceOptions(particle=particle),
+        plot=False)
+
+    with open_loggs("uncertanity acceptance") as loggs:
+        uncertanity = estimator.transform(acceptance_data(particle), loggs)
     Comparator().compare(uncertanity)
-    loggs.plot()
