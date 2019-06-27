@@ -5,7 +5,7 @@ import pytest
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.options import CompositeNonlinearityOptions
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from tools.mc import Nonlinearity
 from tools.scan import NonlinearityScan, form_histnames
 from vault.datavault import DataVault
@@ -43,13 +43,14 @@ def test_scan_nonlinearities(nbins):
     low, high = low.read_multiple(2), high.read_multiple(2)
     mc_data = [(l, h) for l, h in zip(low, high)]
 
-    chi2ndf = NonlinearityScan(options).transform(
-        (
-            DataVault().input("data"),
-            mc_data
-        ),
-        loggs=AnalysisOutput("testing the scan interface")
-    )
+    with open_loggs("calculating the scan") as loggs:
+        chi2ndf = NonlinearityScan(options).transform(
+            (
+                DataVault().input("data"),
+                mc_data
+            ),
+            loggs
+        )
 
     # TODO: Add this to the output
     ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
@@ -74,10 +75,9 @@ def test_draw_most_optimal_nonlinearity(nbins):
     options.fitf = None
     options.factor = 1.
     estimator = Nonlinearity(options)
-    loggs = AnalysisOutput("optimal nonlinearity")
-    nonlinearity = estimator.transform(  # noqa
-        final_nonliearity_data(production, histname),
-        loggs=loggs
-    )
-    loggs.plot()
+    with open_loggs("optimal nonlinearity") as loggs:
+        nonlinearity = estimator.transform(  # noqa
+            final_nonliearity_data(production, histname),
+            loggs
+        )
     # Comparator().compare(nonlinearity)
