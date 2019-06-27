@@ -46,10 +46,9 @@ def validation_data():
 def test_ep_ratio_mc():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)
-    output = estimator.transform(
-        data("pythia8", "ep_ratio_1"),
-        loggs="test ep ratio estimator"
-    )
+
+    with open_loggs() as loggs:
+        output = estimator.transform(data("pythia8", "ep_ratio_1"), loggs)
 
     for o in output:
         Comparator().compare(o)
@@ -59,10 +58,8 @@ def test_ep_ratio_mc():
 def test_ep_ratio_data():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)
-    output = estimator.transform(
-        data("data"),
-        loggs="test ep ratio estimator"
-    )
+    with open_loggs() as loggs:
+        output = estimator.transform(data("data"), loggs)
 
     for o in output:
         Comparator().compare(o)
