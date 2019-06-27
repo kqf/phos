@@ -1,5 +1,5 @@
 import pytest
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
 from spectrum.comparator import Comparator
 
@@ -13,8 +13,6 @@ from spectrum.comparator import Comparator
 ])
 def test_interface_composite(particle):
     estimator = GScale(GScaleOptions(particle=particle), plot=False)
-    uncertanity = estimator.transform(
-        ge_scale_data(particle),
-        loggs=AnalysisOutput("test composite corr. yield interface")
-    )
+    with open_loggs() as loggs:
+        uncertanity = estimator.transform(ge_scale_data(particle), loggs)
     Comparator().compare(uncertanity)
