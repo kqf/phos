@@ -1,8 +1,7 @@
 import pytest
 
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline
-
 from spectrum.options import CompositeCorrectedYieldOptions
 
 from uncertainties.nonlinearity import CompositeNonlinearityUncertaintyOptions
@@ -45,6 +44,5 @@ def test_draws_all_sources():
         ("accepntace", Acceptance(AcceptanceOptions(particle="#pi^{0}"))),
     ), plot=True)
 
-    loggs = AnalysisOutput("testing the scan interface")
-    estimator.transform(data(nbins), loggs)
-    loggs.plot(True)
+    with open_loggs("full uncertainty") as loggs:
+        estimator.transform(data(nbins), loggs)
