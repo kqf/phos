@@ -1,18 +1,22 @@
 import pytest
 
-from spectrum.output import AnalysisOutput
+from spectrum.output import open_loggs
 from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
 from uncertainties.tof import tof_data
 
 # from spectrum.comparator import Comparator
 
 
+@pytest.fixture
+def data():
+    return tof_data()
+
+
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_tof():
+def test_tof(data):
     tof = TofUncertainty(TofUncertaintyOptions())
-    loggs = AnalysisOutput("tof uncertainty")
-    output = tof.transform(tof_data(), loggs=loggs)
-    loggs.plot()
+    with open_loggs("tof uncertainty") as loggs:
+        output = tof.transform(data, loggs)
     assert len(output) > 0
