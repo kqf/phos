@@ -78,7 +78,6 @@ class OutputFitter(TransformerBase):
         histogram.Fit(self.fitf, "Rq")
         histogram.SetStats(True)
         st.fitstat_style()
-        # Comparator(stop=self.plot).compare(histogram)
         ndf = self.fitf.GetNDF()
         chi2_ndf = self.fitf.GetChisquare() / ndf if ndf else 0.
         print("The chi2:", chi2_ndf)
@@ -184,7 +183,6 @@ class ParallelPipeline(object):
         self.steps = steps
 
     def transform(self, inputs, loggs):
-        # import ipdb; ipdb.set_trace()
         assert len(inputs) == len(self.steps), \
             "Input shape doesn't match the shape" \
             " of estimators, got {0}, {1}".format(

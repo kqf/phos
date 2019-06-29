@@ -15,6 +15,12 @@ from uncertainties.acceptance import Acceptance, AcceptanceOptions
 from uncertainties.acceptance import acceptance_data
 
 
+@pytest.fixture
+def nbins():
+    return 2
+
+
+@pytest.fixture
 def data(nbins):
     return (
         yield_extraction_data(),
@@ -28,8 +34,7 @@ def data(nbins):
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_draws_all_sources():
-    nbins = 2
+def test_draws_all_sources(nbins, data):
     nonlin_options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
     nonlin_options.factor = 1.
 
@@ -45,4 +50,4 @@ def test_draws_all_sources():
     ), plot=True)
 
     with open_loggs("full uncertainty") as loggs:
-        estimator.transform(data(nbins), loggs)
+        estimator.transform(data, loggs)
