@@ -3,6 +3,7 @@ from __future__ import print_function
 import array
 from collections import defaultdict
 
+from tqdm import tqdm
 from flatten_dict import flatten, unflatten
 
 import sutils as st
@@ -154,20 +155,22 @@ class FunctionTransformer(object):
 
 class Pipeline(object):
 
-    def __init__(self, steps):
+    def __init__(self, steps, disable=True):
         super(Pipeline, self).__init__()
         self.steps = steps
+        self.disable = disable
 
     def transform(self, inputs, loggs):
         updated = inputs
         try:
-            for name, step in self.steps:
+            for name, step in tqdm(self.steps, disable=self.disable):
                 local_logs = {}
                 updated = step.transform(updated, local_logs)
                 loggs[name] = local_logs
             return updated
         except ValueError:
-            import ipdb; ipdb.set_trace()
+            import ipdb
+            ipdb.set_trace()
 
 
 def merge(data):
