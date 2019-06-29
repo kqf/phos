@@ -9,7 +9,6 @@ from flatten_dict import flatten, unflatten
 import sutils as st
 from broot import BROOT as br
 from comparator import Comparator
-from output import AnalysisOutput
 
 
 class TransformerBase(object):
@@ -19,17 +18,9 @@ class TransformerBase(object):
         self.plot = plot
 
     def transform(self, inputs, loggs):
-        lazy_logs = isinstance(loggs, basestring)
-
-        if lazy_logs:
-            loggs = AnalysisOutput(loggs)
-
         output = self.pipeline.transform(inputs, loggs)
         if output:
             loggs.update({'output': output})
-
-        if lazy_logs:
-            loggs.plot(self.plot)
         return output
 
 
@@ -162,15 +153,11 @@ class Pipeline(object):
 
     def transform(self, inputs, loggs):
         updated = inputs
-        try:
-            for name, step in tqdm(self.steps, disable=self.disable):
-                local_logs = {}
-                updated = step.transform(updated, local_logs)
-                loggs[name] = local_logs
-            return updated
-        except ValueError:
-            import ipdb
-            ipdb.set_trace()
+        for name, step in tqdm(self.steps, disable=self.disable):
+            local_logs = {}
+            updated = step.transform(updated, local_logs)
+            loggs[name] = local_logs
+        return updated
 
 
 def merge(data):
