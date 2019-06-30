@@ -166,7 +166,8 @@ class EfficiencyOptions(object):
     def spmc(klass, particle="#pi^{0}",
              genname="hPt_#pi^{0}_primary_", scale=0.075,
              *args, **kwargs):
-        efficiency_options = klass(genname=genname, scale=scale)
+        efficiency_options = klass(genname=genname, scale=scale,
+                                   particle=particle)
         efficiency_options.analysis = Options().spmc(
             particle=particle, *args, **kwargs)
         return efficiency_options
@@ -179,8 +180,6 @@ class CompositeEfficiencyOptions(object):
                  use_particle=True,
                  scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
-        if use_particle:
-            genname = genname.format(particle)
         self.suboptions = [
             EfficiencyOptions.spmc(
                 particle=particle,

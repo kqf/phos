@@ -65,9 +65,7 @@ class AnalysisOutput(dict):
 @contextmanager
 def open_loggs(name="", stop=False):
     loggs = AnalysisOutput(name)
-    try:
-        yield loggs
-    finally:
-        if not name:
-            return
-        loggs.plot(stop=stop)
+    yield loggs
+    if not name:
+        return
+    loggs.plot(stop=stop)
