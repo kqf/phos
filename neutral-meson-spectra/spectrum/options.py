@@ -143,10 +143,11 @@ class CompositeOptions(object):
 class EfficiencyOptions(object):
 
     def __init__(self, particle="#pi^{0}",
-                 genname="hPt_#pi^{0}_primary_",
+                 genname="hPt_{0}_primary_standard",
                  scale=0.075,
                  ptrange="config/pt.json"):
         super(EfficiencyOptions, self).__init__()
+        genname = genname.format(particle)
         self.analysis = Options(particle=particle, ptrange=ptrange)
         self.genname = genname
         self.scale = scale
