@@ -189,7 +189,7 @@ class CompositeEfficiencyOptions(object):
             for _ in range(n_ranges)
         ]
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
-        if particle == "#eta":
+        if len(self.suboptions[0].analysis.pt.ptedges) <= 12:  # eta size
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
 
         self.analysis = CompositeOptions(particle)

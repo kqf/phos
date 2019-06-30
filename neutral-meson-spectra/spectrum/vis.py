@@ -82,7 +82,7 @@ class MultipleVisualizer(object):
 
     @br.init_inputs
     def compare_visually(self, hists, pad=None, loggs=None, canvas=None):
-        if loggs is not None:
+        if loggs is not None and not self.stop:
             self.cached_hists = hists
             loggs.update({"compare": self})
             return
@@ -268,7 +268,7 @@ class Visualizer(MultipleVisualizer):
     def compare_visually(self, hists, loggs=None):
         a, b = hists
         ratio = br.ratio(a, b, self.ratio)
-        if loggs is not None:
+        if loggs is not None and not self.stop:
             self.cached_ratio = ratio
             self.cached_hists = hists
             loggs.update({"ratio": self})
