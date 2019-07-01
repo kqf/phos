@@ -14,11 +14,12 @@ from vault.formulas import FVault
 
 @pytest.fixture
 def data():
+    prod = "single #pi^{0} nonlinearity scan"
     return (
         DataVault().input("data", "latest", histname="MassPtSM0"),
         (
-            DataVault().input("single #pi^{0}", "low", "PhysEff"),
-            DataVault().input("single #pi^{0}", "high", "PhysEff")
+            DataVault().input(prod, "low", "PhysEff"),
+            DataVault().input(prod, "high", "PhysEff")
         )
     )
 
