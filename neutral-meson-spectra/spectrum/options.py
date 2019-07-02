@@ -189,7 +189,7 @@ class CompositeEfficiencyOptions(object):
             for _ in range(n_ranges)
         ]
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
-        if len(self.suboptions[0].analysis.pt.ptedges) <= 12:  # eta size
+        if len(self.suboptions[0].analysis.pt.ptedges) <= 14:  # eta size
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
 
         self.analysis = CompositeOptions(particle)
@@ -202,16 +202,23 @@ class CompositeEfficiencyOptions(object):
 
 
 class CorrectedYieldOptions(object):
+
+    _pdf_br_ratio = {
+        "#pi^{0}": 0.9882,
+        "#eta": 0.3931,
+    }
+
     def __init__(self, particle=""):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
         self.efficiency = EfficiencyOptions(
-            genname="hPt_{0}_primary_".format(particle))
+            genname="hPt_{0}_primary_standard",
+            particle=particle)
         self.feeddown = FeeddownOptions(particle=particle)
         self.normalization = 1.
-        self.branching_ratio = 0.9882 if particle == "#pi^{0}" else 0.3931
+        self.branching_ratio = self._pdf_br_ratio.get(particle)
 
         out_title = "Corrected {} yield;".format(particle)
         out_title += " p_{T}, GeV/c;"
@@ -229,6 +236,12 @@ class CorrectedYieldOptions(object):
 
 
 class CompositeCorrectedYieldOptions(object):
+
+    _pdf_br_ratio = {
+        "#pi^{0}": 0.9882,
+        "#eta": 0.3931,
+    }
+
     def __init__(self, particle="", n_ranges=2):
         super(CompositeCorrectedYieldOptions, self).__init__()
         self.analysis = Options(
@@ -252,7 +265,7 @@ class CompositeCorrectedYieldOptions(object):
             "label": "ALICE, pp \sqrt{s} = 13 TeV",
         }
         self.normalization = 1.
-        self.branching_ratio = 0.9882 if particle == "#pi^{0}" else 0.3931
+        self.branching_ratio = self._pdf_br_ratio.get(particle)
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
