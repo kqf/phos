@@ -13,6 +13,9 @@ from spectrum.options import CorrectedYieldOptions
 from spectrum.comparator import Comparator
 from tools.feeddown import data_feeddown
 
+from spectrum.input import SingleHistInput
+from spectrum.pipeline import TransformerBase
+
 
 @pytest.fixture
 def dataset():
@@ -20,6 +23,23 @@ def dataset():
         DataVault().input("pythia8", listname="PhysEff"),
         DataVault().input("pythia8", listname="PhysEff")
     )
+
+
+class EtaPionRatio(TransformerBase):
+    def __init__(self, options=None, plot=False):
+        super(EtaPionRatio, self).__init__()
+        self.pipeline = ComparePipeline([
+            ("#eta", SingleHistInput("hPt_#eta_primary_standard")),
+            ("#pi^{0}", SingleHistInput("hPt_#pi^{0}_primary_standard")),
+        ], plot)
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_calculate_eta_pion_ratio(dataset):
+    with open_loggs("eta pion ratio generated") as loggs:
+        ratio = EtaPionRatio().transform(dataset, loggs)
+        Comparator().compare(ratio)
 
 
 @pytest.mark.skip("")
@@ -44,7 +64,7 @@ def test_compare_raw_yields(dataset):
         Comparator().compare(output)
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency(dataset):
@@ -55,7 +75,7 @@ def test_efficiency(dataset):
         ("#pi^{0}", Efficiency(
             EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
     ], plot=True)
-    with open_loggs("efficiency_ratio") as loggs:
+    with open_loggs() as loggs:
         output = estimator.transform(dataset, loggs)
         Comparator().compare(output)
 
@@ -96,7 +116,7 @@ def options():
     return options_eta, options_pi0
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_yield_ratio(data, options):
