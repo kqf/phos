@@ -21,7 +21,7 @@ def pythia():
 
 @pytest.fixture
 def data():
-    return DataVault().input("data")
+    return DataVault().input("data", histname="MassPtSM0")
 
 
 class RawSpectrum(TransformerBase):
