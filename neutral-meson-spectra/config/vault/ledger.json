@@ -75,6 +75,13 @@
             "file": "input-data/mc/pythia/final_nonlinearity_2/pythia8.root",
             "hsum": "4ab83f22bde3a39638bcad2b74a78982f762cbacdff45f90bbf11e3ed03a0f58",
             "pt_range": [0, 20]
+        },
+        "fake": {
+            "default_selection": "PhysEff",
+            "description": "Multiply the latest dataset several times to increase statistics",
+            "file": "input-data/mc/pythia/final_nonlinearity_2/fake/pythia8.root",
+            "hsum": "8180ec24e837ad65b84c4416bf5168396e2f3acf881ca65275c24fbc529bfebd",
+            "pt_range": [0, 20]
         }
     },
     "single #eta": {
