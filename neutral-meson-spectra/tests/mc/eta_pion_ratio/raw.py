@@ -3,34 +3,60 @@ import pytest
 from spectrum.efficiency import Efficiency
 from spectrum.pipeline import ComparePipeline
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
+from spectrum.options import Options
 from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
 
+from spectrum.analysis import Analysis
+from spectrum.pipeline import TransformerBase
+from spectrum.pipeline import Pipeline, HistogramSelector
+
 
 @pytest.fixture
 def pythia():
-    return (
-        DataVault().input("pythia8", "fake", listname="PhysEff"),
-        DataVault().input("pythia8", "fake", listname="PhysEff")
-    )
+    return DataVault().input("pythia8", "fake", listname="PhysEff")
 
 
 @pytest.fixture
-def spmc():
-    eta = (
-        DataVault().input("single #eta", "low", listname="PhysEff"),
-        DataVault().input("single #eta", "high", listname="PhysEff")
-    )
-    pion = (
-        DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
-        DataVault().input("single #pi^{0}", "high", listname="PhysEff")
-    )
-    return eta, pion
+def data():
+    return DataVault().input("data")
+
+
+class RawSpectrum(TransformerBase):
+    def __init__(self, options, plot=False):
+        super(RawSpectrum, self).__init__()
+        self.pipeline = Pipeline([
+            ("analysis", Analysis(options, plot)),
+            ("spectrum", HistogramSelector("spectrum"))
+        ])
 
 
 # @pytest.mark.skip("")
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_raw_yield_ratio(pythia, data):
+    ptrange = "config/pt-same.json"
+
+    def estimator():
+        return ComparePipeline([
+            ("#eta", RawSpectrum(
+                Options(particle="#eta", ptrange=ptrange))),
+            ("#pi^{0}", RawSpectrum(
+                Options(particle="#pi^{0}", ptrange=ptrange))),
+        ], plot=True)
+
+    with open_loggs() as loggs:
+        pythia_ratio = estimator().transform((pythia, pythia), loggs)
+
+    with open_loggs() as loggs:
+        data_ratio = estimator().transform((data, data), loggs)
+
+    Comparator(labels=["data", "pythia"]).compare(data_ratio, pythia_ratio)
+
+
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency_ratio(pythia, spmc):
