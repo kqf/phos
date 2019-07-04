@@ -1,6 +1,11 @@
 import json
 import ROOT
 
+PDG_BR_RATIO = {
+    "#pi^{0}": 0.9882,
+    "#eta": 0.3931,
+}
+
 
 class AnalysisOption(object):
     ignore_attributes = "#eta", "#pi^{0}", "comment", "electrons"
@@ -212,11 +217,6 @@ class CompositeEfficiencyOptions(object):
 
 class CorrectedYieldOptions(object):
 
-    _pdf_br_ratio = {
-        "#pi^{0}": 0.9882,
-        "#eta": 0.3931,
-    }
-
     histpattern = """
         Corrected {} yield; p_{{T}}, GeV/c;
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
@@ -232,7 +232,7 @@ class CorrectedYieldOptions(object):
             particle=particle)
         self.feeddown = FeeddownOptions(particle=particle)
         self.normalization = 1.
-        self.branching_ratio = self._pdf_br_ratio.get(particle)
+        self.branching_ratio = PDG_BR_RATIO.get(particle)
 
         self.decorate = {
             "histname": "corrected_yield",
@@ -247,11 +247,6 @@ class CorrectedYieldOptions(object):
 
 
 class CompositeCorrectedYieldOptions(object):
-
-    _pdf_br_ratio = {
-        "#pi^{0}": 0.9882,
-        "#eta": 0.3931,
-    }
 
     histpattern = """
         Corrected {} yield; p_{{T}}, GeV/c;
@@ -277,7 +272,7 @@ class CompositeCorrectedYieldOptions(object):
             "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
         self.normalization = 1.
-        self.branching_ratio = self._pdf_br_ratio.get(particle)
+        self.branching_ratio = PDG_BR_RATIO.get(particle)
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
