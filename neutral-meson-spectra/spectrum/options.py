@@ -218,7 +218,7 @@ class CompositeEfficiencyOptions(object):
 class CorrectedYieldOptions(object):
 
     histpattern = """
-        Corrected {} yield; p_{{T}}, GeV/c;
+        Corrected {particle} yield; p_{{T}}, GeV/c;
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
@@ -249,7 +249,7 @@ class CorrectedYieldOptions(object):
 class CompositeCorrectedYieldOptions(object):
 
     histpattern = """
-        Corrected {} yield; p_{{T}}, GeV/c;
+        Corrected {particle} yield; p_{{T}}, GeV/c;
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
