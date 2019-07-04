@@ -4,7 +4,12 @@ import ROOT
 
 class AnalysisOption(object):
     ignore_attributes = "#eta", "#pi^{0}", "comment", "electrons"
-    _particles = {"pi0": "#pi^{0}", "eta": "#eta", "electrons": "electrons"}
+
+    _particles = {
+        "pi0": "#pi^{0}",
+        "eta": "#eta",
+        "electrons": "electrons"
+    }
 
     def __init__(self, name, config, particle):
         super(AnalysisOption, self).__init__()
@@ -142,6 +147,13 @@ class CompositeOptions(object):
 
 class EfficiencyOptions(object):
 
+    histpattern = """
+    #varepsilon = #Delta #phi #Delta y/ 2 #pi
+    #frac{{Number of reconstructed {particle}}}
+    {{Number of generated primary {particle}}}
+    ; p_{{T}}, GeV/c; efficiency #times acceptance
+    """
+
     def __init__(self, particle="#pi^{0}",
                  genname="hPt_{0}_primary_standard",
                  scale=0.075,
@@ -152,10 +164,7 @@ class EfficiencyOptions(object):
         self.genname = genname
         self.scale = scale
 
-        histname = "#varepsilon = #Delta #phi #Delta y/ 2 #pi "
-        histname += "#frac{Number of reconstructed %s}" % particle
-        histname += "{Number of generated primary %s}" % particle
-        histname += "; p_{T}, GeV/c; efficiency #times acceptance"
+        histname = self.histpattern.format(particle=particle)
         self.decorate = "eff_" + particle, histname, "efficiency"
 
     def set_binning(self, ptedges, rebins):
@@ -208,6 +217,11 @@ class CorrectedYieldOptions(object):
         "#eta": 0.3931,
     }
 
+    histpattern = """
+        Corrected {} yield; p_{{T}}, GeV/c;
+        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
+    """
+
     def __init__(self, particle=""):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle)
@@ -220,13 +234,10 @@ class CorrectedYieldOptions(object):
         self.normalization = 1.
         self.branching_ratio = self._pdf_br_ratio.get(particle)
 
-        out_title = "Corrected {} yield;".format(particle)
-        out_title += " p_{T}, GeV/c;"
-        out_title += "#frac{1}{N_{events}} #frac{dN}{d p_{T}}}"
         self.decorate = {
             "histname": "corrected_yield",
-            "title": out_title,
-            "label": "ALICE, pp \sqrt{s} = 13 TeV",
+            "title": self.histpattern.format(particle=particle),
+            "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
 
     def set_binning(self, ptedges, rebins):
@@ -242,6 +253,11 @@ class CompositeCorrectedYieldOptions(object):
         "#eta": 0.3931,
     }
 
+    histpattern = """
+        Corrected {} yield; p_{{T}}, GeV/c;
+        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
+    """
+
     def __init__(self, particle="", n_ranges=2):
         super(CompositeCorrectedYieldOptions, self).__init__()
         self.analysis = Options(
@@ -255,14 +271,10 @@ class CompositeCorrectedYieldOptions(object):
             n_ranges=n_ranges
         )
         self.feeddown = FeeddownOptions(particle=particle)
-
-        out_title = "Corrected {} yield;".format(particle)
-        out_title += " p_{T}, GeV/c;"
-        out_title += "#frac{1}{N_{events}} #frac{dN}{d p_{T}}"
         self.decorate = {
             "histname": "corrected_yield",
-            "title": out_title,
-            "label": "ALICE, pp \sqrt{s} = 13 TeV",
+            "title": self.histpattern.format(particle=particle),
+            "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
         self.normalization = 1.
         self.branching_ratio = self._pdf_br_ratio.get(particle)
