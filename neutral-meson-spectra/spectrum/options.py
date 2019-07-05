@@ -176,10 +176,6 @@ class EfficiencyOptions(object):
         histname = self.histpattern.format(particle=particle)
         self.decorate = "eff_" + particle, histname, "efficiency"
 
-    def set_binning(self, ptedges, rebins):
-        self.analysis.pt.ptedges = ptedges
-        self.analysis.pt.rebins = rebins
-
     @classmethod
     def spmc(klass, particle="#pi^{0}",
              genname="hPt_#pi^{0}_primary_", scale=0.075,
@@ -222,11 +218,6 @@ class CompositeEfficiencyOptions(object):
 
         self.analysis = CompositeOptions(particle)
         self.reduce_function = "standard"
-
-    def set_binning(self, ptedges, rebins):
-        for eff_options in self.suboptions:
-            eff_options.analysis.pt.ptedges = ptedges
-            eff_options.analysis.pt.rebins = rebins
 
 
 class CorrectedYieldOptions(object):
@@ -272,7 +263,8 @@ class CompositeCorrectedYieldOptions(object):
         self.spectrum = "spectrum"
         self.efficiency = CompositeEfficiencyOptions(
             particle,
-            n_ranges=n_ranges
+            n_ranges=n_ranges,
+            ptrange=ptrange
         )
         self.feeddown = FeeddownOptions(particle=particle)
         self.decorate = {
@@ -282,11 +274,6 @@ class CompositeCorrectedYieldOptions(object):
         }
         self.normalization = 1.
         self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)
-
-    def set_binning(self, ptedges, rebins):
-        self.analysis.pt.ptedges = ptedges
-        self.analysis.pt.rebins = rebins
-        self.efficiency.set_binning(ptedges, rebins)
 
 
 # TODO: Add ptrange parameter to the feeddown

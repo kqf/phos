@@ -42,11 +42,15 @@ def test_calculate_eta_pion_ratio(dataset):
         Comparator().compare(ratio)
 
 
+@pytest.fixture
+def ptrange():
+    return "config/pt-same.json"
+
+
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_compare_raw_yields(dataset):
-    ptrange = "config/pt-same.json"
+def test_compare_raw_yields(dataset, ptrange):
     estimator = ComparePipeline([
         ("#eta", Pipeline([
             ("analysis", Analysis(
@@ -106,9 +110,9 @@ def data():
 
 
 @pytest.fixture
-def options():
-    options_eta = CorrectedYieldOptions(particle="#eta")
-    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}")
+def options(ptrange):
+    options_eta = CorrectedYieldOptions(particle="#eta", ptrange=ptrange)
+    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", ptrange=ptrange)
     options_pi0.set_binning(
         options_eta.analysis.pt.ptedges,
         options_eta.analysis.pt.rebins
