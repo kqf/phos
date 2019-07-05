@@ -119,7 +119,9 @@ class Options(object):
 
     @staticmethod
     def spmc(particle="#pi^{0}",
-             ptrange="config/pt-spmc.json", *args, **kwargs):
+             ptrange="config/pt-spmc.json",
+             *args, **kwargs):
+
         options = Options(
             particle=particle,
             ptrange=ptrange,
@@ -135,10 +137,12 @@ class Options(object):
 
 class CompositeOptions(object):
 
-    def __init__(self, particle, n_ranges=2, *args, **kwargs):
+    def __init__(self, particle, n_ranges=2,
+                 ptrange="config/pt-spmc.json",
+                 *args, **kwargs):
         super(CompositeOptions, self).__init__()
         options = [
-            Options.spmc(particle, *args, **kwargs)
+            Options.spmc(particle, ptrange=ptrange, *args, **kwargs)
             for _ in range(n_ranges)
         ]
 
@@ -179,11 +183,19 @@ class EfficiencyOptions(object):
     @classmethod
     def spmc(klass, particle="#pi^{0}",
              genname="hPt_#pi^{0}_primary_", scale=0.075,
+             ptrange="config/pt.json",
              *args, **kwargs):
-        efficiency_options = klass(genname=genname, scale=scale,
-                                   particle=particle)
+        efficiency_options = klass(
+            genname=genname,
+            scale=scale,
+            particle=particle,
+            ptrange=ptrange
+        )
         efficiency_options.analysis = Options().spmc(
-            particle=particle, *args, **kwargs)
+            particle=particle,
+            ptrange=ptrange,
+            *args,
+            **kwargs)
         return efficiency_options
 
 
@@ -191,6 +203,7 @@ class CompositeEfficiencyOptions(object):
 
     def __init__(self, particle,
                  genname="hPt_{0}_primary_standard",
+                 ptrange="config/pt-spmc.json",
                  use_particle=True,
                  scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
@@ -198,6 +211,7 @@ class CompositeEfficiencyOptions(object):
             EfficiencyOptions.spmc(
                 particle=particle,
                 genname=genname,
+                ptrange=ptrange,
                 scale=scale,
                 *args, **kwargs)
             for _ in range(n_ranges)
@@ -222,28 +236,25 @@ class CorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
-    def __init__(self, particle=""):
+    def __init__(self, particle="", ptrange="config/pt.json"):
         super(CorrectedYieldOptions, self).__init__()
-        self.analysis = Options(particle=particle)
+        self.analysis = Options(particle=particle, ptrange=ptrange)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
         self.efficiency = EfficiencyOptions(
+            particle=particle,
             genname="hPt_{0}_primary_standard",
-            particle=particle)
+            ptrange=ptrange
+        )
         self.feeddown = FeeddownOptions(particle=particle)
         self.normalization = 1.
-        self.branching_ratio = PDG_BR_RATIO.get(particle)
+        self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)
 
         self.decorate = {
             "histname": "corrected_yield",
             "title": self.histpattern.format(particle=particle),
             "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
-
-    def set_binning(self, ptedges, rebins):
-        self.analysis.pt.ptedges = ptedges
-        self.analysis.pt.rebins = rebins
-        self.efficiency.set_binning(ptedges, rebins)
 
 
 class CompositeCorrectedYieldOptions(object):
@@ -253,12 +264,10 @@ class CompositeCorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
-    def __init__(self, particle="", n_ranges=2):
+    def __init__(self, particle="", n_ranges=2,
+                 ptrange="config/pt-corrected.json"):
         super(CompositeCorrectedYieldOptions, self).__init__()
-        self.analysis = Options(
-            particle=particle,
-            ptrange="config/pt-corrected.json"
-        )
+        self.analysis = Options(particle=particle, ptrange=ptrange)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
         self.efficiency = CompositeEfficiencyOptions(
@@ -272,7 +281,7 @@ class CompositeCorrectedYieldOptions(object):
             "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
         self.normalization = 1.
-        self.branching_ratio = PDG_BR_RATIO.get(particle)
+        self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)
 
     def set_binning(self, ptedges, rebins):
         self.analysis.pt.ptedges = ptedges
@@ -280,6 +289,7 @@ class CompositeCorrectedYieldOptions(object):
         self.efficiency.set_binning(ptedges, rebins)
 
 
+# TODO: Add ptrange parameter to the feeddown
 class FeeddownOptions(object):
     def __init__(self, particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()

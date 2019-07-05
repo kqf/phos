@@ -60,13 +60,9 @@ def test_raw_yield_ratio(pythia, data):
 
 @pytest.fixture
 def options():
-    options_eta = CorrectedYieldOptions(particle="#eta")
-    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}")
-    # Make same binning for all neutral mesons
-    options_pi0.set_binning(
-        options_eta.analysis.pt.ptedges,
-        options_eta.analysis.pt.rebins
-    )
+    ptrange = "config/pt-same.json"
+    options_eta = CorrectedYieldOptions(particle="#eta", ptrange=ptrange)
+    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", ptrange=ptrange)
     return options_eta, options_pi0
 
 
