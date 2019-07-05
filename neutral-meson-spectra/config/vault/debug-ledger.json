@@ -1,13 +1,4 @@
 {
-    "LHC16 trigger qa3": {
-        "LHC16g": {
-            "default_selection": "Phys",
-            "description": "Recalculate the quantities with the official task",
-            "file": "input-data/data/LHC16/trigger_qa/iteration3_kphi7/LHC16g.root",
-            "hsum": "cec9baeab09eb50427132d099d5ae26161d5c760ba59428f1ec7c7e0fd13200c",
-            "pt_range": [0, 20]
-        }
-    },
     "LHC16 trigger qa3 int7": {
         "LHC16g kint7": {
             "default_selection": "Phys",
