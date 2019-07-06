@@ -3,7 +3,7 @@ import ROOT
 import pytest
 
 from spectrum.pipeline import TransformerBase
-from spectrum.options import CompositeEfficiencyOptions, Options
+from spectrum.options import CompositeEfficiencyOptions, OptionsSPMC
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
 from spectrum.output import open_loggs
@@ -156,7 +156,7 @@ def test_different_masses_efficiency(data, theory_data):
     )
     # production = "single #pi^{0}"
     # theory = SimpleAnalysis(
-    #     Options.spmc((6, 20),
+    #     OptionsSPMC((6, 20),
     #                  ptrange="config/pt-debug.json"
     #                  )
     # ).transform(debug_input("high"), "")
@@ -165,7 +165,7 @@ def test_different_masses_efficiency(data, theory_data):
         h.label = "calculated"
 
     experiment = SimpleAnalysis(
-        Options.spmc((6, 20), ptrange="config/pt-debug.json")
+        OptionsSPMC((6, 20), ptrange="config/pt-debug.json")
     ).transform(data[0], "")
     for e, t in zip(experiment, templates):
         move_histogram(e, t)

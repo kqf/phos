@@ -117,22 +117,21 @@ class Options(object):
         options.pt.rebins = rebins
         return options
 
-    @staticmethod
-    def spmc(particle="#pi^{0}",
-             ptrange="config/pt-spmc.json",
-             *args, **kwargs):
 
-        options = Options(
+class OptionsSPMC(Options):
+
+    def __init__(self,
+                 particle="#pi^{0}",
+                 ptrange="config/pt-spmc.json",
+                 *args, **kwargs):
+        super(OptionsSPMC, self).__init__(
             particle=particle,
             ptrange=ptrange,
             spectrumconf="config/spectrum-spmc.json",
             backgroudpconf="config/cball-parameters-spmc.json",
             signalp="config/cball-parameters-spmc.json",
-            *args,
-            **kwargs
-        )
-        options.invmass.use_mixed = False
-        return options
+            *args, **kwargs)
+        self.invmass.use_mixed = False
 
 
 class CompositeOptions(object):
@@ -142,7 +141,7 @@ class CompositeOptions(object):
                  *args, **kwargs):
         super(CompositeOptions, self).__init__()
         options = [
-            Options.spmc(particle, ptrange=ptrange, *args, **kwargs)
+            OptionsSPMC(particle, ptrange=ptrange, *args, **kwargs)
             for _ in range(n_ranges)
         ]
 
