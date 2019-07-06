@@ -176,24 +176,6 @@ class EfficiencyOptions(object):
         histname = self.histpattern.format(particle=particle)
         self.decorate = "eff_" + particle, histname, "efficiency"
 
-    @classmethod
-    def spmc(klass, particle="#pi^{0}",
-             genname="hPt_#pi^{0}_primary_", scale=0.075,
-             ptrange="config/pt.json",
-             *args, **kwargs):
-        efficiency_options = klass(
-            genname=genname,
-            scale=scale,
-            particle=particle,
-            ptrange=ptrange
-        )
-        efficiency_options.analysis = OptionsSPMC(
-            particle=particle,
-            ptrange=ptrange,
-            *args,
-            **kwargs)
-        return efficiency_options
-
 
 class CompositeEfficiencyOptions(object):
 
