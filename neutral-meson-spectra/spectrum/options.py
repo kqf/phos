@@ -165,10 +165,11 @@ class EfficiencyOptions(object):
     def __init__(self, particle="#pi^{0}",
                  genname="hPt_{0}_primary_standard",
                  scale=0.075,
-                 ptrange="config/pt.json"):
+                 ptrange="config/pt.json",
+                 otype=Options):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
-        self.analysis = Options(particle=particle, ptrange=ptrange)
+        self.analysis = otype(particle=particle, ptrange=ptrange)
         self.genname = genname
         self.scale = scale
 
@@ -186,7 +187,7 @@ class EfficiencyOptions(object):
             particle=particle,
             ptrange=ptrange
         )
-        efficiency_options.analysis = Options().spmc(
+        efficiency_options.analysis = OptionsSPMC(
             particle=particle,
             ptrange=ptrange,
             *args,
@@ -203,11 +204,12 @@ class CompositeEfficiencyOptions(object):
                  scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
         self.suboptions = [
-            EfficiencyOptions.spmc(
+            EfficiencyOptions(
                 particle=particle,
                 genname=genname,
                 ptrange=ptrange,
                 scale=scale,
+                otype=OptionsSPMC,
                 *args, **kwargs)
             for _ in range(n_ranges)
         ]

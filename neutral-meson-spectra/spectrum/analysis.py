@@ -1,6 +1,6 @@
 from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
 from processing import InvariantMassExtractor
-from options import Options, CompositeOptions
+from options import Options, OptionsSPMC, CompositeOptions
 from pipeline import Pipeline, ParallelPipeline, ReducePipeline
 from pipeline import TransformerBase
 from broot import BROOT as br
@@ -61,6 +61,7 @@ class Analysis(TransformerBase):
 
     _types = {
         Options: SimpleAnalysis,
+        OptionsSPMC: SimpleAnalysis,
         CompositeOptions: CompositeAnalysis
     }
 
