@@ -80,38 +80,6 @@ class Options(object):
 
         self.particle = particle
 
-    @property
-    def fitf(self):
-        return self.backgroundp.fitf
-
-    @fitf.setter
-    def fitf(self, fitf):
-        # This one is needed only for. systematic error estimation
-        #
-        relaxed, particle = self.backgroundp.relaxed, self.backgroundp.particle
-        prefix = "gaus" if "gaus" in fitf.lower() else "cball"
-        pconf = "config/{0}-parameters.json".format(prefix)
-        self.backgroundp = AnalysisOption("backgroundp", pconf, particle)
-        self.backgroundp.relaxed = relaxed
-
-    @staticmethod
-    def fixed_peak(*args):
-        options = Options(*args)
-        options.spectrum.fit_mass_width = False
-        options.mode = "d"
-        return options
-
-    @staticmethod
-    def coarse_binning(options):
-        edges = options.pt.ptedges
-        edges = [e for e in edges if int(10 * e) % 10 != 5]
-        rebins = [0 for i in range(len(edges) - 1)]
-        rebins[-1] = 3
-        rebins[-2] = 3
-        options.pt.ptedges = edges
-        options.pt.rebins = rebins
-        return options
-
 
 class OptionsSPMC(Options):
 
@@ -296,7 +264,6 @@ class EpRatioOptions(object):
         # We need only pT similar to the original analysis
         self.analysis = Options(
             particle="electrons",
-            fitf="gaus",
             ptrange="config/ep_ratio/pt.json",
             spectrumconf="config/ep_ratio/ep.json",
             backgroudpconf="config/ep_ratio/peak.json",
