@@ -50,7 +50,6 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle="#pi^{0}",
-                 relaxedcb=False,
                  spectrumconf="config/spectrum.json",
                  ptrange="config/pt.json",
                  outconf="config/spectrum-output.json",
@@ -69,10 +68,8 @@ class Options(object):
 
         self.backgroundp = AnalysisOption(
             "backgroundp", backgroudpconf, particle)
-        self.backgroundp.relaxed = relaxedcb
 
         self.signalp = AnalysisOption("signalp", signalp, particle)
-        self.signalp.relaxed = relaxedcb
 
         self.invmass = AnalysisOption("MassFitter", invmassconf, particle)
         self.invmass.signalp = self.signalp

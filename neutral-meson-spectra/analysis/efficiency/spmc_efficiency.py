@@ -36,5 +36,5 @@ def test_spmc_efficiency(data, particle):
     options = CompositeEfficiencyOptions(particle)
     with open_loggs("efficiency spmc {}".format(particle)) as loggs:
         efficiency = Efficiency(options).transform(data, loggs)
-        # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
-        Comparator().compare(efficiency)
+        validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
+        # Comparator().compare(efficiency)

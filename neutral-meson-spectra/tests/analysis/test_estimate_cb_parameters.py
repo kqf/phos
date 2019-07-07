@@ -18,7 +18,10 @@ def data():
 class CbFitOptions(object):
     def __init__(self, particle):
         super(CbFitOptions, self).__init__()
-        self.analysis = Options(particle, relaxedcb=True)
+        self.analysis = Options(particle)
+        self.analysis.invmass.signalp.relaxed = True
+        self.analysis.invmass.backgroundp.relaxed = True
+
         self.names = ["cball_alpha", "cball_n"]
         self.functions = [
             ROOT.TF1("alpha", "pol0", 0, 20),
