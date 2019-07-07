@@ -12,7 +12,8 @@ def masses2edges(masses):
 
 class RawMass(object):
 
-    def __init__(self, inhists, pt_range, nrebin):
+    def __init__(self, inhists, pt_range, nrebin, pt_interval):
+        self.pt_interval = pt_interval
         self.pt_range = pt_range
         self.nrebin = nrebin
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
@@ -48,6 +49,7 @@ class InvariantMass(object):
         self.background = rmass.background
         self.pt_range = rmass.pt_range
         self.pt_label = rmass.pt_label
+        self.pt_interval = rmass.pt_interval
 
         # Setup the fit function
         self.signalp = PeakParametrisation.get(options.signalp)

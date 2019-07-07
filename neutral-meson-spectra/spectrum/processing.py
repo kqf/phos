@@ -28,7 +28,7 @@ class DataSlicer(object):
         )
 
         def common_inputs(x, y):
-            return RawMass(input_data, x, y)
+            return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
 
         return map(common_inputs,
                    intervals,
@@ -103,7 +103,7 @@ class RangeEstimator(object):
             "MassWidthOutput",
             values,
             self._output,
-            self.opt.ptrange,
+            masses[0].pt_interval,
             masses2edges(masses),
             titles,
             ""
@@ -210,7 +210,7 @@ class DataExtractor(object):
             "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
-            self.opt.ptrange,
+            masses[0].pt_interval,
             masses2edges(masses),
             self.opt.output,
             ""

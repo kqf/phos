@@ -50,9 +50,7 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle="#pi^{0}",
-                 fitrange=(0, 20.),  # Leave it for backward compatibility
                  relaxedcb=False,
-                 fitf="cball",
                  spectrumconf="config/spectrum.json",
                  ptrange="config/pt.json",
                  outconf="config/spectrum-output.json",
@@ -64,13 +62,10 @@ class Options(object):
 
         self.spectrum = AnalysisOption(
             "RangeEstimator", spectrumconf, particle)
-        self.spectrum.ptrange = fitrange
-        self.spectrum.fit_range = fitrange
 
         self.pt = AnalysisOption("DataSlicer", ptrange, particle)
         self.output = AnalysisOption("DataExtractor", outconf, particle)
         self.output.scalew_spectrum = True
-        self.output.ptrange = fitrange
 
         self.backgroundp = AnalysisOption(
             "backgroundp", backgroudpconf, particle)
