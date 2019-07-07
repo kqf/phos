@@ -6,6 +6,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions, OptionsSPMC
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
+from spectrum.processing import InvariantMassExtractor
 from spectrum.output import open_loggs
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
@@ -26,6 +27,8 @@ class SignalCutOff(TransformerBase):
                 m.pt_range[1] <= self.mrange[1]]
         signals = [m.mass for m in data]
         for s, m in zip(signals, data):
+            if s is None:
+                continue
             s.label = m.pt_label
         return signals
 
@@ -33,6 +36,8 @@ class SignalCutOff(TransformerBase):
 class SignalExtractor(TransformerBase):
     def transform(self, data, loggs):
         for s in data:
+            if s is None:
+                continue
             s.SetAxisRange(0.08, 0.2, "X")
             s.GetListOfFunctions().Clear()
         return data
@@ -44,6 +49,8 @@ class SignalScaler(TransformerBase):
 
     def transform(self, data, loggs):
         for h in data:
+            if h is None:
+                continue
             print(h.GetName(), h.GetBinWidth(0), h.GetNbinsX())
             h.Scale(self.scale)
         return data
@@ -56,6 +63,7 @@ class SimpleAnalysis(TransformerBase):
         self.options = options
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.pt)),
+            ("parametrize", InvariantMassExtractor(options.invmass)),
             ("fitmasses", MassFitter(options.invmass)),
             ("cut", SignalCutOff(options.output.ptrange)),
             ("signals", SignalExtractor()),
@@ -112,6 +120,9 @@ def debug_input(prod="low"):
 
 
 def move_histogram(source, dest):
+    if source is None:
+        return
+
     for i in br.range(dest):
         si = source.FindBin(dest.GetBinCenter(i))
         dest.SetBinContent(i, source.GetBinContent(si))
@@ -148,25 +159,31 @@ def theory_data():
     return DataVault().file("debug efficiency", "high")
 
 
+@pytest.fixture
+def data():
+    return DataVault().input("single #pi^{0}", "high", "PhysEff")
+
+
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_different_masses_efficiency(data, theory_data):
-    theory = DebugMasses("Same").transform(
-        ""
-    )
-    # production = "single #pi^{0}"
-    # theory = SimpleAnalysis(
-    #     OptionsSPMC((6, 20),
-    #                  ptrange="config/pt-debug.json"
-    #                  )
-    # ).transform(debug_input("high"), "")
+    with open_loggs() as loggs:
+        theory = DebugMasses("Same").transform(theory_data, loggs)
+
     templates = [h.Clone() for h in theory]
     for h in templates:
         h.label = "calculated"
 
-    experiment = SimpleAnalysis(
-        OptionsSPMC((6, 20), ptrange="config/pt-debug.json")
-    ).transform(data[0], "")
+    with open_loggs() as loggs:
+        estimator = SimpleAnalysis(
+            OptionsSPMC(
+                particle="#pi^{0}",
+                ptrange="config/pt-debug.json"
+            )
+        )
+        experiment = estimator.transform(data, loggs)
+
     for e, t in zip(experiment, templates):
         move_histogram(e, t)
+
     Comparator().compare(theory, templates)
