@@ -9,9 +9,10 @@ from vault.datavault import DataVault
 
 @pytest.fixture
 def data():
+    production = "single #pi^{0} debug 2"
     return (
-        DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
-        DataVault().input("single #pi^{0}", "high", listname="PhysEff"),
+        DataVault().input(production, "high", listname="PhysEff"),
+        DataVault().input(production, "high", listname="PhysEff"),
     )
 
 
