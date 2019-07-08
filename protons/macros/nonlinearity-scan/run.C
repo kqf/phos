@@ -13,7 +13,12 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // AddTaskPhysicsSelection(isMC, enablePileupCuts);
 
     TString msg = message("Nonlinearity scan", period);
-    AddPHOSTender(isMC, msg);
+    AliPHOSTenderTask * tender = AddPHOSTender(isMC, msg);
+
+    // Get tender supply
+    AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
+    // Disable the nonlinearity to be able to run the 
+    supply->SetNonlinearityVersion("NoCorrection");  
 
     // NB: This is a local copy of steering macro
     Bool_t acceptance = kTRUE;
