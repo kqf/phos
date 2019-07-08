@@ -23,6 +23,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t acceptance=k
 	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
 		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC)
 	);
+	mc_weights.fNonGlobal = -1.0; // Enable the cuts
 
 	// NB: Don't use all other selections as they are not needed for the analysis
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_eta, &mc_weights));
