@@ -53,14 +53,14 @@ def test_efficiency_evaluation(particle, data):
         particle,
         genname='hGenPi0Pt_clone',
         use_particle=False,
-        ptrange="config/pt-spmc.json",
+        ptrange="config/spmc/pt.json",
         scale=0.5
     )
 
     moptions = CompositeEfficiencyOptions(
         particle,
         genname='hPt_{0}_primary_',
-        ptrange="config/pt-spmc.json"
+        ptrange="config/spmc/pt.json"
     )
 
     CompareEfficiencies(doptions, moptions).transform(

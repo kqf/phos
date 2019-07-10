@@ -82,14 +82,14 @@ class OptionsSPMC(Options):
 
     def __init__(self,
                  particle="#pi^{0}",
-                 ptrange="config/pt-spmc.json",
+                 ptrange="config/spmc/pt.json",
                  *args, **kwargs):
         super(OptionsSPMC, self).__init__(
             particle=particle,
             ptrange=ptrange,
-            spectrumconf="config/spectrum-spmc.json",
-            backgroudpconf="config/cball-parameters-spmc.json",
-            signalp="config/cball-parameters-spmc.json",
+            spectrumconf="config/spmc/spectrum.json",
+            backgroudpconf="config/spmc/cball.json",
+            signalp="config/spmc/cball.json",
             *args, **kwargs)
         self.invmass.use_mixed = False
 
@@ -97,7 +97,7 @@ class OptionsSPMC(Options):
 class CompositeOptions(object):
 
     def __init__(self, particle, n_ranges=2,
-                 ptrange="config/pt-spmc.json",
+                 ptrange="config/spmc/pt.json",
                  *args, **kwargs):
         super(CompositeOptions, self).__init__()
         options = [
@@ -141,7 +141,7 @@ class CompositeEfficiencyOptions(object):
 
     def __init__(self, particle,
                  genname="hPt_{0}_primary_standard",
-                 ptrange="config/pt-spmc.json",
+                 ptrange="config/spmc/pt.json",
                  use_particle=True,
                  scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
@@ -323,6 +323,6 @@ class CompositeNonlinearityScanOptions(object):
         self.analysis = CompositeOptions(
             particle,
             n_ranges=n_ranges,
-            ptrange="config/pt-spmc.json")
-        self.analysis_data = Options(ptrange="config/pt-spmc.json")
+            ptrange="config/spmc/pt.json")
+        self.analysis_data = Options(ptrange="config/spmc/pt.json")
         self.factor = 1.
