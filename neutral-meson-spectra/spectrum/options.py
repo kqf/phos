@@ -50,12 +50,12 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle="#pi^{0}",
-                 spectrumconf="config/spectrum.json",
-                 ptrange="config/pt.json",
-                 outconf="config/spectrum-output.json",
-                 invmassconf="config/invariant-mass.json",
-                 backgroudpconf="config/cball-parameters.json",
-                 signalp="config/cball-parameters.json",
+                 spectrumconf="config/data/spectrum.json",
+                 ptrange="config/data/pt.json",
+                 outconf="config/data/output.json",
+                 invmassconf="config/data/mass-fit.json",
+                 backgroudpconf="config/data/cball.json",
+                 signalp="config/data/cball.json",
                  ):
         super(Options, self).__init__()
 
@@ -125,7 +125,7 @@ class EfficiencyOptions(object):
     def __init__(self, particle="#pi^{0}",
                  genname="hPt_{0}_primary_standard",
                  scale=0.075,
-                 ptrange="config/pt.json",
+                 ptrange="config/data/pt.json",
                  otype=Options):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
@@ -170,7 +170,7 @@ class CorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
-    def __init__(self, particle="", ptrange="config/pt.json"):
+    def __init__(self, particle="", ptrange="config/data/pt.json"):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle, ptrange=ptrange)
         self.analysis.output.scalew_spectrum = True

@@ -13,7 +13,7 @@ from vault.datavault import DataVault
 
 class MockInput(TransformerBase):
     def transform(self, data, loggs):
-        with open('config/pt.json') as f:
+        with open('config/data/pt.json') as f:
             pt = json.load(f)["#pi^{0}"]["ptedges"]
         out = ROOT.TH1F("mock", "Input", len(pt) - 1, array.array('d', pt))
         out.FillRandom("pol0", 10000)
