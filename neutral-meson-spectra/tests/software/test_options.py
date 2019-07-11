@@ -47,18 +47,18 @@ def props(conffile):
 
 
 @pytest.mark.parametrize("name, target", [
-    ("spectrum", lambda x: Options(spectrumconf=x).spectrum),
+    ("calibration", lambda x: Options(calibration=x).calibration),
     ("output", lambda x: Options(outconf=x).output),
     ("invmass", lambda x: Options(invmassconf=x).invmass),
 ])
 def test_check_properties(name, target, props, conffile):
     # Test keys
     for opt in props:
-        msg = "Key {} is missing in %s configuration" % name
+        msg = "Key {{}} is missing in {} configuration".format(name)
         res = opt in dir(target(conffile))
         assert res, msg.format(opt)
 
     for opt, val in props.iteritems():
-        msg = "The value of key {} differs in %s configuration" % name
+        msg = "The value of key {{}} differs in {} configuration".format(name)
         res = target(conffile).__dict__[opt]
         assert res == val, msg.format(opt, res)

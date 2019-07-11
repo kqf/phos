@@ -50,7 +50,7 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle="#pi^{0}",
-                 spectrumconf="config/data/spectrum.json",
+                 calibration="config/data/calibration.json",
                  ptrange="config/data/pt.json",
                  outconf="config/data/output.json",
                  invmassconf="config/data/mass-fit.json",
@@ -59,8 +59,8 @@ class Options(object):
                  ):
         super(Options, self).__init__()
 
-        self.spectrum = AnalysisOption(
-            "RangeEstimator", spectrumconf, particle)
+        self.calibration = AnalysisOption(
+            "RangeEstimator", calibration, particle)
 
         self.pt = AnalysisOption("DataSlicer", ptrange, particle)
         self.output = AnalysisOption("DataExtractor", outconf, particle)
@@ -87,7 +87,7 @@ class OptionsSPMC(Options):
         super(OptionsSPMC, self).__init__(
             particle=particle,
             ptrange=ptrange,
-            spectrumconf="config/spmc/spectrum.json",
+            calibration="config/spmc/calibration.json",
             backgroudpconf="config/spmc/cball.json",
             signalp="config/spmc/cball.json",
             *args, **kwargs)
@@ -262,7 +262,7 @@ class EpRatioOptions(object):
         self.analysis = Options(
             particle="electrons",
             ptrange="config/ep_ratio/pt.json",
-            spectrumconf="config/ep_ratio/ep.json",
+            calibration="config/ep_ratio/ep.json",
             backgroudpconf="config/ep_ratio/peak.json",
             signalp="config/ep_ratio/peak.json",
             outconf="config/ep_ratio/output.json",

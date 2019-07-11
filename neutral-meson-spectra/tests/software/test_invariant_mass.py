@@ -25,7 +25,7 @@ def test_draws_multiple(stop, particle, data):
         ("slice", DataSlicer(option.pt)),
         ("extract", InvariantMassExtractor(option.invmass)),
         ("fit", MassFitter(option.invmass.use_mixed)),
-        ("ranges", RangeEstimator(option.spectrum)),
+        ("ranges", RangeEstimator(option.calibration)),
     ])
 
     with open_loggs("multirange plotter", stop=stop) as loggs:

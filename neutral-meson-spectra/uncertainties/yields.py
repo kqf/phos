@@ -59,10 +59,10 @@ class YieldExtractioin(TransformerBase):
                 for marker, par in enumerate(self.options.signals):
                     for nsigmas in self.options.nsigmas:
                         options = Options()
-                        options.spectrum.dead = True
+                        options.calibration.dead = True
                         options.pt.label = "n#sigma = {0} {1} {2} {3}".format(
                             nsigmas, par, bckgr, flab)
-                        options.spectrum.nsigmas = nsigmas
+                        options.calibration.nsigmas = nsigmas
                         options.signalp.fitf = par
                         options.signalp.background = bckgr
                         options.signalp.fit_range = frange

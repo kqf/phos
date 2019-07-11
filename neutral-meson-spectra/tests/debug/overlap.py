@@ -24,7 +24,7 @@ class SignalExtractor(TransformerBase):
 
 class SignalScaler(TransformerBase):
     def __init__(self, options):
-        low_pt = options.spectrum.ptrange[-1] < 19
+        low_pt = options.calibration.ptrange[-1] < 19
         self.scale = 0.02 if low_pt else 1.0
 
     def transform(self, data, loggs):

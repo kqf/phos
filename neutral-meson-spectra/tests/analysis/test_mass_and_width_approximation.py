@@ -32,5 +32,5 @@ def test_mass_width_parametrization(particle, data):
     with open_loggs("test mass width parameters") as loggs:
         output = Analysis(options).transform(data, loggs)
 
-    fit_quantity(output.mass, options.spectrum.mass_func)
-    fit_quantity(output.width, options.spectrum.width_func)
+    fit_quantity(output.mass, options.calibration.mass_func)
+    fit_quantity(output.width, options.calibration.width_func)

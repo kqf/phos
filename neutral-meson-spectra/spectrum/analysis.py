@@ -15,7 +15,7 @@ class SimpleAnalysis(TransformerBase):
             ("slice", DataSlicer(options.pt)),
             ("parametrize", InvariantMassExtractor(options.invmass)),
             ("fitmasses", MassFitter(options.invmass.use_mixed)),
-            ("ranges", RangeEstimator(options.spectrum)),
+            ("ranges", RangeEstimator(options.calibration)),
             ("data", DataExtractor(options.output))
         ])
 
