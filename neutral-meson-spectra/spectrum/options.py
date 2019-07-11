@@ -228,7 +228,7 @@ class FeeddownOptions(object):
         # self.feeddown = Options(ptrange="config/pt-same.json")
         # NB: Don"t fit the mass and width and
         #     use the same values from the data
-        self.feeddown.spectrum.fit_mass_width = False
+        self.feeddown.calibration.fit_mass_width = False
         self.regular = Options(particle=particle)
         # self.regular = Options(ptrange="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
