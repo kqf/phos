@@ -23,10 +23,10 @@ def nbins():
 @pytest.fixture
 def data(nbins):
     return (
-        yield_extraction_data(),
+        # yield_extraction_data(),
         nonlinearity_scan_data(nbins, "single #pi^{0}"),
         tof_data(),
-        ge_scale_data(),
+        ge_scale_data("#pi^{0}"),
         acceptance_data(),
     )
 
@@ -38,16 +38,16 @@ def test_draws_all_sources(nbins, data):
     nonlin_options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
     nonlin_options.factor = 1.
 
-    cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
+    # cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
 
     estimator = ComparePipeline((
-        ("yield", YieldExtractioin(
-            YieldExtractioinUncertanityOptions(cyield_options))),
+        # ("yield", YieldExtractioin(
+        #     YieldExtractioinUncertanityOptions(cyield_options))),
         ("nonlinearity", Nonlinearity(nonlin_options)),
         ("tof", TofUncertainty(TofUncertaintyOptions())),
         ("gescale", GScale(GScaleOptions(particle="#pi^{0}"))),
         ("accepntace", Acceptance(AcceptanceOptions(particle="#pi^{0}"))),
     ), plot=True)
 
-    with open_loggs("full uncertainty") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(data, loggs)

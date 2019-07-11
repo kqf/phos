@@ -13,7 +13,7 @@ from vault.datavault import DataVault
 
 def tof_data():
     return (
-        DataVault().input("data", "nonlinearity", histname="MassPtSM0"),
+        DataVault().input("data", histname="MassPtSM0"),
         DataVault().input("data", "isolated", histname="MassPtSM0"),
     )
 

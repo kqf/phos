@@ -98,4 +98,4 @@ def test_debug_yield_ratio(data_pion, data_eta):
             CompositeCorrectedYieldOptions(particle="#pi^{0}")
         ).transform(data_pion, loggs)
 
-    Comparator().compare(eta, pi0)
+    Comparator(rrange=(-1,)).compare(eta, pi0)

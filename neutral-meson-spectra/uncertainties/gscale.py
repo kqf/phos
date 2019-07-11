@@ -26,7 +26,7 @@ def ep_data(prod="data", version="latest"):
 
 
 def ge_scale_data(particle):
-    mcproduction = "single %s" % particle
+    mcproduction = "single {}".format(particle)
     return (
         (
             ep_data("data"),

@@ -12,7 +12,7 @@ from spectrum.comparator import Comparator
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta",
+    # "#eta",
 ])
 def test_yield_extraction_uncertanity_pion(particle):
     options = YieldExtractioinUncertanityOptions(
