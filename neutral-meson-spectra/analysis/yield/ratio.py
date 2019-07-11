@@ -13,6 +13,7 @@ from vault.datavault import DataVault
 def data_eta():
     # Define the inputs and the dataset for #eta mesons
     #
+
     inputs_eta = (
         DataVault().input("single #eta", "low", "PhysEff"),
         DataVault().input("single #eta", "high", "PhysEff"),
@@ -68,6 +69,7 @@ def options():
     return options_eta, options_pi0
 
 
+@pytest.mark.skip("ignore")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_yield_ratio(data, options):
@@ -84,12 +86,16 @@ def test_yield_ratio(data, options):
         Comparator().compare(output)
 
 
-@pytest.mark.skip('Something is wrong')
-def test_debug_yield_ratio(data_pion, data_eta, options):
-    options_eta, options_pi0 = options
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_debug_yield_ratio(data_pion, data_eta):
+    with open_loggs() as loggs:
+        eta = CorrectedYield(
+            CompositeCorrectedYieldOptions(particle="#eta")
+        ).transform(data_eta, loggs)
 
-    with open_loggs("eta and pion yields") as loggs:
-        eta = CorrectedYield(options_eta).transform(data_eta, loggs)
-        pi0 = CorrectedYield(options_pi0).transform(data_pion, loggs)
+        pi0 = CorrectedYield(
+            CompositeCorrectedYieldOptions(particle="#pi^{0}")
+        ).transform(data_pion, loggs)
 
     Comparator().compare(eta, pi0)

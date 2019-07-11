@@ -195,7 +195,7 @@ class CompositeCorrectedYieldOptions(object):
 
     histpattern = """
         Corrected {particle} yield; p_{{T}}, GeV/c;
-        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
+        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}
     """
 
     def __init__(self, particle="", n_ranges=2,
