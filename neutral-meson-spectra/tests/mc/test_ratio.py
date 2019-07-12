@@ -113,10 +113,6 @@ def data():
 def options(pt):
     options_eta = CorrectedYieldOptions(particle="#eta", pt=pt)
     options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", pt=pt)
-    options_pi0.set_binning(
-        options_eta.analysis.pt.ptedges,
-        options_eta.analysis.pt.rebins
-    )
     return options_eta, options_pi0
 
 

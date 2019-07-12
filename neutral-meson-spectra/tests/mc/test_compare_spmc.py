@@ -32,13 +32,12 @@ def data(spmc, pythia8):
 ])
 def test_efficiencies(particle, data):
     general_options = EfficiencyOptions(
-        genname="hPt_#pi^{0}_primary_",
+        pt="config/pt-same-truncated.json",
         scale=2,
-        pt="config/pt-same-truncated.json"
     )
 
     steps = [
-        ("spmc", Efficiency(CompositeEfficiencyOptions(particle)))
+        ("spmc", Efficiency(CompositeEfficiencyOptions(particle))),
         ("pythia8", Efficiency(general_options))
     ]
 

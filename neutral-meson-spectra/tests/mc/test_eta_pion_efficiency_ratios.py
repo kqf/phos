@@ -48,11 +48,9 @@ def test_efficiency_ratio(pythia, spmc):
     # Now the similar code for SPMC
     estimator = ComparePipeline([
         ("#eta", Efficiency(
-            CompositeEfficiencyOptions(particle="#eta", pt=pt,
-                                       scale=1))),
+            CompositeEfficiencyOptions(particle="#eta", pt=pt, scale=1))),
         ("#pi^{0}", Efficiency(
-            CompositeEfficiencyOptions(particle="#pi^{0}", pt=pt,
-                                       scale=1))),
+            CompositeEfficiencyOptions(particle="#pi^{0}", pt=pt, scale=1))),
     ], plot=True)
     with open_loggs() as loggs:
         spmc_ratio = estimator.transform(spmc, loggs)
