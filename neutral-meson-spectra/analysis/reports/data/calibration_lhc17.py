@@ -43,7 +43,7 @@ def periods():
     "width"
 ])
 def test_calibration(atype, periods):
-    options = Options(ptrange="config/pt-periods.json")
+    options = Options(pt="config/pt-periods.json")
     masses = [
         CalibrationAnalysis(atype, options).transform(
             DataVault("debug-ledger.json").input("LHC17 qa1", "LHC17" + p),
@@ -69,7 +69,7 @@ def test_mass_different_modules(periods):
         period_name = "LHC17{}".format(period)
         return vault.modules_input("LHC17 qa1", period_name, "Phys", True)
 
-    options = Options(ptrange="config/test_different_modules.json")
+    options = Options(pt="config/test_different_modules.json")
     masses = [
         ModuleAnalysis(options).transform(data(p), {}) for p in periods
     ]

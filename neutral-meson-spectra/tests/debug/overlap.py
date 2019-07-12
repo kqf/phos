@@ -75,7 +75,7 @@ def data():
 def test_efficiency(particle, data):
     options = CompositeEfficiencyOptions(
         particle,
-        ptrange="config/pt-debug.json"
+        pt="config/pt-debug.json"
     )
 
     with open_loggs("mass_test_{}".format(particle)) as loggs:

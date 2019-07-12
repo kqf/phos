@@ -19,7 +19,7 @@ from array import array
 class StanadrtizeOutput(TransformerBase):
     def __init__(self):
         super(StanadrtizeOutput, self).__init__()
-        self.ptedges = Options(ptrange="config/pt-debug.json").pt.ptedges
+        self.ptedges = Options(pt="config/pt-debug.json").pt.ptedges
 
     def transform(self, histogram, loggs):
         ohist = ROOT.TH1F(
@@ -103,7 +103,7 @@ def debug_options(particle):
         particle,
         genname="hGenPi0Pt_clone",
         use_particle=False,
-        ptrange="config/pt-debug.json",
+        pt="config/pt-debug.json",
         scale=0.5
     )
 
@@ -112,7 +112,7 @@ def spmc_options(particle):
     options = CompositeEfficiencyOptions(
         particle,
         genname="hPt_{0}_primary_",
-        ptrange="config/pt-debug.json"
+        pt="config/pt-debug.json"
     )
     return options
 

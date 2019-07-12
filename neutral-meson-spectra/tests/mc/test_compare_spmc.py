@@ -34,7 +34,7 @@ def test_efficiencies(particle, data):
     general_options = EfficiencyOptions(
         genname="hPt_#pi^{0}_primary_",
         scale=2,
-        ptrange="config/pt-same-truncated.json"
+        pt="config/pt-same-truncated.json"
     )
 
     steps = [

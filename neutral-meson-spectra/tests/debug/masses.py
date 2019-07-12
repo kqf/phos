@@ -148,7 +148,7 @@ def test_masses_efficiency(spmc, particle):
     particle = "#pi^{0}"
     options = CompositeEfficiencyOptions(
         particle,
-        ptrange="config/pt-debug.json"
+        pt="config/pt-debug.json"
     )
     with open_loggs("mass_test_{}".format(particle)) as loggs:
         MassComparator(options, plot=True).transform(spmc, loggs)
@@ -178,7 +178,7 @@ def test_different_masses_efficiency(data, theory_data):
         estimator = SimpleAnalysis(
             OptionsSPMC(
                 particle="#pi^{0}",
-                ptrange="config/pt-debug.json"
+                pt="config/pt-debug.json"
             )
         )
         experiment = estimator.transform(data, loggs)
