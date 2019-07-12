@@ -39,14 +39,14 @@ class RawSpectrum(TransformerBase):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_raw_yield_ratio(pythia, data):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
 
     def estimator():
         return ComparePipeline([
             ("#eta", RawSpectrum(
-                Options(particle="#eta", ptrange=ptrange))),
+                Options(particle="#eta", pt=pt))),
             ("#pi^{0}", RawSpectrum(
-                Options(particle="#pi^{0}", ptrange=ptrange))),
+                Options(particle="#pi^{0}", pt=pt))),
         ], plot=True)
 
     with open_loggs() as loggs:
@@ -60,9 +60,9 @@ def test_raw_yield_ratio(pythia, data):
 
 @pytest.fixture
 def options():
-    ptrange = "config/pt-same.json"
-    options_eta = CorrectedYieldOptions(particle="#eta", ptrange=ptrange)
-    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", ptrange=ptrange)
+    pt = "config/pt-same.json"
+    options_eta = CorrectedYieldOptions(particle="#eta", pt=pt)
+    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", pt=pt)
     return options_eta, options_pi0
 
 
@@ -117,15 +117,15 @@ def test_yield_ratio(dataset, options):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_spmc_efficiency(pythia, spmc):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
 
     # Now the similar code for SPMC
     estimator = ComparePipeline([
         ("#eta", Efficiency(
-            CompositeEfficiencyOptions(particle="#eta", ptrange=ptrange,
+            CompositeEfficiencyOptions(particle="#eta", pt=pt,
                                        scale=1))),
         ("#pi^{0}", Efficiency(
-            CompositeEfficiencyOptions(particle="#pi^{0}", ptrange=ptrange,
+            CompositeEfficiencyOptions(particle="#pi^{0}", pt=pt,
                                        scale=1))),
     ], plot=True)
     with open_loggs() as loggs:
@@ -136,10 +136,10 @@ def test_spmc_efficiency(pythia, spmc):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_pion_efficiency(pythia, spmc):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
 
     estimator = Efficiency(
-        EfficiencyOptions(particle="#eta", ptrange=ptrange, scale=1))
+        EfficiencyOptions(particle="#eta", pt=pt, scale=1))
 
     with open_loggs("test eta pythia efficiency") as loggs:
         estimator.transform(pythia[1], loggs)

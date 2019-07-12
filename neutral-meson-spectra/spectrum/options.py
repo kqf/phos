@@ -52,7 +52,7 @@ class Options(object):
                  particle="#pi^{0}",
                  calibration="config/data/calibration.json",
                  pt="config/data/pt.json",
-                 outconf="config/data/output.json",
+                 output="config/data/output.json",
                  invmassconf="config/data/mass-fit.json",
                  backgroudpconf="config/data/cball.json",
                  signalp="config/data/cball.json",
@@ -63,7 +63,7 @@ class Options(object):
             "RangeEstimator", calibration, particle)
 
         self.pt = AnalysisOption("DataSlicer", pt, particle)
-        self.output = AnalysisOption("DataExtractor", outconf, particle)
+        self.output = AnalysisOption("DataExtractor", output, particle)
         self.output.scalew_spectrum = True
 
         self.backgroundp = AnalysisOption(
@@ -265,7 +265,7 @@ class EpRatioOptions(object):
             calibration="config/ep_ratio/ep.json",
             backgroudpconf="config/ep_ratio/peak.json",
             signalp="config/ep_ratio/peak.json",
-            outconf="config/ep_ratio/output.json",
+            output="config/ep_ratio/output.json",
             invmassconf="config/ep_ratio/mass.json",
         )
         # NB: Make sure to define it later

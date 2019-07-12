@@ -34,12 +34,12 @@ def spmc():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency_ratio(pythia, spmc):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
     estimator = ComparePipeline([
         ("#eta", Efficiency(
-            EfficiencyOptions(particle="#eta", ptrange=ptrange, scale=1))),
+            EfficiencyOptions(particle="#eta", pt=pt, scale=1))),
         ("#pi^{0}", Efficiency(
-            EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
+            EfficiencyOptions(particle="#pi^{0}", pt=pt, scale=1))),
     ], plot=True)
 
     with open_loggs() as loggs:
@@ -48,10 +48,10 @@ def test_efficiency_ratio(pythia, spmc):
     # Now the similar code for SPMC
     estimator = ComparePipeline([
         ("#eta", Efficiency(
-            CompositeEfficiencyOptions(particle="#eta", ptrange=ptrange,
+            CompositeEfficiencyOptions(particle="#eta", pt=pt,
                                        scale=1))),
         ("#pi^{0}", Efficiency(
-            CompositeEfficiencyOptions(particle="#pi^{0}", ptrange=ptrange,
+            CompositeEfficiencyOptions(particle="#pi^{0}", pt=pt,
                                        scale=1))),
     ], plot=True)
     with open_loggs() as loggs:
@@ -64,15 +64,15 @@ def test_efficiency_ratio(pythia, spmc):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_spmc_efficiency(pythia, spmc):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
 
     # Now the similar code for SPMC
     estimator = ComparePipeline([
         ("#eta", Efficiency(
-            CompositeEfficiencyOptions(particle="#eta", ptrange=ptrange,
+            CompositeEfficiencyOptions(particle="#eta", pt=pt,
                                        scale=1))),
         ("#pi^{0}", Efficiency(
-            CompositeEfficiencyOptions(particle="#pi^{0}", ptrange=ptrange,
+            CompositeEfficiencyOptions(particle="#pi^{0}", pt=pt,
                                        scale=1))),
     ], plot=True)
     with open_loggs() as loggs:
@@ -83,10 +83,10 @@ def test_spmc_efficiency(pythia, spmc):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_pion_efficiency(pythia, spmc):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
 
     estimator = Efficiency(
-        EfficiencyOptions(particle="#eta", ptrange=ptrange, scale=1))
+        EfficiencyOptions(particle="#eta", pt=pt, scale=1))
 
     with open_loggs("test eta pythia efficiency") as loggs:
         estimator.transform(pythia[1], loggs)

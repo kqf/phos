@@ -48,9 +48,9 @@ def data(pion_data, eta_data):
 
 @pytest.mark.onlylocal
 def test_efficiency_ratio(data):
-    ptrange = "config/pt-same.json"
-    opt_eta = CompositeOptions("#eta", ptrange=ptrange)
-    opt_pi0 = CompositeOptions("#pi^{0}", ptrange=ptrange)
+    pt = "config/pt-same.json"
+    opt_eta = CompositeOptions("#eta", pt=pt)
+    opt_pi0 = CompositeOptions("#pi^{0}", pt=pt)
     estimator = MassComparator(opt_eta, opt_pi0, plot=False)
 
     with open_loggs("mass ratio") as loggs:

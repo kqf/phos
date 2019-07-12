@@ -43,23 +43,23 @@ def test_calculate_eta_pion_ratio(dataset):
 
 
 @pytest.fixture
-def ptrange():
+def pt():
     return "config/pt-same.json"
 
 
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_compare_raw_yields(dataset, ptrange):
+def test_compare_raw_yields(dataset, pt):
     estimator = ComparePipeline([
         ("#eta", Pipeline([
             ("analysis", Analysis(
-                Options(particle="#eta", ptrange=ptrange))),
+                Options(particle="#eta", pt=pt))),
             ("spectrum", HistogramSelector("spectrum")),
         ])),
         ("#pi^{0}", Pipeline([
             ("analysis", Analysis(
-                Options(particle="#pi^{0}", ptrange=ptrange))),
+                Options(particle="#pi^{0}", pt=pt))),
             ("spectrum", HistogramSelector("spectrum")),
         ])),
     ])
@@ -72,12 +72,12 @@ def test_compare_raw_yields(dataset, ptrange):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_efficiency(dataset):
-    ptrange = "config/pt-same.json"
+    pt = "config/pt-same.json"
     estimator = ComparePipeline([
         ("#eta", Efficiency(
-            EfficiencyOptions(particle="#eta", ptrange=ptrange, scale=1))),
+            EfficiencyOptions(particle="#eta", pt=pt, scale=1))),
         ("#pi^{0}", Efficiency(
-            EfficiencyOptions(particle="#pi^{0}", ptrange=ptrange, scale=1))),
+            EfficiencyOptions(particle="#pi^{0}", pt=pt, scale=1))),
     ], plot=True)
     with open_loggs() as loggs:
         output = estimator.transform(dataset, loggs)
@@ -110,9 +110,9 @@ def data():
 
 
 @pytest.fixture
-def options(ptrange):
-    options_eta = CorrectedYieldOptions(particle="#eta", ptrange=ptrange)
-    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", ptrange=ptrange)
+def options(pt):
+    options_eta = CorrectedYieldOptions(particle="#eta", pt=pt)
+    options_pi0 = CorrectedYieldOptions(particle="#pi^{0}", pt=pt)
     options_pi0.set_binning(
         options_eta.analysis.pt.ptedges,
         options_eta.analysis.pt.rebins

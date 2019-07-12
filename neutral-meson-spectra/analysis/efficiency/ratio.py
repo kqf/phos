@@ -24,9 +24,9 @@ def data():
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_efficiency_ratio(data):
-    ptrange = "config/pt-same.json"
-    opt_eta = CompositeEfficiencyOptions("#eta", ptrange=ptrange)
-    opt_pi0 = CompositeEfficiencyOptions("#pi^{0}", ptrange=ptrange)
+    pt = "config/pt-same.json"
+    opt_eta = CompositeEfficiencyOptions("#eta", pt=pt)
+    opt_pi0 = CompositeEfficiencyOptions("#pi^{0}", pt=pt)
     estimator = ComparePipeline([
         ("#eta", Efficiency(opt_eta)),
         ("#pi^{0}", Efficiency(opt_pi0)),

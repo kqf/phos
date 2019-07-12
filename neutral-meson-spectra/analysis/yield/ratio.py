@@ -57,15 +57,9 @@ def data(data_eta, data_pion):
 
 @pytest.fixture
 def options():
-    ptrange = "config/pt-same.json"
-    options_eta = CompositeCorrectedYieldOptions(
-        particle="#eta",
-        ptrange=ptrange
-    )
-    options_pi0 = CompositeCorrectedYieldOptions(
-        particle="#pi^{0}",
-        ptrange=ptrange
-    )
+    pt = "config/pt-same.json"
+    options_eta = CompositeCorrectedYieldOptions(particle="#eta", pt=pt)
+    options_pi0 = CompositeCorrectedYieldOptions(particle="#pi^{0}", pt=pt)
     return options_eta, options_pi0
 
 
