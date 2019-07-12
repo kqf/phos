@@ -18,6 +18,8 @@ def scale_data(data, scale=2):
     real.Scale(scale)
 
     class ScaledInput(object):
+        pt_range = (0, 20)
+
         def transform(self):
             return (real, mixed)
     return ScaledInput()

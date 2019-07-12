@@ -30,7 +30,7 @@ def data():
 
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("mixed", [True, False])
-def test_analysis(mixed):
+def test_analysis(data, mixed):
     options = Options()
     options.pt.use_mixed = mixed
     with open_loggs() as loggs:

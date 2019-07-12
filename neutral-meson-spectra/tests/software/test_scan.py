@@ -73,7 +73,7 @@ def full_composite_data(data, mc_composite_dataset):
 
 
 @pytest.mark.onlylocal
-def test_composite_interface(full_composite_data):
+def test_composite_interface(nbins, full_composite_data):
     estimator = NonlinearityScan(
         CompositeNonlinearityScanOptions(nbins=nbins)
     )
