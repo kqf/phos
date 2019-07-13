@@ -41,7 +41,7 @@ def test_background_fitting(data):
 
     with open_loggs("relaxed cb parameters") as loggs:
         options = Options()
-        options.signalp.relaxed = True
+        options.signal.relaxed = True
         outputs2 = Analysis(options).transform(data, loggs)
 
     diff = Comparator()

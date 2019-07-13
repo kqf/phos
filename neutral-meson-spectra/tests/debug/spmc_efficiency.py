@@ -42,7 +42,7 @@ def eta_dataset():
 def test_spmc_efficiency(inputs, particle):
     options = CompositeEfficiencyOptions(particle)
     # for options in options.suboptions:
-    # options.analysis.signalp.relaxed = True
+    # options.analysis.signal.relaxed = True
     # options.analysis.backgroundp.relaxed = True
 
     with open_loggs("composite efficiency spmc {}".format(particle)) as loggs:

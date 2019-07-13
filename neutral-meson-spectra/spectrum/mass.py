@@ -12,7 +12,7 @@ class BackgroundEstimator(object):
         if not mass.mass.GetEntries():
             return mass.mass
 
-        sigf, bgrf = mass.backgroundp.fit(mass.mass)
+        sigf, bgrf = mass._background.fit(mass.mass)
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
@@ -47,7 +47,7 @@ class SignalExtractor(object):
 class SignalFitter(object):
 
     def transform(self, mass):
-        mass.sigf, mass.bgrf = mass.signalp.fit(mass.signal)
+        mass.sigf, mass.bgrf = mass._signal.fit(mass.signal)
         # mass.signal.Draw()
         # mass.signal.Draw("same")
         # mass.mass.Fit(mass.sigf, "R")
@@ -73,7 +73,7 @@ class MixingBackgroundEstimator(object):
         if ratio.GetEntries() == 0:
             return mass
 
-        fitf, bckgrnd = mass.backgroundp.fit(ratio)
+        fitf, bckgrnd = mass._background.fit(ratio)
         mass.background.Multiply(bckgrnd)
         mass.background.SetLineColor(46)
         mass.ratio = ratio
@@ -120,7 +120,7 @@ class ZeroBinsCleaner(object):
         if not zeros:
             return h
 
-        fitf, bckgrnd = mass.backgroundp.fit(h, is_mixing=is_background)
+        fitf, bckgrnd = mass._background.fit(h, is_mixing=is_background)
 
         # If we failed to fit: do nothing
         if not (fitf and bckgrnd):

@@ -55,7 +55,7 @@ class Options(object):
                  output="config/data/output.json",
                  invmass="config/data/mass-fit.json",
                  backgroudpconf="config/data/cball.json",
-                 signalp="config/data/cball.json",
+                 signal="config/data/cball.json",
                  ):
         super(Options, self).__init__()
 
@@ -69,10 +69,10 @@ class Options(object):
         self.backgroundp = AnalysisOption(
             "backgroundp", backgroudpconf, particle)
 
-        self.signalp = AnalysisOption("signalp", signalp, particle)
+        self.signal = AnalysisOption("signal", signal, particle)
 
         self.invmass = AnalysisOption("MassFitter", invmass, particle)
-        self.invmass.signalp = self.signalp
+        self.invmass.signal = self.signal
         self.invmass.backgroundp = self.backgroundp
 
         self.particle = particle
@@ -89,7 +89,7 @@ class OptionsSPMC(Options):
             pt=pt,
             calibration="config/spmc/calibration.json",
             backgroudpconf="config/spmc/cball.json",
-            signalp="config/spmc/cball.json",
+            signal="config/spmc/cball.json",
             *args, **kwargs)
         self.invmass.use_mixed = False
 
@@ -264,7 +264,7 @@ class EpRatioOptions(object):
             pt="config/ep_ratio/pt.json",
             calibration="config/ep_ratio/ep.json",
             backgroudpconf="config/ep_ratio/peak.json",
-            signalp="config/ep_ratio/peak.json",
+            signal="config/ep_ratio/peak.json",
             output="config/ep_ratio/output.json",
             invmass="config/ep_ratio/mass.json",
         )

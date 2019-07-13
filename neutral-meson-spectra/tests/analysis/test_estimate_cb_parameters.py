@@ -19,7 +19,7 @@ class CbFitOptions(object):
     def __init__(self, particle):
         super(CbFitOptions, self).__init__()
         self.analysis = Options(particle)
-        self.analysis.invmass.signalp.relaxed = True
+        self.analysis.invmass.signal.relaxed = True
         self.analysis.invmass.backgroundp.relaxed = True
 
         self.names = ["cball_alpha", "cball_n"]
