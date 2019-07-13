@@ -20,7 +20,7 @@ class CbFitOptions(object):
         super(CbFitOptions, self).__init__()
         self.analysis = Options(particle)
         self.analysis.invmass.signal.relaxed = True
-        self.analysis.invmass.backgroundp.relaxed = True
+        self.analysis.invmass.background.relaxed = True
 
         self.names = ["cball_alpha", "cball_n"]
         self.functions = [

@@ -57,7 +57,7 @@ def test_background_fitting(single_input):
         masses = MassExtractor(options).transform(single_input, loggs)
 
     target = masses[8]
-    param = PeakParametrisation.get(options.invmass.backgroundp)
+    param = PeakParametrisation.get(options.invmass.background)
     fitf, background = param.fit(target.mass)
 
     canvas = su.canvas("test")
@@ -79,7 +79,7 @@ def test_data_peak(data):
         masses = MassExtractor(options).transform(data, loggs)
 
     target = masses[12]
-    param = PeakParametrisation.get(options.invmass.backgroundp)
+    param = PeakParametrisation.get(options.invmass.background)
     fitf, background = param.fit(target.mass)
 
     canvas = su.canvas("test")

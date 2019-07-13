@@ -66,14 +66,14 @@ class Options(object):
         self.output = AnalysisOption("DataExtractor", output, particle)
         self.output.scalew_spectrum = True
 
-        self.backgroundp = AnalysisOption(
-            "backgroundp", backgroudpconf, particle)
+        self.background = AnalysisOption(
+            "background", backgroudpconf, particle)
 
         self.signal = AnalysisOption("signal", signal, particle)
 
         self.invmass = AnalysisOption("MassFitter", invmass, particle)
         self.invmass.signal = self.signal
-        self.invmass.backgroundp = self.backgroundp
+        self.invmass.background = self.background
 
         self.particle = particle
 

@@ -43,7 +43,7 @@ def test_spmc_efficiency(inputs, particle):
     options = CompositeEfficiencyOptions(particle)
     # for options in options.suboptions:
     # options.analysis.signal.relaxed = True
-    # options.analysis.backgroundp.relaxed = True
+    # options.analysis.background.relaxed = True
 
     with open_loggs("composite efficiency spmc {}".format(particle)) as loggs:
         efficiency = Efficiency(options).transform(inputs, loggs)

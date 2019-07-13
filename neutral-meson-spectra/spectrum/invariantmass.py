@@ -52,8 +52,8 @@ class InvariantMass(object):
         self.pt_interval = rmass.pt_interval
 
         # Setup the fit function
-        self._signal = PeakParametrisation.get(options._signal)
-        self.backgroundp = PeakParametrisation.get(options.backgroundp)
+        self._signal = PeakParametrisation.get(options.signal)
+        self._background = PeakParametrisation.get(options.background)
         self.mass_range = self._signal.opt.fit_range
 
         # Extract the data
