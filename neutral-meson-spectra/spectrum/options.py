@@ -53,7 +53,7 @@ class Options(object):
                  calibration="config/data/calibration.json",
                  pt="config/data/pt.json",
                  output="config/data/output.json",
-                 invmassconf="config/data/mass-fit.json",
+                 invmass="config/data/mass-fit.json",
                  backgroudpconf="config/data/cball.json",
                  signalp="config/data/cball.json",
                  ):
@@ -71,7 +71,7 @@ class Options(object):
 
         self.signalp = AnalysisOption("signalp", signalp, particle)
 
-        self.invmass = AnalysisOption("MassFitter", invmassconf, particle)
+        self.invmass = AnalysisOption("MassFitter", invmass, particle)
         self.invmass.signalp = self.signalp
         self.invmass.backgroundp = self.backgroundp
 
@@ -266,7 +266,7 @@ class EpRatioOptions(object):
             backgroudpconf="config/ep_ratio/peak.json",
             signalp="config/ep_ratio/peak.json",
             output="config/ep_ratio/output.json",
-            invmassconf="config/ep_ratio/mass.json",
+            invmass="config/ep_ratio/mass.json",
         )
         # NB: Make sure to define it later
         self.histname = "hEp_ele"
