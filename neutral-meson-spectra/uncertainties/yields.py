@@ -4,6 +4,7 @@ from spectrum.options import Options
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.pipeline import TransformerBase
+from spectrum.output import open_loggs
 from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
@@ -58,18 +59,22 @@ class YieldExtractioin(TransformerBase):
             for bckgr in self.options.backgrounds:
                 for marker, par in enumerate(self.options.signals):
                     for nsigmas in self.options.nsigmas:
+                        label = "n#sigma = {} {} {} {}".format(
+                            nsigmas, par, bckgr, flab)
                         options = Options()
                         options.calibration.dead = True
-                        options.pt.label = "n#sigma = {0} {1} {2} {3}".format(
-                            nsigmas, par, bckgr, flab)
+                        options.pt.label = label
                         options.calibration.nsigmas = nsigmas
                         options.invmass.signal.fitf = par
                         options.invmass.signal.background = bckgr
                         options.invmass.signal.fit_range = frange
 
                         self.options.cyield.analysis = options
-                        spectrum = CorrectedYield(
-                            self.options.cyield).transform(data, loggs)
+                        with open_loggs(label) as loggs_local:
+                            estimator = CorrectedYield(self.options.cyield)
+                            spectrum = estimator.transform(data, loggs_local)
+                            loggs.update({label: loggs_local})
+
                         spectrum.marker = marker
                         spectrums.append(spectrum)
                         pbar.update()

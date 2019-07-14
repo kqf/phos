@@ -19,7 +19,7 @@ def test_yield_extraction_uncertanity_pion(particle):
         CompositeCorrectedYieldOptions(particle=particle)
     )
     estimator = YieldExtractioin(options)
-    with open_loggs() as loggs:
+    with open_loggs("cyield uncertainty") as loggs:
         output = estimator.transform(
             yield_extraction_data(particle=particle),
             loggs
