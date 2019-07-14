@@ -8,7 +8,7 @@ PDG_BR_RATIO = {
 
 
 class AnalysisOption(object):
-    ignore_attributes = "#eta", "#pi^{0}", "comment", "electrons"
+    _ignore_attributes = "#eta", "#pi^{0}", "comment", "electrons"
 
     _particles = {
         "pi0": "#pi^{0}",
@@ -18,11 +18,12 @@ class AnalysisOption(object):
 
     def __init__(self, name, config, particle):
         super(AnalysisOption, self).__init__()
-        self.name = name
-        self.particle = self._convert_name(particle)
-        with open(config) as f:
+        self._name = name
+        self._config = config
+        self._particle = particle
+        with open(self._config) as f:
             conf = json.load(f)
-        self._setup_configurations(conf, self.particle)
+        self._setup_configurations(conf, self._particle)
 
     def _setup_configurations(self, conf, particle):
         self._update_variables(conf)
@@ -34,17 +35,19 @@ class AnalysisOption(object):
         self._update_variables(conf)
 
     def _update_variables(self, vardict):
-        items = (k for k in vardict if k not in self.ignore_attributes)
+        items = (k for k in vardict if k not in self._ignore_attributes)
         for n in items:
             setattr(self, n, vardict[n])
 
-    @classmethod
-    def _convert_name(klass, name):
-        if name not in klass._particles:
-            return name
-
-        cleaned = klass._particles.get(name)
-        return cleaned
+    def __repr__(self):
+        methods = ", ".join([s for s in dir(self) if not s.startswith('_')])
+        msg = '{}("{}", "{}", "{}"): {}'
+        return msg.format(
+            self.__class__.__name__,
+            self._name,
+            self._config,
+            self._particle,
+            methods)
 
 
 class Options(object):
@@ -54,7 +57,7 @@ class Options(object):
                  pt="config/data/pt.json",
                  output="config/data/output.json",
                  invmass="config/data/mass-fit.json",
-                 backgroudpconf="config/data/cball.json",
+                 background="config/data/cball.json",
                  signal="config/data/cball.json",
                  ):
         super(Options, self).__init__()
@@ -66,14 +69,10 @@ class Options(object):
         self.output = AnalysisOption("DataExtractor", output, particle)
         self.output.scalew_spectrum = True
 
-        self.background = AnalysisOption(
-            "background", backgroudpconf, particle)
-
-        self.signal = AnalysisOption("signal", signal, particle)
-
         self.invmass = AnalysisOption("MassFitter", invmass, particle)
-        self.invmass.signal = self.signal
-        self.invmass.background = self.background
+        self.invmass.signal = AnalysisOption("signal", signal, particle)
+        self.invmass.background = AnalysisOption("background",
+                                                 background, particle)
 
         self.particle = particle
 
@@ -88,7 +87,7 @@ class OptionsSPMC(Options):
             particle=particle,
             pt=pt,
             calibration="config/spmc/calibration.json",
-            backgroudpconf="config/spmc/cball.json",
+            background="config/spmc/cball.json",
             signal="config/spmc/cball.json",
             *args, **kwargs)
         self.invmass.use_mixed = False
@@ -263,7 +262,7 @@ class EpRatioOptions(object):
             particle="electrons",
             pt="config/ep_ratio/pt.json",
             calibration="config/ep_ratio/ep.json",
-            backgroudpconf="config/ep_ratio/peak.json",
+            background="config/ep_ratio/peak.json",
             signal="config/ep_ratio/peak.json",
             output="config/ep_ratio/output.json",
             invmass="config/ep_ratio/mass.json",
