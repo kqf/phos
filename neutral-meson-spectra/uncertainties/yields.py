@@ -15,7 +15,7 @@ def yield_extraction_data(particle="#pi^{0}"):
         DataVault().input(production, "high", "PhysEff"),
     )
 
-    needs_feeddown = particle == "#pi^{0}"
+    needs_feeddown = particle != "#pi^{0}"
     cyield = (
         (
             DataVault().input("data", histname="MassPtSM0"),

@@ -139,6 +139,9 @@ class Input(object):
             ) for name in names]
         return OrderedDict(output)
 
+    def __repr__(self):
+        return self.filename
+
 
 class NoMixingInput(Input):
     def __init__(self, filename, listname, pt_range=(0, 20.),

@@ -30,10 +30,7 @@ class DataSlicer(object):
         def common_inputs(x, y):
             return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
 
-        return map(common_inputs,
-                   intervals,
-                   self.opt.rebins
-                   )
+        return map(common_inputs, intervals, self.opt.rebins)
 
 
 class InvariantMassExtractor(object):
