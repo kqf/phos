@@ -55,10 +55,10 @@ class Options(object):
                  particle="#pi^{0}",
                  calibration="config/data/calibration.json",
                  pt="config/data/pt.json",
-                 output="config/data/output.json",
                  invmass="config/data/mass-fit.json",
-                 background="config/data/cball.json",
                  signal="config/data/cball.json",
+                 background="config/data/cball.json",
+                 output="config/data/output.json",
                  ):
         super(Options, self).__init__()
 
@@ -87,8 +87,8 @@ class OptionsSPMC(Options):
             particle=particle,
             pt=pt,
             calibration="config/spmc/calibration.json",
-            background="config/spmc/cball.json",
             signal="config/spmc/cball.json",
+            background="config/spmc/cball.json",
             *args, **kwargs)
         self.invmass.use_mixed = False
 

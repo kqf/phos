@@ -96,7 +96,7 @@ class RangeEstimator(object):
         )
 
         titles = {q:
-                  t.format(self.opt.particle, T="{T}")
+                  t.format(self.opt._particle, T="{T}")
                   for q, t in zip(self._output, self._titles)}
 
         self.output = analysis_output(

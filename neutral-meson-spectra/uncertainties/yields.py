@@ -63,9 +63,9 @@ class YieldExtractioin(TransformerBase):
                         options.pt.label = "n#sigma = {0} {1} {2} {3}".format(
                             nsigmas, par, bckgr, flab)
                         options.calibration.nsigmas = nsigmas
-                        options.signal.fitf = par
-                        options.signal.background = bckgr
-                        options.signal.fit_range = frange
+                        options.invmass.signal.fitf = par
+                        options.invmass.signal.background = bckgr
+                        options.invmass.signal.fit_range = frange
 
                         self.options.cyield.analysis = options
                         spectrum = CorrectedYield(
