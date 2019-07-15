@@ -826,3 +826,8 @@ def test_calculates_bin_centers(exp_data):
     np.testing.assert_almost_equal(orig_centers, cent_centers)
     np.testing.assert_almost_equal(orig_centers, cent_contents)
     np.testing.assert_almost_equal(cent_errors, np.zeros_like(cent_errors))
+
+
+def test_calculates_ratio_bin_centers(exp_data):
+    normalized = br.divide_by_bin_centers(exp_data)
+    assert normalized is not exp_data

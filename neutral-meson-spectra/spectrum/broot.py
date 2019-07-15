@@ -592,3 +592,9 @@ class BROOT(object):
         for i in klass.range(centers):
             centers.SetBinContent(i, centers.GetBinCenter(i))
         return centers
+
+    @classmethod
+    def divide_by_bin_centers(klass, hist):
+        centers = klass.bin_centers(hist)
+        divided = klass.ratio(hist, centers, option="")
+        return divided
