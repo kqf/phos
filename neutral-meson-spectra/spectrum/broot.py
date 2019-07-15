@@ -584,3 +584,11 @@ class BROOT(object):
     def hist2array(klass, hist):
         data = klass.bins(hist)
         return data.contents
+
+    @classmethod
+    def bin_centers(klass, hist):
+        centers = klass.copy(hist, "_centers")
+        centers.Sumw2()
+        for i in klass.range(centers):
+            centers.SetBinContent(i, centers.GetBinCenter(i))
+        return centers

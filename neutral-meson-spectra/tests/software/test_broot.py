@@ -2,7 +2,9 @@ from __future__ import print_function
 import array
 import os
 import random
+import json
 
+import numpy as np
 import pytest
 import ROOT
 
@@ -804,3 +806,23 @@ def test_draws_chi2(scale):
     hist = br.chi2errors(hist, scale=scale)
     calculated = sum(map(hist.GetBinError, br.range(hist)))
     assert pytest.approx(calculated) == func.GetChisquare() * scale
+
+
+@pytest.fixture
+def exp_data():
+    with open("config/data/pt.json") as f:
+        data = array.array('d', json.load(f)["#pi^{0}"].get("ptedges"))
+    hist = ROOT.TH1F("random", "Testing bin centers; x", len(data) - 1, data)
+    function = ROOT.TF1("function", "TMath::Exp(-0.5 * x)", 0, 100)
+    hist.FillRandom(function.GetName())
+    return br.scalewidth(hist)
+
+
+def test_calculates_bin_centers(exp_data):
+    centers = br.bin_centers(exp_data)
+    orig_contents, orig_errors, orig_centers = br.bins(exp_data)
+    cent_contents, cent_errors, cent_centers = br.bins(centers)
+
+    np.testing.assert_almost_equal(orig_centers, cent_centers)
+    np.testing.assert_almost_equal(orig_centers, cent_contents)
+    np.testing.assert_almost_equal(cent_errors, np.zeros_like(cent_errors))
