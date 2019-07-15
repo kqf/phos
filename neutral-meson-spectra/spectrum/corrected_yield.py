@@ -1,3 +1,4 @@
+from math import pi
 from analysis import Analysis
 from options import CorrectedYieldOptions
 from efficiency import Efficiency
@@ -8,6 +9,14 @@ from pipeline import ComparePipeline
 from pipeline import OutputFitter
 from pipeline import HistogramScaler
 from tools.feeddown import FeeddownEstimator
+from broot import BROOT as br
+
+
+class InvariantYield(TransformerBase):
+    def transform(self, hist, loggs):
+        normalized = br.divide_by_bin_centers(hist)
+        normalized.Scale(1. / 2 / pi)
+        return normalized
 
 
 class CorrectedYield(TransformerBase):
@@ -35,6 +44,7 @@ class CorrectedYield(TransformerBase):
             ("normalization", HistogramScaler(
                 options.normalization / options.branching_ratio)),
             ("fix naming", OutputDecorator(options.analysis.particle)),
+            ("invariant yield", InvariantYield()),
             ("fitted yield", OutputFitter(options)),
             ("decorate output", OutputDecorator(**options.decorate)),
         ])

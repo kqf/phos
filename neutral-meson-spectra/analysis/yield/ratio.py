@@ -63,7 +63,6 @@ def options():
     return options_eta, options_pi0
 
 
-@pytest.mark.skip("ignore")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_yield_ratio(data, options):
@@ -80,6 +79,7 @@ def test_yield_ratio(data, options):
         Comparator().compare(output)
 
 
+@pytest.mark.skip("ignore")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_debug_yield_ratio(data_pion, data_eta):
