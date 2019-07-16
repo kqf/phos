@@ -59,8 +59,9 @@ class YieldExtractioin(TransformerBase):
             for bckgr in self.options.backgrounds:
                 for marker, par in enumerate(self.options.signals):
                     for nsigmas in self.options.nsigmas:
-                        label = "n#sigma = {} {} {} {}".format(
-                            nsigmas, par, bckgr, flab)
+                        msg = "n#sigma = {} {} {} {}"
+                        label = msg.format(nsigmas, par, bckgr, flab)
+
                         options = Options()
                         options.calibration.dead = True
                         options.pt.label = label

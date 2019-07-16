@@ -186,7 +186,8 @@ class CorrectedYieldOptions(object):
         self.decorate = {
             "histname": "corrected_yield",
             "title": self.histpattern.format(particle=particle),
-            "label": "ALICE, pp #sqrt{s} = 13 TeV",
+            "label": particle,
+            # "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
 
 
@@ -212,7 +213,8 @@ class CompositeCorrectedYieldOptions(object):
         self.decorate = {
             "histname": "corrected_yield",
             "title": self.histpattern.format(particle=particle),
-            "label": "ALICE, pp #sqrt{s} = 13 TeV",
+            "label": particle,
+            # "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
         self.normalization = 1.
         self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)

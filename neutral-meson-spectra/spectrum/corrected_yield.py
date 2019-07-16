@@ -16,6 +16,8 @@ class InvariantYield(TransformerBase):
     def transform(self, hist, loggs):
         normalized = br.divide_by_bin_centers(hist)
         normalized.Scale(1. / 2 / pi)
+        normalized.logy = True
+        normalized.logx = True
         return normalized
 
 
