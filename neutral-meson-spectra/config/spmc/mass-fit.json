@@ -2,5 +2,5 @@
         "comment": "These are list of parameters to maintain plots/rebining for invariant mass class",
         "clean_empty_bins": true,
         "tol": 1e-14,
-        "use_mixed": true
+        "use_mixed": false
 }

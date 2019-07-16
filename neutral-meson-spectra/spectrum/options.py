@@ -86,11 +86,11 @@ class OptionsSPMC(Options):
         super(OptionsSPMC, self).__init__(
             particle=particle,
             pt=pt,
+            invmass="config/spmc/mass-fit.json",
             calibration="config/spmc/calibration.json",
             signal="config/spmc/cball.json",
             background="config/spmc/cball.json",
             *args, **kwargs)
-        self.invmass.use_mixed = False
 
 
 class CompositeOptions(object):
