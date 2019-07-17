@@ -13,12 +13,22 @@ from broot import BROOT as br
 
 
 class InvariantYield(TransformerBase):
+    _ytitle = "#frac{1}{2 #pi p_{T}}"
+
     def transform(self, hist, loggs):
         normalized = br.divide_by_bin_centers(hist)
         normalized.Scale(1. / 2 / pi)
         normalized.logy = True
         normalized.logx = True
+        self._update_ytitle(normalized)
+        print("title: ", normalized.GetYaxis().GetTitle())
         return normalized
+
+    @classmethod
+    def _update_ytitle(cls, hist):
+        title = "{} {}".format(cls._ytitle, hist.GetYaxis().GetTitle())
+        hist.GetYaxis().SetTitle(title)
+        return hist
 
 
 class CorrectedYield(TransformerBase):
@@ -31,8 +41,8 @@ class CorrectedYield(TransformerBase):
 
         fyield = ReducePipeline(
             ParallelPipeline([
-                ("raw_yield", raw_yield),
-                ("feed-down", FeeddownEstimator(options.feeddown))
+                ("raw yield", raw_yield),
+                ("feed down", FeeddownEstimator(options.feeddown))
             ]),
             self.multiply)
 
