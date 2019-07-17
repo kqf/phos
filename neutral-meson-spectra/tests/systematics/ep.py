@@ -29,8 +29,8 @@ def data(prod="data", version="ep_ratio"):
 @pytest.fixture
 def double_ratio_data():
     return (
-        data_old_selection("data", "nonlinearity"),
-        data_old_selection("pythia8", "nonlinearity"),
+        data_old_selection("data", "latest"),
+        data_old_selection("pythia8", "latest"),
     )
 
 
@@ -72,8 +72,9 @@ def test_data_mc_ratio(double_ratio_data):
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True
     )
-    with open("double ep ratio") as loggs:
+    with open_loggs("double ep ratio") as loggs:
         output = estimator.transform(double_ratio_data, loggs)
+        Comparator().compare(output)
     assert len(output) > 0
 
 

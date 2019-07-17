@@ -62,7 +62,7 @@ class EpRatioEstimator(TransformerBase):
         self.pipeline = Pipeline([
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
-            ("fit", EpFitter(options.analysis.signal)),
+            ("fit", EpFitter(options.analysis.invmass.signal)),
             ("ranges", RangeEstimator(options.analysis.calibration)),
             ("data", DataExtractor(options.analysis.output)),
             ("ep", HistogramSelector("mass", plot))
