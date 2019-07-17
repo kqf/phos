@@ -21,12 +21,11 @@ class InvariantYield(TransformerBase):
         normalized.logy = True
         normalized.logx = True
         self._update_ytitle(normalized)
-        print("title: ", normalized.GetYaxis().GetTitle())
         return normalized
 
     @classmethod
     def _update_ytitle(cls, hist):
-        title = "{} {}".format(cls._ytitle, hist.GetYaxis().GetTitle())
+        title = "{}{}".format(cls._ytitle, hist.GetYaxis().GetTitle().strip())
         hist.GetYaxis().SetTitle(title)
         return hist
 
@@ -56,9 +55,9 @@ class CorrectedYield(TransformerBase):
             ("normalization", HistogramScaler(
                 options.normalization / options.branching_ratio)),
             ("fix naming", OutputDecorator(options.analysis.particle)),
-            ("invariant yield", InvariantYield()),
-            ("fitted yield", OutputFitter(options)),
             ("decorate output", OutputDecorator(**options.decorate)),
+            ("fitted yield", OutputFitter(options)),
+            ("invariant yield", InvariantYield()),
         ])
 
     def multiply(self, calculations, loggs):

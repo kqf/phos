@@ -597,4 +597,7 @@ class BROOT(object):
     def divide_by_bin_centers(klass, hist):
         centers = klass.bin_centers(hist)
         divided = klass.ratio(hist, centers, option="")
+        divided.SetTitle(hist.GetTitle())
+        divided.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
+        divided.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
         return divided
