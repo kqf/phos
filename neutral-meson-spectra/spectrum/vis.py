@@ -253,6 +253,7 @@ class Visualizer(MultipleVisualizer):
         ROOT.gStyle.SetOptFit(1)
         ratio.fitfunc.SetLineColor(ROOT.kBlue + 1)
         ratio.fitfunc.SetMarkerColor(ROOT.kBlue + 1)
+        ratio.fitfunc.SetLineWidth(4)
         ratio.Fit(ratio.fitfunc, "Rq")
 
     def fit_ratio(self, ratio):

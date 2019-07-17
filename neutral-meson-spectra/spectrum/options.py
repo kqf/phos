@@ -271,6 +271,8 @@ class EpRatioOptions(object):
         )
         # NB: Make sure to define it later
         self.histname = "hEp_ele"
+        self.fitf = ROOT.TF1("ratio", "pol0(0)", 0, 3)
+        self.fitf.SetParameter(0, 1.0)
 
 
 class DataMCEpRatioOptions(object):
