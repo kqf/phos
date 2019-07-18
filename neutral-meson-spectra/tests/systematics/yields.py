@@ -24,4 +24,4 @@ def test_yield_extraction_uncertanity_pion(particle):
             yield_extraction_data(particle=particle),
             loggs
         )
-    Comparator().compare(output)
+        Comparator().compare(output)

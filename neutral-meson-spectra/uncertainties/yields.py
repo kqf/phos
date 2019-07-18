@@ -31,8 +31,8 @@ class YieldExtractioinUncertanityOptions(object):
     def __init__(self, cyield):
         self.mass_range = {
             "low": [0.06, 0.22],
-            "mid": [0.04, 0.20],
-            "wide": [0.08, 0.24]
+            # "mid": [0.04, 0.20],
+            # "wide": [0.08, 0.24]
         }
         self.backgrounds = ["pol1", "pol2"]
         self.signals = ["CrystalBall", "Gaus"]
@@ -71,23 +71,26 @@ class YieldExtractioin(TransformerBase):
                         options.invmass.signal.fit_range = frange
 
                         self.options.cyield.analysis = options
-                        with open_loggs(label) as loggs_local:
+                        with open_loggs() as loggs_local:
                             estimator = CorrectedYield(self.options.cyield)
                             spectrum = estimator.transform(data, loggs_local)
-                            loggs.update({label: loggs_local})
-
+                            # loggs.update({label: loggs_local})
                         spectrum.marker = marker
+                        spectrum.label = label
                         spectrums.append(spectrum)
                         pbar.update()
         pbar.close()
         diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
-        diff.compare(spectrums)
+        diff.compare(spectrums, loggs=loggs)
 
         average = br.average(spectrums, "averaged yield")
-        diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
-        diff.compare_ratios(spectrums, average)
+        diff = Comparator(stop=True, oname="yield_deviation_from_average")
+        diff.compare_ratios(spectrums, average, loggs=loggs)
 
         uncert, rms, mean = br.systematic_deviation(spectrums)
+        loggs.update({"uncertainty": uncert})
+        loggs.update({"rms": rms})
+        loggs.update({"mean": mean})
         # uncert.SetTitle(
         #     "Systematic uncertanity from yield extraction (RMS/mean)")
         # diff = Comparator(stop=self.plot,
