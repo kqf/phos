@@ -326,5 +326,8 @@ class CompositeNonlinearityScanOptions(object):
             particle,
             n_ranges=n_ranges,
             pt="config/spmc/pt.json")
-        self.analysis_data = Options(pt="config/spmc/pt.json")
+
+        self.analysis_data = Options(
+            particle=particle,
+            pt="config/spmc/pt.json")
         self.factor = 1.

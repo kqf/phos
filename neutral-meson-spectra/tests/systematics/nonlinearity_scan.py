@@ -13,7 +13,7 @@ from vault.datavault import DataVault
 
 def final_nonliearity_data(production, histname):
     return (
-        DataVault().input("data", listname="Phys", histname="MassPt"),
+        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
         (
             DataVault().input(production, "low", histname=histname),
             DataVault().input(production, "high", histname=histname),
@@ -21,12 +21,11 @@ def final_nonliearity_data(production, histname):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def nbins():
     return 9
 
 
-@pytest.mark.skip('')
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -36,8 +35,7 @@ def test_scan_nonlinearities(nbins):
     low = DataVault().input(prod, "low", inputs=histnames)
     high = DataVault().input(prod, "high", inputs=histnames)
 
-    options = CompositeNonlinearityScanOptions(
-        (low, high), nbins=nbins)
+    options = CompositeNonlinearityScanOptions("#pi^{0}", nbins=nbins)
     options.factor = 1.
 
     low, high = low.read_multiple(2), high.read_multiple(2)
@@ -46,19 +44,20 @@ def test_scan_nonlinearities(nbins):
     with open_loggs("calculating the scan") as loggs:
         chi2ndf = NonlinearityScan(options).transform(
             (
-                DataVault().input("data"),
+                DataVault().input("data", histname="MassPtSM0"),
                 mc_data
             ),
             loggs
         )
 
-    # TODO: Add this to the output
-    ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
-    chi2ndf.Write()
-    ofile.Close()
-    Comparator().compare(chi2ndf)
+        # TODO: Add this to the output
+        ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
+        chi2ndf.Write()
+        ofile.Close()
+        Comparator().compare(chi2ndf)
 
 
+@pytest.mark.skip('')
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
