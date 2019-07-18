@@ -9,7 +9,7 @@ from uncertainties.nonlinearity import CompositeNonlinearityUncertaintyOptions
 
 @pytest.fixture
 def nbins():
-    return 2
+    return 9
 
 # TODO: Look at generated histogram in different selection
 #       fix this asap
@@ -23,7 +23,7 @@ def test_nonlinearity_uncertainty(nbins):
     options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
     options.factor = 1.
 
-    with open_loggs() as loggs:
+    with open_loggs("nonlinearity uncertainty") as loggs:
         chi2ndf = Nonlinearity(options).transform(
             nonlinearity_scan_data(nbins, prod),
             loggs
