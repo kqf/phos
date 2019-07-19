@@ -6,7 +6,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
-from tools.unityfit import unityfit
+from tools.unityfit import UnityFitTransformer
 from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
@@ -47,6 +47,8 @@ def acceptance_data(particle="#pi^{0}"):
 
 
 class AcceptanceOptions(object):
+    title = "Acceptance uncertainty; p_{T}, GeV/c; Relateive error, %"
+
     def __init__(self, particle="#pi^{0}"):
         super(AcceptanceOptions, self).__init__()
         self.cyield = CompositeCorrectedYieldOptions(particle)
@@ -67,7 +69,6 @@ class SaveImagesTransformer(object):
 class Acceptance(TransformerBase):
     def __init__(self, options, plot=False):
         super(Acceptance, self).__init__(plot)
-        self.fit_range = options.fit_range
         unities = ReduceArgumentPipeline(
             ParallelPipeline([
                 ("dist 1", CorrectedYield(options.cyield)),
@@ -75,22 +76,12 @@ class Acceptance(TransformerBase):
                 ("dist 3", CorrectedYield(options.cyield)),
             ]),
             CorrectedYield(options.cyield),
-            self.fitratio
+            br.ratio
         )
 
         self.pipeline = Pipeline([
             ("unities", unities),
             ("images", SaveImagesTransformer()),
+            ("fit", UnityFitTransformer(options.title, options.fit_range)),
             ("max", MaxUnityHistogram()),
         ])
-
-    def fitratio(self, selected, standard, loggs=None):
-        ratio = br.ratio(selected, standard)
-        return ratio
-        # TODO: Move it to a separate transformer
-        # return unityfit(
-        #     ratio,
-        #     "acceptance_uncertainty",
-        #     "Acceptance uncertainty; p_{T}, GeV/c; Relateive error, %",
-        #     self.fit_range,
-        # )

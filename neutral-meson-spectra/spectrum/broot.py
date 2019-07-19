@@ -259,7 +259,7 @@ class BROOT(object):
             'Neither of hist1 and hist2 have BROOT properties')
 
     @classmethod
-    def ratio(klass, a, b, option="B"):
+    def ratio(klass, a, b, option="B", loggs=None):
         ratio = a.Clone('ratio' + a.GetName())
         klass.prop.copy_everything(ratio, a)
 
