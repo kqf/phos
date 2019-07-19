@@ -5,6 +5,7 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import Pipeline
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
 from tools.unityfit import unityfit
 from tools.feeddown import data_feeddown
 from vault.datavault import DataVault
@@ -57,6 +58,11 @@ class MaxUnityHistogram(object):
         return max(hists, key=lambda x: x.GetBinContent(1))
 
 
+class SaveImagesTransformer(object):
+    def transform(self, hists, loggs):
+        return Comparator().compare(hists, loggs=loggs)
+
+
 class Acceptance(TransformerBase):
     def __init__(self, options, plot=False):
         super(Acceptance, self).__init__(plot)
@@ -73,14 +79,17 @@ class Acceptance(TransformerBase):
 
         self.pipeline = Pipeline([
             ("unities", unities),
+            ("images", SaveImagesTransformer()),
             ("max", MaxUnityHistogram()),
         ])
 
     def fitratio(self, selected, standard, loggs=None):
         ratio = br.ratio(selected, standard)
-        return unityfit(
-            ratio,
-            "acceptance_uncertainty",
-            "Acceptance uncertainty; p_T, GeV/c; Relateive error, %",
-            self.fit_range,
-        )
+        return ratio
+        # TODO: Move it to a separate transformer
+        # return unityfit(
+        #     ratio,
+        #     "acceptance_uncertainty",
+        #     "Acceptance uncertainty; p_{T}, GeV/c; Relateive error, %",
+        #     self.fit_range,
+        # )
