@@ -27,6 +27,7 @@ class InvariantYield(TransformerBase):
     def _update_ytitle(cls, hist):
         title = "{}{}".format(cls._ytitle, hist.GetYaxis().GetTitle().strip())
         hist.GetYaxis().SetTitle(title)
+        hist.SetTitle("Invariant yields for LHC16 data")
         return hist
 
 

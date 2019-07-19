@@ -60,7 +60,8 @@ class MaxUnityHistogram(object):
 
 class SaveImagesTransformer(object):
     def transform(self, hists, loggs):
-        return Comparator().compare(hists, loggs=loggs)
+        Comparator().compare(hists, loggs=loggs)
+        return hists
 
 
 class Acceptance(TransformerBase):
