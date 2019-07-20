@@ -31,8 +31,8 @@ def test_simple(particle, data):
     analysis = Analysis(Options(particle=particle))
     with open_loggs("test the single analysis") as loggs:
         output = analysis.transform(data, loggs=loggs)
-        Comparator().compare(output.spectrum)
     assert len(output) > 0
+
 
 
 @pytest.mark.skip("")
