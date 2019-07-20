@@ -157,6 +157,7 @@ class PtFitter(object):
         # Doesn't fit and use default parameters for
         # width/mass, therefore this will give correct estimation
         if not self.opt.fit_mass_width:
+            print("Using pars", self.mass_pars)
             [fitquant.FixParameter(i, p) for i, p in enumerate(self.par)]
         # fitquant.FixParameter(0, par[0])
         # fitquant.FixParameter(0, )

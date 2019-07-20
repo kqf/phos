@@ -62,8 +62,8 @@ class PeakPositionWidthEstimator(TransformerBase):
         output.mass.GetXaxis().SetRangeUser(*pt_range)
         output.width.GetXaxis().SetRangeUser(*pt_range)
 
-        massf = self.restimator.fit_mass(output.mass)
-        widthf = self.restimator.fit_sigma(output.width)
+        massf = self.restimator.width_pipeline._fit(output.mass).fitf
+        widthf = self.restimator.mass_pipeline._fit(output.width).fitf
         return output.mass, massf, output.width, widthf
 
     def transform(self, data, loggs):

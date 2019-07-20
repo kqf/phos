@@ -1,7 +1,7 @@
 import json
 import ROOT
-from collections import namedtuple
-import pprint
+from recordclass import recordclass
+
 
 PDG_BR_RATIO = {
     "#pi^{0}": 0.9882,
@@ -15,7 +15,7 @@ def _option_hook(data, particle, ignore=("comment",)):
         return data[particle]
 
     data.update({"particle": particle})
-    return namedtuple('AnalysisOption', data.keys())(*data.values())
+    return recordclass('AnalysisOption', data.keys())(*data.values())
 
 
 def option(name, config, particle):
