@@ -136,7 +136,7 @@ class PtFitter(object):
 
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract([self.quantity], masses)
-        title = self.title.format(self.opt._particle)
+        title = self.title.format(self.opt.particle)
         target_quantity = analysis_output(
             self.quantity,
             values,

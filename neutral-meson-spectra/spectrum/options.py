@@ -1,10 +1,28 @@
 import json
 import ROOT
+from collections import namedtuple
+import pprint
 
 PDG_BR_RATIO = {
     "#pi^{0}": 0.9882,
     "#eta": 0.3931,
 }
+
+
+def _option_hook(data, particle, ignore=("comment",)):
+    data = {k: v for k, v in data.iteritems() if k not in ignore}
+    if particle in data:
+        return data[particle]
+
+    data.update({"particle": particle})
+    return namedtuple('AnalysisOption', data.keys())(*data.values())
+
+
+def option(name, config, particle):
+    with open(config) as f:
+        conf = json.load(
+            f, object_hook=lambda x: _option_hook(x, particle))
+    return conf
 
 
 class AnalysisOption(object):
@@ -20,10 +38,10 @@ class AnalysisOption(object):
         super(AnalysisOption, self).__init__()
         self._name = name
         self._config = config
-        self._particle = particle
+        self.particle = particle
         with open(self._config) as f:
             conf = json.load(f)
-        self._setup_configurations(conf, self._particle)
+        self._setup_configurations(conf, self.particle)
 
     def _setup_configurations(self, conf, particle):
         self._update_variables(conf)
@@ -46,7 +64,7 @@ class AnalysisOption(object):
             self.__class__.__name__,
             self._name,
             self._config,
-            self._particle,
+            self.particle,
             methods)
 
 
@@ -62,8 +80,7 @@ class Options(object):
                  ):
         super(Options, self).__init__()
 
-        self.calibration = AnalysisOption(
-            "RangeEstimator", calibration, particle)
+        self.calibration = option("RangeEstimator", calibration, particle)
 
         self.pt = AnalysisOption("DataSlicer", pt, particle)
         self.output = AnalysisOption("DataExtractor", output, particle)
