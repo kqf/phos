@@ -74,8 +74,6 @@ class MassFitter(object):
 
 class RangeEstimator(object):
 
-    _quantities = "mass", "width"
-    _output = "fit_mass", "fit_width"
     _titles = (
         "Parametrized {} mass position; p_{{T}}, GeV/c; m, GeV",
         "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
@@ -85,74 +83,35 @@ class RangeEstimator(object):
         super(RangeEstimator, self).__init__()
         self.opt = options
         self.output = None
+        self.width_pipeline = PtFitter(options,
+                                       "width",
+                                       self._titles[1],
+                                       self.opt.width_func,
+                                       self.opt.width_pars,
+                                       self.opt.width_names,
+                                       )
+
+        self.mass_pipeline = PtFitter(options,
+                                      "mass",
+                                      self._titles[0],
+                                      self.opt.mass_func,
+                                      self.opt.mass_pars,
+                                      self.opt.mass_names,
+                                      )
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract(
-            self._quantities,
-            masses
-        )
-
-        titles = {q: t.format(self.opt._particle)
-                  for q, t in zip(self._output, self._titles)}
-
-        self.output = analysis_output(
-            "MassWidthOutput",
-            values,
-            self._output,
-            masses[0].pt_interval,
-            masses2edges(masses),
-            titles,
-            ""
-        )
-
-        ranges = self._fit_ranges(self.output, loggs)
+        ranges = self._fit(masses, loggs)
         for mass, region in zip(masses, ranges):
             mass.integration_region = region
-
         return masses
 
-    def _fit_quantity(self, quant, func, par, names, pref):
-        fitquant = ROOT.TF1("fitquant" + pref, func)
-        fitquant.SetLineColor(46)
-
-        fitquant.SetParameters(*par)
-        fitquant.SetParNames(*names)
-
-        # Doesn't fit and use default parameters for
-        # width/mass, therefore this will give correct estimation
-        if not self.opt.fit_mass_width:
-            [fitquant.FixParameter(i, p) for i, p in enumerate(par)]
-
-        # fitquant.FixParameter(0, par[0])
-        # fitquant.FixParameter(0, )
-
-        quant.Fit(fitquant, "q")
-        quant.GetListOfFunctions().Add(fitquant)
-
-        # TODO: Now we mutate options. Should we do it in future?
-        # Update the parameters
-        for i in range(fitquant.GetNpar()):
-            par[i] = fitquant.GetParameter(i)
-
-        ndf = fitquant.GetNDF()
-        chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.
-        # print(chi2_ndf, self.opt.fit_range, par)
-        quant.SetTitle(
-            quant.GetTitle() + ", #chi^{2}/ndf" + " = {chi2:0.4g}".format(
-                chi2=chi2_ndf
-            )
-        )
-
-        # print([fitquant.GetParameter(i) for i, p in enumerate(par)])
-        quant.SetLineColor(37)
-        return fitquant
-
-    def _fit_ranges(self, quantities, loggs):
+    def _fit(self, masses, loggs):
         ROOT.gStyle.SetOptStat("")
-        mass, sigma = quantities.fit_mass, quantities.fit_width
+        mass = self.mass_pipeline.transform(masses, loggs)
+        sigma = self.width_pipeline.transform(masses, loggs)
 
-        massf = self.fit_mass(mass)
-        sigmaf = self.fit_sigma(sigma)
+        massf = mass.fitf
+        sigmaf = sigma.fitf
 
         def mass_range(pt):
             return (
@@ -160,26 +119,68 @@ class RangeEstimator(object):
                 massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
             )
 
-        loggs.update({"mass": mass, "sigma": sigma})
-
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
         return map(mass_range, pt_values)
 
-    def fit_mass(self, mass):
-        return self._fit_quantity(mass,
-                                  self.opt.mass_func,
-                                  self.opt.mass_pars,
-                                  self.opt.mass_names,
-                                  "mass"
-                                  )
 
-    def fit_sigma(self, sigma):
-        return self._fit_quantity(sigma,
-                                  self.opt.width_func,
-                                  self.opt.width_pars,
-                                  self.opt.width_names,
-                                  "width"
-                                  )
+class PtFitter(object):
+
+    def __init__(self, options, quantity, title, func, par, names):
+        super(PtFitter, self).__init__()
+        self.opt = options
+        self.quantity = quantity
+        self.title = title
+        self.func = func
+        self.par = par
+        self.names = names
+
+    def transform(self, masses, loggs):
+        values = SpectrumExtractor.extract([self.quantity], masses)
+        title = self.title.format(self.opt._particle)
+        target_quantity = analysis_output(
+            self.quantity,
+            values,
+            [self.quantity],
+            masses[0].pt_interval,
+            masses2edges(masses),
+            {self.quantity: title},
+            ""
+        )
+        return self._fit(target_quantity[0])
+
+    def _fit(self, hist):
+        fitquant = ROOT.TF1("fit_{}".format(self.quantity), self.func)
+        fitquant.SetParameters(*self.par)
+        fitquant.SetParNames(*self.names)
+        fitquant.SetLineColor(46)
+
+        # Doesn't fit and use default parameters for
+        # width/mass, therefore this will give correct estimation
+        if not self.opt.fit_mass_width:
+            [fitquant.FixParameter(i, p) for i, p in enumerate(self.par)]
+        # fitquant.FixParameter(0, par[0])
+        # fitquant.FixParameter(0, )
+
+        hist.Fit(fitquant, "q")
+        hist.GetListOfFunctions().Add(fitquant)
+
+        # TODO: Now we mutate options. Should we do it in future?
+        # Update the parameters
+        for i in range(fitquant.GetNpar()):
+            self.par[i] = fitquant.GetParameter(i)
+
+        ndf = fitquant.GetNDF()
+        chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.
+        # print(chi2_ndf, self.opt.fit_range, par)
+        hist.SetTitle(
+            hist.GetTitle() + ", #chi^{2}/ndf" + " = {chi2:0.4g}".format(
+                chi2=chi2_ndf
+            )
+        )
+        # print([fitquant.GetParameter(i) for i, p in enumerate(par)])
+        hist.SetLineColor(37)
+        hist.fitf = fitquant
+        return hist
 
 
 class DataExtractor(object):
