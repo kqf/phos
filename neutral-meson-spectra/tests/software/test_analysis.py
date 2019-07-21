@@ -34,7 +34,6 @@ def test_simple(particle, data):
     assert len(output) > 0
 
 
-
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [

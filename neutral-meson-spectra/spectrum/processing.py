@@ -141,6 +141,7 @@ class PtFitter(object):
         # Doesn't fit and use default parameters for
         # width/mass, therefore this will give correct estimation
         if not self.opt.fit:
+            print("Reached here", self.quantity, self.opt.pars)
             [fitquant.FixParameter(i, p) for i, p in enumerate(self.opt.pars)]
         # fitquant.FixParameter(0, par[0])
         # fitquant.FixParameter(0, )
@@ -151,7 +152,13 @@ class PtFitter(object):
         # TODO: Now we mutate options. Should we do it in future?
         # Update the parameters
         pars = [fitquant.GetParameter(i) for i in range(fitquant.GetNpar())]
-        self.opt.pars = pars
+        # print("Final", self.quantity, pars)
+        for i in range(fitquant.GetNpar()):
+            try:
+                self.opt.pars[i] = fitquant.GetParameter(i)
+            except:
+                import ipdb; ipdb.set_trace()
+        # self.opt.pars = pars
 
         ndf = fitquant.GetNDF()
         chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.

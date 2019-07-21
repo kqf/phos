@@ -62,8 +62,8 @@ class PeakPositionWidthEstimator(TransformerBase):
         output.mass.GetXaxis().SetRangeUser(*pt_range)
         output.width.GetXaxis().SetRangeUser(*pt_range)
 
-        massf = self.restimator.width_pipeline._fit(output.mass).fitf
-        widthf = self.restimator.mass_pipeline._fit(output.width).fitf
+        massf = self.restimator.mass_pipeline._fit(output.mass).fitf
+        widthf = self.restimator.width_pipeline._fit(output.width).fitf
         return output.mass, massf, output.width, widthf
 
     def transform(self, data, loggs):
@@ -100,7 +100,7 @@ class CompositeEfficiency(TransformerBase):
         ])
 
     def _stepname(self, ranges):
-        return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
+        return "{0} < p_{{T}} < {1} GeV/c".format(*ranges)
 
     def _reduce_function(self, options):
         if options.reduce_function != "standard":
