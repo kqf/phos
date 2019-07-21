@@ -86,17 +86,17 @@ class RangeEstimator(object):
         self.width_pipeline = PtFitter(options,
                                        "width",
                                        self._titles[1],
-                                       self.opt.width_func,
-                                       self.opt.width_pars,
-                                       self.opt.width_names,
+                                       self.opt.width.func,
+                                       self.opt.width.pars,
+                                       self.opt.width.names,
                                        )
 
         self.mass_pipeline = PtFitter(options,
                                       "mass",
                                       self._titles[0],
-                                      self.opt.mass_func,
-                                      self.opt.mass_pars,
-                                      self.opt.mass_names,
+                                      self.opt.mass.func,
+                                      self.opt.mass.pars,
+                                      self.opt.mass.names,
                                       )
 
     def transform(self, masses, loggs):
@@ -156,8 +156,7 @@ class PtFitter(object):
 
         # Doesn't fit and use default parameters for
         # width/mass, therefore this will give correct estimation
-        if not self.opt.fit_mass_width:
-            print("Using pars", self.mass_pars)
+        if not self.opt.mass.fit:
             [fitquant.FixParameter(i, p) for i, p in enumerate(self.par)]
         # fitquant.FixParameter(0, par[0])
         # fitquant.FixParameter(0, )

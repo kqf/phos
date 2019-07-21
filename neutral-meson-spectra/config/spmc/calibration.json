@@ -1,30 +1,41 @@
 {
-	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
-	"canvas": [0.001, 0.001],
+    "comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
+    "canvas": [0.001, 0.001],
     "dead": "",
     "#pi^{0}":
     {
-        "width_func": "sqrt([0] ** 2 + ([1] / x) ** 2 + ([2] * x) ** 2)",
-    	"width_pars": [0.004073830333585946, 0.008147508911668301, 0.000190360932936254419],
-    	"width_names": ["a", "b", "c"],
-        "mass_func": "TMath::Exp([0] * x) * [1] + [2]",
-    	"mass_pars": [-0.38271249157687853, 0.0014294353484205393, 0.13681699068487807],
-    	"mass_names": ["a", "b", "c"],
-        "nsigmas": 2,
-        "fit_range": [0, 20],
-        "fit_mass_width": "True"
-
+        "width": {
+            "func": "sqrt([0] ** 2 + ([1] / x) ** 2 + ([2] * x) ** 2)",
+            "pars": [0.004073830333585946, 0.008147508911668301, 0.000190360932936254419],
+            "names": ["a", "b", "c"],
+            "frange": [0, 20],
+            "fit": true
+        },
+        "mass": {
+            "func": "TMath::Exp([0] * x) * [1] + [2]",
+            "pars": [-0.38271249157687853, 0.0014294353484205393, 0.13681699068487807],
+            "names": ["a", "b", "c"],
+            "frange": [0, 20],
+            "fit": true
+        },
+        "nsigmas": 2
    },
   "#eta":
     {
-        "width_func": "[0] + [1] * x",
-        "width_pars": [0.2629952468139744, -2.331651575377617],
-        "width_names": ["a", "b", "c", "d"],
-        "mass_func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
-        "mass_pars": [-0.9383877408174801, -7.313302813528194, -102.88494983600319, 0.5590698449654556],
-        "mass_names": ["a", "b", "c", "d"],
-        "nsigmas": 2,
-        "fit_range": [0, 20],
-        "fit_mass_width": "True"
+        "width": {
+            "func": "[0] + [1] * x",
+            "pars": [0.2629952468139744, -2.331651575377617],
+            "names": ["a", "b", "c", "d"],
+            "frange": [0, 20],
+            "fit": true
+        },
+        "mass": {
+            "func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
+            "pars": [-0.9383877408174801, -7.313302813528194, -102.88494983600319, 0.5590698449654556],
+            "names": ["a", "b", "c", "d"],
+            "frange": [0, 20],
+            "fit": true
+        },
+        "nsigmas": 2
    }
 }
