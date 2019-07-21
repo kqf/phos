@@ -72,9 +72,11 @@ class PeakPositionWidthEstimator(TransformerBase):
         width_pars, _ = br.pars(widthf)
 
         for option in self.options.suboptions:
-            option.analysis.calibration.mass_pars = mass_pars
-            option.analysis.calibration.width_pars = width_pars
-            option.analysis.calibration.fit_mass_width = False
+            option.analysis.calibration.mass.pars = mass_pars
+            option.analysis.calibration.mass.fit = False
+
+            option.analysis.calibration.width.pars = width_pars
+            option.analysis.calibration.width.fit = False
 
         loggs.update({"mass": mass, "width": width})
         return data  # NB: Don't change the data
