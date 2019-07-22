@@ -18,10 +18,7 @@ class TransformerBase(object):
         self.plot = plot
 
     def transform(self, inputs, loggs):
-        output = self.pipeline.transform(inputs, loggs)
-        if output:
-            loggs.update({'output': output})
-        return output
+        return self.pipeline.transform(inputs, loggs)
 
 
 class ComparePipeline(TransformerBase):
@@ -144,6 +141,7 @@ class FunctionTransformer(object):
 
 
 class Pipeline(object):
+    _output = "output"
 
     def __init__(self, steps, disable=True):
         super(Pipeline, self).__init__()
@@ -155,6 +153,7 @@ class Pipeline(object):
         for name, step in tqdm(self.steps, disable=self.disable):
             local_logs = {}
             updated = step.transform(updated, local_logs)
+            local_logs[self._output] = updated
             loggs[name] = local_logs
         return updated
 

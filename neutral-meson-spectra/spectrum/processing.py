@@ -3,6 +3,7 @@ import ROOT
 
 from invariantmass import InvariantMass, RawMass, masses2edges
 from outputcreator import analysis_output, SpectrumExtractor
+from pipeline import Pipeline
 
 from ptplotter import MulipleOutput
 from mass import BackgroundEstimator, MixingBackgroundEstimator
@@ -73,14 +74,10 @@ class MassFitter(object):
 
 
 class RangeEstimator(object):
-
-    _titles = (
-    )
-
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
-        self.mass_pipeline = PtFitter(options.mass)
-        self.width_pipeline = PtFitter(options.width)
+        self.mass_pipeline = Pipeline([("mass", PtFitter(options.mass))])
+        self.width_pipeline = Pipeline([("width", PtFitter(options.width))])
         self.nsigmas = options.nsigmas
 
     def transform(self, masses, loggs):

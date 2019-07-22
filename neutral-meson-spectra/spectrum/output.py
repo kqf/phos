@@ -50,7 +50,8 @@ class AnalysisOutput(dict):
         with su.rfile(self._ofile(), mode="recreate") as ofile:
             flat = flatten(self, reducer="path")
             for k, v in tqdm.tqdm(flat.iteritems()):
-                save_item(ofile, k, v, stop=stop)
+                path = k.replace("output", "")
+                save_item(ofile, path, v, stop=stop)
 
     def _ofile(self):
         name = self.label.lower().replace(" ", "-")
