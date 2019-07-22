@@ -1,5 +1,6 @@
 from __future__ import print_function
 import ROOT
+import pandas as pd
 
 from invariantmass import InvariantMass, RawMass, masses2edges
 from outputcreator import analysis_output, SpectrumExtractor
@@ -14,6 +15,29 @@ from broot import BROOT as br
 class DataSlicer(object):
     def __init__(self, options):
         super(DataSlicer, self).__init__()
+        self.opt = options
+
+    def transform(self, inputs, loggs):
+        input_data = inputs.transform()
+
+        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
+        assert len(intervals) == len(self.opt.rebins), \
+            "Number of intervals is not equal " \
+            "to the number of rebin parameters" \
+            "edges = {} vs rebins = {}".format(
+                len(intervals),
+                len(self.opt.rebins)
+        )
+
+        def common_inputs(x, y):
+            return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
+
+        return map(common_inputs, intervals, self.opt.rebins)
+
+
+class DataSlicer2(object):
+    def __init__(self, options):
+        super(DataSlicer2, self).__init__()
         self.opt = options
 
     def transform(self, inputs, loggs):
@@ -76,8 +100,8 @@ class MassFitter(object):
 class RangeEstimator(object):
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
-        self.mass_pipeline = Pipeline([("mass", PtFitter(options.mass))])
-        self.width_pipeline = Pipeline([("width", PtFitter(options.width))])
+        self.mass = Pipeline([("mass", PtFitter(options.mass))])
+        self.width = Pipeline([("width", PtFitter(options.width))])
         self.nsigmas = options.nsigmas
 
     def transform(self, masses, loggs):
@@ -88,8 +112,8 @@ class RangeEstimator(object):
 
     def _fit(self, masses, loggs):
         ROOT.gStyle.SetOptStat("")
-        mass = self.mass_pipeline.transform(masses, loggs)
-        sigma = self.width_pipeline.transform(masses, loggs)
+        mass = self.mass.transform(masses, loggs)
+        sigma = self.width.transform(masses, loggs)
 
         massf = mass.fitf
         sigmaf = sigma.fitf

@@ -10,6 +10,26 @@ def masses2edges(masses):
     ))
 
 
+def read_mass(hist, pt_range, nrebin, pt_interval):
+    pt_label = '%.4g < p_{T} < %.4g' % pt_range
+    mass = br.project_range(hist, '_%d_%d', *pt_range)
+    mass.nevents = hist.nevents
+    title = "{} GeV/c ".format(pt_label)
+    title_stat = ' '
+    if mass.nevents > 0:
+        title_stat = "#events = {}".format(humanize.intword(mass.nevents))
+    title_axes_labels = '; M_{#gamma#gamma}, GeV/c^{2}'
+    mass.SetTitle(title + title_stat + title_axes_labels)
+    mass.SetLineColor(37)
+
+    if not mass.GetSumw2N():
+        mass.Sumw2()
+
+    if nrebin:
+        mass.Rebin(nrebin)
+    return mass
+
+
 class RawMass(object):
 
     def __init__(self, inhists, pt_range, nrebin, pt_interval):
@@ -22,22 +42,7 @@ class RawMass(object):
     def _extract_histogram(self, hist):
         if not hist:
             return None
-        mass = br.project_range(hist, '_%d_%d', *self.pt_range)
-        mass.nevents = hist.nevents
-        title = "%s GeV/c " % self.pt_label
-        title_stat = ' '
-        if mass.nevents > 0:
-            title_stat = "#events = {}".format(humanize.intword(mass.nevents))
-        title_axes_labels = '; M_{#gamma#gamma}, GeV/c^{2}'
-        mass.SetTitle(title + title_stat + title_axes_labels)
-        mass.SetLineColor(37)
-
-        if not mass.GetSumw2N():
-            mass.Sumw2()
-
-        if self.nrebin:
-            mass.Rebin(self.nrebin)
-        return mass
+        return read_mass(hist, self.pt_range, self.nrebin, self.pt_interval)
 
 
 class InvariantMass(object):

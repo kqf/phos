@@ -36,7 +36,6 @@ def spmc_data(raw_yield_data):
     )
 
 
-
 @pytest.mark.onlylocal
 def test_corrected_yield(pythia_data):
     estimator = CorrectedYield(
