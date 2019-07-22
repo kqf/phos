@@ -2,26 +2,27 @@ import json
 import ROOT
 from recordclass import recordclass
 
-
 PDG_BR_RATIO = {
     "#pi^{0}": 0.9882,
     "#eta": 0.3931,
 }
 
 
-def _option_hook(data, particle, ignore=("comment",)):
-    data = {k: v for k, v in data.iteritems() if k not in ignore}
-    if particle in data:
-        return data[particle]
+def _option_hook(particle, ignore=("comment",)):
+    def _hook(data):
+        data = {k: v for k, v in data.iteritems() if k not in ignore}
 
-    data.update({"particle": particle})
-    return recordclass('AnalysisOption', data.keys())(*data.values())
+        if particle in data:
+            return data[particle]
+
+        data["particle"] = particle
+        return recordclass('AnalysisOption', data.keys())(*data.values())
+    return _hook
 
 
 def option(name, config, particle):
     with open(config) as f:
-        conf = json.load(
-            f, object_hook=lambda x: _option_hook(x, particle))
+        conf = json.load(f, object_hook=_option_hook(particle))
     return conf
 
 
@@ -186,7 +187,7 @@ class CorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
-    def __init__(self, particle="", pt="config/data/pt.json"):
+    def __init__(self, particle="#pi^{0}", pt="config/data/pt.json"):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle, pt=pt)
         self.analysis.output.scalew_spectrum = True
@@ -215,7 +216,7 @@ class CompositeCorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}
     """
 
-    def __init__(self, particle="", n_ranges=2,
+    def __init__(self, particle="#pi^{0}", n_ranges=2,
                  pt="config/pt-corrected.json"):
         super(CompositeCorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle, pt=pt)
@@ -244,9 +245,10 @@ class FeeddownOptions(object):
         self.particle = particle
         self.feeddown = Options(particle=particle)
         # self.feeddown = Options(pt="config/pt-same.json")
-        # NB: Don"t fit the mass and width and
+        # NB: Don't fit the mass and width and
         #     use the same values from the data
-        self.feeddown.calibration.fit_mass_width = False
+        self.feeddown.calibration.mass.fit = False
+        self.feeddown.calibration.width.fit = False
         self.regular = Options(particle=particle)
         # self.regular = Options(pt="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
