@@ -75,16 +75,13 @@ class MassFitter(object):
 class RangeEstimator(object):
 
     _titles = (
-        "Parametrized {} mass position; p_{{T}}, GeV/c; m, GeV",
-        "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
     )
 
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
-        self.opt = options
-        self.output = None
-        self.mass_pipeline = PtFitter(options.mass, "mass", self._titles[0])
-        self.width_pipeline = PtFitter(options.width, "width", self._titles[1])
+        self.mass_pipeline = PtFitter(options.mass)
+        self.width_pipeline = PtFitter(options.width)
+        self.nsigmas = options.nsigmas
 
     def transform(self, masses, loggs):
         ranges = self._fit(masses, loggs)
@@ -102,8 +99,8 @@ class RangeEstimator(object):
 
         def mass_range(pt):
             return (
-                massf.Eval(pt) - self.opt.nsigmas * sigmaf.Eval(pt),
-                massf.Eval(pt) + self.opt.nsigmas * sigmaf.Eval(pt)
+                massf.Eval(pt) - self.nsigmas * sigmaf.Eval(pt),
+                massf.Eval(pt) + self.nsigmas * sigmaf.Eval(pt)
             )
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
@@ -112,28 +109,26 @@ class RangeEstimator(object):
 
 class PtFitter(object):
 
-    def __init__(self, options, quantity, title):
+    def __init__(self, options):
         super(PtFitter, self).__init__()
         self.opt = options
-        self.quantity = quantity
-        self.title = title
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract([self.quantity], masses)
-        title = self.title.format(self.opt.particle)
+        values = SpectrumExtractor.extract([self.opt.quantity], masses)
+        title = self.opt.title.format(self.opt.particle)
         target_quantity = analysis_output(
-            self.quantity,
+            self.opt.quantity,
             values,
-            [self.quantity],
+            [self.opt.quantity],
             masses[0].pt_interval,
             masses2edges(masses),
-            {self.quantity: title},
+            {self.opt.quantity: title},
             ""
         )
         return self._fit(target_quantity[0])
 
     def _fit(self, hist):
-        fitquant = ROOT.TF1("fit_{}".format(self.quantity), self.opt.func)
+        fitquant = ROOT.TF1("fit_{}".format(self.opt.quantity), self.opt.func)
         fitquant.SetParameters(*self.opt.pars)
         fitquant.SetParNames(*self.opt.names)
         fitquant.SetLineColor(46)
@@ -141,7 +136,6 @@ class PtFitter(object):
         # Doesn't fit and use default parameters for
         # width/mass, therefore this will give correct estimation
         if not self.opt.fit:
-            print("Reached here", self.quantity, self.opt.pars)
             [fitquant.FixParameter(i, p) for i, p in enumerate(self.opt.pars)]
         # fitquant.FixParameter(0, par[0])
         # fitquant.FixParameter(0, )
@@ -151,14 +145,8 @@ class PtFitter(object):
 
         # TODO: Now we mutate options. Should we do it in future?
         # Update the parameters
-        pars = [fitquant.GetParameter(i) for i in range(fitquant.GetNpar())]
-        # print("Final", self.quantity, pars)
         for i in range(fitquant.GetNpar()):
-            try:
-                self.opt.pars[i] = fitquant.GetParameter(i)
-            except:
-                import ipdb; ipdb.set_trace()
-        # self.opt.pars = pars
+            self.opt.pars[i] = fitquant.GetParameter(i)
 
         ndf = fitquant.GetNDF()
         chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.

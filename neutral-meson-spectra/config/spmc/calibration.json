@@ -9,7 +9,8 @@
             "pars": [0.004073830333585946, 0.008147508911668301, 0.000190360932936254419],
             "names": ["a", "b", "c"],
             "frange": [0, 20],
-            "quant": "width",
+            "quantity": "width",
+            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
             "fit": true
         },
         "mass": {
@@ -17,7 +18,8 @@
             "pars": [-0.38271249157687853, 0.0014294353484205393, 0.13681699068487807],
             "names": ["a", "b", "c"],
             "frange": [0, 20],
-            "quant": "mass",
+            "quantity": "mass",
+            "title": "Parametrized {} mass position; p_{{T}}, GeV/c; m, GeV",
             "fit": true
         },
         "nsigmas": 2
@@ -29,7 +31,8 @@
             "pars": [0.2629952468139744, -2.331651575377617],
             "names": ["a", "b"],
             "frange": [0, 20],
-            "quant": "width",
+            "quantity": "width",
+            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
             "fit": true
         },
         "mass": {
@@ -37,7 +40,8 @@
             "pars": [-0.9383877408174801, -7.313302813528194, -102.88494983600319, 0.5590698449654556],
             "names": ["a", "b", "c", "d"],
             "frange": [0, 20],
-            "quant": "mass",
+            "quantity": "mass",
+            "title": "Parametrized {} mass position; p_{{T}}, GeV/c; m, GeV",
             "fit": true
         },
         "nsigmas": 2
