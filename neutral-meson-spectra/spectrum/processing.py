@@ -1,6 +1,5 @@
 from __future__ import print_function
 import ROOT
-import pandas as pd
 
 from invariantmass import InvariantMass, RawMass, masses2edges
 from outputcreator import analysis_output, SpectrumExtractor
