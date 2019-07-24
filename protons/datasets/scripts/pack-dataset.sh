@@ -1,22 +1,19 @@
-archive="MC13TeV.tar.gz"
+archive=$1
+pattern=$2
 # pattern="LHC17?-pass1.txt"
-prefix="verified-"
 
 
 function main(){
-	# Clean the directory
-	rm $prefix*
-
 	# Add comas at the end of each file
-	for file in LHC18c13 LHC18c12 LHC17i4_2 LHC18a9 LHC18a8 LHC17l5 LHC17k4 LHC17h11; do
+	for file in $pattern; do
 		echo $file
-		sed '$!s/$/,/' $file.txt > tmp-$prefix$file
-		(tr -d '\n' < tmp-$prefix$file)>>$prefix$file.txt
-		rm tmp-$prefix$file
+		sed '$!s/$/, /' $file | sed 's/^0*//' > $file.tmp
+		(tr -d '\n' < $file.tmp)>>$file.verified
+		rm $file.tmp
 	done
 
-	tar czvf $archive $prefix*
-	rm $prefix*
+	tar czvf $archive $pattern.verified
+	rm $pattern.verified
 }
 
 main
