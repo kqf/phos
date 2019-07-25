@@ -1,6 +1,6 @@
 import click
-from phosio.unlist import unlist
-from phosio.remove2dir import remove2dir
+from phos.unlist import unlist
+from phos.remove2dir import remove2dir
 
 
 @click.command()
