@@ -11,7 +11,7 @@
             "default_selection": "Phys",
             "description": "Merged isolated bunches analysis with updated nonlinearity",
             "file": "input-data/data/LHC16/isolated_3/LHC16-isolated.root",
-            "hsum": "dd3828aad5e9bf8283ce3638c7f54a0c1bfbb60900f16c2eef1edd310de7f4b4",
+            "hsum": "e5b53bf940ba81669f2188330f5812a375ea7d7b47387e851c8fa11d3cfbe77e",
             "pt_range": [0, 20]
         },
         "latest": {
@@ -73,7 +73,7 @@
             "default_selection": "PhysEff",
             "description": "Production with the fixed nonlinearity",
             "file": "input-data/mc/pythia/final_nonlinearity_2/pythia8.root",
-            "hsum": "4ab83f22bde3a39638bcad2b74a78982f762cbacdff45f90bbf11e3ed03a0f58",
+            "hsum": "2dd471c0d3e800afc24a22527139ab7fcb6aa92ab83c0833db4bf3604a59b62b",
             "pt_range": [0, 20]
         }
     },
