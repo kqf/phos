@@ -5,7 +5,7 @@ from vault.datavault import DataVault
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("ledger", (
     "ledger.json",
-    "debug-ledger.json"
+    # "debug-ledger.json"
 ))
 def test_ledger(ledger):
     bad_datasets = DataVault(ledger).validate_all_datasets()
