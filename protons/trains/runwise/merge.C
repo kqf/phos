@@ -8,7 +8,7 @@ void ProcessRun(TSystemFile * file, TString dirname, const char * ext = ".root")
     // cout << "Processing " <<  << endl;
 
     TFile * ofile = TFile::Open(dirname + ".root", "update");
-    TList * histTrigL0 = (TList*) originaFile->Get("PHOSTriggerQAResultsL0");
+    TList * histTrigL0 = (TList*) originaFile->Get("PHOSCellsQA");
     histTrigL0->Write(fname.ReplaceAll(".root", ""), TObject::kSingleKey);
     ofile->Close();
 
