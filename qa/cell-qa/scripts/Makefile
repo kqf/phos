@@ -1,86 +1,23 @@
-# Order-only prerequisite is marked by "|" character
-# LHC17 data
-# TRAIN=345_20180305-1550_child
-# TRAIN=354_20180320-1238_child
-# TRAIN_CHILD=1
-# PERIOD=LHC17c
-
-# TRAIN_CHILD=2
-# PERIOD=LHC17e
-
-# TRAIN_CHILD=3
-# PERIOD=LHC17f
-
-# TRAIN_CHILD=4
-# PERIOD=LHC17g
-
-# TRAIN_CHILD=5
-# PERIOD=LHC17i
-
-# TRAIN_CHILD=6
-# PERIOD=LHC17j
-
-# TRAIN_CHILD=7
-# PERIOD=LHC17k
-
-# TRAIN_CHILD=8
-# PERIOD=LHC17l
-
-# TRAIN_CHILD=9
-# PERIOD=LHC17m
-
-# TRAIN_CHILD=10
-# PERIOD=LHC17o
-
-# TRAIN_CHILD=11
-# PERIOD=LHC17r
-
-# LHC16 data
-TRAIN=500_20181015-1127_child
-TRAIN=555_20181122-1020_child
-TRAIN_CHILD=2
-PERIOD=LHC16g
-# TRAIN_CHILD=3
-# PERIOD=LHC16h
-# TRAIN_CHILD=4
-# PERIOD=LHC16i
-# TRAIN_CHILD=5
-# PERIOD=LHC16j
-# TRAIN_CHILD=6
-# PERIOD=LHC16k
-# TRAIN_CHILD=7
-# PERIOD=LHC16l
-# TRAIN_CHILD=8
-# PERIOD=LHC16o
-# TRAIN_CHILD=9
-# PERIOD=LHC16p
-YEAR=2016
-NAME=corrected
-
-TARGETDIR=/alice/data/$(YEAR)/$(PERIOD)
-FULL_TRAIN=/pass1/PWGGA/GA_pp_AOD/$(TRAIN)_$(TRAIN_CHILD)
-# NAME=$(shell echo $(PERIOD) | tr A-Z a-z)
-# NAME=$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-triggerQA
-# FILE_NAME=TriggerQA.root
-FILE_NAME=CaloCellsQA.root
-DIRECTORY=../results/$(YEAR)/$(PERIOD)/$(NAME)
+TARGETDIR=/alice/data/$(year)/$(period)
+TRAIN=/pass1/AOD208/PWGGA/GA_pp_AOD/$(train)_child_$(child)
+DIRECTORY=../results/$(year)/$(period)/$(name)
 IM = $(DIRECTORY)/images
 
-allplots: | $(DIRECTORY)/CaloCellsQA.root
-	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root")'
-	@ mkdir -p $(IM)
-	@ mv *.pdf $(IM)
-	@ mv *.png $(IM)
-	@ mv *.move.* $(IM)
-	@ echo -e "\x07"
+# allplots: | $(DIRECTORY)/$(ofilename)
+# 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/$(ofilename)")'
+# 	@ mkdir -p $(IM)
+# 	@ mv *.pdf $(IM)
+# 	@ mv *.png $(IM)
+# 	@ mv *.move.* $(IM)
+# 	@ echo -e "\x07"
 
-$(DIRECTORY)/CaloCellsQA.root: | $(DIRECTORY)
+$(DIRECTORY)/$(ofilename): | $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
-	./download_trains.sh $(TARGETDIR) $(DIRECTORY) $(FULL_TRAIN)
+	./download_trains.sh $(TARGETDIR) $(DIRECTORY) $(TRAIN)
 	@echo -e "\x07"
 
 trigger: | $(DIRECTORY)
@@ -88,14 +25,14 @@ trigger: | $(DIRECTORY)
 
 
 badmap:
-	root -l -b -q  'saveBadMap.C("$(PERIOD)")'
-	@if [ -f BadMap_$(PERIOD).root ]; then mv BadMap_$(PERIOD).root ../results/$(YEAR)/$(PERIOD).root; fi
+	root -l -b -q  'saveBadMap.C("$(period)")'
+	@if [ -f BadMap_$(period).root ]; then mv BadMap_$(period).root ../results/$(year)/$(period).root; fi
 	
-initmap: ../results/$(PERIOD)/REFERENCE_BadMap_$(PERIOD).root
-	root -l -b -q  'saveBadMap.C("$(PERIOD)", "$<")'
+initmap: ../results/$(period)/REFERENCE_BadMap_$(period).root
+	root -l -b -q  'saveBadMap.C("$(period)", "$<")'
 
-compare: | ../results/$(PERIOD)/goodruns.csv
-	$(ROOT_PYTHON) explore-treding-plots.py ../results/$(PERIOD) $(IM)
+compare: | ../results/$(period)/goodruns.csv
+	$(ROOT_PYTHON) explore-treding-plots.py ../results/$(period) $(IM)
 	
 inspect-cells: $(CELLS_TO_INSPECT)
 	@# assuming that CELLS_TO_INSPECT is a bash varaible
@@ -161,8 +98,8 @@ images:
 	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
 	@convert $(IM)/pi0fits.pdf $(IM)/pi0fits.pdf
 
-	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(NAME).png
+	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(name).png
 	@convert $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/pi0.png
 
-	@if [ -z $$ALICE_ENV ]; then pdfunite $(IM)/hNEventsPerRunIndex.pdf $(IM)/ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf $(IM)/hPi0NumRuns.pdf $(IM)/hPi0MassSigmaRuns.pdf $(IM)/$(NAME).pdf ;fi	
+	@if [ -z $$ALICE_ENV ]; then pdfunite $(IM)/hNEventsPerRunIndex.pdf $(IM)/ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf $(IM)/hPi0NumRuns.pdf $(IM)/hPi0MassSigmaRuns.pdf $(IM)/$(name).pdf ;fi	
 	@echo -e "\a"
