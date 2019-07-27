@@ -8,10 +8,10 @@ void saveBadMap(const char * period = "", TString filename = "")
 	gROOT->SetBatch();
 	// gStyle->SetOptStat(0);
 
-	gROOT->LoadMacro("../../../protons/setup/values_for_dataset.h+");
+	gROOT->LoadMacro("../../../protons/setup/read_csv.h+");
 
 	std::vector<Int_t> v;
-	values_for_dataset(v, TString(period).Contains("16") ? "BadCells_LHC16" : "", "../../../protons/datasets/");
+	read_csv(v, TString(period).Contains("16") ? "BadCells_LHC16" : "", "../../../protons/datasets/");
 
 	Int_t nexc = v.size();
 	Int_t * excells = new Int_t[nexc];
