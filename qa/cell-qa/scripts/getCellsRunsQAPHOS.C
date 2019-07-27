@@ -73,10 +73,10 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
 
   // this sets excluded cells
   TString period(TString(infile)(11, 6));
-  gROOT->LoadMacro("../../../protons/setup/values_for_dataset.h+");
+  gROOT->LoadMacro("../../../protons/setup/read_csv.h+");
 
   std::vector<Int_t> v;
-  values_for_dataset(v, period.Contains("16") ? "BadCells_LHC16" : "", "../../../protons/datasets/");
+  read_csv(v, "BadCells_LHC16", "../../../protons/datasets/");
 
   nexc = v.size();
   excells = new Int_t[nexc];
@@ -166,11 +166,10 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // (the last argument is number of bins in this distribution)
   DrawRunsDistribution(nruns, runNumbers, 100);
 
-  DrawPi0Total(nruns, runNumbers,  1);
-  DrawPi0Total(nruns, runNumbers,  2);
-  DrawPi0Total(nruns, runNumbers,  3);
-  DrawPi0Total(nruns, runNumbers,  4);
-
+  DrawPi0Total(nruns, runNumbers, 1);
+  DrawPi0Total(nruns, runNumbers, 2);
+  DrawPi0Total(nruns, runNumbers, 3);
+  DrawPi0Total(nruns, runNumbers, 4);
 
   // ... and exclude runs with number of events < 1k.
 
@@ -282,8 +281,10 @@ void getCellsRunsQAPHOS(char *infile = "LHC11e_cpass1_CellQA_PHI7.root", Bool_t 
   // PrintDeadNoisyCells(hBadCellMapPrimary, 0.1, 0.5);      // in 10-50% of runs
 
   // visualize dead/noisy cell map for EMCAL/PHOS; requires aliroot
-  if(gROOT->GetClass("AliPHOSGeometry"))
-    DrawOccupancy(nruns, runNumbers, hBadCellMapPrimary, "hDeadNoisyCellsOccupancy");
+
+  // Don't draw occupancy for these cells
+  // if(gROOT->GetClass("AliPHOSGeometry"))
+  //   DrawOccupancy(nruns, runNumbers, hBadCellMapPrimary, "hDeadNoisyCellsOccupancy");
 
   // EMCAL: print full information on missing/noisy parts (e.g. RCUs); requires aliroot
   //   PrintEMCALProblematicBlocks(nruns, runNumbers, hBadCellMapPrimary);
@@ -1910,7 +1911,12 @@ void DrawPi0Total(Int_t nruns, Int_t runNumbers[], Int_t sm = -1)
 	    }
 	    if(!h)
 	    {
-	    	h = (TH1 *) tmp->Clone(Form("totMass_sm%i", sm));
+        int nbins = tmp->GetNbinsX();
+        Double_t amin = tmp->GetXaxis()->GetXmin();
+        Double_t amax = tmp->GetXaxis()->GetXmax(); 
+        h = new TH1F(Form("totMass_sm%i", sm), "", nbins, amin, amax);
+        // This doesn't work due to root mismatch
+        // h = (TH1F *) tmp->Clone(Form("totMass_sm%i", sm));
 	    }
 
 	    if(h->GetEntries() == tmp->GetEntries()) continue;
@@ -1926,12 +1932,11 @@ void DrawPi0Total(Int_t nruns, Int_t runNumbers[], Int_t sm = -1)
   h->SetYTitle("Entries");
   h->SetTitleOffset(1.7,"Y");
 
-  TCanvas *c1;
-  if (sm >= 0) c1 = new TCanvas(Form("hMassSM%i",sm),Form("hMassSM%i",sm), 700, 500);
-  // else         c1 = new TCanvas(Form("hPi0Slice_run%i",run),Form("hPi0Slice_run%i",run), 400,400);
 
-  gPad->SetLeftMargin(0.14);
-  gPad->SetRightMargin(0.06);
+  TCanvas * canvas = new TCanvas(Form("hMassSM%i",sm),Form("hMassSM%i",sm), 700, 500);
+  // else         canvas = new TCanvas(Form("hPi0Slice_run%i",run),Form("hPi0Slice_run%i",run), 400,400);
+  canvas->SetLeftMargin(0.14);
+  canvas->SetRightMargin(0.06);
   h->Draw();
 
   Double_t nraw, enraw, mass, emass, sigma, esigma;
@@ -1951,9 +1956,9 @@ void DrawPi0Total(Int_t nruns, Int_t runNumbers[], Int_t sm = -1)
     backgr->Draw("same");
   }
 
-  c1->Update();
-  c1->SaveAs(TString(c1->GetName()) + ".png");
-  c1->SaveAs(TString(c1->GetName()) + ".pdf");
+  canvas->Update();
+  canvas->SaveAs(TString(canvas->GetName()) + ".png");
+  canvas->SaveAs(TString(canvas->GetName()) + ".pdf");
 }
 //_________________________________________________________________________
 void DrawPi0Slice(Int_t run, Int_t sm = -1)

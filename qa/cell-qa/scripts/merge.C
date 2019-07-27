@@ -1,65 +1,10 @@
-void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cname = "PHOSCellsQA") 
-{
-	TH1::AddDirectory(kFALSE);
-	TList * files = TSystemDirectory(directory, directory).GetListOfFiles();
-	if (!files) return;
-
-	TList * output = new TList();
-	output->SetOwner(kTRUE);
-
-	for(Int_t i = 0; i < files->GetEntries(); ++i)
-	{
-		TSystemFile * file = dynamic_cast<TSystemFile *>(files->At(i));
-		TString fname = file->GetName();
-		if (file->IsDirectory() || !fname.EndsWith(".root")) continue;
-
-		fname = directory + "/" + fname;
-		cout << fname << endl;
-		merge_file(fname, output);
-	}
-
-    TFile fout2(directory + "/" + oname + "Single.root", "recreate");
-    output->Write(cname, TObject::kSingleKey);
-    fout2.cd();
-    fout2.Write();
-    fout2.Close();
-
-    TFile fout1(directory + "/" + oname + ".root", "recreate");
-    fout1.cd();
-    output->Write();
-    fout1.Write();
-    fout1.Close();
-}
-
-void merge_file(const char * filename, TList * output)
-{
-	gROOT->Clear();
-	if(!output) return;
-
-
-	TFile file(filename, "read");
-	TList * input = dynamic_cast<TList *>(get_container(file));
-
-	if(!input)
-	{
-		cout << "Container is not a list!!!" << endl;
-		TObjArray * arrinput = dynamic_cast<TObjArray *>(get_container(file));
-		if(!arrinput)
-			cout << "Container is not an ObjArray either!!!" << endl;
-
-		cout << " Reached here " << endl;
-		add_list(output, arrinput);
-		cout << " Reached here  << " << endl;
-		file.Close();
-	}
-
-	add_list(output, input);
-	file.Close();
-}
-
+void add_object(TList * output, TObject * entry);
 template <typename T>
 void add_list(TList * output, T * input)
 {
+	if (!input)
+		return;
+
 	for(Int_t i = 0; i < input->GetEntries(); ++i)
 	{
 		TObject * entry = input->At(i);
@@ -105,4 +50,61 @@ TObject * get_container(TFile & file)
 	cout << "Warning: you might want to add your container to the list of possible containers" << endl;
 	file.ls();
 	return 0;
+}
+
+void merge_file(const char * filename, TList * output)
+{
+	gROOT->Clear();
+	if(!output) return;
+
+
+	TFile file(filename, "read");
+	TList * input = dynamic_cast<TList *>(get_container(file));
+
+	if(!input)
+	{
+		cout << "Container is not a list!!!" << endl;
+		TObjArray * arrinput = dynamic_cast<TObjArray *>(get_container(file));
+		if(!arrinput)
+			cout << "Container is not an ObjArray either!!!" << endl;
+
+		add_list(output, arrinput);
+		file.Close();
+	}
+
+	add_list(output, input);
+	file.Close();
+}
+
+void merge(TString directory = "..", TString oname = "CaloCellsQA", TString cname = "PHOSCellsQA") 
+{
+	TH1::AddDirectory(kFALSE);
+	TList * files = TSystemDirectory(directory, directory).GetListOfFiles();
+	if (!files) return;
+
+	TList * output = new TList();
+	output->SetOwner(kTRUE);
+
+	for(Int_t i = 0; i < files->GetEntries(); ++i)
+	{
+		TSystemFile * file = dynamic_cast<TSystemFile *>(files->At(i));
+		TString fname = file->GetName();
+		if (file->IsDirectory() || !fname.EndsWith(".root")) continue;
+
+		fname = directory + "/" + fname;
+		cout << fname << endl;
+		merge_file(fname, output);
+	}
+
+    TFile fout2(directory + "/" + oname + "Single.root", "recreate");
+    output->Write(cname, TObject::kSingleKey);
+    fout2.cd();
+    fout2.Write();
+    fout2.Close();
+
+    TFile fout1(directory + "/" + oname + ".root", "recreate");
+    fout1.cd();
+    output->Write();
+    fout1.Write();
+    fout1.Close();
 }
