@@ -34,3 +34,14 @@ make compare
 # To get list of absolute id's of bad channels from ROOT file 
 make init-map
 ```
+
+## Run the multiple datasets
+```
+# Use ROOT6 environment to merge the datasets to avoid io issues
+alice
+./run-all.sh
+
+# Use ROOT5 environment to make the plots
+alice-debug
+makeoption=images ./run-all.sh
+```

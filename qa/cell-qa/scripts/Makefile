@@ -3,17 +3,17 @@ TRAIN=/pass1/AOD208/PWGGA/GA_pp_AOD/$(train)_child_$(child)
 DIRECTORY=../results/$(year)/$(period)/$(name)
 IM = $(DIRECTORY)/images
 
-# allplots: | $(DIRECTORY)/$(ofilename)
-# 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/$(ofilename)")'
-# 	@ mkdir -p $(IM)
-# 	@ mv *.pdf $(IM)
-# 	@ mv *.png $(IM)
-# 	@ mv *.move.* $(IM)
-# 	@ echo -e "\x07"
-
 $(DIRECTORY)/$(ofilename): | $(DIRECTORY)
 	# Merge all outputs
 	root -l -b -q 'merge.C("$(DIRECTORY)")'
+
+allplots: | $(DIRECTORY)/$(ofilename)
+	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/$(ofilename)")'
+	@ mkdir -p $(IM)
+	@ mv *.pdf $(IM)
+	@ mv *.png $(IM)
+	@ mv *.move.* $(IM)
+	@ echo -e "\x07"
 
 $(DIRECTORY):
 	mkdir -p $(DIRECTORY)
@@ -21,7 +21,7 @@ $(DIRECTORY):
 	@echo -e "\x07"
 
 trigger: | $(DIRECTORY)
-	root -l -b -q  merge.C'("$(DIRECTORY)", "TriggerQA" , "L0")'
+	root -l -b -q  merge.C'("$(DIRECTORY)")'
 
 
 badmap:
@@ -62,14 +62,14 @@ save-iteration:
 images:
 	# clean the directory befor starting
 	# don't merge multiple times
-	make clean
+	# make clean
 
 	# Run QA in full mode
 	mkdir -p fits
 	root -l -b -q  getCellsRunsQAPHOS.C'("$(DIRECTORY)/CaloCellsQA.root", kFALSE)'
 
-	# Extract map of bad channels
-	make badmap
+	@# Extract map of bad channels
+	@# make badmap
 
 	mkdir -p $(IM)
 	mv *.pdf $(IM)
@@ -78,7 +78,7 @@ images:
 	rm -rf $(IM)/fits
 	mv fits $(IM)
 
-	@  # Hidden operations, don't spoil your output
+	@# Hidden operations, don't spoil your output
 
 	@montage -tile 4x1 $(IM)/hPi0Slice*.png  -geometry +0+0 $(IM)/pi0fits.png
 	@montage -tile 4x1 $(IM)/hPi0Slice*.pdf  -geometry +0+0 $(IM)/pi0fits.pdf
@@ -95,11 +95,16 @@ images:
 	@convert -resize 999x333 $(IM)/totmass4.png $(IM)/totmass4.png
 	@convert $(IM)/totmass4.pdf $(IM)/totmass4.pdf
 
-	@convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
-	@convert $(IM)/pi0fits.pdf $(IM)/pi0fits.pdf
+	# @convert -resize 999x333 $(IM)/pi0fits.png $(IM)/pi0fits.png
+	# @convert $(IM)/pi0fits.pdf $(IM)/pi0fits.pdf
 
-	@convert $(IM)/hNEventsPerRunIndex.png $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' $(IM)/hPi0NumRuns.png $(IM)/hPi0MassSigmaRuns.png $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/$(name).png
-	@convert $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/pi0.png
+	@convert $(IM)/hNEventsPerRunIndex.png \
+			 $(IM)/'ClusterAveragesRuns_NC1_Emin=*_corr4accept.png' \
+			 $(IM)/hPi0NumRuns.png \
+			 $(IM)/hPi0MassSigmaRuns.png \
+			 $(IM)/totmass.png \
+			 -append $(IM)/$(name).png
+	# @convert $(IM)/pi0fits.png $(IM)/totmass.png -append $(IM)/pi0.png
 
 	@if [ -z $$ALICE_ENV ]; then pdfunite $(IM)/hNEventsPerRunIndex.pdf $(IM)/ClusterAveragesRuns_NC1_Emin=*_corr4accept.pdf $(IM)/hPi0NumRuns.pdf $(IM)/hPi0MassSigmaRuns.pdf $(IM)/$(name).pdf ;fi	
 	@echo -e "\a"
