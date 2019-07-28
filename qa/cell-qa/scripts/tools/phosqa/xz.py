@@ -1,9 +1,9 @@
-# Convert cell X,Z to absID without geometry.
+# Convert cell (X, Z) to absID without geometry.
 # Be careful in case if gemetry changes.
 
 import ROOT
 import json
-import sys
+import click
 
 
 def inspect_modules(hists):
@@ -78,11 +78,7 @@ class Converter(object):
         return map(self.convert_cell, *zip(*cells))
 
 
-def main():
-    if len(sys.argv) < 2:
-        print 'Usage: ./convert-xz-to-abs.py cells.json'
-    Converter(sys.argv[1]).convert()
-
-
-if __name__ == '__main__':
-    main()
+@click.command()
+@click.option('--filename', required=True)
+def main(filename):
+    Converter(filename).convert()
