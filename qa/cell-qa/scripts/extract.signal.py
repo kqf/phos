@@ -1,19 +1,23 @@
-#!/usr/bin/python
-
-import numpy as np
 import ROOT
+import click
+import numpy as np
 
 ROOT.TH1.AddDirectory(False)
 ROOT.gStyle.SetOptStat('erm')
 
-def wait(name = 'default', draw = True, save = False):
+
+def wait(name='default', draw=True, save=False):
     canvas = ROOT.gROOT.FindObject('c1')
     canvas.Update()
     name = name.replace(' ', '_')
-    if save: canvas.SaveAs('results/' + name+ '.pdf')
+    if save:
+        canvas.SaveAs('results/' + name + '.pdf')
 
-    canvas.Connect("Closed()", "TApplication", ROOT.gApplication, "Terminate()")
-    if draw: ROOT.gApplication.Run(True)
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    if draw:
+        ROOT.gApplication.Run(True)
+
 
 def fit_function(h):
     f = ROOT.TF1('f1', 'gaus(0)', -2 * 1e-8, 2 * 1e8)
@@ -25,10 +29,10 @@ def fit_function(h):
 class Analyser2D(object):
     def __init__(self, hist):
         super(Analyser2D, self).__init__()
-        self.hist = hist 
+        self.hist = hist
 
     @staticmethod
-    def from_file(filename, i = 0):
+    def from_file(filename, i=0):
         inlist = ROOT.TFile.Open(filename, 'r').TimeTender
         histogram = inlist.FindObject('hClusterEvsTM%d' % i)
         return Analyser2D(histogram)
@@ -56,17 +60,15 @@ class Analyser2D(object):
         resolution.Draw('ap')
         wait()
 
-
     def estimate_cut(self):
-        s = 200
-        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'Y')
+        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25 * 1e-6, 'Y')
 
         data, initial = [], self.hist.Integral()
         for i in np.linspace(1e3, 6e4, 20):
             x = self.trim(i) / initial
             time = self.hist.ProjectionY()
-            time.SetTitle('ToF distribution in all modules %d; t, s' %i)
-            time.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'X')
+            time.SetTitle('ToF distribution in all modules %d; t, s' % i)
+            time.SetAxisRange(-0.25 * 1e-6, 0.25 * 1e-6, 'X')
             f = fit_function(time)
             data.append([x, f.GetParameter(1), f.GetParameter(2)])
             time.Draw('same')
@@ -75,7 +77,7 @@ class Analyser2D(object):
 
     def check_distribution(self):
         s = 200
-        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'Y')
+        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25 * 1e-6, 'Y')
 
         canvas = ROOT.TCanvas('c1', 'test', 4 * s, 3 * s)
         canvas.Divide(2, 1)
@@ -87,7 +89,7 @@ class Analyser2D(object):
         a, b = axis.FindBin(2), axis.GetNbins() - 1
         time = self.hist.ProjectionY("_py", a, b)
         time.SetTitle('ToF distribution in all modules; t, s')
-        time.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'X')
+        time.SetAxisRange(-0.25 * 1e-6, 0.25 * 1e-6, 'X')
 
         f = fit_function(time)
         time.Draw('same')
@@ -95,28 +97,32 @@ class Analyser2D(object):
         wait()
 
     def get_images(self):
-        s = 200
-        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'Y')
+        self.hist.SetAxisRange(-0.25 * 1e-6, 0.25 * 1e-6, 'Y')
         self.hist.Draw('colz')
 
         axis = self.hist.GetXaxis()
         a, b = axis.FindBin(2), axis.GetNbins() - 1
         time = self.hist.ProjectionY("_py", a, b)
         time.SetTitle('ToF distribution in all modules; t, s')
-        time.SetAxisRange(-0.25 * 1e-6, 0.25* 1e-6, 'X')
+        time.SetAxisRange(-0.25 * 1e-6, 0.25 * 1e-6, 'X')
         return self.hist, time
 
 
-def main():
-    analyzer = Analyser2D.from_file("LHC16k-pass1.root")
+@click.command()
+@click.option('--filename', required=True)
+def distribution(filename):
+    analyzer = Analyser2D.from_file(filename)
     analyzer.check_distribution()
 
-def main():
-    analyzers = [Analyser2D.from_file("LHC16k-pass1.root", i + 1) for i in range(4)]
+
+@click.command()
+@click.option('--filename', required=True)
+def main(filename):
+    analyzers = [Analyser2D.from_file(filename, i + 1) for i in range(4)]
     energy, proj = zip(*[a.get_images() for a in analyzers])
 
     scale, rows = 8, 1
-    canvas = ROOT.TCanvas('c1', 'Canvas', 128 * scale / rows , 96 * scale)
+    canvas = ROOT.TCanvas('c1', 'Canvas', 128 * scale / rows, 96 * scale)
     canvas.Divide(2, 2)
 
     for i, e in enumerate(energy):
@@ -132,14 +138,14 @@ def main():
     legend.SetTextSize(0.04)
 
     ROOT.gStyle.SetOptStat(0)
-    canvas = ROOT.TCanvas('c2', 'Canvas', 128 * scale / rows , 96 * scale)
+    canvas = ROOT.TCanvas('c2', 'Canvas', 128 * scale / rows, 96 * scale)
     canvas.cd()
     proj[0].Draw()
     colors = [37, 46, 8, 1]
     for i, (p, c) in enumerate(zip(proj, colors)):
         canvas.SetLogy()
         canvas.SetGridx()
-        p.SetAxisRange(-0.15 * 1e-6, 0.15* 1e-6, 'X')
+        p.SetAxisRange(-0.15 * 1e-6, 0.15 * 1e-6, 'X')
         p.Draw('same')
         p.SetLineColor(c)
         legend.AddEntry(p, 'SM %d' % (i + 1))
@@ -150,9 +156,5 @@ def main():
     raw_input('...')
 
 
-
-
-
 if __name__ == '__main__':
     main()
-
