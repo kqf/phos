@@ -82,8 +82,7 @@ class Options(object):
         super(Options, self).__init__()
 
         self.calibration = option("RangeEstimator", calibration, particle)
-
-        self.pt = AnalysisOption("DataSlicer", pt, particle)
+        self.pt = option("DataSlicer", pt, particle)
         self.output = AnalysisOption("DataExtractor", output, particle)
         self.output.scalew_spectrum = True
 
