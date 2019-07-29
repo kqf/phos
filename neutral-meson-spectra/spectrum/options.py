@@ -85,9 +85,8 @@ class Options(object):
         self.pt = option("DataSlicer", pt, particle)
         self.output = option("DataExtractor", output, particle)
         self.invmass = option("MassFitter", invmass, particle)
-        self.invmass.signal = AnalysisOption("signal", signal, particle)
-        self.invmass.background = AnalysisOption("background",
-                                                 background, particle)
+        self.invmass.signal = option("signal", signal, particle)
+        self.invmass.background = option("background", background, particle)
 
         self.particle = particle
 
