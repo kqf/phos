@@ -84,7 +84,7 @@ class Options(object):
         self.calibration = option("RangeEstimator", calibration, particle)
         self.pt = option("DataSlicer", pt, particle)
         self.output = option("DataExtractor", output, particle)
-        self.invmass = AnalysisOption("MassFitter", invmass, particle)
+        self.invmass = option("MassFitter", invmass, particle)
         self.invmass.signal = AnalysisOption("signal", signal, particle)
         self.invmass.background = AnalysisOption("background",
                                                  background, particle)
