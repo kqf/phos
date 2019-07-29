@@ -134,7 +134,7 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles, label):
         quant: output_histogram(
             ptrange,
             quant,
-            titles[quant],
+            titles[str(quant)],
             label,
             ptedges,
             datapoints

@@ -8,15 +8,15 @@ PDG_BR_RATIO = {
 }
 
 
-def _option_hook(particle, ignore=("comment",)):
+def _option_hook(particle, ignore=("comment", "#pi^{0}", "#eta", "electrons")):
     def _hook(data):
-        data = {k: v for k, v in data.iteritems() if k not in ignore}
+        params = {k: v for k, v in data.iteritems() if k not in ignore}
 
         if particle in data:
-            return data[particle]
+            params = dict(params, **data[particle]._asdict())
 
-        data["particle"] = particle
-        return recordclass('AnalysisOption', data.keys())(*data.values())
+        params["particle"] = particle
+        return recordclass('AnalysisOption', params.keys())(*params.values())
     return _hook
 
 
@@ -83,9 +83,7 @@ class Options(object):
 
         self.calibration = option("RangeEstimator", calibration, particle)
         self.pt = option("DataSlicer", pt, particle)
-        self.output = AnalysisOption("DataExtractor", output, particle)
-        self.output.scalew_spectrum = True
-
+        self.output = option("DataExtractor", output, particle)
         self.invmass = AnalysisOption("MassFitter", invmass, particle)
         self.invmass.signal = AnalysisOption("signal", signal, particle)
         self.invmass.background = AnalysisOption("background",

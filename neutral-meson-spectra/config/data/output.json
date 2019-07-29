@@ -1,6 +1,7 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
     "output_order": ["mass", "width", "spectrum", "chi2", "nmesons", "cball_alpha", "cball_n", "background_chi2", "background_cball_alpha", "background_cball_n"],
+    "scalew_spectrum": true,
     "#pi^{0}":
     {
         "output":
