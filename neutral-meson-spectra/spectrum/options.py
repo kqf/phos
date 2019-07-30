@@ -72,8 +72,8 @@ class AnalysisOption(object):
 class Options(object):
     def __init__(self,
                  particle="#pi^{0}",
-                 calibration="config/data/calibration.json",
                  pt="config/data/pt.json",
+                 calibration="config/data/calibration.json",
                  invmass="config/data/mass-fit.json",
                  signal="config/data/cball.json",
                  background="config/data/cball.json",
@@ -87,7 +87,6 @@ class Options(object):
         self.invmass = option("MassFitter", invmass, particle)
         self.invmass.signal = option("signal", signal, particle)
         self.invmass.background = option("background", background, particle)
-
         self.particle = particle
 
 

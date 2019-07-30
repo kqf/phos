@@ -49,7 +49,8 @@ def props(conffile):
 @pytest.mark.parametrize("name, target", [
     ("calibration", lambda x: Options(calibration=x).calibration),
     ("output", lambda x: Options(output=x).output),
-    ("invmass", lambda x: Options(invmass=x).invmass),
+    ("pt", lambda x: Options(pt=x).pt),
+    # ("invmass", lambda x: Options(invmass=x).invmass),
 ])
 def test_check_properties(name, target, props, conffile):
     # Test keys
