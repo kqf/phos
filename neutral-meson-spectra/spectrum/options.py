@@ -20,53 +20,10 @@ def _option_hook(particle, ignore=("comment", "#pi^{0}", "#eta", "electrons")):
     return _hook
 
 
-def option(name, config, particle):
+def option(config, particle):
     with open(config) as f:
         conf = json.load(f, object_hook=_option_hook(particle))
     return conf
-
-
-class AnalysisOption(object):
-    _ignore_attributes = "#eta", "#pi^{0}", "comment", "electrons"
-
-    _particles = {
-        "pi0": "#pi^{0}",
-        "eta": "#eta",
-        "electrons": "electrons"
-    }
-
-    def __init__(self, name, config, particle):
-        super(AnalysisOption, self).__init__()
-        self._name = name
-        self._config = config
-        self.particle = particle
-        with open(self._config) as f:
-            conf = json.load(f)
-        self._setup_configurations(conf, self.particle)
-
-    def _setup_configurations(self, conf, particle):
-        self._update_variables(conf)
-
-        if particle not in conf:
-            return
-
-        conf = conf[particle]
-        self._update_variables(conf)
-
-    def _update_variables(self, vardict):
-        items = (k for k in vardict if k not in self._ignore_attributes)
-        for n in items:
-            setattr(self, n, vardict[n])
-
-    def __repr__(self):
-        methods = ", ".join([s for s in dir(self) if not s.startswith('_')])
-        msg = '{}("{}", "{}", "{}"): {}'
-        return msg.format(
-            self.__class__.__name__,
-            self._name,
-            self._config,
-            self.particle,
-            methods)
 
 
 class Options(object):
@@ -80,13 +37,12 @@ class Options(object):
                  output="config/data/output.json",
                  ):
         super(Options, self).__init__()
-
-        self.calibration = option("RangeEstimator", calibration, particle)
-        self.pt = option("DataSlicer", pt, particle)
-        self.output = option("DataExtractor", output, particle)
-        self.invmass = option("MassFitter", invmass, particle)
-        self.invmass.signal = option("signal", signal, particle)
-        self.invmass.background = option("background", background, particle)
+        self.calibration = option(calibration, particle)
+        self.pt = option(pt, particle)
+        self.output = option(output, particle)
+        self.invmass = option(invmass, particle)
+        self.invmass.signal = option(signal, particle)
+        self.invmass.background = option(background, particle)
         self.particle = particle
 
 
