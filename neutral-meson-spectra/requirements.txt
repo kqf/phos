@@ -9,3 +9,4 @@ flatten_dict
 humanize
 lazy-object-proxy
 recordclass
+six

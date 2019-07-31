@@ -3,11 +3,11 @@ import ROOT
 import os
 import copy
 import array
-import urllib2
 import tqdm
-from collections import namedtuple
 import numpy as np
 
+from six.moves import urllib
+from collections import namedtuple
 from repoze.lru import lru_cache
 
 ROOT.TH1.AddDirectory(False)
@@ -183,15 +183,15 @@ class BROOT(object):
             link = 'https://www.hepdata.net/download/table/{0}/Table1/1/root'
             try:
                 download = link
-                response = urllib2.urlopen(download.format(record))
+                response = urllib.urlopen(download.format(record))
 
                 with open(ofilename, 'wb') as f:
                     f.write(response.read())
-            except urllib2.HTTPError, e:
+            except urllib.HTTPError as e:
                 raise IOError('HTTP error {0}\nInvalid record {1}\n{2}'
                               .format(e.code, record, download.format(record)))
 
-            except urllib2.URLError, e:
+            except urllib.URLError as e:
                 raise IOError('URL error {0}\nInvalid record {1}\n{2}'
                               .format(e.code, record, download.format(record)))
 

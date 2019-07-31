@@ -18,7 +18,7 @@ def prepare_directory(name):
     )
 
     if not os.path.isdir(path):
-        os.makedirs(path, 0755)
+        os.makedirs(path, 0o755)
     return name
 
 
