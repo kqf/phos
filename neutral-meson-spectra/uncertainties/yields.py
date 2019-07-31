@@ -35,7 +35,7 @@ class YieldExtractioinUncertanityOptions(object):
             # "wide": [0.08, 0.24]
         }
         self.backgrounds = ["pol1", "pol2"]
-        self.signals = ["CrystalBall", "Gaus"]
+        self.signals = ["CrystalBall"]
         self.nsigmas = [2, 3]
         self.cyield = cyield
 
@@ -64,7 +64,6 @@ class YieldExtractioin(TransformerBase):
 
                         options = Options()
                         options.calibration.dead = True
-                        options.pt.label = label
                         options.calibration.nsigmas = nsigmas
                         options.invmass.signal.fitf = par
                         options.invmass.signal.background = bckgr
