@@ -1,14 +1,13 @@
 import ROOT
-
-import os
-import copy
 import array
-import tqdm
-import numpy as np
-
-from six.moves import urllib
+import copy
+import os
 from collections import namedtuple
+
+import numpy as np
+import tqdm
 from repoze.lru import lru_cache
+from six.moves import urllib
 
 ROOT.TH1.AddDirectory(False)
 

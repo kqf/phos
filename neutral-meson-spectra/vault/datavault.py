@@ -1,5 +1,6 @@
-import json
 import hashlib
+import json
+
 from spectrum.input import Input, NoMixingInput
 
 

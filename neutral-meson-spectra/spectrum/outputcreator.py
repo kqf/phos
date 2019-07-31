@@ -1,7 +1,8 @@
 import ROOT
 import collections as coll
 from array import array
-from broot import BROOT as br
+
+from spectrum.broot import BROOT as br
 
 
 class SpectrumExtractor(object):

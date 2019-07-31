@@ -3,10 +3,10 @@ from __future__ import print_function
 import array
 from collections import defaultdict
 
-from tqdm import tqdm
 from flatten_dict import flatten, unflatten
+from tqdm import tqdm
 
-import sutils as st
+import spectrum.sutils as st
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 

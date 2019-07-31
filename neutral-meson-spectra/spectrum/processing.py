@@ -1,14 +1,14 @@
 from __future__ import print_function
 import ROOT
 
-from invariantmass import InvariantMass, RawMass, masses2edges
-from outputcreator import analysis_output, SpectrumExtractor
-from pipeline import Pipeline
+from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
+from spectrum.outputcreator import analysis_output, SpectrumExtractor
+from spectrum.pipeline import Pipeline
 
-from ptplotter import MulipleOutput
-from mass import BackgroundEstimator, MixingBackgroundEstimator
-from mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
-from broot import BROOT as br
+from spectrum.ptplotter import MulipleOutput
+from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
+from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
+from spectrum.broot import BROOT as br
 
 
 class DataSlicer(object):

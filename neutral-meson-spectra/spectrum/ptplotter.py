@@ -1,7 +1,9 @@
 import ROOT
-import sutils as su
-from broot import BROOT as br
+
 from operator import mul
+
+import spectrum.sutils as su
+from spectrum.broot import BROOT as br
 
 
 class MassesPlot(object):

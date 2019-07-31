@@ -1,4 +1,5 @@
 from math import pi
+
 from spectrum.analysis import Analysis
 from spectrum.options import CorrectedYieldOptions
 from spectrum.efficiency import Efficiency

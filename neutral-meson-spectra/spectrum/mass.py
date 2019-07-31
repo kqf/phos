@@ -1,7 +1,7 @@
 from __future__ import print_function
 import ROOT
-import spectrum.sutils as su
 
+import spectrum.sutils as su
 from spectrum.broot import BROOT as br
 
 

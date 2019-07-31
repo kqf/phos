@@ -1,14 +1,14 @@
-from pipeline import TransformerBase
-from options import EfficiencyOptions, CompositeEfficiencyOptions
-from .input import SingleHistInput
-from analysis import Analysis
-from pipeline import Pipeline, HistogramSelector
-from pipeline import OutputDecorator
-from pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
-from pipeline import ComparePipeline
-from pipeline import RebinTransformer
-from broot import BROOT as br
-from processing import RangeEstimator
+from spectrum.pipeline import TransformerBase
+from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
+from spectrum.input import SingleHistInput
+from spectrum.analysis import Analysis
+from spectrum.pipeline import Pipeline, HistogramSelector
+from spectrum.pipeline import OutputDecorator
+from spectrum.pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
+from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import RebinTransformer
+from spectrum.broot import BROOT as br
+from spectrum.processing import RangeEstimator
 
 # NB: This test is to compare different efficiencies
 #     estimated from different productions

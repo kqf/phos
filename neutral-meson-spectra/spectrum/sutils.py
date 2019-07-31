@@ -1,8 +1,8 @@
+import ROOT
+
 import os
 from collections import Iterable
 from contextlib import contextmanager
-
-import ROOT
 
 
 @contextmanager
