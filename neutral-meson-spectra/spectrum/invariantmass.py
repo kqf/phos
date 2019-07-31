@@ -1,7 +1,7 @@
 from __future__ import print_function
 import humanize
-from parametrisation import PeakParametrisation
-from broot import BROOT as br
+from spectrum.parametrisation import PeakParametrisation
+from spectrum.broot import BROOT as br
 
 
 def masses2edges(masses):

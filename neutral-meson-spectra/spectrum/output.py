@@ -3,12 +3,12 @@ from __future__ import print_function
 import ROOT
 import tqdm
 from contextlib import contextmanager
-
-import sutils as su
-from comparator import Comparator
 from flatten_dict import flatten
-from ptplotter import MulipleOutput
-from vis import Visualizer, MultipleVisualizer
+
+import spectrum.sutils as su
+from spectrum.ptplotter import MulipleOutput
+from spectrum.vis import Visualizer, MultipleVisualizer
+from spectrum.comparator import Comparator
 
 # TODO: Introduce more log items for compare etc.
 #

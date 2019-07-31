@@ -1,9 +1,10 @@
-from processing import DataSlicer, RangeEstimator, DataExtractor, MassFitter
-from processing import InvariantMassExtractor
-from options import Options, OptionsSPMC, CompositeOptions
-from pipeline import Pipeline, ParallelPipeline, ReducePipeline
-from pipeline import TransformerBase
-from broot import BROOT as br
+from spectrum.processing import DataSlicer, RangeEstimator
+from spectrum.processing import DataExtractor, MassFitter
+from spectrum.processing import InvariantMassExtractor
+from spectrum.options import Options, OptionsSPMC, CompositeOptions
+from spectrum.pipeline import Pipeline, ParallelPipeline, ReducePipeline
+from spectrum.pipeline import TransformerBase
+from spectrum.broot import BROOT as br
 
 
 class SimpleAnalysis(TransformerBase):

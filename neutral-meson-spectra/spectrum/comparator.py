@@ -1,5 +1,5 @@
-from vis import VisHub
-from broot import BROOT as br
+from spectrum.vis import VisHub
+from spectrum.broot import BROOT as br
 
 
 class Comparator(object):

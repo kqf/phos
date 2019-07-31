@@ -1,15 +1,15 @@
 from math import pi
-from analysis import Analysis
-from options import CorrectedYieldOptions
-from efficiency import Efficiency
-from pipeline import TransformerBase
-from pipeline import Pipeline, HistogramSelector, OutputDecorator
-from pipeline import ParallelPipeline, ReducePipeline
-from pipeline import ComparePipeline
-from pipeline import OutputFitter
-from pipeline import HistogramScaler
+from spectrum.analysis import Analysis
+from spectrum.options import CorrectedYieldOptions
+from spectrum.efficiency import Efficiency
+from spectrum.pipeline import TransformerBase
+from spectrum.pipeline import Pipeline, HistogramSelector, OutputDecorator
+from spectrum.pipeline import ParallelPipeline, ReducePipeline
+from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import OutputFitter
+from spectrum.pipeline import HistogramScaler
+from spectrum.broot import BROOT as br
 from tools.feeddown import FeeddownEstimator
-from broot import BROOT as br
 
 
 class InvariantYield(TransformerBase):

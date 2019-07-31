@@ -7,8 +7,8 @@ from tqdm import tqdm
 from flatten_dict import flatten, unflatten
 
 import sutils as st
-from broot import BROOT as br
-from comparator import Comparator
+from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
 
 
 class TransformerBase(object):

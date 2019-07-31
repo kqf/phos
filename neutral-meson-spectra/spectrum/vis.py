@@ -2,8 +2,8 @@ from __future__ import print_function
 import ROOT
 import numpy as np
 
-from broot import BROOT as br
-import sutils as su
+import spectrum.sutils as su
+from spectrum.broot import BROOT as br
 
 
 def info(hist):
