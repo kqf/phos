@@ -4,6 +4,7 @@ import array
 from collections import defaultdict
 
 from flatten_dict import flatten, unflatten
+import six
 from tqdm import tqdm
 
 import spectrum.sutils as st
@@ -168,10 +169,10 @@ def merge(data):
     output = defaultdict(list)
     for label, ddict in data:
         flat = flatten(ddict)
-        for path, value in flat.iteritems():
+        for path, value in six.iteritems(flat):
             output[path].append((label, value))
     # Merged item should have at least len 2, otherwise it's useless
-    filtered = {k: v for k, v in output.iteritems() if len(v) > 1}
+    filtered = {k: v for k, v in six.iteritems(output) if len(v) > 1}
     return unflatten(filtered)
 
 

@@ -3,6 +3,7 @@ import array
 import copy
 import os
 from collections import namedtuple
+import six
 
 import numpy as np
 import tqdm
@@ -416,7 +417,7 @@ class BROOT(object):
     @classmethod
     def hist2dict(klass, hist):
         binsdict = klass.bins(hist)._asdict()
-        return {k: list(v) for k, v in binsdict.iteritems()}
+        return {k: list(v) for k, v in six.iteritems(binsdict)}
 
     @classmethod
     def systematic_deviation(klass, histograms):

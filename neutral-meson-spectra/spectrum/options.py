@@ -1,5 +1,8 @@
-import json
 import ROOT
+
+import json
+import six
+
 from recordclass import recordclass
 
 PDG_BR_RATIO = {
@@ -10,7 +13,7 @@ PDG_BR_RATIO = {
 
 def _option_hook(particle, ignore=("comment", "#pi^{0}", "#eta", "electrons")):
     def _hook(data):
-        params = {k: v for k, v in data.iteritems() if k not in ignore}
+        params = {k: v for k, v in six.iteritems(data) if k not in ignore}
 
         if particle in data:
             params = dict(params, **data[particle]._asdict())

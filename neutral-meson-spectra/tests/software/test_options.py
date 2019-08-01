@@ -2,6 +2,7 @@ from __future__ import print_function
 import pytest
 import json
 import os
+import six
 
 from spectrum.options import Options
 
@@ -59,7 +60,7 @@ def test_check_properties(name, target, props, conffile):
         res = opt in dir(target(conffile))
         assert res, msg.format(opt)
 
-    for opt, val in props.iteritems():
+    for opt, val in six.iteritems(props):
         msg = "The value of key {{}} differs in {} configuration".format(name)
         res = target(conffile).__dict__[opt]
         assert res == val, msg.format(opt, res)

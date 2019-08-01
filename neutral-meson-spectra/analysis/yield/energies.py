@@ -1,5 +1,6 @@
 import pytest
 import json
+import six
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline
@@ -25,7 +26,7 @@ class HepdataInput(TransformerBase):
 def datasets():
     with open("config/different-energies.json") as f:
         data = json.load(f)
-    labels, links = zip(*data.iteritems())
+    labels, links = zip(*six.iteritems(data))
     steps = [(l, HepdataInput()) for l in labels]
     return steps, links
 

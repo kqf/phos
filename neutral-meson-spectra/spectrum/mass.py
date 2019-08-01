@@ -1,5 +1,6 @@
 from __future__ import print_function
 import ROOT
+import six
 
 import spectrum.sutils as su
 from spectrum.broot import BROOT as br
@@ -133,7 +134,7 @@ class ZeroBinsCleaner(object):
                 su.in_range(h.GetBinCenter(i), mass.mass_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
-        for i, c in centers.iteritems():
+        for i, c in six.iteritems(centers):
             res = fitf.Eval(c)
             if res < 0:
                 # msg  = 'Warning zero bin found at '

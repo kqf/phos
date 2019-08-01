@@ -3,6 +3,7 @@ import ROOT
 
 from contextlib import contextmanager
 
+import six
 import tqdm
 from flatten_dict import flatten
 
@@ -51,7 +52,7 @@ class AnalysisOutput(dict):
     def plot(self, stop=False):
         with su.rfile(self._ofile(), mode="recreate") as ofile:
             flat = flatten(self, reducer="path")
-            for k, v in tqdm.tqdm(flat.iteritems()):
+            for k, v in tqdm.tqdm(six.iteritems(flat)):
                 path = k.replace("output", "")
                 save_item(ofile, path, v, stop=stop)
 

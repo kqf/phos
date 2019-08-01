@@ -1,5 +1,6 @@
 import json
 import sys
+import six
 import numpy as np
 
 
@@ -20,13 +21,10 @@ def validate(output, path,
         nominal = nominal[p]
 
     msg = '\n\n'
-    # for label, actual in output.iteritems():
-    #     msg += 'Nominal values:\n'
-    #     msg += '"{}": {}\n'.format(label, nominal[label])
     msg += 'Actual values:\n'
-    for label, actual in output.iteritems():
+    for label, actual in six.iteritems(output):
         msg += '"{}": {},\n'.format(label, dump_dict(actual))
 
-    for label, actual in output.iteritems():
+    for label, actual in six.iteritems(output):
         print('Checking {}'.format(label))
         np.testing.assert_almost_equal(actual, nominal[label], err_msg=msg)

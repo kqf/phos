@@ -1,3 +1,4 @@
+import six
 import tqdm
 from spectrum.broot import BROOT as br
 from spectrum.options import Options
@@ -55,7 +56,7 @@ class YieldExtractioin(TransformerBase):
             len(self.options.signals) *
             len(self.options.nsigmas)
         )
-        for flab, frange in self.options.mass_range.iteritems():
+        for flab, frange in six.iteritems(self.options.mass_range):
             for bckgr in self.options.backgrounds:
                 for marker, par in enumerate(self.options.signals):
                     for nsigmas in self.options.nsigmas:
