@@ -57,7 +57,7 @@ def write_histograms(filename, selection, histnames):
     ofile = ROOT.TFile(filename, 'recreate')
     tlist.Write(selection, 1)
     ofile.Close()
-    return map(br.clone, hists)
+    return list(map(br.clone, hists))
 
 
 @pytest.fixture(scope="module")

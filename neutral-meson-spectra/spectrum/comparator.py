@@ -40,7 +40,7 @@ class Comparator(object):
                                 comparef=None, **kwargs):
         if not comparef:
             comparef = self.vi.compare_visually
-        comparef(map(br.ratio, hists, baselines), **kwargs)
+        comparef(list(map(br.ratio, hists, baselines)), **kwargs)
 
     def compare_ratios(self, hists, baseline,
                        comparef=None, logy=False, **kwargs):
@@ -49,11 +49,13 @@ class Comparator(object):
 
         def ratio(x):
             return br.ratio(x, baseline)
-        comparef(map(ratio, hists))
+        comparef(list(map(ratio, hists)))
 
     def compare_set_of_histograms(self, l, comparef=None, **kwargs):
         if not comparef:
             comparef = self.vi.compare_visually
 
         result = [comparef(hists, **kwargs) for hists in zip(*l)]
-        return result if len(result) > 1 else result[0]
+        if len(result) > 1:
+            return result[0]
+        return result
