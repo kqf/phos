@@ -1,6 +1,5 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.output import open_loggs
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
@@ -25,38 +24,44 @@ def yield_data(data):
     return data, data_feeddown()
 
 
-SPMC_PION = Proxy(
-    lambda: (
+def pion_data():
+    return (
         DataVault().input("single #pi^{0}", "low", "PhysEff"),
         DataVault().input("single #pi^{0}", "high", "PhysEff"),
     )
-)
 
 
-SPMC_ETA = Proxy(
-    lambda: (
+def eta_data():
+    return (
         DataVault().input("single #eta", "low", "PhysEff"),
         DataVault().input("single #eta", "high", "PhysEff"),
     )
-)
+
+
+@pytest.fixture
+def mc(particle):
+    return {
+        "#pi^{0}": pion_data(),
+        "#eta": eta_data(),
+    }.get(particle)
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle, spmc", [
-    ("#pi^{0}", SPMC_PION),
-    ("#eta", SPMC_ETA),
+    "#pi^{0}",
+    "#eta",
 ])
-def test_simple(particle, spmc, data, yield_data):
+def test_simple(particle, mc, data, yield_data):
     estimator = Analysis(Options(particle=particle))
     with open_loggs("simple test") as loggs:
         meson = estimator.transform(data, loggs)
 
         estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
-        efficiency = estimator.transform(spmc, loggs)
+        efficiency = estimator.transform(mc, loggs)
 
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(particle="#pi^{0}")
         )
-        corr_meson = estimator.transform((yield_data, spmc), loggs)
+        corr_meson = estimator.transform((yield_data, mc), loggs)
         Comparator().compare([meson, efficiency, corr_meson])

@@ -1,7 +1,6 @@
 import ROOT
 import pytest  # noqa
 
-from lazy_object_proxy import Proxy
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.comparator import Comparator
@@ -34,9 +33,8 @@ def tcmf():
     return tcm
 
 
-PION_INPUTS = Proxy(
-    lambda:
-    (
+def pion_data():
+    return (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
@@ -46,10 +44,10 @@ PION_INPUTS = Proxy(
             DataVault().input("single #pi^{0}", "high", "PhysEff"),
         )
     )
-)
-ETA_INPUTS = Proxy(
-    lambda:
-    (
+
+
+def eta_data():
+    return (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(dummy=True)
@@ -59,16 +57,24 @@ ETA_INPUTS = Proxy(
             DataVault().input("single #eta", "high"),
         )
     )
-)
+
+
+@pytest.fixture
+def data(particle):
+    return {
+        "#pi^{0}": pion_data(),
+        "#eta": eta_data(),
+
+    }.get(particle)
 
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.skip("Don't something is wrong with tcm formula")
-@pytest.mark.parametrize("particle, data", [
-    ("#pi^{0}", PION_INPUTS),
-    # ("#eta", ETA_INPUTS),
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
 ])
 def test_tsallis_fit(particle, data, tsallisf):
     estimator = CorrectedYield(
@@ -86,9 +92,9 @@ def test_tsallis_fit(particle, data, tsallisf):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle, data", [
-    ("#pi^{0}", PION_INPUTS),
-    # ("#eta", ETA_INPUTS),
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
 ])
 def test_tcm_fit(particle, data, tcmf):
     estimator = CorrectedYield(

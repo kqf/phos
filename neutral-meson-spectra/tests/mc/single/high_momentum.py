@@ -1,18 +1,18 @@
 import pytest
 
-from lazy_object_proxy import Proxy
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
 from spectrum.output import open_loggs
 from spectrum.options import EfficiencyOptions
 
-DATA_ETA = Proxy(
-    lambda: DataVault().input("single #eta", "high", "PhysEff")
-)
-DATA_PION = Proxy(
-    lambda: DataVault().input("single #pi^{0}", "high", "PhysEff")
-)
+
+@pytest.fixture
+def data(particle):
+    return {
+        "#eta": DataVault().input("single #eta", "high", "PhysEff"),
+        "#pi^{0}": DataVault().input("single #pi^{0}", "high", "PhysEff"),
+    }.get(particle)
 
 
 @pytest.fixture
@@ -39,10 +39,7 @@ def options(edges, rebins):
 
 
 @pytest.mark.onlylocal
-@pytest.mark.parametrize("particle, data", [
-    ("#pi^{0}", DATA_ETA),
-    ("#eta", DATA_PION),
-])
+@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
 def test_high_momentum(particle, data, options):
     with open_loggs("test high momentum {}".format(particle)) as loggs:
         efficiency = Efficiency(options).transform(data, loggs)

@@ -7,6 +7,5 @@ pytest
 tqdm
 flatten_dict
 humanize
-lazy-object-proxy
 recordclass
 six

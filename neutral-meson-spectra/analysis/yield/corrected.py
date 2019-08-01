@@ -1,5 +1,5 @@
 import pytest  # noqa
-from lazy_object_proxy import Proxy
+
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.output import open_loggs
@@ -7,9 +7,9 @@ from spectrum.output import open_loggs
 from vault.datavault import DataVault
 from tools.feeddown import data_feeddown
 
-PION_INPUTS = Proxy(
-    lambda:
-    (
+
+def pion_data():
+    return (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(),
@@ -19,10 +19,10 @@ PION_INPUTS = Proxy(
             DataVault().input("single #pi^{0}", "high", "PhysEff"),
         )
     )
-)
-ETA_INPUTS = Proxy(
-    lambda:
-    (
+
+
+def eta_data():
+    return (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(dummy=True)
@@ -32,15 +32,23 @@ ETA_INPUTS = Proxy(
             DataVault().input("single #eta", "high"),
         )
     )
-)
+
+
+@pytest.fixture
+def data(particle):
+    return {
+        "#pi^{0}": pion_data(),
+        "#eta": eta_data(),
+
+    }.get(particle)
 
 
 @pytest.mark.interactive
 @pytest.mark.parametrize("data, particle", [
-    (PION_INPUTS, "#pi^{0}"),
-    (ETA_INPUTS, "#eta"),
+    "#pi^{0}",
+    "#eta",
 ])
-def test_corrected_yield_for_pi0(data, particle):
+def test_corrected_yield_for_pi0(particle, data):
     with open_loggs("corrected yield {}".format(particle)) as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
