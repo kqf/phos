@@ -118,7 +118,8 @@ class MultipleVisualizer(object):
             h.DrawCopy('colz same ' + h.GetOption())
             legend.AddEntry(h, h.label)
 
-        self._drawable(first_hist, hists)
+        template = first_hist.Clone("{}_template".format(first_hist.GetName()))
+        self._drawable(template, hists)
         # Don't draw legend for TH2 histograms
         if not issubclass(type(first_hist), ROOT.TH2):
             legend.Draw('same')
@@ -132,28 +133,28 @@ class MultipleVisualizer(object):
         # This shouldn't return anything
         # return first_hist
 
-    def _drawable(self, first_hist, hists):
-        if issubclass(type(first_hist), ROOT.TH2):
+    def _drawable(self, template, hists):
+        if issubclass(type(template), ROOT.TH2):
             option = "colz"
             maxbins = max(
-                first_hist.GetNbinsX(),
-                first_hist.GetNbinsY()
+                template.GetNbinsX(),
+                template.GetNbinsY()
             )
             if maxbins < 20:
                 option += " text"
-            first_hist.Draw(option)
-            return first_hist
+            template.Draw(option)
+            return template
 
-        stack = ROOT.THStack("test", first_hist.GetTitle())
-        map(stack.Add, hists)
+        stack = ROOT.THStack("test", template.GetTitle())
+        list(map(stack.Add, hists))
         stack.Draw("colz nostack")
-        stack.GetXaxis().SetTitle(first_hist.GetXaxis().GetTitle())
-        stack.GetYaxis().SetTitle(first_hist.GetYaxis().GetTitle())
+        stack.GetXaxis().SetTitle(template.GetXaxis().GetTitle())
+        stack.GetYaxis().SetTitle(template.GetYaxis().GetTitle())
         stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
-        stack.GetXaxis().SetRangeUser(*br.hist_range(first_hist))
+        stack.GetXaxis().SetRangeUser(*br.hist_range(template))
         stack.GetXaxis().SetMoreLogLabels(
-            first_hist.GetXaxis().GetMoreLogLabels()
+            template.GetXaxis().GetMoreLogLabels()
         )
         self.cache.append(stack)
         self.cache.extend(hists)

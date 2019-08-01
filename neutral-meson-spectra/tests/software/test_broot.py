@@ -52,7 +52,7 @@ def write_histograms(filename, selection, histnames):
 
     tlist = ROOT.TList()
     tlist.SetOwner(True)
-    map(tlist.Add, hists)
+    list(map(tlist.Add, hists))
 
     ofile = ROOT.TFile(filename, 'recreate')
     tlist.Write(selection, 1)
@@ -177,7 +177,7 @@ def test_projection_saves_area(stop):
     # NB: Bin according to this sequence https://oeis.org/A000124
     #     so the bin width of a projection hist always increases
     #
-    carter, ncarter = lambda n: n * (n + 1) / 2 + 1, 16
+    carter, ncarter = lambda n: int(n * (n + 1) / 2 + 1), 16
 
     # TODO: figure out what is why do we should nbinsx, not nbinsy
     #       this contradicts regular logic
@@ -189,8 +189,8 @@ def test_projection_saves_area(stop):
         ROOT.TH2F,
         "refhistProjArea",  # Name
         "Testing updated ProjectX method for BH2F",   # Title
-        nbinsx, startx, stopx, nbinsy,
-        starty, stopy,  # Xbins, Ybins
+        nbinsx, startx, stopx,  # Xbins
+        nbinsy, starty, stopy,  # Ybins
         label="test prop",  # Label
         logy=1, logx=0, priority=3  # Misc properties
     )
@@ -200,7 +200,7 @@ def test_projection_saves_area(stop):
         for j in br.range(hist, 'y'):
             hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
-    bin_edges = map(carter, range(ncarter))
+    bin_edges = list(map(carter, range(ncarter)))
     bins = zip(bin_edges[:-1], bin_edges[1:])
 
     projections = [br.projection(hist, "%d_%d", *bin) for bin in bins]
