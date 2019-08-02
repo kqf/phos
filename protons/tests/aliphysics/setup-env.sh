@@ -23,6 +23,7 @@ alien-token-info || tokeninit
 export PROMPT_PREFIX='\033[1;33m('$ALIPHYSICS_VERSION')\033[0m'
 export PS1="$PROMPT_PREFIX $PS1"
 
-func alien2datasets () {
-	alien_cp alien:~/results ~/private/phos/
+function alien2datasets ()
+{
+	alien_cp alien:${ALIEN_HOME}/results ~/private/phos/
 }
