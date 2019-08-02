@@ -10,8 +10,12 @@ class DataVault(object):
         with open('config/vault/' + ledger) as f:
             self._ledger = json.load(f)
 
-    @classmethod
-    def _validate_dataset(klass, filename, hsum_nominal):
+    def _validate_dataset(self, production, version):
+        dataset = self.dataset(production, version)
+
+        hsum_nominal = dataset["hsum"]
+        filename = dataset["file"]
+
         hashsum = hashlib.sha256()
         with open(filename) as f:
             data = f.read()
@@ -31,10 +35,8 @@ class DataVault(object):
         return self._ledger[production][version]
 
     def file(self, production, version="latest"):
-        data = self.dataset(production, version)
-        filename = data["file"]
-        self._validate_dataset(filename, data["hsum"])
-        return filename
+        self._validate_dataset(production, version)
+        return self.dataset(production, version)["file"]
 
     def input(self, production, version="latest",
               listname=None, pt_range=None, use_mixing=True,
@@ -59,16 +61,3 @@ class DataVault(object):
             same_module=same_module
         )
         return inputs
-
-    def validate_all_datasets(self):
-        not_valid = []
-        for productionion in self._ledger:
-            for version in self._ledger[productionion]:
-                dataset = self._ledger[productionion][version]
-                try:
-                    self._validate_dataset(dataset['file'], dataset['hsum'])
-                except IOError as e:
-                    not_valid.append(
-                        (productionion, version, str(e).split()[-1])
-                    )
-        return not_valid
