@@ -22,14 +22,9 @@ class DataVault(object):
         hashsum.update(data)
         hsum_real = hashsum.hexdigest()
 
-        msg = "File {0} doesn't match the desired hash {1} but got {2}".format(
-            filename,
-            hsum_nominal,
-            hsum_real
-        )
-
+        msg = "File {0} doesn't match the desired hash {1} but got {2}"
         if hsum_real != hsum_nominal:
-            raise IOError(msg)
+            raise IOError(msg.format(filename, hsum_nominal, hsum_real))
 
     def dataset(self, production, version="latest"):
         return self._ledger[production][version]

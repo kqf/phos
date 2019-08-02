@@ -25,5 +25,8 @@ export PS1="$PROMPT_PREFIX $PS1"
 
 function alien2datasets ()
 {
-	alien_cp alien:${ALIEN_HOME}/results ~/private/phos/
+	tmp_datadir=~/private/phos/neutral-meson-spectra/
+	# NB: Alien cant copy to a file, one can't rename alien folder
+	alien_cp alien:${ALIEN_HOME}/results ${tmp_datadir}/
+	mv ${tmp_datadir}/results ${tmp_datadir}/input-data
 }
