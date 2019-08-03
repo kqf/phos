@@ -64,4 +64,9 @@ def main(finput, output):
 
     with lxplus_sftp() as sftp:
         for target in tqdm.tqdm(targets):
-            sftp.get(lxplus_path(target), local_path(target, output))
+            lxplus_target = lxplus_path(target)
+            local_target = local_path(target, output)
+            try:
+                sftp.get(lxplus_target, local_target)
+            except FileNotFoundError:
+                raise FileNotFoundError(lxplus_target)
