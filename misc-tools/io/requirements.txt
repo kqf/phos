@@ -1,2 +1,6 @@
 setuptools
+paramiko
+python-gssapi
+environs
+flatten_dict
 click
