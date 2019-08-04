@@ -59,9 +59,6 @@ def local_path(ofilename, odirectory):
               required=True)
 def main(finput, output):
     targets = extract_targets(finput)
-    for target in targets:
-        print(target)
-
     with lxplus_sftp() as sftp:
         for target in tqdm.tqdm(targets):
             lxplus_target = lxplus_path(target)
