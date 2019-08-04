@@ -17,7 +17,7 @@ class DataVault(object):
         filename = dataset["file"]
 
         hashsum = hashlib.sha256()
-        with open(filename) as f:
+        with open(filename, "rb") as f:
             data = f.read()
         hashsum.update(data)
         hsum_real = hashsum.hexdigest()
