@@ -31,7 +31,7 @@
         "stable old": {
             "default_selection": "PhysOnlyTender",
             "description": "Raw data without TOF correction",
-            "file": "input-data/data/LHC16.root",
+            "file": "input-data/data/LHC16/no-tof-correction/LHC16.root",
             "hsum": "7244c2b0b505a6a51dcdec4dbd13130aff9a58658497a8c9a80bc8f7d0d09d37",
             "pt_range": [0, 20]
         }
