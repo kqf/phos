@@ -199,11 +199,11 @@ class ParallelPipeline(object):
         steps_loggs = {}
         output_with_logs = [
             tr(inp, name, step, steps_loggs)
-            for inp, (name, step) in zip(inputs, self.steps)
+            for inp, (name, step) in list(zip(inputs, self.steps))
         ]
         loggs.update({"steps": steps_loggs})
 
-        outputs, local_logs = zip(*output_with_logs)
+        outputs, local_logs = list(zip(*output_with_logs))
         loggs.update({"merged": merge(local_logs)})
         return outputs
 

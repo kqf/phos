@@ -19,7 +19,7 @@ class DataSlicer(object):
     def transform(self, inputs, loggs):
         input_data = inputs.transform()
 
-        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
+        intervals = list(zip(self.opt.ptedges[:-1], self.opt.ptedges[1:]))
         assert len(intervals) == len(self.opt.rebins), \
             "Number of intervals is not equal " \
             "to the number of rebin parameters" \
@@ -42,7 +42,7 @@ class DataSlicer2(object):
     def transform(self, inputs, loggs):
         input_data = inputs.transform()
 
-        intervals = zip(self.opt.ptedges[:-1], self.opt.ptedges[1:])
+        intervals = list(zip(self.opt.ptedges[:-1], self.opt.ptedges[1:]))
         assert len(intervals) == len(self.opt.rebins), \
             "Number of intervals is not equal " \
             "to the number of rebin parameters" \

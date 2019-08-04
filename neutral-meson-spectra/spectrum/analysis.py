@@ -44,11 +44,9 @@ class CompositeAnalysis(TransformerBase):
                     spec.Scale(1. / area)
 
         # Transpose
-        pairs = zip(*hists)
-
         truncated = [
             br.sum_trimm(obs_pt, self.mergeranges)
-            for obs_pt in pairs
+            for obs_pt in zip(*hists)
         ]
 
         # Use the same container as normal analysis
