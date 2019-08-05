@@ -32,7 +32,8 @@ def data():
 @pytest.mark.parametrize("mixed", [True, False])
 def test_analysis(data, mixed):
     options = Options()
-    options.pt.use_mixed = mixed
+    options.invmass.use_mixed = mixed
+    print(options.pt)
     with open_loggs() as loggs:
         masses = UpdatedAnalysis(options).transform(data, loggs)
     assert len(masses) > 0
