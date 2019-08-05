@@ -77,7 +77,7 @@ class CompositeOptions(object):
         ]
 
         names = ["{0}".format(rr) for rr in range(n_ranges)]
-        self.steps = zip(names, options)
+        self.steps = list(zip(names, options))
 
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
         if particle == "#eta":

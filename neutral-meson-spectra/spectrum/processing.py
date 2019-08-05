@@ -31,7 +31,7 @@ class DataSlicer(object):
         def common_inputs(x, y):
             return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
 
-        return map(common_inputs, intervals, self.opt.rebins)
+        return list(map(common_inputs, intervals, self.opt.rebins))
 
 
 class DataSlicer2(object):
@@ -54,7 +54,7 @@ class DataSlicer2(object):
         def common_inputs(x, y):
             return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
 
-        return map(common_inputs, intervals, self.opt.rebins)
+        return common_inputs, intervals, self.opt.rebins
 
 
 class InvariantMassExtractor(object):
@@ -64,7 +64,7 @@ class InvariantMassExtractor(object):
         self.opt = options
 
     def transform(self, rmasses, loggs):
-        return map(lambda x: InvariantMass(x, self.opt), rmasses)
+        return list(map(lambda x: InvariantMass(x, self.opt), rmasses))
 
 
 class MassFitter(object):

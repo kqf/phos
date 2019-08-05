@@ -31,19 +31,15 @@ class ConfidenceLevelEstimator(TransformerBase):
         self.fitf = fitf
 
     def transform(self, feeddown, loggs):
-        errors = br.confidence_intervals(feeddown, self.fitf)
         title = "Feeddown correction approximation"
         title += "; p_{T}, GeV/c"
         title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
         title += "#frac{dN(all)}{dp_{T}}"
+        try:
+            self._show_errors(feeddown, title, loggs)
+        except TypeError:
+            print("Not able to show confidence intervals")
         feeddown.SetTitle(title)
-        errors.SetTitle(title)
-        errors.label = "approximation"
-        errors.SetOption("e3")
-        errors.SetFillStyle(3002)
-        feeddown.logy = False
-        Comparator(rrange=(-1, -1), stop=self.plot).compare(
-            feeddown, errors, loggs=loggs)
         corr = br.copy(feeddown)
         corr.Reset()
         for b in br.range(feeddown):
@@ -52,6 +48,16 @@ class ConfidenceLevelEstimator(TransformerBase):
         #     otherwise it plots something strange
         corr.Scale(1.0)
         return corr
+
+    def _show_errors(self, feeddown, title, loggs):
+        errors = br.confidence_intervals(feeddown, self.fitf)
+        errors.SetTitle(title)
+        errors.label = "approximation"
+        errors.SetOption("e3")
+        errors.SetFillStyle(3002)
+        feeddown.logy = False
+        Comparator(rrange=(-1, -1), stop=self.plot).compare(
+            feeddown, errors, loggs=loggs)
 
 
 class FeeddownEstimator(TransformerBase):
@@ -87,6 +93,7 @@ class FeeddownEstimator(TransformerBase):
                 "Only pions have sufficient statistics".format(self.particle)
             )
 
+        # TODO: Add unity histogram to BROOT
         if self.particle != "#pi^{0}":
             data = zip(np.ones(len(self.pt) - 1), np.zeros(len(self.pt) - 1))
             return output_histogram(
@@ -95,7 +102,7 @@ class FeeddownEstimator(TransformerBase):
                 "No Feeddown",
                 "feeddown",
                 self.pt,
-                data
+                list(data)
             )
 
         return super(FeeddownEstimator, self).transform(data, loggs)
