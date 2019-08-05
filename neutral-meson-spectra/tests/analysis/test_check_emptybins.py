@@ -21,6 +21,7 @@ def data():
 
 
 @pytest.mark.onlylocal
+@pytest.mark.skip("This analysis is outdated always use standard method")
 def test_check_empty_bins(data):
     options = []
     for average in ["standard", "with empty"]:
