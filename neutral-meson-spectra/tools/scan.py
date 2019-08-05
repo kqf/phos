@@ -23,7 +23,7 @@ class NonlinearityParamExtractor(TransformerBase):
                 high, low = d
                 real, mixing = low.transform()
             output.append(
-                map(float, real.GetTitle().split())
+                list(map(float, real.GetTitle().split()))
             )
         return output
 

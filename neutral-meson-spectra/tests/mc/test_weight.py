@@ -39,6 +39,7 @@ def spectrumf():
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_species_contributions(data, spectrumf):
     estimator = ComparePipeline([
         ("data", Pipeline([

@@ -34,6 +34,7 @@ class PileupEstimator(TransformerBase):
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_pileup(data):
     estimator = PileupEstimator(plot=True)
     with open_loggs("pileup contribution") as loggs:

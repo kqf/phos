@@ -49,6 +49,7 @@ def spmc(data):
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_simple(pythia8, nonlinf):
     options = NonlinearityOptions()
     options.fitf = nonlinf
@@ -60,6 +61,7 @@ def test_simple(pythia8, nonlinf):
 
 
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_composite(spmc, nonlinf):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinf
