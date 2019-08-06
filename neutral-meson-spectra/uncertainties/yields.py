@@ -35,7 +35,7 @@ class YieldExtractioinUncertanityOptions(object):
             # "mid": [0.04, 0.20],
             # "wide": [0.08, 0.24]
         }
-        self.backgrounds = ["pol1", "pol2"]
+        self.backgrounds = ["pol2"]
         self.signals = ["CrystalBall"]
         self.nsigmas = [2, 3]
         self.cyield = cyield

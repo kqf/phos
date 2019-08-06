@@ -8,8 +8,8 @@ from spectrum.comparator import Comparator
 
 
 @pytest.mark.thesis
-@pytest.mark.interactive
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     # "#eta",

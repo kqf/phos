@@ -38,17 +38,14 @@ class TofUncertaintyOptions(object):
 
 
 class RatioFitter(TransformerBase):
+    title = "TOF uncertainty; p_T, GeV/c; Relateive error, %"
+
     def __init__(self, fit_range, plot=False):
         super(RatioFitter, self).__init__(plot)
         self.fit_range = fit_range
 
     def transform(self, ratio, loggs):
-        return unityfit(
-            ratio,
-            "tof_uncertainty",
-            "TOF uncertainty; p_T, GeV/c; Relateive error, %",
-            self.fit_range
-        )
+        return unityfit(ratio, self.title, self.fit_range)
 
 
 class RangeSetter(TransformerBase):
