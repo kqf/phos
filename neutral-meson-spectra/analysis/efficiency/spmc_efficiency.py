@@ -34,7 +34,7 @@ def data(particle):
 
 
 @pytest.mark.onlylocal
-@pytest.mark.parametrize("data, particle", [
+@pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
