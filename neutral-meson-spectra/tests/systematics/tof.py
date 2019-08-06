@@ -13,8 +13,8 @@ def data():
 
 
 @pytest.mark.thesis
-@pytest.mark.interactive
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_tof(data):
     tof = TofUncertainty(TofUncertaintyOptions())
     with open_loggs("tof uncertainty") as loggs:

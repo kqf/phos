@@ -1,10 +1,8 @@
 import pytest
 from spectrum.comparator import Comparator
-from spectrum.options import (DataMCEpRatioOptions, EpRatioOptions,
-                              NonlinearityOptions)
+from spectrum.options import DataMCEpRatioOptions, EpRatioOptions
 from spectrum.output import open_loggs
 from tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
-from tools.mc import Nonlinearity
 from vault.datavault import DataVault
 
 
@@ -48,21 +46,18 @@ def test_ep_ratio_mc():
     estimator = EpRatioEstimator(options, plot=True)
 
     with open_loggs() as loggs:
-        output = estimator.transform(data("pythia8", "ep_ratio_1"), loggs)
-
-    for o in output:
-        Comparator().compare(o)
+        output = estimator.transform(data("pythia8", "latest"), loggs)
+    Comparator().compare(output)
 
 
 @pytest.mark.skip("")
 def test_ep_ratio_data():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)
-    with open_loggs() as loggs:
-        output = estimator.transform(data("data"), loggs)
 
-    for o in output:
-        Comparator().compare(o)
+    with open_loggs() as loggs:
+        output = estimator.transform(data("data", "latest"), loggs)
+    Comparator().compare(output)
 
 
 @pytest.mark.thesis
@@ -75,20 +70,4 @@ def test_data_mc_ratio(double_ratio_data):
     with open_loggs("double ep ratio") as loggs:
         output = estimator.transform(double_ratio_data, loggs)
         Comparator().compare(output)
-    assert len(output) > 0
-
-
-@pytest.mark.skip("Verifying the production")
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-@pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    "#eta",
-])
-def test_ep_dataset(particle, validation_data):
-    estimator = Nonlinearity(
-        NonlinearityOptions(particle=particle), plot=True
-    )
-    with open_loggs("validate ep ratio") as loggs:
-        output = estimator.transform(validation_data, loggs)
     assert len(output) > 0
