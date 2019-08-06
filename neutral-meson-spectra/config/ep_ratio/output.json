@@ -1,6 +1,7 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
     "output_order": ["mass", "width", "chi2", "nmesons", "spectrum"],
+    "scalew_spectrum": true,
     "output":
     {
         "mass": "E/p ratio for electrons; matched cluster p_{T}, GeV; E/p ratio; electrons",

@@ -1,17 +1,28 @@
 {
-	"comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
-	"canvas": [0.001, 0.001],
+    "comment": "All parameters related to the spectrum e.g. meson mass value and peak width configurations should be here",
+    "canvas": [0.001, 0.001],
     "dead": "",
     "electrons":
     {
-        "width_func": "[0] * x + [1]",
-    	"width_pars": [1, 1],
-    	"width_names": ["a", "b"],
-        "mass_func": "[0] * x + [1]",
-    	"mass_pars": [1, 1],
-    	"mass_names": ["a", "b"],
-        "nsigmas": 2,
-        "fit_range": [0, 20],
-        "fit_mass_width": "True" 
+        "mass": {
+            "func": "[0] * x + [1]",
+            "pars": [1, 1],
+            "names": ["a", "b"],
+            "nsigmas": 2,
+            "fit_range": [0, 20],
+            "quantity": "width",
+            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
+            "fit": true
+        },
+        "width": {
+            "func": "[0] * x + [1]",
+            "pars": [1, 1],
+            "names": ["a", "b"],
+            "fit_range": [0, 20],
+            "quantity": "width",
+            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
+            "fit": true
+        },
+        "nsigmas": 2
    }
 }
