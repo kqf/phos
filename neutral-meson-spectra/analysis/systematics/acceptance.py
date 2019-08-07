@@ -3,8 +3,9 @@ import pytest
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
-from uncertainties.acceptance import Acceptance, AcceptanceOptions
-from uncertainties.acceptance import acceptance_data
+from spectrum.uncertainties.acceptance import Acceptance,
+from spectrum.uncertainties.acceptance import AcceptanceOptions
+from spectrum.uncertainties.acceptance import acceptance_data
 
 
 @pytest.mark.thesis

@@ -1,7 +1,11 @@
 import pytest
+
 from spectrum.output import open_loggs
-from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
 from spectrum.comparator import Comparator
+
+from spectrum.uncertainties.gscale import GScale
+from spectrum.uncertainties.gscale import GScaleOptions
+from spectrum.uncertainties.gscale import ge_scale_data
 
 
 @pytest.mark.thesis

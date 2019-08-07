@@ -2,9 +2,11 @@ import pytest
 
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import open_loggs
-from uncertainties.yields import YieldExtractioin, yield_extraction_data
-from uncertainties.yields import YieldExtractioinUncertanityOptions
 from spectrum.comparator import Comparator
+
+from spectrum.uncertainties.yields import YieldExtractioin,
+from spectrum.uncertainties.yields import YieldExtractioinUncertanityOptions
+from spectrum.uncertainties.yields import yield_extraction_data
 
 
 @pytest.mark.thesis

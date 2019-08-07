@@ -1,10 +1,11 @@
 import pytest
 
-from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
+from spectrum.comparator import Comparator
 
-from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
-from uncertainties.nonlinearity import CompositeNonlinearityUncertaintyOptions
+from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty,
+from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
+from spectrum.uncertainties.nonlinearity import nonlinearity_scan_data
 
 
 @pytest.fixture
@@ -20,7 +21,7 @@ def nbins():
 @pytest.mark.onlylocal
 def test_nonlinearity_uncertainty(nbins):
     prod = "single #pi^{0} nonlinearity scan"
-    options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
+    options = NonlinearityUncertaintyOptions(nbins=nbins)
     options.factor = 1.
 
     with open_loggs("nonlinearity uncertainty") as loggs:

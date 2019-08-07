@@ -1,10 +1,11 @@
 import pytest
 
 from spectrum.output import open_loggs
-from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
-from uncertainties.tof import tof_data
+from spectrum.comparator import Comparator  # noqa
 
-# from spectrum.comparator import Comparator
+from spectrum.uncertainties.tof import TofUncertainty,
+from spectrum.uncertainties.tof import TofUncertaintyOptions
+from spectrum.uncertainties.tof import tof_data
 
 
 @pytest.fixture

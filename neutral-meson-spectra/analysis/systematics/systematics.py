@@ -1,18 +1,27 @@
 import pytest
-
+from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline
-from spectrum.options import CompositeCorrectedYieldOptions
 
-from uncertainties.nonlinearity import CompositeNonlinearityUncertaintyOptions
-from uncertainties.yields import YieldExtractioin, yield_extraction_data
-from uncertainties.yields import YieldExtractioinUncertanityOptions
-from uncertainties.nonlinearity import Nonlinearity, nonlinearity_scan_data
-from uncertainties.tof import TofUncertainty, TofUncertaintyOptions
-from uncertainties.tof import tof_data
-from uncertainties.gscale import GScale, GScaleOptions, ge_scale_data
-from uncertainties.acceptance import Acceptance, AcceptanceOptions
-from uncertainties.acceptance import acceptance_data
+from spectrum.uncertainties.acceptance import Acceptance,
+from spectrum.uncertainties.acceptance import AcceptanceOptions
+from spectrum.uncertainties.acceptance import acceptance_data
+
+from spectrum.uncertainties.tof import TofUncertainty,
+from spectrum.uncertainties.tof import TofUncertaintyOptions
+from spectrum.uncertainties.tof import tof_data
+
+from spectrum.uncertainties.gscale import GScale
+from spectrum.uncertainties.gscale import GScaleOptions
+from spectrum.uncertainties.gscale import ge_scale_data
+
+from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty,
+from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
+from spectrum.uncertainties.nonlinearity import nonlinearity_scan_data
+
+from spectrum.uncertainties.yields import YieldExtractioin,
+from spectrum.uncertainties.yields import YieldExtractioinUncertanityOptions
+from spectrum.uncertainties.yields import yield_extraction_data
 
 
 @pytest.fixture
@@ -35,7 +44,7 @@ def data(nbins):
 @pytest.mark.interactive
 @pytest.mark.onlylocal
 def test_draws_all_sources(nbins, data):
-    nonlin_options = CompositeNonlinearityUncertaintyOptions(nbins=nbins)
+    nonlin_options = NonlinearityUncertaintyOptions(nbins=nbins)
     nonlin_options.factor = 1.
 
     # cyield_options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
@@ -43,7 +52,7 @@ def test_draws_all_sources(nbins, data):
     estimator = ComparePipeline((
         # ("yield", YieldExtractioin(
         #     YieldExtractioinUncertanityOptions(cyield_options))),
-        ("nonlinearity", Nonlinearity(nonlin_options)),
+        ("nonlinearity", NonlinearityUncertainty(nonlin_options)),
         ("tof", TofUncertainty(TofUncertaintyOptions())),
         ("gescale", GScale(GScaleOptions(particle="#pi^{0}"))),
         ("accepntace", Acceptance(AcceptanceOptions(particle="#pi^{0}"))),
