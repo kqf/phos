@@ -10,10 +10,10 @@ from vault.datavault import DataVault
 from tools.deviation import MaxDeviationVector
 
 
-class CompositeNonlinearityUncertaintyOptions(object):
+class NonlinearityUncertaintyOptions(object):
 
     def __init__(self, particle="#pi^{0}", nbins=11, n_ranges=2):
-        super(CompositeNonlinearityUncertaintyOptions, self).__init__()
+        super(NonlinearityUncertaintyOptions, self).__init__()
         self.nbins = nbins
         self.eff = CompositeEfficiencyOptions(particle)
 
@@ -22,11 +22,11 @@ def chi2_func(hist1, hist2, loggs):
     return br.chi2ndf(hist1, hist2)
 
 
-class Nonlinearity(TransformerBase):
-    def __init__(self, options=CompositeNonlinearityUncertaintyOptions(),
+class NonlinearityUncertainty(TransformerBase):
+    def __init__(self, options=NonlinearityUncertaintyOptions(),
                  chi2_=chi2_func,
                  plot=True):
-        super(Nonlinearity, self).__init__()
+        super(NonlinearityUncertainty, self).__init__()
         main = Pipeline([
             ('efficiency_main', Efficiency(options.eff, plot))
         ])
