@@ -4,7 +4,7 @@ from tqdm import trange
 from spectrum.options import (CompositeNonlinearityScanOptions,
                               NonlinearityScanOptions)
 from spectrum.output import open_loggs
-from tools.scan import NonlinearityScan
+from spectrum.tools.scan import NonlinearityScan
 from vault.datavault import DataVault
 
 

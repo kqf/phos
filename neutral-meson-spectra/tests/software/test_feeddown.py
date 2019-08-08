@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from tools.feeddown import FeeddownEstimator, data_feeddown
+from spectrum.tools.feeddown import FeeddownEstimator, data_feeddown
 from spectrum.options import FeeddownOptions
 from spectrum.output import open_loggs
 try:

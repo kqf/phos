@@ -6,8 +6,8 @@ from spectrum.pipeline import Pipeline
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
-from tools.unityfit import UnityFitTransformer
-from tools.feeddown import data_feeddown
+from spectrum.tools.unityfit import UnityFitTransformer
+from spectrum.tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 

@@ -6,8 +6,8 @@ from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import open_loggs
-from tools.mc import Nonlinearity
-from tools.scan import NonlinearityScan, form_histnames
+from spectrum.tools.mc import Nonlinearity
+from spectrum.tools.scan import NonlinearityScan, form_histnames
 from vault.datavault import DataVault
 
 

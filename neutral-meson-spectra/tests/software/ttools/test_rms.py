@@ -1,7 +1,7 @@
 import ROOT
 import pytest
 from math import sqrt
-from tools.rms import RmsToMean
+from spectrum.tools.rms import RmsToMean
 from spectrum.broot import BROOT as br
 
 

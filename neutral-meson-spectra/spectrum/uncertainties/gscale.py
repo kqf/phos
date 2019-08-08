@@ -13,7 +13,7 @@ from spectrum.pipeline import Pipeline
 from vault.formulas import FVault
 
 from vault.datavault import DataVault
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 
 
 def ep_data(prod="data", version="latest"):

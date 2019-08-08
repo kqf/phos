@@ -4,7 +4,7 @@ import ROOT
 from vault.datavault import DataVault
 from spectrum.options import NonlinearityOptions, CompositeNonlinearityOptions
 from spectrum.output import open_loggs
-from tools.mc import Nonlinearity
+from spectrum.tools.mc import Nonlinearity
 
 
 @pytest.fixture

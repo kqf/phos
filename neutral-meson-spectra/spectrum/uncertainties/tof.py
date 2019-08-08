@@ -7,7 +7,7 @@ from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputDecorator
-from tools.unityfit import unityfit
+from spectrum.tools.unityfit import unityfit
 from vault.datavault import DataVault
 
 

@@ -3,7 +3,7 @@ import pytest
 from spectrum.output import open_loggs
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 from spectrum.options import Options
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions

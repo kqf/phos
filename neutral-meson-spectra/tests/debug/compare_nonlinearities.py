@@ -6,7 +6,7 @@ from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
-from tools.mc import Nonlinearity
+from spectrum.tools.mc import Nonlinearity
 from vault.datavault import DataVault
 
 

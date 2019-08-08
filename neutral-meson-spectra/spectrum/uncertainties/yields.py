@@ -6,7 +6,7 @@ from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 

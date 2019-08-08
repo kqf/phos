@@ -7,7 +7,7 @@ from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 from vault.formulas import FVault
 
 

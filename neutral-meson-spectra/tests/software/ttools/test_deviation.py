@@ -2,7 +2,7 @@ import pytest
 import ROOT
 
 from spectrum.broot import BROOT as br
-from tools.deviation import MaxDeviation
+from spectrum.tools.deviation import MaxDeviation
 
 
 @pytest.fixture()

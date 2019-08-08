@@ -11,7 +11,7 @@ from vault.datavault import DataVault
 from spectrum.corrected_yield import YieldRatio
 from spectrum.options import CorrectedYieldOptions
 from spectrum.comparator import Comparator
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase

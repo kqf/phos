@@ -5,7 +5,7 @@ from spectrum.corrected_yield import CorrectedYield
 from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 
 
 def pion_data():

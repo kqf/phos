@@ -6,7 +6,7 @@ from spectrum.output import open_loggs
 # from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator  # noqa
 
-# from tools.validate import validate
+# from spectrum.tools.validate import validate
 from vault.datavault import DataVault
 
 

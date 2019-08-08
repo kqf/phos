@@ -10,7 +10,7 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputFitter
 from spectrum.pipeline import HistogramScaler
 from spectrum.broot import BROOT as br
-from tools.feeddown import FeeddownEstimator
+from spectrum.tools.feeddown import FeeddownEstimator
 
 
 class InvariantYield(TransformerBase):

@@ -7,8 +7,8 @@ from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
 from spectrum.output import open_loggs
-from tools.probe import TagAndProbe
-from tools.validate import validate
+from spectrum.tools.probe import TagAndProbe
+from spectrum.tools.validate import validate
 
 
 @pytest.fixture

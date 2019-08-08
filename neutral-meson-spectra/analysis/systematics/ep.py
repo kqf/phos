@@ -2,7 +2,7 @@ import pytest
 from spectrum.comparator import Comparator
 from spectrum.options import DataMCEpRatioOptions, EpRatioOptions
 from spectrum.output import open_loggs
-from tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
+from spectrum.tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
 from vault.datavault import DataVault
 
 

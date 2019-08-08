@@ -1,7 +1,7 @@
 import pytest
 import ROOT
 
-from tools.feeddown import FeeddownEstimator
+from spectrum.tools.feeddown import FeeddownEstimator
 from vault.datavault import DataVault
 
 from spectrum.options import FeeddownOptions

@@ -6,7 +6,7 @@ from spectrum.broot import BROOT as br
 from spectrum.options import Options
 from spectrum.output import open_loggs
 
-from tools.validate import validate
+from spectrum.tools.validate import validate
 from vault.datavault import DataVault
 
 

@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import pytest
-from tools.feeddown import FeeddownEstimator, data_feeddown
+from spectrum.tools.feeddown import FeeddownEstimator, data_feeddown
 
 from spectrum.options import FeeddownOptions
 from spectrum.output import open_loggs

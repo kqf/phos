@@ -1,6 +1,6 @@
 import pytest
 
-from tools.probe import TagAndProbe
+from spectrum.tools.probe import TagAndProbe
 from vault.datavault import DataVault
 from spectrum.options import ProbeTofOptions
 from spectrum.output import open_loggs

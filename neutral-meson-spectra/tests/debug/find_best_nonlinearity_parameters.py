@@ -5,7 +5,7 @@ from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.output import open_loggs
-from tools.scan import NonlinearityScan, form_histnames
+from spectrum.tools.scan import NonlinearityScan, form_histnames
 from vault.datavault import DataVault
 
 

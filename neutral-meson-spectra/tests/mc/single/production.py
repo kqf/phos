@@ -3,7 +3,7 @@ import pytest
 
 from vault.datavault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
-from tools.mc import Nonlinearity, Decalibration, Shape
+from spectrum.tools.mc import Nonlinearity, Decalibration, Shape
 from spectrum.output import open_loggs
 
 

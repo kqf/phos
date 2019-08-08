@@ -7,7 +7,7 @@ from spectrum.broot import BROOT as br
 from spectrum.options import CompositeEfficiencyOptions
 
 from vault.datavault import DataVault
-from tools.deviation import MaxDeviationVector
+from spectrum.tools.deviation import MaxDeviationVector
 
 
 class NonlinearityUncertaintyOptions(object):

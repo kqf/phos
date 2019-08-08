@@ -4,7 +4,7 @@ from spectrum.corrected_yield import YieldRatio, CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
-from tools.feeddown import data_feeddown
+from spectrum.tools.feeddown import data_feeddown
 
 from vault.datavault import DataVault
 
