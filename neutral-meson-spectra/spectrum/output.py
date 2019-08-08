@@ -1,5 +1,6 @@
 from __future__ import print_function
 import ROOT
+import pandas as pd
 
 from contextlib import contextmanager
 
@@ -39,6 +40,9 @@ def save_item(ofile, name, obj, stop=False):
     if obj.__class__.__bases__[0] == tuple:
         for hist in obj:
             hist.Write()
+        return
+
+    if type(obj) == pd.DataFrame:
         return
 
     print("Don't know how to handle", obj, type(obj))

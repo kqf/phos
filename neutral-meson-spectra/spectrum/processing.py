@@ -1,5 +1,6 @@
 from __future__ import print_function
 import ROOT
+import pandas as pd
 
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
 from spectrum.outputcreator import analysis_output, SpectrumExtractor
@@ -31,7 +32,13 @@ class DataSlicer(object):
         def common_inputs(x, y):
             return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
 
-        return list(map(common_inputs, intervals, self.opt.rebins))
+        return pd.DataFrame(
+            {
+                "intervals": intervals,
+                "pt_interval": [inputs.pt_range] * len(intervals),
+                "raw": list(map(common_inputs, intervals, self.opt.rebins))
+            }
+        )
 
 
 class DataSlicer2(object):
@@ -64,7 +71,9 @@ class InvariantMassExtractor(object):
         self.opt = options
 
     def transform(self, rmasses, loggs):
-        return list(map(lambda x: InvariantMass(x, self.opt), rmasses))
+        rmasses["invmasses"] = rmasses["raw"].apply(
+            lambda x: InvariantMass(x, self.opt))
+        return rmasses
 
 
 class MassFitter(object):
@@ -77,7 +86,7 @@ class MassFitter(object):
         pipeline = self._pipeline()
 
         for estimator in pipeline:
-            for mass in masses:
+            for mass in masses["invmasses"].values:
                 estimator.transform(mass)
 
         return masses
@@ -106,7 +115,7 @@ class RangeEstimator(object):
 
     def transform(self, masses, loggs):
         ranges = self._fit(masses, loggs)
-        for mass, region in zip(masses, ranges):
+        for mass, region in zip(masses["invmasses"], ranges):
             mass.integration_region = region
         return masses
 
@@ -135,14 +144,16 @@ class PtFitter(object):
         self.opt = options
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract([self.opt.quantity], masses)
+        values = SpectrumExtractor.extract([self.opt.quantity],
+                                           masses["invmasses"])
+
         title = self.opt.title.format(self.opt.particle)
         target_quantity = analysis_output(
             self.opt.quantity,
             values,
             [self.opt.quantity],
-            masses[0].pt_interval,
-            masses2edges(masses),
+            masses["pt_interval"].values[0],
+            masses2edges(masses["invmasses"]),
             {self.opt.quantity: title},
             ""
         )
@@ -201,26 +212,27 @@ class DataExtractor(object):
         return histograms
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract(self.opt.output_order, masses)
+        values = SpectrumExtractor.extract(self.opt.output_order,
+                                           masses["invmasses"])
 
         histos = analysis_output(
             "SpectrumAnalysisOutput",
             values,
             self.opt.output_order,
-            masses[0].pt_interval,
-            masses2edges(masses),
+            masses["pt_interval"].values[0],
+            masses2edges(masses["invmasses"]),
             self.opt.output,
             ""
         )
 
         # Decorate the histograms
         try:
-            nevents = next(iter(masses)).mass.nevents
+            nevents = next(iter(masses["invmasses"])).mass.nevents
         except AttributeError:
             nevents = 1
 
         decorated = self._decorate_hists(histos, nevents)
-        loggs.update({"invariant_masses": MulipleOutput(masses)})
+        loggs.update({"invariant_masses": MulipleOutput(masses["invmasses"])})
         # TODO: Don't save here, add another step to the pipeline
         loggs.update({"analysis_output": decorated._asdict()})
         return decorated
