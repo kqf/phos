@@ -45,7 +45,6 @@ class RebinTransformer(TransformerBase):
         if self.width:
             rebinned.Scale(data.GetBinWidth(1), "width")
             # br.scalewidth(rebinned)
-        loggs.update({"rebinned": rebinned})
         return rebinned
 
 
@@ -100,7 +99,6 @@ class OutputDecorator(TransformerBase):
 
         if self.label:
             data.label = self.label
-        loggs.update({"decorated": data})
         return data
 
 
@@ -154,7 +152,8 @@ class Pipeline(object):
         for name, step in tqdm(self.steps, disable=self.disable):
             local_logs = {}
             updated = step.transform(updated, local_logs)
-            local_logs[self._output] = updated
+            if self._output not in local_logs:
+                local_logs[self._output] = updated
             loggs[name] = local_logs
         return updated
 

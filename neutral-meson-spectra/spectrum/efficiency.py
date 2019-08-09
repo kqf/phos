@@ -20,9 +20,9 @@ class SimpleEfficiency(TransformerBase):
     def __init__(self, options, plot=False):
         super(SimpleEfficiency, self).__init__(plot)
         scaled_ryield = Pipeline([
-            ("ReconstructMesons", Analysis(options.analysis)),
-            ("NumberOfMesons", HistogramSelector("nmesons")),
-            ("ScaleForAcceptance", HistogramScaler(options.scale))
+            ("analysis", Analysis(options.analysis)),
+            ("nmesons", HistogramSelector("nmesons")),
+            ("scale-for-acceptance", HistogramScaler(options.scale))
         ])
 
         generated = Pipeline([
@@ -33,7 +33,7 @@ class SimpleEfficiency(TransformerBase):
         ])
 
         efficiency = ComparePipeline([
-            ("raw-yield", scaled_ryield),
+            ("reconstructed", scaled_ryield),
             ("generated", generated),
         ], ratio="B")
 

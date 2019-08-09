@@ -5,8 +5,6 @@ from spectrum.options import Options, CompositeOptions
 from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 
-from spectrum.comparator import Comparator
-
 
 @pytest.fixture
 def data():
@@ -21,8 +19,8 @@ def data_spmc():
     )
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
-@pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     # "#eta",
@@ -34,11 +32,10 @@ def test_simple(particle, data):
     assert len(output) > 0
 
 
-@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta",
+    # "#eta",
 ])
 def test_composite(particle, data_spmc):
     analysis = Analysis(CompositeOptions(particle=particle))

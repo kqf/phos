@@ -27,12 +27,12 @@ def data(name):
     }.get(name)
 
 
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 @pytest.mark.parametrize("name, options", [
     ("simple", EfficiencyOptions()),
-    ("composite", CompositeEfficiencyOptions("#pi^{0}")),
+    # ("composite", CompositeEfficiencyOptions("#pi^{0}")),
 ])
-@pytest.mark.interactive
-@pytest.mark.onlylocal
 def test_efficiency(name, options, data):
     estimator = Efficiency(options)
     with open_loggs("test {} efficiency".format(name)) as loggs:

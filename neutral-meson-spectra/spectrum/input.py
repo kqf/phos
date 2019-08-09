@@ -39,8 +39,6 @@ class SingleHistInput(object):
             inputs.filename, inputs.listname), self.norm)
         hist.priority = self.priority
         hist.label = inputs.label
-        if loggs is not None:
-            loggs.update({"input": hist})
         return hist
 
 

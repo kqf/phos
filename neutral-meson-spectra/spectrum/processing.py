@@ -32,11 +32,12 @@ class DataSlicer(object):
         def common_inputs(x, y):
             return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
 
+        output = list(map(common_inputs, intervals, self.opt.rebins))
         return pd.DataFrame(
             {
                 "intervals": intervals,
                 "pt_interval": [inputs.pt_range] * len(intervals),
-                "raw": list(map(common_inputs, intervals, self.opt.rebins))
+                "raw": output,
             }
         )
 
@@ -234,5 +235,5 @@ class DataExtractor(object):
         decorated = self._decorate_hists(histos, nevents)
         loggs.update({"invariant_masses": MulipleOutput(masses["invmasses"])})
         # TODO: Don't save here, add another step to the pipeline
-        loggs.update({"analysis_output": decorated._asdict()})
+        # loggs.update({"analysis_output": decorated._asdict()})
         return decorated
