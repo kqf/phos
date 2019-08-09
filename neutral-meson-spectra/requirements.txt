@@ -1,6 +1,5 @@
 ipdb
-numpy
-pandas==0.24.0 # The latest pandas conflicts with numpy
+pandas
 repoze.lru
 root_numpy
 pytest
