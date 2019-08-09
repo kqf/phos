@@ -93,16 +93,14 @@ class FeeddownEstimator(TransformerBase):
                 "Only pions have sufficient statistics".format(self.particle)
             )
 
-        # TODO: Add unity histogram to BROOT
         if self.particle != "#pi^{0}":
-            data = zip(np.ones(len(self.pt) - 1), np.zeros(len(self.pt) - 1))
-            return output_histogram(
+            return br.unity(output_histogram(
                 (min(self.pt), max(self.pt)),
                 "feeddown",
                 "No Feeddown",
                 "feeddown",
                 self.pt,
                 list(data)
-            )
+            ))
 
         return super(FeeddownEstimator, self).transform(data, loggs)

@@ -601,3 +601,11 @@ class BROOT(object):
         divided.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
         divided.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
         return divided
+
+    @classmethod
+    def unity(klass, hist):
+        ones = klass.copy(hist)
+        for i in klass.range(ones):
+            ones.SetBinContent(i, 1)
+            ones.SetBinError(i, 0)
+        return ones
