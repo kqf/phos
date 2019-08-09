@@ -27,7 +27,7 @@ def save_item(ofile, name, obj, stop=False):
         obj.Write()
         return
 
-    if type(obj) == list:
+    if type(obj) == list or type == tuple:
         if obj and type(obj[0]) == tuple:
             labels, hists = zip(*obj)
             if type(hists[0]) not in {ROOT.TH1F, ROOT.TH1D}:

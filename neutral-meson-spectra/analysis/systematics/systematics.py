@@ -41,8 +41,8 @@ def data(nbins):
 
 
 @pytest.mark.thesis
-@pytest.mark.interactive
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_draws_all_sources(nbins, data):
     nonlin_options = NonlinearityUncertaintyOptions(nbins=nbins)
     nonlin_options.factor = 1.
