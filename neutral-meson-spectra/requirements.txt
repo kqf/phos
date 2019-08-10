@@ -6,5 +6,5 @@ pytest
 tqdm
 flatten_dict
 humanize
-recordclass
+recordclass==0.11.1
 six
