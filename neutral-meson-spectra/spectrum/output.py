@@ -17,34 +17,53 @@ from spectrum.vis import MultipleVisualizer, Visualizer
 # TODO: Introduce more log items for compare etc.
 #
 
+def save_tobject(obj):
+    if type(obj) not in {ROOT.TCanvas, ROOT.TH1F, ROOT.TH1D,
+                         MulipleOutput, Visualizer, MultipleVisualizer}:
+        return False
+
+    obj.Write()
+    return True
+
+
+def save_composite(obj, stop):
+    if type(obj) == list or type == tuple:
+        if obj and type(obj[0]) == tuple:
+            labels, hists = zip(*obj)
+            if type(hists[0]) in {MulipleOutput, pd.DataFrame}:
+                return True
+
+            Comparator(labels=labels, stop=stop).compare(hists)
+            return True
+    return False
+
+
+def save_iterables(obj):
+    if obj.__class__.__bases__[0] == tuple:
+        for hist in obj:
+            hist.Write()
+        return True
+    return False
+
 
 def save_item(ofile, name, obj, stop=False):
     ofile.mkdir(name)
     ofile.cd(name)
 
-    if type(obj) in {ROOT.TCanvas, ROOT.TH1F, ROOT.TH1D,
-                     MulipleOutput, Visualizer, MultipleVisualizer}:
-        obj.Write()
-        return
-
-    if type(obj) == list or type == tuple:
-        if obj and type(obj[0]) == tuple:
-            labels, hists = zip(*obj)
-            if type(hists[0]) not in {ROOT.TH1F, ROOT.TH1D}:
-                return
-
-            if stop:
-                Comparator(labels=labels, stop=False).compare(hists)
-        return
-
-    if obj.__class__.__bases__[0] == tuple:
-        for hist in obj:
-            hist.Write()
-        return
-
     if type(obj) == pd.DataFrame:
         return
 
+    if save_tobject(obj):
+        return
+
+    if save_composite(obj, stop):
+        return
+
+    if save_iterables(obj):
+        return
+
+    # print(obj)
+    # import ipdb; ipdb.set_trace()
     print("Don't know how to handle", obj, type(obj))
 
 
