@@ -9,6 +9,7 @@ import tqdm
 from flatten_dict import flatten
 
 import spectrum.sutils as su
+
 from spectrum.comparator import Comparator
 from spectrum.ptplotter import MulipleOutput
 from spectrum.vis import MultipleVisualizer, Visualizer
@@ -27,13 +28,18 @@ def save_tobject(obj):
 
 
 def save_composite(obj, stop):
+    exclude = {MulipleOutput, Visualizer,
+               MultipleVisualizer, pd.DataFrame}
+
     if type(obj) == list or type == tuple:
         if obj and type(obj[0]) == tuple:
             labels, hists = zip(*obj)
-            if type(hists[0]) in {MulipleOutput, pd.DataFrame}:
+            if type(hists[0]) in exclude:
                 return True
-
-            Comparator(labels=labels, stop=stop).compare(hists)
+            try:
+                Comparator(labels=labels, stop=stop).compare(hists)
+            except (IOError, AttributeError):
+                pass
             return True
     return False
 
@@ -62,8 +68,6 @@ def save_item(ofile, name, obj, stop=False):
     if save_iterables(obj):
         return
 
-    # print(obj)
-    # import ipdb; ipdb.set_trace()
     print("Don't know how to handle", obj, type(obj))
 
 

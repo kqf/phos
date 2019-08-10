@@ -34,7 +34,7 @@ class Comparator(object):
 
         message = "Can't deduce what are you" \
             " trying to do with these arguments:\n {}".format(args)
-        assert False, message
+        raise IOError(message)
 
     def compare_multiple_ratios(self, hists, baselines,
                                 comparef=None, **kwargs):
