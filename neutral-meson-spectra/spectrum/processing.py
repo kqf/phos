@@ -42,29 +42,6 @@ class DataSlicer(object):
         )
 
 
-class DataSlicer2(object):
-    def __init__(self, options):
-        super(DataSlicer2, self).__init__()
-        self.opt = options
-
-    def transform(self, inputs, loggs):
-        input_data = inputs.transform()
-
-        intervals = list(zip(self.opt.ptedges[:-1], self.opt.ptedges[1:]))
-        assert len(intervals) == len(self.opt.rebins), \
-            "Number of intervals is not equal " \
-            "to the number of rebin parameters" \
-            "edges = {} vs rebins = {}".format(
-                len(intervals),
-                len(self.opt.rebins)
-        )
-
-        def common_inputs(x, y):
-            return RawMass(input_data, x, y, pt_interval=inputs.pt_range)
-
-        return common_inputs, intervals, self.opt.rebins
-
-
 class InvariantMassExtractor(object):
 
     def __init__(self, options):
