@@ -70,12 +70,12 @@ class Acceptance(TransformerBase):
     def __init__(self, options, plot=False):
         super(Acceptance, self).__init__(plot)
         unities = ReduceArgumentPipeline(
-            ParallelPipeline([
+            ("cuts", ParallelPipeline([
                 ("dist 1", CorrectedYield(options.cyield)),
                 ("dist 2", CorrectedYield(options.cyield)),
                 ("dist 3", CorrectedYield(options.cyield)),
-            ]),
-            CorrectedYield(options.cyield),
+            ])),
+            ("no cut", CorrectedYield(options.cyield)),
             br.ratio
         )
 

@@ -223,12 +223,23 @@ class ReduceArgumentPipeline(object):
 
     def __init__(self, parallel, argument, function):
         super(ReduceArgumentPipeline, self).__init__()
-        self.parallel = parallel
-        self.argument = argument
+        self.parallel = parallel[1]
+        self.argument = argument[1]
+
+        self.parallel_name = parallel[0]
+        self.argument_name = argument[0]
+
         self.function = function
 
     def transform(self, inputs, loggs):
         argument_inp, inputs_inp = inputs
-        argument = self.argument.transform(argument_inp, loggs)
-        updated = self.parallel.transform(inputs_inp, loggs)
+
+        local_logs = {}
+        argument = self.argument.transform(argument_inp, local_logs)
+        loggs[self.argument_name] = local_logs
+
+        local_logs = {}
+        updated = self.parallel.transform(inputs_inp, local_logs)
+        loggs[self.parallel_name] = local_logs
+
         return [self.function(o, argument, loggs=loggs) for o in updated]

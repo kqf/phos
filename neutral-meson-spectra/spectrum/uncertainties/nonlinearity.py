@@ -36,8 +36,12 @@ class NonlinearityUncertainty(TransformerBase):
             for i in range(options.nbins ** 2)
         ])
 
-        ratio = ReduceArgumentPipeline(mc, main,
-                                       lambda x, y, loggs=None: br.ratio(x, y))
+        ratio = ReduceArgumentPipeline(
+            ("altered efficiencies", mc),
+            ("standard efficiency", main),
+            lambda x, y, loggs=None: br.ratio(x, y)
+        )
+
         self.pipeline = Pipeline([
             ("ratios", ratio),
             ("deviation", MaxDeviationVector())

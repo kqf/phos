@@ -83,11 +83,11 @@ class GScale(TransformerBase):
         # This should be studied on corrected yield
         self.pipeline = Pipeline([
             ("gescale_raw", ReduceArgumentPipeline(
-                Pipeline([
+                ("tsallis fit", Pipeline([
                     ("cyield", CorrectedYield(options.cyield)),
                     ("tsallis_fit", TsallisFitter()),
-                ]),
-                MockEpRatio(options.ep_ratio),
+                ])),
+                ("E/p ratio", MockEpRatio(options.ep_ratio)),
                 self.fit
             )),
             ("gescale", FunctionTransformer(lambda output, loggs: output[0])),

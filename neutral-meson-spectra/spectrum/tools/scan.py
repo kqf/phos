@@ -81,8 +81,8 @@ class NonlinearityScan(TransformerBase):
         ])
 
         chi2 = ReduceArgumentPipeline(
-            masses_mc,
-            mass_estimator_data,
+            ("masses mc", masses_mc),
+            ("mass data", mass_estimator_data),
             chi2_
         )
 

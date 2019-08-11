@@ -6,5 +6,5 @@ pytest
 tqdm
 flatten_dict
 humanize
-recordclass==0.11.1
+recordclass==0.11.1 # no support of python 2.7
 six
