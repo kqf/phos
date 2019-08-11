@@ -18,7 +18,6 @@ def test_different_argument_inputs(data, stop):
     diff.compare(data)
 
     diff = cmpr.Comparator(stop=stop)
-    diff = cmpr.Comparator(stop=stop)
     for d in data:
         d.SetTitle('Compare two lists of arguments')
     diff.compare(data, data[::-1])
@@ -34,5 +33,5 @@ def test_handles_wrong_arguments(data, stop):
     for d in data:
         d.SetTitle('Fail')
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(IOError):
         diff.compare(data, [[0]])
