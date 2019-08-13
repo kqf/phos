@@ -100,7 +100,7 @@ class FeeddownEstimator(TransformerBase):
                 "No Feeddown",
                 "feeddown",
                 self.pt,
-                list(data)
+                list()
             ))
 
         return super(FeeddownEstimator, self).transform(data, loggs)
