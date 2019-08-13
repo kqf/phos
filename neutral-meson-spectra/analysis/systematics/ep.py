@@ -61,13 +61,13 @@ def test_ep_ratio_data():
 
 
 @pytest.mark.thesis
-@pytest.mark.interactive
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_data_mc_ratio(double_ratio_data):
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True
     )
-    with open_loggs("double ep ratio") as loggs:
+    with open_loggs("ep") as loggs:
         output = estimator.transform(double_ratio_data, loggs)
         Comparator().compare(output)
     assert len(output) > 0

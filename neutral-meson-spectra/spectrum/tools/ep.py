@@ -51,7 +51,7 @@ class EpFitter(object):
     def transform(self, masses, loggs):
         local_loggs = {}
         for estimator in self.pipeline:
-            for mass in masses:
+            for mass in masses["invmasses"].values:
                 estimator.transform(mass, local_loggs)
         loggs.update({"epfitter": local_loggs})
         return masses
