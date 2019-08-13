@@ -44,7 +44,7 @@ def data(particle):
 
 
 @pytest.mark.interactive
-@pytest.mark.parametrize("data, particle", [
+@pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
