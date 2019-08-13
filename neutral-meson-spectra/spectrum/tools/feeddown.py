@@ -1,5 +1,3 @@
-import numpy as np
-
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
