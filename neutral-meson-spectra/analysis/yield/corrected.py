@@ -45,7 +45,7 @@ def data(particle):
 
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 def test_corrected_yield_for_pi0(particle, data):

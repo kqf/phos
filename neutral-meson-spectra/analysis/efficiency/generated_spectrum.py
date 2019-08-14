@@ -21,8 +21,8 @@ def fit_function(particle):
 @pytest.fixture
 def data():
     return (
-        DataVault().input("single #pi^{0}", "low"),
-        DataVault().input("single #pi^{0}", "high")
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff")
     )
 
 
@@ -33,13 +33,7 @@ def target_hist():
 
 def test_generated_distribution(target_hist, data):
     for prod in data:
-        function = fit_function("#pi^{0}")
-        generated = SingleHistInput(target_hist).transform(data)
+        generated = SingleHistInput(target_hist).transform(prod)
         generated.Scale(1. / generated.Integral())
-        diff = Comparator()
-        diff.compare(generated, function)
-
-
-def test_integral_over_tsallis_curve():
-    tsallis = fit_function("#pi^{0}")
-    print(tsallis.Integral(0, 20))
+        function = fit_function("#pi^{0}")
+        Comparator().compare(generated, function.GetHistogram())
