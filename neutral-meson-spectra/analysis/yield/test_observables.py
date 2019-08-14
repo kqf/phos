@@ -19,12 +19,12 @@ def minuit_config():
 
 
 def data(selection):
-    return DataVault().input("data", "stable old", selection, label='test')
+    return DataVault().input("data", "stable", selection, label='test')
 
 
 @pytest.mark.parametrize(("particle, selection"), [
-    ("#pi^{0}", "PhysTender"),
-    ("#eta", "EtaTender"),
+    ("#pi^{0}", "Phys"),
+    ("#eta", "Eta"),
 ])
 def test_extracts_spectrum(particle, selection, minuit_config):
     with open_loggs("signal {}".format(particle)) as loggs:
