@@ -76,7 +76,7 @@ class DoubleRatioFitter(TransformerBase):
         title = "Chi2/ndf = " + \
             str(self.fitfunc.GetChisquare() / self.fitfunc.GetNDF())
         double_ratio.SetTitle(title)
-        double_ratio.label = "pp at \sqrt{s} = 13 TeV"
+        double_ratio.label = "pp at #sqrt{s} = 13 TeV"
         double_ratio.SetName("kaon2pion")
         print(br.pars(self.fitfunc))
         return double_ratio
@@ -109,14 +109,16 @@ def real_data():
 
 @pytest.fixture
 def mc_data():
+    selection = DataVault().input("pythia8", "kaon2pion",
+                                  listname="PionToKaonRatioOnlyTender")
     return (
         (
-            DataVault().input("pythia8", listname="KaonToPionRatio"),
-            DataVault().input("pythia8", listname="KaonToPionRatio"),
+            selection,
+            selection,
         ),
         (
-            DataVault().input("pythia8", listname="KaonToPionRatio"),
-            DataVault().input("pythia8", listname="KaonToPionRatio"),
+            selection,
+            selection,
         ),
     )
 
