@@ -56,13 +56,6 @@
     },
     "pythia8": {
         "kaon2pion": {
-            "default_selection": "PionToKaonRatioOnlyTender",
-            "description": "Pythia8 with all corrections, for feeddown correction, wrong binning",
-            "file": "input-data/mc/pythia/test_pion_to_kaon_ratio/LHC17d20a2_extra.root",
-            "hsum": "b0b8a2935494c7d99d3008e8ff05311bf46b725934b6e3b1f0fc3292d26aac1b",
-            "pt_range": [0, 20]
-        },
-        "kaon2pion_fixed": {
             "default_selection": "KaonToPionRatio",
             "description": "Kaon2pion ratio with all corections and fixed binning",
             "file": "input-data/mc/pythia/kaon_to_pion_fixed/pythia8.root",
