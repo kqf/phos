@@ -57,12 +57,19 @@ def local_path(ofilename, odirectory):
 @click.option('--output',
               help='Path to the output files',
               required=True)
-def main(finput, output):
+@click.option('--force',
+              help='Force download the file even if the file exists',
+              is_flag=True)
+def main(finput, output, force):
     targets = extract_targets(finput)
     with lxplus_sftp() as sftp:
         for target in tqdm.tqdm(targets):
             lxplus_target = lxplus_path(target)
             local_target = local_path(target, output)
+
+            if not force and os.path.exists(local_target):
+                continue
+
             try:
                 sftp.get(lxplus_target, local_target)
             except FileNotFoundError:
