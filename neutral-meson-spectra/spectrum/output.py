@@ -27,7 +27,10 @@ def save_tobject(obj):
     return True
 
 
-def save_composite(obj, stop):
+def save_composite(obj, stop, skip_merged):
+    if skip_merged:
+        return False
+
     exclude = {MulipleOutput, Visualizer,
                MultipleVisualizer, pd.DataFrame}
 
@@ -52,7 +55,7 @@ def save_iterables(obj):
     return False
 
 
-def save_item(ofile, name, obj, stop=False):
+def save_item(ofile, name, obj, skip_merged, stop=False):
     ofile.mkdir(name)
     ofile.cd(name)
 
@@ -62,7 +65,7 @@ def save_item(ofile, name, obj, stop=False):
     if save_tobject(obj):
         return
 
-    if save_composite(obj, stop):
+    if save_composite(obj, stop, skip_merged=skip_merged):
         return
 
     if save_iterables(obj):
@@ -71,32 +74,32 @@ def save_item(ofile, name, obj, stop=False):
     print("Don't know how to handle", obj, type(obj))
 
 
-class AnalysisOutput(dict):
+class LogItem(dict):
     def __init__(self, label, *args, **kwargs):
-        super(AnalysisOutput, self).__init__(*args, **kwargs)
+        super(LogItem, self).__init__(*args, **kwargs)
         self.label = label.replace("#", "")
 
-    def plot(self, stop=False):
+    def save(self, stop=False, skip_merged=False):
         with su.rfile(self._ofile(), mode="recreate") as ofile:
             flat = flatten(self, reducer="path")
             for k, v in tqdm.tqdm(six.iteritems(flat)):
                 path = k.replace("output", "")
-                save_item(ofile, path, v, stop=stop)
+                save_item(ofile, path, v, skip_merged=skip_merged, stop=stop)
 
     def _ofile(self):
         name = self.label.lower().replace(" ", "-")
         return "results/{}.root".format(name)
 
     def __repr__(self):
-        normal = super(AnalysisOutput, self).__repr__()
-        message = 'AnalysisOutput(label="{}"): {}'
+        normal = super(LogItem, self).__repr__()
+        message = 'LogItem(label="{}"): {}'
         return message.format(self.label, normal)
 
 
 @contextmanager
-def open_loggs(name="", stop=False):
-    loggs = AnalysisOutput(name)
+def open_loggs(name="", stop=False, shallow=False):
+    loggs = LogItem(name)
     yield loggs
     if not name:
         return
-    loggs.plot(stop=stop)
+    loggs.save(stop=stop, skip_merged=shallow)
