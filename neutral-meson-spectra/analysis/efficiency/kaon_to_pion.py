@@ -109,16 +109,14 @@ def real_data():
 
 @pytest.fixture
 def mc_data():
-    selection = DataVault().input("pythia8", "kaon2pion",
-                                  listname="PionToKaonRatioOnlyTender")
     return (
         (
-            selection,
-            selection,
+            DataVault().input("pythia8", "kaon2pion"),
+            DataVault().input("pythia8", "kaon2pion"),
         ),
         (
-            selection,
-            selection,
+            DataVault().input("pythia8", "kaon2pion"),
+            DataVault().input("pythia8", "kaon2pion"),
         ),
     )
 
