@@ -20,8 +20,9 @@ def data():
 
 
 @pytest.fixture
-def yield_data(data):
-    return data, data_feeddown()
+def yield_data(data, particle):
+    use_dummy = particle != "#pi^{0}"
+    return data, data_feeddown(dummy=use_dummy)
 
 
 def pion_data():
@@ -48,20 +49,21 @@ def mc(particle):
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle, spmc", [
+@pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
 def test_simple(particle, mc, data, yield_data):
-    estimator = Analysis(Options(particle=particle))
-    with open_loggs("simple test") as loggs:
-        meson = estimator.transform(data, loggs)
+    with open_loggs() as loggs:
+        estimator = Analysis(Options(particle=particle))
+        raw_yield = estimator.transform(data, loggs).spectrum
 
         estimator = Efficiency(CompositeEfficiencyOptions(particle=particle))
         efficiency = estimator.transform(mc, loggs)
 
         estimator = CorrectedYield(
-            CompositeCorrectedYieldOptions(particle="#pi^{0}")
+            CompositeCorrectedYieldOptions(particle=particle)
         )
-        corr_meson = estimator.transform((yield_data, mc), loggs)
-        Comparator().compare([meson, efficiency, corr_meson])
+        corr_yield = estimator.transform((yield_data, mc), loggs)
+        print([raw_yield, efficiency, corr_yield])
+        Comparator().compare([raw_yield, efficiency, corr_yield])

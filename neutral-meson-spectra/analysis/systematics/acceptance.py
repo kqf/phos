@@ -20,6 +20,6 @@ def test_acceptance(particle):
         AcceptanceOptions(particle=particle),
         plot=False)
 
-    with open_loggs("acceptance") as loggs:
+    with open_loggs("acceptance", shallow=True) as loggs:
         uncertanity = estimator.transform(acceptance_data(particle), loggs)
         Comparator().compare(uncertanity)
