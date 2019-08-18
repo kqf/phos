@@ -1,7 +1,7 @@
 .PHONY: integrity-test update-datasets clean
 
 integrity-test:
-	pytest analysis/yield/test_observables.py \
+	pytest analysis/yield/observables.py \
 		analysis/tof/efficiency_tag.py \
 		analysis/efficiency/spmc_efficiency.py
 
