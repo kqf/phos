@@ -18,20 +18,19 @@ def minuit_config():
     ROOT.TVirtualFitter.SetDefaultFitter('Minuit')
 
 
+@pytest.fixture
 def data(selection):
     return DataVault().input("data", "stable", selection, label='test')
 
 
+@pytest.mark.onlylocal
 @pytest.mark.parametrize(("particle, selection"), [
     ("#pi^{0}", "Phys"),
     ("#eta", "Eta"),
 ])
-def test_extracts_spectrum(particle, selection, minuit_config):
+def test_extracts_spectrum(particle, selection, data, minuit_config):
     with open_loggs() as loggs:
-        output = Analysis(Options(particle=particle)).transform(
-            data(selection),
-            loggs
-        )
+        output = Analysis(Options(particle=particle)).transform(data, loggs)
 
     actual = {
         h.GetName(): list(br.bins(h).contents) for h in output
