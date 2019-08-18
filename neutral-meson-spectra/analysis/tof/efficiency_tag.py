@@ -64,7 +64,7 @@ def efficincy_function():
 
 
 def fit_tof_efficiency(dataset):
-    with open_loggs("tof efficiency") as loggs:
+    with open_loggs() as loggs:
         options = ProbeTofOptions()
         options.fitfunc = efficincy_function()
         probe_estimator = TagAndProbe(options, False)

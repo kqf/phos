@@ -27,7 +27,7 @@ def data(selection):
     ("#eta", "Eta"),
 ])
 def test_extracts_spectrum(particle, selection, minuit_config):
-    with open_loggs("signal {}".format(particle)) as loggs:
+    with open_loggs() as loggs:
         output = Analysis(Options(particle=particle)).transform(
             data(selection),
             loggs
