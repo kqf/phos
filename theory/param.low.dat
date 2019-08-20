@@ -25,9 +25,26 @@
 0.12D0         value of ymax
 -0.12D0        value of ymin
 .false.        .false., cross-section at (ymax-ymin)/2.;.true. integrated in y
-1              nb of pt points
-2.0D1          pt value for point 20
-1              choice of the scale:1 pt*c 
+18             nb of pT points
+0.9D0          the 1 pT point
+1.1D0          the 2 pT point
+1.3D0          the 3 pT point
+1.5D0          the 4 pT point
+1.7D0          the 5 pT point
+1.9D0          the 6 pT point
+2.1D0          the 7 pT point
+2.3D0          the 8 pT point
+2.5D0          the 9 pT point
+2.7D0          the 10 pT point
+2.9D0          the 11 pT point
+3.1D0          the 12 pT point
+3.3D0          the 13 pT point
+3.5D0          the 14 pT point
+3.7D0          the 15 pT point
+3.9D0          the 16 pT point
+4.25D0         the 17 pT point
+4.75D0         the 18 pT point
+1              choice of the scale:1 pT*c 
 .5D0           value of c for initial state factorisation scale
 .5D0           value of c for renormalisation scale
 .5D0           value of c for final state factorisation scale
