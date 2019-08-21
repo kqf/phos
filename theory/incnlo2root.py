@@ -5,10 +5,10 @@ import pandas as pd
 from collections import defaultdict
 
 PATTERNS = {
-    "p_T": r"Pt    ({float})",
-    "#sigma_{total}": r"SIGTOT NLL    ({float})",
-    "#sigma_{born}": r"where  BORN =   ({float})",
-    "#sigma_{nlo}": r"HIGH ORDER =   ({float})",
+    "p_T": r"Pt +({float})",
+    "#sigma_{total}": r"SIGTOT NLL +({float})",
+    "#sigma_{born}": r"where  BORN = +({float})",
+    "#sigma_{nlo}": r"HIGH ORDER = +({float})",
     "Kff": r"K factor  fragmentation  NLL/BORN    ({float})"
 }
 FLOAT = r"[+-]?([0-9]*[.])?[0-9]+"
@@ -20,11 +20,7 @@ def parse_incnlo(filename):
         for title, pattern in six.iteritems(PATTERNS):
             match = re.search(pattern.format(float=FLOAT), line)
             if match:
-                data[title].append(match.group(1))
-
-    for title in data:
-        print(title, len(title))
-    return {}
+                data[title].append(float(match.group(1)))
     return data
 
 
