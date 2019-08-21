@@ -7,6 +7,7 @@ import click
 import six
 import pandas as pd
 from collections import defaultdict
+ROOT.TH1.AddDirectory(False)
 
 PATTERNS = {
     "p_T": r"Pt +({float})",
@@ -18,12 +19,12 @@ PATTERNS = {
 
 TITLES = {
     "#sigma_{total}":
-    "#sigma_{total} NLO; E d^3 #sigma/dp^3 (mb GeV); p_T (GeV/c)",
+    "#sigma_{total}; p_{T} (GeV/c); E d^{3} #sigma/dp^{3} (mb GeV)",
     "#sigma_{born}":
-    "#sigma_{born}; E d^3 #sigma/dp^3 (mb GeV); p_T (GeV/c)",
+    "#sigma_{born}; p_{T} (GeV/c); E d^{3} #sigma/dp^{3} (mb GeV)",
     "#sigma_{nlo}":
-    "#sigma_{nlo}; E d^3 #sigma/dp^3 (mb GeV); p_T (GeV/c)",
-    "Kff": "K-factob fragmentation; NLO/Born; p_T (GeV/c)",
+    "#sigma_{nlo}; p_{T} (GeV/c); E d^{3} #sigma/dp^{3} (mb GeV)",
+    "Kff": "K-factor fragmentation; p_{T} (GeV/c); NLO/Born",
 }
 FLOAT = r"[+-]?([0-9]*[.])?[0-9]+"
 
@@ -47,14 +48,25 @@ def data2hists(data, edges):
 
 @click.command()
 @click.option("--filename", type=click.Path(exists=True), required=True)
-def main(filename):
+@click.option("--ofilename", type=click.Path(exists=False), required=True)
+def main(filename, ofilename):
     data = pd.DataFrame(parse_incnlo(filename)).sort_values("p_T")
 
     with open("../neutral-meson-spectra/config/data/pt.json") as f:
         edges = array.array('f', json.load(f)["#pi^{0}"]["ptedges"])
 
-    for title in TITLES:
-        data2hists(data[title], edges)
+    hists = [data2hists(data[title], edges) for title in TITLES]
+    print(hists)
+
+    output = ROOT.TList()
+    # output.SetOwner(True)
+    for hist in hists:
+        output.Add(hist)
+
+    ofile = ROOT.TFile(ofilename, "recreate")
+    output.Write("pQCD", 1)
+    ofile.Write()
+    ofile.Close()
 
 
 if __name__ == '__main__':
