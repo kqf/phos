@@ -39,10 +39,11 @@ def parse_incnlo(filename):
     return data
 
 
-def data2hists(data, edges):
+def data2hists(data, edges, scale=1e9):
     hist = ROOT.TH1F(data.name, TITLES[data.name], len(edges) - 1, edges)
     for i, v in enumerate(data.values):
-        hist.SetBinContent(i, v)
+        # Convert cross sections to mb
+        hist.SetBinContent(i + 1, v / scale)
     return hist
 
 
