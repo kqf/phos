@@ -10,7 +10,7 @@ incnlo.root: param.*.dat incnlo2root.py result.out
 result.%.out: param.%.dat
 	@# Note that inclnll doesn't accept cli arguments, copy the config
 	cp $< param.dat
-	docker run --rm -v ${PWD}:/output akqf/incnlo inclnll 
+	docker run --rm -v ${PWD}:/output akqf/incnlo
 
 	@# Clean the directory
 	rm param.dat
