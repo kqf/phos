@@ -1,6 +1,9 @@
 .PHONY: clean
 
 
+incnlo.root: param.*.dat incnlo2root.py result.out
+	python incnlo2root.py --filename result.out --ofilename $@
+
 %.out: %.low.out %.high.out
 	cat $^ > $@
 

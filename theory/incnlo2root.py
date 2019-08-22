@@ -56,13 +56,9 @@ def main(filename, ofilename):
     with open("../neutral-meson-spectra/config/data/pt.json") as f:
         edges = array.array('f', json.load(f)["#pi^{0}"]["ptedges"])
 
-    hists = [data2hists(data[title], edges) for title in TITLES]
-    print(hists)
-
     output = ROOT.TList()
-    # output.SetOwner(True)
-    for hist in hists:
-        output.Add(hist)
+    for title in TITLES:
+        output.Add(data2hists(data[title], edges))
 
     ofile = ROOT.TFile(ofilename, "recreate")
     output.Write("pQCD", 1)
