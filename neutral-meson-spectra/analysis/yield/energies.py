@@ -5,6 +5,9 @@ from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
+from spectrum.input import SingleHistInput
+
+from vault.datavault import DataVault
 
 
 class HepdataInput(TransformerBase):
@@ -28,6 +31,9 @@ def datasets():
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
     steps = [(l, HepdataInput()) for l in labels]
+    steps.append(("INCNLO 13 TeV", SingleHistInput("#sigma_{total}")))
+    links = list(links)
+    links.append(DataVault().input("theory", "incnlo"))
     return steps, links
 
 
