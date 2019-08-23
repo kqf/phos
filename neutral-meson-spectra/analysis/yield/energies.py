@@ -2,7 +2,7 @@ import pytest
 import json
 import six
 from spectrum.broot import BROOT as br
-from spectrum.pipeline import TransformerBase
+from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
@@ -25,13 +25,29 @@ class HepdataInput(TransformerBase):
         return hist
 
 
+class ErrorsTransformer(TransformerBase):
+    def transform(self, data, loggs):
+        for i in br.range(data):
+            data.SetBinError(i, 0.0001)
+        data.Sumw2()
+        return data
+
+
+def theory_prediction(label):
+    pipeline = Pipeline([
+        ("raw", SingleHistInput("#sigma_{total}")),
+        ("errors", ErrorsTransformer())
+    ])
+    return (label, pipeline)
+
+
 @pytest.fixture
 def datasets():
     with open("config/different-energies.json") as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
     steps = [(l, HepdataInput()) for l in labels]
-    steps.append(("INCNLO 13 TeV", SingleHistInput("#sigma_{total}")))
+    steps.append(theory_prediction("INCNLO 13 TeV"))
     links = list(links)
     links.append(DataVault().input("theory", "incnlo"))
     return steps, links
