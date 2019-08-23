@@ -50,7 +50,7 @@
             "default_selection": "pQCD",
             "description": "Estimated #pi^{0} spectrum via INCNLO software",
             "file": "input-data/theory/pQCD/incnlo.root",
-            "hsum": "9d0b8ec5b3c112e6cf681cfe3949309b49006cf08ee3d51b7b04fcf264ae5d09",
+            "hsum": "076d230bf2f82b3f7c051eaeb1d68b4639c4e2d1320a7d14436da468c5727bec",
             "pt_range": [4.0, 20.0]
         }
     },
