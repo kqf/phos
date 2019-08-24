@@ -48,8 +48,11 @@ def datasets():
     labels, links = zip(*six.iteritems(data))
     steps = [(l, HepdataInput()) for l in labels]
     steps.append(theory_prediction("INCNLO 13 TeV"))
+    steps.append(theory_prediction("INCNLO 7 TeV"))
+
     links = list(links)
     links.append(DataVault().input("theory", "incnlo"))
+    links.append(DataVault().input("theory", "7 TeV"))
     return steps, links
 
 
