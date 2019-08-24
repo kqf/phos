@@ -60,6 +60,9 @@ def test_ep_ratio_data():
     Comparator().compare(output)
 
 
+# Benchmark:
+# In the 5 TeV analysis E/p(data) / E/p (MC) ~ 0.004
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive

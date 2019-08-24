@@ -8,6 +8,9 @@ from spectrum.uncertainties.gscale import GScaleOptions
 from spectrum.uncertainties.gscale import ge_scale_data
 
 
+# Benchmark:
+# In the 5 TeV analysis U_ge ~ 0.01 - 0.03
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive

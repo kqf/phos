@@ -7,6 +7,9 @@ from spectrum.uncertainties.acceptance import Acceptance
 from spectrum.uncertainties.acceptance import AcceptanceOptions
 from spectrum.uncertainties.acceptance import acceptance_data
 
+# Benchmark:
+# In the 5 TeV analysis U_accept ~ 0.018
+
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal

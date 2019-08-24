@@ -9,6 +9,9 @@ from spectrum.uncertainties.yields import YieldExtractioinUncertanityOptions
 from spectrum.uncertainties.yields import yield_extraction_data
 
 
+# Benchmark:
+# In the 5 TeV analysis U_extraction ~ 0.08 - 0.05
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive

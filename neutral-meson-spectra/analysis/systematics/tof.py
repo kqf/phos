@@ -13,6 +13,9 @@ def data():
     return tof_data()
 
 
+# Benchmark:
+# In the 5 TeV analysis U_tof ~ 0.02
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive

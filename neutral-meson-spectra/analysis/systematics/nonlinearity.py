@@ -16,6 +16,9 @@ def nbins():
 #       fix this asap
 
 
+# Benchmark:
+# In the 5 TeV analysis U_nonlin ~ 0.01
+
 @pytest.mark.thesis
 @pytest.mark.interactive
 @pytest.mark.onlylocal
