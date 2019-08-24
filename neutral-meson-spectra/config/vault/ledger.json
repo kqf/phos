@@ -52,6 +52,13 @@
             "file": "input-data/theory/pQCD/incnlo.root",
             "hsum": "076d230bf2f82b3f7c051eaeb1d68b4639c4e2d1320a7d14436da468c5727bec",
             "pt_range": [4.0, 20.0]
+        },
+        "7 TeV": {
+            "default_selection": "pQCD",
+            "description": "Estimated #pi^{0} spectrum  at 7 TeV via INCNLO software",
+            "file": "input-data/theory/pQCD/incnlo.7.tev.root",
+            "hsum": "6a88d3f09d84dc2ce0fb29aff5bb5c30c6953ecfb15a375ad27e40d664765161",
+            "pt_range": [4.0, 20.0]
         }
     },
     "kaon2pion": {
