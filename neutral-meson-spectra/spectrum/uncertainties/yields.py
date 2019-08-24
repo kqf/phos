@@ -36,8 +36,8 @@ class YieldExtractioinUncertanityOptions(object):
             # "wide": [0.08, 0.24]
         }
         self.backgrounds = ["pol2"]
-        self.signals = ["CrystalBall"]
-        self.nsigmas = [2, 3]
+        self.signals = ["CrystalBall", "Gaus"]
+        self.nsigmas = [2]
         self.cyield = cyield
 
 
@@ -88,6 +88,7 @@ class YieldExtractioin(TransformerBase):
         diff.compare_ratios(spectrums, average, loggs=loggs)
 
         uncert, rms, mean = br.systematic_deviation(spectrums)
+        uncert.logy = False
         loggs.update({"uncertainty": uncert})
         loggs.update({"rms": rms})
         loggs.update({"mean": mean})
