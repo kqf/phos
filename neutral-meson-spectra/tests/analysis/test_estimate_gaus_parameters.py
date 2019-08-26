@@ -10,7 +10,7 @@ from vault.datavault import DataVault
 @pytest.fixture
 def data():
     return [
-        DataVault().input("data", histname="MassPtSM0"),
+        # DataVault().input("data", histname="MassPtSM0"),
         DataVault().input("data", histname="MassPtSM0"),
     ]
 
@@ -18,8 +18,12 @@ def data():
 @pytest.fixture
 def options(particle):
     return {
-        "gaus": Options(particle=particle, signal="config/data/cball.json"),
-        "cball": Options(particle=particle, signal="config/data/gaus.json"),
+        # "gaus": Options(particle=particle, signal="config/data/cball.json"),
+        "cball": Options(
+            particle=particle,
+            signal="config/data/gaus.json",
+            background="config/data/gaus.json"
+        ),
     }
 
 
