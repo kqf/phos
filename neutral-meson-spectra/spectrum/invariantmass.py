@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import humanize
 from spectrum.broot import BROOT as br
-from spectrum.parametrisation import PeakParametrisation
+from spectrum.parametrisation import parametrisation
 
 
 def masses2edges(masses):
@@ -58,8 +58,8 @@ class InvariantMass(object):
         self.pt_interval = rmass.pt_interval
 
         # Setup the fit function
-        self._signal = PeakParametrisation.get(options.signal)
-        self._background = PeakParametrisation.get(options.background)
+        self._signal = parametrisation(options.signal)
+        self._background = parametrisation(options.background)
         self.mass_range = self._signal.opt.fit_range
 
         # Extract the data

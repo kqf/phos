@@ -1,6 +1,16 @@
 import ROOT
 
 
+def parametrisation(options):
+    ptype = {
+        'CrystalBall': CrystalBall,
+        'Gaus': Gaus,
+        'CrystalBallEnhanced': CrystalBallEnhanced,
+        'CrystalBallOnly': CrystalBallOnly
+    }.get(options.fitf, None)
+    return ptype(options)
+
+
 class PeakParametrisation(object):
 
     def __init__(self, options):
@@ -73,16 +83,6 @@ class PeakParametrisation(object):
             return ROOT.TF1(fname, bf % (fit_mass * 3), *fit_range)
 
         return ROOT.TF1(fname, self.opt.background + "(0)", *fit_range)
-
-    @staticmethod
-    def get(options):
-        function = {
-            'CrystalBall': CrystalBall,
-            'Gaus': Gaus,
-            'CrystalBallEnhanced': CrystalBallEnhanced,
-            'CrystalBallOnly': CrystalBallOnly
-        }.get(options.fitf, None)
-        return function(options)
 
 
 class CrystalBall(PeakParametrisation):
