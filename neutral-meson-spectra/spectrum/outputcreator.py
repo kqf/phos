@@ -9,12 +9,11 @@ class SpectrumExtractor(object):
 
     def handle_empty_fit(f):
         def wrapper(self, mass):
-            if not mass.fitted():  # TODO: This should be removed?
-                return (0, 0)
             try:
                 return f(self, mass)
             except AttributeError:
-                return (0, 0)
+                print("here")
+                return (1, 0)
         return wrapper
 
     def __init__(self, order=[]):
@@ -35,28 +34,31 @@ class SpectrumExtractor(object):
 
         self.quantities = [rules[q] for q in order]
 
-    def parameter(self, mass, parname, signal=True):
-        position = mass.sigf.GetParNumber(parname)
-        hist = mass.sigf if signal else mass.background_fitted
-        par = hist.GetParameter(position)
-        par_error = hist.GetParError(position)
+    def parameter(self, func, parname):
+        position = func.GetParNumber(parname)
+
+        if position < 0:
+            return 0, 0
+
+        par = func.GetParameter(position)
+        par_error = func.GetParError(position)
         return par, par_error
 
     @handle_empty_fit
     def mass(self, mass):
-        return self.parameter(mass, "M")
+        return self.parameter(mass.sigf, "M")
 
     @handle_empty_fit
     def width(self, mass):
-        return self.parameter(mass, "#sigma")
+        return self.parameter(mass.sigf, "#sigma")
 
     @handle_empty_fit
     def cball_alpha(self, mass):
-        return self.parameter(mass, "#alpha")
+        return self.parameter(mass.sigf, "#alpha")
 
     @handle_empty_fit
     def cball_n(self, mass):
-        return self.parameter(mass, "n")
+        return self.parameter(mass.sigf, "n")
 
     @handle_empty_fit
     def nmesons(self, mass):
@@ -70,17 +72,14 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def background_cball_alpha(self, mass):
-        return self.parameter(mass, "#alpha", signal=False)
+        return self.parameter(mass.background_fitted, "#alpha")
 
     @handle_empty_fit
     def background_cball_n(self, mass):
-        return self.parameter(mass, "n", signal=False)
+        return self.parameter(mass.background_fitted, "n")
 
     @handle_empty_fit
     def background_chi2(self, mass):
-        if not mass.background_fitted:
-            return (0, 0)
-
         ndf = mass.background_fitted.GetNDF()
         ndf = ndf if ndf > 0 else 1
         return (mass.background_fitted.GetChisquare() / ndf, 0)
