@@ -9,7 +9,7 @@
         "prel_mass_limits":  [0.1, 0.2],
         "prel_width_limits": [0.004, 0.030],
         "prel_range":        [0.105, 0.165],
-        "prel_paremeters":   [0.135, 0.010, 0.0],
+        "prel_paremeters":   [0.098, 0.136, 0.008, 0.013, -0.016, 0.02],
         "fit_mass":          0.135,
         "fit_mass_limits":   [0.12, 0.15],
         "fit_width_limits":  [0.001, 0.080],

@@ -54,10 +54,11 @@ class PeakParametrisation(object):
         ff.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
         ff.SetParLimits(1, *self.opt.prel_mass_limits)
         ff.SetParLimits(2, *self.opt.prel_width_limits)
-        ff.SetParameters(hist.GetMaximum() / 3., *self.opt.prel_paremeters)
+        ff.SetParameters(hist.GetMaximum() / 3., *self.opt.prel_parameters)
+        ff.SetParameter(0, hist.GetMaximum() / 3.)
         hist.Fit(ff, "0QL", "", *self.opt.prel_range)
-        par = [ff.GetParameter(i) if i !=
-               1 else self.opt.fit_mass for i in range(4)]
+        par = [ff.GetParameter(i) for i in range(4)]
+        par[1] = self.opt.fit_mass
         fitfun.SetParameters(*par)
         return par
 
