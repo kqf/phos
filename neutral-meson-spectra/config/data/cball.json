@@ -4,18 +4,13 @@
     "#pi^{0}":
     {
         "preliminary": {
-            "mass_limits":  [0.1, 0.2],
-            "width_limits": [0.004, 0.030],
-            "range":        [0.105, 0.165],
-            "parameters":   [0, 0.135, 0.010, 0.0],
-            "par_names":    ["A", "M", "#sigma", "a_{0}"]
+            "mass_limits":   [0.1, 0.2],
+            "width_limits":  [0.004, 0.030],
+            "range":         [0.105, 0.165],
+            "parameters":    [0, 0.135, 0.010, 0.0],
+            "par_names":     ["A", "M", "#sigma", "a_{0}"]
         },
         "fit_range":         [0.06, 0.22],
-        "prel_area_limits":  1.5,
-        "prel_mass_limits":  [0.1, 0.2],
-        "prel_width_limits": [0.004, 0.030],
-        "prel_range":        [0.105, 0.165],
-        "prel_parameters":   [0.135, 0.010, 0.0],
         "fit_mass":          0.135,
         "fit_mass_limits":   [0.12, 0.15],
         "fit_width_limits":  [0.001, 0.080],
@@ -29,18 +24,13 @@
     "#eta":
     {
         "preliminary": {
-            "mass_limits":  [0.5, 0.6],
-            "width_limits": [0.004, 0.030],
-            "range":        [0.49, 0.6],
-            "parameters":   [0, 0.547, 0.010, 0.0],
-            "par_names":    ["A", "M", "#sigma", "a_{0}"]
+            "mass_limits":   [0.5, 0.6],
+            "width_limits":  [0.004, 0.030],
+            "range":         [0.49, 0.6],
+            "parameters":    [0, 0.547, 0.010, 0.0],
+            "par_names":     ["A", "M", "#sigma", "a_{0}"]
         },
         "fit_range":         [0.4, 0.7],
-        "prel_area_limits":  1.5,
-        "prel_mass_limits":  [0.5, 0.6],
-        "prel_width_limits": [0.004, 0.030],
-        "prel_range":        [0.49, 0.6],
-        "prel_parameters":   [0.547, 0.010, 0.0],
         "fit_mass":          0.547,
         "fit_mass_limits":   [0.520, 0.570],
         "fit_width_limits":  [0.004,0.050],
