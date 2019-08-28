@@ -14,16 +14,7 @@ class PeakParametrisation(object):
     def __init__(self, options):
         super(PeakParametrisation, self).__init__()
         ROOT.gStyle.SetOptFit()
-
         self.opt = options
-        funcname = self.__class__.__name__
-        # Initiate signal function
-        self.signal = self.form_fitting_function(funcname)
-        self.background = self.form_background()
-        formula = "{0} + {1}".format(self.signal.GetName(),
-                                     self.background.GetName())
-        self.fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
-        self.fitfun.SetNpx(1000)
 
     def _set_background_parameters(self, fitfun, background):
         npar, nparb = fitfun.GetNpar(), background.GetNpar()
@@ -40,6 +31,15 @@ class PeakParametrisation(object):
         if (not hist) or (hist.GetEntries() == 0):
             return None, None
 
+        # Initiate signal function
+        funcname = self.__class__.__name__
+        self.signal = self.form_fitting_function(funcname)
+        self.background = self.form_background()
+        formula = "{0} + {1}".format(self.signal.GetName(),
+                                     self.background.GetName())
+
+        self.fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
+        self.fitfun.SetNpx(1000)
         self.fitfun.SetParNames(*self.opt.par_names)
         self.fitfun.SetLineColor(46)
         self.fitfun.SetLineWidth(2)
