@@ -10,6 +10,11 @@ def parametrisation(options):
 
 
 class PeakParametrisation(object):
+    pols = {
+        "pol1": "[0] + [1]*x",
+        "pol2": "[0] + [1]*(x-{mass:.3f}) + [2]*(x-{mass:.3f})^2",
+        "pol3": "[0] + [1]*(x-{mass:.3f}) + [2]*(x-{mass:.3f})^2 + [3] * x^(x-{mass:.3f})^3",  # noqa
+    }
 
     def __init__(self, options):
         super(PeakParametrisation, self).__init__()
@@ -35,15 +40,13 @@ class PeakParametrisation(object):
         funcname = self.__class__.__name__
         signal = self.form_fitting_function(funcname)
         background = self.form_background()
-        formula = "{0} + {1}".format(signal.GetName(),
-                                     background.GetName())
+        formula = "{0} + {1}".format(signal.GetName(), background.GetName())
 
         fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
         fitfun.SetNpx(1000)
         fitfun.SetParNames(*self.opt.par_names)
         fitfun.SetLineColor(46)
         fitfun.SetLineWidth(2)
-
         pars = self._preliminary_fit(hist)
 
         self._setup_limits(fitfun, hist.GetMaximum())
@@ -67,18 +70,8 @@ class PeakParametrisation(object):
         return par
 
     def form_background(self, fname="background"):
-        fit_mass = (self.opt.fit_mass,)
-        fit_range = self.opt.fit_range
-
-        if 'pol2' in self.opt.background:
-            bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2"
-            return ROOT.TF1(fname, bf % (fit_mass * 2), *fit_range)
-
-        if 'pol3' in self.opt.background:
-            bf = "[0] + [1]*(x-%.3f) + [2]*(x-%.3f)^2 + [3] * x^(x-%.3f)^3"
-            return ROOT.TF1(fname, bf % (fit_mass * 3), *fit_range)
-
-        return ROOT.TF1(fname, self.opt.background + "(0)", *fit_range)
+        pol = self.pols[self.opt.background].format(mass=self.opt.fit_mass)
+        return ROOT.TF1(fname, pol, *self.opt.fit_range)
 
 
 class CrystalBall(PeakParametrisation):
@@ -87,12 +80,12 @@ class CrystalBall(PeakParametrisation):
         super(CrystalBall, self).__init__(options)
 
     def form_fitting_function(self, name='cball'):
-        alpha, n = '[3]', '[4]'  # alpha >= 0, n > 1
+        # alpha, n = '[3]', '[4]' (alpha >= 0, n > 1)
         a = 'TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])'
         b = '[4] / [3] - [3]'
-        cff = "(x-[1])/[2] > -%s ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : " \
-            "[0]*%s*(%s-(x-[1])/[2])^(-%s)"
-        signal = ROOT.TF1(name, cff % (alpha, a, b, n))
+        cff = "(x-[1])/[2] > -[3] ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : " \
+            "[0]*{a}*({b}-(x-[1])/[2])^(-[4])"
+        signal = ROOT.TF1(name, cff.format(a=a, b=b))
         return signal
 
     def _setup_limits(self, fitfun, maximum):
