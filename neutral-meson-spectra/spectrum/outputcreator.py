@@ -12,7 +12,6 @@ class SpectrumExtractor(object):
             try:
                 return f(self, mass)
             except AttributeError:
-                print("here")
                 return (1, 0)
         return wrapper
 

@@ -42,13 +42,14 @@ class PeakParametrisation(object):
         if (not hist) or (hist.GetEntries() == 0):
             return None, None
 
-        self._setup_parameters(self.fitfun, hist)
+        pars = self.preliminary_fit(hist)
+        self._setup_parameters(self.fitfun, pars, hist.GetMaximum())
         self._set_no_signal(self.fitfun, is_mixing)
         hist.Fit(self.fitfun, "RQM", "")
         self._set_background_parameters(self.fitfun, self.background)
         return self.fitfun, self.background
 
-    def preliminary_fit(self, hist, fitfun):
+    def preliminary_fit(self, hist):
         # make a preliminary fit to estimate parameters
         ff = ROOT.TF1("fastfit", "gaus(0) + [3]")
         ff.SetParLimits(0, 0., hist.GetMaximum() * 1.5)
@@ -59,7 +60,6 @@ class PeakParametrisation(object):
         hist.Fit(ff, "0QL", "", *self.opt.preliminary.range)
         par = [ff.GetParameter(i) for i in range(4)]
         par[1] = self.opt.fit_mass
-        fitfun.SetParameters(*par)
         return par
 
     def _setup_parameters(self, fitfun, hist):
@@ -100,8 +100,13 @@ class CrystalBall(PeakParametrisation):
         signal = ROOT.TF1(name, cff % (alpha, a, b, n))
         return signal
 
-    def _setup_parameters(self, fitfun, hist):
-        pars = super(CrystalBall, self)._setup_parameters(fitfun, hist)
+    def _setup_parameters(self, fitfun, pars, maximum):
+        fitfun.SetParNames(*self.opt.par_names)
+        fitfun.SetLineColor(46)
+        fitfun.SetLineWidth(2)
+        fitfun.SetParLimits(0, 0., maximum * 1.5)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
         fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
         fitfun.SetParLimits(4, *self.opt.cb_n_limits)
         fitfun.SetParameters(
