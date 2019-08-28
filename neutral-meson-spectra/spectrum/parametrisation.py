@@ -25,7 +25,7 @@ class PeakParametrisation(object):
     def _set_no_signal(self, fitfun, is_mixing=False):
         if not is_mixing:
             return
-        self.fitfun.FixParameter(0, 0)
+        fitfun.FixParameter(0, 0)
 
     def fit(self, hist, is_mixing=False):
         if (not hist) or (hist.GetEntries() == 0):
@@ -33,25 +33,25 @@ class PeakParametrisation(object):
 
         # Initiate signal function
         funcname = self.__class__.__name__
-        self.signal = self.form_fitting_function(funcname)
-        self.background = self.form_background()
-        formula = "{0} + {1}".format(self.signal.GetName(),
-                                     self.background.GetName())
+        signal = self.form_fitting_function(funcname)
+        background = self.form_background()
+        formula = "{0} + {1}".format(signal.GetName(),
+                                     background.GetName())
 
-        self.fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
-        self.fitfun.SetNpx(1000)
-        self.fitfun.SetParNames(*self.opt.par_names)
-        self.fitfun.SetLineColor(46)
-        self.fitfun.SetLineWidth(2)
+        fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
+        fitfun.SetNpx(1000)
+        fitfun.SetParNames(*self.opt.par_names)
+        fitfun.SetLineColor(46)
+        fitfun.SetLineWidth(2)
 
         pars = self._preliminary_fit(hist)
 
-        self._setup_limits(self.fitfun, hist.GetMaximum())
-        self._setup_parameters(self.fitfun, pars)
-        self._set_no_signal(self.fitfun, is_mixing)
-        hist.Fit(self.fitfun, "RQM", "")
-        self._set_background_parameters(self.fitfun, self.background)
-        return self.fitfun, self.background
+        self._setup_limits(fitfun, hist.GetMaximum())
+        self._setup_parameters(fitfun, pars)
+        self._set_no_signal(fitfun, is_mixing)
+        hist.Fit(fitfun, "RQM", "")
+        self._set_background_parameters(fitfun, background)
+        return fitfun, background
 
     def _preliminary_fit(self, hist):
         # make a preliminary fit to estimate parameters
