@@ -79,7 +79,7 @@ class CrystalBall(PeakParametrisation):
     def __init__(self, options):
         super(CrystalBall, self).__init__(options)
 
-    def form_fitting_function(self, name='cball'):
+    def form_fitting_function(self, name='signal'):
         # alpha, n = '[3]', '[4]' (alpha >= 0, n > 1)
         a = 'TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])'
         b = '[4] / [3] - [3]'
@@ -87,13 +87,6 @@ class CrystalBall(PeakParametrisation):
             "[0]*{a}*({b}-(x-[1])/[2])^(-[4])"
         signal = ROOT.TF1(name, cff.format(a=a, b=b))
         return signal
-
-    def _setup_limits(self, fitfun, maximum):
-        fitfun.SetParLimits(0, 0., maximum * 1.5)
-        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
-        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
-        fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
-        fitfun.SetParLimits(4, *self.opt.cb_n_limits)
 
     def _setup_parameters(self, fitfun, pars):
         fitfun.SetParameters(
@@ -103,11 +96,26 @@ class CrystalBall(PeakParametrisation):
             fitfun.FixParameter(3, self.opt.cb_alpha)
             fitfun.FixParameter(4, self.opt.cb_n)
 
+    def _setup_limits(self, fitfun, maximum):
+        fitfun.SetParLimits(0, 0., maximum * 1.5)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
+        fitfun.SetParLimits(3, *self.opt.cb_alpha_limits)
+        fitfun.SetParLimits(4, *self.opt.cb_n_limits)
+
 
 class Gaus(PeakParametrisation):
     def __init__(self, options):
         super(Gaus, self).__init__(options)
 
-    def form_fitting_function(self, name='cball'):
-        signal = ROOT.TF1(name, "gaus(0)")
+    def form_fitting_function(self, name='signal'):
+        signal = ROOT.TF1(name, "gaus")
         return signal
+
+    def _setup_parameters(self, fitfun, pars):
+        fitfun.SetParameters(*pars)
+
+    def _setup_limits(self, fitfun, maximum):
+        fitfun.SetParLimits(0, 0., maximum * 1.5)
+        fitfun.SetParLimits(1, *self.opt.fit_mass_limits)
+        fitfun.SetParLimits(2, *self.opt.fit_width_limits)
