@@ -1,5 +1,7 @@
 import ROOT
 
+from spectrum.broot import BROOT as br
+
 
 def parametrisation(options):
     ptype = {
@@ -37,12 +39,10 @@ class PeakParametrisation(object):
             return None, None
 
         # Initiate signal function
-        funcname = self.__class__.__name__
-        signal = self.form_fitting_function(funcname)
+        signal = self.form_fitting_function()
         background = self.form_background()
-        formula = "{0} + {1}".format(signal.GetName(), background.GetName())
-
-        fitfun = ROOT.TF1("fitfun", formula, *self.opt.fit_range)
+        fitfun = br.tf1_sum(signal, background)
+        fitfun.SetRange(*self.opt.fit_range)
         fitfun.SetNpx(1000)
         fitfun.SetParNames(*self.opt.par_names)
         fitfun.SetLineColor(46)
