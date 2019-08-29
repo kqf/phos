@@ -19,7 +19,7 @@ def data():
 def options(particle):
     return {
         # "gaus": Options(particle=particle, signal="config/data/cball.json"),
-        "cball": Options(
+        "gaus": Options(
             particle=particle,
             signal="config/data/gaus.json",
             background="config/data/gaus.json"

@@ -1,21 +1,19 @@
 import ROOT
 
-from spectrum.broot import BROOT as br
-
 
 def parametrisation(options):
     ptype = {
-        'CrystalBall': CrystalBall,
-        'Gaus': Gaus,
+        "CrystalBall": CrystalBall,
+        "Gaus": Gaus,
     }.get(options.fitf, None)
     return ptype(options)
 
 
 class PeakParametrisation(object):
     pols = {
-        "pol1": "[0] + [1]*x",
-        "pol2": "[0] + [1]*(x-{mass:.3f}) + [2]*(x-{mass:.3f})^2",
-        "pol3": "[0] + [1]*(x-{mass:.3f}) + [2]*(x-{mass:.3f})^2 + [3] * x^(x-{mass:.3f})^3",  # noqa
+        "pol1": "[{start} + 0] + [{start} + 1]*x",
+        "pol2": "[{start} + 0] + [{start} + 1]*(x-{mass:.3f}) + [{start} + 2]*(x-{mass:.3f})^2",  # noqa
+        "pol3": "[{start} + 0] + [{start} + 1]*(x-{mass:.3f}) + [{start} + 2]*(x-{mass:.3f})^2 + [{start} + 3] * x^(x-{mass:.3f})^3",  # noqa
     }
 
     def __init__(self, options):
@@ -39,9 +37,9 @@ class PeakParametrisation(object):
             return None, None
 
         # Initiate signal function
-        signal = self.form_fitting_function()
+        signal = self.form_fitting_function(self.npars_signal)
         background = self.form_background()
-        fitfun = br.tf1_sum(signal, background)
+        fitfun = ROOT.TF1("fitfun", "({}) + ({})".format(signal, background))
         fitfun.SetRange(*self.opt.fit_range)
         fitfun.SetNpx(1000)
         fitfun.SetParNames(*self.opt.par_names)
@@ -53,8 +51,11 @@ class PeakParametrisation(object):
         self._setup_parameters(fitfun, pars)
         self._set_no_signal(fitfun, is_mixing)
         hist.Fit(fitfun, "RQM", "")
-        self._set_background_parameters(fitfun, background)
-        return fitfun, background
+        self.background = ROOT.TF1(
+            "background",
+            self.form_background(0), *self.opt.fit_range)
+        self._set_background_parameters(fitfun, self.background)
+        return fitfun, self.background
 
     def _preliminary_fit(self, hist):
         # make a preliminary fit to estimate parameters
@@ -70,23 +71,24 @@ class PeakParametrisation(object):
         return par
 
     def form_background(self, fname="background"):
-        pol = self.pols[self.opt.background].format(mass=self.opt.fit_mass)
-        return ROOT.TF1(fname, pol, *self.opt.fit_range)
+        template = self.pols[self.opt.background]
+        return template.format(start=self.npars_signal, mass=self.opt.fit_mass)
 
 
 class CrystalBall(PeakParametrisation):
+    npars_signal = 5
 
     def __init__(self, options):
         super(CrystalBall, self).__init__(options)
 
-    def form_fitting_function(self, name='signal'):
-        # alpha, n = '[3]', '[4]' (alpha >= 0, n > 1)
-        a = 'TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])'
-        b = '[4] / [3] - [3]'
-        cff = "(x-[1])/[2] > -[3] ? [0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) : " \
-            "[0]*{a}*({b}-(x-[1])/[2])^(-[4])"
-        signal = ROOT.TF1(name, cff.format(a=a, b=b))
-        return signal
+    def form_fitting_function(self, name="signal"):
+        # alpha, n = "[3]", "[4]" (alpha >= 0, n > 1)
+        a = "TMath::Exp(-[3] * [3] / 2.) * TMath::Power([4] / [3], [4])"
+        b = "[4] / [3] - [3]"
+        gaus = "[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))"
+        shoulder = "[0]*{a}*({b}-(x-[1])/[2])^(-[4])".format(a=a, b=b)
+        cball = "((x-[1])/[2] > -[3] ? {gaus} : {shoulder})"
+        return cball.format(gaus=gaus, shoulder=shoulder)
 
     def _setup_parameters(self, fitfun, pars):
         fitfun.SetParameters(
@@ -105,12 +107,13 @@ class CrystalBall(PeakParametrisation):
 
 
 class Gaus(PeakParametrisation):
+    npars_signal = 3
+
     def __init__(self, options):
         super(Gaus, self).__init__(options)
 
-    def form_fitting_function(self, name='signal'):
-        signal = ROOT.TF1(name, "gaus")
-        return signal
+    def form_fitting_function(self, name="signal"):
+        return "gaus(0)"
 
     def _setup_parameters(self, fitfun, pars):
         fitfun.SetParameters(*pars)
