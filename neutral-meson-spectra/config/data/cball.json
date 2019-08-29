@@ -20,7 +20,6 @@
         "cb_alpha_limits":   [0, 2],
         "background": "pol2"
     },
-
     "#eta":
     {
         "preliminary": {

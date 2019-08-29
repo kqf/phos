@@ -6,6 +6,9 @@ integrity-test:
 		analysis/efficiency/spmc_efficiency.py
 
 
+simple-test:
+	pytest -s analysis/yield/observables.py
+
 update-datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.
 
