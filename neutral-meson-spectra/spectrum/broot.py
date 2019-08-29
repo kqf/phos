@@ -609,3 +609,14 @@ class BROOT(object):
             ones.SetBinContent(i, 1)
             ones.SetBinError(i, 0)
         return ones
+
+    @classmethod
+    def tf1_sum(klass, func1, func2, name="sum"):
+        np1, np2 = func2.GetNpar(), func2.GetNpar()
+        start, stop = ROOT.Double(), ROOT.Double()
+        func1.GetRange(start, stop)
+
+        def summed(x, par):
+            par = array.array('d', par)
+            return func1.EvalPar(x, par[:np1]) + func2.EvalPar(x, par[np1:])
+        return ROOT.TF1(name, summed, start, stop, np1 + np2)
