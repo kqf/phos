@@ -64,8 +64,7 @@ class MassFitter(object):
         pipeline = self._pipeline()
 
         for estimator in pipeline:
-            for mass in masses["invmasses"].values:
-                estimator.transform(mass)
+            estimator.transform(masses, loggs)
 
         return masses
 

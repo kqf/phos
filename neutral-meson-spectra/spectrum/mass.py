@@ -7,10 +7,18 @@ from spectrum.broot import BROOT as br
 
 
 # TODO: Remove all checks if not: return
+class MassTransformer(object):
+    in_col = "invmasses"
 
-class BackgroundEstimator(object):
+    def transform(self, data, loggs):
+        data[self.out_col] = data[self.in_col].apply(self.apply)
+        return data
 
-    def transform(self, mass):
+
+class BackgroundEstimator(MassTransformer):
+    out_col = "background"
+
+    def apply(self, mass):
         if not mass.mass.GetEntries():
             return mass.mass
 
@@ -23,9 +31,10 @@ class BackgroundEstimator(object):
         return mass
 
 
-class SignalExtractor(object):
+class SignalExtractor(MassTransformer):
+    out_col = "signal"
 
-    def transform(self, mass):
+    def apply(self, mass):
         if not mass.mass or not mass.mass.GetEntries():
             return mass
 
@@ -46,9 +55,10 @@ class SignalExtractor(object):
         return mass.signal
 
 
-class SignalFitter(object):
+class SignalFitter(MassTransformer):
+    out_col = "signal_fit"
 
-    def transform(self, mass):
+    def apply(self, mass):
         mass.sigf, mass.bgrf = mass._signal.fit(mass.signal)
         # mass.signal.Draw()
         # mass.signal.Draw("same")
@@ -60,9 +70,10 @@ class SignalFitter(object):
         return mass
 
 
-class MixingBackgroundEstimator(object):
+class MixingBackgroundEstimator(MassTransformer):
+    out_col = "signal"
 
-    def transform(self, mass):
+    def apply(self, mass):
         if not mass.mass.GetEntries():
             return mass
 
@@ -85,7 +96,7 @@ class MixingBackgroundEstimator(object):
         return mass
 
 
-class ZeroBinsCleaner(object):
+class ZeroBinsCleaner(MassTransformer):
     """
     Warning: this estimator mutates masses and backgrounds
     The problem:
@@ -93,8 +104,9 @@ class ZeroBinsCleaner(object):
         it's not a well determined operation when subtracting empty - nonempty
         replace empty bins with interpolations
     """
+    out_col = "masses_cleaned"
 
-    def transform(self, mass):
+    def apply(self, mass):
         if not mass.background:
             return mass
 
