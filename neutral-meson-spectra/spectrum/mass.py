@@ -39,67 +39,71 @@ class BackgroundEstimator(MassTransformer):
 
 
 class SignalExtractor(MassTransformer):
+    in_cols = ["invmasses", "mass", "background"]
     out_col = "signal"
 
-    def apply(self, mass):
-        if not mass.mass or not mass.mass.GetEntries():
+    def transform(self, data, loggs):
+        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
+        return data
+
+    def apply(self, data):
+        imass, mass, background = data[self.in_cols]
+        if not mass or not mass.GetEntries():
             return mass
 
-        if not mass.background:
-            mass.signal = mass.mass
-            return mass.signal
-
         # Subtraction
-        mass.signal = mass.mass.Clone()
-        mass.signal.Add(mass.background, -1.)
+        imass.signal = mass.Clone()
+        imass.signal.Add(background, -1.)
 
-        # mass.signal = mass.mass.Clone()
-        # mass.signal.Sumw2(True)
-        # mass.signal.Add(mass.mass, mass.background.GetHistogram(), 1, -1.)
         # TODO: SetAxisRange aswell
-        mass.signal.SetAxisRange(*mass.mass_range)
-        mass.signal.GetYaxis().SetTitle("Real - background")
-        return mass.signal
+        imass.signal.SetAxisRange(*imass.mass_range)
+        imass.signal.GetYaxis().SetTitle("Real - background")
+        return imass.signal
 
 
 class SignalFitter(MassTransformer):
-    out_col = "signal_fit"
+    in_cols = ["invmasses", "signal"]
+    out_col = "signal_fitf"
 
-    def apply(self, mass):
-        mass.sigf, mass.bgrf = mass._signal.fit(mass.signal)
-        # mass.signal.Draw()
-        # mass.signal.Draw("same")
-        # mass.mass.Fit(mass.sigf, "R")
-        # mass.mass.Draw()
-        # canvas = ROOT.gROOT.FindObject("c1")
-        # canvas.Update()
-        # raw_input("testing the inputs")
-        return mass
+    def transform(self, data, loggs):
+        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
+        return data
+
+    def apply(self, data):
+        imass, signal = data[self.in_cols]
+        imass.sigf, imass.bgrf = imass._signal.fit(signal)
+        return imass.sigf
 
 
 class MixingBackgroundEstimator(MassTransformer):
+    in_cols = ["invmasses", "mass", "background"]
     out_col = "signal"
 
-    def apply(self, mass):
-        if not mass.mass.GetEntries():
+    def transform(self, data, loggs):
+        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
+        return data
+
+    def apply(self, data):
+        imass, mass, background = data[self.in_cols]
+        if not mass.GetEntries():
             return mass
 
-        if not mass.background:
+        if not background:
             return mass
 
-        ratio = br.ratio(mass.mass, mass.background, '')
+        ratio = br.ratio(mass, background, '')
         ratio.GetYaxis().SetTitle("Same event / mixed event")
 
         if ratio.GetEntries() == 0:
             return mass
 
-        fitf, bckgrnd = mass._background.fit(ratio)
-        mass.background.Multiply(bckgrnd)
-        mass.background.SetLineColor(46)
-        mass.ratio = ratio
+        fitf, bckgrnd = imass._background.fit(ratio)
+        background.Multiply(bckgrnd)
+        background.SetLineColor(46)
+        imass.ratio = ratio
 
-        # mass.background = bckgrnd
-        mass.background_fitted = fitf
+        # background = bckgrnd
+        imass.background_fitted = fitf
         return mass
 
 
