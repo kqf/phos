@@ -51,6 +51,11 @@ class InvariantMassExtractor(object):
     def transform(self, rmasses, loggs):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(x, self.opt))
+        rmasses["mass"] = rmasses["invmasses"].apply(lambda x: x.mass)
+        rmasses["background"] = rmasses["invmasses"].apply(
+            lambda x: x.background)
+        rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
+        rmasses["pt_label"] = rmasses["invmasses"].apply(lambda x: x.pt_label)
         return rmasses
 
 

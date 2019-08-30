@@ -16,19 +16,26 @@ class MassTransformer(object):
 
 
 class BackgroundEstimator(MassTransformer):
+    in_cols = ["invmasses", "mass"]
     out_col = "background"
 
-    def apply(self, mass):
-        if not mass.mass.GetEntries():
-            return mass.mass
+    def transform(self, data, loggs):
+        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
+        return data
 
-        sigf, bgrf = mass._background.fit(mass.mass)
+    def apply(self, data):
+        imass, mass = data[self.in_cols]
+
+        if not mass.GetEntries():
+            return mass
+
+        sigf, bgrf = imass._background.fit(mass)
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
-        mass.background = bgrf
-        mass.background_fitted = sigf
-        return mass
+        imass.background = bgrf
+        imass.background_fitted = sigf
+        return bgrf
 
 
 class SignalExtractor(MassTransformer):
@@ -40,7 +47,7 @@ class SignalExtractor(MassTransformer):
 
         if not mass.background:
             mass.signal = mass.mass
-            return mass
+            return mass.signal
 
         # Subtraction
         mass.signal = mass.mass.Clone()
