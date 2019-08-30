@@ -88,9 +88,6 @@ class MixingBackgroundEstimator(MassTransformer):
         if not mass.GetEntries():
             return mass
 
-        if not background:
-            return mass
-
         ratio = br.ratio(mass, background, '')
         ratio.GetYaxis().SetTitle("Same event / mixed event")
 
@@ -115,27 +112,28 @@ class ZeroBinsCleaner(MassTransformer):
         it's not a well determined operation when subtracting empty - nonempty
         replace empty bins with interpolations
     """
+    in_cols = ["invmasses", "mass", "background"]
     out_col = "masses_cleaned"
 
-    def apply(self, mass):
-        if not mass.background:
-            return mass
+    def transform(self, data, loggs):
+        data[self.in_cols].apply(self.apply, axis=1)
+        return data
 
+    def apply(self, data):
+        imass, mass, background = data[self.in_cols]
         zeros = set()
-
-        zsig = br.empty_bins(mass.mass, mass.opt.tol)
+        zsig = br.empty_bins(mass, imass.opt.tol)
 
         # if mass.background else []
-        zmix = br.empty_bins(mass.background, mass.opt.tol)
+        zmix = br.empty_bins(background, imass.opt.tol)
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
 
         # Remove all zero bins and don't
         # touch bins that are zeros in both cases.
         #
-        mass.mass = self._clean_histogram(mass.mass, zeros, mass)
-        mass.background = self._clean_histogram(
-            mass.background, zeros, mass, True)
+        mass = self._clean_histogram(mass, zeros, imass)
+        background = self._clean_histogram(background, zeros, imass, True)
         return mass
 
     def _clean_histogram(self, h, zeros, mass, is_background=False):
