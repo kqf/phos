@@ -11,7 +11,8 @@ class MassTransformer(object):
     in_col = "invmasses"
 
     def transform(self, data, loggs):
-        data[self.out_col] = data[self.in_col].apply(self.apply)
+        data[self.out_col] = data[self.in_cols].apply(
+            lambda data: self.apply(*data[self.in_cols]), axis=1)
         return data
 
 
@@ -19,13 +20,7 @@ class BackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "mass"]
     out_col = "background"
 
-    def transform(self, data, loggs):
-        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
-        return data
-
-    def apply(self, data):
-        imass, mass = data[self.in_cols]
-
+    def apply(self, imass, mass):
         if not mass.GetEntries():
             return mass
 
@@ -42,12 +37,7 @@ class SignalExtractor(MassTransformer):
     in_cols = ["invmasses", "mass", "background"]
     out_col = "signal"
 
-    def transform(self, data, loggs):
-        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
-        return data
-
-    def apply(self, data):
-        imass, mass, background = data[self.in_cols]
+    def apply(self, imass, mass, background):
         if not mass or not mass.GetEntries():
             return mass
 
@@ -65,12 +55,7 @@ class SignalFitter(MassTransformer):
     in_cols = ["invmasses", "signal"]
     out_col = "signal_fitf"
 
-    def transform(self, data, loggs):
-        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
-        return data
-
-    def apply(self, data):
-        imass, signal = data[self.in_cols]
+    def apply(self, imass, signal):
         imass.sigf, imass.bgrf = imass._signal.fit(signal)
         return imass.sigf
 
@@ -79,12 +64,7 @@ class MixingBackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "mass", "background"]
     out_col = "signal"
 
-    def transform(self, data, loggs):
-        data[self.out_col] = data[self.in_cols].apply(self.apply, axis=1)
-        return data
-
-    def apply(self, data):
-        imass, mass, background = data[self.in_cols]
+    def apply(self, imass, mass, background):
         if not mass.GetEntries():
             return mass
 
@@ -113,14 +93,9 @@ class ZeroBinsCleaner(MassTransformer):
         replace empty bins with interpolations
     """
     in_cols = ["invmasses", "mass", "background"]
-    out_col = "masses_cleaned"
+    out_col = "invmasses"
 
-    def transform(self, data, loggs):
-        data[self.in_cols].apply(self.apply, axis=1)
-        return data
-
-    def apply(self, data):
-        imass, mass, background = data[self.in_cols]
+    def apply(self, imass, mass, background):
         zeros = set()
         zsig = br.empty_bins(mass, imass.opt.tol)
 
@@ -134,7 +109,7 @@ class ZeroBinsCleaner(MassTransformer):
         #
         mass = self._clean_histogram(mass, zeros, imass)
         background = self._clean_histogram(background, zeros, imass, True)
-        return mass
+        return imass
 
     def _clean_histogram(self, h, zeros, mass, is_background=False):
         if not mass.opt.clean_empty_bins:
