@@ -37,7 +37,7 @@ class YieldExtractioinUncertanityOptions(object):
         }
         self.backgrounds = ["pol2", "pol1"]
         self.signals = ["CrystalBall", "Gaus"]
-        self.nsigmas = [2]
+        self.nsigmas = [2, 3]
         self.cyield = cyield
 
 
@@ -77,6 +77,7 @@ class YieldExtractioin(TransformerBase):
                             # loggs.update({label: loggs_local})
                         spectrum.marker = marker
                         spectrum.label = label
+                        spectrum.logy = False
                         spectrums.append(spectrum)
                         pbar.update()
         pbar.close()

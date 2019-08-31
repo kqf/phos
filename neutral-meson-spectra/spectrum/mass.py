@@ -6,7 +6,6 @@ import spectrum.sutils as su
 from spectrum.broot import BROOT as br
 
 
-# TODO: Remove all checks if not: return
 class MassTransformer(object):
     in_col = "invmasses"
 
@@ -21,9 +20,6 @@ class BackgroundEstimator(MassTransformer):
     out_col = "background"
 
     def apply(self, imass, mass):
-        if not mass.GetEntries():
-            return mass
-
         sigf, bgrf = imass._background.fit(mass)
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
@@ -63,14 +59,8 @@ class MixingBackgroundEstimator(MassTransformer):
     out_col = "signal"
 
     def apply(self, imass, mass, background):
-        if not mass.GetEntries():
-            return mass
-
         ratio = br.ratio(mass, background, '')
         ratio.GetYaxis().SetTitle("Same event / mixed event")
-
-        if ratio.GetEntries() == 0:
-            return mass
 
         fitf, bckgrnd = imass._background.fit(ratio)
         background.Multiply(bckgrnd)

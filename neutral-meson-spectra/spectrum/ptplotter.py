@@ -65,11 +65,9 @@ class MassesPlot(object):
             berrors = berrors[roi]
             return bins, berrors
 
-        try:
-            mbins, merrors = bins_errors(mass, *limits)
-            sbins, serrors = bins_errors(signal, *limits)
-        except:
-            import ipdb; ipdb.set_trace()
+        mbins, merrors = bins_errors(mass, *limits)
+        sbins, serrors = bins_errors(signal, *limits)
+
         yaxis.SetRangeUser(
             min(sbins) - 2 * max(serrors),
             max(mbins) + 3 * max(merrors)
