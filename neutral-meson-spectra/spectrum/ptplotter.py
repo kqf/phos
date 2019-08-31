@@ -9,23 +9,23 @@ from spectrum.broot import BROOT as br
 class MassesPlot(object):
 
     def transform(self, imass, pad):
-        su.ticks(pad)
-        if not imass.signal:
-            return
+        self._evaluate(imass.mass, imass.sigf, imass.background, imass.signal,
+                       imass.bgrf, imass.initial_fitting_region,
+                       imass.integration_region, pad)
 
+    def _evaluate(self, mass, sigf, background, signal, bgrf,
+                  initial_fitting_region, integration_region, pad):
+        su.ticks(pad)
         ci = br.define_colors()
         pad.cd()
-
-        self._set_axis_limits(imass)
-        self.draw(imass.mass, "histe")
-        if imass.sigf:
-            imass.sigf.SetLineStyle(9)
-        self.draw(imass.sigf, color=ci[1])
-        self.draw(imass.background, color=ci[1])
-        self.draw(imass.signal, color=ci[2])
-        self.draw(imass.bgrf, color=ci[5])
-        self.draw_chisquare(imass.sigf)
-        self._draw_line(imass)
+        self._set_axis_limits(mass, signal, initial_fitting_region)
+        self.draw(mass, "histe")
+        self.draw(sigf, color=ci[1])
+        self.draw(background, color=ci[1])
+        self.draw(signal, color=ci[2])
+        self.draw(bgrf, color=ci[5])
+        self.draw_chisquare(sigf)
+        self._draw_line(mass, *integration_region)
         pad.Update()
 
     def draw_chisquare(self, func):
@@ -52,44 +52,40 @@ class MassesPlot(object):
         hist.SetFillStyle(0)
         return hist
 
-    def _set_axis_limits(self, imass):
-        a, b = imass.initial_fitting_region
-        imass.mass.GetXaxis().SetRangeUser(a, b)
-        ytitle = imass.mass.GetYaxis().GetTitle()
-        imass.mass.GetYaxis().SetTitle(
-            "{0}/{1} MeV".format(
-                ytitle,
-                imass.mass.GetBinWidth(1) * 1000
-            )
-        )
+    def _set_axis_limits(self, mass, signal, limits):
+        mass.GetXaxis().SetRangeUser(*limits)
+        yaxis = mass.GetYaxis()
+        yaxis.SetTitle(
+            "{}/{} MeV".format(yaxis.GetTitle(), mass.GetBinWidth(1) * 1000))
 
-        def bins_errors(hist):
+        def bins_errors(hist, a, b):
             bins, berrors, centers = br.bins(hist)
             roi = (centers > a) & (centers < b)
             bins = bins[roi]
             berrors = berrors[roi]
             return bins, berrors
 
-        mbins, merrors = bins_errors(imass.mass)
-        sbins, serrors = bins_errors(imass.signal)
-
-        imass.mass.GetYaxis().SetRangeUser(
+        try:
+            mbins, merrors = bins_errors(mass, *limits)
+            sbins, serrors = bins_errors(signal, *limits)
+        except:
+            import ipdb; ipdb.set_trace()
+        yaxis.SetRangeUser(
             min(sbins) - 2 * max(serrors),
             max(mbins) + 3 * max(merrors)
         )
 
-    def _draw_line(self, imass):
-        def lline(position):
-            line = ROOT.TLine(position, imass.mass.GetMinimum(),
-                              position, imass.mass.GetMaximum())
+    def _draw_line(self, mass, lower, upper):
+        # Draw integration region, when specified
+        def lline(pos):
+            line = ROOT.TLine(pos, mass.GetMinimum(), pos, mass.GetMaximum())
             line.SetLineColor(1)
             line.SetLineStyle(7)
             line.Draw()
             return line
-            # Draw integration region, when specified
-        lower, upper = imass.integration_region
-        imass.line_low = lline(lower)
-        imass.line_upper = lline(upper)
+        # Dirty hack for root memory management
+        mass.line_low = lline(lower)
+        mass.line_upper = lline(upper)
 
 
 class MultiplePlotter(object):
@@ -122,8 +118,11 @@ class MulipleOutput(object):
     def Write(self):
         for mass in self.masses:
             mass.mass.Write()
+
             if mass.ratio:
                 mass.ratio.Write()
+
             if mass.background:
                 mass.background.Write()
+
         MultiplePlotter().transform(self.masses)

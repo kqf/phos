@@ -38,9 +38,6 @@ class SignalExtractor(MassTransformer):
     out_col = "signal"
 
     def apply(self, imass, mass, background):
-        if not mass or not mass.GetEntries():
-            return mass
-
         # Subtraction
         imass.signal = mass.Clone()
         imass.signal.Add(background, -1.)
@@ -57,6 +54,7 @@ class SignalFitter(MassTransformer):
 
     def apply(self, imass, signal):
         imass.sigf, imass.bgrf = imass._signal.fit(signal)
+        imass.sigf.SetLineStyle(9)
         return imass.sigf
 
 

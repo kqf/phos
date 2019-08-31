@@ -33,12 +33,11 @@ class PeakParametrisation(object):
         fitfun.FixParameter(0, 0)
 
     def fit(self, hist, is_mixing=False):
-        if (not hist) or (hist.GetEntries() == 0):
-            return None, None
-
         # Initiate signal function
         signal = self.form_fitting_function(self.npars_signal)
         background = self.form_background()
+
+        # Create the total fitting function
         fitfun = ROOT.TF1("fitfun", "({}) + ({})".format(signal, background))
         fitfun.SetRange(*self.opt.fit_range)
         fitfun.SetNpx(1000)
