@@ -196,7 +196,8 @@ class FeeddownOptions(object):
     def __init__(self, particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()
         self.particle = particle
-        self.feeddown = Options(particle=particle)
+        self.feeddown = Options(particle=particle,
+                                invmass="config/data/feeddown-mass-fit.json")
         # self.feeddown = Options(pt="config/pt-same.json")
         # NB: Don't fit the mass and width and
         #     use the same values from the data
