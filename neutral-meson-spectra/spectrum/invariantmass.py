@@ -60,13 +60,12 @@ class InvariantMass(object):
         # Setup the fit function
         self._signal = parametrisation(options.signal)
         self._background = parametrisation(options.background)
-        self.mass_range = self._signal.opt.fit_range
+        self.fit_range = self._signal.opt.fit_range
 
         # Extract the data
         self.sigf = None
         self.bgrf = None
         self.area_error = None
-        self.initial_fitting_region = self._signal.opt.fit_range
         self._integration_region = self._signal.opt.fit_range
         self.ratio = None
         self.signal = None

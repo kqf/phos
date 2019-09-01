@@ -10,15 +10,15 @@ class MassesPlot(object):
 
     def transform(self, imass, pad):
         self._evaluate(imass.mass, imass.sigf, imass.background, imass.signal,
-                       imass.bgrf, imass.initial_fitting_region,
+                       imass.bgrf, imass.fit_range,
                        imass.integration_region, pad)
 
     def _evaluate(self, mass, sigf, background, signal, bgrf,
-                  initial_fitting_region, integration_region, pad):
+                  fit_range, integration_region, pad):
         su.ticks(pad)
         ci = br.define_colors()
         pad.cd()
-        self._set_axis_limits(mass, signal, initial_fitting_region)
+        self._set_axis_limits(mass, signal, fit_range)
         self.draw(mass, "histe")
         self.draw(sigf, color=ci[1])
         self.draw(background, color=ci[1])

@@ -17,7 +17,7 @@ def mass():
     data.bgrf = None
     data.signal = data
     data.integration_region = (0.1, 0.12)
-    data.initial_fitting_region = (0.08, 0.14)
+    data.fit_range = (0.08, 0.14)
     return data
 
 

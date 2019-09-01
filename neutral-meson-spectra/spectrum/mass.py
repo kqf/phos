@@ -39,7 +39,7 @@ class SignalExtractor(MassTransformer):
         imass.signal.Add(background, -1.)
 
         # TODO: SetAxisRange aswell
-        imass.signal.SetAxisRange(*imass.mass_range)
+        imass.signal.SetAxisRange(*imass.fit_range)
         imass.signal.GetYaxis().SetTitle("Real - background")
         return imass.signal
 
@@ -51,6 +51,8 @@ class SignalFitter(MassTransformer):
     def apply(self, imass, signal):
         imass.sigf, imass.bgrf = imass._signal.fit(signal)
         imass.sigf.SetLineStyle(9)
+        # with su.canvas():
+            # signal.Draw()
         return imass.sigf
 
 
@@ -115,7 +117,7 @@ class ZeroBinsCleaner(MassTransformer):
         # Delete bin only if it's empty
         def valid(i):
             return h.GetBinContent(i) < mass.opt.tol and \
-                su.in_range(h.GetBinCenter(i), mass.mass_range)
+                su.in_range(h.GetBinCenter(i), mass.fit_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
         for i, c in six.iteritems(centers):

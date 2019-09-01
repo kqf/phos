@@ -36,15 +36,15 @@ def yield_extraction_data(particle="#pi^{0}"):
 @memory.cache()
 def _calculate_yields(conf, data):
     print(conf)
-    spectrums = []
+    spectrums = {}
     pbar = tqdm.tqdm(
-        total=len(conf.mass_range) *
+        total=len(conf.fit_range) *
         len(conf.backgrounds) *
         len(conf.signals) *
         len(conf.nsigmas)
     )
     cyield = CompositeCorrectedYieldOptions(conf.particle)
-    for flab, frange in six.iteritems(conf.mass_range):
+    for flab, frange in six.iteritems(conf.fit_range):
         for bckgr in conf.backgrounds:
             for marker, par in enumerate(conf.signals):
                 for nsigmas in conf.nsigmas:
@@ -64,9 +64,10 @@ def _calculate_yields(conf, data):
                         spectrum = estimator.transform(data, loggs_local)
                         # loggs.update({label: loggs_local})
                     spectrum.marker = marker
+                    print("Asigning the label", label)
                     spectrum.label = label
                     spectrum.logy = False
-                    spectrums.append(spectrum)
+                    spectrums[label] = spectrum
                     pbar.update()
     pbar.close()
     return spectrums
@@ -74,7 +75,7 @@ def _calculate_yields(conf, data):
 
 class YieldExtractioinUncertanityOptions(object):
     def __init__(self, particle):
-        self.mass_range = {
+        self.fit_range = {
             "low": [0.06, 0.22],
             "mid": [0.04, 0.20],
             "wide": [0.08, 0.24]
@@ -103,9 +104,12 @@ class YieldExtractioin(TransformerBase):
 
     def transform(self, data, loggs):
         spectrums = _calculate_yields(self.options, data)
+        for label, spectrum in six.iteritems(spectrums):
+            spectrum.label = label
+        spectrums = list(spectrums.values())
 
-        # diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
-        # diff.compare(spectrums, loggs=loggs)
+        diff = Comparator(oname="spectrum_extraction_methods")
+        diff.compare(spectrums)
 
         average = br.average(spectrums, "averaged yield")
         diff = Comparator(stop=True, oname="yield_deviation_from_average")
