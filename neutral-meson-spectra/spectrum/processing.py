@@ -2,8 +2,11 @@ from __future__ import print_function
 import ROOT
 import pandas as pd
 
+import spectrum.sutils as su
+
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
 from spectrum.outputcreator import analysis_output, SpectrumExtractor
+from spectrum.outputcreator import table2hist
 from spectrum.pipeline import Pipeline
 
 from spectrum.ptplotter import MulipleOutput
@@ -37,6 +40,7 @@ class DataSlicer(object):
             {
                 "intervals": intervals,
                 "pt_interval": [inputs.pt_range] * len(intervals),
+                "pt_edges": [self.opt.ptedges] * len(intervals),
                 "raw": output,
             }
         )
@@ -71,6 +75,19 @@ class MassFitter(object):
         for estimator in pipeline:
             estimator.transform(masses, loggs)
 
+        params = masses["signal_fitf"].apply(
+            lambda f: {
+                f.GetParName(i): f.GetParameter(i) for i in range(f.GetNpar())}
+        )
+
+        params = pd.DataFrame(params.to_dict()).T
+
+        out = []
+        for col in params:
+            title = "Signal parametrisation parameter {}".format(col)
+            hist = table2hist(col, title, params[col], masses["pt_edges"][0])
+            out.append(hist)
+        loggs.update({"output": tuple(out)})
         return masses
 
     def _pipeline(self):

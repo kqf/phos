@@ -1,8 +1,11 @@
 import ROOT
-import collections as coll
+import collections
+import numpy as np
 from array import array
 
+import spectrum.sutils as su
 from spectrum.broot import BROOT as br
+
 
 
 class SpectrumExtractor(object):
@@ -120,7 +123,7 @@ def output_histogram(ptrange, name, title, label, bins, data, priority=999):
 
 
 def analysis_output(typename, data, order, ptrange, ptedges, titles, label):
-    AnalysisOutType = coll.namedtuple(typename, order)
+    AnalysisOutType = collections.namedtuple(typename, order)
 
     iter_collection = zip(
         order,  # Ensure ordering of `data`
@@ -142,3 +145,11 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles, label):
 
     # Convert to a proper datastructure
     return AnalysisOutType(**output)
+
+
+def table2hist(name, title, data, edges, errors=None):
+    hist = ROOT.TH1F(name, title, len(edges) - 1, array('f', edges))
+    for i, (c, error) in enumerate(zip(data, errors or np.zeros_like(data))):
+        hist.SetBinContent(i + 1, c)
+        hist.SetBinError(i + 1, error)
+    return hist

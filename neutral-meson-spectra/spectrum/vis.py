@@ -75,7 +75,7 @@ class MultipleVisualizer(object):
     def decorate_hist(self, hist, index=0):
         color, marker = self._color_marker(index, hist)
         hist.SetLineColor(color)
-        hist.SetFillColor(color)
+        # hist.SetFillColor(color)
         hist.SetMarkerStyle(marker)
         hist.SetMarkerColor(color)
         return hist
