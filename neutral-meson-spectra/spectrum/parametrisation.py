@@ -50,6 +50,7 @@ class PeakParametrisation(object):
         self._setup_parameters(fitfun, pars)
         self._set_no_signal(fitfun, is_mixing)
         hist.Fit(fitfun, "RQM", "")
+        print("********** ", self.opt.fit_range)
         self.background = ROOT.TF1(
             "background",
             self.form_background(0), *self.opt.fit_range)
@@ -116,6 +117,8 @@ class Gaus(PeakParametrisation):
 
     def _setup_parameters(self, fitfun, pars):
         fitfun.SetParameters(*pars)
+        fitfun.SetParameter(1, self.opt.fit_mass)
+        fitfun.SetParameter(2, self.opt.fit_width)
 
     def _setup_limits(self, fitfun, maximum):
         fitfun.SetParLimits(0, 0., maximum * 1.5)

@@ -19,6 +19,7 @@
         "prel_paremeters":   [0.098, 0.136, 0.008, 0.013, -0.016, 0.02],
         "fit_mass":          0.135,
         "fit_mass_limits":   [0.12, 0.15],
+        "fit_width":         0.005,
         "fit_width_limits":  [0.001, 0.080],
         "background": "pol2"
     },

@@ -48,7 +48,7 @@ def save_composite(obj, stop, skip_merged):
 
 
 def save_iterables(obj):
-    if obj.__class__.__bases__[0] == tuple:
+    if obj.__class__.__bases__[0] == tuple or type(obj) == tuple:
         for hist in obj:
             hist.Write()
         return True
