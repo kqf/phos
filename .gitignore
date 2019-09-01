@@ -55,7 +55,6 @@ gphysi.dat
 *.tar
 *.gz
 *.zip
-
 *.tgz
 
 # Python related
@@ -66,6 +65,7 @@ gphysi.dat
 .hypothesis
 .coverage
 .ipynb_checkpoints
+.joblib-cachedir
 
 # Editors
 *.sublime*

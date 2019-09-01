@@ -1,6 +1,5 @@
 import pytest
 
-from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
@@ -20,10 +19,9 @@ from spectrum.uncertainties.yields import yield_extraction_data
     # "#eta",
 ])
 def test_yield_extraction_uncertanity_pion(particle):
-    options = YieldExtractioinUncertanityOptions(
-        CompositeCorrectedYieldOptions(particle=particle)
+    estimator = YieldExtractioin(
+        YieldExtractioinUncertanityOptions(particle=particle)
     )
-    estimator = YieldExtractioin(options)
     with open_loggs("cyield uncertainty", shallow=True) as loggs:
         output = estimator.transform(
             yield_extraction_data(particle=particle),

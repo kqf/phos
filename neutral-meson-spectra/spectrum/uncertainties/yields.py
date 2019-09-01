@@ -1,13 +1,18 @@
 import six
 import tqdm
+import joblib
+
 from spectrum.broot import BROOT as br
-from spectrum.options import Options
+from spectrum.options import Options, CompositeCorrectedYieldOptions
 from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
 from spectrum.tools.feeddown import data_feeddown
 from vault.datavault import DataVault
+
+
+memory = joblib.Memory('.joblib-cachedir', verbose=0)
 
 
 def yield_extraction_data(particle="#pi^{0}"):
@@ -28,17 +33,65 @@ def yield_extraction_data(particle="#pi^{0}"):
     return cyield
 
 
+@memory.cache()
+def _calculate_yields(conf, data):
+    print(conf)
+    spectrums = []
+    pbar = tqdm.tqdm(
+        total=len(conf.mass_range) *
+        len(conf.backgrounds) *
+        len(conf.signals) *
+        len(conf.nsigmas)
+    )
+    cyield = CompositeCorrectedYieldOptions(conf.particle)
+    for flab, frange in six.iteritems(conf.mass_range):
+        for bckgr in conf.backgrounds:
+            for marker, par in enumerate(conf.signals):
+                for nsigmas in conf.nsigmas:
+                    msg = "n#sigma = {} {} {} {}"
+                    label = msg.format(nsigmas, par, bckgr, flab)
+
+                    options = Options()
+                    options.calibration.dead = True
+                    options.calibration.nsigmas = nsigmas
+                    options.invmass.signal.fitf = par
+                    options.invmass.signal.background = bckgr
+                    options.invmass.signal.fit_range = frange
+
+                    cyield.analysis = options
+                    with open_loggs() as loggs_local:
+                        estimator = CorrectedYield(cyield)
+                        spectrum = estimator.transform(data, loggs_local)
+                        # loggs.update({label: loggs_local})
+                    spectrum.marker = marker
+                    spectrum.label = label
+                    spectrum.logy = False
+                    spectrums.append(spectrum)
+                    pbar.update()
+    pbar.close()
+    return spectrums
+
+
 class YieldExtractioinUncertanityOptions(object):
-    def __init__(self, cyield):
+    def __init__(self, particle):
         self.mass_range = {
             "low": [0.06, 0.22],
             "mid": [0.04, 0.20],
             "wide": [0.08, 0.24]
         }
-        self.backgrounds = ["pol2", "pol1"]
-        self.signals = ["CrystalBall", "Gaus"]
-        self.nsigmas = [2, 3]
-        self.cyield = cyield
+        self.backgrounds = [
+            "pol2",
+            "pol1"
+        ]
+        self.signals = [
+            "CrystalBall",
+            "Gaus"
+        ]
+        self.nsigmas = [
+            2,
+            3
+        ]
+        self.particle = particle
 
 
 class YieldExtractioin(TransformerBase):
@@ -49,40 +102,10 @@ class YieldExtractioin(TransformerBase):
         self.plot = plot
 
     def transform(self, data, loggs):
-        spectrums = []
-        pbar = tqdm.tqdm(
-            total=len(self.options.mass_range) *
-            len(self.options.backgrounds) *
-            len(self.options.signals) *
-            len(self.options.nsigmas)
-        )
-        for flab, frange in six.iteritems(self.options.mass_range):
-            for bckgr in self.options.backgrounds:
-                for marker, par in enumerate(self.options.signals):
-                    for nsigmas in self.options.nsigmas:
-                        msg = "n#sigma = {} {} {} {}"
-                        label = msg.format(nsigmas, par, bckgr, flab)
+        spectrums = _calculate_yields(self.options, data)
 
-                        options = Options()
-                        options.calibration.dead = True
-                        options.calibration.nsigmas = nsigmas
-                        options.invmass.signal.fitf = par
-                        options.invmass.signal.background = bckgr
-                        options.invmass.signal.fit_range = frange
-
-                        self.options.cyield.analysis = options
-                        with open_loggs() as loggs_local:
-                            estimator = CorrectedYield(self.options.cyield)
-                            spectrum = estimator.transform(data, loggs_local)
-                            # loggs.update({label: loggs_local})
-                        spectrum.marker = marker
-                        spectrum.label = label
-                        spectrum.logy = False
-                        spectrums.append(spectrum)
-                        pbar.update()
-        pbar.close()
-        diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
-        diff.compare(spectrums, loggs=loggs)
+        # diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
+        # diff.compare(spectrums, loggs=loggs)
 
         average = br.average(spectrums, "averaged yield")
         diff = Comparator(stop=True, oname="yield_deviation_from_average")
