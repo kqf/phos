@@ -53,6 +53,7 @@ def _calculate_yields(conf, data):
                     label = msg.format(nsigmas, par, bckgr, flab)
 
                     options = Options(
+                        particle=conf.particle,
                         signal=conf.signals[par],
                         background=conf.signals[par]
                     )
@@ -65,7 +66,7 @@ def _calculate_yields(conf, data):
 
                     cyield.analysis = options
                     cyield.efficiency = CompositeEfficiencyOptions(
-                        conf.particle,
+                        particle=conf.particle,
                         signal=conf.signals[par],
                         background=conf.signals[par]
                     )
@@ -92,12 +93,21 @@ def _calculate_yields(conf, data):
 
 
 class YieldExtractioinUncertanityOptions(object):
-    def __init__(self, particle):
-        self.fit_range = {
+    _fit_ranges = {
+        "#pi^{0}": {
             "low": [0.06, 0.22],
             "mid": [0.04, 0.20],
             "wide": [0.08, 0.24]
-        }
+        },
+        "#eta": {
+            "low": [0.35, 0.75],
+            "mid": [0.4, 0.7],
+            "wide": [0.45, 0.65]
+        },
+    }
+
+    def __init__(self, particle):
+        self.fit_range = self._fit_ranges[particle]
         self.backgrounds = [
             "pol2",
             "pol1"

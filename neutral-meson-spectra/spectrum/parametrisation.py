@@ -117,7 +117,7 @@ class Gaus(PeakParametrisation):
     def _setup_parameters(self, fitfun, pars):
         fitfun.SetParameters(*pars)
         fitfun.SetParameter(1, self.opt.fit_mass)
-        fitfun.SetParameter(2, self.opt.fit_width)
+        # fitfun.SetParameter(2, self.opt.fit_width)
 
     def _setup_limits(self, fitfun, maximum):
         fitfun.SetParLimits(0, 0., maximum * 1.5)
