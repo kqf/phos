@@ -57,6 +57,7 @@ def _calculate_yields(conf, data):
                     options.invmass.signal.fitf = par
                     options.invmass.signal.background = bckgr
                     options.invmass.signal.fit_range = frange
+                    options.invmass.background.fit_range = frange
 
                     cyield.analysis = options
                     with open_loggs() as loggs_local:

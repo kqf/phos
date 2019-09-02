@@ -44,6 +44,7 @@ def test_simple(particle, data, options):
         option.calibration.nsigmas = 3
         option.invmass.signal.background = "pol1"
         option.invmass.signal.fit_range = [0.04, 0.20]
+        option.invmass.background.fit_range = [0.04, 0.20]
 
     estimator = ComparePipeline([
         (name, spectrum_pipeline(options[name]))

@@ -51,8 +51,7 @@ class SignalFitter(MassTransformer):
     def apply(self, imass, signal):
         imass.sigf, imass.bgrf = imass._signal.fit(signal)
         imass.sigf.SetLineStyle(9)
-        # with su.canvas():
-            # signal.Draw()
+        # with su.canvas(): # signal.Draw()
         return imass.sigf
 
 
