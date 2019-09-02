@@ -54,15 +54,12 @@ class OptionsSPMC(Options):
     def __init__(self,
                  particle="#pi^{0}",
                  pt="config/spmc/pt.json",
+                 invmass="config/spmc/mass-fit.json",
+                 calibration="config/spmc/calibration.json",
+                 signal="config/spmc/cball.json",
+                 background="config/spmc/cball.json",
                  *args, **kwargs):
-        super(OptionsSPMC, self).__init__(
-            particle=particle,
-            pt=pt,
-            invmass="config/spmc/mass-fit.json",
-            calibration="config/spmc/calibration.json",
-            signal="config/spmc/cball.json",
-            background="config/spmc/cball.json",
-            *args, **kwargs)
+        super(OptionsSPMC, self).__init__(*args, **kwargs)
 
 
 class CompositeOptions(object):
@@ -96,10 +93,10 @@ class EfficiencyOptions(object):
                  genname="hPt_{0}_primary_standard",
                  scale=0.075,
                  pt="config/data/pt.json",
-                 otype=Options):
+                 otype=Options, **kwargs):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
-        self.analysis = otype(particle=particle, pt=pt)
+        self.analysis = otype(particle=particle, pt=pt, **kwargs)
         self.genname = genname
         self.scale = scale
 
