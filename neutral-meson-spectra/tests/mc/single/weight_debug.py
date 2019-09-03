@@ -2,7 +2,7 @@ import ROOT
 import pytest
 
 from spectrum.pipeline import Pipeline, ComparePipeline
-from spectrum.pipeline import OutputFitter
+from spectrum.pipeline import HistogramFitter
 from spectrum.input import SingleHistInput
 from spectrum.options import Options
 from spectrum.pipeline import TransformerBase
@@ -53,13 +53,11 @@ def spectrumf():
 
 @pytest.mark.onlylocal
 def test_corrected_yield_for_pi0(data, spectrumf):
-    options = Options()
-    options.fitfunc = spectrumf
     estimator = Pipeline([
         ("data", SingleHistInput(
             "hPt_#pi^{0}_primary_standard", norm=True)),
         ("attributes", Attributes()),
-        ("fit", OutputFitter(options)),
+        ("fit", HistogramFitter(fitfunc=spectrumf)),
     ])
 
     with open_loggs("corrected yield #pi{0}") as loggs:

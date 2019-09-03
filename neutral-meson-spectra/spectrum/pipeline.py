@@ -49,36 +49,33 @@ class RebinTransformer(TransformerBase):
 
 
 class FitfunctionAssigner(TransformerBase):
-    def __init__(self, fitf, plot=False):
+    def __init__(self, fitfunc, plot=False):
         super(FitfunctionAssigner, self).__init__(plot)
-        self.fitf = fitf
+        self.fitfunc = fitfunc
 
     def transform(self, histogram, loggs):
-        if not self.fitf:
+        if not self.fitfunc:
             return histogram
-        histogram.fitfunc = self.fitf
+        histogram.fitfunc = self.fitfunc
         return histogram
 
 
-class OutputFitter(TransformerBase):
-    def __init__(self, options, plot=False):
-        super(OutputFitter, self).__init__(plot)
-        try:
-            self.fitf = options.fitfunc
-        except AttributeError:
-            self.fitf = None
+class HistogramFitter(TransformerBase):
+    def __init__(self, fitfunc, plot=False):
+        super(HistogramFitter, self).__init__(plot)
+        self.fitfunc = fitfunc
 
     def transform(self, histogram, loggs):
-        if not self.fitf:
+        if not self.fitfunc:
             return histogram
 
-        histogram.Fit(self.fitf, "Rq")
+        histogram.Fit(self.fitfunc, "Rq")
         histogram.SetStats(True)
         st.fitstat_style()
-        ndf = self.fitf.GetNDF()
-        chi2_ndf = self.fitf.GetChisquare() / ndf if ndf else 0.
+        ndf = self.fitfunc.GetNDF()
+        chi2_ndf = self.fitfunc.GetChisquare() / ndf if ndf else 0.
         print("The chi2:", chi2_ndf)
-        print("The parameters", br.pars(self.fitf))
+        print("The parameters", br.pars(self.fitfunc))
         Comparator().compare(histogram)
         return histogram
 
