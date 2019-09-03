@@ -7,7 +7,6 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector, OutputDecorator
 from spectrum.pipeline import ParallelPipeline, ReducePipeline
 from spectrum.pipeline import ComparePipeline
-from spectrum.pipeline import OutputFitter
 from spectrum.pipeline import HistogramScaler
 from spectrum.broot import BROOT as br
 from spectrum.tools.feeddown import FeeddownEstimator
@@ -58,7 +57,6 @@ class CorrectedYield(TransformerBase):
                 options.normalization / options.branching_ratio)),
             ("fix naming", OutputDecorator(options.analysis.particle)),
             ("decorate output", OutputDecorator(**options.decorate)),
-            ("fitted yield", OutputFitter(options)),
             ("invariant yield", InvariantYield()),
         ])
 
