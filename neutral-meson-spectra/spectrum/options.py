@@ -59,7 +59,14 @@ class OptionsSPMC(Options):
                  signal="config/spmc/cball.json",
                  background="config/spmc/cball.json",
                  *args, **kwargs):
-        super(OptionsSPMC, self).__init__(*args, **kwargs)
+        super(OptionsSPMC, self).__init__(
+            particle=particle,
+            pt=pt,
+            invmass=invmass,
+            calibration=calibration,
+            signal=signal,
+            background=background,
+            *args, **kwargs)
 
 
 class CompositeOptions(object):
