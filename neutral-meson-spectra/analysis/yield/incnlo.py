@@ -3,7 +3,8 @@ import pytest
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.output import open_loggs
-from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
+from spectrum.pipeline import ComparePipeline, Pipeline
+from spectrum.pipeline import FunctionTransformer
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase
 from spectrum.tools.feeddown import data_feeddown
@@ -35,10 +36,16 @@ class ErrorsTransformer(TransformerBase):
         return data
 
 
+def normalize(hist, loggs):
+    hist.Scale(1. / hist.Integral(), "w")
+    return hist
+
+
 def theory_prediction():
     pipeline = Pipeline([
         ("raw", SingleHistInput("#sigma_{total}")),
-        ("errors", ErrorsTransformer())
+        ("errors", ErrorsTransformer()),
+        ("integral", FunctionTransformer(func=normalize)),
     ])
     return pipeline
 
@@ -47,6 +54,7 @@ def cyield(particle):
     options = CompositeCorrectedYieldOptions(particle=particle)
     return Pipeline([
         ("analysis", CorrectedYield(options)),
+        ("integral", FunctionTransformer(func=normalize)),
     ])
 
 
