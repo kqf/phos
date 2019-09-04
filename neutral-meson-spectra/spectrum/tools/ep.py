@@ -6,6 +6,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
+from spectrum.ptplotter import MulipleOutput
 
 
 class IdentityExtractor(object):
@@ -14,8 +15,8 @@ class IdentityExtractor(object):
         self.options = options
 
     def transform(self, mass, loggs):
+        ROOT.gStyle.SetOptFit()
         mass.signal = mass.mass.Clone()
-
         formula = "gaus(0) + {}(3)".format(self.options.background)
         func = ROOT.TF1("func", formula, *self.options.fit_range)
 
@@ -78,4 +79,4 @@ class DataMCEpRatioEstimator(TransformerBase):
         self.pipeline = ComparePipeline([
             ("data", EpRatioEstimator(options.data)),
             ("mc", EpRatioEstimator(options.mc)),
-        ])
+        ], plot=plot)

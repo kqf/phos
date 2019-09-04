@@ -24,11 +24,6 @@ def test_yield_extraction_uncertanity_pion(particle):
     estimator = YieldExtractioin(
         YieldExtractioinUncertanityOptions(particle=particle)
     )
-    # nsigma = 3, cball, mid, pol1
-    # nsigma = 3, gaus, mid, pol1
-    # nsigma = 2, gaus, wide, pol1
-    # nsigma = 2, cball, mid, pol1
-    # nsigma = 2, gaus, mid, pol1
     with open_loggs("cyield uncertainty", shallow=True) as loggs:
         output = estimator.transform(
             yield_extraction_data(particle=particle),
