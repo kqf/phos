@@ -32,7 +32,7 @@ class TofUncertaintyOptions(object):
         self.data = Options()
         self.isolated = Options()
         self.decorate = self.data.particle, "isolated"
-        self.fit_range = 1.0, 8
+        self.fit_range = 1.0, 7.5
         self.fitf = ROOT.TF1("ratio", "1. - pol0(0)", *self.fit_range)
         self.fitf.SetParameter(0, 0.02)
 
