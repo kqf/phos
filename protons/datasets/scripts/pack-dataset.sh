@@ -4,6 +4,10 @@ pattern=$2
 
 
 function main(){
+	# Remove everything from the previous analysis
+
+	rm -f *.verified
+
 	# Add comas at the end of each file
 	for file in $pattern; do
 		echo $file
@@ -12,8 +16,9 @@ function main(){
 		rm $file.tmp
 	done
 
-	tar czvf $archive $pattern.verified
-	rm $pattern.verified
+	mv $pattern.verified .
+	tar czvf $archive *.verified
+	rm -f *.verified
 }
 
 main
