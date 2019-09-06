@@ -2,8 +2,6 @@ from __future__ import print_function
 import ROOT
 import pandas as pd
 
-import spectrum.sutils as su
-
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
 from spectrum.outputcreator import analysis_output, SpectrumExtractor
 from spectrum.outputcreator import table2hist

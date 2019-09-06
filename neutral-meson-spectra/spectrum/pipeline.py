@@ -174,9 +174,10 @@ def merge(data):
 
 class ParallelPipeline(object):
 
-    def __init__(self, steps):
+    def __init__(self, steps, disable=True):
         super(ParallelPipeline, self).__init__()
         self.steps = steps
+        self.disable = disable
 
     def transform(self, inputs, loggs):
         assert len(inputs) == len(self.steps), \
@@ -195,7 +196,8 @@ class ParallelPipeline(object):
         steps_loggs = {}
         output_with_logs = [
             tr(inp, name, step, steps_loggs)
-            for inp, (name, step) in list(zip(inputs, self.steps))
+            for inp, (name, step) in tqdm(list(zip(inputs, self.steps)),
+                                          disable=self.disable)
         ]
         loggs.update({"steps": steps_loggs})
 
