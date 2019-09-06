@@ -1,3 +1,5 @@
+from joblib import Memory
+
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ParallelPipeline
@@ -20,6 +22,19 @@ class NonlinearityUncertaintyOptions(object):
 
 def chi2_func(hist1, hist2, loggs):
     return br.chi2ndf(hist1, hist2)
+
+
+memory = Memory(".joblib-cachedir", verbose=0)
+
+
+@memory.cache()
+def efficiencies(data, loggs, nbins, plot=False):
+    options = CompositeEfficiencyOptions(particle="#pi^{0}")
+    mc = ParallelPipeline([
+        ("efficiency_" + str(i), Efficiency(options, plot))
+        for i in range(nbins ** 2)
+    ], disable=False)
+    return mc.transform(data, loggs)
 
 
 class NonlinearityUncertainty(TransformerBase):
