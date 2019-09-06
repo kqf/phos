@@ -3,14 +3,14 @@ import pytest
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
-from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty,
+from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
 from spectrum.uncertainties.nonlinearity import nonlinearity_scan_data
 
 
 @pytest.fixture
 def nbins():
-    return 9
+    return 2
 
 # TODO: Look at generated histogram in different selection
 #       fix this asap
@@ -28,7 +28,7 @@ def test_nonlinearity_uncertainty(nbins):
     options.factor = 1.
 
     with open_loggs("nonlinearity uncertainty") as loggs:
-        chi2ndf = Nonlinearity(options).transform(
+        chi2ndf = NonlinearityUncertainty(options).transform(
             nonlinearity_scan_data(nbins, prod),
             loggs
         )

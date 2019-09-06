@@ -34,7 +34,7 @@ class NonlinearityUncertainty(TransformerBase):
         mc = ParallelPipeline([
             ("efficiency_" + str(i), Efficiency(options.eff, plot))
             for i in range(options.nbins ** 2)
-        ])
+        ], disable=False)
 
         ratio = ReduceArgumentPipeline(
             ("altered efficiencies", mc),
