@@ -8,6 +8,11 @@ from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
 from spectrum.uncertainties.nonlinearity import nonlinearity_scan_data
 from spectrum.uncertainties.nonlinearity import efficiencies
 
+from spectrum.efficiency import Efficiency
+from spectrum.options import CompositeEfficiencyOptions
+from spectrum.pipeline import ComparePipeline
+from vault.datavault import DataVault
+
 
 @pytest.fixture
 def nbins():
@@ -37,6 +42,7 @@ def test_nonlinearity_uncertainty(nbins):
     Comparator().compare(chi2ndf)
 
 
+@pytest.mark.skip("This one is used only to check the uncertainties by eyes")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_different_nonlinearities(nbins):
@@ -46,3 +52,30 @@ def test_different_nonlinearities(nbins):
         data = efficiencies(data, loggs, nbins=nbins)
         for i in range(0, len(data), nbins):
             Comparator().compare(data[i: i + nbins])
+
+
+@pytest.fixture
+def spmc_data():
+    return (
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff"),
+    )
+
+
+@pytest.fixture
+def scan_data():
+    prod = "single #pi^{0} nonlinearity scan"
+    return (
+        DataVault().input(prod, "low", "PhysEff"),
+        DataVault().input(prod, "high", "PhysEff"),
+    )
+
+
+def test_spmc_efficiency(spmc_data, scan_data):
+    options = CompositeEfficiencyOptions("#pi^{0}")
+    estimator = ComparePipeline([
+        ("spmc", Efficiency(options)),
+        ("scan", Efficiency(options)),
+    ], plot=True)
+    with open_loggs("test") as loggs:
+        estimator.transform((spmc_data, scan_data), loggs)
