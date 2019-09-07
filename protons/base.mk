@@ -12,6 +12,7 @@
 
 # PROTONS_PATH=../../
 OUTFILE = AnalysisResults
+ALICE_SITE = ALICE::GSI::AF_SE
 
 
 grid: | %.cxx
@@ -100,11 +101,11 @@ endef
 define upload_result
 	-mv $(1).root $(2).root
 	-alien_mkdir -p $(ALIEN_HOME)/$(OUTDIR)/
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)/@ALICE::NIHAM::EOS
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)/$(OUTDIR)/@$(ALICE_SITE)
 endef
 
 
 define upload_test
 	mv $(1).root $(2).root
-	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@ALICE::NIHAM::EOS
+	-alien_cp -n $(2).root alien:$(ALIEN_HOME)@$(ALICE_SITE)
 endef
