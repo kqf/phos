@@ -179,11 +179,13 @@ class BROOT(object):
             return stack.GetHists()
 
         @classmethod
-        def hepdata(klass, record, ofilename):
-            link = 'https://www.hepdata.net/download/table/{0}/Table1/1/root'
+        def hepdata(klass, record, ofilename, table="Table 1"):
+
+            link = 'https://www.hepdata.net/download/table/{}/{}/1/root'
             try:
                 download = link
-                response = urllib.request.urlopen(download.format(record))
+                url = download.format(record, table.replace(" ", ""))
+                response = urllib.request.urlopen(url)
 
                 with open(ofilename, 'wb') as f:
                     f.write(response.read())
