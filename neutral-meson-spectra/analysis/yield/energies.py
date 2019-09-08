@@ -16,12 +16,14 @@ class HepdataInput(TransformerBase):
         self.table_name = table_name
         self.histname = histname
 
-    def transform(self, link, loggs):
-        filename = "{}.root".format(link)
-        br.io.hepdata(link, filename)
-        hist = br.io.read(filename, "Table 1", "Hist1D_y1")
+    def transform(self, item, loggs):
+        print(item)
+        filename = ".hepdata-cachedir/{}.root".format(item["hepdata"])
+        # br.io.hepdata(item["hepdata"], filename)
+        hist = br.io.read(filename, self.table_name, self.histname)
         hist.logy = True
         hist.logx = False
+        hist.Scale(item["scale"])
         return hist
 
 

@@ -1,6 +1,22 @@
 {
-	"pp 7 TeV": "ins1116147",
-	"PbPb 2.76 TeV": "ins1296306",
-	"pp 8 TeV": "ins1620477",
-	"PHENIX pp 0.2 TeV": "ins617784"
+	"pp 7 TeV": {
+		"hepdata": "ins1116147",
+		"scale": 1,
+		"energy": 7000
+	},
+	"pp 2.76 TeV": {
+		"hepdata": "ins1296306",
+		"scale": 1,
+		"energy": 2760
+	},
+	"pp 8 TeV": {
+		"hepdata": "ins1620477",
+		"scale": 1e-6,
+		"energy": 8000
+	},	
+	"PHENIX pp 0.2 TeV": {
+		"hepdata": "ins617784",
+		"scale": 1,
+		"energy": 200
+	}
 }
