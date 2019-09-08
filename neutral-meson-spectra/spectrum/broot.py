@@ -185,6 +185,7 @@ class BROOT(object):
             try:
                 download = link
                 url = download.format(record, table.replace(" ", ""))
+                print(url)
                 response = urllib.request.urlopen(url)
 
                 with open(ofilename, 'wb') as f:

@@ -16,13 +16,12 @@ from vault.datavault import DataVault
 class HepdataInput(TransformerBase):
     def __init__(self, table_name="Table 1", histname="Hist1D_y1", plot=False):
         super(HepdataInput, self).__init__(plot)
-        self.table_name = table_name
         self.histname = histname
 
     def transform(self, item, loggs):
         filename = ".hepdata-cachedir/{}".format(item["file"])
-        br.io.hepdata(item["hepdata"], filename)
-        hist = br.io.read(filename, self.table_name, self.histname)
+        br.io.hepdata(item["hepdata"], filename, item["table"])
+        hist = br.io.read(filename, item["table"], self.histname)
         hist.logy = True
         hist.logx = False
         hist.Scale(item["scale"])
@@ -41,8 +40,9 @@ class XTtransformer(TransformerBase):
 
         for i in br.range(x):
             xt.SetBinContent(i, x.GetBinContent(i))
-            xt.SetBinError(i, x.GetBinError(i))
+            xt.SetBinError(i, x.GetBinContent(i) * 0.0001)
         xt.Scale(x.energy)
+        xt.logx = True
         xt.logy = True
         return xt
 
@@ -86,9 +86,9 @@ def incnlo_datasets(datasets):
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_downloads_from_hepdata(incnlo_datasets):
-    steps, links = incnlo_datasets
-    with open_loggs("compare yields") as loggs:
+def test_downloads_from_hepdata(datasets):
+    steps, links = datasets
+    with open_loggs() as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
 
 
@@ -106,6 +106,7 @@ def xtdatasets():
     return steps, links
 
 
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_distribution(xtdatasets):

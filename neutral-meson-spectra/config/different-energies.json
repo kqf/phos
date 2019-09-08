@@ -6,11 +6,18 @@
 		"table": "Table 1",
 		"energy": 7000
 	},
+	"pp 0.9 TeV": {
+		"file": "pion-0900-gev-pp.root",
+		"hepdata": "ins1116147",
+		"scale": 1,
+		"table": "Table 2",
+		"energy": 900
+	},
 	"pp 2.76 TeV": {
 		"file": "pion-2760-gev-pp.root",
 		"hepdata": "ins1296306",
-		"scale": 1,
-		"table": "Table 1",
+		"scale": 1e-6,
+		"table": "Table 2",
 		"energy": 2760
 	},
 	"pp 8 TeV": {
