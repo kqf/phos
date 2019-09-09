@@ -41,7 +41,7 @@ class XTtransformer(TransformerBase):
         for i in br.range(x):
             xt.SetBinContent(i, x.GetBinContent(i))
             xt.SetBinError(i, x.GetBinContent(i) * 0.0001)
-        xt.Scale(x.energy)
+        # xt.Scale(x.nergy)
         xt.logx = True
         xt.logy = True
         return xt

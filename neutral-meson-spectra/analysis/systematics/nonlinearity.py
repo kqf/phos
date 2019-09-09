@@ -16,7 +16,7 @@ from vault.datavault import DataVault
 
 @pytest.fixture
 def nbins():
-    return 9
+    return 5
 
 # TODO: Look at generated histogram in different selection
 #       fix this asap
@@ -34,7 +34,7 @@ def test_nonlinearity_uncertainty(nbins):
     options = NonlinearityUncertaintyOptions(nbins=nbins)
     options.factor = 1.
 
-    with open_loggs("nonlinearity uncertainty") as loggs:
+    with open_loggs() as loggs:
         chi2ndf = NonlinearityUncertainty(options).transform(
             nonlinearity_scan_data(nbins, prod),
             loggs
@@ -50,6 +50,7 @@ def test_different_nonlinearities(nbins):
     _, data = nonlinearity_scan_data(nbins, prod)
     with open_loggs("nonlinearity uncertainty") as loggs:
         data = efficiencies(data, loggs, nbins=nbins)
+        print("Done")
         for i in range(0, len(data), nbins):
             Comparator().compare(data[i: i + nbins])
 
@@ -71,6 +72,9 @@ def scan_data():
     )
 
 
+@pytest.mark.skip("This one is used only to check the uncertainties by eyes")
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_spmc_efficiency(spmc_data, scan_data):
     options = CompositeEfficiencyOptions("#pi^{0}")
     estimator = ComparePipeline([
