@@ -16,6 +16,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     // AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     TString msg = message("E/p ratio", period);
+    AddPHOSTender(isMC, msg);
     AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, msg);
     task->SelectCollisionCandidates(AliVEvent::kINT7);
 

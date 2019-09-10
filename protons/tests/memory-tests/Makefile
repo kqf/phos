@@ -13,11 +13,14 @@ TEST_SELECTION = PhysTender
 
 # profiling: | %.cxx
 profiling:
-	valgrind --tool=massif \
+	valgrind --tool=memcheck \
 	--error-limit=no \
-	--num-callers=40 \
 	--log-file=./profiling_result.log \
 	--suppressions=${ROOTSYS}/etc/valgrind-root.supp \
+	--max-stackframe=3060888 \
+	--leak-check=full \
+	--num-callers=40 \
+	--show-leak-kinds=all \
 	${PROFILING_TARGET}
 	@$(call funlink) && echo "Directory is clean"
 
