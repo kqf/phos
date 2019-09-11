@@ -59,6 +59,13 @@
             "file": "input-data/theory/pQCD/incnlo.7.tev.root",
             "hsum": "6a88d3f09d84dc2ce0fb29aff5bb5c30c6953ecfb15a375ad27e40d664765161",
             "pt_range": [0.0, 20.0]
+        },
+        "pythia6": {
+            "default_selection": "",
+            "description": "Estimated #pi^{0}/#eta/#gamma spectra with Pythia 6.214",
+            "file": "input-data/theory/pythia6.214/pp13TeV_pythia6.root",
+            "hsum": "2b38acbaecb22298d62b8482fdf1ca11ec7d915766f6894d170639d8c12cfed5",
+            "pt_range": [0.0, 20.0]
         }
     },
     "kaon2pion": {
