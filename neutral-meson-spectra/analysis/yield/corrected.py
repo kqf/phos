@@ -43,10 +43,11 @@ def data(particle):
     }.get(particle)
 
 
+@pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta",
+    # "#eta",
 ])
 def test_corrected_yield_for_pi0(particle, data):
     with open_loggs("corrected yield {}".format(particle)) as loggs:
