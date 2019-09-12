@@ -1,4 +1,7 @@
+import array
 import pytest
+import json
+
 
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield
@@ -36,22 +39,40 @@ class ErrorsTransformer(TransformerBase):
         return data
 
 
+class RebinTransformer(TransformerBase):
+    def __init__(self, particle, filename):
+        with open(filename) as f:
+            self.edges = json.load(f)[particle]["ptedges"]
+
+    def transform(self, hist, loggs):
+        nbins = len(self.edges) - 1
+        name = "{}_rebinned".format(hist.GetName())
+        edges = array.array('d', self.edges)
+        rebinned = hist.Rebin(nbins, name, edges)
+        for i in br.range(rebinned):
+            width = rebinned.GetBinWidth(i)
+            rebinned.SetBinContent(i, rebinned.GetBinContent(i) / width)
+        return rebinned
+
+
 def normalize(hist, loggs):
-    hist.Scale(1. / hist.Integral(), "w")
+    hist.Scale(1. / hist.Integral())
     return hist
 
 
 def theory_prediction():
     pipeline = Pipeline([
-        ("raw", SingleHistInput("hxsPi0Pt")),
+        ("raw", SingleHistInput("hxsPi0PtInv")),
         ("errors", ErrorsTransformer()),
+        ("rebin", RebinTransformer("#pi^{0}", "config/pt-pythia6.json")),
         ("integral", FunctionTransformer(func=normalize)),
     ])
     return pipeline
 
 
 def cyield(particle):
-    options = CompositeCorrectedYieldOptions(particle=particle)
+    ptfile = "config/pt-pythia6.json"
+    options = CompositeCorrectedYieldOptions(particle=particle, pt=ptfile)
     return Pipeline([
         ("analysis", CorrectedYield(options)),
         ("integral", FunctionTransformer(func=normalize)),
