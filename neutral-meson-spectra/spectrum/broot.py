@@ -306,14 +306,9 @@ class BROOT(object):
         def nbins(x):
             return x.GetNbinsX()
 
-        def lbins(x):
-            return (
-                x.GetBinLowEdge(i) for i in klass.range(x, edges=True)
-            )
-
         a, b = (hist1, hist2) if nbins(
             hist1) > nbins(hist2) else (hist2, hist1)
-        rebinned = klass.rebin_proba(a, lbins(b))
+        rebinned = klass.rebin_proba(a, klass.edges(b))
         return (rebinned, b) if a == hist1 else (b, rebinned)
 
     @classmethod
@@ -623,3 +618,7 @@ class BROOT(object):
             return func1.EvalPar(x, par[:np1]) + func2.EvalPar(x, par[np1:])
 
         return ROOT.TF1(name, summed, start, stop, np1 + np2)
+
+    @classmethod
+    def edges(klass, x):
+        return [x.GetBinLowEdge(i) for i in klass.range(x, edges=True)]

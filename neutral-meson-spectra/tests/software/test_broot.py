@@ -847,3 +847,12 @@ def test_sums_tf1_functions():
     total = br.tf1_sum(func1, func2)
     total.SetParameters(10, 20)
     assert total.Eval(100) == 10 + 20
+
+
+def test_retrieves_edges():
+    edges_nominal = array.array('d', [0, 1, 2, 3, 4, 5, 10, 100])
+    hist = ROOT.TH1F("h", "hist", len(edges_nominal) - 1, edges_nominal)
+    edges = br.edges(hist)
+    assert len(edges_nominal) == len(edges)
+
+    np.testing.assert_almost_equal(edges_nominal, edges)
