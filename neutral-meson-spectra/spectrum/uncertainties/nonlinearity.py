@@ -27,7 +27,7 @@ def chi2_func(hist1, hist2, loggs):
 memory = Memory(".joblib-cachedir", verbose=0)
 
 
-@memory.cache()
+# @memory.cache()
 def efficiencies(data, loggs, nbins, plot=False):
     options = CompositeEfficiencyOptions(particle="#pi^{0}")
     mc = ParallelPipeline([

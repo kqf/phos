@@ -33,7 +33,7 @@ class MaxDeviationVector(MaxDeviation):
 
     def transform(self, ratios, loggs):
         bins = np.asarray(list(map(rp.hist2array, ratios)))
-        max_deviations = np.abs(bins).max(axis=0)
+        max_deviations = np.abs(bins).mean(axis=0)
         max_deviations = np.abs(max_deviations - 1.)
 
         output = ratios[0].Clone()

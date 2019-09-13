@@ -25,7 +25,7 @@ def nbins():
 # Benchmark:
 # In the 5 TeV analysis U_nonlin ~ 0.01
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -39,7 +39,7 @@ def test_nonlinearity_uncertainty(nbins):
             nonlinearity_scan_data(nbins, prod),
             loggs
         )
-    Comparator().compare(chi2ndf)
+        Comparator().compare(chi2ndf)
 
 
 @pytest.mark.skip("This one is used only to check the uncertainties by eyes")
@@ -48,7 +48,7 @@ def test_nonlinearity_uncertainty(nbins):
 def test_different_nonlinearities(nbins):
     prod = "single #pi^{0} nonlinearity scan"
     _, data = nonlinearity_scan_data(nbins, prod)
-    with open_loggs("nonlinearity uncertainty") as loggs:
+    with open_loggs() as loggs:
         data = efficiencies(data, loggs, nbins=nbins)
         print("Done")
         for i in range(0, len(data), nbins):
