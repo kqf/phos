@@ -1,9 +1,9 @@
+import array
 import ROOT
 import pytest
 import json
 import six
 import numpy as np
-import itertools
 
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase, Pipeline
@@ -49,11 +49,11 @@ class XTtransformer(TransformerBase):
 
 
 class RebinTransformer(TransformerBase):
-    def __init__(self, edegs=None):
-        self.edegs = edegs
+    def __init__(self, edges=None):
+        self.edges = edges
 
     def transform(self, hist, loggs):
-        if not self.edegs:
+        if not self.edges:
             return hist
         nbins = len(self.edges) - 1
         name = "{}_rebinned".format(hist.GetName())
@@ -157,5 +157,5 @@ def xt_scaling_pairs():
 def test_xt_scaling(xt_scaling_pairs):
     for pair in xt_scaling_pairs:
         with open_loggs() as loggs:
-            steps = [(l, xt(pair.edges)) for l in pair.links]
+            steps = [(l, xt(pair["edges"])) for l in pair["energies"]]
             # ComparePipeline(steps, plot=True).transform(links, loggs)
