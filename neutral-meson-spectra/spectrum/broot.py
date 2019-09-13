@@ -180,6 +180,8 @@ class BROOT(object):
 
         @classmethod
         def hepdata(klass, record, ofilename, table="Table 1"):
+            if os.path.isfile(ofilename):
+                return
 
             link = 'https://www.hepdata.net/download/table/{}/{}/1/root'
             try:
