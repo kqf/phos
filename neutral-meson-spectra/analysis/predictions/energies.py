@@ -3,6 +3,7 @@ import pytest
 import json
 import six
 import numpy as np
+import itertools
 
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase, Pipeline
@@ -47,12 +48,46 @@ class XTtransformer(TransformerBase):
         return xt
 
 
+class RebinTransformer(TransformerBase):
+    def __init__(self, edegs=None):
+        self.edegs = edegs
+
+    def transform(self, hist, loggs):
+        if not self.edegs:
+            return hist
+        nbins = len(self.edges) - 1
+        name = "{}_rebinned".format(hist.GetName())
+        edges = array.array('d', self.edges)
+        rebinned = hist.Rebin(nbins, name, edges)
+        for i in br.range(rebinned):
+            width = rebinned.GetBinWidth(i)
+            rebinned.SetBinContent(i, rebinned.GetBinContent(i) / width)
+        return rebinned
+
+
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
         for i in br.range(data):
-            data.SetBinError(i, 0.0001)
+            data.SetBinError(i, 0.000001)
         data.Sumw2()
+        print(br.edges(data))
         return data
+
+
+def hepdata():
+    return Pipeline([
+        ("raw", HepdataInput()),
+        ("errors", ErrorsTransformer()),
+    ])
+
+
+def xt(edges=None):
+    return Pipeline([
+        ("cyield", HepdataInput()),
+        ("cyield", XTtransformer()),
+        ("errors", ErrorsTransformer()),
+        ("rebin", RebinTransformer(edges=edges))
+    ])
 
 
 def theory_prediction(label):
@@ -68,7 +103,7 @@ def datasets():
     with open("config/different-energies.json") as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
-    steps = [(l, HepdataInput()) for l in labels]
+    steps = [(l, hepdata()) for l in labels]
     return steps, links
 
 
@@ -94,11 +129,6 @@ def test_downloads_from_hepdata(datasets):
 
 @pytest.fixture
 def xtdatasets():
-    def xt():
-        return Pipeline([
-            ("cyield", HepdataInput()),
-            ("cyield", XTtransformer()),
-        ])
     with open("config/different-energies.json") as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
@@ -106,10 +136,26 @@ def xtdatasets():
     return steps, links
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_distribution(xtdatasets):
     steps, links = xtdatasets
     with open_loggs("compare yields") as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
+
+
+@pytest.fixture
+def xt_scaling_pairs():
+    with open("config/cross-energies.json") as f:
+        data = json.load(f)
+    return data
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_xt_scaling(xt_scaling_pairs):
+    for pair in xt_scaling_pairs:
+        with open_loggs() as loggs:
+            steps = [(l, xt(pair.edges)) for l in pair.links]
+            # ComparePipeline(steps, plot=True).transform(links, loggs)
