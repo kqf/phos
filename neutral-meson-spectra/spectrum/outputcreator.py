@@ -3,9 +3,7 @@ import collections
 import numpy as np
 from array import array
 
-import spectrum.sutils as su
 from spectrum.broot import BROOT as br
-
 
 
 class SpectrumExtractor(object):
