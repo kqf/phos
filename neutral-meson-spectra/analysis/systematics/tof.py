@@ -21,6 +21,6 @@ def data():
 @pytest.mark.interactive
 def test_tof(data):
     tof = TofUncertainty(TofUncertaintyOptions())
-    with open_loggs("tof") as loggs:
+    with open_loggs() as loggs:
         output = tof.transform(data, loggs)
     assert len(output) > 0
