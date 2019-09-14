@@ -10,6 +10,7 @@ from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
+import spectrum.sutils as su
 
 from vault.datavault import DataVault
 
@@ -48,6 +49,26 @@ class XTtransformer(TransformerBase):
         return xt
 
 
+def scale_bin_width(hist, rebins=None):
+    hist = hist.Clone()
+    width = 1
+    for i in br.range(hist):
+        if rebins is not None:
+            width = rebins[i - 1] + 1
+        hist.SetBinContent(i, hist.GetBinContent(i) / width)
+    return hist
+
+
+def meregd_bins(new, old):
+    new, old = br.edges(new), br.edges(old)
+
+    def nbins(a, b):
+        return [pT for pT in old if a < pT < b]
+
+    rebins = [len(nbins(*edge)) for edge in zip(new[:-1], new[1:])]
+    return rebins
+
+
 class RebinTransformer(TransformerBase):
     def __init__(self, edges=None):
         self.edges = edges
@@ -55,13 +76,15 @@ class RebinTransformer(TransformerBase):
     def transform(self, hist, loggs):
         if not self.edges:
             return hist
+
         nbins = len(self.edges) - 1
         name = "{}_rebinned".format(hist.GetName())
         edges = array.array('d', self.edges)
         rebinned = hist.Rebin(nbins, name, edges)
-        for i in br.range(rebinned):
-            width = rebinned.GetBinWidth(i)
-            rebinned.SetBinContent(i, rebinned.GetBinContent(i) / width)
+        rebins = meregd_bins(rebinned, hist)
+        rebinned = scale_bin_width(rebinned, rebins)
+        rebinned.energy = hist.energy
+        rebinned.logy = True
         return rebinned
 
 
@@ -69,8 +92,7 @@ class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
         for i in br.range(data):
             data.SetBinError(i, 0.000001)
-        data.Sumw2()
-        print(br.edges(data))
+        # print(br.edges(data))
         return data
 
 
@@ -84,9 +106,8 @@ def hepdata():
 def xt(edges=None):
     return Pipeline([
         ("cyield", HepdataInput()),
-        ("cyield", XTtransformer()),
+        ("rebin", RebinTransformer(edges=edges)),
         ("errors", ErrorsTransformer()),
-        ("rebin", RebinTransformer(edges=edges))
     ])
 
 
@@ -99,48 +120,28 @@ def theory_prediction(label):
 
 
 @pytest.fixture
-def datasets():
+def data():
     with open("config/different-energies.json") as f:
         data = json.load(f)
-    labels, links = zip(*six.iteritems(data))
-    steps = [(l, hepdata()) for l in labels]
-    return steps, links
-
-
-@pytest.fixture
-def incnlo_datasets(datasets):
-    steps, links = datasets
-    steps.append(theory_prediction("INCNLO 13 TeV"))
-    steps.append(theory_prediction("INCNLO 7 TeV"))
-    links = list(links)
-    links.append(DataVault().input("theory", "incnlo"))
-    links.append(DataVault().input("theory", "7 TeV"))
-    return steps, links
+    return data
 
 
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_downloads_from_hepdata(datasets):
-    steps, links = datasets
+def test_downloads_from_hepdata(data):
+    labels, links = zip(*six.iteritems(data))
+    steps = [(l, hepdata()) for l in labels]
     with open_loggs() as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
 
 
-@pytest.fixture
-def xtdatasets():
-    with open("config/different-energies.json") as f:
-        data = json.load(f)
-    labels, links = zip(*six.iteritems(data))
-    steps = [(l, xt()) for l in labels]
-    return steps, links
-
-
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_xt_distribution(xtdatasets):
-    steps, links = xtdatasets
+def test_xt_distribution(data):
+    labels, links = zip(*six.iteritems(data))
+    steps = [(l, xt()) for l in labels]
     with open_loggs("compare yields") as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
 
@@ -152,10 +153,12 @@ def xt_scaling_pairs():
     return data
 
 
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_xt_scaling(xt_scaling_pairs):
+def test_xt_scaling(xt_scaling_pairs, data):
     for pair in xt_scaling_pairs:
         with open_loggs() as loggs:
             steps = [(l, xt(pair["edges"])) for l in pair["energies"]]
-            # ComparePipeline(steps, plot=True).transform(links, loggs)
+            links = [data[l] for l in pair["energies"]]
+            ComparePipeline(steps, plot=True).transform(links, loggs)
