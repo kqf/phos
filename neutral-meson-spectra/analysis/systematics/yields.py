@@ -17,7 +17,7 @@ from spectrum.uncertainties.yields import yield_extraction_data
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 def test_yield_extraction_uncertanity_pion(particle):
