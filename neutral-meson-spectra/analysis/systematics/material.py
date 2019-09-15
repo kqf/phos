@@ -14,7 +14,7 @@ def data():
 
 
 # Benchmark:
-# In the 5 TeV analysis U_tof ~ 0.02
+# Inherits from previous analyses
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
@@ -23,9 +23,8 @@ def data():
     "#pi^{0}",
     "#eta",
 ])
-def test_tof(particle, data):
-    tof = MaterialBudget(MaterialBudgetOptions(particle=particle))
+def test_material_budget(particle, data):
+    material = MaterialBudget(MaterialBudgetOptions(particle=particle))
     with open_loggs() as loggs:
-        output = tof.transform(data, loggs)
+        output = material.transform(data, loggs)
         Comparator().compare(output)
-    assert len(output) > 0
