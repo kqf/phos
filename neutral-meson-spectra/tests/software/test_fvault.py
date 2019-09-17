@@ -7,13 +7,13 @@ from vault.formulas import FVault
 
 @pytest.fixture
 def parameters():
-    return [2.4 * 100000, 0.139, 6.88, 0.134976, 0.134976]
+    return [2.4 * 100000, 0.139, 6.88, 0.134976]
 
 
 def tsallis(x, p):
     pt = x[0]
     # mass = p[0]
-    norm, C, n, mass, _ = p
+    norm, C, n, mass = p
     mt = ROOT.TMath.Sqrt(pt * pt + mass * mass)
     # n = p[1]
     # C = p[2]
