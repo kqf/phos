@@ -1,4 +1,6 @@
+import ROOT
 import json
+import six
 
 
 class FVault(object):
@@ -8,4 +10,12 @@ class FVault(object):
             self._ledger = json.load(f)
 
     def func(self, production, version="standard"):
-        return self._ledger[production][version]
+        return self._ledger[production][version]["formula"]
+
+    def tf1(self, production, version="standard"):
+        data = self._ledger[production][version]
+        func = ROOT.TF1(production, data["formula"], *data["range"])
+        func.SetParNames(*data["parameters"])
+        for name, value in six.iteritems(data["default"]):
+            func.SetParameter(name, value)
+        return func
