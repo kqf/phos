@@ -10,9 +10,6 @@ from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
-import spectrum.sutils as su
-
-from vault.datavault import DataVault
 
 
 class HepdataInput(TransformerBase):
@@ -121,7 +118,7 @@ def theory_prediction(label):
 
 @pytest.fixture
 def data():
-    with open("config/different-energies.json") as f:
+    with open("config/predictions/hepdata.json") as f:
         data = json.load(f)
     return data
 
@@ -148,7 +145,7 @@ def test_xt_distribution(data):
 
 @pytest.fixture
 def xt_scaling_pairs():
-    with open("config/cross-energies.json") as f:
+    with open("config/predictions/same-binning.json") as f:
         data = json.load(f)
     return data
 
