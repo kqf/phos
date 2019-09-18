@@ -1,5 +1,4 @@
 import ROOT
-import array
 import pytest
 import json
 import six
