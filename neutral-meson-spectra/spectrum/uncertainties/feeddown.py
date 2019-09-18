@@ -54,4 +54,5 @@ class FeedDown(TransformerBase):
         for i in br.range(uncertainty):
             uncertainty.SetBinContent(i, uncertainty_value)
         uncertainty.label = "feed-down uncertainty"
+        uncertainty.Scale(0.1)
         return uncertainty
