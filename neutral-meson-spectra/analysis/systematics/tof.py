@@ -20,7 +20,7 @@ def data():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_tof(data):
-    tof = TofUncertainty(TofUncertaintyOptions())
+    tof = TofUncertainty(TofUncertaintyOptions(), plot=True)
     with open_loggs() as loggs:
         output = tof.transform(data, loggs)
     assert len(output) > 0

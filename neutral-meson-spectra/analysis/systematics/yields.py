@@ -22,7 +22,8 @@ from spectrum.uncertainties.yields import yield_extraction_data
 ])
 def test_yield_extraction_uncertanity_pion(particle):
     estimator = YieldExtractioin(
-        YieldExtractioinUncertanityOptions(particle=particle)
+        YieldExtractioinUncertanityOptions(particle=particle),
+        plot=True
     )
     with open_loggs("cyield uncertainty", shallow=True) as loggs:
         output = estimator.transform(

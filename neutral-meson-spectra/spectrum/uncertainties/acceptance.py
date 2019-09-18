@@ -8,6 +8,7 @@ from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import UnityFitTransformer
 from spectrum.tools.feeddown import data_feeddown
+from spectrum.pipeline import FunctionTransformer
 from vault.datavault import DataVault
 
 
@@ -61,6 +62,7 @@ class MaxUnityHistogram(object):
 
 
 class SaveImagesTransformer(object):
+
     def transform(self, hists, loggs):
         Comparator().compare(hists, loggs=loggs)
         return hists
@@ -79,9 +81,13 @@ class Acceptance(TransformerBase):
             br.ratio
         )
 
+        def save_images(hists, loggs):
+            Comparator(stop=plot).compare(hists, loggs=loggs)
+            return hists
+
         self.pipeline = Pipeline([
             ("unities", unities),
-            ("images", SaveImagesTransformer()),
+            ("images", FunctionTransformer(save_images)),
             ("fit", UnityFitTransformer(options.title, options.fit_range)),
             ("max", MaxUnityHistogram()),
         ])

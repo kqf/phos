@@ -136,11 +136,11 @@ class YieldExtractioin(TransformerBase):
             spectrum.label = label
         spectrums = list(spectrums.values())
 
-        diff = Comparator(oname="spectrum_extraction_methods")
+        diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
         diff.compare(spectrums)
 
         average = br.average(spectrums, "averaged yield")
-        diff = Comparator(stop=True, oname="yield_deviation_from_average")
+        diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
         diff.compare_ratios(spectrums, average, loggs=loggs)
 
         uncert, rms, mean = br.systematic_deviation(spectrums)

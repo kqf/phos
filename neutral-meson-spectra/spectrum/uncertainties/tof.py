@@ -74,7 +74,7 @@ class TofUncertainty(TransformerBase):
                 ("range", RangeSetter(options.fit_range)),
                 ("decorate", OutputDecorator(*options.decorate)),
             ])),
-        ], True)
+        ], plot)
 
         self.pipeline = Pipeline([
             ("spectrum_isolated_spectra_ratio", ratio),
