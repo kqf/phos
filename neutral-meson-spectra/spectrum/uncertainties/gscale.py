@@ -53,13 +53,13 @@ class GScaleOptions(object):
 
 class MockEpRatio(TransformerBase):
     def transform(self, data, loggs):
-        return 0.01
+        return 0.004
 
 
 class TsallisFitter(TransformerBase):
     @classmethod
     def fitfunc(klass, name='', bias=0.0001):
-        fitf = ROOT.TF1(name, FVault().func("tsallis"), 2, 25)
+        fitf = FVault().tf1("tsallis")
         fitf.SetParameter(0, 2.40)
         fitf.SetParameter(1, 0.139)
         fitf.SetParameter(2, 6.88)
@@ -67,7 +67,7 @@ class TsallisFitter(TransformerBase):
 
     def transform(self, corrected_yield, loggs):
         fitf = self.fitfunc('tsallis_')
-        corrected_yield.Fit(fitf, 'R', '')
+        corrected_yield.Fit(fitf)
         # corrected_yield.Draw()
         # diff = Comparator(stop=self.plot)
         # diff.compare(corrected_yield)
@@ -107,8 +107,8 @@ class GScale(TransformerBase):
 
     def fit(self, data, ep_ratio, loggs=None):
         corrected_yield, fitf = data
-        lower = self.ratiofunc(fitf, 'low', -0.01, 38)
-        upper = self.ratiofunc(fitf, 'up', 0.01, 47)
+        lower = self.ratiofunc(fitf, 'low', ep_ratio, 38)
+        upper = self.ratiofunc(fitf, 'up', -ep_ratio, 47)
 
         # diff = Comparator(stop=self.plot, rrange=(-1, ), crange=(0.9, 1.1))
         # diff.compare(
@@ -116,11 +116,9 @@ class GScale(TransformerBase):
         #     upper.GetHistogram()
         # )
 
-        syst_error = corrected_yield.Clone("gescale")
+        syst_error = corrected_yield.Clone("gscale")
         bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
-        bins = [lower.Eval(c) - upper.Eval(c) for c in bins]
+        bins = [max(1 - lower.Eval(c), upper.Eval(c) - 1) for c in bins]
         for i, b in enumerate(bins):
-            if b < 0:
-                print('Warning: negative global energy scale corrections')
-            syst_error.SetBinContent(i + 1, abs(b))
+            syst_error.SetBinContent(i + 1, b)
         return syst_error
