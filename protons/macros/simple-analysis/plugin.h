@@ -20,7 +20,7 @@ AliAnalysisGrid * CreatePlugin(const char * pluginmode, TString period_raw, TStr
 	reconstruction.ReplaceAll(dir + (reconstruction.Contains(dir + "-") ? "-" : "") , "");
 	reconstruction.ReplaceAll("-", "_");
 
-	TString globaldir = isMC ? "/alice/sim/2017/" : "/alice/data/2016/";
+	TString globaldir = isMC ? "/alice/sim/2017/" : "/alice/data/2018/";
 	plugin->SetGridDataDir(globaldir + dir);
 	cout << "/alice/data/2016/" + dir << endl;
 

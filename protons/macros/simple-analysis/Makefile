@@ -2,7 +2,7 @@ include ../../base.mk
 
 PROTONS_PATH=../../
 
-DATASET = LHC16l-pass1-isolated
+DATASET = LHC18d-pass1
 DPART = first
 MC = kFALSE
 OUTDIR = results/mc/pythia/debug_weights
