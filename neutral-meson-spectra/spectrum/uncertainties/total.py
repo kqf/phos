@@ -1,3 +1,4 @@
+import numpy as np
 from joblib import Memory
 
 from spectrum.output import open_loggs
@@ -35,6 +36,9 @@ from spectrum.uncertainties.material import MaterialBudget
 from spectrum.uncertainties.material import MaterialBudgetOptions
 from spectrum.uncertainties.material import material_budget_data
 
+from spectrum.comparator import Comparator
+from spectrum.broot import BROOT as br
+
 
 NBINS = 5
 
@@ -58,21 +62,28 @@ memory = Memory(".joblib-cachedir", verbose=0)
 def uncertainties(particle, data):
     options = TotalUncertaintyOptions(particle=particle)
     estimator = ParallelPipeline([
-        ("yield", YieldExtractioin(options.yields)),
+        ("yield extraction", YieldExtractioin(options.yields)),
         ("nonlinearity", NonlinearityUncertainty(options.nonlin)),
         ("tof", TofUncertainty(options.tof)),
-        ("gescale", GScale(options.gescale)),
+        ("global energy scale", GScale(options.gescale)),
         ("accepntace", Acceptance(options.acceptance)),
         ("feed down", FeedDown(options.feeddown)),
         ("material budget", MaterialBudget(options.material))
     ])
+    labels, transformers = zip(*estimator.steps)
+
     with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
-    print("Systematics is done")
+
+    for hist, label in zip(output, labels):
+        hist.label = label
+
     return output
 
 
 class TotalUncertaintyOptions():
+    title = "Total systematic uncertainty; p_{T}, GeV/c, relative sys. err."
+
     def __init__(self, particle):
         self.yields = YieldExtractioinUncertanityOptions(particle=particle)
         self.nonlin = NonlinearityUncertaintyOptions(nbins=NBINS)
@@ -87,12 +98,21 @@ class TotalUncertaintyOptions():
 class TotalUncertainty(TransformerBase):
     def __init__(self, options, plot=False):
         particle = options.particle
+        self.options = options
         self.pipeline = Pipeline([
             ("efficiencies", FunctionTransformer(
                 lambda data, loggs: uncertainties(particle, data)
             )),
-            ("sum", self.sum)
+            ("sum", FunctionTransformer(self.sum))
         ])
 
     def sum(self, data, loggs):
-        return None
+        uncertainties = np.array([br.bins(h).contents for h in data])
+        total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
+        total_hist = data[0].Clone("total_uncertainty")
+        total_hist.SetTitle(self.options.title)
+        total_hist.label = "total"
+        for i in br.range(total_hist):
+            total_hist.SetBinContent(i, total_uncert[i - 1])
+        Comparator().compare(list(data) + [total_hist])
+        return total_hist
