@@ -1,3 +1,5 @@
+import joblib
+
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
@@ -51,3 +53,12 @@ class Spectrum(TransformerBase):
             spectrum.SetBinError(i, total_errors[i - 1])
 
         return spectrum, statistics, systematics
+
+
+memory = joblib.Memory(".joblib-cachedir", verbose=0)
+
+
+@memory.cache()
+def spectrum(particle, data, loggs):
+    estimator = Spectrum(particle=particle)
+    return estimator.transform(data, loggs)

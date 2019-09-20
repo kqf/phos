@@ -15,8 +15,8 @@ from spectrum.uncertainties.acceptance import acceptance_data
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta"
+    # "#pi^{0}",
+    "#eta"
 ])
 def test_acceptance(particle):
     estimator = Acceptance(

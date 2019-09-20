@@ -19,7 +19,7 @@ def cyield_data(particle, cut):
             "data", "latest",
             listname="Phys{}".format(cut),
             histname="MassPtSM0"),
-        data_feeddown(),
+        data_feeddown(particle != "#pi^{0}"),
     )
     mc_inputs = (
         DataVault().input(
@@ -68,6 +68,14 @@ class SaveImagesTransformer(object):
         return hists
 
 
+class RemoveErrors(object):
+
+    def transform(self, hist, loggs):
+        for i in br.range(hist):
+            hist.SetBinError(i, 0)
+        return hist
+
+
 class Acceptance(TransformerBase):
     def __init__(self, options, plot=False):
         super(Acceptance, self).__init__(plot)
@@ -90,4 +98,5 @@ class Acceptance(TransformerBase):
             ("images", FunctionTransformer(save_images)),
             ("fit", UnityFitTransformer(options.title, options.fit_range)),
             ("max", MaxUnityHistogram()),
+            ("final", RemoveErrors()),
         ])

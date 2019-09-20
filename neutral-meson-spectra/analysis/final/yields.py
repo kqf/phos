@@ -1,5 +1,5 @@
 import pytest
-from spectrum.spectrum import Spectrum, data_spectrum
+from spectrum.spectrum import spectrum, data_spectrum
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
@@ -16,5 +16,5 @@ def data(particle):
 ])
 def test_spectrum(particle, data):
     with open_loggs() as loggs:
-        output = Spectrum(particle).transform(data, loggs)
+        output = spectrum(particle, data, loggs)
         Comparator().compare(output)

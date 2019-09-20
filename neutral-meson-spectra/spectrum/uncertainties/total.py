@@ -109,6 +109,7 @@ class TotalUncertainty(TransformerBase):
     def sum(self, data, loggs):
         uncertainties = np.array([br.bins(h).contents for h in data])
         total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
+        # total_uncert = uncertainties.sum(axis=0)
         total_hist = data[0].Clone("total_uncertainty")
         total_hist.SetTitle(self.options.title)
         total_hist.label = "total"
