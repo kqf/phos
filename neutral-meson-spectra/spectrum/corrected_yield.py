@@ -8,8 +8,44 @@ from spectrum.pipeline import Pipeline, HistogramSelector, OutputDecorator
 from spectrum.pipeline import ParallelPipeline, ReducePipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramScaler
+
 from spectrum.broot import BROOT as br
+
 from spectrum.tools.feeddown import FeeddownEstimator
+from spectrum.tools.feeddown import data_feeddown
+from vault.datavault import DataVault
+
+
+def pion_data():
+    return (
+        (
+            DataVault().input("data", histname="MassPtSM0"),
+            data_feeddown(),
+        ),
+        (
+            DataVault().input("single #pi^{0}", "low", "PhysEff"),
+            DataVault().input("single #pi^{0}", "high", "PhysEff"),
+        )
+    )
+
+
+def eta_data():
+    return (
+        (
+            DataVault().input("data", histname="MassPtSM0"),
+            data_feeddown(dummy=True)
+        ),
+        (
+            DataVault().input("single #eta", "low"),
+            DataVault().input("single #eta", "high"),
+        )
+    )
+
+
+def data_cyield(particle):
+    if particle == "#pi^{0}":
+        return pion_data()
+    return eta_data()
 
 
 class InvariantYield(TransformerBase):

@@ -1,49 +1,16 @@
 import pytest  # noqa
 
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.corrected_yield import CorrectedYield, data_cyield
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 from spectrum.constants import PARTICLE_MASSES
-
-from vault.datavault import DataVault
 from vault.formulas import FVault
-from spectrum.tools.feeddown import data_feeddown
-
-
-def pion_data():
-    return (
-        (
-            DataVault().input("data", histname="MassPtSM0"),
-            data_feeddown(),
-        ),
-        (
-            DataVault().input("single #pi^{0}", "low", "PhysEff"),
-            DataVault().input("single #pi^{0}", "high", "PhysEff"),
-        )
-    )
-
-
-def eta_data():
-    return (
-        (
-            DataVault().input("data", histname="MassPtSM0"),
-            data_feeddown(dummy=True)
-        ),
-        (
-            DataVault().input("single #eta", "low"),
-            DataVault().input("single #eta", "high"),
-        )
-    )
 
 
 @pytest.fixture
 def data(particle):
-    return {
-        "#pi^{0}": pion_data(),
-        "#eta": eta_data(),
-
-    }.get(particle)
+    return data_cyield(particle)
 
 
 @pytest.mark.onlylocal

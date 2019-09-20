@@ -43,7 +43,7 @@ from spectrum.broot import BROOT as br
 NBINS = 5
 
 
-def data():
+def data_total_uncert(particle):
     return (
         yield_extraction_data(),
         nonlinearity_scan_data(NBINS, "single #pi^{0}"),
