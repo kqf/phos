@@ -14,7 +14,7 @@ from spectrum.tools.deviation import MaxDeviationVector
 
 class NonlinearityUncertaintyOptions(object):
 
-    def __init__(self, particle="#pi^{0}", nbins=11, n_ranges=2):
+    def __init__(self, particle="#pi^{0}", nbins=5, n_ranges=2):
         super(NonlinearityUncertaintyOptions, self).__init__()
         self.nbins = nbins
         self.eff = CompositeEfficiencyOptions(particle)
