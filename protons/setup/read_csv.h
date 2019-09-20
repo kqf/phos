@@ -6,6 +6,8 @@
 #include "iostream"
 #include "algorithm"
 #include "iterator"
+using std::cout;
+using std::endl;
 
 
 void read_csv(std::vector<Int_t> & v, TString period = "LHC10b", TString datsetspath = "../../datasets/")
