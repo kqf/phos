@@ -15,9 +15,14 @@ from vault.datavault import DataVault
 
 
 @pytest.fixture
+def stop():
+    return False
+
+
+@pytest.fixture
 def edges(etype):
     if etype == "normal":
-        return np.linspace(0, 20, 2000)
+        return np.linspace(0, 20, 200)
 
     with open("config/pt.json") as f:
         data = json.load(f)
@@ -36,10 +41,10 @@ def edges_eta():
     lambda i: exp(-i / 20.),
 ])
 @pytest.mark.parametrize("etype", [
-    "normal",
+    # "normal",
     "#pi^{0}",
 ])
-def test_rebins_flat_data(edges, edges_eta, func):
+def test_rebins_flat_data(edges, edges_eta, func, stop):
     hist = ROOT.TH1F("hist", "test", len(edges) - 1, array.array('d', edges))
     hist.label = "original"
     for i in br.range(hist):
@@ -48,10 +53,10 @@ def test_rebins_flat_data(edges, edges_eta, func):
 
     hist.logy = True
     with open_loggs() as loggs:
-        rebinned = RebinTransformer(True, edges).transform(hist, loggs)
+        rebinned = RebinTransformer(True, edges_eta).transform(hist, loggs)
         rebinned.label = "transformed"
 
-    Comparator().compare(hist, rebinned)
+    Comparator(stop=stop).compare(hist, rebinned)
     assert hist is not rebinned
 
 
@@ -64,10 +69,12 @@ def pion_data():
     )
 
 
+# @pytest.mark.skip()
+@pytest.mark.onlylocal
 @pytest.mark.parametrize("etype", [
     "#pi^{0}",
 ])
-def test_rebins_data(etype, edges, pion_data):
+def test_rebins_data(etype, edges, pion_data, stop):
     for data in pion_data:
         histname = "hPt_#pi^{0}_primary_standard"
         with open_loggs() as loggs:
@@ -78,4 +85,4 @@ def test_rebins_data(etype, edges, pion_data):
             rebinned = RebinTransformer(False, edges).transform(hist, loggs)
             rebinned.label = "transformed"
             rebinned.logy = True
-            Comparator().compare(hist, rebinned)
+            Comparator(stop=stop).compare(hist, rebinned)

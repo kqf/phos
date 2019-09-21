@@ -42,20 +42,20 @@ class RebinTransformer(TransformerBase):
     def scale_bin_width(hist, aggregated_widths, normalized):
         hist = hist.Clone()
         for i, width in zip(br.range(hist), aggregated_widths):
-            bwidth = hist.GetBinWidth(i) if normalized else 1.
-            hist.SetBinContent(i, hist.GetBinContent(i) / width * bwidth)
-            hist.SetBinError(i, hist.GetBinError(i) / width * bwidth)
+            hist.SetBinContent(i, hist.GetBinContent(i) / width)
+            hist.SetBinError(i, hist.GetBinError(i) / width)
         return hist
 
     @staticmethod
-    def meregd_bins(newh, oldh):
+    def meregd_bins(newh, oldh, normalized):
         new = br.edges(newh)
 
         def nbins(a, b):
             return [oldh.GetBinWidth(i)
                     for i in br.range(oldh) if a < oldh.GetBinCenter(i) < b]
 
-        widths = [sum(nbins(*edge)) for edge in zip(new[:-1], new[1:])]
+        func = len if normalized else sum
+        widths = [func(nbins(*edge)) for edge in zip(new[:-1], new[1:])]
         return widths
 
     def transform(self, hist, loggs):
@@ -69,7 +69,7 @@ class RebinTransformer(TransformerBase):
 
         rebinned = self.scale_bin_width(
             rebinned,
-            self.meregd_bins(rebinned, hist),
+            self.meregd_bins(rebinned, hist, self.normalized),
             normalized=self.normalized)
 
         return rebinned

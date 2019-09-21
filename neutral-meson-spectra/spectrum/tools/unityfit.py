@@ -15,6 +15,7 @@ def unityfit(ratio, title, fit_range=(0, 100)):
 
     output = ratio.Clone("{}_unity".format(ratio.GetName()))
     output.Reset()
+    output.GetXaxis().UnZoom()
     output.SetTitle(title)
     for i in br.range(output):
         output.SetBinContent(i, sys_error)

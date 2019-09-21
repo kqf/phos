@@ -19,8 +19,13 @@ def data():
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_tof(data):
-    tof = TofUncertainty(TofUncertaintyOptions(), plot=True)
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"
+])
+def test_tof(data, particle):
+    tof = TofUncertainty(TofUncertaintyOptions(particle=particle), plot=True)
     with open_loggs() as loggs:
         output = tof.transform(data, loggs)
+        Comparator().compare(output)
     assert len(output) > 0

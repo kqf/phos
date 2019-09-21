@@ -5,6 +5,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.options import Options
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
+from spectrum.pipeline import RebinTransformer
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputDecorator
 from spectrum.tools.unityfit import unityfit
@@ -27,7 +28,7 @@ def tof_data_stable():
 
 class TofUncertaintyOptions(object):
 
-    def __init__(self):
+    def __init__(self, particle="#pi^{0}"):
         super(TofUncertaintyOptions, self).__init__()
         self.data = Options()
         self.isolated = Options()
@@ -35,6 +36,9 @@ class TofUncertaintyOptions(object):
         self.fit_range = 1.0, 7.5
         self.fitf = ROOT.TF1("ratio", "1. - pol0(0)", *self.fit_range)
         self.fitf.SetParameter(0, 0.02)
+        self.edges = None
+        if particle != "#pi^{0}":
+            self.edges = Options(particle=particle).pt.ptedges
 
 
 class RatioFitter(TransformerBase):
@@ -78,5 +82,6 @@ class TofUncertainty(TransformerBase):
 
         self.pipeline = Pipeline([
             ("spectrum_isolated_spectra_ratio", ratio),
-            ("pol0_fit", RatioFitter(options.fit_range))
+            ("pol0_fit", RatioFitter(options.fit_range)),
+            ("rebin", RebinTransformer(True, options.edges)),
         ])
