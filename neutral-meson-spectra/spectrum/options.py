@@ -32,7 +32,7 @@ def option(config, particle):
 class Options(object):
     def __init__(self,
                  particle="#pi^{0}",
-                 pt="config/data/pt.json",
+                 pt="config/pt.json",
                  calibration="config/data/calibration.json",
                  invmass="config/data/mass-fit.json",
                  signal="config/data/cball.json",
@@ -53,7 +53,7 @@ class OptionsSPMC(Options):
 
     def __init__(self,
                  particle="#pi^{0}",
-                 pt="config/spmc/pt.json",
+                 pt="config/pt.json",
                  invmass="config/spmc/mass-fit.json",
                  calibration="config/spmc/calibration.json",
                  signal="config/spmc/cball.json",
@@ -72,7 +72,7 @@ class OptionsSPMC(Options):
 class CompositeOptions(object):
 
     def __init__(self, particle, n_ranges=2,
-                 pt="config/spmc/pt.json",
+                 pt="config/pt.json",
                  *args, **kwargs):
         super(CompositeOptions, self).__init__()
         options = [
@@ -99,7 +99,7 @@ class EfficiencyOptions(object):
     def __init__(self, particle="#pi^{0}",
                  genname="hPt_{0}_primary_standard",
                  scale=0.075,
-                 pt="config/data/pt.json",
+                 pt="config/pt.json",
                  otype=Options, **kwargs):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
@@ -115,7 +115,7 @@ class CompositeEfficiencyOptions(object):
 
     def __init__(self, particle,
                  genname="hPt_{0}_primary_standard",
-                 pt="config/spmc/pt.json",
+                 pt="config/pt.json",
                  use_particle=True,
                  scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
@@ -144,7 +144,7 @@ class CorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
-    def __init__(self, particle="#pi^{0}", pt="config/data/pt.json"):
+    def __init__(self, particle="#pi^{0}", pt="config/pt.json"):
         super(CorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle, pt=pt)
         self.analysis.output.scalew_spectrum = True
@@ -174,7 +174,7 @@ class CompositeCorrectedYieldOptions(object):
     """
 
     def __init__(self, particle="#pi^{0}", n_ranges=2,
-                 pt="config/pt-corrected.json"):
+                 pt="config/pt.json"):
         super(CompositeCorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle, pt=pt)
         self.analysis.output.scalew_spectrum = True
@@ -274,7 +274,7 @@ class CompositeNonlinearityOptions(object):
 
     def __init__(self, particle="#pi^{0}", n_ranges=2):
         super(CompositeNonlinearityOptions, self).__init__()
-        pt = "config/pt-nonlinearity.json"
+        pt = "config/pt.json"
 
         self.data = Options(particle=particle, pt=pt)
         self.mc = CompositeOptions(particle, pt=pt, n_ranges=n_ranges)
@@ -302,9 +302,9 @@ class CompositeNonlinearityScanOptions(object):
         self.analysis = CompositeOptions(
             particle,
             n_ranges=n_ranges,
-            pt="config/spmc/pt.json")
+            pt="config/pt.json")
 
         self.analysis_data = Options(
             particle=particle,
-            pt="config/spmc/pt.json")
+            pt="config/pt.json")
         self.factor = 1.

@@ -16,11 +16,11 @@ def data(particle):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+    # "#pi^{0}",
+    "#eta",
 ])
 def test_fit_the_corrected_yield(particle, data):
-    with open_loggs() as loggs:
+    with open_loggs("eta yield") as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
                 particle=particle

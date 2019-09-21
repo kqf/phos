@@ -32,7 +32,7 @@ def data(spmc, pythia8):
 ])
 def test_efficiencies(particle, data):
     general_options = EfficiencyOptions(
-        pt="config/pt-same-truncated.json",
+        pt="config/pt.json",
         scale=2,
     )
 
