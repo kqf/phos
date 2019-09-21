@@ -21,7 +21,7 @@ from spectrum.uncertainties.acceptance import acceptance_data
 def test_acceptance(particle):
     estimator = Acceptance(
         AcceptanceOptions(particle=particle),
-        plot=False)
+        plot=True)
 
     with open_loggs() as loggs:
         uncertanity = estimator.transform(acceptance_data(particle), loggs)

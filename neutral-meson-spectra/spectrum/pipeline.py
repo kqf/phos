@@ -34,17 +34,44 @@ class ComparePipeline(TransformerBase):
 
 
 class RebinTransformer(TransformerBase):
-    def __init__(self, edges, plot=False, width=True):
-        super(RebinTransformer, self).__init__(plot)
-        self.edges = array.array('d', edges)
-        self.width = width
+    def __init__(self, normalized, edges=None):
+        self.normalized = normalized
+        self.edges = edges
 
-    def transform(self, data, loggs):
-        newname = "{0}_rebinned".format(data.GetName())
-        rebinned = data.Rebin(len(self.edges) - 1, newname, self.edges)
-        if self.width:
-            rebinned.Scale(data.GetBinWidth(1), "width")
-            # br.scalewidth(rebinned)
+    @staticmethod
+    def scale_bin_width(hist, aggregated_widths, normalized):
+        hist = hist.Clone()
+        for i, width in zip(br.range(hist), aggregated_widths):
+            bwidth = hist.GetBinWidth(i) if normalized else 1.
+            hist.SetBinContent(i, hist.GetBinContent(i) / width * bwidth)
+            hist.SetBinError(i, hist.GetBinError(i) / width * bwidth)
+        return hist
+
+    @staticmethod
+    def meregd_bins(newh, oldh):
+        new = br.edges(newh)
+
+        def nbins(a, b):
+            return [oldh.GetBinWidth(i)
+                    for i in br.range(oldh) if a < oldh.GetBinCenter(i) < b]
+
+        widths = [sum(nbins(*edge)) for edge in zip(new[:-1], new[1:])]
+        return widths
+
+    def transform(self, hist, loggs):
+        if self.edges is None:
+            return hist
+
+        nbins = len(self.edges) - 1
+        edges = array.array('d', self.edges)
+        rebinned = hist.Clone("{}_rebinned".format(hist.GetName()))
+        rebinned = rebinned.Rebin(nbins, rebinned.GetName(), edges)
+
+        rebinned = self.scale_bin_width(
+            rebinned,
+            self.meregd_bins(rebinned, hist),
+            normalized=self.normalized)
+
         return rebinned
 
 
