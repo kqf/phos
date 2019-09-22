@@ -44,15 +44,18 @@ NBINS = 5
 
 
 def data_total_uncert(particle):
-    return (
-        yield_extraction_data(),
+    data = [
+        yield_extraction_data(particle=particle),
         nonlinearity_scan_data(NBINS, "single #pi^{0}"),
         tof_data(),
-        ge_scale_data("#pi^{0}"),
+        ge_scale_data(particle),
         acceptance_data(),
-        feeddown_data(),
         material_budget_data(),
-    )
+    ]
+
+    if particle == "#pi^{0}":
+        data.append(feeddown_data(particle))
+    return data
 
 
 memory = Memory(".joblib-cachedir", verbose=0)
@@ -61,20 +64,24 @@ memory = Memory(".joblib-cachedir", verbose=0)
 @memory.cache()
 def uncertainties(particle, data):
     options = TotalUncertaintyOptions(particle=particle)
-    estimator = ParallelPipeline([
+    steps = [
         ("yield extraction", YieldExtractioin(options.yields)),
         ("nonlinearity", NonlinearityUncertainty(options.nonlin)),
         ("tof", TofUncertainty(options.tof)),
         ("global energy scale", GScale(options.gescale)),
         ("accepntace", Acceptance(options.acceptance)),
-        ("feed down", FeedDown(options.feeddown)),
         ("material budget", MaterialBudget(options.material))
-    ])
-    labels, transformers = zip(*estimator.steps)
+    ]
+
+    if particle == "#pi^{0}":
+        steps.append(("feed down", FeedDown(options.feeddown)))
+
+    estimator = ParallelPipeline(steps)
 
     with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
 
+    labels, _ = zip(*steps)
     for hist, label in zip(output, labels):
         hist.label = label
 
@@ -86,13 +93,15 @@ class TotalUncertaintyOptions():
 
     def __init__(self, particle):
         self.yields = YieldExtractioinUncertanityOptions(particle=particle)
-        self.nonlin = NonlinearityUncertaintyOptions(nbins=NBINS)
-        self.tof = TofUncertaintyOptions()
+        self.nonlin = NonlinearityUncertaintyOptions(
+            particle=particle, nbins=NBINS)
+        self.tof = TofUncertaintyOptions(particle=particle)
         self.gescale = GScaleOptions(particle=particle)
         self.acceptance = AcceptanceOptions(particle=particle)
-        self.feeddown = FeedDownOptions(particle=particle)
         self.material = MaterialBudgetOptions(particle=particle)
         self.particle = particle
+        if particle == "#pi^{0}":
+            self.feeddown = FeedDownOptions(particle=particle)
 
 
 class TotalUncertainty(TransformerBase):

@@ -4,9 +4,10 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import ReduceArgumentPipeline
+from spectrum.pipeline import RebinTransformer
 from spectrum.efficiency import Efficiency
 from spectrum.broot import BROOT as br
-from spectrum.options import CompositeEfficiencyOptions
+from spectrum.options import CompositeEfficiencyOptions, Options
 
 from vault.datavault import DataVault
 from spectrum.tools.deviation import MaxDeviationVector
@@ -17,7 +18,10 @@ class NonlinearityUncertaintyOptions(object):
     def __init__(self, particle="#pi^{0}", nbins=5, n_ranges=2):
         super(NonlinearityUncertaintyOptions, self).__init__()
         self.nbins = nbins
-        self.eff = CompositeEfficiencyOptions(particle)
+        self.eff = CompositeEfficiencyOptions("#pi^{0}")
+        self.edges = None
+        if particle != "#pi^{0}":
+            self.edges = Options(particle=particle).pt.ptedges
 
 
 def chi2_func(hist1, hist2, loggs):
@@ -59,7 +63,8 @@ class NonlinearityUncertainty(TransformerBase):
 
         self.pipeline = Pipeline([
             ("ratios", ratio),
-            ("deviation", MaxDeviationVector())
+            ("deviation", MaxDeviationVector()),
+            ("rebin", RebinTransformer(True, options.edges)),
         ])
 
 

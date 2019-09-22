@@ -1,8 +1,9 @@
 from spectrum.pipeline import TransformerBase
-from spectrum.options import CompositeCorrectedYieldOptions
+from spectrum.options import CompositeCorrectedYieldOptions, Options
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import Pipeline
+from spectrum.pipeline import RebinTransformer
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
@@ -38,11 +39,11 @@ def cyield_data(particle, cut):
 
 def acceptance_data(particle="#pi^{0}"):
     return (
-        cyield_data(particle, cut=0),
+        cyield_data("#pi^{0}", cut=0),
         (
-            cyield_data(particle, cut=1),
-            cyield_data(particle, cut=2),
-            cyield_data(particle, cut=3),
+            cyield_data("#pi^{0}", cut=1),
+            cyield_data("#pi^{0}", cut=2),
+            cyield_data("#pi^{0}", cut=3),
         ),
     )
 
@@ -52,8 +53,12 @@ class AcceptanceOptions(object):
 
     def __init__(self, particle="#pi^{0}"):
         super(AcceptanceOptions, self).__init__()
-        self.cyield = CompositeCorrectedYieldOptions(particle)
+        self.cyield = CompositeCorrectedYieldOptions(particle="#pi^{0}")
         self.fit_range = (1, 10)
+        self.edges = None
+        if particle == "#pi^{0}":
+            return
+        self.edges = Options(particle="#eta").pt.ptedges
 
 
 class MaxUnityHistogram(object):
@@ -99,4 +104,5 @@ class Acceptance(TransformerBase):
             ("fit", UnityFitTransformer(options.title, options.fit_range)),
             ("max", MaxUnityHistogram()),
             ("final", RemoveErrors()),
+            ("rebin", RebinTransformer(True, options.edges)),
         ])

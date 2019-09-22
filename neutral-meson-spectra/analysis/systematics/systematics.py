@@ -9,8 +9,8 @@ from spectrum.comparator import Comparator
 
 
 @pytest.fixture
-def dataset():
-    return data_total_uncert()
+def dataset(particle):
+    return data_total_uncert(particle)
 
 
 @pytest.mark.skip("")
@@ -25,7 +25,11 @@ def test_draws_all_sources(dataset):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_calculates_total_uncertainty(dataset):
+@pytest.mark.parametrize("particle", [
+    # "#pi^{0}",
+    "#eta",
+])
+def test_calculates_total_uncertainty(particle, dataset):
     with open_loggs() as loggs:
-        tot = TotalUncertainty(TotalUncertaintyOptions(particle="#pi^{0}"))
+        tot = TotalUncertainty(TotalUncertaintyOptions(particle=particle))
         Comparator().compare(tot.transform(dataset, loggs))

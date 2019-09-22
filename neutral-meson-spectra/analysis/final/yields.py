@@ -12,7 +12,8 @@ def data(particle):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}"
+    "#pi^{0}",
+    "#eta",
 ])
 def test_spectrum(particle, data):
     with open_loggs() as loggs:

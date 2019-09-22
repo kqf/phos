@@ -29,9 +29,13 @@ def nbins():
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_nonlinearity_uncertainty(nbins):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_nonlinearity_uncertainty(particle, nbins):
     prod = "single #pi^{0} nonlinearity scan"
-    options = NonlinearityUncertaintyOptions(nbins=nbins)
+    options = NonlinearityUncertaintyOptions(particle=particle, nbins=nbins)
     options.factor = 1.
 
     with open_loggs() as loggs:
