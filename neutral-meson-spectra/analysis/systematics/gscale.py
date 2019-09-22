@@ -15,7 +15,7 @@ from spectrum.uncertainties.gscale import ge_scale_data
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 def test_interface_composite(particle):

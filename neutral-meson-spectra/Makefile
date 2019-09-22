@@ -18,11 +18,14 @@ ifeq (, $(shell which phos-download))
 endif
 
 systematics:
-# 	pytest analysis/systematics/tof.py
-# 	pytest analysis/systematics/acceptance.py # TODO: Update selection
-# 	pytest analysis/systematics/gscale.py
 	pytest analysis/systematics/yields.py
 	pytest analysis/systematics/nonlinearity.py
+	pytest analysis/systematics/gscale.py
+	pytest analysis/systematics/tof.py
+	pytest analysis/systematics/acceptance.py # TODO: Update selection
+	pytest analysis/systematics/feeddown.py
+	pytest analysis/systematics/material.py
+	pytest analysis/systematics/systematics.py
 
 clean:
 	rm -f *.pdf *.png *.root

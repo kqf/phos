@@ -54,7 +54,7 @@ def data_total_uncert(particle):
     ]
 
     if particle == "#pi^{0}":
-        data.append(feeddown_data(particle))
+        data.append(feeddown_data())
     return data
 
 
