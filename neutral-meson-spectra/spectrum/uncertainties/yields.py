@@ -100,9 +100,9 @@ class YieldExtractioinUncertanityOptions(object):
             "wide": [0.08, 0.24]
         },
         "#eta": {
-            "low": [0.35, 0.75],
+            "low": [0.35, 0.65],
             "mid": [0.4, 0.7],
-            "wide": [0.45, 0.65]
+            "wide": [0.45, 0.75]
         },
     }
 
