@@ -810,7 +810,7 @@ def test_draws_chi2(scale):
 
 @pytest.fixture
 def exp_data():
-    with open("config/data/pt.json") as f:
+    with open("config/pt.json") as f:
         data = array.array('d', json.load(f)["#pi^{0}"].get("ptedges"))
     hist = ROOT.TH1F("random", "Testing bin centers; x", len(data) - 1, data)
     function = ROOT.TF1("function", "TMath::Exp(-0.5 * x)", 0, 100)

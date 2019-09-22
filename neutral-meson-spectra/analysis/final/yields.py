@@ -1,5 +1,5 @@
 import pytest
-from spectrum.spectrum import spectrum, data_spectrum
+from spectrum.spectra import spectrum, data_spectrum
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
