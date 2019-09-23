@@ -9,8 +9,29 @@ from vault.formulas import FVault
 @pytest.fixture
 def tcmf(particle):
     tcm = FVault().tf1("tcm")
-    tcm.SetParameters(0.1, 4.35526e-01, 8.02315e-01, 9.20052e-01, 1)
-    tcm.FixParameter(6, mass(particle))
+
+    if particle == "#pi^{0}":
+        tcm.SetParameter(0, 0.1)
+        tcm.SetParameter(1, 1.73e-01)
+        tcm.SetParLimits(1, 0.1, 0.3)
+        tcm.SetParameter(2, 0.1)
+        tcm.SetParameter(3, 0.601)
+        tcm.SetParLimits(3, 0.4, 1.0)
+        tcm.SetParameter(4, 3.09)
+        tcm.SetParLimits(4, 2.0, 4.0)
+
+    if particle == "#eta":
+        tcm.SetParameter(0, 0.1)
+        tcm.SetParLimits(0, 0, 1e+1)
+        tcm.SetParameter(1, 1.71e-01)
+        tcm.SetParLimits(1, 0.1, 0.3)
+        tcm.SetParameter(2, 0.1)
+        tcm.SetParameter(3, 0.801)
+        tcm.SetParLimits(3, 0.7, 0.9)
+        tcm.SetParameter(4, 3.059)
+        tcm.SetParLimits(4, 2.0, 4.0)
+
+    tcm.FixParameter(5, mass(particle))
     return tcm
 
 
@@ -25,7 +46,7 @@ def tcmf(particle):
 def test_tcm_fit(particle, tcmf):
     cyield, _, _ = spectrum(particle)
     cyield.SetTitle("final yield")
-    cyield.Fit(tcmf)
+    cyield.Fit(tcmf, "R")
     cyield.logy = True
     cyield.logx = True
     Comparator().compare(cyield)
