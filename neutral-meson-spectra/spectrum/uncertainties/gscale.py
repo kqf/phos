@@ -117,6 +117,7 @@ class GScale(TransformerBase):
         # )
 
         syst_error = corrected_yield.Clone("gscale")
+        syst_error.Reset()
         bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
         bins = [max(1 - lower.Eval(c), upper.Eval(c) - 1) for c in bins]
         for i, b in enumerate(bins):
