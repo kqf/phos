@@ -47,7 +47,7 @@ class Spectrum(TransformerBase):
             systematics.SetBinError(i, absolute_error[i - 1])
 
         total_errors = (
-            br.bins(statistics).errors ** 2 + br.bins(uncertainty).errors ** 2
+            br.bins(statistics).errors ** 2 + br.bins(systematics).errors ** 2
         ) ** 0.5
 
         for i in br.range(spectrum):
