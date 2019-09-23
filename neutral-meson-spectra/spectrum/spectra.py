@@ -3,6 +3,7 @@ import joblib
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
+from spectrum.output import open_loggs
 from spectrum.broot import BROOT as br
 
 
@@ -59,6 +60,9 @@ memory = joblib.Memory(".joblib-cachedir", verbose=0)
 
 
 @memory.cache()
-def spectrum(particle, data, loggs):
+def spectrum(particle):
+    data = data_spectrum(particle=particle)
     estimator = Spectrum(particle=particle)
-    return estimator.transform(data, loggs)
+    with open_loggs() as loggs:
+        output = estimator.transform(data, loggs)
+    return output
