@@ -29,7 +29,7 @@ class HepdataInput(TransformerBase):
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
         for i in br.range(data):
-            data.SetBinError(i, 0.000001)
+            data.SetBinError(i, 1e-29)
         # print(br.edges(data))
         return data
 

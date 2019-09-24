@@ -33,5 +33,12 @@
         "scale": 1,
         "table": "Table 1",
         "energy": 200
+    },
+    "pp 63 GeV": {
+        "file": "pion-63-gev-pp.root",
+        "hepdata": "ins1620477",
+        "scale": 1e-27,
+        "table": "Table 1",
+        "energy": 63
     }
 }

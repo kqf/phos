@@ -12,5 +12,29 @@
         "scale": 1e-6,
         "table": "Table 2",
         "energy": 8000
+    },
+    "pp 200 GeV": {
+        "file": "eta-200-gev-pp.root",
+        "hepdata": "ins1300542",
+        "scale": 1e-6,
+        "table": "Table 2",
+        "energy": 2000,
+        "graph": "?",
+    },
+    "pp 30.6 GeV": {
+        "file": "eta-30.6-gev-pp.root",
+        "hepdata": "ins145095",
+        "scale": 1e+27,
+        "table": "Table 1",
+        "energy": 30.6,
+        "histogram": "first"
+    },
+    "pp 53.2 GeV": {
+        "file": "eta-53.2-gev-pp.root",
+        "hepdata": "ins145095",
+        "scale": 1e+27,
+        "table": "Table 1",
+        "energy": 53.2,
+        "histogram": "second"
     }
 }
