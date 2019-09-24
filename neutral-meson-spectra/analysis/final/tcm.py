@@ -22,7 +22,7 @@ def tcmf(particle):
 
     if particle == "#eta":
         tcm.SetParameter(0, 0.1)
-        tcm.SetParLimits(0, 0, 1e+1)
+        tcm.SetParLimits(0, 0, 1e3)
         tcm.SetParameter(1, 1.71e-01)
         tcm.SetParLimits(1, 0.1, 0.3)
         tcm.SetParameter(2, 0.1)
@@ -44,7 +44,7 @@ def tcmf(particle):
     "#eta",
 ])
 def test_tcm_fit(particle, tcmf):
-    cyield, _, _ = spectrum(particle)
+    cyield = spectrum(particle)
     cyield.SetTitle("final yield")
     cyield.Fit(tcmf, "R")
     cyield.logy = True

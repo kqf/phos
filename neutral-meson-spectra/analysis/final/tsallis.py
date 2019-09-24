@@ -16,15 +16,16 @@ def tsallisf(particle):
         tsallis.FixParameter(2, 6.500)
         tsallis.SetParLimits(2, 6.000, 8.000)
         tsallis.FixParameter(3, mass(particle))
+        tsallis.SetRange(0, 20)
 
     if particle == "#eta":
         tsallis.SetParameter(0, 1)
         tsallis.SetParameter(1, 0.238)
         tsallis.SetParLimits(1, 0.200, 0.300)
-        tsallis.FixParameter(2, 6.19)
+        tsallis.SetParameter(2, 6.19)
         tsallis.SetParLimits(2, 5.5, 7.000)
         tsallis.FixParameter(3, mass(particle))
-        tsallis.SetRange(2, 20)
+        tsallis.SetRange(2.1, 20)
 
     tsallis.FixParameter(3, mass(particle))
     tsallis.FixParameter(4, mass(particle))
@@ -39,9 +40,9 @@ def tsallisf(particle):
     "#eta",
 ])
 def test_tsallis_fit(particle, tsallisf):
-    cyield, _, _ = spectrum(particle)
+    cyield = spectrum(particle)
     cyield.SetTitle("final yield")
-    cyield.Fit(tsallisf)
+    cyield.Fit(tsallisf, "R")
     cyield.logy = True
     cyield.logx = True
     Comparator().compare(cyield)

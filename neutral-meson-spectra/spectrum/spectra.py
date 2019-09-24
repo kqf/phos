@@ -1,10 +1,13 @@
 import joblib
+from collections import namedtuple
 
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
 from spectrum.broot import BROOT as br
+from spectrum.comparator import Comparator
+from spectrum.pipeline import RebinTransformer
 
 
 from spectrum.corrected_yield import CorrectedYield, data_cyield
@@ -53,7 +56,8 @@ class Spectrum(TransformerBase):
         for i in br.range(spectrum):
             spectrum.SetBinError(i, total_errors[i - 1])
 
-        return spectrum, statistics, systematics
+        t = namedtuple("Production", ["spectrum", "statistics", "systematics"])
+        return t(spectrum, statistics, systematics)
 
 
 memory = joblib.Memory(".joblib-cachedir", verbose=0)
@@ -65,4 +69,20 @@ def spectrum(particle):
     estimator = Spectrum(particle=particle)
     with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
-    return output
+    return output.spectrum
+
+
+def ratio(stop=False):
+    pion = spectrum("#pi^{0}")
+    eta = spectrum("#eta")
+    eta.logy = True
+    eta.logx = True
+    eta.label = "#eta"
+    eta.label = "#pi^{0}"
+    with open_loggs() as loggs:
+        pion = RebinTransformer(True, br.edges(eta)).transform(pion, loggs)
+    ratio = Comparator(stop=stop).compare(eta, pion)
+    ratio.SetTitle("#eta/#pi^{0}; p_T; #eta/#pi^{0}")
+    ratio.logy = False
+    ratio.GetXaxis().SetRangeUser(2, 10)
+    return ratio
