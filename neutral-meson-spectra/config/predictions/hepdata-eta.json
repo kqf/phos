@@ -1,0 +1,16 @@
+{
+    "pp 7 TeV": {
+        "file": "eta-7000-gev-pp.root",
+        "hepdata": "ins1116147",
+        "scale": 1,
+        "table": "Table 3",
+        "energy": 7000
+    },
+    "pp 8 TeV": {
+        "file": "eta-8000-gev-pp.root",
+        "hepdata": "ins1620477",
+        "scale": 1e-6,
+        "table": "Table 2",
+        "energy": 8000
+    }
+}

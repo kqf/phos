@@ -2,6 +2,7 @@ import pytest
 import json
 import six
 
+import spectrum.sutils as su
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase, Pipeline, FunctionTransformer
 from spectrum.pipeline import ComparePipeline
@@ -41,20 +42,25 @@ def hepdata():
 
 
 @pytest.fixture
-def data():
-    with open("config/predictions/hepdata-pion.json") as f:
+def data(particle):
+    filename = "config/predictions/hepdata-{}.json".format(su.spell(particle))
+    with open(filename) as f:
         data = json.load(f)
     return data
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_downloads_from_hepdata(data):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_downloads_from_hepdata(particle, data):
     labels, links = zip(*six.iteritems(data))
     steps = [(l, hepdata()) for l in labels]
-    pion = spectrum("#pi^{0}")
+    pion = spectrum(particle)
     pion.Scale(57.8 * 1e3)
-    steps.append(("13 TeV", FunctionTransformer(lambda x, loggs: pion)))
+    steps.append(("pp 13 TeV", FunctionTransformer(lambda x, loggs: pion)))
     links = list(links)
     links.append(None)
     with open_loggs() as loggs:
