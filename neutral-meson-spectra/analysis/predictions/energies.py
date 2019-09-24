@@ -118,7 +118,7 @@ def theory_prediction(label):
 
 @pytest.fixture
 def data():
-    with open("config/predictions/hepdata.json") as f:
+    with open("config/predictions/hepdata-pion.json") as f:
         data = json.load(f)
     return data
 
