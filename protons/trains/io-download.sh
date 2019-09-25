@@ -67,7 +67,8 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/
 # run=613_20190122-1924_child_
 # run=736_20190307-1551_child_
 # run=745_20190322-1658_child_
-run=798_20190506-1401_child_
+# run=798_20190506-1401_child_
+run=1027_20190923-1423_child_
 # This scheme is valid for LHC16 data.
 # fill the map in the following way ([child number]=runlist number)
 declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
