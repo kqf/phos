@@ -1,5 +1,5 @@
-outdir=results/data/LHC17/final_nonlinearity_3
-ofile=LHC17.root
+outdir=results/data/LHC18/final_nonlinearity_3
+ofile=LHC18.root
 
 # outdir=results/mc/pythia/final_nonlinearity_2
 # ofile=pythia8_LHC16_extra.root
