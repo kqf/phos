@@ -21,6 +21,27 @@
             "hsum": "6755cce72742a64db8c163febb3fef76ea8ce8a12c6680ca7186344c8a86a38b",
             "pt_range": [0, 20]
         },
+        "latest LHC16": {
+            "default_selection": "Phys",
+            "description": "Minimal prodcution with the official nonlinearity, and acceptance",
+            "file": "input-data/data/LHC16/final_nonlinearity_3/LHC16.root",
+            "hsum": "6ae43a0399bdb8a60ce9fca5fa7ce4d3bb54d677d2f67707784d2f7fdd78fbe2",
+            "pt_range": [0, 20]
+        },
+        "latest LHC17": {
+            "default_selection": "Phys",
+            "description": "Minimal prodcution with the official nonlinearity, and acceptance",
+            "file": "input-data/data/LHC17/final_nonlinearity_3/LHC17.root",
+            "hsum": "92522ce6be11fc3dd8eb8ab9c1d5729f0af29dcd5d83011f6fce80546d9df793",
+            "pt_range": [0, 20]
+        },
+        "latest LHC18": {
+            "default_selection": "Phys",
+            "description": "Minimal prodcution with the official nonlinearity, and acceptance",
+            "file": "input-data/data/LHC18/final_nonlinearity_3/LHC18.root",
+            "hsum": "2e362a8eef38db86d92902cae5e1775bf7d9bc3c0831f39db8bdbb95fbfe6bd1",
+            "pt_range": [0, 20]
+        },
         "stable": {
             "default_selection": "Phys",
             "description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction",
