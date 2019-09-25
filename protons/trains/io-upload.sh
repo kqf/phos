@@ -1,5 +1,5 @@
-outdir=results/data/LHC16/final_nonlinearity_3
-ofile=LHC16.root
+outdir=results/data/LHC17/final_nonlinearity_3
+ofile=LHC17.root
 
 # outdir=results/mc/pythia/final_nonlinearity_2
 # ofile=pythia8_LHC16_extra.root
@@ -12,7 +12,7 @@ function upload() {
 	hadd $ofile *.root
 	
 	# Convert all necessary folders to lists
-	folders2lists $ofile
+	# folders2lists $ofile
 
 	# Interact with GRID
 	alien_mkdir -p $ALIEN_HOME/$outdir/
