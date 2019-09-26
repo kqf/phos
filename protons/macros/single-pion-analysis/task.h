@@ -30,7 +30,7 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 	{
 		Int_t scale = 1;
 		Int_t minDistanceMaximum = 4;
-		for (Int_t i = 0; i < minDistanceMaximum; ++i)
+		for (Int_t i = 0; i <= minDistanceMaximum; ++i)
 		{
 			AliPP13ClusterCuts cuts_pi0 = AliPP13ClusterCuts::GetClusterCuts();
 			cuts_pi0.fNContributors = 0;
