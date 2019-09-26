@@ -39,14 +39,14 @@
             "default_selection": "Phys",
             "description": "Minimal prodcution with the official nonlinearity, and acceptance",
             "file": "input-data/data/LHC18/final_nonlinearity_3/LHC18.root",
-            "hsum": "2e362a8eef38db86d92902cae5e1775bf7d9bc3c0831f39db8bdbb95fbfe6bd1",
+            "hsum": "a5418e9524187fa5b39bd54f7a4af58d82c86c4f347cbf4eaacd9310da7941aa",
             "pt_range": [0, 20]
         },
         "latest": {
             "default_selection": "Phys",
             "description": "Minimal prodcution with the official nonlinearity, and acceptance",
             "file": "input-data/data/merged/final_nonlinearity_3/LHC16-LHC17-LHC18.root",
-            "hsum": "883837913a360214df2f827225c02a62a55a342816bd1f260a58611f699f4034",
+            "hsum": "edecf5c5b303249319a257acd0cd1ad7349ccafc5bdf7fbbcc347e261b591d4a",
             "pt_range": [0, 20]
         },
         "stable": {
