@@ -14,9 +14,9 @@
             "hsum": "e5b53bf940ba81669f2188330f5812a375ea7d7b47387e851c8fa11d3cfbe77e",
             "pt_range": [0, 20]
         },
-        "latest": {
+        "tof": {
             "default_selection": "Phys",
-            "description": "Prodcution with the official nonlinearity",
+            "description": "Correct tof version prodcution with the official nonlinearity",
             "file": "input-data/data/LHC16/final_nonlinearity_2/LHC16.root",
             "hsum": "6755cce72742a64db8c163febb3fef76ea8ce8a12c6680ca7186344c8a86a38b",
             "pt_range": [0, 20]
@@ -42,7 +42,7 @@
             "hsum": "2e362a8eef38db86d92902cae5e1775bf7d9bc3c0831f39db8bdbb95fbfe6bd1",
             "pt_range": [0, 20]
         },
-        "staging": {
+        "latest": {
             "default_selection": "Phys",
             "description": "Minimal prodcution with the official nonlinearity, and acceptance",
             "file": "input-data/data/merged/final_nonlinearity_3/LHC16-LHC17-LHC18.root",

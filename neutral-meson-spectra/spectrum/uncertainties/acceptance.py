@@ -17,7 +17,7 @@ def cyield_data(particle, cut):
     mc_production = "single {}".format(particle)
     data_input = (
         DataVault().input(
-            "data", "latest",
+            "data",
             listname="Phys{}".format(cut),
             histname="MassPtSM0"),
         data_feeddown(particle != "#pi^{0}"),
