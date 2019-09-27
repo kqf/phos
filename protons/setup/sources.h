@@ -24,7 +24,7 @@ void LoadAnalysisLibraries()
 	gInterpreter->LoadMacro("AliPP13DetectorHistogram.cxx+");
 	gInterpreter->LoadMacro("AliPP13PhysicsSelection.cxx+");
 	gInterpreter->LoadMacro("AliPP13PhotonSpectrumSelection.cxx+");
-	gInterpreter->LoadMacro("AliPP13SpectrumSelectionSimple.h.cxx+");
+	gInterpreter->LoadMacro("AliPP13SpectrumSelectionSimple.cxx+");
 	gInterpreter->LoadMacro("AliPP13QualityPhotonSelection.cxx+");
 	// TODO: Add to particle histogram
 	gInterpreter->LoadMacro("AliPP13ParticlesHistogram.cxx+");
@@ -56,7 +56,7 @@ void LoadAnalysisLibraries()
 		"AliPP13DetectorHistogram.cxx " +
 		"AliPP13PhysicsSelection.cxx " +
 		"AliPP13PhotonSpectrumSelection.cxx " +
-		"AliPP13SpectrumSelectionSimple.h.cxx " +
+		"AliPP13SpectrumSelectionSimple.cxx " +
 		"AliPP13QualityPhotonSelection.cxx " +
 		"AliPP13ParticlesHistogram.cxx " +
 		"AliPP13SpectrumSelection.cxx " +
@@ -93,8 +93,8 @@ void LoadAnalysisLibraries()
 		"AliPP13PhysicsSelection.h " +
 		"AliPP13PhotonSpectrumSelection.cxx " +
 		"AliPP13PhotonSpectrumSelection.h " +
-		"AliPP13SpectrumSelectionSimple.h.cxx " +
-		"AliPP13SpectrumSelectionSimple.h.h " +
+		"AliPP13SpectrumSelectionSimple.cxx " +
+		"AliPP13SpectrumSelectionSimple.h " +
 		"AliPP13QualityPhotonSelection.cxx " +
 		"AliPP13QualityPhotonSelection.h " +
 		"AliPP13ParticlesHistogram.cxx " +

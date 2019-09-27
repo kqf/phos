@@ -2,7 +2,6 @@
 #include "iostream"
 #include "AliAnalysisManager.h"
 
-
 using std::cout;
 using std::endl;
 
@@ -13,6 +12,9 @@ AliAnalysisAlien * CreatePlugin(const char * pluginmode, TString period, TString
 
 	// Use default setup for the plugin
 	AliAnalysisAlien * plugin = GetPlugin(pluginmode, period, dpart, useJDL, isMC, msize);
+
+	
+	// Extract period and reconstruction pass
 	plugin->SetOutputToRunNo(kFALSE);
 	
 	TString dir = period.Contains("_extra") ? period : TString(period, isMC ? 10 : 6); // fancy slicing
