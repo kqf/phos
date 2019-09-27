@@ -1,6 +1,6 @@
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeCorrectedYieldOptions, Options
-from spectrum.pipeline import ReduceArgumentPipeline
+from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import RebinTransformer
@@ -9,7 +9,6 @@ from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import UnityFitTransformer
 from spectrum.tools.feeddown import data_feeddown
-from spectrum.pipeline import FunctionTransformer
 from vault.datavault import DataVault
 
 
@@ -39,12 +38,10 @@ def cyield_data(particle, cut):
 
 def acceptance_data(particle="#pi^{0}"):
     return (
-        cyield_data("#pi^{0}", cut=0),
-        (
-            cyield_data("#pi^{0}", cut=1),
-            cyield_data("#pi^{0}", cut=2),
-            cyield_data("#pi^{0}", cut=3),
-        ),
+        cyield_data("#pi^{0}", cut=1),
+        cyield_data("#pi^{0}", cut=2),
+        # cyield_data("#pi^{0}", cut=3),
+        # cyield_data("#pi^{0}", cut=4),
     )
 
 
@@ -84,25 +81,42 @@ class RemoveErrors(object):
 class Acceptance(TransformerBase):
     def __init__(self, options, plot=False):
         super(Acceptance, self).__init__(plot)
-        unities = ReduceArgumentPipeline(
-            ("cuts", ParallelPipeline([
-                ("dist 1", CorrectedYield(options.cyield)),
-                ("dist 2", CorrectedYield(options.cyield)),
-                ("dist 3", CorrectedYield(options.cyield)),
-            ])),
-            ("no cut", CorrectedYield(options.cyield)),
-            br.ratio
+        unities = ReducePipeline(
+            ParallelPipeline([
+                ("no cut", CorrectedYield(options.cyield)),
+                ("min. dist. 1 cell", CorrectedYield(options.cyield)),
+                # ("min. dist. 2 cells", CorrectedYield(options.cyield)),
+                # ("min. dist. 3 cells", CorrectedYield(options.cyield)),
+            ]),
+            self.ratio
         )
-
-        def save_images(hists, loggs):
-            Comparator(stop=plot).compare(hists, loggs=loggs)
-            return hists
 
         self.pipeline = Pipeline([
             ("unities", unities),
-            ("images", FunctionTransformer(save_images)),
             ("fit", UnityFitTransformer(options.title, options.fit_range)),
             ("max", MaxUnityHistogram()),
             ("final", RemoveErrors()),
             ("rebin", RebinTransformer(True, options.edges)),
         ])
+
+    def ratio(self, spectrums, loggs):
+        average = br.average(spectrums, "averaged yield")
+        # Comparator().compare(spectrums)
+        diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
+        # uncert, rms, mean = br.systematic_deviation(spectrums)
+        # uncert.logy = False
+        # loggs.update({"uncertainty": uncert})
+        # loggs.update({"rms": rms})
+        # loggs.update({"mean": mean})
+        # return uncert
+
+        diff.compare_ratios(spectrums, average, loggs=loggs)
+        ratios = [br.ratio(average, s) for s in spectrums]
+        for r in ratios:
+            r.logy = False
+        diff.compare(ratios)
+        #     "Systematic uncertanity from yield extraction (RMS/mean)")
+        # diff = Comparator(stop=self.plot,
+        #                   oname="syst-error-yield-extraction")
+        # diff.compare(uncert)
+        return ratios
