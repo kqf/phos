@@ -20,7 +20,7 @@ def data(particle):
     "#eta",
 ])
 def test_fit_the_corrected_yield(particle, data):
-    with open_loggs("eta yield") as loggs:
+    with open_loggs("corrected-{}".format(particle)) as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
                 particle=particle

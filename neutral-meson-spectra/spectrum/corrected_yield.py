@@ -108,6 +108,6 @@ class YieldRatio(TransformerBase):
     def __init__(self, options_eta, options_pi0, plot=False):
         super(YieldRatio, self).__init__(plot)
         self.pipeline = ComparePipeline([
-            ("#eta", CorrectedYield(options_eta, plot)),
-            ("#pi^{0}", CorrectedYield(options_pi0, plot)),
+            ("#eta", CorrectedYield(options_eta)),
+            ("#pi^{0}", CorrectedYield(options_pi0)),
         ], plot)

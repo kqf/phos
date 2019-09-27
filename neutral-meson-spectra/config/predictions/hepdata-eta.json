@@ -19,7 +19,7 @@
         "scale": 1e-6,
         "table": "Table 2",
         "energy": 2000,
-        "graph": "?",
+        "graph": "?"
     },
     "pp 30.6 GeV": {
         "file": "eta-30.6-gev-pp.root",

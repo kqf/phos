@@ -6,4 +6,4 @@ from spectrum.comparator import Comparator
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 def test_spectrum():
-    Comparator().compare(ratio())
+    Comparator().compare(ratio(True))
