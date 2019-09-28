@@ -16,7 +16,7 @@ def tsallisf(particle):
         tsallis.FixParameter(2, 6.500)
         tsallis.SetParLimits(2, 6.000, 8.000)
         tsallis.FixParameter(3, mass(particle))
-        tsallis.SetRange(0, 20)
+        tsallis.SetRange(1.4, 20)
 
     if particle == "#eta":
         tsallis.SetParameter(0, 1)
@@ -25,7 +25,7 @@ def tsallisf(particle):
         tsallis.SetParameter(2, 6.19)
         tsallis.SetParLimits(2, 5.5, 7.000)
         tsallis.FixParameter(3, mass(particle))
-        tsallis.SetRange(2.1, 20)
+        tsallis.SetRange(2.2, 20)
 
     tsallis.FixParameter(3, mass(particle))
     tsallis.FixParameter(4, mass(particle))
