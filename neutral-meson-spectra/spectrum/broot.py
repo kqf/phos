@@ -624,3 +624,10 @@ class BROOT(object):
     @classmethod
     def edges(klass, x):
         return [x.GetBinLowEdge(i) for i in klass.range(x, edges=True)]
+
+    @classmethod
+    def same_binning(klass, hist1, hist2):
+        edges1, edges2 = klass.edges(hist1), klass.edges(hist2)
+        if len(edges1) != len(edges2):
+            return False
+        return np.allclose(edges1, edges2)

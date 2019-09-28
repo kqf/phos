@@ -10,6 +10,8 @@ from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
+from spectrum.pipeline import FunctionTransformer
+from vault.datavault import DataVault
 
 
 class HepdataInput(TransformerBase):
@@ -108,12 +110,12 @@ def xt(edges=None):
     ])
 
 
-def theory_prediction(label):
+def theory_prediction():
     pipeline = Pipeline([
         ("raw", SingleHistInput("#sigma_{total}")),
         ("errors", ErrorsTransformer())
     ])
-    return (label, pipeline)
+    return pipeline
 
 
 @pytest.fixture
@@ -123,12 +125,15 @@ def data():
     return data
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_downloads_from_hepdata(data):
     labels, links = zip(*six.iteritems(data))
     steps = [(l, hepdata()) for l in labels]
+    steps.append(("incnlo", theory_prediction()))
+    links = list(links)
+    links.append(DataVault().input("theory", "7 TeV"))
     with open_loggs() as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
 
@@ -150,7 +155,7 @@ def xt_scaling_pairs():
     return data
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_scaling(xt_scaling_pairs, data):

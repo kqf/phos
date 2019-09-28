@@ -7,3 +7,7 @@ PARTICLE_MASSES = {
 
 def mass(particle):
     return PARTICLE_MASSES[particle]
+
+
+def cross_section():
+    return 57.8 * 1e3
