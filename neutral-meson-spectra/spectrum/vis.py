@@ -21,19 +21,23 @@ def set_pad_logx(hist, pad):
     if 'eff' in hist.GetName().lower():
         return
 
+    hist.GetXaxis().SetMoreLogLabels(True)
     if hist.logx is not None:
         pad.SetLogx(hist.logx)
-        hist.GetXaxis().SetMoreLogLabels(hist.logx)
         return
 
     # Draw logx for increasing bin width
     start_width = hist.GetBinWidth(1)
     stop_width = hist.GetBinWidth(hist.GetNbinsX() - 1)
     pad.SetLogx(start_width < stop_width)
-    hist.GetXaxis().SetMoreLogLabels()
 
     if hist.GetName() == 'testtest':
         print(hist, start_width < stop_width)
+
+
+def set_pad_logy(hist, pad):
+    if 'eff' not in hist.GetName():
+        pad.SetLogy(hist.logy)
 
 
 class VisHub(object):
@@ -93,10 +97,17 @@ class MultipleVisualizer(object):
 
         canvas = su.gcanvas(x=self.size[0], y=self.size[1], resize=True)
         su.ticks(canvas)
-        legend = ROOT.TLegend(0.55, 0.65, 0.8, 0.85)
+
+        ycenter = 0.6
+        ywidth = len(hists) * 0.02
+        yend = min(0.9, ycenter + ywidth / 2)
+        ystart = max(0.2, ycenter - ywidth / 2)
+
+        legend = ROOT.TLegend(0.55, ystart, 0.8, yend)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
-        legend.SetTextSize(0.04)
+        # legend.SetTextSize(0.04)
+        # legend.SetTextSize(30)
         # legend.SetTextFont(132)
 
         if self.labels:
@@ -112,8 +123,7 @@ class MultipleVisualizer(object):
         mainpad = pad if pad else su.gcanvas()
         mainpad.cd()
         set_pad_logx(first_hist, mainpad)
-        if 'eff' not in first_hist.GetName():
-            mainpad.SetLogy(first_hist.logy)
+        set_pad_logx(first_hist, mainpad)
 
         for i, h in enumerate(hists):
             self.decorate_hist(h, index=i)
@@ -157,9 +167,7 @@ class MultipleVisualizer(object):
         stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
         stack.GetXaxis().SetRangeUser(*br.hist_range(template))
-        stack.GetXaxis().SetMoreLogLabels(
-            template.GetXaxis().GetMoreLogLabels()
-        )
+        stack.GetXaxis().SetMoreLogLabels(True)
         self.cache.append(stack)
         self.cache.extend(hists)
         return stack

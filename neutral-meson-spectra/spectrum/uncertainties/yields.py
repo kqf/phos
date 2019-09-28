@@ -134,8 +134,11 @@ class YieldExtractioin(TransformerBase):
         spectrums = _calculate_yields(self.options, data)
         for label, spectrum in six.iteritems(spectrums):
             spectrum.label = label
-        spectrums = list(spectrums.values())
+            spectrum.SetTitle("")
+            spectrum.logx = False
+            spectrum.logy = False
 
+        spectrums = list(spectrums.values())
         diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
         diff.compare(spectrums)
 

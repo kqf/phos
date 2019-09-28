@@ -274,18 +274,15 @@ class BROOT(object):
         else:
             ratio.Divide(a, b, 1, 1, option)
 
-        try:
-            label = a.label + ' / ' + b.label
-        except AttributeError:
-            label = ""
-
-        # at, bt = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
-        # ratio.GetYaxis().SetTitle(at + '/' + bt)
+        titles = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
+        if not any(titles):
+            try:
+                label = a.label + ' / ' + b.label
+            except AttributeError:
+                label = ""
+        else:
+            label = "{} / {}".format(*titles)
         ratio.GetYaxis().SetTitle(label)
-
-        title = a.GetTitle() + ' / ' + b.GetTitle()
-        ratio.SetTitle(title)
-
         if not ratio.GetSumw2N():
             ratio.Sumw2()
 
@@ -562,6 +559,9 @@ class BROOT(object):
     def average(klass, histograms, label=None):
         summed = klass.sum(histograms, label)
         summed.Scale(1. / len(histograms))
+        summed.GetYaxis().SetTitle(
+            "< {} >".format(histograms[0].GetYaxis().GetTitle())
+        )
         return summed
 
     @classmethod
