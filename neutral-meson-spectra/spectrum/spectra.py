@@ -8,6 +8,7 @@ from spectrum.output import open_loggs
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.pipeline import RebinTransformer
+from spectrum.constants import cross_section
 
 
 from spectrum.corrected_yield import CorrectedYield, data_cyield
@@ -39,6 +40,7 @@ class Spectrum(TransformerBase):
 
     def reduce(self, data, loggs):
         spectrum, uncertainty = data
+        spectrum.Scale(cross_section())
         statistics = spectrum.Clone("statistics")
         systematics = spectrum.Clone("systematics")
 

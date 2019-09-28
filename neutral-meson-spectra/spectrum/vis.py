@@ -55,7 +55,8 @@ class VisHub(object):
             vis = MultipleVisualizer(*self.args, **self.kwargs)
             return vis.compare_visually(hists, loggs=loggs)
 
-        if len(hists) == 2 and (br.edges(hists[0]) != br.edges(hists[1])):
+        if len(hists) == 2 and np.allclose(br.edges(hists[0]),
+                                           br.edges(hists[1])):
             vis = MultipleVisualizer(*self.args, **self.kwargs)
             return vis.compare_visually(hists, loggs=loggs)
 
