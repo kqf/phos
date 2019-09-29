@@ -102,7 +102,14 @@ class Acceptance(TransformerBase):
     def ratio(self, spectrums, loggs):
         average = br.average(spectrums, "averaged yield")
         # Comparator().compare(spectrums)
-        diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
+        for i, r in enumerate(spectrums):
+            r.logy = False
+            r.label = "dist bad cell > {}".format(i + 1)
+            r.SetTitle("")
+
+        diff = Comparator(stop=self.plot, rrange=(-1, -1),
+                          oname="yield_deviation_from_average")
+        diff.compare(spectrums)
         # uncert, rms, mean = br.systematic_deviation(spectrums)
         # uncert.logy = False
         # loggs.update({"uncertainty": uncert})
@@ -112,8 +119,9 @@ class Acceptance(TransformerBase):
 
         diff.compare_ratios(spectrums, average, loggs=loggs)
         ratios = [br.ratio(average, s) for s in spectrums]
-        for r in ratios:
+        for i, r in enumerate(ratios):
             r.logy = False
+            r.label = "dist bad cell > {}".format(i + 1)
         diff.compare(ratios)
         #     "Systematic uncertanity from yield extraction (RMS/mean)")
         # diff = Comparator(stop=self.plot,
