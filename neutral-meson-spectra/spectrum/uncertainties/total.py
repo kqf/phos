@@ -103,6 +103,17 @@ class TotalUncertaintyOptions():
         if particle == "#pi^{0}":
             self.feeddown = FeedDownOptions(particle=particle)
 
+        self.steps = [
+            "yield extraction",
+            "nonlinearity",
+            "tof",
+            "global energy scale",
+            "accepntace",
+            "material budget",
+        ]
+        if particle == "#pi^{0}":
+            self.steps.append("feed down")
+
 
 class TotalUncertainty(TransformerBase):
     def __init__(self, options, plot=False):
@@ -114,13 +125,21 @@ class TotalUncertainty(TransformerBase):
             )),
             ("sum", FunctionTransformer(self.sum))
         ])
+        self.steps = options.steps
 
     def sum(self, data, loggs):
         uncertainties = np.array([br.bins(h).contents for h in data])
+        for uncert, label in zip(data, self.steps):
+            uncert.SetTitle("")
+            uncert.GetYaxis().SetTitle("rel. sys. error, %")
+            for i in br.range(uncert):
+                uncert.SetBinError(i, 0)
+            uncert.label = label
+
         total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
-        # total_uncert = uncertainties.sum(axis=0)
         total_hist = data[0].Clone("total_uncertainty")
         total_hist.SetTitle(self.options.title)
+        total_hist.SetTitle("")
         total_hist.label = "total"
         for i in br.range(total_hist):
             total_hist.SetBinContent(i, total_uncert[i - 1])

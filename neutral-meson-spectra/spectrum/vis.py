@@ -99,11 +99,11 @@ class MultipleVisualizer(object):
         su.ticks(canvas)
 
         ycenter = 0.6
-        ywidth = len(hists) * 0.02
+        ywidth = len(hists) * 0.1
         yend = min(0.9, ycenter + ywidth / 2)
         ystart = max(0.2, ycenter - ywidth / 2)
 
-        legend = ROOT.TLegend(0.55, ystart, 0.8, yend)
+        legend = ROOT.TLegend(0.55, ystart, 0.9, yend)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
         # legend.SetTextSize(0.04)
