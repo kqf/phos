@@ -8,7 +8,7 @@ from vault.formulas import FVault
 
 @pytest.fixture
 def tcmf(particle):
-    tcm = FVault().tf1("tcm")
+    tcm = FVault().tf1("tcm", "{} 13 TeV".format(particle))
 
     if particle == "#pi^{0}":
         tcm.SetParameter(0, 0.1)
@@ -22,7 +22,7 @@ def tcmf(particle):
 
     if particle == "#eta":
         tcm.SetParameter(0, 0.1)
-        tcm.SetParLimits(0, 0, 1e3)
+        tcm.SetParLimits(0, 0, 1e4)
         tcm.SetParameter(1, 1.71e-01)
         tcm.SetParLimits(1, 0.1, 0.3)
         tcm.SetParameter(2, 0.1)
