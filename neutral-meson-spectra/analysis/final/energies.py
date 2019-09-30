@@ -8,7 +8,6 @@ from spectrum.pipeline import TransformerBase, Pipeline, FunctionTransformer
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
-from spectrum.constants import cross_section
 
 
 class HepdataInput(TransformerBase):
@@ -22,6 +21,10 @@ class HepdataInput(TransformerBase):
         hist = br.io.read(filename, item["table"], self.histname)
         hist.logy = True
         hist.logx = False
+        hist.GetXaxis().SetTitle("p_{T}, GeV/c")
+        ytitle = "#frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}".format()
+        hist.GetYaxis().SetTitle(ytitle)
+        hist.SetTitle("")
         hist.Scale(item["scale"])
         hist.energy = item["energy"]
         return hist
@@ -60,7 +63,6 @@ def test_downloads_from_hepdata(particle, data):
     labels, links = zip(*six.iteritems(data))
     steps = [(l, hepdata()) for l in labels]
     pion = spectrum(particle)
-    pion.Scale(cross_section())
     steps.append(("pp 13 TeV", FunctionTransformer(lambda x, loggs: pion)))
     links = list(links)
     links.append(None)

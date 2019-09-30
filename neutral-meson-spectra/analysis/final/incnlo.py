@@ -31,7 +31,13 @@ def test_simple(data):
 
     histograms = [pion] + list(predictions)
 
-    param = br.function2histogram(FVault().tf1("tsallis"), pion)
+    param = br.function2histogram(FVault().tf1("tcm", "#pi^{0} 13 TeV"), pion)
     ratios = [br.ratio(h, param) for h in histograms]
+    labels = ["data", "NLO pQCD #mu = 1.0 p_{T}", "NLO pQCD #mu = 0.5 p_{T}"]
+    for rr, label in zip(ratios, labels):
+        rr.label = label
+        rr.GetYaxis().SetTitle("#frac{data, predictions}{TCM fit}")
+        rr.SetTitle("")
+
     for p in predictions:
         Comparator().compare(ratios)
