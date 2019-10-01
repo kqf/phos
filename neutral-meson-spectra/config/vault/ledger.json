@@ -14,6 +14,13 @@
             "hsum": "e5b53bf940ba81669f2188330f5812a375ea7d7b47387e851c8fa11d3cfbe77e",
             "pt_range": [0, 20]
         },
+        "isolated LHC16h": {
+            "default_selection": "Phys",
+            "description": "Merged isolated bunches analysis with updated nonlinearity",
+            "file": "input-data/data/LHC16/isolated_4/LHC16h-pass1-isolated.root",
+            "hsum": "e81732d9a1595b597ec9313a6700b1ccb5aee8abb47fd5a69dc188b08ae236c8",
+            "pt_range": [0, 20]
+        },
         "tof": {
             "default_selection": "Phys",
             "description": "Correct tof version prodcution with the official nonlinearity",
