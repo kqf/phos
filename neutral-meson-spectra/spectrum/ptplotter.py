@@ -18,11 +18,18 @@ class MassesPlot(object):
         su.ticks(pad)
         ci = br.define_colors()
         pad.cd()
+
+        if mass is not None:
+            mass.SetStats(False)
+
+        if signal is not None:
+            signal.SetStats(False)
+
         self._set_axis_limits(mass, signal, fit_range)
         self.draw(mass, "histe")
+        self.draw(signal, color=ci[2])
         self.draw(sigf, color=ci[1])
         self.draw(background, color=ci[1])
-        self.draw(signal, color=ci[2])
         self.draw(bgrf, color=ci[5])
         self.draw_chisquare(sigf)
         self._draw_line(mass, *integration_region)
@@ -55,8 +62,11 @@ class MassesPlot(object):
     def _set_axis_limits(self, mass, signal, limits):
         mass.GetXaxis().SetRangeUser(*limits)
         yaxis = mass.GetYaxis()
+        ytitle = yaxis.GetTitle()
+        if not ytitle.strip():
+            ytitle = "counts"
         yaxis.SetTitle(
-            "{}/{} MeV".format(yaxis.GetTitle(), mass.GetBinWidth(1) * 1000))
+            "{} / {} MeV".format(ytitle, mass.GetBinWidth(1) * 1000))
 
         def bins_errors(hist, a, b):
             bins, berrors, centers = br.bins(hist)
@@ -87,24 +97,29 @@ class MassesPlot(object):
 
 
 class MultiplePlotter(object):
-    def __init__(self):
-        super(MultiplePlotter, self).__init__()
-        self.multcanvas = [4, 3, 0.001, 0.001]
-        self.lastcanvas = [2, 2, 0.001, 0.001]
+    widths = [0.001, 0.001]
+    layouts = {
+        1: [1, 1],
+        2: [2, 1],
+        3: [3, 1],
+        4: [2, 2],
+        5: [3, 2],
+        6: [3, 2],
+        9: [3, 3],
+    }
+    default = [4, 3]
 
-    def transform(self, masses, show=False):
-        self.all_bins(masses, show)
-
-    def all_bins(self, masses, show):
-        n_plots = mul(*self.multcanvas[0:2])
+    def transform(self, masses, stop=False):
+        canvas_shape = self.layouts.get(len(masses), self.default)
+        n_plots = mul(*canvas_shape)
         for i in range(0, len(masses), n_plots):
-            canvas = su.gcanvas(x=1, y=1, resize=True)
-            canvas.Clear()
-            canvas.Divide(*self.multcanvas)
-            plotter = MassesPlot()
-            for j, mass in enumerate(masses[i:i + n_plots]):
-                plotter.transform(mass, canvas.cd(j + 1))
-            canvas.Write("masses_{}".format(i))
+            with su.canvas(stop=stop) as canvas:
+                canvas.Clear()
+                canvas.Divide(*canvas_shape + self.widths)
+                plotter = MassesPlot()
+                for j, mass in enumerate(masses[i:i + n_plots]):
+                    plotter.transform(mass, canvas.cd(j + 1))
+                canvas.Write("masses_{}".format(i))
 
 
 class MulipleOutput(object):

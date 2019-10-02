@@ -14,18 +14,25 @@ def generate_from_data(conf, particle="#pi^{0}"):
     return measured
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mass():
     measured = generate_from_data("config/data/gaus.json")
     data = ROOT.TH1F("test", ";p_{T}, GeV/c; M_{#gamma#gamma}", 400, 0, 1.5)
     data.FillRandom(measured.GetName(), 10000)
-    func = ROOT.TF1("fitf", "gaus")
-    data.Fit(func, "Q0")
+    data.Fit(measured, "Q0")
+
+    background = measured.Clone("backgroundf")
+    background.SetParameter(0, 0)
+
     data.mass = data
     data.background = None
-    data.sigf = func
-    data.bgrf = None
-    data.signal = data
+    data.sigf = measured
+    data.bgrf = background
+
+    signal = data.Clone()
+    signal.Add(background, -1)
+    data.signal = signal
+
     data.integration_region = (0.125, 0.146)
     data.fit_range = (0.08, 0.2)
     return data
@@ -36,6 +43,6 @@ def test_plots_ivnariatmass(mass, stop):
         MassesPlot().transform(mass, canvas)
 
 
-@pytest.mark.parametrize("nhists", [1, 4, 6])
+@pytest.mark.parametrize("nhists", [1, 4, 6, 9])
 def test_multiple_plotter(nhists, mass, stop=True):
-    MultiplePlotter().transform([mass] * nhists, show=stop)
+    MultiplePlotter().transform([mass] * nhists, stop=stop)
