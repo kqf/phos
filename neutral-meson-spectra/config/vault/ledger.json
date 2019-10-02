@@ -14,27 +14,6 @@
             "hsum": "e5b53bf940ba81669f2188330f5812a375ea7d7b47387e851c8fa11d3cfbe77e",
             "pt_range": [0, 20]
         },
-        "isolated LHC16h": {
-            "default_selection": "Phys",
-            "description": "Merged isolated bunches analysis with updated nonlinearity",
-            "file": "input-data/data/LHC16/isolated_4/LHC16h-pass1-isolated.root",
-            "hsum": "e81732d9a1595b597ec9313a6700b1ccb5aee8abb47fd5a69dc188b08ae236c8",
-            "pt_range": [0, 20]
-        },
-        "isolated LHC16o": {
-            "default_selection": "Phys",
-            "description": "Merged isolated bunches analysis with updated nonlinearity",
-            "file": "input-data/data/LHC16/isolated_4/LHC16o-pass1-isolated.root",
-            "hsum": "8af929fc49f037d32d91940308566d13b183b2944b77bfddce0283cf3d984da4",
-            "pt_range": [0, 20]
-        },
-        "isolated LHC16l": {
-            "default_selection": "Phys",
-            "description": "Merged isolated bunches analysis with updated nonlinearity",
-            "file": "input-data/data/LHC16/isolated_4/LHC16l-pass1-isolated.root",
-            "hsum": "077f58966becb9a38931bf90e17bb544d4c5d3d0d9ccccb546237c501d0649ad",
-            "pt_range": [0, 20]
-        },
         "isolated staging": {
             "default_selection": "Phys",
             "description": "Merged isolated bunches analysis with updated nonlinearity",
