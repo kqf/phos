@@ -44,5 +44,5 @@ def test_plots_ivnariatmass(mass, stop):
 
 
 @pytest.mark.parametrize("nhists", [1, 4, 6, 9])
-def test_multiple_plotter(nhists, mass, stop=True):
+def test_multiple_plotter(nhists, mass, stop):
     MultiplePlotter().transform([mass] * nhists, stop=stop)
