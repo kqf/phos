@@ -27,7 +27,7 @@ def data(prod="data", version="ep_ratio"):
 @pytest.fixture
 def double_ratio_data():
     return (
-        data_old_selection("data", "latest"),
+        data_old_selection("data", "tof"),
         data_old_selection("pythia8", "latest"),
     )
 
