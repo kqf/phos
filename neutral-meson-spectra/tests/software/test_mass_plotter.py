@@ -45,13 +45,12 @@ def mass():
     return data
 
 
-def test_plots_ivnariatmass(mass, stop=True):
+def test_plots_ivnariatmass(mass, stop):
     with su.canvas(stop=stop) as canvas:
         canvas.Clear()
         MassesPlot().transform(mass, canvas)
 
 
-@pytest.mark.skip("")
 @pytest.mark.parametrize("nhists", [1, 4, 6, 9, 12])
-def test_multiple_plotter(nhists, mass, stop=True):
+def test_multiple_plotter(nhists, mass, stop):
     MultiplePlotter().transform([mass] * nhists, stop=stop)
