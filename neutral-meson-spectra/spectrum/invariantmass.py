@@ -12,41 +12,56 @@ def masses2edges(masses):
     ))
 
 
-def read_mass(hist, pt_range, nrebin, title, pt_interval):
-    pt_label = '%.4g < p_{T} < %.4g' % pt_range
-    mass = br.project_range(hist, '_%d_%d', *pt_range)
-    mass.nevents = hist.nevents
-    title = PAVE_PREFIX + title + "| {} GeV/c |".format(pt_label)
-    title_stat = ' '
-    if mass.nevents > 0:
-        title_stat = "#events = {}".format(humanize.intword(mass.nevents))
-    title_axes_labels = '; M_{#gamma#gamma}, GeV/c^{2}'
-    mass.SetTitle(title + title_stat + title_axes_labels)
-    mass.SetLineColor(37)
-
-    if not mass.GetSumw2N():
-        mass.Sumw2()
-
-    if nrebin:
-        mass.Rebin(nrebin)
-    return mass
-
-
 class RawMass(object):
 
-    def __init__(self, inhists, pt_range, nrebin, title, pt_interval):
+    reactions = {
+        "#pi^{0}": "#pi^{0} #rightarrow #gamma #gamma",
+        "#eta": "#eta #rightarrow #gamma #gamma",
+        "electrons": "e^{#pm}",
+    }
+
+    xaxes = {
+        "#pi^{0}": "M_{#gamma#gamma}, GeV/c^{2}",
+        "#eta": "M_{#gamma#gamma}, GeV/c^{2}",
+        "electrons": "E/p ratio",
+    }
+
+    def __init__(self, inhists, pt_range, nrebin, particle, pt_interval):
         self.pt_interval = pt_interval
         self.pt_range = pt_range
         self.nrebin = nrebin
-        self.title = title
-        self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
+        self.particle = particle
+        label = "{:.4g} < p_{{T}} < {:.4g} GeV/c"
+        self.pt_label = label.format(*self.pt_range)
+        self.template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
         self.mass, self.background = map(self._extract_histogram, inhists)
 
     def _extract_histogram(self, hist):
         if not hist:
             return None
-        return read_mass(
-            hist, self.pt_range, self.nrebin, self.title, self.pt_interval)
+        return self.read_mass(
+            hist, self.pt_range, self.nrebin, self.pt_interval)
+
+    def read_mass(self, hist, pt_range, nrebin, pt_interval):
+        mass = br.project_range(hist, "_%d_%d", *pt_range)
+        mass.nevents = hist.nevents
+        title = self.template.format(
+            pref=PAVE_PREFIX,
+            reaction=self.reactions[self.particle],
+            pt=self.pt_label,
+            events=humanize.intword(mass.nevents)
+        )
+        mass.SetTitle(title)
+        mass.GetXaxis().SetTitle(self.xaxes[self.particle])
+        mass.GetYaxis().SetTitle("counts")
+        mass.SetLineColor(37)
+
+        if not mass.GetSumw2N():
+            mass.Sumw2()
+
+        if nrebin:
+            mass.Rebin(nrebin)
+        return mass
 
 
 class InvariantMass(object):

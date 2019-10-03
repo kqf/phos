@@ -99,7 +99,7 @@ class MultipleVisualizer(object):
         su.ticks(canvas)
 
         ycenter = 0.6
-        ywidth = len(hists) * 0.1
+        ywidth = len(hists) * 0.08
         yend = min(0.9, ycenter + ywidth / 2)
         ystart = max(0.2, ycenter - ywidth / 2)
 

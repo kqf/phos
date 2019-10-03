@@ -66,11 +66,6 @@ class MassesPlot(object):
     def _set_axis_limits(self, mass, signal, limits):
         mass.GetXaxis().SetRangeUser(*limits)
         yaxis = mass.GetYaxis()
-        ytitle = yaxis.GetTitle()
-        if not ytitle.strip():
-            ytitle = "counts"
-        yaxis.SetTitle(
-            "{} / {} MeV".format(ytitle, mass.GetBinWidth(1) * 1000))
 
         def bins_errors(hist, a, b):
             bins, berrors, centers = br.bins(hist)

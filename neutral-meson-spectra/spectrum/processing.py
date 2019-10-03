@@ -14,12 +14,6 @@ from spectrum.broot import BROOT as br
 
 
 class DataSlicer(object):
-    titles = {
-        "#pi^{0}": "#pi^{0} #rightarrow #gamma #gamma",
-        "#eta": "#eta #rightarrow #gamma #gamma",
-        "electrons": "e^{#pm}",
-    }
-
     def __init__(self, options):
         super(DataSlicer, self).__init__()
         self.opt = options
@@ -37,8 +31,9 @@ class DataSlicer(object):
         )
 
         def common_inputs(x, y):
-            t = self.titles[self.opt.particle]
-            return RawMass(input_data, x, y, t, pt_interval=inputs.pt_range)
+            return RawMass(
+                input_data, x, y,
+                self.opt.particle, pt_interval=inputs.pt_range)
 
         output = list(map(common_inputs, intervals, self.opt.rebins))
         return pd.DataFrame(

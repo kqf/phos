@@ -5,7 +5,7 @@ PARTICLE_MASSES = {
 }
 
 PAVE_PREFIX = """
-pp at #sqrt{s} = 13 TeV |
+pp at #sqrt{s} = 13 TeV
 """
 
 
