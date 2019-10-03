@@ -3,6 +3,7 @@ from __future__ import print_function
 import humanize
 from spectrum.broot import BROOT as br
 from spectrum.parametrisation import parametrisation
+from spectrum.constants import PAVE_PREFIX
 
 
 def masses2edges(masses):
@@ -11,11 +12,11 @@ def masses2edges(masses):
     ))
 
 
-def read_mass(hist, pt_range, nrebin, pt_interval):
+def read_mass(hist, pt_range, nrebin, title, pt_interval):
     pt_label = '%.4g < p_{T} < %.4g' % pt_range
     mass = br.project_range(hist, '_%d_%d', *pt_range)
     mass.nevents = hist.nevents
-    title = "{} GeV/c ".format(pt_label)
+    title = PAVE_PREFIX + title + "| {} GeV/c |".format(pt_label)
     title_stat = ' '
     if mass.nevents > 0:
         title_stat = "#events = {}".format(humanize.intword(mass.nevents))
@@ -33,17 +34,19 @@ def read_mass(hist, pt_range, nrebin, pt_interval):
 
 class RawMass(object):
 
-    def __init__(self, inhists, pt_range, nrebin, pt_interval):
+    def __init__(self, inhists, pt_range, nrebin, title, pt_interval):
         self.pt_interval = pt_interval
         self.pt_range = pt_range
         self.nrebin = nrebin
+        self.title = title
         self.pt_label = '%.4g < p_{T} < %.4g' % self.pt_range
         self.mass, self.background = map(self._extract_histogram, inhists)
 
     def _extract_histogram(self, hist):
         if not hist:
             return None
-        return read_mass(hist, self.pt_range, self.nrebin, self.pt_interval)
+        return read_mass(
+            hist, self.pt_range, self.nrebin, self.title, self.pt_interval)
 
 
 class InvariantMass(object):

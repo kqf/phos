@@ -19,10 +19,13 @@ class MassesPlot(object):
         ci = br.define_colors()
         pad.cd()
 
+        title = mass.GetTitle()
         if mass is not None:
+            mass.SetTitle("")
             mass.SetStats(False)
 
         if signal is not None:
+            signal.SetTitle("")
             signal.SetStats(False)
 
         self._set_axis_limits(mass, signal, fit_range)
@@ -33,6 +36,7 @@ class MassesPlot(object):
         self.draw(bgrf, color=ci[5])
         self.draw_chisquare(sigf)
         self._draw_line(mass, *integration_region)
+        self._draw_text(mass, title)
         pad.Update()
 
     def draw_chisquare(self, func):
@@ -94,6 +98,21 @@ class MassesPlot(object):
         # Dirty hack for root memory management
         mass.line_low = lline(lower)
         mass.line_upper = lline(upper)
+
+    def _draw_text(self, hist, title, sep="|"):
+        pave = ROOT.TPaveText(0.68, 0.75, 0.88, 0.88, "NDC")
+        entries = title.split(sep)
+        for entry in entries:
+            if "event" in entry:
+                continue
+            pave.AddText(entry)
+        pave.SetMargin(0)
+        pave.SetBorderSize(0)
+        pave.SetFillStyle(0)
+        pave.SetTextAlign(13)
+        pave.SetTextFont(42)
+        hist.pave = pave
+        pave.Draw()
 
 
 class MultiplePlotter(object):

@@ -106,9 +106,6 @@ class MultipleVisualizer(object):
         legend = ROOT.TLegend(0.55, ystart, 0.9, yend)
         legend.SetBorderSize(0)
         legend.SetFillStyle(0)
-        # legend.SetTextSize(0.04)
-        # legend.SetTextSize(30)
-        # legend.SetTextFont(132)
 
         if self.labels:
             for h, l in zip(hists, self.labels):

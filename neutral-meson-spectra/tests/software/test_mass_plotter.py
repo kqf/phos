@@ -17,7 +17,14 @@ def generate_from_data(conf, particle="#pi^{0}"):
 @pytest.fixture(scope="module")
 def mass():
     measured = generate_from_data("config/data/gaus.json")
-    data = ROOT.TH1F("test", ";p_{T}, GeV/c; M_{#gamma#gamma}", 400, 0, 1.5)
+    data = ROOT.TH1F(
+        "test", ";M_{#gamma#gamma}; M_{#gamma#gamma}", 400, 0, 1.5)
+    title = """
+        pp at #sqrt{s} = 13 TeV,|
+        #pi^{0} #rightarrow #gamma#gamma,|
+        15 < p_{T} < 20 GeV/c |
+    """
+    data.SetTitle(title)
     data.FillRandom(measured.GetName(), 10000)
     data.Fit(measured, "Q0")
 
@@ -38,11 +45,13 @@ def mass():
     return data
 
 
-def test_plots_ivnariatmass(mass, stop):
+def test_plots_ivnariatmass(mass, stop=True):
     with su.canvas(stop=stop) as canvas:
+        canvas.Clear()
         MassesPlot().transform(mass, canvas)
 
 
-@pytest.mark.parametrize("nhists", [1, 4, 6, 9])
-def test_multiple_plotter(nhists, mass, stop):
+@pytest.mark.skip("")
+@pytest.mark.parametrize("nhists", [1, 4, 6, 9, 12])
+def test_multiple_plotter(nhists, mass, stop=True):
     MultiplePlotter().transform([mass] * nhists, stop=stop)

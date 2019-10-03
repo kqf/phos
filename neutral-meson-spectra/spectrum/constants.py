@@ -4,6 +4,10 @@ PARTICLE_MASSES = {
     "#eta": 0.547862,
 }
 
+PAVE_PREFIX = """
+pp at #sqrt{s} = 13 TeV |
+"""
+
 
 def mass(particle):
     return PARTICLE_MASSES[particle]
