@@ -8,9 +8,9 @@ import itertools
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
-from spectrum.pipeline import ComparePipeline
-from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
+from spectrum.output import open_loggs
+from vault.formulas import FVault
 
 
 class HepdataInput(TransformerBase):
@@ -48,18 +48,26 @@ class XTtransformer(TransformerBase):
         return xt
 
 
+class DataFitter(TransformerBase):
+    def transform(self, x, loggs):
+        tsallis = FVault().tf1("tsallis")
+        x.Fit(tsallis, "R")
+        x.fitfunc = tsallis
+        return x
+
+
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
         for i in br.range(data):
             data.SetBinError(i, 0.000001)
-        # print(br.edges(data))
         return data
 
 
 def xt(edges=None):
     return Pipeline([
         ("cyield", HepdataInput()),
-        ("xt", XTtransformer())
+        ("fit", DataFitter()),
+        ("xt", XTtransformer()),
     ])
 
 
