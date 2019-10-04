@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import ROOT
 from spectrum.broot import BROOT as br
-# from spectrum.comparator import Comparator
+from spectrum.comparator import Comparator
 from spectrum.pipeline import TransformerBase
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
@@ -58,7 +58,7 @@ class MockEpRatio(TransformerBase):
 
 class TsallisFitter(TransformerBase):
     @classmethod
-    def fitfunc(klass, name='', bias=0.0001):
+    def fitfunc(klass, name="", bias=0.0001):
         fitf = FVault().tf1("tsallis")
         fitf.SetParameter(0, 2.40)
         fitf.SetParameter(1, 0.139)
@@ -66,7 +66,7 @@ class TsallisFitter(TransformerBase):
         return fitf
 
     def transform(self, corrected_yield, loggs):
-        fitf = self.fitfunc('tsallis_')
+        fitf = self.fitfunc("tsallis_")
         corrected_yield.Fit(fitf)
         # corrected_yield.Draw()
         # diff = Comparator(stop=self.plot)
@@ -94,7 +94,7 @@ class GScale(TransformerBase):
         ])
 
     @staticmethod
-    def ratiofunc(fitf, name='', bias=0.01, color=46):
+    def ratiofunc(fitf, name="", bias=0.01, color=46):
         def rf(x, p):
             tsallis = ROOT.TF1("f", FVault().func("tsallis"), 0, 100)
             tsallis.SetParameters(*p)
@@ -107,19 +107,30 @@ class GScale(TransformerBase):
 
     def fit(self, data, ep_ratio, loggs=None):
         corrected_yield, fitf = data
-        lower = self.ratiofunc(fitf, 'low', ep_ratio, 38)
-        upper = self.ratiofunc(fitf, 'up', -ep_ratio, 47)
+        lower = self.ratiofunc(fitf, "low", ep_ratio, 38)
+        upper = self.ratiofunc(fitf, "up", -ep_ratio, 47)
 
-        # diff = Comparator(stop=self.plot, rrange=(-1, ), crange=(0.9, 1.1))
-        # diff.compare(
-        #     lower.GetHistogram(),
-        #     upper.GetHistogram()
-        # )
+        diff = Comparator(stop=self.plot, rrange=(-1,), crange=(0.9, 1.1))
+        diff.compare(
+            self.hist(lower, "f(p_{T} + #Delta p_{T})/f(p_{T})"),
+            self.hist(upper, "f(p_{T} - #Delta p_{T})/f(p_{T})")
+        )
 
         syst_error = corrected_yield.Clone("gscale")
         syst_error.Reset()
+        syst_error.SetTitle("")
+        syst_error.GetYaxis().SetTitle("rel. syst. error")
+        syst_error.label = "global energy scale"
         bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
         bins = [max(1 - lower.Eval(c), upper.Eval(c) - 1) for c in bins]
         for i, b in enumerate(bins):
             syst_error.SetBinContent(i + 1, b)
         return syst_error
+
+    def hist(self, tfunc, label):
+        thist = tfunc.GetHistogram()
+        thist.label = label
+        thist.SetTitle("")
+        thist.GetXaxis().SetTitle("p_{T}, GeV/c")
+        thist.GetYaxis().SetTitle("ratio to Tsallis function f")
+        return thist
