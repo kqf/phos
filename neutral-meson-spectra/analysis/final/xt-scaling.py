@@ -40,7 +40,7 @@ class XTtransformer(TransformerBase):
 
         for i in br.range(x):
             xt.SetBinContent(i, x.GetBinContent(i))
-            xt.SetBinError(i, x.GetBinError(i) * 0.0001)
+            xt.SetBinError(i, x.GetBinError(i) / 2)
 
         xt.logx = True
         xt.logy = True
@@ -75,9 +75,9 @@ def xt(edges=None):
 
 def n_factor(hist1, hist2):
     nxt = hist1.Clone("n")
-    nxt.Divide(hist2.fitfunc, hist2.energy / 2)
+    nxt.Divide(br.function2histogram(hist2.fitfunc, nxt, hist2.energy / 2))
     contents, errors, centers = br.bins(nxt)
-    logcontents = np.log(contents) / np.log(hist1.energy / hist2.energy)
+    logcontents = - np.log(contents) / np.log(hist1.energy / hist2.energy)
     logerrors = errors / contents
     for (i, c, e) in zip(br.range(nxt), logcontents, logerrors):
         nxt.SetBinContent(i, c)
