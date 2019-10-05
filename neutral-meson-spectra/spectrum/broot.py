@@ -504,13 +504,10 @@ class BROOT(object):
         return ci
 
     @classmethod
-    def function2histogram(klass, func, hist):
+    def function2histogram(klass, func, hist, scale=1):
         newhist = klass.copy(hist)
         for b in klass.range(hist):
-            newhist.SetBinContent(
-                b,
-                func.Eval(hist.GetBinCenter(b))
-            )
+            newhist.SetBinContent(b, func.Eval(hist.GetBinCenter(b) * scale))
         return newhist
 
     @classmethod

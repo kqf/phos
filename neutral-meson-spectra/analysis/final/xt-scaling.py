@@ -45,6 +45,8 @@ class XTtransformer(TransformerBase):
         xt.logx = True
         xt.logy = True
         xt.label = str(x.energy)
+        xt.energy = x.energy
+        xt.fitfunc = x.fitfunc
         return xt
 
 
@@ -71,6 +73,18 @@ def xt(edges=None):
     ])
 
 
+def n_factor(hist1, hist2):
+    nxt = hist1.Clone("n")
+    nxt.Divide(hist2.fitfunc, hist2.energy / 2)
+    contents, errors, centers = br.bins(nxt)
+    logcontents = -np.log(contents)
+    logerrors = errors / contents
+    for (i, c, e) in zip(br.range(nxt), logcontents, logerrors):
+        nxt.SetBinContent(i, c / np.log(hist1.energy / hist2.energy))
+        nxt.SetBinError(i, e / np.log(hist1.energy / hist2.energy))
+    return nxt
+
+
 @pytest.fixture(scope="module")
 def data():
     with open("config/predictions/hepdata-pion.json") as f:
@@ -82,15 +96,15 @@ def data():
     return histograms
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_distribution(data):
     Comparator().compare(data)
 
 
-# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_scaling(data):
     for pair in itertools.combinations(data, 2):
-        Comparator().compare(*pair)
+        Comparator().compare(n_factor(*pair))
