@@ -77,11 +77,12 @@ def n_factor(hist1, hist2):
     nxt = hist1.Clone("n")
     nxt.Divide(hist2.fitfunc, hist2.energy / 2)
     contents, errors, centers = br.bins(nxt)
-    logcontents = -np.log(contents)
+    logcontents = np.log(contents) / np.log(hist1.energy / hist2.energy)
     logerrors = errors / contents
     for (i, c, e) in zip(br.range(nxt), logcontents, logerrors):
-        nxt.SetBinContent(i, c / np.log(hist1.energy / hist2.energy))
-        nxt.SetBinError(i, e / np.log(hist1.energy / hist2.energy))
+        nxt.SetBinContent(i, c)
+        # nxt.SetBinError(i, e)
+    nxt.label = "{} {}".format(hist1.label, hist2.label)
     return nxt
 
 
@@ -106,5 +107,7 @@ def test_xt_distribution(data):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_scaling(data):
-    for pair in itertools.combinations(data, 2):
-        Comparator().compare(n_factor(*pair))
+    spectra = sorted(data, key=lambda x: x.energy)
+    n_factors = [n_factor(*pair)
+                 for pair in itertools.combinations(spectra, 2)]
+    Comparator().compare(n_factors)
