@@ -11,7 +11,7 @@ import ROOT
 from spectrum.broot import BROOT as br
 from spectrum.comparator import Comparator
 from spectrum.options import Options
-from spectrum.sutils import wait
+import spectrum.sutils as su
 
 
 # NB: Don't use broot in write functions
@@ -78,7 +78,7 @@ def test_properties(stop, testhist):
 def test_draw(stop, testhist):
     assert testhist is not None
     testhist.Draw()
-    wait(stop=stop)
+    su.wait(stop=stop)
 
 
 def test_setp(stop, testhist):
@@ -161,13 +161,13 @@ def test_bh2_draws_projection_range(stop):
             hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
     hist.Draw('colz')
-    wait(stop=stop)
+    su.wait(stop=stop)
 
     # NB: There is no need to manually set properties
     hist2 = br.project_range(hist, 'newname', -5, 5)
 
     hist2.Draw()
-    wait(stop=stop)
+    su.wait(stop=stop)
 
     # Now copy the properties
     assert br.same(hist2, hist)
@@ -561,7 +561,7 @@ def test_caclulates_syst_deviation(stop):
 
     hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
     hist.Draw()
-    wait(stop=stop)
+    su.wait(stop=stop)
 
 
 def test_extracts_bins(stop):
@@ -603,7 +603,7 @@ def test_reads_from_tdir(stop):
     hist = br.io.read(ofile, 'Table 1', 'Hist1D_y1')
     hist.SetTitle('TEST BROOT: Test read from TDirectory')
     hist.Draw()
-    wait(stop=stop)
+    su.wait(stop=stop)
     os.remove(ofile)
 
 
@@ -677,11 +677,11 @@ def test_sets_to_zero(stop):
 
     hist1.Sumw2()
     hist1.Draw()
-    wait(stop=stop)
+    su.wait(stop=stop)
 
     br.set_to_zero(hist1, zero_range)
     hist1.Draw()
-    wait(stop=stop)
+    su.wait(stop=stop)
 
     a, b = bin_range
     for bin in range(1, hist1.GetNbinsX()):
@@ -723,7 +723,7 @@ def test_sum_trimm(stop):
                 assert hh.GetBinContent(bin), hist.GetBinContent(bin)
                 # print(hh.GetBinContent(bin), hist.GetBinContent(bin))
 
-    wait(stop=stop)
+    su.wait(stop=stop)
 
 
 def test_calculates_confidence_intervals(stop):
@@ -856,3 +856,13 @@ def test_retrieves_edges():
     assert len(edges_nominal) == len(edges)
 
     np.testing.assert_almost_equal(edges_nominal, edges)
+
+
+def test_graph_asym_error():
+    x = np.arange(100)
+    y = np.arange(100)
+    ey = np.random.randint(0, 1, len(x))
+    graph = ROOT.TGraphAsymmErrors(len(x), x, y)
+
+    with su.canvas():
+        graph.Draw("APL")
