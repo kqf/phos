@@ -630,10 +630,13 @@ class BROOT(object):
         return np.allclose(edges1, edges2)
 
     @classmethod
-    def assym_errors(graph):
-        # nPt = hist.GetN()
-        # xt = graph.GetX()
-        # xs = graph.GetY()
-        # exsHigh = graph.GetEYhigh()
-        # exsLow = graph.GetEYlow()
-        return graph
+    def unbufer(klass, iterable):
+        return [x for x in iterable]
+
+    @classmethod
+    def graph2hist(klass, graph, hist):
+        values = klass.unbufer(graph.GetY())
+        for i, v in zip(klass.range(hist), values):
+            hist.SetBinContent(i, v)
+            hist.SetBinError(i, graph.GetErrorY(i - 1))
+        return hist

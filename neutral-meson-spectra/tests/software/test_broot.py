@@ -859,9 +859,21 @@ def test_retrieves_edges():
 
 def test_graph_asym_error(stop):
     x = np.arange(100)
-    y = np.arange(100)
-    ey = np.random.randint(0, 1, len(x))
-    graph = ROOT.TGraphAsymmErrors(len(x), x, y)
+    y = np.e ** (-np.arange(100) / 100)
+    ex = np.zeros_like(x)
+    ey = y * 0.001
+    graph = ROOT.TGraphAsymmErrors(
+        len(x),
+        array.array('d', x),
+        array.array('d', y),
+        array.array('d', ex),
+        array.array('d', ey),
+    )
+
+    hist = ROOT.TH1F("hist", "test", 100, 0, 100)
+    br.graph2hist(graph, hist)
 
     with su.canvas(stop=stop):
         graph.Draw("APL")
+        hist.SetLineColor(ROOT.kRed + 1)
+        hist.Draw("same")
