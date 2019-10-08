@@ -858,11 +858,11 @@ def test_retrieves_edges():
     np.testing.assert_almost_equal(edges_nominal, edges)
 
 
-def test_graph_asym_error():
+def test_graph_asym_error(stop):
     x = np.arange(100)
     y = np.arange(100)
     ey = np.random.randint(0, 1, len(x))
     graph = ROOT.TGraphAsymmErrors(len(x), x, y)
 
-    with su.canvas():
+    with su.canvas(stop=stop):
         graph.Draw("APL")

@@ -628,3 +628,12 @@ class BROOT(object):
         if len(edges1) != len(edges2):
             return False
         return np.allclose(edges1, edges2)
+
+    @classmethod
+    def assym_errors(graph):
+        # nPt = hist.GetN()
+        # xt = graph.GetX()
+        # xs = graph.GetY()
+        # exsHigh = graph.GetEYhigh()
+        # exsLow = graph.GetEYlow()
+        return graph
