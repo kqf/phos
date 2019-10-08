@@ -60,10 +60,8 @@ def test_background_fitting(single_input):
     param = PeakParametrisation.get(options.invmass.background)
     fitf, background = param.fit(target.mass)
 
-    canvas = su.canvas("test")
-    MassesPlot().transform(target, canvas)
-    canvas.Update()
-    su.wait()
+    with su.canvas("test") as canvas:
+        MassesPlot().transform(target, canvas)
 
 
 @pytest.fixture
@@ -82,7 +80,5 @@ def test_data_peak(data):
     param = PeakParametrisation.get(options.invmass.background)
     fitf, background = param.fit(target.mass)
 
-    canvas = su.canvas("test")
-    MassesPlot().transform(target, canvas)
-    canvas.Update()
-    su.wait()
+    with su.canvas("test") as canvas:
+        MassesPlot().transform(target, canvas)

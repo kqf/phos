@@ -77,8 +77,8 @@ def test_properties(stop, testhist):
 
 def test_draw(stop, testhist):
     assert testhist is not None
-    testhist.Draw()
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        testhist.Draw()
 
 
 def test_setp(stop, testhist):
@@ -160,14 +160,14 @@ def test_bh2_draws_projection_range(stop):
         for j in br.range(hist, 'y'):
             hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
-    hist.Draw('colz')
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        hist.Draw('colz')
 
     # NB: There is no need to manually set properties
     hist2 = br.project_range(hist, 'newname', -5, 5)
 
-    hist2.Draw()
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        hist2.Draw()
 
     # Now copy the properties
     assert br.same(hist2, hist)
@@ -560,8 +560,8 @@ def test_caclulates_syst_deviation(stop):
         assert r == 0
 
     hist.SetTitle('TEST BROOT: Check RMS/mean ratio (should be zero)')
-    hist.Draw()
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        hist.Draw()
 
 
 def test_extracts_bins(stop):
@@ -602,8 +602,8 @@ def test_reads_from_tdir(stop):
     br.io.hepdata(record, ofile)
     hist = br.io.read(ofile, 'Table 1', 'Hist1D_y1')
     hist.SetTitle('TEST BROOT: Test read from TDirectory')
-    hist.Draw()
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        hist.Draw()
     os.remove(ofile)
 
 
@@ -676,12 +676,12 @@ def test_sets_to_zero(stop):
     bin_range = map(hist1.FindBin, zero_range)
 
     hist1.Sumw2()
-    hist1.Draw()
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        hist1.Draw()
 
     br.set_to_zero(hist1, zero_range)
-    hist1.Draw()
-    su.wait(stop=stop)
+    with su.canvas(stop=stop):
+        hist1.Draw()
 
     a, b = bin_range
     for bin in range(1, hist1.GetNbinsX()):
@@ -712,9 +712,10 @@ def test_sum_trimm(stop):
     ranges = (-4, -0.5), (-0.5, 4)
     hist = br.sum_trimm(hists, ranges)
 
-    hist.Draw()
-    hist1.Draw("same")
-    hist2.Draw("same")
+    with su.canvas(stop=stop):
+        hist.Draw()
+        hist1.Draw("same")
+        hist2.Draw("same")
 
     for hh, rr in zip(hists, ranges):
         a, b = map(hist.FindBin, rr)
@@ -722,8 +723,6 @@ def test_sum_trimm(stop):
             if a < bin < b - 1:
                 assert hh.GetBinContent(bin), hist.GetBinContent(bin)
                 # print(hh.GetBinContent(bin), hist.GetBinContent(bin))
-
-    su.wait(stop=stop)
 
 
 def test_calculates_confidence_intervals(stop):

@@ -5,7 +5,6 @@ import six
 import numpy as np
 import itertools
 
-import spectrum.sutils as su
 from spectrum.broot import BROOT as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
