@@ -5,7 +5,7 @@ import json
 import six
 import numpy as np
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
@@ -32,14 +32,14 @@ class HepdataInput(TransformerBase):
 
 class XTtransformer(TransformerBase):
     def transform(self, x, loggs):
-        edges = np.array([x.GetBinLowEdge(i) for i in br.range(x, edges=True)])
+        edges = np.array([x.GetBinLowEdge(i) for i in br.hrange(x, edges=True)])
         xtedges = edges / x.energy
         xt = ROOT.TH1F(
             "{}_xt".format(x.GetName()), x.GetTitle(),
             len(xtedges) - 1,
             xtedges)
 
-        for i in br.range(x):
+        for i in br.hrange(x):
             xt.SetBinContent(i, x.GetBinContent(i))
             xt.SetBinError(i, x.GetBinContent(i) * 0.0001)
         # xt.Scale(x.nergy)
@@ -51,7 +51,7 @@ class XTtransformer(TransformerBase):
 def scale_bin_width(hist, rebins=None):
     hist = hist.Clone()
     width = 1
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         if rebins is not None:
             width = rebins[i - 1] + 1
         hist.SetBinContent(i, hist.GetBinContent(i) / width)
@@ -89,7 +89,7 @@ class RebinTransformer(TransformerBase):
 
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
-        for i in br.range(data):
+        for i in br.hrange(data):
             data.SetBinError(i, 0.000001)
         # print(br.edges(data))
         return data

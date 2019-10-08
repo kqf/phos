@@ -6,7 +6,7 @@ from spectrum.input import Input
 from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from tests.playground.phspace import InclusiveGenerator
 from vault.datavault import DataVault
 

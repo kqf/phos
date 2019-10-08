@@ -5,7 +5,7 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import RebinTransformer
 from spectrum.corrected_yield import CorrectedYield
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import UnityFitTransformer
 from spectrum.tools.feeddown import data_feeddown
@@ -73,7 +73,7 @@ class SaveImagesTransformer(object):
 class RemoveErrors(object):
 
     def transform(self, hist, loggs):
-        for i in br.range(hist):
+        for i in br.hrange(hist):
             hist.SetBinError(i, 0)
         return hist
 

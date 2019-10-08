@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import ROOT
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.options import Options
 import spectrum.sutils as su
@@ -71,7 +71,7 @@ def testhist():
 
 
 def test_properties(stop, testhist):
-    for p in br.prop._properties.keys():
+    for p in br._prop._properties.keys():
         assert p in dir(testhist)
 
 
@@ -103,7 +103,7 @@ def test_clone_from_root(stop):
 
     # Properties should not copy when using copy constructor
     #
-    assert br.prop.has_properties(hist2)
+    assert br._prop.has_properties(hist2)
 
 
 def test_clone(stop):
@@ -156,8 +156,8 @@ def test_bh2_draws_projection_range(stop):
     )
 
     # Fill random values
-    for i in br.range(hist):
-        for j in br.range(hist, 'y'):
+    for i in br.hrange(hist):
+        for j in br.hrange(hist, 'y'):
             hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
     with su.canvas(stop=stop):
@@ -196,8 +196,8 @@ def test_projection_saves_area(stop):
     )
 
     # Fill random values
-    for i in br.range(hist):
-        for j in br.range(hist, 'y'):
+    for i in br.hrange(hist):
+        for j in br.hrange(hist, 'y'):
             hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
 
     bin_edges = list(map(carter, range(ncarter)))
@@ -354,7 +354,7 @@ def test_sum(stop):
     entries = sum(h.GetEntries() for h in hists)
 
     newlabel = 'total'
-    total = br.sum(hists, newlabel)
+    total = br.hsum(hists, newlabel)
 
     assert total.GetEntries() == entries
     assert total.label == newlabel
@@ -372,7 +372,7 @@ def test_average(stop):
             hist.Fill(i, i)
 
     newlabel = 'average'
-    total = br.sum(hists, newlabel)
+    total = br.hsum(hists, newlabel)
     assert total.GetBinContent(1) == hists[0].GetBinContent(1)
     assert total.GetBinContent(10) == hists[0].GetBinContent(10)
     assert total.GetBinError(1) == hists[0].GetBinError(1)
@@ -514,14 +514,14 @@ def test_initializes_inputs(stop):
 
     # There is no porperties
     for hist in inputs:
-        assert not br.prop.has_properties(hist)
+        assert not br._prop.has_properties(hist)
 
     data = Empty()
     outputs = data.identity(inputs)
 
     # Decorated method takes alrady modified objects
     for hist in outputs:
-        assert br.prop.has_properties(hist)
+        assert br._prop.has_properties(hist)
 
     # It's the same objects
     for inp, out in zip(inputs, outputs):
@@ -548,7 +548,7 @@ def test_caclulates_syst_deviation(stop):
                        i, 20, 0, 20) for i in range(10)]
 
     for i, hist in enumerate(hists):
-        for b in br.range(hist):
+        for b in br.hrange(hist):
             hist.SetBinContent(b, b)
 
     hist, rms, mean = br.systematic_deviation(hists)
@@ -566,7 +566,7 @@ def test_caclulates_syst_deviation(stop):
 
 def test_extracts_bins(stop):
     hist = ROOT.TH1F("hGetBins", "Test BROOT: Retuns binvalues", 40, 0, 40)
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         hist.Fill(i - 0.5, i), hist.GetBinContent(i)
 
     bins, errors, centers = br.bins(hist)
@@ -614,19 +614,19 @@ def test_iterates_over_bins(stop):
 
     hist = ROOT.TH1F(
         "hIterations1", "Test BROOT: Test iterations", 100, -4, 4)
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         hcenter = hist.GetBinCenter(i)
         assert hist.Fill(hcenter == i), i
 
     hist = ROOT.TH1F(
         "hIterations2", "Test BROOT: Test iterations", 100, 0, 4000)
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         hcenter = hist.GetBinCenter(i)
         assert hist.Fill(hcenter == i), i
 
     hist = ROOT.TH1F(
         "hIterations2", "Test BROOT: Test iterations", 4, 0, 4)
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         hcenter = hist.GetBinCenter(i)
         assert hist.Fill(hcenter == i), i
 
@@ -669,7 +669,7 @@ def test_sets_to_zero(stop):
                   "Test BROOT1: Test add Trimm", 100, -4, 4)
     hist1.label = 'Remove this label later'
     hist1.SetLineColor(46)
-    for bin in br.range(hist1):
+    for bin in br.hrange(hist1):
         hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
 
     zero_range = (-1, 4)
@@ -698,14 +698,14 @@ def test_sum_trimm(stop):
                   "Test BROOT1: Test add Trimm", 100, -4, 4)
     hist1.label = 'Remove this label later'
     hist1.SetLineColor(46)
-    for bin in br.range(hist1):
+    for bin in br.hrange(hist1):
         hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
 
     hist2 = br.BH(ROOT.TH1F, "hAddTrimm2",
                   "Test BROOT2: Test add Trimm", 100, -4, 4)
     hist2.label = 'Remove this label later'
     hist2.SetLineColor(37)
-    for bin in br.range(hist2):
+    for bin in br.hrange(hist2):
         hist2.SetBinContent(bin, hist2.GetBinCenter(bin))
 
     hists = hist1, hist2
@@ -738,7 +738,7 @@ def test_calculates_confidence_intervals(stop):
 
 def test_subtracts_histogram(stop):
     hist = br.BH(ROOT.TH1F, "f2h", "Test BROOT: func2hist", 100, -4, 4)
-    for b in br.range(hist):
+    for b in br.hrange(hist):
         hist.Fill(hist.GetBinCenter(b), 5)
     func = ROOT.TF1("testFunc", "5", -4, 4)
     output = br.function2histogram(func, hist)
@@ -769,7 +769,7 @@ def test_scales_with_rebins(stop):
     function = ROOT.TF1('exp', "TMath::Exp(-[0] * x) * [1] ", 0, 20)
     function.SetParameters(0.5, 1000000)
 
-    for i in br.range(hist1):
+    for i in br.hrange(hist1):
         value = function.Eval(hist1.GetBinCenter(i))
         hist1.SetBinContent(i, value)
     pt = Options().pt.ptedges
@@ -794,7 +794,7 @@ def test_scales_with_rebins(stop):
 @pytest.mark.parametrize("scale", [0.001, 0.1, 1., 10, 100])
 def test_draws_chi2(scale):
     hist = ROOT.TH1F("testchi2plot", "Testing #chi^{2} plot; x", 10, 0, 10)
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         hist.SetBinContent(i, 1.)
         hist.SetBinError(i, 0.1)
     hist.SetBinContent(5, 2)
@@ -803,7 +803,7 @@ def test_draws_chi2(scale):
     func.SetParameter(0, 1)
     hist.Fit(func, "RQ")
     hist = br.chi2errors(hist, scale=scale)
-    calculated = sum(map(hist.GetBinError, br.range(hist)))
+    calculated = sum(map(hist.GetBinError, br.hrange(hist)))
     assert pytest.approx(calculated) == func.GetChisquare() * scale
 
 

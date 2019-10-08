@@ -4,7 +4,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, ParallelPipeline, HistogramSelector
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import HistogramScaler
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 class NonlinearityParamExtractor(TransformerBase):

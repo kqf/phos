@@ -5,7 +5,7 @@ from spectrum.output import open_loggs
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.efficiency import PeakPositionWidthEstimator
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from vault.datavault import DataVault
 
 

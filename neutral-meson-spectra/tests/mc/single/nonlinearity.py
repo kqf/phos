@@ -7,7 +7,7 @@ from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import open_loggs  # noqa
 from spectrum.tools.mc import Nonlinearity
 from spectrum.tools.mc import Decalibration
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator  # noqa
 from vault.formulas import FVault
 

@@ -5,7 +5,7 @@ from spectrum.output import open_loggs
 from spectrum.pipeline import ParallelPipeline
 from spectrum.input import SingleHistInput
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from vault.datavault import DataVault
 from vault.formulas import FVault
 

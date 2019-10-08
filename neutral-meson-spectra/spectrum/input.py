@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 def read_histogram(filename, listname, histname,

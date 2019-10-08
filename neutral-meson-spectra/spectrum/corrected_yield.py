@@ -9,7 +9,7 @@ from spectrum.pipeline import ParallelPipeline, ReducePipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramScaler
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 from spectrum.tools.feeddown import FeeddownEstimator
 from spectrum.tools.feeddown import data_feeddown

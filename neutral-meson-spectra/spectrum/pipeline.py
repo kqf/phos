@@ -8,7 +8,7 @@ import six
 from tqdm import tqdm
 
 import spectrum.sutils as st
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 
 
@@ -41,7 +41,7 @@ class RebinTransformer(TransformerBase):
     @staticmethod
     def scale_bin_width(hist, aggregated_widths, normalized):
         hist = hist.Clone()
-        for i, width in zip(br.range(hist), aggregated_widths):
+        for i, width in zip(br.hrange(hist), aggregated_widths):
             hist.SetBinContent(i, hist.GetBinContent(i) / width)
             hist.SetBinError(i, hist.GetBinError(i) / width)
         return hist
@@ -52,7 +52,7 @@ class RebinTransformer(TransformerBase):
 
         def nbins(a, b):
             return [oldh.GetBinWidth(i)
-                    for i in br.range(oldh) if a < oldh.GetBinCenter(i) < b]
+                    for i in br.hrange(oldh) if a < oldh.GetBinCenter(i) < b]
 
         func = len if normalized else sum
         widths = [func(nbins(*edge)) for edge in zip(new[:-1], new[1:])]

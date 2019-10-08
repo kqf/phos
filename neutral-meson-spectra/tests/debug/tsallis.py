@@ -6,7 +6,7 @@ from vault.datavault import DataVault
 from vault.formulas import FVault
 from spectrum.comparator import Comparator
 from spectrum.input import SingleHistInput
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 @pytest.fixture

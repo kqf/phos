@@ -2,7 +2,7 @@ from __future__ import print_function
 import pytest
 
 import ROOT
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.options import ProbeTofOptions
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault

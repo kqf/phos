@@ -2,7 +2,7 @@ import six
 import tqdm
 import joblib
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.options import Options, CompositeCorrectedYieldOptions
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.comparator import Comparator

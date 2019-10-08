@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import humanize
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.parametrisation import parametrisation
 from spectrum.constants import PAVE_PREFIX
 

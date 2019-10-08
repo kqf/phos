@@ -3,7 +3,7 @@ import pytest
 import ROOT
 
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 @pytest.fixture

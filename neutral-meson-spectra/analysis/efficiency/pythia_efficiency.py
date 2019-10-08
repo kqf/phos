@@ -3,7 +3,7 @@ import pytest
 from spectrum.efficiency import Efficiency
 from spectrum.options import EfficiencyOptions
 from spectrum.output import open_loggs
-# from spectrum.broot import BROOT as br
+# import spectrum.broot as br
 from spectrum.comparator import Comparator  # noqa
 
 # from spectrum.tools.validate import validate

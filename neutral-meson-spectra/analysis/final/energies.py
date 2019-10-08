@@ -3,7 +3,7 @@ import json
 import six
 
 import spectrum.sutils as su
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase, Pipeline, FunctionTransformer
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
@@ -32,7 +32,7 @@ class HepdataInput(TransformerBase):
 
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
-        for i in br.range(data):
+        for i in br.hrange(data):
             data.SetBinError(i, 1e-29)
         # print(br.edges(data))
         return data

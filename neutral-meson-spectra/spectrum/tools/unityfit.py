@@ -1,5 +1,5 @@
 import ROOT
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 
 
@@ -17,7 +17,7 @@ def unityfit(ratio, title, fit_range=(0, 100)):
     output.Reset()
     output.GetXaxis().UnZoom()
     output.SetTitle(title)
-    for i in br.range(output):
+    for i in br.hrange(output):
         output.SetBinContent(i, sys_error)
         output.SetBinError(i, sys_error_conf)
     return output

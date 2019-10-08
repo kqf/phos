@@ -12,7 +12,7 @@ from spectrum.pipeline import Pipeline, ReducePipeline
 from spectrum.pipeline import ParallelPipeline, FunctionTransformer
 from spectrum.input import SingleHistInput
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from array import array
 
 

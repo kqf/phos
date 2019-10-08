@@ -1,7 +1,7 @@
 import pytest
 import ROOT
 import spectrum.sutils as su
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.output import open_loggs

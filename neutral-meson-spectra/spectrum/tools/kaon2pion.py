@@ -1,5 +1,5 @@
 from collections import namedtuple
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
@@ -15,7 +15,7 @@ class HistSum(TransformerBase):
             ParallelPipeline([
                 (name, SingleHistInput(name)) for name in names
             ]),
-            lambda x, loggs: br.sum(x)
+            lambda x, loggs: br.hsum(x)
         )
 
 

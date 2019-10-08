@@ -1,5 +1,5 @@
 from spectrum.pipeline import TransformerBase
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 class RmsToMean(TransformerBase):
@@ -13,7 +13,7 @@ class RmsToMean(TransformerBase):
         average_ratio = br.average(ratios, "average_ratio")
 
         uncertainty = br.copy(mean)
-        for i in br.range(uncertainty):
+        for i in br.hrange(uncertainty):
             uncertainty.SetBinContent(
                 i,
                 average_ratio.GetBinError(i) / average_ratio.GetBinContent(i)

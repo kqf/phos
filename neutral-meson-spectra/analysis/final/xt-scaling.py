@@ -5,7 +5,7 @@ import six
 import numpy as np
 import itertools
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.comparator import Comparator
@@ -33,14 +33,14 @@ class HepdataInput(TransformerBase):
 
 class XTtransformer(TransformerBase):
     def transform(self, x, loggs):
-        edges = np.array([x.GetBinLowEdge(i) for i in br.range(x, edges=True)])
+        edges = np.array([x.GetBinLowEdge(i) for i in br.hrange(x, edges=True)])
         xtedges = edges / (x.energy / 2)
         xt = ROOT.TH1F(
             "{}_xt".format(x.GetName()), x.GetTitle(),
             len(xtedges) - 1,
             xtedges)
 
-        for i in br.range(x):
+        for i in br.hrange(x):
             xt.SetBinContent(i, x.GetBinContent(i))
             xt.SetBinError(i, x.GetBinError(i) / 2)
 
@@ -80,7 +80,7 @@ def n_factor(hist1, hist2):
     # contents, errors, centers = br.bins(nxt)
     # logcontents = - np.log(contents) / np.log(hist1.energy / hist2.energy)
     # logerrors = errors / contents
-    # for (i, c, e) in zip(br.range(nxt), logcontents, logerrors):
+    # for (i, c, e) in zip(br.hrange(nxt), logcontents, logerrors):
     #     nxt.SetBinContent(i, c)
     #     nxt.SetBinError(i, e)
     # nxt.label = "{} {}".format(hist1.label, hist2.label)

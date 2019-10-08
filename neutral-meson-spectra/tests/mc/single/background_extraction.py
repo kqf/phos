@@ -2,7 +2,7 @@ import random
 import pytest  # noqa
 
 import spectrum.sutils as su
-from spectrum.broot import BROOT as br  # noqa
+import spectrum.broot as br  # noqa
 from spectrum.comparator import Comparator  # noqa
 from spectrum.input import Input
 from spectrum.options import Options

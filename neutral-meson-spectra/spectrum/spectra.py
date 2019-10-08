@@ -5,7 +5,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.pipeline import RebinTransformer
 from spectrum.constants import cross_section
@@ -48,14 +48,14 @@ class Spectrum(TransformerBase):
             br.bins(spectrum).contents * br.bins(uncertainty).contents
         )
 
-        for i in br.range(systematics):
+        for i in br.hrange(systematics):
             systematics.SetBinError(i, absolute_error[i - 1])
 
         total_errors = (
             br.bins(statistics).errors ** 2 + br.bins(systematics).errors ** 2
         ) ** 0.5
 
-        for i in br.range(spectrum):
+        for i in br.hrange(spectrum):
             spectrum.SetBinError(i, total_errors[i - 1])
 
         t = namedtuple("Production", ["spectrum", "statistics", "systematics"])

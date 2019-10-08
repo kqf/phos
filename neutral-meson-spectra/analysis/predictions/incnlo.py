@@ -8,7 +8,7 @@ from spectrum.pipeline import FunctionTransformer
 from spectrum.input import SingleHistInput
 from spectrum.pipeline import TransformerBase
 from spectrum.tools.feeddown import data_feeddown
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from vault.datavault import DataVault
 
 
@@ -30,7 +30,7 @@ def data():
 
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
-        for i in br.range(data):
+        for i in br.hrange(data):
             data.SetBinError(i, 0.0001)
         data.Sumw2()
         return data

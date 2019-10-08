@@ -1,6 +1,6 @@
 import pytest
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions

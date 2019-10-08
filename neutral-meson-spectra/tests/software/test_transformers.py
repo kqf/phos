@@ -8,7 +8,7 @@ import array
 from spectrum.pipeline import RebinTransformer
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.input import SingleHistInput
 
 from vault.datavault import DataVault
@@ -47,7 +47,7 @@ def edges_eta():
 def test_rebins_flat_data(edges, edges_eta, func, stop):
     hist = ROOT.TH1F("hist", "test", len(edges) - 1, array.array('d', edges))
     hist.label = "original"
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         hist.SetBinContent(i, func(i))
         hist.SetBinError(i, func(i) * 1e-2)
 

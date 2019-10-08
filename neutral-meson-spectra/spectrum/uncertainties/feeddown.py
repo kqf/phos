@@ -4,7 +4,7 @@ import ROOT
 
 from spectrum.options import Options
 from spectrum.pipeline import TransformerBase
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.tools.kaon2pion import K2POptions
 from spectrum.tools.kaon2pion import KaonToPionRatioData
 from vault.datavault import DataVault
@@ -51,7 +51,7 @@ class FeedDown(TransformerBase):
                                 len(edges) - 1,
                                 edges)
 
-        for i in br.range(uncertainty):
+        for i in br.hrange(uncertainty):
             uncertainty.SetBinContent(i, uncertainty_value)
         uncertainty.label = "feed-down uncertainty"
         uncertainty.Scale(0.1)

@@ -10,7 +10,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
 from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 class DataSlicer(object):

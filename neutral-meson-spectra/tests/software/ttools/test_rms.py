@@ -2,12 +2,12 @@ import ROOT
 import pytest
 from math import sqrt
 from spectrum.tools.rms import RmsToMean
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 def test_rms():
     original = ROOT.TH1F("test", "test", 30, 0, 20)
-    for i in br.range(original):
+    for i in br.hrange(original):
         original.SetBinContent(i, 81)
     original.Sumw2()
 

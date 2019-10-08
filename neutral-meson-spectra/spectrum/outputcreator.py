@@ -3,7 +3,7 @@ import collections
 import numpy as np
 from array import array
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 class SpectrumExtractor(object):
@@ -111,7 +111,7 @@ def output_histogram(ptrange, name, title, label, bins, data, priority=999):
         hist.SetBinError(i + 1, e)
 
     xmin, xmax = ptrange
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         if xmin < hist.GetBinCenter(i) < xmax:
             continue
         hist.SetBinError(i, 0)

@@ -1,14 +1,14 @@
 import pytest
 import ROOT
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.tools.deviation import MaxDeviation
 
 
 @pytest.fixture()
 def ratio():
     ratio = ROOT.TH1F("test", "test", 30, 0, 20)
-    for i in br.range(ratio):
+    for i in br.hrange(ratio):
         ratio.SetBinContent(i, 1)
     ratio.SetBinContent(30, 1)
 

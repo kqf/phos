@@ -4,7 +4,7 @@ from spectrum.processing import InvariantMassExtractor
 from spectrum.options import Options, OptionsSPMC, CompositeOptions
 from spectrum.pipeline import Pipeline, ParallelPipeline, ReducePipeline
 from spectrum.pipeline import TransformerBase
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 class SimpleAnalysis(TransformerBase):

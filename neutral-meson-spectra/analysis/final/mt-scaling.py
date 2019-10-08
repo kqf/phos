@@ -2,7 +2,7 @@ import pytest
 from spectrum.spectra import spectrum, ratio
 from spectrum.comparator import Comparator
 from vault.formulas import FVault
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 @pytest.mark.thesis

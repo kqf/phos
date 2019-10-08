@@ -3,7 +3,7 @@ import ROOT
 import six
 
 import spectrum.sutils as su
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 class MassTransformer(object):

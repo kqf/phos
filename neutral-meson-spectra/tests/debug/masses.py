@@ -10,7 +10,7 @@ from spectrum.processing import InvariantMassExtractor
 from spectrum.output import open_loggs
 from vault.datavault import DataVault
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
 #
@@ -123,7 +123,7 @@ def move_histogram(source, dest):
     if source is None:
         return
 
-    for i in br.range(dest):
+    for i in br.hrange(dest):
         si = source.FindBin(dest.GetBinCenter(i))
         dest.SetBinContent(i, source.GetBinContent(si))
         dest.SetBinError(i, source.GetBinError(si))

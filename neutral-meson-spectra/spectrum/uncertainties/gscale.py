@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import ROOT
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.pipeline import TransformerBase
 from spectrum.corrected_yield import CorrectedYield
@@ -121,7 +121,7 @@ class GScale(TransformerBase):
         syst_error.SetTitle("")
         syst_error.GetYaxis().SetTitle("rel. syst. error")
         syst_error.label = "global energy scale"
-        bins = [syst_error.GetBinCenter(i) for i in br.range(syst_error)]
+        bins = [syst_error.GetBinCenter(i) for i in br.hrange(syst_error)]
         bins = [max(1 - lower.Eval(c), upper.Eval(c) - 1) for c in bins]
         for i, b in enumerate(bins):
             syst_error.SetBinContent(i + 1, b)

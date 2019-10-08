@@ -1,4 +1,4 @@
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.analysis import Analysis
@@ -40,7 +40,7 @@ class ConfidenceLevelEstimator(TransformerBase):
         feeddown.SetTitle(title)
         corr = br.copy(feeddown)
         corr.Reset()
-        for b in br.range(feeddown):
+        for b in br.hrange(feeddown):
             corr.SetBinContent(b, 1. - self.fitf.Eval(corr.GetBinCenter(b)))
         # NB: I don't know why It should be scaled by 1.
         #     otherwise it plots something strange

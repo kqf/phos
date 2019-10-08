@@ -37,7 +37,7 @@ from spectrum.uncertainties.material import MaterialBudgetOptions
 from spectrum.uncertainties.material import material_budget_data
 
 from spectrum.comparator import Comparator
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 NBINS = 5
@@ -132,7 +132,7 @@ class TotalUncertainty(TransformerBase):
         for uncert, label in zip(data, self.steps):
             uncert.SetTitle("")
             uncert.GetYaxis().SetTitle("rel. sys. error, %")
-            for i in br.range(uncert):
+            for i in br.hrange(uncert):
                 uncert.SetBinError(i, 0)
             uncert.label = label
 
@@ -141,7 +141,7 @@ class TotalUncertainty(TransformerBase):
         total_hist.SetTitle(self.options.title)
         total_hist.SetTitle("")
         total_hist.label = "total"
-        for i in br.range(total_hist):
+        for i in br.hrange(total_hist):
             total_hist.SetBinContent(i, total_uncert[i - 1])
         Comparator().compare(list(data) + [total_hist])
         return total_hist

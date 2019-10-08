@@ -3,7 +3,7 @@ import pytest
 import json
 import six
 
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
@@ -38,7 +38,7 @@ class HepdataInput(TransformerBase):
 def scale_bin_width(hist, rebins=None):
     hist = hist.Clone()
     width = 1
-    for i in br.range(hist):
+    for i in br.hrange(hist):
         if rebins is not None:
             width = rebins[i - 1] + 1
         hist.SetBinContent(i, hist.GetBinContent(i) / width)
@@ -69,7 +69,7 @@ class SpectrumFitter(TransformerBase):
 
 class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
-        for i in br.range(data):
+        for i in br.hrange(data):
             data.SetBinError(i, 0.000001)
         # print(br.edges(data))
         return data

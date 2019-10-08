@@ -2,7 +2,7 @@ import pytest
 
 import ROOT
 from spectrum.analysis import Analysis
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.options import Options
 from spectrum.output import open_loggs
 

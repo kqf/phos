@@ -1,7 +1,7 @@
 import ROOT
 import numpy as np
 from spectrum.pipeline import TransformerBase
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 try:
     import root_numpy as rp
@@ -38,6 +38,6 @@ class MaxDeviationVector(MaxDeviation):
 
         output = ratios[0].Clone()
         output.Reset()
-        for i, m in zip(br.range(output), max_deviations):
+        for i, m in zip(br.hrange(output), max_deviations):
             output.SetBinContent(i, m)
         return output

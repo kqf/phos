@@ -6,7 +6,7 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import RebinTransformer
 from spectrum.efficiency import Efficiency
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.options import CompositeEfficiencyOptions, Options
 
 from vault.datavault import DataVault

@@ -2,7 +2,7 @@ import array
 import ROOT
 from spectrum.options import Options
 from spectrum.pipeline import TransformerBase
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 
 
 def material_budget_data():
@@ -32,7 +32,7 @@ class MaterialBudget(TransformerBase):
                                 self.options.title,
                                 len(edges) - 1,
                                 edges)
-        for i in br.range(uncertainty):
+        for i in br.hrange(uncertainty):
             uncertainty.SetBinContent(i, self.options.uncertainty_value)
         uncertainty.label = "material budget"
         return uncertainty

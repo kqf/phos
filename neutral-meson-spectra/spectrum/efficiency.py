@@ -7,7 +7,7 @@ from spectrum.pipeline import OutputDecorator
 from spectrum.pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import RebinTransformer
-from spectrum.broot import BROOT as br
+import spectrum.broot as br
 from spectrum.processing import RangeEstimator
 
 # NB: This test is to compare different efficiencies
