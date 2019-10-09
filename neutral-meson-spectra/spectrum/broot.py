@@ -80,7 +80,7 @@ class io(object):
     def _dir_to_list(klass, tdir):
         try:
             keys = tdir.GetListOfKeys()
-        except AttributeError:  # It's not a tdirectory
+        except SystemError:  # It's not a tdirectory
             return tdir
 
         nlist = ROOT.TList()
@@ -101,7 +101,7 @@ class io(object):
                 infile.ls()
                 raise IOError('No such selection {1} in file: \
                     {0}'.format(filename, selection))
-        return klass._dir_to_list(lst)
+            return klass._dir_to_list(lst)
 
     @classmethod
     @lru_cache(maxsize=None)
