@@ -16,14 +16,14 @@ ROOT.TH1.AddDirectory(False)
 
 class _prop(object):
     _properties = {
-        'label': '',
-        'logy': 0,
-        'logx': 0,
-        'priority': 999,
-        'marker': 0
+        "label": "",
+        "logy": 0,
+        "logx": 0,
+        "priority": 999,
+        "marker": 0
     }
 
-    def __init__(self, label='', logy=0, logx=0, priority=999, marker=0):
+    def __init__(self, label="", logy=0, logx=0, priority=999, marker=0):
         super(_prop, self).__init__()
         self.__dict__.update(self._properties)
         # Add self.set_properties
@@ -80,7 +80,7 @@ class io(object):
     def _dir_to_list(klass, tdir):
         try:
             keys = tdir.GetListOfKeys()
-        except SystemError:  # It's not a tdirectory
+        except AttributeError:  # It's not a tdirectory
             return tdir
 
         nlist = ROOT.TList()
@@ -99,8 +99,8 @@ class io(object):
 
             if not lst:
                 infile.ls()
-                raise IOError('No such selection {1} in file: \
-                    {0}'.format(filename, selection))
+                raise IOError("No such selection {1} in file: \
+                    {0}".format(filename, selection))
             return klass._dir_to_list(lst)
 
     @classmethod
@@ -111,7 +111,7 @@ class io(object):
 
         if not hist:
             raise IOError(
-                'No such histogram {2} for selection {1} in file: {0}'
+                "No such histogram {2} for selection {1} in file: {0}"
                 .format(filename, selection, histname))
 
         hist = hist.Clone()
@@ -136,7 +136,7 @@ class io(object):
             hist = lst.FindObject(histname)
             if not hist:
                 raise IOError(
-                    'No such histogram {2} for selection {1} in file: {0}'
+                    "No such histogram {2} for selection {1} in file: {0}"
                     .format(filename, selection, histname))
 
             hist = hist.Clone()
@@ -146,8 +146,8 @@ class io(object):
         return histograms
 
     @classmethod
-    def save(klass, obj, fname='output.root',
-             selection='', option='recreate'):
+    def save(klass, obj, fname="output.root",
+             selection="", option="recreate"):
         ofile = ROOT.TFile(fname, option)
 
         if not selection:
@@ -156,7 +156,7 @@ class io(object):
 
         olist = ROOT.TList()
         olist.SetOwner(True)
-        cloned = clone(obj, '')
+        cloned = clone(obj, "")
         olist.Add(cloned)
         olist.Write(selection, 1)
         ofile.Close()
@@ -171,27 +171,27 @@ class io(object):
         if os.path.isfile(ofilename):
             return
 
-        link = 'https://www.hepdata.net/download/table/{}/{}/1/root'
+        link = "https://www.hepdata.net/download/table/{}/{}/1/root"
         try:
             download = link
             url = download.format(record, table.replace(" ", ""))
             response = urllib.request.urlopen(url)
 
-            with open(ofilename, 'wb') as f:
+            with open(ofilename, "wb") as f:
                 f.write(response.read())
         except urllib.error.HTTPError as e:
-            raise IOError('HTTP error {0}\nInvalid record {1}\n{2}'
+            raise IOError("HTTP error {0}\nInvalid record {1}\n{2}"
                           .format(e.code, record, download.format(record)))
 
         except urllib.error.URLError as e:
-            raise IOError('URL error {0}\nInvalid record {1}\n{2}'
+            raise IOError("URL error {0}\nInvalid record {1}\n{2}"
                           .format(e.code, record, download.format(record)))
 
 
 @contextmanager
 def tfile(filename, option=""):
     if not os.path.isfile(filename):
-        raise IOError('No such file: {0}'.format(filename))
+        raise IOError("No such file: {0}".format(filename))
 
     rfile = ROOT.TFile(filename, option)
     yield rfile
@@ -210,7 +210,7 @@ def setp(dest, source=None, force=False):
     _prop.copy(dest, source, force)
 
 
-def clone(hist, name='_copied', replace=False):
+def clone(hist, name="_copied", replace=False):
     name = name if replace else hist.GetName() + name
     cloned = hist.Clone(name)
     prop = hist if _prop.has_properties(hist) else _prop()
@@ -218,29 +218,29 @@ def clone(hist, name='_copied', replace=False):
     return cloned
 
 
-def copy(hist, name='_copied', replace=False):
+def copy(hist, name="_copied", replace=False):
     hist = clone(hist, name, replace)
     hist.Reset()
     return hist
 
 
-def projection(hist, a, b, axis='x'):
+def projection(hist, a, b, axis="x"):
     name = "{}_{}_{}".format(hist.GetName(), a, b)
 
     # NB:  By default ProjectionX takes the last bin as well.
-    #      We don't want to take last bin as it contains the
+    #      We don"t want to take last bin as it contains the
     #      beginning of the next bin. Therefore use "b - 1" here!
     #
 
-    projection = hist.ProjectionX if axis.lower() == 'x' else hist.ProjectionY
-    project = hist.ProjectionX if axis.lower() == 'x' else hist.ProjectionY
+    projection = hist.ProjectionX if axis.lower() == "x" else hist.ProjectionY
+    project = hist.ProjectionX if axis.lower() == "x" else hist.ProjectionY
     projection = project(name, a, b - 1)
     setp(projection, hist, force=True)
     return projection
 
 
-def project_range(hist, xa, xb, axis='x'):
-    bin = bincenterf(hist, 'x' not in axis)
+def project_range(hist, xa, xb, axis="x"):
+    bin = bincenterf(hist, "x" not in axis)
     return projection(hist, bin(xa), bin(xb), axis)
 
 
@@ -252,11 +252,11 @@ def same(hist1, hist2):
         return _prop.same_as(hist1, hist2)
 
     raise AttributeError(
-        'Neither of hist1 and hist2 have BROOT properties')
+        "Neither of hist1 and hist2 have BROOT properties")
 
 
 def ratio(a, b, option="B", loggs=None):
-    ratio = a.Clone('ratio' + a.GetName())
+    ratio = a.Clone("ratio" + a.GetName())
     _prop.copy_everything(ratio, a)
 
     # if ratio.GetNbinsX() != b.GetNbinsX():
@@ -269,7 +269,7 @@ def ratio(a, b, option="B", loggs=None):
     titles = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
     if not any(titles):
         try:
-            label = a.label + ' / ' + b.label
+            label = a.label + " / " + b.label
         except AttributeError:
             label = ""
     else:
@@ -304,7 +304,7 @@ def rebin_as(hist1, hist2):
 
 
 def rebin_proba(hist, edges, name="_rebinned"):
-    edges = array.array('d', edges)
+    edges = array.array("d", edges)
     rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
 
     if not rebin.GetSumw2N():
@@ -398,7 +398,7 @@ def bins(hist):
     errors = np.array([hist.GetBinError(i) for i in hrange(hist)])
     centers = np.array([hist.GetBinCenter(i) for i in hrange(hist)])
     HistMatrix = namedtuple(
-        'HistMatrix', ['contents', 'errors', 'centers'])
+        "HistMatrix", ["contents", "errors", "centers"])
     return HistMatrix(contents, errors, centers)
 
 
@@ -413,9 +413,9 @@ def systematic_deviation(histograms):
     rms, mean = np.std(matrix, axis=0), np.mean(matrix, axis=0)
 
     setp(histograms[0])
-    syst = copy(histograms[0], 'RMS/mean')
-    syst.GetYaxis().SetTitle('rms/mean')
-    syst.label = 'yield extraction'
+    syst = copy(histograms[0], "RMS/mean")
+    syst.GetYaxis().SetTitle("rms/mean")
+    syst.label = "yield extraction"
 
     for i, r in enumerate(rms / mean):
         syst.SetBinContent(i + 1, r)
@@ -423,8 +423,8 @@ def systematic_deviation(histograms):
     return syst, rms, mean
 
 
-def hrange(hist, axis='x', start=1, edges=False):
-    nbins = hist.GetNbinsX() if 'x' in axis.lower() else hist.GetNbinsY()
+def hrange(hist, axis="x", start=1, edges=False):
+    nbins = hist.GetNbinsX() if "x" in axis.lower() else hist.GetNbinsY()
     # NB: Default value should be 1
     #     one should use 0 if bin edges are needed
     return range(start, nbins + 1 + int(edges))
@@ -437,7 +437,7 @@ def pars(tfunc, npars=None):
     pp = [tfunc.GetParameter(i) for i in range(npars)]
     ep = [tfunc.GetParError(i) for i in range(npars)]
 
-    FitPars = namedtuple('FitPars', ['pars', 'errors'])
+    FitPars = namedtuple("FitPars", ["pars", "errors"])
     return FitPars(pp, ep)
 
 
@@ -467,7 +467,7 @@ def set_to_zero(hist, rrange):
 
     bins = list(b for b in hrange(hist)
                 if not (a < hist.GetBinCenter(b) < bb))
-    # NB: Don't include the last bin,
+    # NB: Don"t include the last bin,
     #     othervise we will count twice the same point
     #     in sum_trimm method
 
@@ -505,7 +505,7 @@ def function2histogram(func, hist, scale=1):
 def chi2(hist1, hist2, rrange=None):
     assert hist1.GetNbinsX() == hist2.GetNbinsX(), \
         "Histograms should have the same binning"
-    difference = copy(hist1, 'difference')
+    difference = copy(hist1, "difference")
     difference.Add(hist2, hist1, -1)
 
     def within_range(x):
@@ -604,7 +604,7 @@ def tf1_sum(func1, func2, name="sum"):
     func1.GetRange(start, stop)
 
     def summed(x, par):
-        par = array.array('d', par)
+        par = array.array("d", par)
         return func1.EvalPar(x, par[:np1]) + func2.EvalPar(x, par[np1:])
 
     return ROOT.TF1(name, summed, start, stop, np1 + np2)
