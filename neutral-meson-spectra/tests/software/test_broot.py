@@ -589,8 +589,8 @@ def test_downloads_from_hepdata(stop):
     br.io.hepdata(record, ofile)
     assert os.path.isfile(ofile)
 
-    rfile = br.io._read_file(ofile)
-    assert rfile.IsOpen()
+    with br.tfile(ofile) as rfile:
+        assert rfile.IsOpen()
     os.remove(ofile)
 
 

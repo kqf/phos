@@ -6,6 +6,7 @@ import six
 
 import numpy as np
 import tqdm
+from contextlib import contextmanager
 from repoze.lru import lru_cache
 from six.moves import urllib
 from copy import deepcopy
@@ -76,19 +77,6 @@ class io(object):
         super(io, self).__init__()
 
     @classmethod
-    def _read_file(klass, filename, directory='input-data/'):
-        if os.path.isfile(filename):
-            return ROOT.TFile(filename)
-
-        if directory not in filename:
-            return klass._read_file(directory + filename, directory)
-
-        if '.root' not in filename:
-            return klass._read_file(filename + '.root', directory)
-
-        raise IOError('No such file: {0}'.format(filename))
-
-    @classmethod
     def _dir_to_list(klass, tdir):
         try:
             keys = tdir.GetListOfKeys()
@@ -103,18 +91,16 @@ class io(object):
 
     @classmethod
     def _read_list(klass, filename, selection):
-        infile = klass._read_file(filename)
+        with tfile(filename) as infile:
+            if not selection:
+                return klass._dir_to_list(infile)
 
-        if not selection:
-            return klass._dir_to_list(infile)
+            lst = infile.Get(selection)
 
-        lst = infile.Get(selection)
-
-        if not lst:
-            infile.ls()
-            raise IOError('No such selection {1} in file: \
-                {0}'.format(filename, selection))
-
+            if not lst:
+                infile.ls()
+                raise IOError('No such selection {1} in file: \
+                    {0}'.format(filename, selection))
         return klass._dir_to_list(lst)
 
     @classmethod
@@ -200,6 +186,16 @@ class io(object):
         except urllib.error.URLError as e:
             raise IOError('URL error {0}\nInvalid record {1}\n{2}'
                           .format(e.code, record, download.format(record)))
+
+
+@contextmanager
+def tfile(filename, option=""):
+    if not os.path.isfile(filename):
+        raise IOError('No such file: {0}'.format(filename))
+
+    rfile = ROOT.TFile(filename, option)
+    yield rfile
+    rfile.Close()
 
 
 def BH(THnT, *args, **kwargs):
