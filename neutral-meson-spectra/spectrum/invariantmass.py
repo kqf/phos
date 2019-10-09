@@ -43,7 +43,7 @@ class RawMass(object):
             hist, self.pt_range, self.nrebin, self.pt_interval)
 
     def read_mass(self, hist, pt_range, nrebin, pt_interval):
-        mass = br.project_range(hist, "_%d_%d", *pt_range)
+        mass = br.project_range(hist, *pt_range)
         mass.nevents = hist.nevents
         title = self.template.format(
             pref=PAVE_PREFIX,

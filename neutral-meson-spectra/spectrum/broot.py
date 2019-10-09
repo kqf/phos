@@ -228,27 +228,24 @@ def copy(hist, name='_copied', replace=False):
     return hist
 
 
-def projection(hist, name, a, b, axis='x'):
-    axis, name = axis.lower(), hist.GetName() + name
-
-    if '%d_%d' in name:
-        name = name % (a, b)
+def projection(hist, a, b, axis='x'):
+    name = "{}_{}_{}".format(hist.GetName(), a, b)
 
     # NB:  By default ProjectionX takes the last bin as well.
     #      We don't want to take last bin as it contains the
     #      beginning of the next bin. Therefore use "b - 1" here!
     #
 
-    args = name, a, b - 1
-    proj = hist.ProjectionX(
-        *args) if axis == 'x' else hist.ProjectionY(*args)
-    setp(proj, hist, force=True)
-    return proj
+    projection = hist.ProjectionX if axis.lower() == 'x' else hist.ProjectionY
+    project = hist.ProjectionX if axis.lower() == 'x' else hist.ProjectionY
+    projection = project(name, a, b - 1)
+    setp(projection, hist, force=True)
+    return projection
 
 
-def project_range(hist, name, xa, xb, axis='x'):
+def project_range(hist, xa, xb, axis='x'):
     bin = bincenterf(hist, 'x' not in axis)
-    return projection(hist, name, bin(xa), bin(xb), axis)
+    return projection(hist, bin(xa), bin(xb), axis)
 
 
 def same(hist1, hist2):

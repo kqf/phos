@@ -98,8 +98,7 @@ def test_clone_from_root(stop):
         ROOT.TH1F, "refhistROOT", "Testing set_property method",
         100, -10, 10)
 
-    hist2 = br.BH(
-            ROOT.TH1F, hist)
+    hist2 = br.BH(ROOT.TH1F, hist)
 
     # Properties should not copy when using copy constructor
     #
@@ -164,7 +163,7 @@ def test_bh2_draws_projection_range(stop):
         hist.Draw('colz')
 
     # NB: There is no need to manually set properties
-    hist2 = br.project_range(hist, 'newname', -5, 5)
+    hist2 = br.project_range(hist, -5, 5)
 
     with su.canvas(stop=stop):
         hist2.Draw()
@@ -203,7 +202,7 @@ def test_projection_saves_area(stop):
     bin_edges = list(map(carter, range(ncarter)))
     bins = zip(bin_edges[:-1], bin_edges[1:])
 
-    projections = [br.projection(hist, "%d_%d", *bin) for bin in bins]
+    projections = [br.projection(hist, *bin) for bin in bins]
 
     # print
     # for b, p in zip(bins, projections):
