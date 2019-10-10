@@ -33,7 +33,8 @@ class HepdataInput(TransformerBase):
 
 class XTtransformer(TransformerBase):
     def transform(self, x, loggs):
-        edges = np.array([x.GetBinLowEdge(i) for i in br.hrange(x, edges=True)])
+        edges = np.array([x.GetBinLowEdge(i)
+                          for i in br.hrange(x, edges=True)])
         xtedges = edges / (x.energy / 2)
         xt = ROOT.TH1F(
             "{}_xt".format(x.GetName()), x.GetTitle(),
@@ -74,17 +75,15 @@ def xt(edges=None):
 def n_factor(hist1, hist2):
     nxt = hist1.Clone("n")
     nxt2 = br.function2histogram(hist2.fitfunc, nxt, hist2.energy / 2)
-    Comparator().compare(nxt, nxt2)
     nxt.Divide(nxt2)
-    Comparator().compare(nxt)
-    # contents, errors, centers = br.bins(nxt)
-    # logcontents = - np.log(contents) / np.log(hist1.energy / hist2.energy)
-    # logerrors = errors / contents
-    # for (i, c, e) in zip(br.hrange(nxt), logcontents, logerrors):
-    #     nxt.SetBinContent(i, c)
-    #     nxt.SetBinError(i, e)
-    # nxt.label = "{} {}".format(hist1.label, hist2.label)
-    # Comparator().compare(nxt, br.function2histogram(hist2.fitfunc, nxt, hist2.energy / 2))
+    contents, errors, centers = br.bins(nxt)
+    logcontents = - np.log(contents)
+    logerrors = errors / contents
+    for (i, c, e) in zip(br.hrange(nxt), logcontents, logerrors):
+        nxt.SetBinContent(i, c)
+        nxt.SetBinError(i, e)
+    nxt.Scale(1. / np.log(hist1.energy / hist2.energy))
+    nxt.label = "{} {}".format(hist1.label, hist2.label)
     return nxt
 
 
@@ -96,8 +95,6 @@ def data():
     steps = [(l, xt()) for l in labels]
     with open_loggs() as loggs:
         histograms = ParallelPipeline(steps).transform(links, loggs)
-        histograms = [h for h in histograms if h.energy >= 7000]
-    print(histograms)
     return histograms
 
 
@@ -114,4 +111,4 @@ def test_xt_scaling(data):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
-    Comparator().compare(n_factors[0])
+    Comparator().compare(n_factors)
