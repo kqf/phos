@@ -105,6 +105,7 @@ def test_xt_distribution(data):
     Comparator().compare(data)
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_scaling(data):
@@ -112,3 +113,26 @@ def test_xt_scaling(data):
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
     Comparator().compare(n_factors)
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_combined_fit(data):
+    spectra = sorted(data, key=lambda x: x.energy)
+    n_factors = [n_factor(*pair)
+                 for pair in itertools.combinations(spectra, 2)]
+
+    for n in n_factors:
+        fit = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
+        fit.SetLineWidth(3)
+        fit.SetParameter(0, 5.0)
+        fit.SetLineStyle(7)
+        fit.SetLineColor(ROOT.kBlack)
+        n.Fit("fitpol0", "FQ", "", 2.9e-03, 2.e-02)  # 19/07/2017
+        Comparator().compare(n)
+
+    # mg->Fit("fitpol0","FQ","",4.4e-03,2.e-02);
+    # mg->Fit("fitpol0","FQ","",1.0e-03,2.e-02);## 2/10/2017
+    # print("\n pi0 Combined Fit \n")
+    # print("#chi^{2}/ndf = %.3g \n", fit.GetChisquare() / fit.GetNDF())
+    # print("n = %.3g +- %.3g \n", fit.GetParameter(0), fit.GetParError(0))
