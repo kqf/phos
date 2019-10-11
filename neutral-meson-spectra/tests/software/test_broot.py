@@ -876,3 +876,14 @@ def test_graph_asym_error(stop):
         graph.Draw("APL")
         hist.SetLineColor(ROOT.kRed + 1)
         hist.Draw("same")
+
+
+def test_hist2graph(stop):
+    hist = ROOT.TH1F("hist", "test", 100, -3, 3)
+    hist.FillRandom("gaus")
+    graph = br.hist2graph(hist)
+
+    with su.canvas(stop=stop):
+        graph.Draw("APL")
+        hist.SetLineColor(ROOT.kRed + 1)
+        hist.Draw("same")

@@ -631,3 +631,15 @@ def graph2hist(graph, hist):
         hist.SetBinContent(i, v)
         hist.SetBinError(i, graph.GetErrorY(i - 1))
     return hist
+
+
+def hist2graph(hist):
+    contents, errors, centers = bins(hist)
+    graph = ROOT.TGraphErrors(
+        len(contents),
+        array.array('d', centers),
+        array.array('d', contents),
+        array.array('d', np.zeros_like(contents)),
+        array.array('d', errors),
+    )
+    return graph
