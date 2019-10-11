@@ -4,8 +4,7 @@ PROTONS_PATH=../../../
 
 DATASET = LHC16g
 DPART = first
-MC = kTRUE
-OUTDIR = results/mc/pythia/debug_weights
+MC = kFALSE
 
 
 TEST_SELECTION = PhysTender

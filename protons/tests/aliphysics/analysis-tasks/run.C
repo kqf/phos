@@ -4,9 +4,9 @@
 
 #include "plugin.h"
 
-// #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
-// #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisAcceptanceTaskPP.C>
-#include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddSimpleAnalysisTaskPP.C>
+#include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisTaskPP.C>
+#include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddAnalysisAcceptanceTaskPP.C>
+// #include <PWGGA/PHOSTasks/PHOS_LHC16_pp/macros/AddSimpleAnalysisTaskPP.C>
 
 void run(TString period, const char * runmode = "local", const char * pluginmode = "test", TString dpart = "first", Bool_t isMC = kFALSE, Bool_t useJDL = kTRUE)
 {
@@ -21,9 +21,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     AddPHOSTender(isMC, msg);
     AddPIDResponse(isMC);
     // AddAnalysisTaskPP(isMC);
-    AliAnalysisTaskPP13 * task = AddSimpleAnalysisTaskPP(isMC);
+    // AliAnalysisTaskPP13 * task = AddSimpleAnalysisTaskPP(isMC);
 
-    // AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, msg);
+    AliAnalysisTaskPP13 * task = AddAnalysisTaskPP(isMC, msg);
     task->SelectCollisionCandidates(AliVEvent::kINT7);
 
     // Add the official E/p ratio task
