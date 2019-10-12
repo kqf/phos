@@ -117,33 +117,33 @@ def test_xt_scaling(data):
     Comparator().compare(n_factors)
 
 
+@pytest.fixture
+def xtrange():
+    return 2.9e-03, 2.e-02
+
+
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_separate_fits(data):
+def test_separate_fits(data, xtrange):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
 
     for n in n_factors:
-        fit = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
-        fit.SetLineWidth(3)
-        fit.SetParameter(0, 5.0)
-        fit.SetLineStyle(7)
-        fit.SetLineColor(ROOT.kBlack)
-        n.Fit("fitpol0", "FQ", "", 2.9e-03, 2.e-02)  # 19/07/2017
+        fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
+        fitf.SetLineWidth(3)
+        fitf.SetParameter(0, 5.0)
+        fitf.SetLineStyle(7)
+        fitf.SetLineColor(ROOT.kBlack)
+        n.Fit(fitf, "FQ", "", *xtrange)
+        br.print_fit_results(fitf)
         Comparator().compare(n)
-
-    # mg->Fit("fitpol0","FQ","",4.4e-03,2.e-02);
-    # mg->Fit("fitpol0","FQ","",1.0e-03,2.e-02);## 2/10/2017
-    # print("\n pi0 Combined Fit \n")
-    # print("#chi^{2}/ndf = %.3g \n", fit.GetChisquare() / fit.GetNDF())
-    # print("n = %.3g +- %.3g \n", fit.GetParameter(0), fit.GetParError(0))
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_combined_fits(data):
+def test_combined_fits(data, xtrange):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
@@ -162,7 +162,8 @@ def test_combined_fits(data):
     fitf.SetParameter(0, 5.0)
     fitf.SetLineStyle(7)
     fitf.SetLineColor(ROOT.kBlack)
-    multigraph.Fit(fitf, "FQ", "", 2.9e-03, 2.e-02)
+    multigraph.Fit(fitf, "FQ", "", *xtrange)
+    br.print_fit_results(fitf)
 
     with su.canvas():
         multigraph.Draw("ap")

@@ -658,3 +658,17 @@ def hist2graph(hist):
     graph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     graph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     return graph
+
+
+def fit_results(fitf):
+    results = {}
+    results["#chi^{2}/ndf"] = fitf.GetChisquare() / fitf.GetNDF()
+    for i in range(fitf.GetNpar()):
+        results[fitf.GetParName(i)] = fitf.GetParameter(i)
+        results["#Delta {}".format(fitf.GetParName(i))] = fitf.GetParError(i)
+    return results
+
+
+def print_fit_results(fitf):
+    for title, val in fit_results(fitf).items():
+        print("{} = {:.3f}".format(title, val))
