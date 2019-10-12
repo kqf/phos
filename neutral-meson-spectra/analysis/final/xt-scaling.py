@@ -110,7 +110,7 @@ def test_xt_distribution(data):
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_xt_scaling(data):
+def test_n_scaling_scaling(data):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
@@ -175,9 +175,36 @@ def combined_n():
     return 5.19
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_scaled_spectra(data, combined_n):
     for h in data:
         h.Scale(h.energy ** combined_n)
+    Comparator().compare(data)
+
+
+@pytest.fixture
+def scaledf():
+    return FVault().tf1("tcm", "#pi^{0} 13 TeV")
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_xt_scaling(data, combined_n, scaledf):
+    for h in data:
+        h.Scale(h.energy ** combined_n)
+        scaledf.SetParameter("A", 1e20)
+        scaledf.SetParameter("Ae", 1e20)
+        scaledf.SetParameter("Ae", -2.39430e+19)
+        scaledf.SetParameter("Te", 2.26665e-05)
+        scaledf.SetParameter("A", 2.62125e+20)
+        scaledf.SetParameter("T", -8.61489e-04)
+        scaledf.SetParameter("n", 3.22735e+00)
+        scaledf.SetParameter("M", 4.73892e-02)
+        h.Fit(scaledf, "", "", 9e-05, 3.e-02)
+        h.Divide(scaledf)
+        # with su.canvas():
+        #     h.Draw()
+        #     scaledf.Draw("same")
     Comparator().compare(data)
