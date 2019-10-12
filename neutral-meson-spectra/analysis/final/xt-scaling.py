@@ -141,6 +141,7 @@ def test_separate_fits(data, xtrange):
         Comparator().compare(n)
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_combined_fits(data, xtrange):
@@ -167,3 +168,16 @@ def test_combined_fits(data, xtrange):
 
     with su.canvas():
         multigraph.Draw("ap")
+
+
+@pytest.fixture
+def combined_n():
+    return 5.19
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_scaled_spectra(data, combined_n):
+    for h in data:
+        h.Scale(h.energy ** combined_n)
+    Comparator().compare(data)
