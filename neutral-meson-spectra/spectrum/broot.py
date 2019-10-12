@@ -389,8 +389,21 @@ def define_colors():
         ROOT.kYellow + 1,
         ROOT.kOrange + 1,
         ROOT.kBlack + 1,
+        ROOT.kGray + 1,
+        ROOT.kMagenta + 1,
+        ROOT.kCyan + 1,
+        ROOT.kSpring + 1,
+        ROOT.kTeal + 1,
+        ROOT.kAzure + 1,
+        ROOT.kViolet + 1,
+        ROOT.kPink + 1,
     ]
     return rcolors
+
+
+def icolor(i):
+    colors = define_colors()
+    return colors[i % len(colors)]
 
 
 def bins(hist):
@@ -642,4 +655,6 @@ def hist2graph(hist):
         array.array('d', np.zeros_like(contents)),
         array.array('d', errors),
     )
+    graph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
+    graph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     return graph

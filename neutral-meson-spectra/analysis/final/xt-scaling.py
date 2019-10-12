@@ -6,6 +6,8 @@ import numpy as np
 import itertools
 
 import spectrum.broot as br
+import spectrum.sutils as su
+
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.comparator import Comparator
@@ -115,9 +117,10 @@ def test_xt_scaling(data):
     Comparator().compare(n_factors)
 
 
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_combined_fit(data):
+def test_separate_fits(data):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
@@ -136,3 +139,30 @@ def test_combined_fit(data):
     # print("\n pi0 Combined Fit \n")
     # print("#chi^{2}/ndf = %.3g \n", fit.GetChisquare() / fit.GetNDF())
     # print("n = %.3g +- %.3g \n", fit.GetParameter(0), fit.GetParError(0))
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_combined_fits(data):
+    spectra = sorted(data, key=lambda x: x.energy)
+    n_factors = [n_factor(*pair)
+                 for pair in itertools.combinations(spectra, 2)]
+
+    multigraph = ROOT.TMultiGraph()
+    for i, n in enumerate(n_factors):
+        ngraph = br.hist2graph(n)
+        ngraph.SetMarkerColor(br.icolor(i))
+        ngraph.SetLineColor(br.icolor(i))
+        ngraph.SetMarkerStyle(20)
+        ngraph.SetMarkerSize(1)
+        multigraph.Add(ngraph)
+
+    fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
+    fitf.SetLineWidth(3)
+    fitf.SetParameter(0, 5.0)
+    fitf.SetLineStyle(7)
+    fitf.SetLineColor(ROOT.kBlack)
+    multigraph.Fit(fitf, "FQ", "", 2.9e-03, 2.e-02)
+
+    with su.canvas():
+        multigraph.Draw("ap")
