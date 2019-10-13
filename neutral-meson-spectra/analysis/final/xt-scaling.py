@@ -196,20 +196,7 @@ def scaledf():
 def test_xt_scaling(data, combined_n, scaledf):
     for h in data:
         h.Scale(h.energy ** combined_n)
-        if h.energy < 1000:
-            scaledf.SetParameter(0, 4.35967e+22)
-            scaledf.SetParameter(1, 3.59107e-07)
-            scaledf.SetParameter(2, 2.32103e+22)
-            scaledf.SetParameter(3, -3.89363e-04)
-
         h.Fit(scaledf, "", "", 9e-05, 3.e-02)
         Comparator().compare(h)
         h.Divide(scaledf)
     Comparator().compare(data)
-
-# 1  Ae           4.35967e+22   8.92836e+22   2.07885e+16  -8.53195e-27
-# 2  Te           3.59240e-07   5.00738e-07   8.28673e-11  -3.88209e+02
-# 3  A            2.32103e+22   4.19204e+22   1.10675e+16   3.65758e-26
-# 4  T           -3.89363e-04   1.54462e-04   5.49227e-09  -1.39198e+01
-# 5  n            3.11357e+00   2.46071e-01   3.93579e-05  -3.05920e-03
-# 6  M            1.34976e-01     fixed
