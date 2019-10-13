@@ -120,7 +120,7 @@ class MultipleVisualizer(object):
         mainpad = pad if pad else su.gcanvas()
         mainpad.cd()
         set_pad_logx(first_hist, mainpad)
-        set_pad_logx(first_hist, mainpad)
+        set_pad_logy(first_hist, mainpad)
 
         for i, h in enumerate(hists):
             self.decorate_hist(h, index=i)
