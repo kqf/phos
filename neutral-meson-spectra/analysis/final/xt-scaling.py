@@ -196,7 +196,8 @@ def scaledf():
 def test_xt_scaling(data, combined_n, scaledf):
     for h in data:
         h.Scale(h.energy ** combined_n)
-        h.Fit(scaledf, "", "", 9e-05, 3.e-02)
+        if h.energy == 8000:
+            h.Fit(scaledf, "", "", 9e-05, 3.e-02)
         Comparator().compare(h)
         h.Divide(scaledf)
     Comparator().compare(data)

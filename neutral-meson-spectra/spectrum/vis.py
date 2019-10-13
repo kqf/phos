@@ -17,6 +17,11 @@ def info(hist):
     return pave
 
 
+def calculate_x_limits(hists):
+    data = np.array([br.hist_range(h) for h in hists])
+    return data.min() * 0.95, data.max() * 1.05
+
+
 def set_pad_logx(hist, pad):
     if 'eff' in hist.GetName().lower():
         return
@@ -163,7 +168,8 @@ class MultipleVisualizer(object):
         stack.GetYaxis().SetTitle(template.GetYaxis().GetTitle())
         stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
-        stack.GetXaxis().SetRangeUser(*br.hist_range(template))
+        print(calculate_x_limits(hists))
+        stack.GetXaxis().SetRangeUser(*calculate_x_limits(hists))
         stack.GetXaxis().SetMoreLogLabels(True)
         self.cache.append(stack)
         self.cache.extend(hists)
