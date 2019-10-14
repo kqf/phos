@@ -15,6 +15,11 @@ from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
 from vault.formulas import FVault
 
+DATA_CONFIG = {
+    "#pi^{0}": "config/predictions/hepdata-pion.json",
+    "#eta": "config/predictions/hepdata-eta.json",
+}
+
 
 class HepdataInput(TransformerBase):
     def __init__(self, table_name="Table 1", histname="Hist1D_y1", plot=False):
@@ -116,7 +121,7 @@ def n_factor(hist1, hist2):
 
 @pytest.fixture(scope="module")
 def data(particle="#pi^{0}"):
-    with open("config/predictions/hepdata-pion.json") as f:
+    with open(DATA_CONFIG[particle]) as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
     steps = [(l, xt()) for l in labels]
@@ -201,10 +206,13 @@ def combined_n():
     return 5.558
 
 
-@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_scaled_spectra(data, combined_n):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_scaled_spectra(particle, data, combined_n):
     for h in data:
         h.Scale(h.energy ** combined_n)
     Comparator().compare(data)
@@ -217,10 +225,14 @@ def scaledf():
     return func
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_xt_scaling(data, combined_n, scaledf):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_xt_scaling(particle, data, combined_n, scaledf):
     for h in data:
         h.Scale(h.energy ** combined_n)
         if h.energy == 8000:
