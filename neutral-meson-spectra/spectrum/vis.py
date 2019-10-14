@@ -168,7 +168,6 @@ class MultipleVisualizer(object):
         stack.GetYaxis().SetTitle(template.GetYaxis().GetTitle())
         stack.SetMaximum(stack.GetMaximum("nostack") * 1.05)
         stack.SetMinimum(stack.GetMinimum("nostack") * 0.95)
-        print(calculate_x_limits(hists))
         stack.GetXaxis().SetRangeUser(*calculate_x_limits(hists))
         stack.GetXaxis().SetMoreLogLabels(True)
         self.cache.append(stack)
