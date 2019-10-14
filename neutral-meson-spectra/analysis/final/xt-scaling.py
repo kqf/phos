@@ -198,7 +198,7 @@ def test_combined_fits(data, xtrange):
 
 @pytest.fixture
 def combined_n():
-    return 5.19
+    return 5.558
 
 
 @pytest.mark.skip("")
