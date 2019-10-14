@@ -12,6 +12,7 @@ from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
+from spectrum.spectra import spectrum
 from vault.formulas import FVault
 
 
@@ -30,6 +31,19 @@ class HepdataInput(TransformerBase):
         hist.Scale(item["scale"])
         hist.energy = item["energy"]
         hist.title = item["title"]
+        return hist
+
+
+class DataExtractor(TransformerBase):
+    def transform(self, particle, loggs):
+        hist = spectrum(particle)
+        for i in br.hrange(hist):
+            hist.SetBinContent(i, hist.GetBinContent(i))
+        hist.logx = True
+        hist.logy = True
+        hist.label = "13 TeV"
+        hist.energy = 13000
+        hist.title = "pp 13 TeV"
         return hist
 
 
@@ -74,6 +88,17 @@ def xt(edges=None):
     ])
 
 
+def xt_measured(particle="#pi^{0}"):
+    estimator = Pipeline([
+        ("cyield", DataExtractor()),
+        ("fit", DataFitter()),
+        ("xt", XTtransformer())
+    ])
+    with open_loggs() as loggs:
+        result = estimator.transform(particle, loggs)
+    return result
+
+
 def n_factor(hist1, hist2):
     nxt = hist1.Clone("n")
     nxt2 = br.function2histogram(hist2.fitfunc, nxt, hist2.energy / 2)
@@ -90,7 +115,7 @@ def n_factor(hist1, hist2):
 
 
 @pytest.fixture(scope="module")
-def data():
+def data(particle="#pi^{0}"):
     with open("config/predictions/hepdata-pion.json") as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
@@ -98,6 +123,7 @@ def data():
     with open_loggs() as loggs:
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
+    spectra.append(xt_measured())
     return spectra
 
 
@@ -191,18 +217,17 @@ def scaledf():
     return func
 
 
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_xt_scaling(data, combined_n, scaledf):
     for h in data:
         h.Scale(h.energy ** combined_n)
-        if h.energy > 3000:
-            continue
-        h.Fit(scaledf, "", "", 9e-05, 3.e-02)
-        print()
-        br.print_fit_results(scaledf)
-
-    for h in data:
+        if h.energy == 8000:
+            scaledf.SetParameter(0, 2e22)
+            scaledf.SetParameter(2, 2e22)
+            h.Fit(scaledf, "", "", 9e-05, 3.e-02)
         Comparator().compare(h)
+    for h in data:
         h.Divide(scaledf)
     Comparator().compare(data)
