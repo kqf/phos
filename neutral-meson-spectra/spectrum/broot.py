@@ -655,6 +655,7 @@ def hist2graph(hist):
         array.array('d', np.zeros_like(contents)),
         array.array('d', errors),
     )
+    graph.SetTitle(hist.GetTitle())
     graph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     graph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     return graph

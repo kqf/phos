@@ -67,6 +67,17 @@ def style():
     old_style.cd()
 
 
+def legend(data):
+    legend = ROOT.TLegend(0.6, 0.7, 0.8, 0.85)
+    legend.SetBorderSize(0)
+    for entry in data:
+        legend.AddEntry(entry, entry.GetTitle(), "p")
+    legend.SetFillColor(0)
+    legend.SetTextColor(1)
+    legend.SetTextSize(0.035)
+    return legend
+
+
 def plot(data, xtitle, ytitle, logx=True, logy=True, stop=True):
     x = np.concatenate([br.bins(h).centers for h in data])
     y = np.concatenate([br.bins(h).contents for h in data])
@@ -91,3 +102,5 @@ def plot(data, xtitle, ytitle, logx=True, logy=True, stop=True):
             graph.SetLineColor(color)
             graph.SetMarkerColor(color)
             graph.Draw("p")
+        ll = legend(graphs)
+        ll.Draw("same")
