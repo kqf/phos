@@ -93,7 +93,7 @@ def xt(edges=None):
     ])
 
 
-def xt_measured(particle="#pi^{0}"):
+def xt_measured(particle):
     estimator = Pipeline([
         ("cyield", DataExtractor()),
         ("fit", DataFitter()),
@@ -128,7 +128,7 @@ def data(particle):
     with open_loggs() as loggs:
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
-    spectra.append(xt_measured())
+    spectra.append(xt_measured(particle))
     return spectra
 
 
@@ -206,6 +206,7 @@ def combined_n():
     return 5.558
 
 
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
@@ -229,8 +230,8 @@ def scaledf():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+    # "#pi^{0}",
+    "#eta",
 ])
 def test_xt_scaling(particle, data, combined_n, scaledf):
     for h in data:
