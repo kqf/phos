@@ -119,8 +119,8 @@ def n_factor(hist1, hist2):
     return nxt
 
 
-@pytest.fixture(scope="module")
-def data(particle="#pi^{0}"):
+@pytest.fixture
+def data(particle):
     with open(DATA_CONFIG[particle]) as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
@@ -209,8 +209,8 @@ def combined_n():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+    # "#pi^{0}",
+    "#eta",
 ])
 def test_scaled_spectra(particle, data, combined_n):
     for h in data:
