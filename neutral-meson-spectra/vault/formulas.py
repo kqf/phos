@@ -17,5 +17,6 @@ class FVault(object):
         func = ROOT.TF1(production, data["formula"], *data["range"])
         func.SetParNames(*data["parameters"])
         for name, value in six.iteritems(data["default"]):
-            func.SetParameter(name, value)
+            strname = ROOT.TString(name)
+            func.SetParameter(strname, value)
         return func
