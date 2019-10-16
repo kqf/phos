@@ -13,6 +13,7 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
+from spectrum.plotter import plot
 from vault.formulas import FVault
 
 DATA_CONFIG = {
@@ -135,8 +136,12 @@ def data(particle):
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
 def test_xt_distribution(data):
-    Comparator().compare(data)
+    plot(data)
 
 
 @pytest.mark.skip("")
@@ -206,17 +211,17 @@ def combined_n():
     return 5.558
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 def test_scaled_spectra(particle, data, combined_n):
     for h in data:
         h.Scale(h.energy ** combined_n)
-    Comparator().compare(data)
+    plot(data)
 
 
 @pytest.fixture
@@ -226,11 +231,11 @@ def scaledf():
     return func
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 def test_xt_scaling(particle, data, combined_n, scaledf):
@@ -243,4 +248,4 @@ def test_xt_scaling(particle, data, combined_n, scaledf):
         Comparator().compare(h)
     for h in data:
         h.Divide(scaledf)
-    Comparator().compare(data)
+    plot(data)

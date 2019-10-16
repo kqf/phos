@@ -53,7 +53,7 @@ def style():
     style.SetStatFont(42)
 
     style.SetTitleOffset(1.0, "X")
-    style.SetTitleOffset(1., "Y")
+    style.SetTitleOffset(1.0, "Y")
 
     # style.SetFillColor(ROOT.kWhite)
     style.SetTitleFillColor(ROOT.kWhite)
@@ -78,15 +78,16 @@ def legend(data):
     return legend
 
 
-def plot(data, xtitle, ytitle, logx=True, logy=True, stop=True):
+def plot(data, xtitle=None, ytitle=None, logx=True, logy=True, stop=True):
     x = np.concatenate([br.bins(h).centers for h in data])
     y = np.concatenate([br.bins(h).contents for h in data])
 
-    box = ROOT.TH1F("box", "Test test test", 1000, 0, 20)
-    box.GetXaxis().SetTitle(xtitle)
-    box.GetYaxis().SetTitle(ytitle)
+    box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
+    box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
+    box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
     box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
     box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
+    box.GetXaxis().SetMoreLogLabels(True)
 
     graphs = list(map(br.hist2graph, data))
     with style(), su.canvas(stop=stop) as canvas:
@@ -97,10 +98,11 @@ def plot(data, xtitle, ytitle, logx=True, logy=True, stop=True):
         box.Draw()
         for i, graph in enumerate(graphs):
             color = br.icolor(i)
+            print(graph)
             graph.SetMarkerStyle(20)
             graph.SetMarkerSize(1)
             graph.SetLineColor(color)
             graph.SetMarkerColor(color)
-            graph.Draw("p")
+            graph.Draw("same p")
         ll = legend(graphs)
         ll.Draw("same")
