@@ -115,6 +115,7 @@ def plot(data, xtitle=None, ytitle=None, logx=True, logy=True, stop=True):
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
         box.Draw()
+        su.ticks(canvas)
         for i, graph in enumerate(graphed):
             color = br.icolor(i)
             graph.SetMarkerStyle(20)

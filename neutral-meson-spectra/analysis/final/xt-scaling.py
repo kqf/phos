@@ -6,7 +6,6 @@ import numpy as np
 import itertools
 
 import spectrum.broot as br
-import spectrum.sutils as su
 
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
@@ -149,11 +148,12 @@ def test_xt_distribution(data):
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.parametrize("particle", ["#pi^{0}"])
 def test_n_scaling_scaling(data):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
-    Comparator().compare(n_factors)
+    plot(n_factors, logx=True, logy=False)
 
 
 @pytest.fixture
@@ -164,6 +164,7 @@ def xtrange():
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.parametrize("particle", ["#pi^{0}"])
 def test_separate_fits(data, xtrange):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
@@ -177,12 +178,13 @@ def test_separate_fits(data, xtrange):
         fitf.SetLineColor(ROOT.kBlack)
         n.Fit(fitf, "FQ", "", *xtrange)
         br.print_fit_results(fitf)
-        Comparator().compare(n)
+        plot([n, fitf], logy=False)
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.parametrize("particle", ["#pi^{0}"])
 def test_combined_fits(data, xtrange):
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(data, 2)]
@@ -196,16 +198,14 @@ def test_combined_fits(data, xtrange):
         ngraph.SetMarkerSize(1)
         multigraph.Add(ngraph)
 
-    fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
+    fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 1.5e-02)
     fitf.SetLineWidth(3)
     fitf.SetParameter(0, 5.0)
     fitf.SetLineStyle(7)
     fitf.SetLineColor(ROOT.kBlack)
     multigraph.Fit(fitf, "FQ", "", *xtrange)
     br.print_fit_results(fitf)
-
-    with su.canvas():
-        multigraph.Draw("ap")
+    plot(n_factors + [fitf], logy=False)
 
 
 @pytest.fixture
@@ -233,7 +233,7 @@ def scaledf():
     return func
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
