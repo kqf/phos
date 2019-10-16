@@ -401,9 +401,9 @@ def define_colors():
     return rcolors
 
 
-def icolor(i):
+def icolor(i, offset=0):
     colors = define_colors()
-    return colors[i % len(colors)]
+    return colors[(i + offset) % len(colors)]
 
 
 def bins(hist):

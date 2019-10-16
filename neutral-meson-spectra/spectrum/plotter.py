@@ -1,6 +1,7 @@
 import ROOT
 import numpy as np
 from contextlib import contextmanager
+from collections import defaultdict
 
 import spectrum.broot as br
 import spectrum.sutils as su
@@ -78,9 +79,27 @@ def legend(data):
     return legend
 
 
+def separate(data):
+    hists, graphs, functions = [], [], []
+    for entry in data:
+        if issubclass(type(entry), ROOT.TH1):
+            hists.append(entry)
+        if issubclass(type(entry), ROOT.TF1):
+            functions.append(entry)
+        if issubclass(type(entry), ROOT.TGraph):
+            functions.append(entry)
+    return hists, graphs, functions
+
+
 def plot(data, xtitle=None, ytitle=None, logx=True, logy=True, stop=True):
-    x = np.concatenate([br.bins(h).centers for h in data])
-    y = np.concatenate([br.bins(h).contents for h in data])
+    hists, graphs, functions = separate(data)
+    histogrammed = (
+        hists +
+        list(map(lambda x: x.GetHistogram(), functions)) +
+        list(map(br.graph2hist, graphs))
+    )
+    x = np.concatenate([br.bins(h).centers for h in histogrammed])
+    y = np.concatenate([br.bins(h).contents for h in histogrammed])
 
     box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
     box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
@@ -89,20 +108,24 @@ def plot(data, xtitle=None, ytitle=None, logx=True, logy=True, stop=True):
     box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
     box.GetXaxis().SetMoreLogLabels(True)
 
-    graphs = list(map(br.hist2graph, data))
+    graphed = graphs + list(map(br.hist2graph, hists))
     with style(), su.canvas(stop=stop) as canvas:
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
         box.Draw()
-        for i, graph in enumerate(graphs):
+        for i, graph in enumerate(graphed):
             color = br.icolor(i)
-            print(graph)
             graph.SetMarkerStyle(20)
             graph.SetMarkerSize(1)
             graph.SetLineColor(color)
             graph.SetMarkerColor(color)
-            graph.Draw("same p")
-        ll = legend(graphs)
+            graph.Draw("p")
+
+        for i, func in enumerate(functions):
+            func.SetLineColor(br.icolor(i, offset=len(graphed)))
+            func.Draw("same")
+
+        ll = legend(graphed + functions)
         ll.Draw("same")

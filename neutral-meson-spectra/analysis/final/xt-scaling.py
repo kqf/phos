@@ -37,6 +37,7 @@ class HepdataInput(TransformerBase):
         hist.Scale(item["scale"])
         hist.energy = item["energy"]
         hist.title = item["title"]
+        hist.SetTitle(item["title"])
         return hist
 
 
@@ -50,6 +51,7 @@ class DataExtractor(TransformerBase):
         hist.label = "13 TeV"
         hist.energy = 13000
         hist.title = "pp 13 TeV"
+        hist.SetTitle("pp 13 TeV")
         return hist
 
 
