@@ -63,6 +63,7 @@ class XTtransformer(TransformerBase):
             "{}_xt".format(x.GetName()), x.GetTitle(),
             len(xtedges) - 1,
             xtedges)
+        xt.GetXaxis().SetTitle("x_{T}")
 
         for i in br.hrange(x):
             xt.SetBinContent(i, x.GetBinContent(i))

@@ -125,7 +125,8 @@ def plot(data, xtitle=None, ytitle=None, logx=True, logy=True, stop=True):
             graph.Draw("p")
 
         for i, func in enumerate(functions):
-            func.SetLineColor(br.icolor(i, offset=len(graphed)))
+            # Don't use colors for graphs
+            # func.SetLineColor(br.icolor(i, offset=len(graphed)))
             func.Draw("same")
 
         ll = legend(graphed + functions)
