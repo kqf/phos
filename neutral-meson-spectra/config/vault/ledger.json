@@ -35,6 +35,13 @@
             "hsum": "6ae43a0399bdb8a60ce9fca5fa7ce4d3bb54d677d2f67707784d2f7fdd78fbe2",
             "pt_range": [0, 20]
         },
+        "staging LHC16": {
+            "default_selection": "Phys",
+            "description": "Minimal prodcution with the official nonlinearity, and acceptance",
+            "file": "input-data/data/LHC16/final_nonlinearity_3/LHC16.root",
+            "hsum": "6ae43a0399bdb8a60ce9fca5fa7ce4d3bb54d677d2f67707784d2f7fdd78fbe2",
+            "pt_range": [0, 20]
+        },
         "latest LHC17": {
             "default_selection": "Phys",
             "description": "Minimal prodcution with the official nonlinearity, and acceptance",
