@@ -1,6 +1,7 @@
-outdir=results/data/LHC18/final_nonlinearity_3
-ofile=LHC18.root
-
+period=LHC16
+outdir=results/data/$period/final_nonlinearity_4
+ofile=$period.root
+# alice_site=@ALICE::GSI::SE2
 # outdir=results/mc/pythia/final_nonlinearity_2
 # ofile=pythia8_LHC16_extra.root
 
@@ -12,14 +13,14 @@ function upload() {
 	hadd $ofile *.root
 	
 	# Convert all necessary folders to lists
-	# folders2lists $ofile
+	folders2lists $ofile
 
 	# Interact with GRID
 	alien_mkdir -p $ALIEN_HOME/$outdir/
-	alien_cp -n $ofile alien:$ALIEN_HOME/$outdir/$ofile@ALICE::GSI::SE2
+	alien_cp -n $ofile alien:$ALIEN_HOME/$outdir/$ofile$alice_site
 
 	for i in *.root; do
-		alien_cp -n $i alien:$ALIEN_HOME/$outdir/$i@ALICE::GSI::SE2
+		alien_cp -n $i alien:$ALIEN_HOME/$outdir/$i$alice_site
 	done
 }
 
