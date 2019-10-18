@@ -37,7 +37,7 @@
         },
         "staging LHC16": {
             "default_selection": "Phys",
-            "description": "Minimal prodcution with the official nonlinearity, and acceptance",
+            "description": "All corrections + tof study",
             "file": "input-data/data/LHC16/final_nonlinearity_4/LHC16.root",
             "hsum": "3ae6270a88b4aa3f34f5b592c3a2dae4cfcb0665a31b9cb488f574fbe0b24f48",
             "pt_range": [0, 20]
@@ -51,7 +51,7 @@
         },
         "staging LHC17": {
             "default_selection": "Phys",
-            "description": "Minimal prodcution with the official nonlinearity, and acceptance",
+            "description": "All corrections + tof study",
             "file": "input-data/data/LHC17/final_nonlinearity_4/LHC17.root",
             "hsum": "69de3774cb612139cbb4e766f156e0d6727eb39277ace49f3354c7b57e745686",
             "pt_range": [0, 20]
@@ -61,6 +61,13 @@
             "description": "Minimal prodcution with the official nonlinearity, and acceptance",
             "file": "input-data/data/LHC18/final_nonlinearity_3/LHC18.root",
             "hsum": "a5418e9524187fa5b39bd54f7a4af58d82c86c4f347cbf4eaacd9310da7941aa",
+            "pt_range": [0, 20]
+        },
+        "staging LHC18": {
+            "default_selection": "Phys",
+            "description": "All corrections + tof study",
+            "file": "input-data/data/LHC18/final_nonlinearity_4/LHC18.root",
+            "hsum": "64a113f5ea63177e902fd89107ff6ea12a0a6a372b78d5e9965dde5ac8621a7f",
             "pt_range": [0, 20]
         },
         "latest": {
