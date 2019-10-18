@@ -1,4 +1,4 @@
-period=LHC16
+period=LHC18
 outdir=results/data/$period/final_nonlinearity_4
 ofile=$period.root
 # alice_site=@ALICE::GSI::SE2
