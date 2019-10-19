@@ -6,6 +6,7 @@ DATASET = LHC16l-pass1-isolated
 DPART = first
 MC = kFALSE
 OUTDIR = results/mc/pythia/debug_weights
+ALICE_SITE =
 
 
 TEST_SELECTION = PhysTender

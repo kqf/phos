@@ -10,7 +10,7 @@ from vault.datavault import DataVault
 @pytest.fixture
 def old_new_data():
     return (
-        DataVault().input("data", "tof", histname="MassPtSM0"),
+        DataVault().input("data", "staging", histname="MassPtSM0"),
         DataVault().input("data", histname="MassPtSM0"),
     )
 
@@ -18,9 +18,8 @@ def old_new_data():
 @pytest.fixture
 def data():
     return (
-        DataVault().input("data", "latest LHC16", histname="MassPtSM0"),
-        DataVault().input("data", "latest LHC17", histname="MassPtSM0"),
-        DataVault().input("data", "latest LHC18", histname="MassPtSM0"),
+        DataVault().input("data", "staging LHC17", histname="MassPtSM0"),
+        DataVault().input("data", "staging LHC18", histname="MassPtSM0"),
     )
 
 
@@ -31,11 +30,10 @@ def analysis(particle):
     ])
 
 
-@pytest.mark.skip()
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
-    "#eta",
+    "#pi^{0}",
+    # "#eta",
 ])
 def test_old_new(particle, old_new_data):
     estimator = ComparePipeline([
@@ -46,6 +44,7 @@ def test_old_new(particle, old_new_data):
         estimator.transform(old_new_data, loggs)
 
 
+@pytest.mark.skip()
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
