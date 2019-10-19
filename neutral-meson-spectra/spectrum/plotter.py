@@ -1,7 +1,6 @@
 import ROOT
 import numpy as np
 from contextlib import contextmanager
-from collections import defaultdict
 
 import spectrum.broot as br
 import spectrum.sutils as su
