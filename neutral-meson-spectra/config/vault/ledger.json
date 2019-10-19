@@ -77,6 +77,13 @@
             "hsum": "edecf5c5b303249319a257acd0cd1ad7349ccafc5bdf7fbbcc347e261b591d4a",
             "pt_range": [0, 20]
         },
+        "staging": {
+            "default_selection": "Phys",
+            "description": "All corrections + tof study",
+            "file": "input-data/data/merged/final_nonlinearity_4/LHC16-LHC17-LHC18.root",
+            "hsum": "ec81f0ef8fe8b4f554fee0dd20ef46b7921710447ae4022c26bea11dfb516983",
+            "pt_range": [0, 20]
+        },
         "stable": {
             "default_selection": "Phys",
             "description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction",
