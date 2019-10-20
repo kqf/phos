@@ -12,11 +12,13 @@ class FVault(object):
     def func(self, production, version="standard"):
         return self._ledger[production][version]["formula"]
 
-    def tf1(self, production, version="standard"):
+    def tf1(self, production, version="standard", fixed=False):
         data = self._ledger[production][version]
         func = ROOT.TF1(production, data["formula"], *data["range"])
         func.SetParNames(*data["parameters"])
         for name, value in six.iteritems(data["default"]):
-            strname = ROOT.TString(name)
-            func.SetParameter(strname, value)
+            index = func.GetParNumber(name)
+            func.SetParameter(index, value)
+            if fixed:
+                func.FixParameter(index, value)
         return func
