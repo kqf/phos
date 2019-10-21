@@ -1,5 +1,5 @@
 import pytest
-from spectrum.spectra import spectrum
+from spectrum.spectra import spectrum, ratio
 from spectrum.comparator import Comparator
 
 
@@ -12,3 +12,9 @@ from spectrum.comparator import Comparator
 def test_spectrum(particle):
     output = spectrum(particle)
     Comparator().compare(output)
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+def test_ratio():
+    Comparator().compare(ratio(True))
