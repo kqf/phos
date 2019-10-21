@@ -90,15 +90,18 @@ def separate(data):
     return hists, graphs, functions
 
 
-def plot(data, xtitle=None, ytitle=None, logx=True, logy=True, stop=True):
+def plot(data, xtitle=None, ytitle=None,
+         logx=True, logy=True, stop=True,
+         xlimits=None, ylimits=None
+         ):
     hists, graphs, functions = separate(data)
     histogrammed = (
         hists +
         list(map(lambda x: x.GetHistogram(), functions)) +
         list(map(br.graph2hist, graphs))
     )
-    x = np.concatenate([br.bins(h).centers for h in histogrammed])
-    y = np.concatenate([br.bins(h).contents for h in histogrammed])
+    x = xlimits or np.concatenate([br.bins(h).centers for h in histogrammed])
+    y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
 
     box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
     box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
