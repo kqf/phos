@@ -21,15 +21,16 @@ def tcmf(particle):
         tcm.SetParLimits(4, 2.0, 4.0)
 
     if particle == "#eta":
+        # pass
         tcm.SetParameter(0, 0.1)
         tcm.SetParLimits(0, 0, 1e4)
         tcm.SetParameter(1, 1.71e-01)
         tcm.SetParLimits(1, 0.1, 0.3)
         tcm.SetParameter(2, 0.1)
         tcm.SetParameter(3, 0.801)
-        tcm.SetParLimits(3, 0.7, 0.9)
+        # tcm.SetParLimits(3, 0.7, 0.9)
         tcm.SetParameter(4, 3.059)
-        tcm.SetParLimits(4, 2.0, 4.0)
+        # tcm.SetParLimits(4, 2.0, 4.0)
 
     tcm.FixParameter(5, mass(particle))
     return tcm
@@ -40,7 +41,7 @@ def tcmf(particle):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
+    # "#pi^{0}",
     "#eta",
 ])
 def test_tcm_fit(particle, tcmf):
