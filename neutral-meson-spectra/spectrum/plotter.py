@@ -8,8 +8,8 @@ import spectrum.sutils as su
 
 @contextmanager
 def style():
-    old_style = ROOT.gStyle.Clone("modern")
-    style = ROOT.gStyle.Clone("alice")
+    # old_style = ROOT.gStyle.Clone("modern")
+    style = ROOT.gStyle  # .Clone("alice")
     style.SetOptDate(0)
     style.SetOptTitle(0)
     style.SetOptStat(0)
@@ -64,7 +64,7 @@ def style():
     style.SetOptFit(111)
     style.cd()
     yield style
-    old_style.cd()
+    # old_style.cd()
 
 
 def legend(data):
