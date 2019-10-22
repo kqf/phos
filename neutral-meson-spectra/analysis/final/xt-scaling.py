@@ -178,7 +178,7 @@ def test_separate_fits(data, xtrange):
         fitf.SetLineStyle(7)
         fitf.SetLineColor(ROOT.kBlack)
         n.Fit(fitf, "FQ", "", *xtrange)
-        br.print_fit_results(fitf)
+        # br.print_fit_results(fitf)
         plot([n, fitf], logy=False)
 
 
@@ -205,7 +205,7 @@ def test_combined_fits(data, xtrange):
     fitf.SetLineStyle(7)
     fitf.SetLineColor(ROOT.kBlack)
     multigraph.Fit(fitf, "FQ", "", *xtrange)
-    br.print_fit_results(fitf)
+    # br.print_fit_results(fitf)
     plot(n_factors + [fitf], logy=False)
 
 

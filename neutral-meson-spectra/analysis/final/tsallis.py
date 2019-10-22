@@ -1,8 +1,10 @@
+import ROOT
 import pytest  # noqa
 
 from spectrum.spectra import spectrum
-from spectrum.comparator import Comparator
+# from spectrum.comparator import Comparator
 from spectrum.constants import mass
+from spectrum.plotter import plot
 from vault.formulas import FVault
 
 
@@ -29,6 +31,9 @@ def tsallisf(particle):
 
     tsallis.FixParameter(3, mass(particle))
     tsallis.FixParameter(4, mass(particle))
+    tsallis.SetTitle("Tsallis function")
+    tsallis.SetLineColor(ROOT.kBlue + 1)
+    tsallis.SetNpx(100)
     return tsallis
 
 
@@ -41,8 +46,7 @@ def tsallisf(particle):
 ])
 def test_tsallis_fit(particle, tsallisf):
     cyield = spectrum(particle)
-    cyield.SetTitle("final yield")
+    cyield.SetTitle("{} yield".format(particle))
     cyield.Fit(tsallisf, "R")
-    cyield.logy = True
-    cyield.logx = True
-    Comparator().compare(cyield)
+    tsallisf.SetRange(0.6, 21)
+    plot([cyield, tsallisf])
