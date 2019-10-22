@@ -36,6 +36,12 @@ def eta_mtf(pionf):
     return eta_mtf
 
 
+def tcmratio(func, hist, title):
+    histratio = br.ratio(hist, br.function2histogram(func, hist))
+    histratio.SetTitle("{}, data / {}".format(hist.GetTitle(), title))
+    return histratio
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 def test_spectrum(pion, eta, pionf, eta_mtf):
@@ -48,6 +54,9 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
     ])
 
     plot([
-        br.ratio(pion, br.function2histogram(pionf, pion)),
-        br.ratio(eta, br.function2histogram(eta_mtf, eta)),
-    ], ylimits=(0, 1.2), logy=False)
+        tcmratio(pionf, pion, "TCM-fit"),
+        tcmratio(eta_mtf, eta, "m_{T}-scaled TCM-fit"),
+    ],
+        xlimits=(0.8, 20.0), ylimits=(0, 3.4), logy=False,
+        ytitle="Data / TCM fit"
+    )
