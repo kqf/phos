@@ -646,19 +646,27 @@ def graph2hist(graph, hist):
     return hist
 
 
-def hist2graph(hist):
-    contents, errors, centers = bins(hist)
+def graph(title, contents, errors, centers, center_errors=None):
+    if center_errors is None:
+        center_errors = np.zeros_like(contents)
+
     graph = ROOT.TGraphErrors(
         len(contents),
         array.array('d', centers),
         array.array('d', contents),
-        array.array('d', np.zeros_like(contents)),
+        array.array('d', center_errors),
         array.array('d', errors),
     )
-    graph.SetTitle(hist.GetTitle())
-    graph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
-    graph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
+    graph.SetTitle(title)
     return graph
+
+
+def hist2graph(hist):
+    hgraph = graph(hist.GetTitle(), *bins(hist))
+    hgraph.SetTitle(hist.GetTitle())
+    hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
+    hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
+    return hgraph
 
 
 def fit_results(fitf):
