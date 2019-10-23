@@ -877,6 +877,8 @@ def test_graph_asym_error(stop):
         hist.SetLineColor(ROOT.kRed + 1)
         hist.Draw("same")
 
+    br.graph2hist(graph)
+
 
 def test_hist2graph(stop):
     hist = ROOT.TH1F("hist", "test", 100, -3, 3)

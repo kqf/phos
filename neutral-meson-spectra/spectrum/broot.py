@@ -656,7 +656,15 @@ def graph(title, x, y, dx=None, dy=None):
     return graph
 
 
-def graph2hist(graph, hist):
+def graph2hist(graph, hist=None):
+    if hist is None:
+        centers = unbufer(graph.GetX())
+        widths = [(b - a) / 2 for a, b in zip(centers[:-1], centers[1:])]
+        widths.append(widths[-1])
+        edges = [c - w for c, w in zip(centers, widths)]
+        edges.append(edges[-1] + widths[-1])
+        hist = ROOT.TH1F("graph", "", len(edges) - 1, array.array('d', edges))
+
     values = unbufer(graph.GetY())
     for i, v in zip(hrange(hist), values):
         hist.SetBinContent(i, v)
@@ -667,7 +675,6 @@ def graph2hist(graph, hist):
 def hist2graph(hist):
     contents, errors, centers = bins(hist)
     hgraph = graph(hist.GetTitle(), x=centers, y=contents, dy=errors)
-    hgraph.SetTitle(hist.GetTitle())
     hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     return hgraph
