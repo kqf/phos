@@ -86,7 +86,7 @@ def separate(data):
         if issubclass(type(entry), ROOT.TF1):
             functions.append(entry)
         if issubclass(type(entry), ROOT.TGraph):
-            functions.append(entry)
+            graphs.append(entry)
     return hists, graphs, functions
 
 
