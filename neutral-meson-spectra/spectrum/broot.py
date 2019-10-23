@@ -638,6 +638,24 @@ def unbufer(iterable):
     return [x for x in iterable]
 
 
+def graph(title, x, y, dx=None, dy=None):
+    if dx is None:
+        dx = np.zeros_like(x)
+
+    if dy is None:
+        dy = np.zeros_like(y)
+
+    graph = ROOT.TGraphErrors(
+        len(y),
+        array.array('d', x),
+        array.array('d', y),
+        array.array('d', dx),
+        array.array('d', dy),
+    )
+    graph.SetTitle(title)
+    return graph
+
+
 def graph2hist(graph, hist):
     values = unbufer(graph.GetY())
     for i, v in zip(hrange(hist), values):
@@ -646,23 +664,9 @@ def graph2hist(graph, hist):
     return hist
 
 
-def graph(title, contents, errors, centers, center_errors=None):
-    if center_errors is None:
-        center_errors = np.zeros_like(contents)
-
-    graph = ROOT.TGraphErrors(
-        len(contents),
-        array.array('d', centers),
-        array.array('d', contents),
-        array.array('d', center_errors),
-        array.array('d', errors),
-    )
-    graph.SetTitle(title)
-    return graph
-
-
 def hist2graph(hist):
-    hgraph = graph(hist.GetTitle(), *bins(hist))
+    contents, errors, centers = bins(hist)
+    hgraph = graph(hist.GetTitle(), x=centers, y=contents, dy=errors)
     hgraph.SetTitle(hist.GetTitle())
     hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
