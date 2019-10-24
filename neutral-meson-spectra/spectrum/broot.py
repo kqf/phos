@@ -692,3 +692,17 @@ def fit_results(fitf):
 def print_fit_results(fitf):
     for title, val in fit_results(fitf).items():
         print("{} = {:.3f}".format(title, val))
+
+
+def shaded_region(lower, upper, fill_color=16, fill_style=3013):
+    x_lower = np.linspace(lower.GetXmin(), lower.GetXmax(), lower.GetNpx())
+    y_lower = np.array(list(map(lower.Eval, x_lower)))
+    x_upper = np.linspace(upper.GetXmin(), upper.GetXmax(), upper.GetNpx())
+    y_upper = np.array(list(map(upper.Eval, x_upper)))
+    x = np.concatenate([x_lower, x_upper])
+    y = np.concatenate([y_lower, y_upper])
+    graph = ROOT.TGraph(len(x), x, y)
+    graph.SetFillStyle(fill_style)
+    graph.SetFillColor(fill_color)
+    graph.GetDrawOption = lambda: "AF"
+    return graph
