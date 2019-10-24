@@ -123,13 +123,13 @@ def plot(data, xtitle=None, ytitle=None,
             graph.SetMarkerStyle(20)
             graph.SetMarkerSize(1)
             graph.SetLineColor(color)
+            graph.SetFillColor(color)
             graph.SetMarkerColor(color)
-            graph.Draw("p")
+            options = graph.GetDrawOption() or "p"
+            graph.Draw(options)
 
         for i, func in enumerate(functions):
-            # Don't use colors for graphs
-            # func.SetLineColor(br.icolor(i, offset=len(graphed)))
-            func.Draw("same")
+            func.Draw("same " + func.GetDrawOption())
 
         ll = legend(graphed + functions)
         ll.Draw("same")
