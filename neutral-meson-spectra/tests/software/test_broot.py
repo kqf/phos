@@ -894,6 +894,6 @@ def test_hist2graph(stop):
 def test_plots_shaded_area(stop):
     sin = ROOT.TF1("low", "sin(x)", np.pi / 4, 1 * np.pi + np.pi / 4)
     cos = ROOT.TF1("high", "cos(x)", np.pi / 4, np.pi + np.pi / 4)
-    shaded = br.shaded_region(sin, cos)
+    shaded = br.shaded_region("test hysteresis", sin, cos)
     with su.canvas(stop=stop):
         shaded.Draw(shaded.GetDrawOption())
