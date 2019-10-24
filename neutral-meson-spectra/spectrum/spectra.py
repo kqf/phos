@@ -84,7 +84,7 @@ def ratio(stop=False):
     with open_loggs() as loggs:
         pion = RebinTransformer(True, br.edges(eta)).transform(pion, loggs)
     ratio = Comparator(stop=stop).compare(eta, pion)
-    ratio.SetTitle("#eta/#pi^{0}; p_T; #eta/#pi^{0}")
+    ratio.SetTitle("#eta / #pi^{0}; p_T; #eta / #pi^{0}")
     ratio.logy = False
     ratio.GetXaxis().SetRangeUser(2, 10)
     return ratio

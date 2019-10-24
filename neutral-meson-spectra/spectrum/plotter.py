@@ -124,6 +124,7 @@ def plot(data, xtitle=None, ytitle=None,
             graph.SetMarkerSize(1)
             graph.SetLineColor(color)
             graph.SetFillColor(color)
+            graph.SetFillColorAlpha(color, 0.50)
             graph.SetMarkerColor(color)
             options = graph.GetDrawOption() or "p"
             graph.Draw(options)

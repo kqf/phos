@@ -695,8 +695,8 @@ def print_fit_results(fitf):
 
 
 def shaded_region(title, lower, upper,
-                  fill_color=16, fill_style=3013,
-                  option="AF"):
+                  fill_color=16, fill_style=1001,
+                  option="f"):
     x_lower = np.linspace(lower.GetXmin(), lower.GetXmax(), lower.GetNpx())
     y_lower = np.array(list(map(lower.Eval, x_lower)))
     x_upper = np.linspace(upper.GetXmin(), upper.GetXmax(), upper.GetNpx())
@@ -708,5 +708,6 @@ def shaded_region(title, lower, upper,
     graph.SetTitle(title)
     graph.SetFillStyle(fill_style)
     graph.SetFillColor(fill_color)
+    graph.SetFillColorAlpha(fill_color, 0.36)
     graph.GetDrawOption = lambda: option
     return graph

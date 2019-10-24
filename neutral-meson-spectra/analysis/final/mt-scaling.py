@@ -76,15 +76,26 @@ def eta_pion_ratio(x, par):
     return c * (numerator / denominator) ** -n
 
 
+@pytest.fixture(scope="module")
+def asymptotic_eta_pion_ratio(min_pt=5):
+    rratio = ratio(stop=False)
+    fitf = ROOT.TF1("eta_pion", "[0]", min_pt, 20)
+    rratio.Fit(fitf, "R")
+    etapion = fitf.GetParameter(0)
+    print()
+    print("Asymptotic #eta / #pi^{0} ratio: ", etapion)
+    return etapion
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-def test_ratio():
-    lower = ROOT.TF1("lower", eta_pion_ratio, 0, 16, 3)
-    lower.SetParameter(0, 0.436)
+def test_ratio(asymptotic_eta_pion_ratio):
+    lower = ROOT.TF1("lower", eta_pion_ratio, 0, 20, 3)
+    lower.SetParameter(0, asymptotic_eta_pion_ratio)
     lower.SetParameter(1, 1.2)
     lower.SetParameter(2, 10)
 
-    upper = ROOT.TF1("upper", eta_pion_ratio, 0, 16, 3)
+    upper = ROOT.TF1("upper", eta_pion_ratio, 0, 20, 3)
     upper.SetParameter(0, 0.436)
     upper.SetParameter(1, 1.2)
     upper.SetParameter(2, 14)
@@ -93,5 +104,7 @@ def test_ratio():
         br.shaded_region("m_{T}-scaling", upper, lower),
     ],
         logy=False,
-        logx=False
+        logx=False,
+        ytitle="#eta / #pi^{0}",
+        xtitle="p_{T}, GeV/c"
     )
