@@ -65,7 +65,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
 
     plot([
         tcmratio(pionf, pion, "TCM-fit"),
-        tcmratio(eta_mtf, eta, "m_{T}-scaled TCM-fit"),
+        tcmratio(eta_mtf, eta, "m_{T} scaled TCM-fit"),
     ],
         xlimits=(0.8, 20.0),
         ylimits=(0, 3.4),

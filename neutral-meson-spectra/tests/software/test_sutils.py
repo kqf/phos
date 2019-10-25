@@ -20,20 +20,20 @@ def test_draws_histogram(stop, background):
 
 
 def test_draws_rescaled(stop, background):
-    with su.canvas(x=1., resize=True, stop=stop):
+    with su.canvas(size=(128., 128), resize=True, stop=stop):
         hist = ROOT.TH1F(
             'histNormal', 'Test: Drawing normal scale first', 600, -3, 3)
         hist.FillRandom('gaus')
         hist.Draw()
 
-    with su.canvas(x=1. / 2, resize=True, stop=stop):
+    with su.canvas(size=(128. / 2, 128), resize=True, stop=stop):
         hist = ROOT.TH1F(
             'histHalfSize', 'Test: Drawing half-size scale', 600, -3, 3)
         hist.FillRandom('gaus')
         hist.SetLineColor(37)
         hist.Draw()
 
-    with su.canvas(x=1., resize=True, stop=stop):
+    with su.canvas(size=(128., 128), resize=True, stop=stop):
         hist = ROOT.TH1F('histNormalAgain',
                          'Test: Drawing normal scale again', 600, -3, 3)
         hist.FillRandom('gaus')
