@@ -77,21 +77,23 @@ def save_canvas_root(canvas, outdir, name):
     ofile.Close()
 
 
-def create_canvas(name="c1", x=1., y=1., scale=6):
-    canvas = ROOT.TCanvas(name, "Canvas", int(
-        128 * x * scale), int(96 * y * scale))
+def create_canvas(name="c1", x=128, y=96, scale=6):
+    if int(x * scale) < 700:
+        raise IOError()
+    print(int(x * scale), int(y * scale))
+    canvas = ROOT.TCanvas(name, "Canvas", int(x * scale), int(y * scale))
     ticks(canvas)
     return adjust_canvas(canvas)
 
 
-def gcanvas(name="c1", x=1., y=1, resize=False, scale=6):
+def gcanvas(name="c1", x=128, y=96, resize=False, scale=6):
     ccanvas = ROOT.gROOT.FindObject(name)
     if ccanvas:
         if not resize:
             ccanvas.cd()
             return ccanvas
 
-        cx, cy = map(int, [128 * x * scale, 96 * y * scale])
+        cx, cy = map(int, [x * scale, y * scale])
         ccanvas.SetWindowSize(cx, cy)
         ccanvas.SetCanvasSize(cx, cy)
         return adjust_canvas(ccanvas)
@@ -99,7 +101,7 @@ def gcanvas(name="c1", x=1., y=1, resize=False, scale=6):
 
 
 @contextmanager
-def canvas(name="c1", x=1., y=1., resize=False, scale=6, stop=True):
+def canvas(name="c1", x=128, y=96, resize=False, scale=6, stop=True):
     canvas = gcanvas(name=name, x=x, y=y, resize=resize, scale=scale)
     try:
         yield canvas

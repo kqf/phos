@@ -3,7 +3,7 @@ from spectrum.vis import VisHub
 
 
 class Comparator(object):
-    def __init__(self, size=(1, 1), rrange=(), crange=(),
+    def __init__(self, size=(128, 96), rrange=(), crange=(),
                  stop=True, oname='', labels=None, **kwargs):
         super(Comparator, self).__init__()
         self.vi = VisHub(size, rrange, crange, stop, oname, labels, **kwargs)
