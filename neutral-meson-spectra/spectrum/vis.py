@@ -100,7 +100,7 @@ class MultipleVisualizer(object):
             loggs.update({"compare": self})
             return
 
-        canvas = su.gcanvas(x=self.size[0], y=self.size[1], resize=True)
+        canvas = su.gcanvas(size=self.size, resize=True)
         su.ticks(canvas)
 
         ycenter = 0.6
@@ -199,7 +199,7 @@ class Visualizer(MultipleVisualizer):
         self.ratio = ratio
 
     def _canvas(self, hists):
-        c1 = su.gcanvas(x=self.size[0], y=self.size[1], resize=True)
+        c1 = su.gcanvas(size=self.size, resize=True)
         c1.Clear()
         # print(br.chi2ndf(*hists))
 
