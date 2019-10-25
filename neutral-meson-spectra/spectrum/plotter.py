@@ -92,7 +92,8 @@ def separate(data):
 
 def plot(data, xtitle=None, ytitle=None,
          logx=True, logy=True, stop=True,
-         xlimits=None, ylimits=None
+         xlimits=None, ylimits=None,
+         csize=(128, 96),
          ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -111,7 +112,7 @@ def plot(data, xtitle=None, ytitle=None,
     box.GetXaxis().SetMoreLogLabels(True)
 
     graphed = graphs + list(map(br.hist2graph, hists))
-    with style(), su.canvas(stop=stop) as canvas:
+    with style(), su.canvas(stop=stop, size=csize) as canvas:
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
