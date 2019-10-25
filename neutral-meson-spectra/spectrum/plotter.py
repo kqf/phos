@@ -71,7 +71,8 @@ def legend(data):
     legend = ROOT.TLegend(0.6, 0.7, 0.8, 0.85)
     legend.SetBorderSize(0)
     for entry in data:
-        legend.AddEntry(entry, entry.GetTitle(), "p")
+        options = "f" if entry.GetFillStyle() > 1000 else "pl"
+        legend.AddEntry(entry, entry.GetTitle(), options)
     legend.SetFillColor(0)
     legend.SetTextColor(1)
     legend.SetTextSize(0.035)

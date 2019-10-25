@@ -26,6 +26,7 @@ def eta():
 def pionf():
     pionf = FVault().tf1("tcm", "#pi^{0} 13 TeV")
     pionf.SetTitle("#pi^{0}, TCM")
+    pionf.SetLineColor(ROOT.kBlack)
     return pionf
 
 
@@ -35,6 +36,8 @@ def eta_mtf(pionf):
                        p: pionf.Eval(x[0]) * p[0], 2, 20, 1)
     eta_mtf.SetParameter(0, 0.5)
     eta_mtf.SetTitle("m_{T} scaled")
+    eta_mtf.SetLineColor(ROOT.kBlack)
+    eta_mtf.SetLineStyle(7)
     return eta_mtf
 
 
@@ -46,7 +49,7 @@ def tcmratio(func, hist, title):
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 def test_spectrum(pion, eta, pionf, eta_mtf):
     eta.Fit(eta_mtf, "R")
     plot([
@@ -54,14 +57,21 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         eta,
         pionf,
         eta_mtf,
-    ])
+    ],
+        xlimits=(0.8, 20.0),
+        xtitle="",
+        csize=(128, 128),
+    )
 
     plot([
         tcmratio(pionf, pion, "TCM-fit"),
         tcmratio(eta_mtf, eta, "m_{T}-scaled TCM-fit"),
     ],
-        xlimits=(0.8, 20.0), ylimits=(0, 3.4), logy=False,
-        ytitle="Data / TCM fit"
+        xlimits=(0.8, 20.0),
+        ylimits=(0, 3.4),
+        logy=False,
+        ytitle="Data / TCM fit",
+        csize=(128, 128),
     )
 
 
