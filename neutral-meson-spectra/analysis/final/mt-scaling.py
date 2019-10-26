@@ -3,7 +3,6 @@ import pytest
 from spectrum.spectra import spectrum, ratio
 from spectrum.plotter import plot
 from spectrum.constants import mass
-import spectrum.sutils as su
 from vault.formulas import FVault
 import spectrum.broot as br
 
@@ -49,9 +48,8 @@ def tcmratio(func, hist, title):
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-# @pytest.mark.skip("")
 def test_spectrum(pion, eta, pionf, eta_mtf):
-    eta.Fit(eta_mtf, "R")
+    eta.Fit(eta_mtf, "R0Q")
     plot([
         pion,
         eta,
@@ -111,10 +109,11 @@ def test_ratio(asymptotic_eta_pion_ratio):
     upper.SetParameter(2, 14)
     plot([
         ratio(stop=False),
-        br.shaded_region("m_{T}-scaling", upper, lower),
+        br.shaded_region("m_{T} scaling", upper, lower),
     ],
         logy=False,
         logx=False,
+        csize=(128, 128),
         ytitle="#eta / #pi^{0}",
         xtitle="p_{T}, GeV/c"
     )

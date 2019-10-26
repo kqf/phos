@@ -1,9 +1,23 @@
 import ROOT
 import numpy as np
 from contextlib import contextmanager
-
 import spectrum.broot as br
-import spectrum.sutils as su
+
+
+@contextmanager
+def pcanvas(name="c1", size=(128, 128), scale=6):
+    canvas = ROOT.TCanvas(name, "canvas",
+                          int(size[0] * scale), int(size[1] * scale))
+    canvas.SetTickx()
+    canvas.SetTicky()
+    canvas.SetGridx()
+    canvas.SetGridy()
+
+    yield canvas
+    canvas.Update()
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    ROOT.gApplication.Run(True)
 
 
 @contextmanager
@@ -44,16 +58,16 @@ def style():
     style.SetTitleSize(0.04, "X")
     style.SetTitleSize(0.04, "Y")
     style.SetTitleSize(0.04, "Z")
-    style.SetTitleFont(62, "X")
-    style.SetTitleFont(62, "Y")
-    style.SetTitleFont(62, "Z")
+    style.SetTitleFont(42, "X")
+    style.SetTitleFont(42, "Y")
+    style.SetTitleFont(42, "Z")
     style.SetLabelFont(42, "X")
     style.SetLabelFont(42, "Y")
     style.SetLabelFont(42, "Z")
     style.SetStatFont(42)
 
-    style.SetTitleOffset(1.0, "X")
-    style.SetTitleOffset(1.0, "Y")
+    style.SetTitleOffset(1.2, "X")
+    style.SetTitleOffset(1.6, "Y")
 
     # style.SetFillColor(ROOT.kWhite)
     style.SetTitleFillColor(ROOT.kWhite)
@@ -105,21 +119,20 @@ def plot(data, xtitle=None, ytitle=None,
     x = xlimits or np.concatenate([br.bins(h).centers for h in histogrammed])
     y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
 
-    box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
-    box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
-    box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
-    box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
-    box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
-    box.GetXaxis().SetMoreLogLabels(True)
-
     graphed = graphs + list(map(br.hist2graph, hists))
-    with style(), su.canvas(stop=stop, size=csize) as canvas:
+    with style(), pcanvas(size=csize) as canvas:
+        box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
+        box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
+        box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
+        box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
+        box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
+        box.GetXaxis().SetMoreLogLabels(True)
+
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
         box.Draw()
-        su.ticks(canvas)
         for i, graph in enumerate(graphed):
             color = br.icolor(i)
             graph.SetMarkerStyle(20)
