@@ -58,7 +58,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
     ],
         xlimits=(0.8, 20.0),
         xtitle="",
-        csize=(128, 128),
+        csize=(128, 128 * 1.4),
         oname="results/mt_scaling/fits.pdf"
     )
 
@@ -70,7 +70,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         ylimits=(0, 3.4),
         logy=False,
         ytitle="Data / TCM fit",
-        csize=(128, 128),
+        csize=(128, 128 * 1.4),
         oname="results/mt_scaling/ratio.pdf"
     )
 
@@ -115,7 +115,7 @@ def test_ratio(asymptotic_eta_pion_ratio):
     ],
         logy=False,
         logx=False,
-        csize=(96 * 2, 96),
+        csize=(96 * 1.5, 96),
         ytitle="#eta / #pi^{0}",
         xtitle="p_{T}, GeV/c",
         oname="results/mt_scaling/eta_pion_ratio.pdf"
