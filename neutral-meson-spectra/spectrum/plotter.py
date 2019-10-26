@@ -2,10 +2,11 @@ import ROOT
 import numpy as np
 from contextlib import contextmanager
 import spectrum.broot as br
+import spectrum.sutils as su
 
 
 @contextmanager
-def pcanvas(name="c1", size=(128, 128), scale=6):
+def pcanvas(name="c1", size=(128, 128), scale=6, oname=None):
     canvas = ROOT.TCanvas(name, "canvas",
                           int(size[0] * scale), int(size[1] * scale))
     canvas.SetTickx()
@@ -15,6 +16,8 @@ def pcanvas(name="c1", size=(128, 128), scale=6):
 
     yield canvas
     canvas.Update()
+    if oname is not None:
+        canvas.SaveAs(su.ensure_directory(oname))
     canvas.Connect("Closed()", "TApplication",
                    ROOT.gApplication, "Terminate()")
     ROOT.gApplication.Run(True)
@@ -109,6 +112,7 @@ def plot(data, xtitle=None, ytitle=None,
          logx=True, logy=True, stop=True,
          xlimits=None, ylimits=None,
          csize=(128, 96),
+         oname=None
          ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -120,7 +124,7 @@ def plot(data, xtitle=None, ytitle=None,
     y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
 
     graphed = graphs + list(map(br.hist2graph, hists))
-    with style(), pcanvas(size=csize) as canvas:
+    with style(), pcanvas(size=csize, oname=oname) as canvas:
         box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
         box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
         box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())

@@ -12,13 +12,10 @@ def rfile(filename, mode="recreate"):
     fileio.Close()
 
 
-def prepare_directory(name):
-    path = "/".join(
-        name.split("/")[0:-1]  # remove filename
-    )
-
-    if not os.path.isdir(path):
-        os.makedirs(path, 0o755)
+def ensure_directory(name):
+    directory = os.path.dirname(name)
+    if not os.path.exists(directory):
+        os.makedirs(directory, 0o755)
     return name
 
 
@@ -59,7 +56,7 @@ def save_canvas(name, pdf=True, root=True):
     canvas.Update()
     name = clean_name(name)
     if pdf:
-        canvas.SaveAs(prepare_directory(outdir + name + ".pdf"))
+        canvas.SaveAs(ensure_directory(outdir + name + ".pdf"))
     if root:
         save_canvas_root(canvas, outdir, name)
 
