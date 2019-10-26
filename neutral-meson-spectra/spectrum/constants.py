@@ -15,3 +15,9 @@ def mass(particle):
 
 def cross_section():
     return 57.8 * 1e3
+
+
+def invariant_cross_section_code(scale="mb"):
+    return """
+    E #frac{{ d^{{3}}#sigma }}{{ dp^{{3}} }} ({} GeV^{{-2}} #it{{c^{{3}}}})
+    """.format(scale)

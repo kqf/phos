@@ -64,9 +64,9 @@ def style():
     style.SetTitleSize(0.04, "X")
     style.SetTitleSize(0.04, "Y")
     style.SetTitleSize(0.04, "Z")
-    style.SetTitleFont(42, "X")
-    style.SetTitleFont(42, "Y")
-    style.SetTitleFont(42, "Z")
+    style.SetTitleFont(62, "X")
+    style.SetTitleFont(62, "Y")
+    style.SetTitleFont(62, "Z")
     style.SetLabelFont(42, "X")
     style.SetLabelFont(42, "Y")
     style.SetLabelFont(42, "Z")
@@ -87,8 +87,8 @@ def style():
     # old_style.cd()
 
 
-def legend(data):
-    legend = ROOT.TLegend(0.6, 0.7, 0.8, 0.85)
+def legend(data, coordinates):
+    legend = ROOT.TLegend(*coordinates)
     legend.SetBorderSize(0)
     for entry in data:
         options = "f" if entry.GetFillStyle() > 1000 else "pl"
@@ -115,7 +115,8 @@ def plot(data, xtitle=None, ytitle=None,
          logx=True, logy=True, stop=True,
          xlimits=None, ylimits=None,
          csize=(128, 96),
-         oname=None
+         oname=None,
+         legend_pos=(0.6, 0.7, 0.8, 0.85)
          ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -154,5 +155,5 @@ def plot(data, xtitle=None, ytitle=None,
         for i, func in enumerate(functions):
             func.Draw("same " + func.GetDrawOption())
 
-        ll = legend(graphed + functions)
+        ll = legend(graphed + functions, legend_pos)
         ll.Draw("same")

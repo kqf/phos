@@ -3,6 +3,7 @@ import pytest
 from spectrum.spectra import spectrum, ratio
 from spectrum.plotter import plot
 from spectrum.constants import mass
+from spectrum.constants import invariant_cross_section_code
 from vault.formulas import FVault
 import spectrum.broot as br
 
@@ -57,7 +58,8 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         eta_mtf,
     ],
         xlimits=(0.8, 20.0),
-        xtitle="",
+        xtitle="p_{T} (GeV/#it{c})",
+        ytitle=invariant_cross_section_code(),
         csize=(128, 128 * 1.4),
         oname="results/mt_scaling/fits.pdf"
     )
@@ -70,7 +72,9 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         ylimits=(0, 3.4),
         logy=False,
         ytitle="Data / TCM fit",
+        xtitle="p_{T} (GeV/#it{c})",
         csize=(128, 128 * 1.4),
+        legend_pos=(0.45, 0.7, 0.75, 0.85),
         oname="results/mt_scaling/ratio.pdf"
     )
 
@@ -117,6 +121,6 @@ def test_ratio(asymptotic_eta_pion_ratio):
         logx=False,
         csize=(96 * 1.5, 96),
         ytitle="#eta / #pi^{0}",
-        xtitle="p_{T}, GeV/c",
+        xtitle="p_{T} (GeV/#it{c})",
         oname="results/mt_scaling/eta_pion_ratio.pdf"
     )
