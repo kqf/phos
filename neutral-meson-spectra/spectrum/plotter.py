@@ -97,6 +97,7 @@ def legend(data, coordinates, ltitle=None):
     for entry in data:
         options = "f" if entry.GetFillStyle() > 1000 else "pl"
         legend.AddEntry(entry, entry.GetTitle(), options)
+
     legend.SetFillColor(0)
     legend.SetTextColor(1)
     legend.SetTextSize(0.035)

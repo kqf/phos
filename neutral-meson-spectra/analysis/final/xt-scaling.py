@@ -159,26 +159,37 @@ def test_plot_xt_distribution(data, particle):
     )
 
 
+@pytest.fixture
+def xtrange():
+    return 2.9e-03, 1.05e-02
+
 # @pytest.mark.skip("")
+
+
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_n_scaling_scaling(data):
+def test_n_scaling_scaling(data, xtrange):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
     n_factors = [n for n in n_factors if n is not None]
+    fitfunc = ROOT.TF1("nxt", "[0]", *xtrange)
+    fitfunc.SetParameter(0, 5)
+    fitfunc.SetLineColor(ROOT.kBlack)
+    fitfunc.SetLineStyle(9)
+    fitfunc.SetTitle("n(x_{{T}}) = {}".format(fitfunc.GetParameter(0)))
     plot(
+        [fitfunc] +
         n_factors,
         logx=False,
         logy=False,
+        xlimits=(0.0001, 0.011),
+        ylimits=(0, 12),
+        ytitle="n(x_{T}, #sqrt{s_{1}}, #sqrt{s_{2}})",
         csize=(96 * 1.5, 96),
+        legend_pos=(0.65, 0.6, 0.88, 0.88),
     )
-
-
-@pytest.fixture
-def xtrange():
-    return 2.9e-03, 2.e-02
 
 
 @pytest.mark.skip("")
