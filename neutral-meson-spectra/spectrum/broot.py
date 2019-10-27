@@ -357,6 +357,12 @@ def scalewidth(hist):
     return hist
 
 
+def scale_clone(hist, scale=1.0):
+    scaled = hist.Clone()
+    scaled.Scale(scale)
+    return scaled
+
+
 def bincenterf(hist, isxaxis=True):
     axis = hist.GetXaxis() if isxaxis else hist.GetYaxis()
     return lambda x: axis.FindBin(x)
