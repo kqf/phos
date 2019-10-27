@@ -31,11 +31,11 @@ class HepdataInput(TransformerBase):
         filename = ".hepdata-cachedir/{}".format(item["file"])
         br.io.hepdata(item["hepdata"], filename, item["table"])
         hist = br.io.read(filename, item["table"], self.histname)
+        hist = br.scale_clone(hist, item["scale"])
         hist.logx = True
         hist.logy = True
         hist.label = item["title"]
         hist.func = item["func"]
-        hist.Scale(item["scale"])
         hist.energy = item["energy"]
         hist.title = item["title"]
         hist.SetTitle(item["title"])
@@ -70,11 +70,11 @@ class XTtransformer(TransformerBase):
 
         for i in br.hrange(x):
             xt.SetBinContent(i, x.GetBinContent(i))
-            xt.SetBinError(i, x.GetBinError(i) / 2)
+            xt.SetBinError(i, x.GetBinError(i))
 
         xt.logx = True
         xt.logy = True
-        xt.label = str(x.energy)
+        xt.label = x.label
         xt.energy = x.energy
         xt.fitfunc = x.fitfunc
         return xt
@@ -111,7 +111,10 @@ def xt_measured(particle):
 
 
 def n_factor(hist1, hist2):
-    nxt = hist1.Clone("n")
+    ignore = {(8000, 13000), (7000, 8000), (7000, 13000)}
+    if (hist1.energy, hist2.energy) in ignore:
+        return None
+    nxt = hist1.Clone()
     nxt2 = br.function2histogram(hist2.fitfunc, nxt, hist2.energy / 2)
     nxt.Divide(nxt2)
     contents, errors, centers = br.bins(nxt)
@@ -121,7 +124,8 @@ def n_factor(hist1, hist2):
         nxt.SetBinContent(i, c)
         nxt.SetBinError(i, e)
     nxt.Scale(1. / np.log(hist1.energy / hist2.energy))
-    nxt.label = "{} {}".format(hist1.label, hist2.label)
+    nxt.label = "n(x_{{T}}, {}, {})".format(hist1.label, hist2.label)
+    nxt.SetTitle(nxt.label.replace("pp", ""))
     return nxt
 
 
@@ -138,22 +142,24 @@ def data(particle):
     return spectra
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_xt_distribution(data):
+def test_plot_xt_distribution(data, particle):
     plot(
         data,
         ytitle=invariant_cross_section_code(),
-        csize=(96, 128)
+        csize=(96, 128),
+        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        legend_pos=(0.72, 0.7, 0.88, 0.88),
     )
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
@@ -161,7 +167,13 @@ def test_n_scaling_scaling(data):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
-    plot(n_factors, logx=True, logy=False)
+    n_factors = [n for n in n_factors if n is not None]
+    plot(
+        n_factors,
+        logx=False,
+        logy=False,
+        csize=(96 * 1.5, 96),
+    )
 
 
 @pytest.fixture

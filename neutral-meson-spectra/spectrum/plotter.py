@@ -87,9 +87,13 @@ def style():
     # old_style.cd()
 
 
-def legend(data, coordinates):
+def legend(data, coordinates, ltitle=None):
     legend = ROOT.TLegend(*coordinates)
     legend.SetBorderSize(0)
+
+    if ltitle is not None:
+        legend.AddEntry(0, ltitle, "")
+
     for entry in data:
         options = "f" if entry.GetFillStyle() > 1000 else "pl"
         legend.AddEntry(entry, entry.GetTitle(), options)
@@ -116,7 +120,8 @@ def plot(data, xtitle=None, ytitle=None,
          xlimits=None, ylimits=None,
          csize=(128, 96),
          oname=None,
-         legend_pos=(0.6, 0.7, 0.8, 0.85)
+         legend_pos=(0.6, 0.7, 0.8, 0.85),
+         ltitle=None
          ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -155,5 +160,5 @@ def plot(data, xtitle=None, ytitle=None,
         for i, func in enumerate(functions):
             func.Draw("same " + func.GetDrawOption())
 
-        ll = legend(graphed + functions, legend_pos)
+        ll = legend(graphed + functions, legend_pos, ltitle)
         ll.Draw("same")
