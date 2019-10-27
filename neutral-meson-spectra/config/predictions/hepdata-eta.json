@@ -1,5 +1,6 @@
 {
     "pp 7 TeV": {
+        "func": "#pi^{0} 7 TeV",
         "title": "pp 7 TeV",
         "file": "eta-7000-gev-pp.root",
         "hepdata": "ins1116147",
@@ -8,6 +9,7 @@
         "energy": 7000
     },
     "pp 8 TeV": {
+        "func": "#pi^{0} 8 TeV",
         "title": "pp 8 TeV",
         "file": "eta-8000-gev-pp.root",
         "hepdata": "ins1620477",

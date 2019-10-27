@@ -73,7 +73,7 @@ def style():
     style.SetStatFont(42)
 
     style.SetTitleOffset(1.2, "X")
-    style.SetTitleOffset(1.6, "Y")
+    style.SetTitleOffset(1.2, "Y")
 
     # style.SetFillColor(ROOT.kWhite)
     style.SetTitleFillColor(ROOT.kWhite)

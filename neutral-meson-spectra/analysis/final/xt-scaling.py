@@ -13,6 +13,7 @@ from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
 from spectrum.plotter import plot
+from spectrum.constants import invariant_cross_section_code
 from vault.formulas import FVault
 
 DATA_CONFIG = {
@@ -33,6 +34,7 @@ class HepdataInput(TransformerBase):
         hist.logx = True
         hist.logy = True
         hist.label = item["title"]
+        hist.func = item["func"]
         hist.Scale(item["scale"])
         hist.energy = item["energy"]
         hist.title = item["title"]
@@ -50,6 +52,7 @@ class DataExtractor(TransformerBase):
         hist.label = "13 TeV"
         hist.energy = 13000
         hist.title = "pp 13 TeV"
+        hist.func = "#pi^{0} 13 TeV"
         hist.SetTitle("pp 13 TeV")
         return hist
 
@@ -83,7 +86,7 @@ class DataFitter(TransformerBase):
             self.data = json.load(f)
 
     def transform(self, x, loggs):
-        tsallis = FVault().tf1("tsallis", x.title.replace("pp", "#pi^{0}"))
+        tsallis = FVault().tf1("tsallis", x.func)
         x.fitfunc = tsallis
         return x
 
@@ -135,7 +138,7 @@ def data(particle):
     return spectra
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
@@ -143,7 +146,11 @@ def data(particle):
     "#eta",
 ])
 def test_xt_distribution(data):
-    plot(data)
+    plot(
+        data,
+        ytitle=invariant_cross_section_code(),
+        csize=(96, 128)
+    )
 
 
 @pytest.mark.skip("")
@@ -182,7 +189,7 @@ def test_separate_fits(data, xtrange):
         plot([n, fitf], logy=False)
 
 
-# @pytest.mark.skip("")
+@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])

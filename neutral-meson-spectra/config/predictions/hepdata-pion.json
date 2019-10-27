@@ -1,5 +1,6 @@
 {
     "pp 7 TeV": {
+        "func": "#pi^{0} 7 TeV",
         "title": "pp 7 TeV",
         "file": "pion-7000-gev-pp.root",
         "hepdata": "ins1116147",
@@ -8,6 +9,7 @@
         "energy": 7000
     },
     "pp 0.9 TeV": {
+        "func": "#pi^{0} 0.9 TeV",
         "title": "pp 0.9 TeV",
         "file": "pion-0900-gev-pp.root",
         "hepdata": "ins1116147",
@@ -16,6 +18,7 @@
         "energy": 900
     },
     "pp 2.76 TeV": {
+        "func": "#pi^{0} 2.76 TeV",
         "title": "pp 2.76 TeV",
         "file": "pion-2760-gev-pp.root",
         "hepdata": "ins1296306",
@@ -24,6 +27,7 @@
         "energy": 2760
     },
     "pp 8 TeV": {
+        "func": "#pi^{0} 8 TeV",
         "title": "pp 8 TeV",
         "file": "pion-8000-gev-pp.root",
         "hepdata": "ins1620477",

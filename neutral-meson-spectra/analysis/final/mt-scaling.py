@@ -60,7 +60,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         xlimits=(0.8, 20.0),
         xtitle="p_{T} (GeV/#it{c})",
         ytitle=invariant_cross_section_code(),
-        csize=(128, 128 * 1.4),
+        csize=(96, 128),
         oname="results/mt_scaling/fits.pdf"
     )
 
@@ -73,7 +73,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         logy=False,
         ytitle="Data / TCM fit",
         xtitle="p_{T} (GeV/#it{c})",
-        csize=(128, 128 * 1.4),
+        csize=(96, 128),
         legend_pos=(0.45, 0.7, 0.75, 0.85),
         oname="results/mt_scaling/ratio.pdf"
     )
