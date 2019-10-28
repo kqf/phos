@@ -1,5 +1,5 @@
-period=LHC18
-outdir=results/data/$period/final_nonlinearity_4
+period=LHC16
+outdir=results/data/$period/extended_pt_range_1
 ofile=$period.root
 # alice_site=@ALICE::GSI::SE2
 # outdir=results/mc/pythia/final_nonlinearity_2

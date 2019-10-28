@@ -73,20 +73,21 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/
 # run=1028_20190923-1424_child_
 # run=1046_20191014-1054_child_
 # run=1047_20191014-1054_child_
-run=1048_20191014-1054_child_
+# run=1048_20191014-1054_child_
+run=1092_20191024-1523_child_
 
 # This scheme is valid for LHC16 data.
 # fill the map in the following way ([child number]=runlist number)
-# declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
-# declare -A names=([4]=LHC16g [5]=LHC16h [6]=LHC16i [7]=LHC16j [8]=LHC16k [9]=LHC16l [10]=LHC16o [11]=LHC16p)
+declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
+declare -A names=([4]=LHC16g [5]=LHC16h [6]=LHC16i [7]=LHC16j [8]=LHC16k [9]=LHC16l [10]=LHC16o [11]=LHC16p)
 
 # LHC17 data
 # declare -A children=([1]=5 [2]=5 [3]=5 [4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
 # declare -A names=([1]=LHC17c [2]=LHC17e [3]=LHC17f [4]=LHC17h [5]=LHC17i [6]=LHC17j [7]=LHC17k [8]=LHC17l [9]=LHC17m [10]=LHC17o [11]=LHC17r)
 
 # LHC18 data
-declare -A children=([1]=5 [2]=5 [3]=5 [4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [12]=5 [13]=5 [14]=5)
-declare -A names=([1]=LHC18b [2]=LHC18d [3]=LHC18e [4]=LHC18f [5]=LHC18g [6]=LHC18h [7]=LHC18i [8]=LHC18j [9]=LHC18k [10]=LHC18l [12]=LHC18n [13]=LHC18o [14]=LHC18p)
+# declare -A children=([1]=5 [2]=5 [3]=5 [4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [12]=5 [13]=5 [14]=5)
+# declare -A names=([1]=LHC18b [2]=LHC18d [3]=LHC18e [4]=LHC18f [5]=LHC18g [6]=LHC18h [7]=LHC18i [8]=LHC18j [9]=LHC18k [10]=LHC18l [12]=LHC18n [13]=LHC18o [14]=LHC18p)
 
 function download_file() {
 	alien_cp alien:/$1/AnalysisResults.root $2
