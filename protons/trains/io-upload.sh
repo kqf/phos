@@ -1,4 +1,4 @@
-period=LHC17
+period=LHC18
 outdir=results/data/$period/extended_pt_range_1
 ofile=$period.root
 # alice_site=@ALICE::GSI::SE2
