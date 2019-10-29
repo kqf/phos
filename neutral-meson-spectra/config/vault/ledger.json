@@ -38,8 +38,8 @@
         "staging LHC16": {
             "default_selection": "Phys",
             "description": "All corrections + tof study",
-            "file": "input-data/data/LHC16/final_nonlinearity_4/LHC16.root",
-            "hsum": "3ae6270a88b4aa3f34f5b592c3a2dae4cfcb0665a31b9cb488f574fbe0b24f48",
+            "file": "input-data/data/LHC16/final_nonlinearity_5/LHC16.root",
+            "hsum": "f4203b744a5067919cd2b2717a0999f1f91d1c487269e843c460ea4443b1e8be",
             "pt_range": [0, 20]
         },
         "latest LHC17": {
