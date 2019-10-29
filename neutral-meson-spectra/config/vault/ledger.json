@@ -66,8 +66,8 @@
         "staging LHC18": {
             "default_selection": "Phys",
             "description": "All corrections + tof study",
-            "file": "input-data/data/LHC18/final_nonlinearity_4/LHC18.root",
-            "hsum": "64a113f5ea63177e902fd89107ff6ea12a0a6a372b78d5e9965dde5ac8621a7f",
+            "file": "input-data/data/LHC18/final_nonlinearity_5/LHC18.root",
+            "hsum": "2baaea21a6d6c847922dff418ebf8d4d86113c57933c312c4f584017bc2691be",
             "pt_range": [0, 20]
         },
         "latest": {
