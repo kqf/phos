@@ -188,7 +188,7 @@
             "pt_range": [0.0, 8.0]
         }
     },
-    "single #pi^{0} nonlinearity scan": {
+    "single #pi^{0} nonlinearity scan stable": {
         "high": {
             "default_selection": "PhysNonlinScan",
             "description": "The same scan with significantly reduced scan range",
@@ -201,6 +201,22 @@
             "description": "The same scan with significantly reduced scan range",
             "file": "input-data/mc/single/pi0/final_nonlinearity_scan_4/LHC17j3b1.root",
             "hsum": "947f0754e2a8f151abc709974704434cf492c52cb224dd10b102bf94aae15ec8",
+            "pt_range": [0.0, 8.0]
+        }
+    },
+    "single #pi^{0} nonlinearity scan": {
+        "high": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Restrict the search range to be withing the errors",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_5/LHC17j3b2.root",
+            "hsum": "9087b051b865b3140fc4ca9b2b849873fba2a58aa0a4bd59eec173a2998d20d3",
+            "pt_range": [4.0, 20.0]
+        },
+        "low": {
+            "default_selection": "PhysNonlinScan",
+            "description": "Restrict the search range to be withing the errors",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_5/LHC17j3b1.root",
+            "hsum": "7c47a753051e32e0d192dd1af4aded1d0f0481ec3caf77a0614e76cfc292d4a3",
             "pt_range": [0.0, 8.0]
         }
     }
