@@ -23,14 +23,16 @@ DATA_CONFIG = {
 
 
 class HepdataInput(TransformerBase):
-    def __init__(self, table_name="Table 1", histname="Hist1D_y1", plot=False):
+    def __init__(self, table_name="Table 1",
+                 histname="Graph1D_y1", plot=False):
         super(HepdataInput, self).__init__(plot)
         self.histname = histname
 
     def transform(self, item, loggs):
         filename = ".hepdata-cachedir/{}".format(item["file"])
         br.io.hepdata(item["hepdata"], filename, item["table"])
-        hist = br.io.read(filename, item["table"], self.histname)
+        graph = br.io.read(filename, item["table"], self.histname)
+        hist = br.graph2hist(graph)
         hist = br.scale_clone(hist, item["scale"])
         hist.logx = True
         hist.logy = True
@@ -119,7 +121,7 @@ def n_factor(hist1, hist2):
     nxt.Divide(nxt2)
     contents, errors, centers = br.bins(nxt)
     logcontents = - np.log(contents)
-    logerrors = errors / contents
+    logerrors = 4 * errors / contents
     for (i, c, e) in zip(br.hrange(nxt), logcontents, logerrors):
         nxt.SetBinContent(i, c)
         nxt.SetBinError(i, e)
@@ -142,7 +144,7 @@ def data(particle):
     return spectra
 
 
-@pytest.mark.skip("")
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
@@ -214,12 +216,13 @@ def xtrange():
 
 @pytest.fixture
 def combined_n():
-    # chi^{2}/ndf = 0.597
-    # p0 = 5.481 #pm 0.083
-    return 5.481
+    # chi^{2}/ndf = 1.868
+    # p0 = 5.302
+    # Delta p0 = 0.044
+    return 5.302
 
 
-# @pytest.mark.skip("")
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
@@ -247,7 +250,7 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
     )
 
 
-# @pytest.mark.skip("Just for debug purposes")
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
@@ -257,7 +260,17 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
 def test_scaled_spectra(particle, data, combined_n):
     for h in data:
         h.Scale(h.energy ** combined_n)
-    plot(data)
+    title = "(#sqrt{{s}})^{{{n}}} (GeV)^{{{n}}} #times ".format(n=combined_n)
+    title += invariant_cross_section_code().strip()
+    plot(
+        data,
+        ytitle=title,
+        ylimits=(0.7e16, 1.5e25),
+        xlimits=(1e-4, 0.013),
+        csize=(96, 128),
+        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        legend_pos=(0.72, 0.7, 0.88, 0.88),
+    )
 
 
 @pytest.fixture
