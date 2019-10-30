@@ -159,40 +159,7 @@ def test_plot_xt_distribution(data, particle):
     )
 
 
-@pytest.fixture
-def xtrange():
-    return 2.9e-03, 1.05e-02
-
-# @pytest.mark.skip("")
-
-
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-@pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_n_scaling_scaling(data, xtrange):
-    spectra = sorted(data, key=lambda x: x.energy)
-    n_factors = [n_factor(*pair)
-                 for pair in itertools.combinations(spectra, 2)]
-    n_factors = [n for n in n_factors if n is not None]
-    fitfunc = ROOT.TF1("nxt", "[0]", *xtrange)
-    fitfunc.SetParameter(0, 5)
-    fitfunc.SetLineColor(ROOT.kBlack)
-    fitfunc.SetLineStyle(9)
-    fitfunc.SetTitle("n(x_{{T}}) = {}".format(fitfunc.GetParameter(0)))
-    plot(
-        [fitfunc] +
-        n_factors,
-        logx=False,
-        logy=False,
-        xlimits=(0.0001, 0.011),
-        ylimits=(0, 12),
-        ytitle="n(x_{T}, #sqrt{s_{1}}, #sqrt{s_{2}})",
-        csize=(96 * 1.5, 96),
-        legend_pos=(0.65, 0.6, 0.88, 0.88),
-    )
-
-
-@pytest.mark.skip("")
+@pytest.mark.skip("just for debug purposes")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
@@ -200,6 +167,7 @@ def test_separate_fits(data, xtrange):
     spectra = sorted(data, key=lambda x: x.energy)
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(spectra, 2)]
+    n_factors = [n for n in n_factors if n is not None]
 
     for n in n_factors:
         fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
@@ -212,13 +180,13 @@ def test_separate_fits(data, xtrange):
         plot([n, fitf], logy=False)
 
 
-@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
 def test_combined_fits(data, xtrange):
     n_factors = [n_factor(*pair)
                  for pair in itertools.combinations(data, 2)]
+    n_factors = [n for n in n_factors if n is not None]
 
     multigraph = ROOT.TMultiGraph()
     for i, n in enumerate(n_factors):
@@ -234,17 +202,52 @@ def test_combined_fits(data, xtrange):
     fitf.SetParameter(0, 5.0)
     fitf.SetLineStyle(7)
     fitf.SetLineColor(ROOT.kBlack)
-    multigraph.Fit(fitf, "FQ", "", *xtrange)
-    # br.print_fit_results(fitf)
+    multigraph.Fit(fitf, "RF", "", *xtrange)
+    br.print_fit_results(fitf)
     plot(n_factors + [fitf], logy=False)
 
 
 @pytest.fixture
+def xtrange():
+    return 2.9e-03, 1.05e-02
+
+
+@pytest.fixture
 def combined_n():
-    return 5.558
+    # chi^{2}/ndf = 0.597
+    # p0 = 5.481 #pm 0.083
+    return 5.481
 
 
-@pytest.mark.skip("")
+# @pytest.mark.skip("")
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", ["#pi^{0}"])
+def test_n_scaling_scaling(data, xtrange, combined_n):
+    spectra = sorted(data, key=lambda x: x.energy)
+    n_factors = [n_factor(*pair)
+                 for pair in itertools.combinations(spectra, 2)]
+    n_factors = [n for n in n_factors if n is not None]
+    fitfunc = ROOT.TF1("nxt", "[0]", *xtrange)
+    fitfunc.SetParameter(0, combined_n)
+    fitfunc.SetLineColor(ROOT.kBlack)
+    fitfunc.SetLineStyle(9)
+    fitfunc.SetTitle("const = {}".format(combined_n))
+    plot(
+        [fitfunc] +
+        n_factors,
+        logx=False,
+        logy=False,
+        xlimits=(0.0001, 0.011),
+        ylimits=(0, 12),
+        ytitle="n(x_{T}, #sqrt{s_{1}}, #sqrt{s_{2}})",
+        xtitle="x_{T}",
+        csize=(96 * 1.5, 96),
+        legend_pos=(0.65, 0.6, 0.88, 0.88),
+    )
+
+
+# @pytest.mark.skip("Just for debug purposes")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
