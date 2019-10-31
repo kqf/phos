@@ -6,6 +6,7 @@ import numpy as np
 import itertools
 
 import spectrum.broot as br
+import spectrum.sutils as su
 
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
@@ -152,12 +153,16 @@ def data(particle):
     "#eta",
 ])
 def test_plot_xt_distribution(data, particle):
+    pattern = "results/xt_scaling/xt_cross_section_{}.pdf"
     plot(
         data,
         ytitle=invariant_cross_section_code(),
         csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),
         legend_pos=(0.72, 0.7, 0.88, 0.88),
+        yoffset=1.4,
+        more_logs=False,
+        oname=pattern.format(su.spell(particle)),
     )
 
 
@@ -247,6 +252,7 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
         xtitle="x_{T}",
         csize=(96 * 1.5, 96),
         legend_pos=(0.65, 0.6, 0.88, 0.88),
+        oname="results/xt_scaling/n_factor_fit.pdf",
     )
 
 
@@ -262,14 +268,18 @@ def test_scaled_spectra(particle, data, combined_n):
         h.Scale(h.energy ** combined_n)
     title = "(#sqrt{{s}})^{{{n}}} (GeV)^{{{n}}} #times ".format(n=combined_n)
     title += invariant_cross_section_code().strip()
+    pattern = "results/xt_scaling/xt_normalized_cross_section_{}.pdf"
     plot(
         data,
         ytitle=title,
-        ylimits=(0.7e16, 1.5e25),
+        ylimits=(0.1e16, 0.5e26),
         xlimits=(1e-4, 0.013),
         csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),
         legend_pos=(0.72, 0.7, 0.88, 0.88),
+        yoffset=1.7,
+        more_logs=False,
+        oname=pattern.format(su.spell(particle)),
     )
 
 

@@ -122,7 +122,9 @@ def plot(data, xtitle=None, ytitle=None,
          csize=(128, 96),
          oname=None,
          legend_pos=(0.6, 0.7, 0.8, 0.85),
-         ltitle=None
+         ltitle=None,
+         more_logs=True,
+         yoffset=1.2
          ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -140,7 +142,8 @@ def plot(data, xtitle=None, ytitle=None,
         box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
         box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
         box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
-        box.GetXaxis().SetMoreLogLabels(True)
+        box.GetXaxis().SetMoreLogLabels(more_logs)
+        box.GetYaxis().SetTitleOffset(yoffset)
 
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
