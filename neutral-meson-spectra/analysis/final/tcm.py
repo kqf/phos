@@ -96,6 +96,7 @@ def test_tcm_fit(particle, tcm, tsallis, oname):
     plot(
         [cs, tcm, tsallis],
         ytitle=invariant_cross_section_code(),
+        xtitle="p_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),
         csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),
