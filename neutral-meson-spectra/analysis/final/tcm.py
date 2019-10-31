@@ -9,9 +9,50 @@ from spectrum.constants import invariant_cross_section_code
 from vault.formulas import FVault
 
 
+def report(func, particle):
+    particle = su.spell(particle)
+    pattern = r"\def \{particle}{func}{par}{err} {{{val:.3g}}}"
+    for i in range(func.GetNpar()):
+        print(pattern.format(
+            particle=particle,
+            func=func.GetName(),
+            par=func.GetParName(i),
+            val=func.GetParameter(i),
+            err=""
+        ))
+        print(pattern.format(
+            particle=particle,
+            func=func.GetName(),
+            par=func.GetParName(i),
+            val=func.GetParError(i),
+            err="Error"
+        ))
+
+    print(r"\def \{particle}{func}Chi {{{val:.3g}}}".format(
+        particle=particle,
+        func=func.GetName(),
+        val=func.GetChisquare() / func.GetNDF()
+    ))
+    xmin, xmax = ROOT.Double(0), ROOT.Double(0)
+    func.GetRange(xmin, xmax)
+
+    print(r"\def \{particle}{func}MinPt {{{val:.3g}}}".format(
+        particle=particle,
+        func=func.GetName(),
+        val=xmin
+    ))
+
+    print(r"\def \{particle}{func}MaxPt {{{val:.3g}}}".format(
+        particle=particle,
+        func=func.GetName(),
+        val=xmax
+    ))
+
+
 @pytest.fixture
 def tsallis(particle):
     tsallis = FVault().tf1("tsallis")
+    tsallis.SetName("Tsallis")
     tsallis.SetTitle("Tsallis fit")
     # tsallis.SetLineColor(ROOT.kBlue + 1)
     tsallis.SetNpx(1000)
@@ -44,6 +85,7 @@ def tsallis(particle):
 @pytest.fixture
 def tcm(particle):
     tcm = FVault().tf1("tcm", "{} 13 TeV".format(particle))
+    tcm.SetName("TCM")
     tcm.SetTitle("TCM fit")
     tcm.SetNpx(100)
     tcm.SetLineColor(ROOT.kBlack)
@@ -91,8 +133,11 @@ def oname(particle):
 def test_tcm_fit(particle, tcm, tsallis, oname):
     cs = spectrum(particle)
     cs.SetTitle("Data")
-    cs.Fit(tcm, "R")
-    cs.Fit(tsallis, "R")
+    cs.Fit(tcm, "RQ")
+    cs.Fit(tsallis, "RQ")
+    print()
+    report(tcm, particle)
+    report(tsallis, particle)
     plot(
         [cs, tcm, tsallis],
         ytitle=invariant_cross_section_code(),
