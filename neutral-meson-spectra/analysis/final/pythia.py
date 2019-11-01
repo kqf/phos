@@ -1,7 +1,6 @@
 import pytest
 
 from spectrum.spectra import spectrum
-from spectrum.spectra import ratio as sratio
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
 from spectrum.comparator import Comparator
@@ -28,14 +27,13 @@ def ratio(hist, particle):
     return br.ratio(hist, param)
 
 
-@pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta"
 ])
-def test_simple(data, particle):
+def test_compare_with_pythia(data, particle):
     cyield = spectrum(particle)
     cyield.logy = True
     cyield.logx = True
@@ -59,29 +57,6 @@ def test_simple(data, particle):
     for rr in ratios:
         rr.GetYaxis().SetTitle("#frac{Data, pythia}{TCM fit}")
         rr.GetYaxis().SetRangeUser(0, 10)
+        rr.logx = False
+        rr.logy = False
     Comparator().compare(ratios)
-
-
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_ratio(data):
-    rdata = sratio()
-    rdata.logy = True
-    rdata.logx = True
-    rdata.label = "data, pp #sqrt{s} = 13 TeV"
-    rdata.SetTitle("")
-
-    with open_loggs() as loggs:
-        mc = br.ratio(
-            SingleHistInput(HISTNAMES["#eta"]).transform(data, loggs),
-            SingleHistInput(HISTNAMES["#pi^{0}"]).transform(data, loggs)
-        )
-        mc.label = "pythia6"
-        mc.SetTitle("")
-
-    histograms = [rdata] + [mc]
-    for rr in histograms:
-        rr.GetYaxis().SetTitle("#eta/#pi^{0}")
-        rr.GetXaxis().SetTitle("p_{T}")
-        # rr.GetYaxis().SetRangeUser(0, 10)
-    Comparator().compare(histograms)
