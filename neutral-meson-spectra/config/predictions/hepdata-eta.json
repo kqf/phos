@@ -1,7 +1,7 @@
 {
     "pp 7 TeV": {
         "func": "#pi^{0} 7 TeV",
-        "title": "pp 7 TeV",
+        "title": "pp, #sqrt{s} = 7 TeV",
         "file": "eta-7000-gev-pp.root",
         "hepdata": "ins1116147",
         "scale": 1,
@@ -10,7 +10,7 @@
     },
     "pp 8 TeV": {
         "func": "#pi^{0} 8 TeV",
-        "title": "pp 8 TeV",
+        "title": "pp, #sqrt{s} = 8 TeV",
         "file": "eta-8000-gev-pp.root",
         "hepdata": "ins1620477",
         "scale": 1e-6,

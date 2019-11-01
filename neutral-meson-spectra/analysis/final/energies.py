@@ -4,10 +4,17 @@ import six
 
 import spectrum.sutils as su
 import spectrum.broot as br
-from spectrum.pipeline import TransformerBase, Pipeline, FunctionTransformer
-from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import TransformerBase, Pipeline
+from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
+from spectrum.plotter import plot
+from spectrum.constants import invariant_cross_section_code
+
+DATA_CONFIG = {
+    "#pi^{0}": "config/predictions/hepdata-pion.json",
+    "#eta": "config/predictions/hepdata-eta.json",
+}
 
 
 class HepdataInput(TransformerBase):
@@ -19,12 +26,8 @@ class HepdataInput(TransformerBase):
         filename = ".hepdata-cachedir/{}".format(item["file"])
         br.io.hepdata(item["hepdata"], filename, item["table"])
         hist = br.io.read(filename, item["table"], self.histname)
-        hist.logy = True
-        hist.logx = False
-        hist.GetXaxis().SetTitle("p_{T}, GeV/c")
-        ytitle = "#frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}".format()
-        hist.GetYaxis().SetTitle(ytitle)
-        hist.SetTitle("")
+        hist.GetXaxis().SetTitle("p_{T} (GeV/c)")
+        hist.SetTitle(item["title"])
         hist.Scale(item["scale"])
         hist.energy = item["energy"]
         return hist
@@ -34,7 +37,6 @@ class ErrorsTransformer(TransformerBase):
     def transform(self, data, loggs):
         for i in br.hrange(data):
             data.SetBinError(i, 1e-29)
-        # print(br.edges(data))
         return data
 
 
@@ -47,10 +49,21 @@ def hepdata():
 
 @pytest.fixture
 def data(particle):
-    filename = "config/predictions/hepdata-{}.json".format(su.spell(particle))
-    with open(filename) as f:
+    with open(DATA_CONFIG[particle]) as f:
         data = json.load(f)
-    return data
+    labels, links = zip(*six.iteritems(data))
+    steps = [(l, hepdata()) for l in labels]
+    with open_loggs() as loggs:
+        histograms = ParallelPipeline(steps).transform(links, loggs)
+    spectra = sorted(histograms, key=lambda x: x.energy)
+    measured = spectrum(particle)
+    measured.SetTitle("pp, #sqrt{s} = 13 TeV")
+    spectra.append(measured)
+
+    for i, cs in enumerate(spectra):
+        cs.Scale(10 ** i)
+        cs.SetTitle(cs.GetTitle() + " #times 10^{{{}}}".format(i))
+    return spectra
 
 
 @pytest.mark.onlylocal
@@ -60,11 +73,16 @@ def data(particle):
     "#eta",
 ])
 def test_downloads_from_hepdata(particle, data):
-    labels, links = zip(*six.iteritems(data))
-    steps = [(l, hepdata()) for l in labels]
-    pion = spectrum(particle)
-    steps.append(("pp 13 TeV", FunctionTransformer(lambda x, loggs: pion)))
-    links = list(links)
-    links.append(None)
-    with open_loggs() as loggs:
-        ComparePipeline(steps, plot=True).transform(links, loggs)
+    plot(
+        data,
+        ytitle=invariant_cross_section_code(),
+        xtitle="p_{T} (GeV/#it{c})",
+        # xlimits=(0.7, 22),
+        csize=(96, 128),
+        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        # legend_pos=(0.65, 0.7, 0.8, 0.88),
+        legend_pos=(0.55, 0.72, 0.8, 0.88),
+        yoffset=1.4,
+        more_logs=False,
+        oname="results/energies/{}.pdf".format(su.spell(particle))
+    )
