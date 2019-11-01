@@ -4,7 +4,7 @@ import six
 
 import spectrum.sutils as su
 import spectrum.broot as br
-from spectrum.pipeline import TransformerBase, Pipeline
+from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
@@ -18,14 +18,16 @@ DATA_CONFIG = {
 
 
 class HepdataInput(TransformerBase):
-    def __init__(self, table_name="Table 1", histname="Hist1D_y1", plot=False):
+    def __init__(self, table_name="Table 1",
+                 histname="Graph1D_y1", plot=False):
         super(HepdataInput, self).__init__(plot)
         self.histname = histname
 
     def transform(self, item, loggs):
         filename = ".hepdata-cachedir/{}".format(item["file"])
         br.io.hepdata(item["hepdata"], filename, item["table"])
-        hist = br.io.read(filename, item["table"], self.histname)
+        graph = br.io.read(filename, item["table"], self.histname)
+        hist = br.graph2hist(graph)
         hist.GetXaxis().SetTitle("p_{T} (GeV/c)")
         hist.SetTitle(item["title"])
         hist.Scale(item["scale"])
@@ -33,26 +35,12 @@ class HepdataInput(TransformerBase):
         return hist
 
 
-class ErrorsTransformer(TransformerBase):
-    def transform(self, data, loggs):
-        for i in br.hrange(data):
-            data.SetBinError(i, 1e-29)
-        return data
-
-
-def hepdata():
-    return Pipeline([
-        ("raw", HepdataInput()),
-        ("errors", ErrorsTransformer()),
-    ])
-
-
 @pytest.fixture
 def data(particle):
     with open(DATA_CONFIG[particle]) as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
-    steps = [(l, hepdata()) for l in labels]
+    steps = [(l, HepdataInput()) for l in labels]
     with open_loggs() as loggs:
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
@@ -81,7 +69,7 @@ def test_downloads_from_hepdata(particle, data):
         csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),
         # legend_pos=(0.65, 0.7, 0.8, 0.88),
-        legend_pos=(0.55, 0.72, 0.8, 0.88),
+        legend_pos=(0.52, 0.72, 0.78, 0.88),
         yoffset=1.4,
         more_logs=False,
         oname="results/energies/{}.pdf".format(su.spell(particle))
