@@ -3,10 +3,9 @@ import pytest
 from spectrum.spectra import spectrum
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
-from spectrum.comparator import Comparator
+from spectrum.plotter import plot
 import spectrum.broot as br
 from vault.datavault import DataVault
-from vault.formulas import FVault
 
 HISTNAMES = {
     "#pi^{0}": "hxsPi0PtInv",
@@ -15,14 +14,17 @@ HISTNAMES = {
 
 
 @pytest.fixture
-def data():
-    return DataVault().input("theory", "pythia6")
+def pythia6(particle):
+    data = DataVault().input("theory", "pythia6")
+    with open_loggs() as loggs:
+        mc = SingleHistInput(HISTNAMES[particle]).transform(data, loggs)
+        mc.Scale(1e-6)
+        mc.SetTitle("PYTHIA 6")
+    return mc
 
 
-def ratio(hist, particle):
-    param = br.function2histogram(
-        FVault().tf1("tcm", "{} 13 TeV".format(particle)),
-        hist)
+def ratio(hist, func):
+    param = br.function2histogram(func, hist)
     return br.ratio(hist, param)
 
 
@@ -32,22 +34,8 @@ def ratio(hist, particle):
     "#pi^{0}",
     "#eta"
 ])
-def test_compare_with_pythia(data, particle, tcm):
-    cyield = spectrum(particle)
-    cyield.SetTitle("Data")
-
-    with open_loggs() as loggs:
-        mc = SingleHistInput(HISTNAMES[particle]).transform(data, loggs)
-        mc.Scale(1e-6)
-        mc.label = "pythia6"
-        mc.SetTitle("")
-
-    histograms = [cyield] + [mc]
-    Comparator().compare(histograms)
-    ratios = [ratio(h, particle) for h in histograms]
-    for rr in ratios:
-        rr.GetYaxis().SetTitle("#frac{Data, pythia}{TCM fit}")
-        rr.GetYaxis().SetRangeUser(0, 10)
-        rr.logx = False
-        rr.logy = False
-    Comparator().compare(ratios)
+def test_compare_with_pythia(pythia6, particle, tcm):
+    cs = spectrum(particle)
+    cs.SetTitle("Data")
+    cs.Fit(tcm, "RQ")
+    plot([cs, pythia6, tcm])
