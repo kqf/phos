@@ -77,4 +77,4 @@ def tcm(particle):
 
 @pytest.fixture
 def oname(particle):
-    return "results/{{}}/{{}}_{}.pdf".format(su.spell(particle))
+    return "results/{{}}{}.pdf".format(su.spell(particle))
