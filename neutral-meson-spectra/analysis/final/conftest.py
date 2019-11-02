@@ -2,7 +2,11 @@ import ROOT
 import pytest
 
 import spectrum.sutils as su
+import spectrum.broot as br
 from spectrum.constants import mass
+from spectrum.output import open_loggs
+from spectrum.input import SingleHistInput
+from vault.datavault import DataVault
 from vault.formulas import FVault
 
 
@@ -78,3 +82,28 @@ def tcm(particle):
 @pytest.fixture
 def oname(particle):
     return "results/{{}}{}.pdf".format(su.spell(particle))
+
+
+def read_pythia6(particle):
+    histnames = {
+        "#pi^{0}": "hxsPi0PtInv",
+        "#eta": "hxsEtaPtInv"
+    }
+    data = DataVault().input("theory", "pythia6")
+    with open_loggs() as loggs:
+        mc = SingleHistInput(histnames[particle]).transform(data, loggs)
+        mc.Scale(1e-6)
+        mc.SetTitle("PYTHIA 6")
+    return mc
+
+
+@pytest.fixture
+def pythia6(particle):
+    return read_pythia6(particle)
+
+
+@pytest.fixture
+def pythia6_eta_pion_ratio():
+    mc = br.ratio(read_pythia6("#eta"), read_pythia6("#pi^{0}"))
+    mc.SetTitle("PYTHIA 6")
+    return mc

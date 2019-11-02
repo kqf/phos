@@ -1,27 +1,9 @@
 import pytest
 
 from spectrum.spectra import spectrum
-from spectrum.output import open_loggs
-from spectrum.input import SingleHistInput
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 import spectrum.broot as br
-from vault.datavault import DataVault
-
-HISTNAMES = {
-    "#pi^{0}": "hxsPi0PtInv",
-    "#eta": "hxsEtaPtInv"
-}
-
-
-@pytest.fixture
-def pythia6(particle):
-    data = DataVault().input("theory", "pythia6")
-    with open_loggs() as loggs:
-        mc = SingleHistInput(HISTNAMES[particle]).transform(data, loggs)
-        mc.Scale(1e-6)
-        mc.SetTitle("PYTHIA 6")
-    return mc
 
 
 def ratio(hist, func):
