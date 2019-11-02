@@ -7,7 +7,6 @@ from spectrum.comparator import Comparator
 import spectrum.broot as br
 from vault.datavault import DataVault
 from vault.formulas import FVault
-import spectrum.sutils as su
 
 HISTNAMES = {
     "#pi^{0}": "hxsPi0PtInv",
@@ -33,23 +32,15 @@ def ratio(hist, particle):
     "#pi^{0}",
     "#eta"
 ])
-def test_compare_with_pythia(data, particle):
+def test_compare_with_pythia(data, particle, tcm):
     cyield = spectrum(particle)
-    cyield.logy = True
-    cyield.logx = True
-    cyield.label = "data, pp #sqrt{s} = 13 TeV"
-    cyield.SetTitle("")
+    cyield.SetTitle("Data")
 
     with open_loggs() as loggs:
         mc = SingleHistInput(HISTNAMES[particle]).transform(data, loggs)
         mc.Scale(1e-6)
         mc.label = "pythia6"
         mc.SetTitle("")
-
-    with su.canvas():
-        cyield.Draw()
-        func = FVault().tf1("tcm", "{} 13 TeV".format(particle))
-        func.Draw("same")
 
     histograms = [cyield] + [mc]
     Comparator().compare(histograms)
