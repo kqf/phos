@@ -4,7 +4,7 @@ from spectrum.spectra import spectrum
 from spectrum.output import open_loggs
 from spectrum.pipeline import ParallelPipeline
 from spectrum.input import SingleHistInput
-from spectrum.comparator import Comparator
+from spectrum.plotter import plot
 import spectrum.broot as br
 from vault.datavault import DataVault
 from vault.formulas import FVault
@@ -12,32 +12,38 @@ from vault.formulas import FVault
 
 @pytest.fixture
 def data():
-    return (
+    data = (
         DataVault().input("theory", "incnlo"),
         DataVault().input("theory", "7 TeV")
     )
+    with open_loggs() as loggs:
+        predictions = ParallelPipeline([
+            ("mu1", SingleHistInput("#sigma_{total}")),
+            ("mu2", SingleHistInput("#sigma_{total}")),
+        ]).transform(data, loggs=loggs)
+    return predictions
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_simple(data):
     pion = spectrum("#pi^{0}")
+    pion.SetTitle("Data")
 
-    with open_loggs() as loggs:
-        predictions = ParallelPipeline([
-            ("mu1", SingleHistInput("#sigma_{total}")),
-            ("mu2", SingleHistInput("#sigma_{total}")),
-        ]).transform(data, loggs=loggs)
-
-    histograms = [pion] + list(predictions)
-
+    histograms = [pion] + list(data)
     param = br.function2histogram(FVault().tf1("tcm", "#pi^{0} 13 TeV"), pion)
     ratios = [br.ratio(h, param) for h in histograms]
-    labels = ["data", "NLO pQCD #mu = 1.0 p_{T}", "NLO pQCD #mu = 0.5 p_{T}"]
-    for rr, label in zip(ratios, labels):
-        rr.label = label
-        rr.GetYaxis().SetTitle("#frac{data, predictions}{TCM fit}")
-        rr.SetTitle("")
-
-    for p in predictions:
-        Comparator().compare(ratios)
+    plot(
+        ratios,
+        ytitle="#frac{Data, NLO}{TCM fit}",
+        xtitle="p_{T} (GeV/#it{c})",
+        logy=False,
+        logx=True,
+        ylimits=(0, 10.),
+        csize=(128, 96),
+        # legend_pos=(0.65, 0.7, 0.8, 0.88),
+        legend_pos=(0.52, 0.72, 0.78, 0.88),
+        yoffset=1.4,
+        more_logs=True,
+        oname="results/pQCD/pion.pdf"
+    )
