@@ -717,3 +717,21 @@ def shaded_region(title, lower, upper,
     graph.SetFillColorAlpha(fill_color, 0.36)
     graph.GetDrawOption = lambda: option
     return graph
+
+
+def shaded_region_hist(title, lower, upper,
+                       fill_color=16, fill_style=1001,
+                       option="f"):
+    y_upper, _, x_upper = bins(upper)
+    y_lower, _, x_lower = bins(lower)
+    x_upper = x_upper[::-1]
+    y_upper = y_upper[::-1]
+    x = np.concatenate([x_lower, x_upper])
+    y = np.concatenate([y_lower, y_upper])
+    graph = ROOT.TGraph(len(x), x, y)
+    graph.SetTitle(title)
+    graph.SetFillStyle(fill_style)
+    graph.SetFillColor(fill_color)
+    graph.SetFillColorAlpha(fill_color, 0.36)
+    graph.GetDrawOption = lambda: option
+    return graph

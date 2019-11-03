@@ -26,22 +26,21 @@ def data():
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_simple(data):
+def test_pion_spectrum(data):
     pion = spectrum("#pi^{0}")
     pion.SetTitle("Data")
-
     histograms = [pion] + list(data)
     param = br.function2histogram(FVault().tf1("tcm", "#pi^{0} 13 TeV"), pion)
     ratios = [br.ratio(h, param) for h in histograms]
+    confidence = br.shaded_region_hist("pQCD", *ratios[1:])
     plot(
-        ratios,
+        [ratios[0], confidence],
         ytitle="#frac{Data, NLO}{TCM fit}",
         xtitle="p_{T} (GeV/#it{c})",
         logy=False,
         logx=True,
         ylimits=(0, 10.),
         csize=(128, 96),
-        # legend_pos=(0.65, 0.7, 0.8, 0.88),
         legend_pos=(0.52, 0.72, 0.78, 0.88),
         yoffset=1.4,
         more_logs=True,
