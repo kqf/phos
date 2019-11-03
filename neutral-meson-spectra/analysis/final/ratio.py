@@ -8,20 +8,28 @@ from spectrum.plotter import plot
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_ratio(pythia6_eta_pion_ratio):
+def test_ratio(pythia6_eta_pion_ratio, ptmin=5.5, ptmax=22):
     data = ratio()
     data.SetTitle("Data")
 
-    constant = ROOT.TF1("constant", "[0]", 5.5, 22)
-    constant.SetParameter(0, 0.5)
-    data.Fit(constant, "RQ")
-    constant.SetRange(2, 22)
-    constant.SetLineColor(ROOT.kBlack)
-    constant.SetLineStyle(7)
-    constant.SetTitle("Constant fit")
+    ff = ROOT.TF1("ff", "[0]", ptmin, ptmax)
+    ff.SetParameter(0, 0.5)
+    data.Fit(ff, "RQ")
+    print()
+    print(r"\def etaPionRatioValue {{{:.3g}}}".format(ff.GetParameter(0)))
+    print(r"\def etaPionRatioValueError {{{:.3g}}}".format(ff.GetParError(0)))
+    print(r"\def minEtaPionRatioFit {{{:.3g}}}".format(ptmin))
+    print(r"\def maxEtaPionRatioFit {{{:.3g}}}".format(ptmax))
+    print(r"\def etaPionRatioChi {{{:.3g}}}".format(
+        ff.GetChisquare() / ff.GetNDF()
+    ))
+    ff.SetRange(2, 22)
+    ff.SetLineColor(ROOT.kBlack)
+    ff.SetLineStyle(7)
+    ff.SetTitle("Constant fit")
 
     plot(
-        [data, pythia6_eta_pion_ratio, constant],
+        [data, pythia6_eta_pion_ratio, ff],
         ytitle="#eta / #pi^{0}",
         xtitle="p_{T} (GeV/#it{c})",
         logy=False,
