@@ -42,7 +42,7 @@
 14.0D0         the 32 pT point
 17.5D0         the 33 pT point
 1              choice of the scale:1 pT*c 
-.5D0           value of c for initial state factorisation scale
-.5D0           value of c for renormalisation scale
-.5D0           value of c for final state factorisation scale
+1.D0           value of c for initial state factorisation scale
+1.D0           value of c for renormalisation scale
+1.D0           value of c for final state factorisation scale
 'lhc'          flag to choose which experiment you want

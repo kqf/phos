@@ -25,27 +25,24 @@
 0.12D0         value of ymax
 -0.12D0        value of ymin
 .false.        .false., cross-section at (ymax-ymin)/2.;.true. integrated in y
-18             nb of pT points
-0.9D0          the 1 pT point
-1.1D0          the 2 pT point
-1.3D0          the 3 pT point
-1.5D0          the 4 pT point
-1.7D0          the 5 pT point
-1.9D0          the 6 pT point
-2.1D0          the 7 pT point
-2.3D0          the 8 pT point
-2.5D0          the 9 pT point
-2.7D0          the 10 pT point
-2.9D0          the 11 pT point
-3.1D0          the 12 pT point
-3.3D0          the 13 pT point
-3.5D0          the 14 pT point
-3.7D0          the 15 pT point
-3.9D0          the 16 pT point
-4.25D0         the 17 pT point
-4.75D0         the 18 pT point
+15             nb of pT points
+5.25D0         the 19 pT point
+5.75D0         the 20 pT point
+6.25D0         the 21 pT point
+6.75D0         the 22 pT point
+7.25D0         the 23 pT point
+7.75D0         the 24 pT point
+8.25D0         the 25 pT point
+8.75D0         the 26 pT point
+9.25D0         the 27 pT point
+9.75D0         the 28 pT point
+10.5D0         the 29 pT point
+11.5D0         the 30 pT point
+12.5D0         the 31 pT point
+14.0D0         the 32 pT point
+17.5D0         the 33 pT point
 1              choice of the scale:1 pT*c 
-1.D0           value of c for initial state factorisation scale
-1.D0           value of c for renormalisation scale
-1.D0           value of c for final state factorisation scale
+.5D0           value of c for initial state factorisation scale
+.5D0           value of c for renormalisation scale
+.5D0           value of c for final state factorisation scale
 'lhc'          flag to choose which experiment you want
