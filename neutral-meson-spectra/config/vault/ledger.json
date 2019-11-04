@@ -116,6 +116,13 @@
             "hsum": "076d230bf2f82b3f7c051eaeb1d68b4639c4e2d1320a7d14436da468c5727bec",
             "pt_range": [0.0, 20.0]
         },
+        "incnlo low": {
+            "default_selection": "pQCD",
+            "description": "Estimated #pi^{0} spectrum via INCNLO software",
+            "file": "input-data/theory/pQCD/low.root",
+            "hsum": "5a16276fdf0dd6ea35a29f42da7ac57d2e21dd84869cee9a4b753b288b02d2bd",
+            "pt_range": [0.0, 20.0]
+        },
         "7 TeV": {
             "default_selection": "pQCD",
             "description": "Estimated #pi^{0} spectrum  at 7 TeV via INCNLO software",
