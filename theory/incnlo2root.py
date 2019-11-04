@@ -53,7 +53,7 @@ def data2hists(data, edges, scale=1e6):
 def main(filename, ofilename):
     data = pd.DataFrame(parse_incnlo(filename)).sort_values("p_T")
 
-    with open("../neutral-meson-spectra/config/data/pt.json") as f:
+    with open("../neutral-meson-spectra/config/pt.json") as f:
         edges = array.array('f', json.load(f)["#pi^{0}"]["ptedges"])
 
     output = ROOT.TList()

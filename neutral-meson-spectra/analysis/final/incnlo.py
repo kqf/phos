@@ -33,6 +33,7 @@ def test_pion_spectrum(data):
     param = br.function2histogram(FVault().tf1("tcm", "#pi^{0} 13 TeV"), pion)
     ratios = [br.ratio(h, param) for h in histograms]
     confidence = br.shaded_region_hist("pQCD", *ratios[1:])
+    confidence.SetTitle("pQCD NLO, 1/2 p_{T} < #mu < 2 p_{T}")
     plot(
         [ratios[0], confidence],
         ytitle="#frac{Data, NLO}{TCM fit}",
