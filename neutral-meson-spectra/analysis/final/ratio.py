@@ -16,11 +16,11 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=5.5, ptmax=22):
     ff.SetParameter(0, 0.5)
     data.Fit(ff, "RQ")
     print()
-    print(r"\def etaPionRatioValue {{{:.3g}}}".format(ff.GetParameter(0)))
-    print(r"\def etaPionRatioValueError {{{:.3g}}}".format(ff.GetParError(0)))
-    print(r"\def minEtaPionRatioFit {{{:.3g}}}".format(ptmin))
-    print(r"\def maxEtaPionRatioFit {{{:.3g}}}".format(ptmax))
-    print(r"\def etaPionRatioChi {{{:.3g}}}".format(
+    print(r"\def \etaPionRatioValue {{{:.3g}}}".format(ff.GetParameter(0)))
+    print(r"\def \etaPionRatioValueError {{{:.3g}}}".format(ff.GetParError(0)))
+    print(r"\def \minEtaPionRatioFit {{{:.3g}}}".format(ptmin))
+    print(r"\def \maxEtaPionRatioFit {{{:.3g}}}".format(ptmax))
+    print(r"\def \etaPionRatioChi {{{:.3g}}}".format(
         ff.GetChisquare() / ff.GetNDF()
     ))
     ff.SetRange(2, 22)
@@ -37,9 +37,8 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=5.5, ptmax=22):
         xlimits=(1.9, 22),
         ylimits=(0, 1.4),
         csize=(128, 96),
-        # legend_pos=(0.65, 0.7, 0.8, 0.88),
-        legend_pos=(0.52, 0.72, 0.78, 0.88),
+        legend_pos=(0.65, 0.7, 0.8, 0.88),
         yoffset=1.4,
         more_logs=True,
-        oname="results/pythia/etapion.pdf"
+        oname="results/eta-pion-ratio.pdf"
     )
