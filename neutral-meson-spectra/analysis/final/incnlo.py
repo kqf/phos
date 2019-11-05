@@ -13,8 +13,8 @@ from vault.formulas import FVault
 @pytest.fixture
 def data():
     data = (
-        DataVault().input("theory", "incnlo"),
-        DataVault().input("theory", "7 TeV")
+        DataVault().input("theory", "incnlo high"),
+        DataVault().input("theory", "incnlo low")
     )
     with open_loggs() as loggs:
         predictions = ParallelPipeline([
@@ -33,7 +33,7 @@ def test_pion_spectrum(data):
     param = br.function2histogram(FVault().tf1("tcm", "#pi^{0} 13 TeV"), pion)
     ratios = [br.ratio(h, param) for h in histograms]
     confidence = br.shaded_region_hist("pQCD", *ratios[1:])
-    confidence.SetTitle("pQCD NLO, 1/2 p_{T} < #mu < 2 p_{T}")
+    confidence.SetTitle("NLO, PDF: CTEQ5")
     plot(
         [ratios[0], confidence],
         ytitle="#frac{Data, NLO}{TCM fit}",
