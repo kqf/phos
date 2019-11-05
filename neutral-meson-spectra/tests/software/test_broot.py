@@ -532,7 +532,7 @@ def test_initializes_inputs(stop):
 
 
 def test_initializes_colors(stop):
-    ci = br.define_colors()
+    ci = br.BR_COLORS
     hists = []
     for i, c in enumerate(ci):
         hist = ROOT.TH1F("hCol{}".format(i), "Test BROOT: Colors", 40, -4, 4)

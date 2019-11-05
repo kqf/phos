@@ -16,7 +16,6 @@ class MassesPlot(object):
     def _evaluate(self, mass, sigf, background, signal, bgrf,
                   fit_range, integration_region, pad):
         su.ticks(pad)
-        ci = br.define_colors()
         pad.cd()
 
         title = mass.GetTitle()
@@ -30,10 +29,10 @@ class MassesPlot(object):
 
         self._set_axis_limits(mass, signal, fit_range)
         self.draw(mass, "histe")
-        self.draw(signal, color=ci[2])
-        self.draw(sigf, color=ci[1])
-        self.draw(background, color=ci[1])
-        self.draw(bgrf, color=ci[5])
+        self.draw(signal, color=br.BR_COLORS[2])
+        self.draw(sigf, color=br.BR_COLORS[1])
+        self.draw(background, color=br.BR_COLORS[1])
+        self.draw(bgrf, color=br.BR_COLORS[5])
         self.draw_chisquare(sigf)
         self._draw_line(mass, *integration_region)
         self._draw_text(mass, title)
