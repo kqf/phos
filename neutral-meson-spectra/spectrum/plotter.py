@@ -124,7 +124,8 @@ def plot(data, xtitle=None, ytitle=None,
          legend_pos=(0.6, 0.7, 0.8, 0.85),
          ltitle=None,
          more_logs=True,
-         yoffset=1.2
+         yoffset=1.2,
+         colors='auto',
          ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -151,13 +152,14 @@ def plot(data, xtitle=None, ytitle=None,
         canvas.SetLogy(logy)
         box.Draw()
         for i, graph in enumerate(graphed):
-            color = br.icolor(i)
-            graph.SetMarkerStyle(20)
-            graph.SetMarkerSize(1)
-            graph.SetLineColor(color)
-            graph.SetFillColor(color)
-            graph.SetFillColorAlpha(color, 0.50)
-            graph.SetMarkerColor(color)
+            if colors == 'auto':
+                color, marker = br.auto_color_marker(i)
+                graph.SetMarkerStyle(marker)
+                graph.SetMarkerSize(1)
+                graph.SetLineColor(color)
+                graph.SetFillColor(color)
+                graph.SetFillColorAlpha(color, 0.50)
+                graph.SetMarkerColor(color)
             options = graph.GetDrawOption() or "p"
             graph.Draw(options)
 

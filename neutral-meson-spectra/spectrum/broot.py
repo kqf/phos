@@ -13,6 +13,23 @@ from copy import deepcopy
 
 ROOT.TH1.AddDirectory(False)
 
+BR_COLORS = [
+    ROOT.kRed + 1,
+    ROOT.kBlue - 3,
+    ROOT.kGreen + 1,
+    ROOT.kYellow + 1,
+    ROOT.kOrange + 1,
+    ROOT.kBlack + 1,
+    ROOT.kGray + 1,
+    ROOT.kMagenta + 1,
+    ROOT.kCyan + 1,
+    ROOT.kSpring + 1,
+    ROOT.kTeal + 1,
+    ROOT.kAzure + 1,
+    ROOT.kViolet + 1,
+    ROOT.kPink + 1,
+]
+
 
 class _prop(object):
     _properties = {
@@ -387,29 +404,8 @@ def init_inputs(func):
     return f
 
 
-def define_colors():
-    rcolors = [
-        ROOT.kRed + 1,
-        ROOT.kBlue - 3,
-        ROOT.kGreen + 1,
-        ROOT.kYellow + 1,
-        ROOT.kOrange + 1,
-        ROOT.kBlack + 1,
-        ROOT.kGray + 1,
-        ROOT.kMagenta + 1,
-        ROOT.kCyan + 1,
-        ROOT.kSpring + 1,
-        ROOT.kTeal + 1,
-        ROOT.kAzure + 1,
-        ROOT.kViolet + 1,
-        ROOT.kPink + 1,
-    ]
-    return rcolors
-
-
 def icolor(i, offset=0):
-    colors = define_colors()
-    return colors[(i + offset) % len(colors)]
+    return BR_COLORS[(i + offset) % len(BR_COLORS)]
 
 
 def bins(hist):
@@ -735,3 +731,9 @@ def shaded_region_hist(title, lower, upper,
     graph.SetFillColorAlpha(fill_color, 0.36)
     graph.GetDrawOption = lambda: option
     return graph
+
+
+def auto_color_marker(index=0):
+    color = BR_COLORS[index % len(BR_COLORS)]
+    marker = 20 + index // len(BR_COLORS)
+    return color, marker

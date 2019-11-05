@@ -47,8 +47,6 @@ def set_pad_logy(hist, pad):
 
 class VisHub(object):
 
-    ci = br.define_colors()
-
     def __init__(self, *args, **kwargs):
         super(VisHub, self).__init__()
         self.args = args
@@ -74,7 +72,6 @@ class VisHub(object):
 class MultipleVisualizer(object):
     output_prefix = 'compared-'
     ncolors = 5
-    ci = br.define_colors()
 
     def __init__(self, size, rrange, crange, stop, oname, labels, **kwargs):
         super(MultipleVisualizer, self).__init__()
@@ -175,11 +172,11 @@ class MultipleVisualizer(object):
         return stack
 
     def _color_marker(self, i, h):
-        color = self.ci[i % len(self.ci)]
+        color = br.BR_COLORS[i % len(br.BR_COLORS)]
         if h.marker:
             return color, 20 + h.marker
 
-        return color, 20 + i // len(self.ci)
+        return color, 20 + i // len(br.BR_COLORS)
 
     def io(self, canvas, hists, loggs):
         cloned = canvas.Clone()
