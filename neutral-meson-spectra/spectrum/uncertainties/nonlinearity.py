@@ -1,3 +1,4 @@
+import six
 from joblib import Memory
 
 from spectrum.pipeline import TransformerBase
@@ -8,20 +9,23 @@ from spectrum.pipeline import RebinTransformer
 from spectrum.efficiency import Efficiency
 import spectrum.broot as br
 from spectrum.options import CompositeEfficiencyOptions, Options
+from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
-from spectrum.tools.deviation import MaxDeviationVector
+from spectrum.plotter import plot
+import spectrum.sutils as su
 
 
 class NonlinearityUncertaintyOptions(object):
 
-    def __init__(self, particle="#pi^{0}", nbins=5, n_ranges=2):
+    def __init__(self, particle="#pi^{0}", nbins=9, n_ranges=2):
         super(NonlinearityUncertaintyOptions, self).__init__()
         self.nbins = nbins
         self.eff = CompositeEfficiencyOptions("#pi^{0}")
         self.edges = None
         if particle != "#pi^{0}":
             self.edges = Options(particle=particle).pt.ptedges
+        self.particle = particle
 
 
 def chi2_func(hist1, hist2, loggs):
@@ -31,14 +35,16 @@ def chi2_func(hist1, hist2, loggs):
 memory = Memory(".joblib-cachedir", verbose=0)
 
 
-# @memory.cache()
-def efficiencies(data, loggs, nbins, plot=False):
-    options = CompositeEfficiencyOptions(particle="#pi^{0}")
+@memory.cache()
+def efficiencies(data, particle, plot=False):
+    options = NonlinearityUncertaintyOptions(particle=particle)
     mc = ParallelPipeline([
-        ("efficiency_" + str(i), Efficiency(options, plot))
-        for i in range(nbins ** 2)
+        ("efficiency_" + str(i), Efficiency(options.eff, plot))
+        for i in range(options.nbins ** 2)
     ], disable=False)
-    return mc.transform(data, loggs)
+    with open_loggs() as loggs:
+        output = mc.transform(data, loggs)
+    return output
 
 
 class NonlinearityUncertainty(TransformerBase):
@@ -46,26 +52,44 @@ class NonlinearityUncertainty(TransformerBase):
                  chi2_=chi2_func,
                  plot=True):
         super(NonlinearityUncertainty, self).__init__()
-        main = Pipeline([
-            ('efficiency_main', Efficiency(options.eff, plot))
-        ])
+        self.options = options
 
-        mc = ParallelPipeline([
-            ("efficiency_" + str(i), Efficiency(options.eff, plot))
-            for i in range(options.nbins ** 2)
-        ], disable=False)
-
-        ratio = ReduceArgumentPipeline(
-            ("altered efficiencies", mc),
-            ("standard efficiency", main),
-            lambda x, y, loggs=None: br.ratio(x, y)
+    def transform(self, data, loggs):
+        print(self.options.particle)
+        effs = efficiencies(data[1], self.options.particle)
+        plot(
+            effs,
+            xtitle="p_{T} (GeV/#it{c})",
+            csize=(96, 128),
+            oname="results/systematics/yields/spectra-{}.pdf".format(
+                su.spell(self.options.particle)),
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.6,
+            ltext_size=0.015
         )
 
-        self.pipeline = Pipeline([
-            ("ratios", ratio),
-            ("deviation", MaxDeviationVector()),
-            ("rebin", RebinTransformer(True, options.edges)),
-        ])
+        average = br.average(effs, "averaged yield")
+        average.GetYaxis().SetTitle("average")
+        plot(
+            list(map(lambda x: br.ratio(x, average), effs)),
+            logy=False,
+            xtitle="p_{T} (GeV/#it{c})",
+            csize=(96, 128),
+            oname="results/systematics/yields/ratios-{}.pdf".format(
+                su.spell(self.options.particle)),
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.6,
+            ltext_size=0.015
+        )
+
+        uncert, rms, mean = br.systematic_deviation(effs)
+        uncert.logy = False
+        loggs.update({"uncertainty": uncert})
+        loggs.update({"rms": rms})
+        loggs.update({"mean": mean})
+        return uncert
 
 
 def form_histnames(nbins=4):

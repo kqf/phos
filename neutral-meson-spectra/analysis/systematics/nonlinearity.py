@@ -16,7 +16,7 @@ from vault.datavault import DataVault
 
 @pytest.fixture
 def nbins():
-    return 5
+    return 9
 
 # TODO: Look at generated histogram in different selection
 #       fix this asap
