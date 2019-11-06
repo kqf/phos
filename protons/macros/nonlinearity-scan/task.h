@@ -28,8 +28,9 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 
 	Int_t nbins = 9;
-	Float_t precA = 0.0002 * 2 / nbins * mc_weights.fNonA;
-	Float_t precSigma = 0.0005 * 2 / nbins * mc_weights.fNonSigma;
+	Int_t nsigma = 2;
+	Float_t precA = nsigma * 0.0002 * 2 / nbins * mc_weights.fNonA;
+	Float_t precSigma = nsigma * 0.0005 * 2 / nbins * mc_weights.fNonSigma;
 	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights, precA, precSigma));
 
 	// Setup task
