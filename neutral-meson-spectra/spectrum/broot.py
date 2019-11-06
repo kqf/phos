@@ -23,7 +23,7 @@ BR_COLORS = [
     ROOT.kGray + 1,
     ROOT.kMagenta + 1,
     ROOT.kCyan + 1,
-    ROOT.kSpring + 1,
+    # ROOT.kSpring + 1,
     ROOT.kTeal + 1,
     ROOT.kAzure + 1,
     ROOT.kViolet + 1,

@@ -5,12 +5,13 @@ import joblib
 import spectrum.broot as br
 from spectrum.options import Options, CompositeCorrectedYieldOptions
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.comparator import Comparator
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
 from spectrum.tools.feeddown import data_feeddown
+from spectrum.plotter import plot
 from vault.datavault import DataVault
+import spectrum.sutils as su
 
 
 memory = joblib.Memory('.joblib-cachedir', verbose=0)
@@ -134,17 +135,41 @@ class YieldExtractioin(TransformerBase):
         spectrums = _calculate_yields(self.options, data)
         for label, spectrum in six.iteritems(spectrums):
             spectrum.label = label
-            spectrum.SetTitle("")
-            spectrum.logx = False
-            spectrum.logy = False
+            spectrum.SetTitle(label)
 
         spectrums = list(spectrums.values())
-        diff = Comparator(stop=self.plot, oname="spectrum_extraction_methods")
-        diff.compare(spectrums)
+        plot(
+            spectrums,
+            # xlimits=(0.8, 30.0),
+            xtitle="p_{T} (GeV/#it{c})",
+            # ytitle=invariant_cross_section_code(),
+            csize=(96, 128),
+            legend_pos=(0.72, 0.6, 0.88, 0.88),
+            oname="results/systematics/yields/spectra-{}.pdf".format(
+                su.spell(self.options.particle)),
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.6,
+            ltext_size=0.015
+        )
 
         average = br.average(spectrums, "averaged yield")
-        diff = Comparator(stop=self.plot, oname="yield_deviation_from_average")
-        diff.compare_ratios(spectrums, average, loggs=loggs)
+        average.GetYaxis().SetTitle("average")
+        plot(
+            list(map(lambda x: br.ratio(x, average), spectrums)),
+            # xlimits=(0.8, 30.0),
+            logy=False,
+            xtitle="p_{T} (GeV/#it{c})",
+            # ytitle=spectrums[0] + ' / Average',
+            csize=(96, 128),
+            legend_pos=(0.72, 0.6, 0.88, 0.88),
+            oname="results/systematics/yields/ratios-{}.pdf".format(
+                su.spell(self.options.particle)),
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.6,
+            ltext_size=0.015
+        )
 
         uncert, rms, mean = br.systematic_deviation(spectrums)
         uncert.logy = False

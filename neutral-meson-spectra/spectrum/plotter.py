@@ -87,7 +87,7 @@ def style():
     # old_style.cd()
 
 
-def legend(data, coordinates, ltitle=None):
+def legend(data, coordinates, ltitle=None, ltext_size=0.035):
     legend = ROOT.TLegend(*coordinates)
     legend.SetBorderSize(0)
 
@@ -100,7 +100,7 @@ def legend(data, coordinates, ltitle=None):
 
     legend.SetFillColor(0)
     legend.SetTextColor(1)
-    legend.SetTextSize(0.035)
+    legend.SetTextSize(ltext_size)
     return legend
 
 
@@ -116,17 +116,24 @@ def separate(data):
     return hists, graphs, functions
 
 
-def plot(data, xtitle=None, ytitle=None,
-         logx=True, logy=True, stop=True,
-         xlimits=None, ylimits=None,
-         csize=(128, 96),
-         oname=None,
-         legend_pos=(0.6, 0.7, 0.8, 0.85),
-         ltitle=None,
-         more_logs=True,
-         yoffset=1.2,
-         colors='auto',
-         ):
+def plot(
+    data,
+    xtitle=None,
+    ytitle=None,
+    logx=True,
+    logy=True,
+    stop=True,
+    xlimits=None,
+    ylimits=None,
+    csize=(128, 96),
+    oname=None,
+    legend_pos=(0.6, 0.7, 0.8, 0.85),
+    ltitle=None,
+    more_logs=True,
+    yoffset=1.2,
+    colors='auto',
+    ltext_size=0.035,
+):
     hists, graphs, functions = separate(data)
     histogrammed = (
         hists +
@@ -138,7 +145,7 @@ def plot(data, xtitle=None, ytitle=None,
 
     graphed = graphs + list(map(br.hist2graph, hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
-        box = ROOT.TH1F("box", "Test test test", 1000, min(x), max(x))
+        box = ROOT.TH1F("box", "", 1000, min(x) * 0.95, max(x) * 1.05)
         box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
         box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
         box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
@@ -166,5 +173,5 @@ def plot(data, xtitle=None, ytitle=None,
         for i, func in enumerate(functions):
             func.Draw("same " + func.GetDrawOption())
 
-        ll = legend(graphed + functions, legend_pos, ltitle)
+        ll = legend(graphed + functions, legend_pos, ltitle, ltext_size)
         ll.Draw("same")
