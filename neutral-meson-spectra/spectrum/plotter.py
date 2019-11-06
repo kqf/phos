@@ -173,5 +173,6 @@ def plot(
         for i, func in enumerate(functions):
             func.Draw("same " + func.GetDrawOption())
 
-        ll = legend(graphed + functions, legend_pos, ltitle, ltext_size)
-        ll.Draw("same")
+        if legend_pos is not None:
+            ll = legend(graphed + functions, legend_pos, ltitle, ltext_size)
+            ll.Draw("same")

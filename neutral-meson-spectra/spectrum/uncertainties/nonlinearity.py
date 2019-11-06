@@ -61,6 +61,7 @@ class NonlinearityUncertainty(TransformerBase):
             effs,
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
+            legend_pos=None,
             oname="results/systematics/yields/spectra-{}.pdf".format(
                 su.spell(self.options.particle)),
             stop=self.plot,
@@ -76,6 +77,7 @@ class NonlinearityUncertainty(TransformerBase):
             logy=False,
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
+            legend_pos=None,
             oname="results/systematics/yields/ratios-{}.pdf".format(
                 su.spell(self.options.particle)),
             stop=self.plot,
