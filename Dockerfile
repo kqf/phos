@@ -12,6 +12,6 @@ RUN apt-get update -y
 
 # Setup python
 RUN apt-get install -y python-pip
-RUN apt-get install python-tk # required by seaborn
+RUN apt-get install -y python-tk # required by seaborn
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
