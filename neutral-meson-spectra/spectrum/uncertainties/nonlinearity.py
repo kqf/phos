@@ -1,15 +1,13 @@
+import ROOT
+import spectrum.broot as br
 from joblib import Memory
-
-from spectrum.pipeline import TransformerBase
-from spectrum.pipeline import ParallelPipeline
 # from spectrum.pipeline import RebinTransformer
 from spectrum.efficiency import Efficiency
-import spectrum.broot as br
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.output import open_loggs
-
-from vault.datavault import DataVault
+from spectrum.pipeline import ParallelPipeline, TransformerBase
 from spectrum.plotter import plot
+from vault.datavault import DataVault
 
 
 class NonlinearityUncertaintyOptions(object):
@@ -61,6 +59,7 @@ class NonlinearityUncertainty(TransformerBase):
             oname="results/systematics/nonlinearity/efficiencies.pdf",
             stop=self.plot,
             more_logs=False,
+            colors='coolwarm',
             yoffset=1.6,
             ltext_size=0.015
         )
@@ -75,6 +74,7 @@ class NonlinearityUncertainty(TransformerBase):
             legend_pos=None,
             oname="results/systematics/nonlinearity/ratios.pdf",
             stop=self.plot,
+            colors='coolwarm',
             more_logs=False,
             yoffset=1.6,
             ltext_size=0.015

@@ -679,6 +679,9 @@ def hist2graph(hist):
     hgraph = graph(hist.GetTitle(), x=centers, y=contents, dy=errors)
     hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
+    hgraph.SetLineColor(hist.GetLineColor())
+    hgraph.SetMarkerColor(hist.GetMarkerColor())
+    hgraph.SetMarkerStyle(hist.GetMarkerStyle())
     return hgraph
 
 

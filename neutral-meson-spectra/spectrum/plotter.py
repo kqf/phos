@@ -1,8 +1,11 @@
-import ROOT
-import numpy as np
 from contextlib import contextmanager
+
+import numpy as np
+import ROOT
+import seaborn as sns
 import spectrum.broot as br
 import spectrum.sutils as su
+from repoze.lru import lru_cache
 
 
 @contextmanager
@@ -116,6 +119,13 @@ def separate(data):
     return hists, graphs, functions
 
 
+@lru_cache(maxsize=1024)
+def define_color(r, g, b, alpha=1):
+    colorindex = ROOT.TColor.GetFreeColorIndex()
+    color = ROOT.TColor(colorindex, r, g, b)
+    return colorindex, color
+
+
 def plot(
     data,
     xtitle=None,
@@ -143,6 +153,7 @@ def plot(
     x = xlimits or np.concatenate([br.bins(h).centers for h in histogrammed])
     y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
 
+    cache = []
     graphed = graphs + list(map(br.hist2graph, hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
         box = ROOT.TH1F("box", "", 1000, min(x) * 0.95, max(x) * 1.05)
@@ -167,6 +178,24 @@ def plot(
                 graph.SetFillColor(color)
                 graph.SetFillColorAlpha(color, 0.50)
                 graph.SetMarkerColor(color)
+
+            if colors == 'levels':
+                alpha = np.logspace(0, 0.9, len(graphed))[i]
+                graph.SetMarkerStyle(20)
+                graph.SetMarkerSize(1)
+                graph.SetLineColorAlpha(ROOT.kRed + 1, alpha)
+                graph.SetFillColorAlpha(ROOT.kRed + 1, alpha)
+                graph.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
+
+            if colors == 'coolwarm':
+                palette = sns.color_palette("coolwarm", len(graphed))
+                color, _ = define_color(*palette[i])
+                graph.SetMarkerStyle(20)
+                graph.SetMarkerSize(1)
+                graph.SetLineColor(color)
+                graph.SetFillColor(color)
+                graph.SetMarkerColor(color)
+
             options = graph.GetDrawOption() or "p"
             graph.Draw(options)
 

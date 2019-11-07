@@ -9,3 +9,4 @@ humanize
 recordclass==0.11.1 # no support of python 2.7
 joblib
 six
+seaborn
