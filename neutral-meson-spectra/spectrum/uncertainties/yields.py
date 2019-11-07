@@ -140,9 +140,7 @@ class YieldExtractioin(TransformerBase):
         spectrums = list(spectrums.values())
         plot(
             spectrums,
-            # xlimits=(0.8, 30.0),
             xtitle="p_{T} (GeV/#it{c})",
-            # ytitle=invariant_cross_section_code(),
             csize=(96, 128),
             legend_pos=(0.72, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/spectra-{}.pdf".format(
@@ -157,10 +155,8 @@ class YieldExtractioin(TransformerBase):
         average.GetYaxis().SetTitle("average")
         plot(
             list(map(lambda x: br.ratio(x, average), spectrums)),
-            # xlimits=(0.8, 30.0),
             logy=False,
             xtitle="p_{T} (GeV/#it{c})",
-            # ytitle=spectrums[0] + ' / Average',
             csize=(96, 128),
             legend_pos=(0.72, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/ratios-{}.pdf".format(
@@ -176,9 +172,4 @@ class YieldExtractioin(TransformerBase):
         loggs.update({"uncertainty": uncert})
         loggs.update({"rms": rms})
         loggs.update({"mean": mean})
-        # uncert.SetTitle(
-        #     "Systematic uncertanity from yield extraction (RMS/mean)")
-        # diff = Comparator(stop=self.plot,
-        #                   oname="syst-error-yield-extraction")
-        # diff.compare(uncert)
         return uncert

@@ -10,6 +10,7 @@ from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import UnityFitTransformer
 from spectrum.tools.feeddown import data_feeddown
 from vault.datavault import DataVault
+from spectrum.plotter import plot
 
 
 def cyield_data(particle, cut):
@@ -100,31 +101,32 @@ class Acceptance(TransformerBase):
         ])
 
     def ratio(self, spectrums, loggs):
-        average = br.average(spectrums, "averaged yield")
-        # Comparator().compare(spectrums)
         for i, r in enumerate(spectrums):
-            r.logy = False
-            r.label = "dist bad cell > {}".format(i + 1)
-            r.SetTitle("")
+            r.SetTitle("dist. to a bad cell > {} cm".format(i + 1))
 
-        diff = Comparator(stop=self.plot, rrange=(-1, -1),
-                          oname="yield_deviation_from_average")
-        diff.compare(spectrums)
-        # uncert, rms, mean = br.systematic_deviation(spectrums)
-        # uncert.logy = False
-        # loggs.update({"uncertainty": uncert})
-        # loggs.update({"rms": rms})
-        # loggs.update({"mean": mean})
-        # return uncert
-
-        diff.compare_ratios(spectrums, average, loggs=loggs)
-        ratios = [br.ratio(average, s) for s in spectrums]
-        for i, r in enumerate(ratios):
-            r.logy = False
-            r.label = "dist bad cell > {}".format(i + 1)
-        diff.compare(ratios)
-        #     "Systematic uncertanity from yield extraction (RMS/mean)")
-        # diff = Comparator(stop=self.plot,
-        #                   oname="syst-error-yield-extraction")
-        # diff.compare(uncert)
+        plot(
+            spectrums,
+            xtitle="p_{T} (GeV/#it{c})",
+            csize=(96, 128),
+            legend_pos=(0.5, 0.7, 0.7, 0.85),
+            oname="results/systematics/acceptance/spectra.pdf",
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.6,
+        )
+        average = br.average(spectrums, "averaged yield")
+        average.SetTitle("average")
+        ratios = [br.ratio(s, average, "B") for s in spectrums]
+        plot(
+            ratios,
+            logy=False,
+            xtitle="p_{T} (GeV/#it{c})",
+            ytitle="{} / average".format(spectrums[0].GetYaxis().GetTitle()),
+            csize=(96, 128),
+            legend_pos=(0.5, 0.7, 0.7, 0.85),
+            oname="results/systematics/yields/ratios.pdf",
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.8,
+        )
         return ratios
