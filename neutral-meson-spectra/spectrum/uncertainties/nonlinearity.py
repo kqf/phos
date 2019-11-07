@@ -1,4 +1,3 @@
-import ROOT
 import spectrum.broot as br
 from joblib import Memory
 # from spectrum.pipeline import RebinTransformer
