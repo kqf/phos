@@ -1,11 +1,8 @@
-import six
 from joblib import Memory
 
 from spectrum.pipeline import TransformerBase
-from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ParallelPipeline
-from spectrum.pipeline import ReduceArgumentPipeline
-from spectrum.pipeline import RebinTransformer
+# from spectrum.pipeline import RebinTransformer
 from spectrum.efficiency import Efficiency
 import spectrum.broot as br
 from spectrum.options import CompositeEfficiencyOptions, Options
@@ -13,7 +10,6 @@ from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 from spectrum.plotter import plot
-import spectrum.sutils as su
 
 
 class NonlinearityUncertaintyOptions(object):
@@ -56,14 +52,13 @@ class NonlinearityUncertainty(TransformerBase):
 
     def transform(self, data, loggs):
         print(self.options.particle)
-        effs = efficiencies(data[1], self.options.particle)
+        effs = efficiencies(data, self.options.particle)
         plot(
             effs,
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=None,
-            oname="results/systematics/yields/spectra-{}.pdf".format(
-                su.spell(self.options.particle)),
+            oname="results/systematics/nonlinearity/efficiencies.pdf",
             stop=self.plot,
             more_logs=False,
             yoffset=1.6,
@@ -78,8 +73,7 @@ class NonlinearityUncertainty(TransformerBase):
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=None,
-            oname="results/systematics/yields/ratios-{}.pdf".format(
-                su.spell(self.options.particle)),
+            oname="results/systematics/nonlinearity/ratios.pdf",
             stop=self.plot,
             more_logs=False,
             yoffset=1.6,
@@ -123,4 +117,4 @@ def nonlinearity_scan_data(nbins, prod, eff_prod="PhysEff"):
         high.read_multiple(single=efficiency_inputs[1])
     )]
 
-    return (efficiency_inputs, spmc)
+    return spmc
