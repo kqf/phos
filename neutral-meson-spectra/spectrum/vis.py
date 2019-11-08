@@ -4,6 +4,7 @@ import numpy as np
 
 import spectrum.sutils as su
 import spectrum.broot as br
+from spectrum.style import style
 
 
 def info(hist):
@@ -54,19 +55,19 @@ class VisHub(object):
         su.gcanvas().Clear()
 
     def compare_visually(self, hists, loggs=None):
-        vis = Visualizer(*self.args, **self.kwargs)
-        neglimits = any(i < 0 for i in vis.rrange)
-        ignoreratio = neglimits and vis.rrange
+        with style():
+            vis = Visualizer(*self.args, **self.kwargs)
+            neglimits = any(i < 0 for i in vis.rrange)
+            ignoreratio = neglimits and vis.rrange
 
-        if len(hists) != 2 or ignoreratio:
-            vis = MultipleVisualizer(*self.args, **self.kwargs)
+            if len(hists) != 2 or ignoreratio:
+                vis = MultipleVisualizer(*self.args, **self.kwargs)
+                return vis.compare_visually(hists, loggs=loggs)
+
+            if len(hists) == 2 and not br.same_binning(hists[0], hists[1]):
+                vis = MultipleVisualizer(*self.args, **self.kwargs)
+                return vis.compare_visually(hists, loggs=loggs)
             return vis.compare_visually(hists, loggs=loggs)
-
-        if len(hists) == 2 and not br.same_binning(hists[0], hists[1]):
-            vis = MultipleVisualizer(*self.args, **self.kwargs)
-            return vis.compare_visually(hists, loggs=loggs)
-
-        return vis.compare_visually(hists, loggs=loggs)
 
 
 class MultipleVisualizer(object):
