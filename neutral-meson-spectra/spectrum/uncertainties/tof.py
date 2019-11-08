@@ -84,7 +84,7 @@ def tof_ratio(histograms, loggs, fitf):
         [ratio, fitf],
         logy=False,
         logx=True,
-        ytitle="differential yield (cut) / differential yield (no cut)",
+        ytitle="R_{TOF}",
         xtitle="p_{T} (GeV/#it{c})",
         xlimits=(0.8, 9.6),
         ylimits=(0, 2.5),

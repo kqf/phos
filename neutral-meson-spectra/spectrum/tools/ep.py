@@ -6,7 +6,6 @@ from spectrum.pipeline import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
-from spectrum.ptplotter import MulipleOutput
 
 
 class IdentityExtractor(object):

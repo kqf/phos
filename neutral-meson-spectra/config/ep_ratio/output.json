@@ -4,10 +4,10 @@
     "scalew_spectrum": true,
     "output":
     {
-        "mass": "E/p ratio for electrons; matched cluster p_{T}, GeV; E/p ratio; electrons",
+        "mass": "E/p ratio for electrons; matched cluster p_{T} (GeV); E/p ratio; electrons",
         "width": "E/p ratio width ; matched cluster p_{T}; #sigma_{E/p}; electrons",
-        "chi2": "#chi^{2} / N_{dof} for E/p ratio; p_{T}, GeV; #chi^{2} / N_{dof}; electrons",
-        "nmesons": "Number of electrons in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}; electrons",
-        "spectrum": "Number of electrons in each p_{T} bin; p_{T}, GeV; #frac{dN}{dp_{T}}; electrons"
+        "chi2": "#chi^{2} / N_{dof} for E/p ratio; p_{T} (GeV); #chi^{2} / N_{dof}; electrons",
+        "nmesons": "Number of electrons in each p_{T} bin; p_{T} (GeV); #frac{dN}{dp_{T}}; electrons",
+        "spectrum": "Number of electrons in each p_{T} bin; p_{T} (GeV); #frac{dN}{dp_{T}}; electrons"
     }
 }
