@@ -89,7 +89,7 @@ def uncertainties(particle, data):
 
 
 class TotalUncertaintyOptions():
-    title = "Total systematic uncertainty; p_{T} (GeV)/c, relative sys. err."
+    title = "Total systematic uncertainty; p_{T} (GeV/#it{c})/c, relative sys. err."
 
     def __init__(self, particle):
         self.yields = YieldExtractioinUncertanityOptions(particle=particle)

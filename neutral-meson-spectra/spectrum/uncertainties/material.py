@@ -15,7 +15,7 @@ class MaterialBudgetOptions(object):
     def __init__(self, particle="#pi^{0}"):
         super(MaterialBudgetOptions, self).__init__()
         self.edges = Options(particle).pt.ptedges
-        self.title = "; p_{T} (GeV)/c ;relative sys. uncertainty"
+        self.title = "; p_{T} (GeV/#it{c})/c ;relative sys. uncertainty"
         # The value borrowed from the 5 TeV analysis
         self.uncertainty_value = 0.02
 

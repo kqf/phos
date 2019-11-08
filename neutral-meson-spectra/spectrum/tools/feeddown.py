@@ -30,7 +30,7 @@ class ConfidenceLevelEstimator(TransformerBase):
 
     def transform(self, feeddown, loggs):
         title = "Feeddown correction approximation"
-        title += "; p_{T} (GeV)/c"
+        title += "; p_{T} (GeV/#it{c})/c"
         title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
         title += "#frac{dN(all)}{dp_{T}}"
         try:
