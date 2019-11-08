@@ -1,5 +1,6 @@
 import ROOT
 
+import spectrum.broot as br
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
 from spectrum.options import Options
@@ -8,7 +9,11 @@ from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import RebinTransformer
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputDecorator
+from spectrum.pipeline import ReducePipeline
+from spectrum.pipeline import ParallelPipeline
+from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import unityfit
+from spectrum.plotter import plot
 from vault.datavault import DataVault
 
 
@@ -24,6 +29,73 @@ def tof_data_stable():
         DataVault().input("data", "stable"),
         DataVault().input("data", "isolated", histname="MassPtSM0"),
     )
+
+
+def report(func):
+    print(r"\def \uncertaintyTofChi {{{val:.3g}}}".format(
+        val=br.chi2ndff(func)
+    ))
+    print(r"\def \uncertaintyTof {{{val:.3g}}}".format(
+        val=func.GetParameter(0)
+    ))
+    print(r"\def \uncertaintyTofError {{{val:.3g}}}".format(
+        val=func.GetParError(0)
+    ))
+    xmin, xmax = ROOT.Double(0), ROOT.Double(0)
+    func.GetRange(xmin, xmax)
+    print(r"\def \uncertaintyTofLowPt {{{val:.3g}}}".format(
+        val=xmin
+    ))
+    print(r"\def \uncertaintyTofHighPt {{{val:.3g}}}".format(
+        val=xmax
+    ))
+
+
+def tof_ratio(histograms, loggs, fitf):
+    for i in br.hrange(histograms[1]):
+        if histograms[1].GetBinContent(i) < 0:
+            histograms[1].SetBinContent(i, abs(histograms[1].GetBinContent(i)))
+
+    histograms[0].SetTitle("12.5 ns cut")
+    histograms[1].SetTitle("no cut")
+
+    plot(
+        histograms,
+        logy=True,
+        logx=True,
+        xtitle="p_{T} (GeV/#it{c})",
+        # xlimits=(0.8, 9.6),
+        csize=(96, 128),
+        # legend_pos=(0.5, 0.7, 0.7, 0.85),
+        oname="results/systematics/tof/yields.pdf",
+        # stop=self.plot,
+        more_logs=False,
+        yoffset=1.6,
+    )
+    ratio = Comparator(stop=False).compare(histograms)
+    ratio.Fit(fitf, "R")
+    ratio.SetTitle("Data")
+    fitf.SetTitle("Constant fit")
+    fitf.SetLineStyle(9)
+    fitf.SetLineColor(ROOT.kBlack)
+    report(fitf)
+
+    plot(
+        [ratio, fitf],
+        logy=False,
+        logx=True,
+        ytitle="differential yield (cut) / differential yield (no cut)",
+        xtitle="p_{T} (GeV/#it{c})",
+        xlimits=(0.8, 9.6),
+        ylimits=(0, 2.5),
+        csize=(96, 128),
+        # legend_pos=(0.5, 0.7, 0.7, 0.85),
+        oname="results/systematics/tof/ratios.pdf",
+        # stop=self.plot,
+        more_logs=False,
+        # yoffset=1.6,
+    )
+    return ratio
 
 
 class TofUncertaintyOptions(object):
@@ -65,7 +137,7 @@ class TofUncertainty(TransformerBase):
 
     def __init__(self, options, plot=False):
         super(TofUncertainty, self).__init__(plot)
-        ratio = ComparePipeline([
+        estimators = [
             ('25ns', Pipeline([
                 ("reconstruction", Analysis(options.data, plot)),
                 ("spectrum", HistogramSelector("spectrum", plot)),
@@ -78,7 +150,13 @@ class TofUncertainty(TransformerBase):
                 ("range", RangeSetter(options.fit_range)),
                 ("decorate", OutputDecorator(*options.decorate)),
             ])),
-        ], plot)
+        ]
+
+        # labels = list(zip(*estimators))[0]
+        ratio = ReducePipeline(
+            ParallelPipeline(estimators),
+            lambda x, loggs: tof_ratio(x, loggs, fitf=options.fitf)
+        )
 
         self.pipeline = Pipeline([
             ("spectrum_isolated_spectra_ratio", ratio),

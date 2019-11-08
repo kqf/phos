@@ -21,11 +21,11 @@ def data():
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta"
+    # "#eta"
 ])
 def test_tof(data, particle):
     tof = TofUncertainty(TofUncertaintyOptions(particle=particle), plot=True)
     with open_loggs() as loggs:
         output = tof.transform(data, loggs)
-        Comparator().compare(output)
+        # Comparator().compare(output)
     assert len(output) > 0

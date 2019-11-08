@@ -545,6 +545,14 @@ def chi2ndf(hist1, hist2):
     return chi2(hist1, hist2) / hist1.GetNbinsX()
 
 
+# Use multipledispatch
+def chi2ndff(func):
+    ndf = func.GetNDF()
+    if ndf == 0:
+        ndf = 1
+    return func.GetChisquare() / ndf
+
+
 def hist_range(hist):
     x = hist.GetXaxis()
     return (

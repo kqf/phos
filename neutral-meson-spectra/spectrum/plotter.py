@@ -153,7 +153,6 @@ def plot(
     x = xlimits or np.concatenate([br.bins(h).centers for h in histogrammed])
     y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
 
-    cache = []
     graphed = graphs + list(map(br.hist2graph, hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
         box = ROOT.TH1F("box", "", 1000, min(x) * 0.95, max(x) * 1.05)
