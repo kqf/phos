@@ -1,11 +1,15 @@
 import ROOT
+import spectrum.broot as br
 from spectrum.processing import DataSlicer, InvariantMassExtractor
 from spectrum.pipeline import Pipeline
-from spectrum.pipeline import ComparePipeline
+from spectrum.pipeline import ReducePipeline
+from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
+from spectrum.comparator import Comparator
+from spectrum.plotter import plot
 
 
 class IdentityExtractor(object):
@@ -72,10 +76,73 @@ class EpRatioEstimator(TransformerBase):
         ])
 
 
+def report(func):
+    print(r"\def \uncertaintyEpChi {{{val:.3g}}}".format(
+        val=br.chi2ndff(func)
+    ))
+    print(r"\def \uncertaintyEp {{{val:.5g}}}".format(
+        val=func.GetParameter(0)
+    ))
+    print(r"\def \uncertaintyEpError {{{val:.5g}}}".format(
+        val=func.GetParError(0)
+    ))
+    xmin, xmax = ROOT.Double(0), ROOT.Double(0)
+    func.GetRange(xmin, xmax)
+    print(r"\def \uncertaintyEpLowPt {{{val:.3g}}}".format(
+        val=xmin
+    ))
+    print(r"\def \uncertaintyEpHighPt {{{val:.3g}}}".format(
+        val=xmax
+    ))
+
+
+def double_ratio(histograms, loggs, fitf, labels):
+    for h, l in zip(histograms, labels):
+        h.SetTitle(l)
+
+    plot(
+        histograms,
+        logy=False,
+        logx=False,
+        xtitle="p_{T} (GeV/#it{c})",
+        csize=(96, 128),
+        oname="results/systematics/gescale/ep.pdf",
+        more_logs=False,
+        yoffset=1.6,
+    )
+    ratio = Comparator(stop=False).compare(histograms)
+    ratio.Fit(fitf, "R")
+    ratio.SetTitle("Double ratio")
+    fitf.SetRange(0.7, 2)
+    fitf.SetTitle("Constant fit")
+    fitf.SetLineStyle(9)
+    fitf.SetLineColor(ROOT.kBlack)
+    report(fitf)
+
+    plot(
+        [ratio, fitf],
+        logy=False,
+        logx=False,
+        ytitle="(E/p)_{Data} / (E/p)_{MC}",
+        xtitle="p_{T} (GeV/#it{c})",
+        csize=(96, 128),
+        oname="results/systematics/gescale/double-ep.pdf",
+        more_logs=False,
+        yoffset=1.6,
+    )
+    return ratio
+
+
 class DataMCEpRatioEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(DataMCEpRatioEstimator, self).__init__(plot)
-        self.pipeline = ComparePipeline([
-            ("data", EpRatioEstimator(options.data)),
-            ("mc", EpRatioEstimator(options.mc)),
-        ], plot=plot)
+        estimators = [
+            ("Data", EpRatioEstimator(options.data)),
+            ("MC", EpRatioEstimator(options.mc)),
+        ]
+
+        labels = list(zip(*estimators))[0]
+        self.pipeline = ReducePipeline(
+            ParallelPipeline(estimators),
+            lambda x, loggs: double_ratio(x, loggs, options.data.fitf, labels)
+        )

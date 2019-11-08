@@ -8,7 +8,7 @@ PROTONS_PATH=../../
 
 # Run final efficiency fine nonlinearity binning
 #
-DATASET = LHC17j3b1
+DATASET = LHC17j3b2
 OUTDIR = results/mc/single/pi0/final_nonlinearity_scan_6
 TEST_SELECTION = PhysTender
 

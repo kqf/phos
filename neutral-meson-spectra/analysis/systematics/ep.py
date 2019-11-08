@@ -70,7 +70,7 @@ def test_data_mc_ratio(double_ratio_data):
     estimator = DataMCEpRatioEstimator(
         DataMCEpRatioOptions(), plot=True
     )
-    with open_loggs("ep") as loggs:
+    with open_loggs() as loggs:
         output = estimator.transform(double_ratio_data, loggs)
         Comparator().compare(output)
     assert len(output) > 0
