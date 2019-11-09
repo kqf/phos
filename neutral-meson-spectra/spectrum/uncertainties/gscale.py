@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import ROOT
 import spectrum.broot as br
-from spectrum.comparator import Comparator
+import spectrum.sutils as su
 from spectrum.pipeline import TransformerBase
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
@@ -10,6 +10,7 @@ from spectrum.options import DataMCEpRatioOptions
 from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import Pipeline
+from spectrum.plotter import plot
 from vault.formulas import FVault
 
 from vault.datavault import DataVault
@@ -49,6 +50,7 @@ class GScaleOptions(object):
     def __init__(self, particle="#pi^{0}"):
         self.cyield = CompositeCorrectedYieldOptions(particle=particle)
         self.ep_ratio = DataMCEpRatioOptions()
+        self.particle = particle
 
 
 class MockEpRatio(TransformerBase):
@@ -110,12 +112,18 @@ class GScale(TransformerBase):
         lower = self.ratiofunc(fitf, "low", ep_ratio, 38)
         upper = self.ratiofunc(fitf, "up", -ep_ratio, 47)
 
-        diff = Comparator(stop=self.plot, rrange=(-1,), crange=(0.9, 1.1))
-        diff.compare(
-            self.hist(lower, "f(p_{T} + #Delta p_{T})/f(p_{T})"),
-            self.hist(upper, "f(p_{T} - #Delta p_{T})/f(p_{T})")
+        upper.SetTitle("f(p_{T} + #Delta p_{T})/f(p_{T})")
+        upper.SetLineColor(ROOT.kBlue + 1)
+        lower.SetTitle("f(p_{T} - #Delta p_{T})/f(p_{T})")
+        lower.SetLineColor(ROOT.kRed + 1)
+        lower.GetXaxis().SetTitle("p_{T} (GeV/#it{c})")
+        plot(
+            [lower, upper],
+            logy=False,
+            csize=(96, 128),
+            oname="results/systematics/gescale/{}.pdf".format(
+                su.spell(self.options.particle)),
         )
-
         syst_error = corrected_yield.Clone("gscale")
         syst_error.Reset()
         syst_error.SetTitle("")
@@ -126,11 +134,3 @@ class GScale(TransformerBase):
         for i, b in enumerate(bins):
             syst_error.SetBinContent(i + 1, b)
         return syst_error
-
-    def hist(self, tfunc, label):
-        thist = tfunc.GetHistogram()
-        thist.label = label
-        thist.SetTitle("")
-        thist.GetXaxis().SetTitle("p_{T} (GeV/#it{c})")
-        thist.GetYaxis().SetTitle("ratio to Tsallis function f")
-        return thist

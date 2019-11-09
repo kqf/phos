@@ -7,7 +7,6 @@ from spectrum.options import Options
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import RebinTransformer
-from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import OutputDecorator
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
@@ -64,11 +63,8 @@ def tof_ratio(histograms, loggs, fitf):
         logy=True,
         logx=True,
         xtitle="p_{T} (GeV/#it{c})",
-        # xlimits=(0.8, 9.6),
         csize=(96, 128),
-        # legend_pos=(0.5, 0.7, 0.7, 0.85),
         oname="results/systematics/tof/yields.pdf",
-        # stop=self.plot,
         more_logs=False,
         yoffset=1.6,
     )
@@ -89,11 +85,8 @@ def tof_ratio(histograms, loggs, fitf):
         xlimits=(0.8, 9.6),
         ylimits=(0, 2.5),
         csize=(96, 128),
-        # legend_pos=(0.5, 0.7, 0.7, 0.85),
         oname="results/systematics/tof/ratios.pdf",
-        # stop=self.plot,
         more_logs=False,
-        # yoffset=1.6,
     )
     return ratio
 
@@ -114,7 +107,7 @@ class TofUncertaintyOptions(object):
 
 
 class RatioFitter(TransformerBase):
-    title = "TOF uncertainty; p_T, GeV/c; Relateive error, %"
+    title = "TOF uncertainty; p_{T} (GeV/#it{c}); Relateive error, %"
 
     def __init__(self, fit_range, plot=False):
         super(RatioFitter, self).__init__(plot)
