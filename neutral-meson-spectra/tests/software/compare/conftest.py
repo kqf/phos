@@ -19,7 +19,7 @@ def data():
 def _spectrum(name, par):
     function = ROOT.TF1(name, FVault().func("tsallis"), 0.3, 15, 3)
     function.SetParameters(*par)
-    title = '%s p_{T} spectrum; p_{T} (GeV/#it{c})/c; #frac{dN}{dp_{T}}' % name
+    title = '%s p_{T} spectrum; p_{T} (GeV/#it{c}); #frac{dN}{dp_{T}}' % name
     histogram = function.GetHistogram().Clone()
     histogram.SetName(name + "_spectrum")
     histogram.SetTitle(title)

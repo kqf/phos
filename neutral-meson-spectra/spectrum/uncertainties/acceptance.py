@@ -47,7 +47,7 @@ def acceptance_data(particle="#pi^{0}"):
 
 
 class AcceptanceOptions(object):
-    title = "Acceptance uncertainty; p_{T} (GeV/#it{c})/c; Relateive error, %"
+    title = "Acceptance uncertainty; p_{T} (GeV/#it{c}); Relateive error, %"
 
     def __init__(self, particle="#pi^{0}"):
         super(AcceptanceOptions, self).__init__()

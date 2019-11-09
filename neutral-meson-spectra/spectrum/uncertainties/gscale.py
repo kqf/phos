@@ -131,6 +131,6 @@ class GScale(TransformerBase):
         thist = tfunc.GetHistogram()
         thist.label = label
         thist.SetTitle("")
-        thist.GetXaxis().SetTitle("p_{T} (GeV/#it{c})/c")
+        thist.GetXaxis().SetTitle("p_{T} (GeV/#it{c})")
         thist.GetYaxis().SetTitle("ratio to Tsallis function f")
         return thist

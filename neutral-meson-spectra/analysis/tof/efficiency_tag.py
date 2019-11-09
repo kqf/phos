@@ -76,7 +76,7 @@ def fit_tof_efficiency(dataset):
         "%s %s" % (
             "Timing cut efficiency for efficiency",
             # options.fitfunc.GetChisquare() / options.fitfunc.GetNDF(),
-            "; p_{T} (GeV/#it{c})/c; efficiency"
+            "; p_{T} (GeV/#it{c}); efficiency"
         )
     )
     # diff = Comparator(crange=(0.2, 1.05))

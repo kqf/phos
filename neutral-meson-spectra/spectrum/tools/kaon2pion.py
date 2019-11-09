@@ -46,7 +46,7 @@ class KaonToPionRatioData(TransformerBase):
 def rebin_compare(inputs, loggs):
     data, mc = inputs
     title = """
-    Charged kaon to charged pion yields ratio; p_{T} (GeV/#it{c})/c
+    Charged kaon to charged pion yields ratio; p_{T} (GeV/#it{c})
     ; #frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}}"
     """
     mc.SetTitle(title)
