@@ -224,11 +224,11 @@ def hplot(
     colors='auto',
     ltext_size=0.035,
 ):
-    x = xlimits or np.concatenate([br.bins(h).centers for h in data])
+    x = xlimits or np.concatenate([br.edges(h) for h in data])
     y = ylimits or np.concatenate([br.bins(h).contents for h in data])
 
     with style(), pcanvas("cn", size=csize, stop=stop, oname=oname) as canvas:
-        box = ROOT.TH1F("box", "", 1000, min(x) * 0.95, max(x) * 1.05)
+        box = ROOT.TH1F("box", "", 1000, min(x), max(x))
         box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
         box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
         box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")

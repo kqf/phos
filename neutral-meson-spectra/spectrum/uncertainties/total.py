@@ -64,7 +64,7 @@ memory = Memory(".joblib-cachedir", verbose=0)
 
 
 @memory.cache()
-def uncertainties(particle, data):
+def errors(data, particle):
     options = TotalUncertaintyOptions(particle=particle)
     steps = [
         ("yield extraction", YieldExtractioin(options.yields)),
@@ -123,15 +123,12 @@ class TotalUncertainty(TransformerBase):
         particle = options.particle
         self.options = options
         self.pipeline = Pipeline([
-            ("efficiencies", FunctionTransformer(
-                lambda data, loggs: uncertainties(particle, data)
-            )),
+            ("errors", FunctionTransformer(errors, True, particle=particle)),
             ("sum", FunctionTransformer(self.sum))
         ])
         self.steps = options.steps
 
     def sum(self, data, loggs):
-        uncertainties = np.array([br.bins(h).contents for h in data])
         for uncert, label in zip(data, self.steps):
             uncert.SetTitle(label)
             uncert.GetYaxis().SetTitle("rel. sys. error")
@@ -139,6 +136,7 @@ class TotalUncertainty(TransformerBase):
             for i in br.hrange(uncert):
                 uncert.SetBinError(i, 0)
 
+        uncertainties = np.array([br.bins(h).contents for h in data])
         total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
         total_hist = data[0].Clone("total_uncertainty")
         total_hist.SetTitle("total")
@@ -153,7 +151,7 @@ class TotalUncertainty(TransformerBase):
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.2, 0.7, 0.4, 0.85),
-            oname="results/systematics/{}.pdf".format(
+            oname="results/systematics/total/{}.pdf".format(
                 su.spell(self.options.particle)
             ),
             more_logs=False,

@@ -152,15 +152,18 @@ class HistogramScaler(object):
         return inputs
 
 
-class FunctionTransformer(object):
+class FunctionTransformer(TransformerBase):
 
-    def __init__(self, func):
+    def __init__(self, func, no_loggs=False, **kwargs):
         super(FunctionTransformer, self).__init__()
         self.func = func
+        self.no_loggs = no_loggs
+        self.kwargs = kwargs
 
     def transform(self, inputs, loggs):
-        output = self.func(inputs, loggs=loggs)
-        return output
+        if not self.no_loggs:
+            return self.func(inputs, loggs=loggs, **self.kwargs)
+        return self.func(inputs, **self.kwargs)
 
 
 class Pipeline(object):

@@ -6,7 +6,6 @@ from spectrum.comparator import Comparator
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
 from spectrum.uncertainties.nonlinearity import nonlinearity_scan_data
-from spectrum.uncertainties.nonlinearity import efficiencies
 
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
@@ -18,9 +17,6 @@ from vault.datavault import DataVault
 def nbins():
     return 9
 
-# TODO: Look at generated histogram in different selection
-#       fix this asap
-
 
 # Benchmark:
 # In the 5 TeV analysis U_nonlin ~ 0.01
@@ -30,8 +26,8 @@ def nbins():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+    # "#pi^{0}",
+    "#eta",
 ])
 def test_nonlinearity_uncertainty(particle, nbins):
     prod = "single #pi^{0} nonlinearity scan"
@@ -39,24 +35,11 @@ def test_nonlinearity_uncertainty(particle, nbins):
     options.factor = 1.
 
     with open_loggs() as loggs:
-        chi2ndf = NonlinearityUncertainty(options).transform(
+        uncert = NonlinearityUncertainty(options).transform(
             nonlinearity_scan_data(nbins, prod),
             loggs
         )
-        Comparator().compare(chi2ndf)
-
-
-@pytest.mark.skip("This one is used only to check the uncertainties by eyes")
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_different_nonlinearities(nbins):
-    prod = "single #pi^{0} nonlinearity scan"
-    _, data = nonlinearity_scan_data(nbins, prod)
-    with open_loggs() as loggs:
-        data = efficiencies(data, loggs, nbins=nbins)
-        print("Done")
-        for i in range(0, len(data), nbins):
-            Comparator().compare(data[i: i + nbins])
+        Comparator().compare(uncert)
 
 
 @pytest.fixture

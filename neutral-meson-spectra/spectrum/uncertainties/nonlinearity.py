@@ -1,6 +1,8 @@
 import spectrum.broot as br
 from joblib import Memory
-# from spectrum.pipeline import RebinTransformer
+from spectrum.pipeline import RebinTransformer
+from spectrum.pipeline import Pipeline
+from spectrum.pipeline import FunctionTransformer
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.output import open_loggs
@@ -21,16 +23,13 @@ class NonlinearityUncertaintyOptions(object):
         self.particle = particle
 
 
-def chi2_func(hist1, hist2, loggs):
-    return br.chi2ndf(hist1, hist2)
-
-
 memory = Memory(".joblib-cachedir", verbose=0)
 
 
+# TODO: Handle loggs
 @memory.cache()
-def efficiencies(data, particle, plot=False):
-    options = NonlinearityUncertaintyOptions(particle=particle)
+def _eff(data, plot=False):
+    options = NonlinearityUncertaintyOptions()
     mc = ParallelPipeline([
         ("efficiency_" + str(i), Efficiency(options.eff, plot))
         for i in range(options.nbins ** 2)
@@ -40,51 +39,54 @@ def efficiencies(data, particle, plot=False):
     return output
 
 
+def visualise(effs, loggs, stop=False):
+    plot(
+        effs,
+        xtitle="p_{T} (GeV/#it{c})",
+        csize=(96, 128),
+        legend_pos=None,
+        oname="results/systematics/nonlinearity/efficiencies.pdf",
+        stop=stop,
+        more_logs=False,
+        colors='coolwarm',
+        yoffset=1.6,
+        ltext_size=0.015
+    )
+
+    average = br.average(effs, "averaged yield")
+    average.GetYaxis().SetTitle("average")
+    plot(
+        list(map(lambda x: br.ratio(x, average), effs)),
+        logy=False,
+        xtitle="p_{T} (GeV/#it{c})",
+        csize=(96, 128),
+        legend_pos=None,
+        oname="results/systematics/nonlinearity/ratios.pdf",
+        stop=stop,
+        colors='coolwarm',
+        more_logs=False,
+        yoffset=1.6,
+        ltext_size=0.015
+    )
+
+    uncert, rms, mean = br.systematic_deviation(effs)
+    uncert.logy = False
+    loggs.update({"uncertainty": uncert})
+    loggs.update({"rms": rms})
+    loggs.update({"mean": mean})
+    return uncert
+
+
 class NonlinearityUncertainty(TransformerBase):
     def __init__(self, options=NonlinearityUncertaintyOptions(),
-                 chi2_=chi2_func,
                  plot=True):
         super(NonlinearityUncertainty, self).__init__()
         self.options = options
-
-    def transform(self, data, loggs):
-        print(self.options.particle)
-        effs = efficiencies(data, self.options.particle)
-        plot(
-            effs,
-            xtitle="p_{T} (GeV/#it{c})",
-            csize=(96, 128),
-            legend_pos=None,
-            oname="results/systematics/nonlinearity/efficiencies.pdf",
-            stop=self.plot,
-            more_logs=False,
-            colors='coolwarm',
-            yoffset=1.6,
-            ltext_size=0.015
-        )
-
-        average = br.average(effs, "averaged yield")
-        average.GetYaxis().SetTitle("average")
-        plot(
-            list(map(lambda x: br.ratio(x, average), effs)),
-            logy=False,
-            xtitle="p_{T} (GeV/#it{c})",
-            csize=(96, 128),
-            legend_pos=None,
-            oname="results/systematics/nonlinearity/ratios.pdf",
-            stop=self.plot,
-            colors='coolwarm',
-            more_logs=False,
-            yoffset=1.6,
-            ltext_size=0.015
-        )
-
-        uncert, rms, mean = br.systematic_deviation(effs)
-        uncert.logy = False
-        loggs.update({"uncertainty": uncert})
-        loggs.update({"rms": rms})
-        loggs.update({"mean": mean})
-        return uncert
+        self.pipeline = Pipeline([
+            ("effs", FunctionTransformer(_eff, no_loggs=True, plot=plot)),
+            ("visualise", FunctionTransformer(visualise, stop=plot)),
+            ("rebin", RebinTransformer(True, options.edges)),
+        ])
 
 
 def form_histnames(nbins=4):
