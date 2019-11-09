@@ -93,7 +93,7 @@ class EfficiencyOptions(object):
     histpattern = """
     #varepsilon = #Delta #phi #Delta y/ 2 #pi
     #frac{{Number of reconstructed {particle}}}{{Number of generated primary {particle}}}
-    ; p_{{T}}, GeV/c; efficiency #times acceptance
+    ; p_{{T}} (GeV/#it{{c}}); efficiency #times acceptance
     """  # noqa
 
     def __init__(self, particle="#pi^{0}",
@@ -140,7 +140,7 @@ class CompositeEfficiencyOptions(object):
 class CorrectedYieldOptions(object):
 
     histpattern = """
-        Corrected {particle} yield; p_{{T}}, GeV/c;
+        Corrected {particle} yield; p_{{T}} (GeV/#it{{c}});
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
     """
 
@@ -169,7 +169,7 @@ class CorrectedYieldOptions(object):
 class CompositeCorrectedYieldOptions(object):
 
     histpattern = """
-        Corrected {particle} yield; p_{{T}}, GeV/c;
+        Corrected {particle} yield; p_{{T}} (GeV/#it{{c}});
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}
     """
 

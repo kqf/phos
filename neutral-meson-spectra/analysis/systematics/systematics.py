@@ -17,7 +17,7 @@ def dataset(particle):
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta",
+    # "#eta",
 ])
 def test_calculates_total_uncertainty(particle, dataset):
     with open_loggs() as loggs:

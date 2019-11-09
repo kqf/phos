@@ -1,3 +1,4 @@
+import ROOT
 import numpy as np
 from joblib import Memory
 
@@ -36,11 +37,12 @@ from spectrum.uncertainties.material import MaterialBudget
 from spectrum.uncertainties.material import MaterialBudgetOptions
 from spectrum.uncertainties.material import material_budget_data
 
-from spectrum.comparator import Comparator
+from spectrum.plotter import hplot
 import spectrum.broot as br
+import spectrum.sutils as su
 
 
-NBINS = 5
+NBINS = 9
 
 
 def data_total_uncert(particle):
@@ -89,7 +91,8 @@ def uncertainties(particle, data):
 
 
 class TotalUncertaintyOptions():
-    title = "Total systematic uncertainty; p_{T} (GeV/#it{c}), relative sys. err."
+    title = "Total systematic uncertainty; " \
+        "p_{T} (GeV/#it{c}), relative sys. err."
 
     def __init__(self, particle):
         self.yields = YieldExtractioinUncertanityOptions(particle=particle)
@@ -130,18 +133,30 @@ class TotalUncertainty(TransformerBase):
     def sum(self, data, loggs):
         uncertainties = np.array([br.bins(h).contents for h in data])
         for uncert, label in zip(data, self.steps):
-            uncert.SetTitle("")
-            uncert.GetYaxis().SetTitle("rel. sys. error, %")
+            uncert.SetTitle(label)
+            uncert.GetYaxis().SetTitle("rel. sys. error")
+            uncert.SetLineColor(-1)
             for i in br.hrange(uncert):
                 uncert.SetBinError(i, 0)
-            uncert.label = label
 
         total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
         total_hist = data[0].Clone("total_uncertainty")
-        total_hist.SetTitle(self.options.title)
-        total_hist.SetTitle("")
-        total_hist.label = "total"
+        total_hist.SetTitle("total")
+        total_hist.SetLineColor(ROOT.kBlack)
         for i in br.hrange(total_hist):
             total_hist.SetBinContent(i, total_uncert[i - 1])
-        Comparator().compare(list(data) + [total_hist])
+
+        hplot(
+            list(data) + [total_hist],
+            logx=False,
+            logy=False,
+            xtitle="p_{T} (GeV/#it{c})",
+            csize=(96, 128),
+            legend_pos=(0.2, 0.7, 0.4, 0.85),
+            oname="results/systematics/{}.pdf".format(
+                su.spell(self.options.particle)
+            ),
+            more_logs=False,
+            yoffset=1.6,
+        )
         return total_hist

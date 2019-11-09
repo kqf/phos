@@ -204,3 +204,66 @@ def plot(
         if legend_pos is not None:
             ll = legend(graphed + functions, legend_pos, ltitle, ltext_size)
             ll.Draw("same")
+
+
+def hplot(
+    data,
+    xtitle=None,
+    ytitle=None,
+    logx=True,
+    logy=True,
+    stop=True,
+    xlimits=None,
+    ylimits=None,
+    csize=(128, 96),
+    oname=None,
+    legend_pos=(0.6, 0.7, 0.8, 0.85),
+    ltitle=None,
+    more_logs=True,
+    yoffset=1.2,
+    colors='auto',
+    ltext_size=0.035,
+):
+    x = xlimits or np.concatenate([br.bins(h).centers for h in data])
+    y = ylimits or np.concatenate([br.bins(h).contents for h in data])
+
+    with style(), pcanvas("cn", size=csize, stop=stop, oname=oname) as canvas:
+        box = ROOT.TH1F("box", "", 1000, min(x) * 0.95, max(x) * 1.05)
+        box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
+        box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
+        box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
+        box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
+        box.GetXaxis().SetMoreLogLabels(more_logs)
+        box.GetYaxis().SetTitleOffset(yoffset)
+
+        canvas.SetLeftMargin(0.15)
+        canvas.SetRightMargin(0.05)
+        canvas.SetLogx(logx)
+        canvas.SetLogy(logy)
+        box.Draw()
+        for i, hist in enumerate(data):
+            if colors == 'auto' and hist.GetLineColor() < 0:
+                color, marker = br.auto_color_marker(i)
+                hist.SetLineColor(color)
+                hist.SetMarkerColor(color)
+
+            if colors == 'levels' and hist.GetLineColor() < 0:
+                alpha = np.logspace(0, 0.9, len(data))[i]
+                hist.SetLineColorAlpha(ROOT.kRed + 1, alpha)
+                hist.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
+
+            if colors == 'coolwarm' and hist.GetLineColor() < 0:
+                palette = sns.color_palette("coolwarm", len(data))
+                color, _ = define_color(*palette[i])
+                hist.SetLineColor(color)
+                hist.SetMarkerColor(color)
+
+            options = hist.GetDrawOption() or "hist"
+            hist.SetFillStyle(0)
+            hist.SetMarkerStyle(20)
+            hist.SetMarkerSize(1)
+            hist.Draw("same " + options)
+
+        if legend_pos is not None:
+            ll = legend(data, legend_pos, ltitle, ltext_size)
+            ll.Draw("same")
