@@ -146,6 +146,7 @@ class YieldExtractioin(TransformerBase):
             oname="results/systematics/yields/spectra-{}.pdf".format(
                 su.spell(self.options.particle)),
             stop=self.plot,
+            colors='coolwarm',
             more_logs=False,
             yoffset=1.6,
             ltext_size=0.015
@@ -162,6 +163,7 @@ class YieldExtractioin(TransformerBase):
             oname="results/systematics/yields/ratios-{}.pdf".format(
                 su.spell(self.options.particle)),
             stop=self.plot,
+            colors='coolwarm',
             more_logs=False,
             yoffset=1.6,
             ltext_size=0.015

@@ -67,6 +67,7 @@ def tof_ratio(histograms, loggs, fitf):
         oname="results/systematics/tof/yields.pdf",
         more_logs=False,
         yoffset=1.6,
+        ltitle="#pi^{0} #rightarrow #gamma #gamma",
     )
     ratio = Comparator(stop=False).compare(histograms)
     ratio.Fit(fitf, "R")
@@ -87,6 +88,7 @@ def tof_ratio(histograms, loggs, fitf):
         csize=(96, 128),
         oname="results/systematics/tof/ratios.pdf",
         more_logs=False,
+        ltitle="#pi^{0} #rightarrow #gamma #gamma",
     )
     return ratio
 

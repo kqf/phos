@@ -113,6 +113,7 @@ class Acceptance(TransformerBase):
             stop=self.plot,
             more_logs=False,
             yoffset=1.6,
+            ltitle="#pi^{0} #rightarrow #gamma #gamma",
         )
         average = br.average(spectrums, "averaged yield")
         average.SetTitle("average")
@@ -128,5 +129,6 @@ class Acceptance(TransformerBase):
             stop=self.plot,
             more_logs=False,
             yoffset=1.8,
+            ltitle="#pi^{0} #rightarrow #gamma #gamma",
         )
         return ratios

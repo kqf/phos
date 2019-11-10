@@ -85,7 +85,11 @@ def errors(data, particle):
 
     labels, _ = zip(*steps)
     for hist, label in zip(output, labels):
-        hist.label = label
+        hist.SetTitle(label)
+        hist.GetYaxis().SetTitle("rel. sys. error")
+        hist.SetLineColor(-1)
+        for i in br.hrange(hist):
+            hist.SetBinError(i, 0)
 
     return output
 
@@ -129,13 +133,6 @@ class TotalUncertainty(TransformerBase):
         self.steps = options.steps
 
     def sum(self, data, loggs):
-        for uncert, label in zip(data, self.steps):
-            uncert.SetTitle(label)
-            uncert.GetYaxis().SetTitle("rel. sys. error")
-            uncert.SetLineColor(-1)
-            for i in br.hrange(uncert):
-                uncert.SetBinError(i, 0)
-
         uncertainties = np.array([br.bins(h).contents for h in data])
         total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
         total_hist = data[0].Clone("total_uncertainty")
@@ -156,5 +153,8 @@ class TotalUncertainty(TransformerBase):
             ),
             more_logs=False,
             yoffset=1.6,
+            # ltitle="{} #rightarrow #gamma #gamma".format(
+            #     self.options.particle
+            # ),
         )
         return total_hist
