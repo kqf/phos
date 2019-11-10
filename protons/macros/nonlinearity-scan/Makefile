@@ -9,7 +9,7 @@ PROTONS_PATH=../../
 # Run final efficiency fine nonlinearity binning
 #
 DATASET = LHC17j3b2
-OUTDIR = results/mc/single/pi0/final_nonlinearity_scan_7
+OUTDIR = results/mc/single/pi0/final_nonlinearity_scan_8
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
