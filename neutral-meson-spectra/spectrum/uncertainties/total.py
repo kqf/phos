@@ -88,9 +88,9 @@ def errors(data, particle):
         hist.SetTitle(label)
         hist.GetYaxis().SetTitle("rel. sys. error")
         hist.SetLineColor(-1)
+        hist.SetAxisRange(0, 1, "Y")
         for i in br.hrange(hist):
             hist.SetBinError(i, 0)
-
     return output
 
 

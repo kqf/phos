@@ -258,11 +258,11 @@ def hplot(
                 hist.SetLineColor(color)
                 hist.SetMarkerColor(color)
 
-            options = hist.GetDrawOption() or "hist"
             hist.SetFillStyle(0)
             hist.SetMarkerStyle(20)
             hist.SetMarkerSize(1)
-            hist.Draw("same " + options)
+            # hist.SetLineWidth(2)
+            hist.Draw("same hist")
 
         if legend_pos is not None:
             ll = legend(data, legend_pos, ltitle, ltext_size)

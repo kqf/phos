@@ -111,7 +111,7 @@ def double_ratio(histograms, loggs, fitf, labels):
         yoffset=1.6,
     )
     ratio = Comparator(stop=False).compare(histograms)
-    ratio.Fit(fitf, "R")
+    ratio.Fit(fitf, "RQ")
     ratio.SetTitle("Double ratio")
     fitf.SetRange(0.7, 2)
     fitf.SetTitle("Constant fit")

@@ -40,7 +40,8 @@ class RebinTransformer(TransformerBase):
 
     @staticmethod
     def scale_bin_width(hist, aggregated_widths, normalized):
-        hist = hist.Clone()
+        name = "{}_width".format(hist.GetName())
+        hist = hist.Clone(name)
         for i, width in zip(br.hrange(hist), aggregated_widths):
             hist.SetBinContent(i, hist.GetBinContent(i) / width)
             hist.SetBinError(i, hist.GetBinError(i) / width)
@@ -64,8 +65,8 @@ class RebinTransformer(TransformerBase):
 
         nbins = len(self.edges) - 1
         edges = array.array('d', self.edges)
-        rebinned = hist.Clone("{}_rebinned".format(hist.GetName()))
-        rebinned = rebinned.Rebin(nbins, rebinned.GetName(), edges)
+        rebinned = hist.Rebin(nbins, hist.GetName(), edges)
+        rebinned.SetName("{}_rebinned".format(hist.GetName()))
 
         rebinned = self.scale_bin_width(
             rebinned,
