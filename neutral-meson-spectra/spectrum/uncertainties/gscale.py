@@ -21,8 +21,8 @@ def ep_data(prod="data", version="latest"):
     return DataVault().input(
         prod,
         version=version,
-        listname="PHOSEpRatioCoutput1",
-        histname="Ep_ele",
+        listname="EpRatio",
+        histname="EpElectronsPSM0",
         use_mixing=False)
 
 
@@ -30,7 +30,7 @@ def ge_scale_data(particle):
     mcproduction = "single {}".format(particle)
     return (
         (
-            ep_data("data"),
+            ep_data("data", "tof"),
             ep_data("pythia8"),
         ),
         (
@@ -69,7 +69,7 @@ class TsallisFitter(TransformerBase):
 
     def transform(self, corrected_yield, loggs):
         fitf = self.fitfunc("tsallis_")
-        corrected_yield.Fit(fitf)
+        corrected_yield.Fit(fitf, "RQ")
         # corrected_yield.Draw()
         # diff = Comparator(stop=self.plot)
         # diff.compare(corrected_yield)

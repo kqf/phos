@@ -66,7 +66,7 @@ class DoubleRatioFitter(TransformerBase):
 
     def transform(self, double_ratio, loggs):
         double_ratio.SetMarkerSize(0)
-        double_ratio.Fit(self.fitfunc, "R")
+        double_ratio.Fit(self.fitfunc, "RQ")
         self.fitfunc.SetRange(0, 20)
         title = "Chi2/ndf = " + \
             str(self.fitfunc.GetChisquare() / self.fitfunc.GetNDF())

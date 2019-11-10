@@ -91,6 +91,7 @@ def errors(data, particle):
         hist.SetAxisRange(0, 1, "Y")
         for i in br.hrange(hist):
             hist.SetBinError(i, 0)
+
     return output
 
 

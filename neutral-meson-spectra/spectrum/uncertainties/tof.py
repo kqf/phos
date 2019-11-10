@@ -70,7 +70,7 @@ def tof_ratio(histograms, loggs, fitf):
         ltitle="#pi^{0} #rightarrow #gamma #gamma",
     )
     ratio = Comparator(stop=False).compare(histograms)
-    ratio.Fit(fitf, "R")
+    ratio.Fit(fitf, "RQ")
     ratio.SetTitle("Data")
     fitf.SetTitle("Constant fit")
     fitf.SetLineStyle(9)

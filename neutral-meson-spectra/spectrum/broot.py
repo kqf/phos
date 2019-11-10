@@ -116,6 +116,7 @@ class io(object):
 
             if not lst:
                 infile.ls()
+                print(filename, selection)
                 raise IOError("No such selection {1} in file: \
                     {0}".format(filename, selection))
             return klass._dir_to_list(lst)
@@ -283,7 +284,7 @@ def ratio(a, b, option="B", loggs=None):
     else:
         ratio.Divide(a, b, 1, 1, option)
 
-    titles = a.GetYaxis().GetTitle(), b.GetYaxis().GetTitle()
+    titles = a.GetYaxis().GetTitle().strip(), b.GetYaxis().GetTitle().strip()
     if not any(titles):
         try:
             label = a.label + " / " + b.label
@@ -502,7 +503,7 @@ def sum_trimm(hists, ranges):
 
 def confidence_intervals(hist, func, options="R", histbining=None):
     ci = copy(histbining or hist)
-    hist.Fit(func, options)
+    hist.Fit(func, options + "Q")
     ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(ci)
     ci.SetStats(False)
     ci.SetOption("E3")
