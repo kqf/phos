@@ -48,7 +48,7 @@ NBINS = 9
 def data_total_uncert(particle):
     data = [
         yield_extraction_data(particle=particle),
-        nonlinearity_scan_data(NBINS, "single #pi^{0}"),
+        nonlinearity_scan_data(NBINS, "single #pi^{0} nonlinearity scan"),
         tof_data(),
         ge_scale_data(particle),
         acceptance_data(),
@@ -71,7 +71,7 @@ def errors(data, particle):
         ("nonlinearity", NonlinearityUncertainty(options.nonlin)),
         ("tof", TofUncertainty(options.tof)),
         ("global energy scale", GScale(options.gescale)),
-        ("accepntace", Acceptance(options.acceptance)),
+        ("acceptance", Acceptance(options.acceptance)),
         ("material budget", MaterialBudget(options.material))
     ]
 
@@ -116,7 +116,7 @@ class TotalUncertaintyOptions():
             "nonlinearity",
             "tof",
             "global energy scale",
-            "accepntace",
+            "acceptance",
             "material budget",
         ]
         if particle == "#pi^{0}":
