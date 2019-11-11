@@ -1,3 +1,8 @@
+# Uncomment to use makefile for each period separately
+# year=2018
+# period=LHC18b
+# name=iteration1
+
 TARGETDIR=/alice/data/$(year)/$(period)
 TRAIN=/pass1/AOD208/PWGGA/GA_pp_AOD/$(train)_child_$(child)
 DIRECTORY=../results/$(year)/$(period)/$(name)

@@ -554,6 +554,13 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
   gPad->SetLeftMargin(0.12);
   gPad->SetRightMargin(0.08);
   gPad->SetLogy();
+  gPad->SetGridx()
+  gPad->SetGridy()
+
+
+  for(int i = 0; i < 4; ++i) 
+    hFactorDistr[i]->SetTitle("");
+
   hFactorDistr[0]->SetLineColor(kBlue + 1);
   hFactorDistr[1]->SetLineColor(kRed + 1);
   hFactorDistr[2]->SetLineColor(kGreen + 1);
@@ -563,12 +570,21 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
   hFactorDistr[2]->Draw("same");
   hFactorDistr[3]->Draw("same");
 
+  c1->SetTickx();
+  c1->SetTicky();
+  c1->SetTickx();
+  c1->SetTicky();
+  c1->SetGridx();
+  c1->SetGridy();
+
   // ... with legend
-  TLegend *leg = new TLegend(0.45,0.65,0.90,0.85);
-  leg->AddEntry(hFactorDistr[0], "NTimesInCluster, low energy","l");
-  leg->AddEntry(hFactorDistr[2], "ETotalCluster, low energy","l");
-  leg->AddEntry(hFactorDistr[1], "NTimesInCluster, high energy","l");
-  leg->AddEntry(hFactorDistr[3], "EtotalCluster, high energy","l");
+  TLegend *leg = new TLegend(0.45,0.65,0.90,0.80);
+  leg->AddEntry(hFactorDistr[0], "N_{times in cluster}, E_{cluster} < 1 GeV","l");
+  leg->AddEntry(hFactorDistr[2], "E_{total} in cluster, E_{cluster} < 1 GeV","l");
+  leg->AddEntry(hFactorDistr[1], "N_{times in cluster}, E_{cluster} > 1 GeV","l");
+  leg->AddEntry(hFactorDistr[3], "E_{total} in cluster, E_{cluster} > 1 GeV","l");
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
   leg->Draw("same");
 
   c1->Update();
@@ -576,6 +592,7 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
   c1->SaveAs(TString(c1->GetName()) + ".png");
 
   TFile factorfile("factor.move.root", "recreate");
+  c1->Write();
   for(int i = 0; i < 4; ++i) 
     hFactorDistr[i]->Write();
   factorfile.Write();
@@ -583,6 +600,7 @@ TH2** FindDeadNoisyCellsPerRun(const Int_t nruns, Int_t runNumbers[],
 
   return hBadCellMap;
 }
+
 
 //_________________________________________________________________________
 void PrintCellsToExcludeFromAverages(TH2** hBadCellMap)
