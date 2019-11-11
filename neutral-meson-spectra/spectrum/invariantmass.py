@@ -1,4 +1,5 @@
 from __future__ import print_function
+import ROOT
 
 import humanize
 import spectrum.broot as br
@@ -20,9 +21,9 @@ class RawMass(object):
         "electrons": "e^{#pm}",
     }
 
-    xaxes = {
-        "#pi^{0}": "M_{#gamma#gamma}, GeV/c^{2}",
-        "#eta": "M_{#gamma#gamma}, GeV/c^{2}",
+    xaxis = {
+        "#pi^{0}": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
+        "#eta": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
         "electrons": "E/p ratio",
     }
 
@@ -31,7 +32,7 @@ class RawMass(object):
         self.pt_range = pt_range
         self.nrebin = nrebin
         self.particle = particle
-        label = "{:.4g} < p_{{T}} < {:.4g} GeV/c"
+        label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
         self.pt_label = label.format(*self.pt_range)
         self.template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
         self.mass, self.background = map(self._extract_histogram, inhists)
@@ -52,9 +53,9 @@ class RawMass(object):
             events=humanize.intword(mass.nevents)
         )
         mass.SetTitle(title)
-        mass.GetXaxis().SetTitle(self.xaxes[self.particle])
-        mass.GetYaxis().SetTitle("counts")
-        mass.SetLineColor(37)
+        mass.GetXaxis().SetTitle(self.xaxis[self.particle])
+        mass.GetYaxis().SetTitle()
+        mass.SetLineColor(ROOT.kRed + 1)
 
         if not mass.GetSumw2N():
             mass.Sumw2()

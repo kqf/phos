@@ -21,11 +21,11 @@ class MassesPlot(object):
         title = mass.GetTitle()
         if mass is not None:
             mass.SetTitle("")
-            mass.SetStats(False)
+            # mass.SetStats(False)
 
         if signal is not None:
             signal.SetTitle("")
-            signal.SetStats(False)
+            # signal.SetStats(False)
 
         self._set_axis_limits(mass, signal, fit_range)
         self.draw(mass, "histe")
@@ -94,7 +94,7 @@ class MassesPlot(object):
         mass.line_upper = lline(upper)
 
     def _draw_text(self, hist, title, sep="|"):
-        pave = ROOT.TPaveText(0.68, 0.75, 0.88, 0.88, "NDC")
+        pave = ROOT.TPaveText(0.18, 0.75, 0.38, 0.88, "NDC")
         entries = title.split(sep)
         for entry in entries:
             if "event" in entry:
