@@ -9,7 +9,7 @@ from repoze.lru import lru_cache
 
 
 @contextmanager
-def pcanvas(name="c1", size=(128, 128), stop=False, scale=6, oname=None):
+def pcanvas(name="c1", size=(96, 128), stop=False, scale=6, oname=None):
     canvas = ROOT.TCanvas(name, "canvas",
                           int(size[0] * scale), int(size[1] * scale))
     canvas.SetTickx()
@@ -135,7 +135,7 @@ def plot(
     stop=True,
     xlimits=None,
     ylimits=None,
-    csize=(128, 96),
+    csize=(96, 128),
     oname=None,
     legend_pos=(0.6, 0.7, 0.8, 0.85),
     ltitle=None,
@@ -215,7 +215,7 @@ def hplot(
     stop=True,
     xlimits=None,
     ylimits=None,
-    csize=(128, 96),
+    csize=(96, 128),
     oname=None,
     legend_pos=(0.6, 0.7, 0.8, 0.85),
     ltitle=None,
