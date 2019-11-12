@@ -1,6 +1,7 @@
 import pytest
 
 import ROOT
+import spectrum.broot as br
 import spectrum.sutils as su
 from spectrum.analysis import Analysis
 from spectrum.options import Options
@@ -40,17 +41,22 @@ class SelectAndFitHistograms(TransformerBase):
         output = [data._asdict()[n] for n in self.opt.names]
         args = zip(output, self.opt.functions, self.opt.limits)
         for hist, func, limits in args:
-            self._fit_histogram(hist, func)
+            self._fit_histogram(hist, func, self.opt.analysis.particle)
             hist.ylimits = limits
         return output
 
-    def _fit_histogram(self, histogram, func):
+    def _fit_histogram(self, histogram, func, particle):
         histogram.Fit(func, 'q')
         histogram.SetLineColor(ROOT.kRed + 1)
         func.SetLineColor(ROOT.kBlue + 1)
         func.SetLineWidth(2)
         val, err = func.GetParameter(0), func.GetParError(0)
-        print("The scale is", histogram.GetTitle(), val, err)
+        name, pname = func.GetName(), su.spell(particle)
+        print()
+        print(r"\def \{}{}Value {{{:.3g}}}".format(name, pname, val))
+        print(r"\def \{}{}ValueError {{{:.3g}}}".format(name, pname, err))
+        print(r"\def \{}{}Chi {{{:.3g}}}".format(name, pname,
+                                                 br.chi2ndff(func)))
 
 
 class CballParametersEstimator(TransformerBase):
