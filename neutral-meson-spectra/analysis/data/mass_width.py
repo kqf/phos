@@ -9,16 +9,18 @@ from vault.datavault import DataVault
 from spectrum.plotter import plot
 
 
-def fit_quantity(quantity, quant):
-    ROOT.gStyle.SetOptFit(1)
-    bins = br.bins(quantity).centers
+def fit(hist, quant, particle):
+    hist.SetTitle("Data")
+    bins = br.edges(hist)
     fitf = ROOT.TF1("Fit", quant.func, min(bins), max(bins))
     fitf.SetTitle("Fit")
+    fitf.SetLineColor(ROOT.kBlack)
+    fitf.SetLineStyle(9)
     for i, p in enumerate(quant.pars):
-        fitf.FixParameter(i, p)
-    quantity.Fit(fitf, "Q")
-    quantity.SetLineColor(ROOT.kRed + 1)
-    plot([quantity, fitf], logy=False)
+        fitf.SetParameter(i, p)
+    hist.Fit(fitf, "Q")
+
+    plot([hist, fitf], logy=False)
 
 
 @pytest.fixture
@@ -37,5 +39,5 @@ def test_mass_width_parametrization(particle, data):
     with open_loggs("test mass width parameters") as loggs:
         output = Analysis(options).transform(data, loggs)
 
-    fit_quantity(output.mass, options.calibration.mass)
-    fit_quantity(output.width, options.calibration.width)
+    fit(output.mass, options.calibration.mass, particle)
+    fit(output.width, options.calibration.width, particle)
