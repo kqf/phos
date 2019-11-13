@@ -11,16 +11,27 @@ from spectrum.plotter import plot
 
 def fit(hist, quant, particle):
     hist.SetTitle("Data")
-    bins = br.edges(hist)
-    fitf = ROOT.TF1(hist.GetName(), quant.func, min(bins), max(bins))
+    fitf = ROOT.TF1(hist.GetName(), quant.func, *quant.frange)
+    # fitf = ROOT.TF1(hist.GetName(), quant.func, min(bins), 2)
     fitf.SetTitle("Fit")
     fitf.SetLineColor(ROOT.kBlack)
     fitf.SetLineStyle(9)
-    for i, p in enumerate(quant.pars):
+    for i, (p, n) in enumerate(zip(quant.pars, quant.names)):
+        fitf.SetParName(i, n)
         fitf.SetParameter(i, p)
+
     hist.Fit(fitf, "Q")
+    # print(br.pars(fitf))
     br.report(fitf, particle)
-    plot([hist, fitf], logy=False)
+    pattern = "results/analysis/data/{}_{}.pdf"
+    plot(
+        [hist, fitf],
+        logy=False,
+        ltitle="{} #rightarrow #gamma #gamma".format(particle),
+        oname=pattern.format(hist.GetName(), br.spell(particle)),
+        more_logs=False,
+        yoffset=2.05,
+    )
 
 
 @pytest.fixture

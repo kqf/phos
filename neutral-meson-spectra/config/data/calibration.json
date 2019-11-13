@@ -5,21 +5,21 @@
     "#pi^{0}":
     {
         "width": {
-            "func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
-            "pars": [-18.67051583703201, -2.1079177819958077, 2905883.199349993, 0.00501164599580413],
-            "names": ["a", "b", "c", "d"],
-            "frange": [0, 20],
+            "func": "[0] * TMath::Power(x, -[1]) + [2] * x + [3]",
+            "pars": [0.0035005652008778454, 1.3569538362642557, 0,  0.004425604453656113],
+            "names": ["A", "B", "C", "D"],
+            "frange": [0.8, 20],
             "quantity": "width",
-            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
+            "title": "{} peak width; p_{{T}}, GeV/#it{{c}}; #sigma, GeV/#it{{c}}^{{2}}",
             "fit": true
         },
         "mass": {
-            "func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
-            "pars": [-4.43994833245771, -1.9958973408412146, 0.847614142282804, 0.13654300650259044],
-            "names": ["a", "b", "c", "d"],
-            "frange": [0, 20],
+            "func": "[0] * TMath::Power(x, -[1]) + [2]",
+            "pars": [0.0037565722910166354, 1.7422972274253838, 0.13656666996324454],
+            "names": ["A", "B", "C", "D"],
+            "frange": [0.8, 20],
             "quantity": "mass",
-            "title": "Parametrized {} mass position; p_{{T}}, GeV/c; m, GeV",
+            "title": "{} mass position; p_{{T}}, GeV/#it{{c}}; m, GeV/#it{{c}}^{{2}}",
             "fit": true
         },
         "nsigmas": 2
@@ -27,21 +27,21 @@
   "#eta":
     {
         "width": {
-            "func": "TMath::Exp([0] + [1] * x ) * [2] * x + [3]",
-            "pars": [0.2629952468139744, -2.331651575377617, -0.1217264515698897, 0.014533326264109624],
-            "names": ["a", "b", "c", "d"],
-            "frange": [0, 20],
+            "func": "[0] * TMath::Power(x, -[1]) + [2]",
+            "pars": [0.2629952468139744, -2.331651575377617, 0.014533326264109624],
+            "names": ["A", "B", "C"],
+            "frange": [2, 20],
             "quantity": "width",
-            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
+            "title": "{} peak width; p_{{T}}, GeV/#it{{c}}; #sigma, GeV/#it{{c}}^{{2}}",
             "fit": true
         },
         "mass": {
-            "func": "[0] * x + [1]",
+            "func": "[1]",
             "pars": [0, 0.5590698449654556],
-            "names": ["a", "b", "c", "d"],
-            "frange": [0, 20],
+            "names": ["A", "B", "C", "D"],
+            "frange": [2, 20],
             "quantity": "mass",
-            "title": "Parametrized {} mass position; p_{{T}}, GeV/c; m, GeV",
+            "title": "{} mass position; p_{{T}}, GeV/#it{{c}}; m, GeV/#it{{c}}^{{2}}",
             "fit": true
         },
         "nsigmas": 2
