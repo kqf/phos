@@ -756,3 +756,48 @@ def spell(text):
         return "pion"
     if text == "#eta":
         return "eta"
+    return text
+
+
+def report(func, particle="", limits=False):
+    particle = spell(particle)
+    pattern = r"\def \{particle}{func}{par}{err} {{{val:.3g}}}"
+    for i in range(func.GetNpar()):
+        print(pattern.format(
+            particle=particle,
+            func=func.GetName(),
+            par=func.GetParName(i),
+            val=func.GetParameter(i),
+            err=""
+        ))
+        print(pattern.format(
+            particle=particle,
+            func=func.GetName(),
+            par=func.GetParName(i),
+            val=func.GetParError(i),
+            err="Error"
+        ))
+
+    print(r"\def \{particle}{func}Chi {{{val:.3g}}}".format(
+        particle=particle,
+        func=func.GetName(),
+        val=func.GetChisquare() / func.GetNDF()
+    ))
+
+    if not limits:
+        return
+
+    xmin, xmax = ROOT.Double(0), ROOT.Double(0)
+    func.GetRange(xmin, xmax)
+
+    print(r"\def \{particle}{func}MinPt {{{val:.3g}}}".format(
+        particle=particle,
+        func=func.GetName(),
+        val=xmin
+    ))
+
+    print(r"\def \{particle}{func}MaxPt {{{val:.3g}}}".format(
+        particle=particle,
+        func=func.GetName(),
+        val=xmax
+    ))

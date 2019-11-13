@@ -12,14 +12,14 @@ from spectrum.plotter import plot
 def fit(hist, quant, particle):
     hist.SetTitle("Data")
     bins = br.edges(hist)
-    fitf = ROOT.TF1("Fit", quant.func, min(bins), max(bins))
+    fitf = ROOT.TF1(hist.GetName(), quant.func, min(bins), max(bins))
     fitf.SetTitle("Fit")
     fitf.SetLineColor(ROOT.kBlack)
     fitf.SetLineStyle(9)
     for i, p in enumerate(quant.pars):
         fitf.SetParameter(i, p)
     hist.Fit(fitf, "Q")
-
+    br.report(fitf, particle)
     plot([hist, fitf], logy=False)
 
 

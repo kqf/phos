@@ -30,6 +30,7 @@ def tof_data_stable():
     )
 
 
+# TODO: try to use br.report
 def report(func):
     print(r"\def \uncertaintyTofChi {{{val:.3g}}}".format(
         val=br.chi2ndff(func)

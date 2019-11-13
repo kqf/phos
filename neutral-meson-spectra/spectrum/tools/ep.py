@@ -76,6 +76,7 @@ class EpRatioEstimator(TransformerBase):
         ])
 
 
+# TODO: switch to br.report
 def report(func):
     print(r"\def \uncertaintyEpChi {{{val:.3g}}}".format(
         val=br.chi2ndff(func)
