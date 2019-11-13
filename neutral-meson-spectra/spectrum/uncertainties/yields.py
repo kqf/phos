@@ -11,7 +11,6 @@ from spectrum.output import open_loggs
 from spectrum.tools.feeddown import data_feeddown
 from spectrum.plotter import plot
 from vault.datavault import DataVault
-import spectrum.sutils as su
 
 
 memory = joblib.Memory('.joblib-cachedir', verbose=0)
@@ -144,7 +143,7 @@ class YieldExtractioin(TransformerBase):
             csize=(96, 128),
             legend_pos=(0.72, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/spectra-{}.pdf".format(
-                su.spell(self.options.particle)),
+                br.spell(self.options.particle)),
             stop=self.plot,
             colors='coolwarm',
             more_logs=False,
@@ -161,7 +160,7 @@ class YieldExtractioin(TransformerBase):
             csize=(96, 128),
             legend_pos=(0.72, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/ratios-{}.pdf".format(
-                su.spell(self.options.particle)),
+                br.spell(self.options.particle)),
             stop=self.plot,
             colors='coolwarm',
             more_logs=False,

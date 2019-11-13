@@ -166,10 +166,3 @@ def write(tobject, filename, option="recreate"):
     ofile = ROOT.TFile(filename, option)
     tobject.Write()
     ofile.Close()
-
-
-def spell(text):
-    if text == "#pi^{0}":
-        return "pion"
-    if text == "#eta":
-        return "eta"

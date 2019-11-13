@@ -39,7 +39,6 @@ from spectrum.uncertainties.material import material_budget_data
 
 from spectrum.plotter import hplot
 import spectrum.broot as br
-import spectrum.sutils as su
 
 
 NBINS = 9
@@ -150,7 +149,7 @@ class TotalUncertainty(TransformerBase):
             csize=(96, 128),
             legend_pos=(0.2, 0.7, 0.4, 0.85),
             oname="results/systematics/total/{}.pdf".format(
-                su.spell(self.options.particle)
+                br.spell(self.options.particle)
             ),
             more_logs=False,
             yoffset=1.6,

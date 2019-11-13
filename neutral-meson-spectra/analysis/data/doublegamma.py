@@ -1,7 +1,7 @@
 import ROOT
 import pytest
 
-import spectrum.sutils as su
+import spectrum.broot as br
 import spectrum.plotter as plt
 from spectrum.output import open_loggs
 from spectrum.options import Options
@@ -25,7 +25,7 @@ def test_simple(particle, data):
     analysis = Analysis(Options(particle=particle))
     with open_loggs() as loggs:
         ofile = "results/analysis/data/gammagamma_{}.pdf"
-        ofile = ofile.format(su.spell(particle))
+        ofile = ofile.format(br.spell(particle))
         with plt.pcanvas(size=(96, 128), stop=True, oname=ofile) as canvas:
             ROOT.gStyle.SetStatY(0.88)
             ROOT.gStyle.SetStatX(0.88)

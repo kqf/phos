@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import ROOT
 import spectrum.broot as br
-import spectrum.sutils as su
 from spectrum.pipeline import TransformerBase
 from spectrum.corrected_yield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
@@ -122,7 +121,7 @@ class GScale(TransformerBase):
             logy=False,
             csize=(96, 128),
             oname="results/systematics/gescale/{}.pdf".format(
-                su.spell(self.options.particle)),
+                br.spell(self.options.particle)),
             ltitle="{} #rightarrow #gamma #gamma".format(
                 self.options.particle
             ),

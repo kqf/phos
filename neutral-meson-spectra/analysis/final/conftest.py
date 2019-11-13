@@ -1,7 +1,6 @@
 import ROOT
 import pytest
 
-import spectrum.sutils as su
 import spectrum.broot as br
 from spectrum.constants import mass
 from spectrum.output import open_loggs
@@ -81,7 +80,7 @@ def tcm(particle):
 
 @pytest.fixture
 def oname(particle):
-    return "results/{{}}{}.pdf".format(su.spell(particle))
+    return "results/{{}}{}.pdf".format(br.spell(particle))
 
 
 def read_pythia6(particle):

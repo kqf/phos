@@ -749,3 +749,10 @@ def auto_color_marker(index=0):
     color = BR_COLORS[index % len(BR_COLORS)]
     marker = 20 + index // len(BR_COLORS)
     return color, marker
+
+
+def spell(text):
+    if text == "#pi^{0}":
+        return "pion"
+    if text == "#eta":
+        return "eta"

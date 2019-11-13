@@ -6,7 +6,6 @@ import numpy as np
 import itertools
 
 import spectrum.broot as br
-import spectrum.sutils as su
 
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline
@@ -162,7 +161,7 @@ def test_plot_xt_distribution(data, particle):
         legend_pos=(0.72, 0.7, 0.88, 0.88),
         yoffset=1.4,
         more_logs=False,
-        oname=pattern.format(su.spell(particle)),
+        oname=pattern.format(br.spell(particle)),
     )
 
 
@@ -279,7 +278,7 @@ def test_scaled_spectra(particle, data, combined_n):
         legend_pos=(0.72, 0.7, 0.88, 0.88),
         yoffset=1.7,
         more_logs=False,
-        oname=pattern.format(su.spell(particle)),
+        oname=pattern.format(br.spell(particle)),
     )
 
 

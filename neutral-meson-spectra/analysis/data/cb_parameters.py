@@ -2,7 +2,6 @@ import pytest
 
 import ROOT
 import spectrum.broot as br
-import spectrum.sutils as su
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.output import open_loggs
@@ -51,7 +50,7 @@ class SelectAndFitHistograms(TransformerBase):
         func.SetLineColor(ROOT.kBlue + 1)
         func.SetLineWidth(2)
         val, err = func.GetParameter(0), func.GetParError(0)
-        name, pname = func.GetName(), su.spell(particle)
+        name, pname = func.GetName(), br.spell(particle)
         print()
         print(r"\def \{}{}Value {{{:.3g}}}".format(name, pname, val))
         print(r"\def \{}{}ValueError {{{:.3g}}}".format(name, pname, err))
@@ -95,5 +94,5 @@ def test_cball_parameters(particle, data):
             ylimits=hist.ylimits,
             legend_pos=(0.58, 0.7, 0.68, 0.85),
             ltitle="{} #rightarrow #gamma#gamma".format(particle),
-            oname=oname.format(func.GetName(), su.spell(particle)),
+            oname=oname.format(func.GetName(), br.spell(particle)),
         )

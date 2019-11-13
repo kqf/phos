@@ -1,14 +1,14 @@
 import ROOT
 import pytest  # noqa
 
-import spectrum.sutils as su
+import spectrum.broot as br
 from spectrum.spectra import spectrum
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
 def report(func, particle):
-    particle = su.spell(particle)
+    particle = br.spell(particle)
     pattern = r"\def \{particle}{func}{par}{err} {{{val:.3g}}}"
     for i in range(func.GetNpar()):
         print(pattern.format(
