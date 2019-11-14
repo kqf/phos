@@ -7,7 +7,7 @@
         "width": {
             "func": "TMath::Power([0] * x, -[1]) + [2] * x + [3]",
             "pars": [24, 1.3569538362642557, 0,  0.004425604453656113],
-            "names": ["A", "B", "C", "D"],
+            "names": ["A", "B", "D", "C"],
             "frange": [0.8, 20],
             "quantity": "width",
             "title": "{} peak width; p_{{T}}, GeV/#it{{c}}; #sigma, GeV/#it{{c}}^{{2}}",
@@ -36,9 +36,9 @@
             "fit": true
         },
         "mass": {
-            "func": "[1]",
-            "pars": [0, 0.5590698449654556],
-            "names": ["A", "B", "C", "D"],
+            "func": "[0]",
+            "pars": [0.5590698449654556, 0],
+            "names": ["C", "dummy"],
             "frange": [2, 20],
             "quantity": "mass",
             "title": "{} mass position; p_{{T}}, GeV/#it{{c}}; m, GeV/#it{{c}}^{{2}}",

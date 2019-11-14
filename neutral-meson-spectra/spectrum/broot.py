@@ -801,3 +801,7 @@ def report(func, particle="", limits=False):
         func=func.GetName(),
         val=xmax
     ))
+
+
+def ratio_uncert(a, b, da, db):
+    return (a / b) * ((da / a) ** 2 + (db / b) ** 2) ** 0.5
