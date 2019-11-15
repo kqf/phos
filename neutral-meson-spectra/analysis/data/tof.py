@@ -78,10 +78,8 @@ def fitfunc():
 @pytest.fixture
 def efficiency(data):
     with open_loggs() as loggs:
-        options = ProbeTofOptions()
-        probe_estimator = TagAndProbe(options, False)
+        probe_estimator = TagAndProbe(ProbeTofOptions(), False)
         efficiency = probe_estimator.transform(data, loggs)
-    efficiency.SetTitle("Data; E_{#gamma} (GeV); #varepsilon_{TOF}")
     return efficiency
 
 

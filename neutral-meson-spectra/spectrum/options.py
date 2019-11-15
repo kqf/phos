@@ -230,6 +230,7 @@ class FeeddownOptions(object):
 class ProbeTofOptions(object):
     def __init__(self):
         self.analysis = Options(pt="config/tag-and-probe-tof.json")
+        self.title = "Data; E_{#gamma} (GeV); #varepsilon_{TOF}"
         # NB: Make sure to define it later
         self.fitfunc = None
 
