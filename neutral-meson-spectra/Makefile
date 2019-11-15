@@ -2,7 +2,7 @@
 
 integrity-test:
 	pytest analysis/yield/observables.py \
-		analysis/tof/efficiency_tag.py \
+		analysis/data/tof.py \
 		analysis/efficiency/spmc_efficiency.py
 
 simple-test:
