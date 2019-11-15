@@ -11,8 +11,8 @@ from spectrum.tools.validate import validate # noqa
 from spectrum.plotter import plot
 
 """
-- [ ] Fix titles
-- [ ] Exclude LHC18
+- [x] Fix titles
+- [x] Exclude LHC18
 - [ ] Try different binning
 - [ ] Try different parameters
 
@@ -22,9 +22,9 @@ from spectrum.plotter import plot
 @pytest.fixture
 def data():
     return (
-        DataVault().input("data", "staging", listname="TagAndProbleTOF",
+        DataVault().input("data", "staging tof", listname="TagAndProbleTOF",
                           histname="MassEnergyTOF_SM0"),
-        DataVault().input("data", "staging", listname="TagAndProbleTOF",
+        DataVault().input("data", "staging tof", listname="TagAndProbleTOF",
                           histname="MassEnergyAll_SM0"),
     )
 
@@ -88,10 +88,11 @@ def efficiency(data):
 def test_estimate_tof_efficiency(efficiency, fitfunc):
     bins = br.edges(efficiency)
     fitfunc.SetRange(min(bins), max(bins))
-    efficiency.Fit(fitfunc, "R")
+    efficiency.Fit(fitfunc, "RWW")
     plot(
         [efficiency, fitfunc],
         logy=False,
-        legend_pos=(0.2, 0.7, 0.4, 0.85),
+        csize=(126, 126),
+        legend_pos=(0.25, 0.7, 0.38, 0.85),
     )
     # validate(br.hist2dict(efficiency), "efficiency_tag")

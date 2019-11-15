@@ -84,6 +84,13 @@
             "hsum": "b0770faf60fe55e70b2b5377d185812c3062dc8454014713516376027835f9dd",
             "pt_range": [0, 20]
         },
+        "staging tof": {
+            "default_selection": "TagAndProbleTOF",
+            "description": "All corrections + tof study + exclude LHC18",
+            "file": "input-data/data/merged/extended_pt_range_1/LHC16-LHC17.root",
+            "hsum": "1389ac0bddf512b07d67eb5e9e2de71bb0ccd0e4081a1761c4b069cff1c5e53e",
+            "pt_range": [0, 20]
+        },
         "stable": {
             "default_selection": "Phys",
             "description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction",
