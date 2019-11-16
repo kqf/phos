@@ -9,7 +9,7 @@ PROTONS_PATH=../../
 # Run the analysis on the newest nonlinearity function
 #
 DATASET = LHC17j3c2
-OUTDIR = results/mc/single/eta/final_nonlinearity_3
+OUTDIR = results/mc/single/eta/extended_pt_range_1
 TEST_SELECTION = PhysEff
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks

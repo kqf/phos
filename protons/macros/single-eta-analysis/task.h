@@ -23,11 +23,17 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t acceptance=k
 	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
 		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSingleEtaMC)
 	);
+
+	AliPP13SelectionWeights & no_weights = dynamic_cast<AliPP13SelectionWeights &>(
+		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain)
+	);
+
 	mc_weights.fNonGlobal = -1.0; // Enable the cuts
 
 	// NB: Don't use all other selections as they are not needed for the analysis
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_eta, &mc_weights));
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEffNoA", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
+	selections->Add(new AliPP13EfficiencySelectionMC("NoWeights", "Physics efficiency no corrections", cuts_eta, &no_weights));
 
 	if(acceptance){
 		Int_t scale = 1;
@@ -49,6 +55,8 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t acceptance=k
 			selections->Add(new AliPP13EfficiencySelectionMC(Form("PhysEffEta%d", i), "Physics Selection for eta meson", cuts_eta, &mc_weights));
 		}
 	}
+	delete &mc_weights;
+	delete &no_weights;
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);

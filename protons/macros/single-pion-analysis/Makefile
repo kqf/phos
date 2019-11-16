@@ -9,7 +9,7 @@ PROTONS_PATH=../../
 # Run final efficiency for optimized GE scale
 #
 DATASET = LHC17j3b2
-OUTDIR = results/mc/single/pi0/final_nonlinearity_3
+OUTDIR = results/mc/single/pi0/extended_pt_range_1
 TEST_SELECTION = PhysTender
 
 # Dirty?!? hack to avoid grid(plugin) limitations.
