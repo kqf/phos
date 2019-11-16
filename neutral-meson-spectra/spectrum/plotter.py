@@ -9,7 +9,7 @@ from repoze.lru import lru_cache
 
 
 @contextmanager
-def pcanvas(name="cn", size=(96, 128), stop=False, scale=6, oname=None):
+def pcanvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
     canvas = ROOT.TCanvas(name, "canvas",
                           int(size[0] * scale), int(size[1] * scale))
     canvas.SetTickx()
