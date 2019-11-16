@@ -683,9 +683,13 @@ def graph2hist(graph, hist=None):
     return hist
 
 
-def hist2graph(hist):
+def hist2graph(hist, option=None):
     contents, errors, centers = bins(hist)
     hgraph = graph(hist.GetTitle(), x=centers, y=contents, dy=errors)
+    if option == "positive":
+        idx = contents > 0
+        hgraph = graph(hist.GetTitle(), centers[idx],
+                       contents[idx], dy=errors[idx])
     hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     hgraph.SetLineColor(hist.GetLineColor())

@@ -35,10 +35,12 @@ def test_eta_phi(particle, data, oname):
     with plt.style(), plt.pcanvas(oname=oname), open_loggs() as loggs:
         ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
         ROOT.gPad.SetLogz(True)
+        ROOT.gPad.SetRightMargin(0.12)
         summed = br.hsum([
             SingleHistInput("hEtaPhi_#gamma").transform(d, loggs)
             for d in data.values()
         ])
+        summed.GetYaxis().SetTitleOffset(1.0)
         summed.Draw("colz")
 
 
@@ -52,6 +54,7 @@ def wname(particle):
     return "results/analysis/spmc/weighted_{}.pdf".format(br.spell(particle))
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
@@ -64,10 +67,7 @@ def test_spectral_shape(particle, data, ltitle, wname):
         for name, d in data.items():
             hist = SingleHistInput(
                 "hPtLong_{}".format(particle)).transform(d, loggs)
-            contents, errors, centers = br.bins(hist)
-            idx = contents > 0
-            graph = br.graph(name, centers[idx], contents[idx], dy=errors[idx])
-            hists.append(graph)
+            hists.append(br.hist2graph(hist, "positive"))
 
         plt.plot(
             hists,

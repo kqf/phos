@@ -14,7 +14,7 @@ AliPHOSTenderTask * AddTenderTaskCustomParameters(Bool_t isMC = kFALSE, TString 
 	// 
 	AliAnalysisManager * manager = AliAnalysisManager::GetAnalysisManager();
 
-	// Setup Phos Tender
+	// Setup PHOS Tender
 	//
 	gROOT->LoadMacro("$ALICE_PHYSICS/PWGGA/PHOSTasks/PHOS_PbPb/AddAODPHOSTender.C");
 	TString tenderOption = isMC ? "Run2Default" : "";
