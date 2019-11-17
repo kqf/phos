@@ -6,14 +6,15 @@ from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
 from spectrum.pipeline import ParallelPipeline
-from vault.datavault import DataVault
 from spectrum.plotter import plot
+from vault.datavault import DataVault
 
 
 @pytest.fixture
 def calibration_data(particle, spmc, data, quant):
     data = [data] + list(spmc)
     labels = "Data", "Low p_{T}", "High p_{T}"
+    scales = [1, 1.0189, 1.0189]
     with open_loggs() as loggs:
         estimator = ParallelPipeline([
             (label, Analysis(Options(particle)))
@@ -21,8 +22,10 @@ def calibration_data(particle, spmc, data, quant):
         ])
         output = estimator.transform(data, loggs)
         targets = []
-        for name, hists in zip(labels, output):
+        for name, hists, s in zip(labels, output, scales):
             hist = hists._asdict()[quant]
+            if quant == "mass":
+                hist.Scale(s)
             hist.SetTitle(name)
             targets.append(br.hist2graph(hist, "positive"))
     return targets
@@ -39,7 +42,17 @@ def spmc(particle):
 
 @pytest.fixture
 def data():
-    return DataVault().input("data", "staging", histname="MassPtSM0")
+    return DataVault().input("data", histname="MassPtSM0")
+
+
+@pytest.fixture
+def ltitle(particle):
+    return "{} #rightarrow #gamma#gamma".format(particle)
+
+
+@pytest.fixture
+def oname(particle, quant):
+    return "results/analysis/spmc/{}_{}.pdf".format(quant, br.spell(particle))
 
 
 @pytest.mark.thesis
@@ -53,5 +66,11 @@ def data():
     "mass",
     "width",
 ])
-def test_mass_width_parametrization(calibration_data, quant):
-    plot(calibration_data, logy=False, yoffset=1.8)
+def test_mass_width_parametrization(calibration_data, quant, oname, ltitle):
+    plot(
+        calibration_data,
+        oname=oname,
+        ltitle=ltitle,
+        logy=False,
+        yoffset=1.8
+    )
