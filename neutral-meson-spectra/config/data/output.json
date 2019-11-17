@@ -6,8 +6,8 @@
     {
         "output":
         {
-            "mass": "Reconstructed #pi^{0} mass position; p_{T} (GeV/#it{c}); m, GeV/#it{c}^{2}",
-            "width": "Reconstructed #pi^{0} peak width ; p_{T} (GeV/#it{c}); #sigma, GeV/#it{c}^{2}",
+            "mass": "Reconstructed #pi^{0} mass position; p_{T} (GeV/#it{c}); m (GeV/#it{c}^{2})",
+            "width": "Reconstructed #pi^{0} peak width ; p_{T} (GeV/#it{c}); #sigma (GeV/#it{c}^{2})",
             "spectrum": "Reconstructed #pi^{0} spectrum ; p_{T} (GeV/#it{c}); #frac{dN_{rec} }{dp_{T}}",  
             "chi2": "#chi^{2} / N_{dof} for #pi^{0} spectrum; p_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
             "nmesons": "Number of #pi^{0}s in each p_{T} bin; p_{T} (GeV/#it{c}); #frac{dN}{dp_{T}}",  
@@ -22,8 +22,8 @@
     {
         "output":
         {
-            "mass": "Reconstructed #eta mass position; p_{T} (GeV/#it{c}); m, GeV/#it{c}^{2}",
-            "width": "Reconstructed #eta peak width ; p_{T} (GeV/#it{c}); #sigma, GeV/#it{c}^{2}",
+            "mass": "Reconstructed #eta mass position; p_{T} (GeV/#it{c}); m (GeV/#it{c}^{2})",
+            "width": "Reconstructed #eta peak width ; p_{T} (GeV/#it{c}); #sigma (GeV/#it{c}^{2})",
             "spectrum": "Reconstructed #eta spectrum ; p_{T} (GeV/#it{c}); #frac{dN_{rec} }{dp_{T}}",  
             "chi2": "#chi^{2} / N_{dof} for #eta spectrum; p_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
             "nmesons": "Number of #etas in each p_{T} bin; p_{T} (GeV/#it{c}); #frac{dN}{dp_{T}}",  

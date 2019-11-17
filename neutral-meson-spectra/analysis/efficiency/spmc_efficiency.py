@@ -8,29 +8,16 @@ from spectrum.comparator import Comparator  # noqa
 
 from spectrum.tools.validate import validate  # noqa
 from vault.datavault import DataVault
-
-
-def pion_data():
-    return (
-        DataVault().input("single #pi^{0}", "low", "PhysEff"),
-        DataVault().input("single #pi^{0}", "high", "PhysEff"),
-    )
-
-
-def eta_data():
-    return (
-        DataVault().input("single #eta", "low"),
-        DataVault().input("single #eta", "high"),
-    )
+from spectrum.plotter import plot
 
 
 @pytest.fixture
 def data(particle):
-    return {
-        "#pi^{0}": pion_data(),
-        "#eta": eta_data(),
-
-    }.get(particle)
+    production = "single {}".format(particle)
+    return (
+        DataVault().input(production, "low", "PhysEff"),
+        DataVault().input(production, "high", "PhysEff"),
+    )
 
 
 @pytest.mark.onlylocal
@@ -40,8 +27,14 @@ def data(particle):
 ])
 def test_spmc_efficiency(particle, data):
     options = CompositeEfficiencyOptions(particle)
-    # with open_loggs("efficiency spmc {}".format(particle)) as loggs:
     with open_loggs() as loggs:
         efficiency = Efficiency(options).transform(data, loggs)
-        validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
+        # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
         # Comparator().compare(efficiency)
+        plot(
+            [efficiency],
+            logy=False,
+            logx=False,
+            legend_pos=None,
+            yoffset=2
+        )

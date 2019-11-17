@@ -171,7 +171,7 @@ class PtFitter(object):
         # fitquant.FixParameter(0, par[0])
         # fitquant.FixParameter(0, )
 
-        hist.Fit(fitquant, "q")
+        hist.Fit(fitquant, "qww")
         hist.GetListOfFunctions().Add(fitquant)
 
         # TODO: Now we mutate options. Should we do it in future?

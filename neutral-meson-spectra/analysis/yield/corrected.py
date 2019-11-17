@@ -3,8 +3,8 @@ import pytest  # noqa
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield, data_cyield
 from spectrum.output import open_loggs
-from spectrum.comparator import Comparator
 from spectrum.constants import mass
+from spectrum.plotter import plot
 from vault.formulas import FVault
 
 
@@ -13,14 +13,15 @@ def data(particle):
     return data_cyield(particle)
 
 
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 def test_fit_the_corrected_yield(particle, data):
-    with open_loggs("corrected-{}".format(particle)) as loggs:
+    with open_loggs() as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
                 particle=particle
@@ -35,4 +36,4 @@ def test_fit_the_corrected_yield(particle, data):
         tsallis.SetParLimits(2, 6.000, 7.000)
         tsallis.FixParameter(3, mass(particle))
         cyield.Fit(tsallis)
-        Comparator().compare(cyield)
+        plot([cyield])

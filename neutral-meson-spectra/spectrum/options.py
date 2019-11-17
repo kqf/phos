@@ -93,7 +93,7 @@ class EfficiencyOptions(object):
     histpattern = """
     #varepsilon = #Delta #phi #Delta y/ 2 #pi
     #frac{{Number of reconstructed {particle}}}{{Number of generated primary {particle}}}
-    ; p_{{T}} (GeV/#it{{c}}); efficiency #times acceptance
+    ; p_{{T}} (GeV/#it{{c}}); #varepsilon #times A 
     """  # noqa
 
     def __init__(self, particle="#pi^{0}",
