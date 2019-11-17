@@ -42,10 +42,10 @@ LHC17f8d,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16j
 LHC17f8c,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16g
 LHC17f8b,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16f
 LHC17f8a,         p-p, 13 TeV, Pythia8 - JJ events anchored to LHC16l
-LHC17i3c2,        p-p, 13 TeV, JJ events triggered by decay photons with at least 7 GeV/c in DCal+PHOS, 2016 anchors
-LHC17i3c1,        p-p, 13 TeV, JJ events triggered by decay photons with at least 7 GeV/c in EMCal, 2016 anchors
-LHC17i3b2,        p-p, 13 TeV, JJ events triggered by decay photons with at least 3.5 GeV/c in DCal+PHOS, 2016 anchors
-LHC17i3b1,        p-p, 13 TeV, JJ events triggered by decay photons with at least 3.5 GeV/c in EMCal, 2016 anchors
+LHC17i3c2,        p-p, 13 TeV, JJ events triggered by decay photons with at least 7 GeV/#it{c} in DCal+PHOS, 2016 anchors
+LHC17i3c1,        p-p, 13 TeV, JJ events triggered by decay photons with at least 7 GeV/#it{c} in EMCal, 2016 anchors
+LHC17i3b2,        p-p, 13 TeV, JJ events triggered by decay photons with at least 3.5 GeV/#it{c} in DCal+PHOS, 2016 anchors
+LHC17i3b1,        p-p, 13 TeV, JJ events triggered by decay photons with at least 3.5 GeV/#it{c} in EMCal, 2016 anchors
 
 
 # Monash
