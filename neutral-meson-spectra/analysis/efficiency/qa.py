@@ -25,6 +25,7 @@ def oname(particle):
     return "results/analysis/spmc/eta_phi_{}.pdf".format(br.spell(particle))
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
@@ -50,23 +51,28 @@ def ltitle(particle):
 
 
 @pytest.fixture
-def wname(particle):
-    return "results/analysis/spmc/weighted_{}.pdf".format(br.spell(particle))
+def wname(particle, selection):
+    pattern = "results/analysis/spmc/{}_{}.pdf"
+    return pattern.format(selection.lower(), br.spell(particle))
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_spectral_shape(particle, data, ltitle, wname):
+@pytest.mark.parametrize("selection", [
+    "NoWeights",
+    "PhysEff",
+])
+def test_spectral_shape(particle, data, ltitle, selection, wname):
     with open_loggs() as loggs:
         hists = []
         for name, d in data.items():
             hist = SingleHistInput(
-                "hPtLong_{}".format(particle)).transform(d, loggs)
+                "hPtLong_{}".format(particle), selection).transform(d, loggs)
+            hist.SetTitle(name)
             hists.append(br.hist2graph(hist, "positive"))
 
         plt.plot(
