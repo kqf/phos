@@ -1,16 +1,20 @@
 import pytest  # noqa
 
+import spectrum.broot as br
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.corrected_yield import CorrectedYield, data_cyield
 from spectrum.output import open_loggs
-from spectrum.constants import mass
 from spectrum.plotter import plot
-from vault.formulas import FVault
 
 
 @pytest.fixture
 def data(particle):
     return data_cyield(particle)
+
+
+@pytest.fixture
+def oname(particle):
+    return "results/analysis/corrected_{}.pdf".format(br.spell(particle))
 
 
 @pytest.mark.thesis
@@ -20,7 +24,7 @@ def data(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_fit_the_corrected_yield(particle, data):
+def test_fit_the_corrected_yield(particle, data, oname):
     with open_loggs() as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
@@ -28,12 +32,10 @@ def test_fit_the_corrected_yield(particle, data):
             )
         )
         cyield = estimator.transform(data, loggs)
-        tsallis = FVault().tf1("tsallis")
-        tsallis.SetParameter(0, 1)
-        tsallis.SetParameter(1, mass(particle))
-        tsallis.SetParLimits(1, 0.100, 0.300)
-        tsallis.FixParameter(2, 6.500)
-        tsallis.SetParLimits(2, 6.000, 7.000)
-        tsallis.FixParameter(3, mass(particle))
-        cyield.Fit(tsallis)
-        plot([cyield])
+
+    plot(
+        [cyield],
+        oname=oname,
+        legend_pos=None,
+        yoffset=1.65,
+    )
