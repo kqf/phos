@@ -7,13 +7,7 @@ from spectrum.options import Options
 from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import TransformerBase
-from vault.datavault import DataVault
 from spectrum.plotter import plot
-
-
-@pytest.fixture
-def data():
-    return DataVault().input("data", histname="MassPtSM0")
 
 
 class CbFitOptions(object):

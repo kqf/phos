@@ -5,7 +5,6 @@ import spectrum.broot as br
 from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
 from spectrum.plotter import plot
 
 
@@ -32,11 +31,6 @@ def fit(hist, quant, particle):
         more_logs=False,
         yoffset=2.05,
     )
-
-
-@pytest.fixture
-def data():
-    return DataVault().input("data", histname="MassPtSM0")
 
 
 @pytest.mark.onlylocal

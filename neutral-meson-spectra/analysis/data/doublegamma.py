@@ -7,15 +7,8 @@ from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
 from spectrum.ptplotter import MassesPlot
-from vault.datavault import DataVault
 
 
-@pytest.fixture
-def data():
-    return DataVault().input("data", histname="MassPtSM0")
-
-
-# @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
