@@ -12,7 +12,7 @@
 
 # PROTONS_PATH=../../
 OUTFILE = AnalysisResults
-ALICE_SITE = @ALICE::GSI::SE2
+# ALICE_SITE = @ALICE::GSI::SE2
 
 
 grid: | %.cxx

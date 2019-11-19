@@ -20,12 +20,18 @@ def data(particle):
     )
 
 
+@pytest.fixture
+def oname(particle):
+    pattern = "results/analysis/spmc/efficiency_{}.pdf"
+    return pattern.format(br.spell(particle))
+
+
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_spmc_efficiency(particle, data):
+def test_spmc_efficiency(particle, data, oname):
     options = CompositeEfficiencyOptions(particle)
     with open_loggs() as loggs:
         efficiency = Efficiency(options).transform(data, loggs)
@@ -35,6 +41,7 @@ def test_spmc_efficiency(particle, data):
             [efficiency],
             logy=False,
             logx=False,
+            oname=oname,
             legend_pos=None,
             yoffset=2
         )
