@@ -1,6 +1,7 @@
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
+from spectrum.pipeline import FunctionTransformer
 from spectrum.analysis import Analysis
 from spectrum.comparator import Comparator
 from spectrum.outputcreator import output_histogram
@@ -80,6 +81,7 @@ class FeeddownEstimator(TransformerBase):
 
         self.pipeline = Pipeline([
             ("feeddown_extraction", feeddown_main),
+            ("plot", FunctionTransformer(options.plot_func)),
             ("feeddown_fit", ConfidenceLevelEstimator(options.fitf, plot))
         ])
 

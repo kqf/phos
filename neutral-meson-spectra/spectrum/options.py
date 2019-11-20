@@ -200,8 +200,9 @@ class FeeddownOptions(object):
     def __init__(self, particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()
         self.particle = particle
-        self.feeddown = Options(particle=particle,
-                                invmass="config/data/feeddown-mass-fit.json")
+        self.feeddown = Options(
+            particle=particle,
+            invmass="config/data/feeddown-mass-fit.json")
         # self.feeddown = Options(pt="config/pt-same.json")
         # NB: Don't fit the mass and width and
         #     use the same values from the data
@@ -211,6 +212,8 @@ class FeeddownOptions(object):
         # self.regular = Options(pt="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
         self.fitf = self.feeddown_paramerization()
+        # Use the idendity transformation by default
+        self.plot_func = lambda x, loggs: x
 
     @staticmethod
     def feeddown_paramerization():
