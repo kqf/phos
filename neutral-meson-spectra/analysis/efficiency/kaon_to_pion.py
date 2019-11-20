@@ -32,18 +32,19 @@ def data():
 
 def reduce_func(inputs, loggs):
     fitfunc = ROOT.TF1(
-        "feeddown_ratio",
-        "[3] * x *(([4] + [5]) * x - [5]) + "
-        "[0] * (1 + [1] * TMath::Exp(-x * x/ [2]))", 0.5, 20)
+        "KpiRatio",
+        "[3] * x * x + [4] * x * x - [4] * x + "
+        "[0] * (1 + [1] * TMath::Exp(-x * x/ [2]))", 0.3, 20)
     fitfunc.SetTitle("Fit")
     fitfunc.SetLineColor(ROOT.kBlack)
     fitfunc.SetLineStyle(9)
-    fitfunc.SetParameter(0, 3.109659395803652)
-    fitfunc.SetParameter(1, -0.39094679433665736)
-    fitfunc.SetParameter(2, 20.553216100613582)
-    fitfunc.SetParameter(3, -0.02262708740433334)
-    fitfunc.SetParameter(4, 16.09234627672746)
-    fitfunc.SetParameter(5, -17.17670171607285)
+    fitfunc.SetParNames(*["A", "B", "S", "C", "D"])
+    fitfunc.SetParameter(0, 1.760221482495616)
+    fitfunc.SetParameter(1, -0.4026614560039952)
+    fitfunc.SetParameter(2, 0.5459275534441625)
+    fitfunc.SetParameter(3, -0.15120526703793247)
+    fitfunc.SetParameter(4, 0.1673495588004339)
+
     data, mc_ = inputs
     data.SetTitle(
         "Data; p_{T} (GeV/#it{c});"
@@ -54,27 +55,28 @@ def reduce_func(inputs, loggs):
         "(#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}})^{mc}"
     )
     mc = RebinTransformer(True, br.edges(data)).transform(mc_, loggs)
-    # plot(
-    #     # [data, mc],
-    #     inputs,
-    #     xlimits=(0.3, 20),
-    #     ytitle="#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}}",
-    #     logy=False,
-    #     logx=False,
-    #     yoffset=1.6,
-    # )
+    plot(
+        [data, mc],
+        xlimits=(0.3, 20),
+        ylimits=(0.0, 0.7),
+        ytitle="#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}}",
+        logy=False,
+        logx=False,
+        yoffset=1.6,
+        legend_pos=(0.2, 0.7, 0.4, 0.85),
+        oname="results/analysis/kaon2pion_ratio.pdf",
+    )
 
     double_ratio = br.ratio(data, mc)
     double_ratio.Fit(fitfunc, "RQWW")
-    double_ratio.SetTitle("Double ratio")
     plot(
         [double_ratio, fitfunc],
         xlimits=(0.3, 20),
         logy=False,
         logx=True,
+        oname="results/analysis/kaon2pion_doubleratio.pdf",
     )
-    for i, (p, e) in enumerate(zip(*br.pars(fitfunc))):
-        print("fitfunc.SetParameter({}, {})".format(i, p))
+    br.report(fitfunc)
     return double_ratio
 
 
