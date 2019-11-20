@@ -220,13 +220,13 @@ class FeeddownOptions(object):
     def feeddown_paramerization():
         func_feeddown = ROOT.TF1(
             "func_feeddown",
-            "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
+            "[2] * (1 + [0]*TMath::Exp(-x * x / [1] / [1] / 2))",
             0.8, 7
         )
         func_feeddown.SetParNames("A", "#sigma", "E_{scale}")
-        func_feeddown.SetParameter(0, 0.02)
-        func_feeddown.SetParameter(1, 0.64)
-        func_feeddown.SetParameter(2, 0.05)
+        func_feeddown.SetParameter(0, 0.486)
+        func_feeddown.SetParameter(1, 1.280)
+        func_feeddown.SetParameter(2, 0.048)
         return func_feeddown
 
 
