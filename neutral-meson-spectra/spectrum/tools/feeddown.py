@@ -1,9 +1,11 @@
+import array
+import ROOT
+
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.pipeline import FunctionTransformer
 from spectrum.analysis import Analysis
-from spectrum.comparator import Comparator
 from spectrum.outputcreator import output_histogram
 from vault.datavault import DataVault
 
@@ -24,45 +26,27 @@ def data_feeddown(dummy=False):
     )
 
 
-class ConfidenceLevelEstimator(TransformerBase):
-    def __init__(self, fitf, plot=False):
-        super(ConfidenceLevelEstimator, self).__init__(plot)
+class CorrectionEstimator(TransformerBase):
+    def __init__(self, fitf, pt, plot=False):
+        super(CorrectionEstimator, self).__init__(plot)
         self.fitf = fitf
+        self.pt = array.array('f', pt)
 
     def transform(self, feeddown, loggs):
-        title = "Feeddown correction approximation"
-        title += "; p_{T} (GeV/#it{c})"
+        title = "MC; p_{T} (GeV/#it{c})"
         title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
         title += "#frac{dN(all)}{dp_{T}}"
-        try:
-            self._show_errors(feeddown, title, loggs)
-        except TypeError:
-            print("Not able to show confidence intervals")
-        feeddown.SetTitle(title)
-        corr = br.copy(feeddown)
-        corr.Reset()
-        for b in br.hrange(feeddown):
+        feeddown.Fit(self.fitf, "QR")
+        corr = ROOT.TH1F("feeddown", "Feed-down", len(self.pt) - 1, self.pt)
+        for b in br.hrange(corr):
             corr.SetBinContent(b, 1. - self.fitf.Eval(corr.GetBinCenter(b)))
-        # NB: I don't know why It should be scaled by 1.
-        #     otherwise it plots something strange
-        corr.Scale(1.0)
         return corr
-
-    def _show_errors(self, feeddown, title, loggs):
-        errors = br.confidence_intervals(feeddown, self.fitf)
-        errors.SetTitle(title)
-        errors.label = "approximation"
-        errors.SetOption("e3")
-        errors.SetFillStyle(3002)
-        feeddown.logy = False
-        Comparator(rrange=(-1, -1), stop=self.plot).compare(
-            feeddown, errors, loggs=loggs)
 
 
 class FeeddownEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(FeeddownEstimator, self).__init__(plot)
-        self.pt = options.regular.pt.ptedges
+        self.pt = array.array('f', options.pt)
         self.particle = options.particle
         feeddown_main = ComparePipeline([
             ("feed-down",
@@ -82,7 +66,7 @@ class FeeddownEstimator(TransformerBase):
         self.pipeline = Pipeline([
             ("feeddown_extraction", feeddown_main),
             ("plot", FunctionTransformer(options.plot_func)),
-            ("feeddown_fit", ConfidenceLevelEstimator(options.fitf, plot))
+            ("feeddown_fit", CorrectionEstimator(options.fitf, self.pt, plot))
         ])
 
     def transform(self, data, loggs):
@@ -94,13 +78,8 @@ class FeeddownEstimator(TransformerBase):
             )
 
         if self.particle != "#pi^{0}":
-            return br.unity(output_histogram(
-                (min(self.pt), max(self.pt)),
-                "feeddown",
-                "No Feeddown",
-                "feeddown",
-                self.pt,
-                list()
-            ))
+            return br.unity(
+                ROOT.TH1F("feeddown", "Feed-down", len(self.pt) - 1, self.pt)
+            )
 
         return super(FeeddownEstimator, self).transform(data, loggs)

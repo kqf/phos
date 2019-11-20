@@ -195,38 +195,38 @@ class CompositeCorrectedYieldOptions(object):
         self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)
 
 
-# TODO: Add pt parameter to the feeddown
 class FeeddownOptions(object):
-    def __init__(self, particle="#pi^{0}"):
+    def __init__(self, pt="config/pt.json", particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()
         self.particle = particle
         self.feeddown = Options(
+            pt=pt,
             particle=particle,
             invmass="config/data/feeddown-mass-fit.json")
-        # self.feeddown = Options(pt="config/pt-same.json")
         # NB: Don't fit the mass and width and
         #     use the same values from the data
-        self.feeddown.calibration.mass.fit = False
-        self.feeddown.calibration.width.fit = False
-        self.regular = Options(particle=particle)
+        # self.feeddown.calibration.mass.fit = False
+        # self.feeddown.calibration.width.fit = False
+        self.regular = Options(pt=pt, particle=particle)
         # self.regular = Options(pt="config/pt-same.json")
         # NB: Make sure to define and assign the feeddown parametrization
         self.fitf = self.feeddown_paramerization()
         # Use the idendity transformation by default
         self.plot_func = lambda x, loggs: x
+        # Ensure the right pT binning for the final particle histogram
+        self.pt = Options(particle=particle).pt.ptedges
 
     @staticmethod
     def feeddown_paramerization():
         func_feeddown = ROOT.TF1(
             "func_feeddown",
             "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
-            0, 100
+            0.8, 7
         )
         func_feeddown.SetParNames("A", "#sigma", "E_{scale}")
-        func_feeddown.SetParameter(0, -1.4)
-        func_feeddown.SetParameter(1, 0.33)
-        func_feeddown.SetParLimits(1, 0, 10)
-        func_feeddown.SetParameter(2, 0.02)
+        func_feeddown.SetParameter(0, 0.02)
+        func_feeddown.SetParameter(1, 0.64)
+        func_feeddown.SetParameter(2, 0.05)
         return func_feeddown
 
 
