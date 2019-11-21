@@ -47,7 +47,7 @@ def acceptance_data(particle="#pi^{0}"):
 
 
 class AcceptanceOptions(object):
-    title = "Acceptance uncertainty; p_{T} (GeV/#it{c}); Relateive error, %"
+    title = "Acceptance ; p_{T} (GeV/#it{c}); rel. sys. error"
 
     def __init__(self, particle="#pi^{0}"):
         super(AcceptanceOptions, self).__init__()
@@ -117,7 +117,11 @@ class Acceptance(TransformerBase):
         )
         average = br.average(spectrums, "averaged yield")
         average.SetTitle("average")
-        ratios = [br.ratio(s, average, "B") for s in spectrums]
+        ratios = [br.ratio(s, average) for s in spectrums]
+        for ratio in ratios:
+            for i in br.hrange(ratio):
+                ratio.SetBinError(i, ratio.GetBinError(i))
+
         plot(
             ratios,
             logy=False,
