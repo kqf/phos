@@ -4,33 +4,10 @@ import pytest
 import ROOT
 import spectrum.broot as br
 from spectrum.options import ProbeTofOptions
-from vault.datavault import DataVault
 from spectrum.output import open_loggs
 from spectrum.tools.probe import TagAndProbe
 from spectrum.tools.validate import validate  # noqa
 from spectrum.plotter import plot
-
-
-@pytest.fixture
-def data():
-    return (
-        DataVault().input("data", "staging tof", listname="TagAndProbleTOF",
-                          histname="MassEnergyTOF_SM0"),
-        DataVault().input("data", "staging tof", listname="TagAndProbleTOF",
-                          histname="MassEnergyAll_SM0"),
-    )
-
-
-@pytest.fixture
-def data_old():
-    return (
-        DataVault().input("data", "uncorrected",
-                          "TagAndProbleTOFOnlyTender",
-                          histname="MassEnergyTOF_SM0"),
-        DataVault().input("data", "uncorrected",
-                          "TagAndProbleTOFOnlyTender",
-                          histname="MassEnergyAll_SM0"),
-    )
 
 
 @pytest.fixture
@@ -54,10 +31,10 @@ def fitfunc():
 
 
 @pytest.fixture
-def efficiency(data):
+def efficiency(tof_data):
     with open_loggs() as loggs:
         probe_estimator = TagAndProbe(ProbeTofOptions(), False)
-        efficiency = probe_estimator.transform(data, loggs)
+        efficiency = probe_estimator.transform(tof_data, loggs)
     return efficiency
 
 
@@ -69,7 +46,8 @@ def oname():
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_estimate_tof_efficiency(efficiency, oname, fitfunc):
+@pytest.mark.parametrize("particle", ["#pi^{0}"])
+def test_estimate_tof_efficiency(efficiency, oname, fitfunc, ltitle):
     bins = br.edges(efficiency)
     fitfunc.SetRange(min(bins), max(bins))
     efficiency.Fit(fitfunc, "RWW")
@@ -79,7 +57,7 @@ def test_estimate_tof_efficiency(efficiency, oname, fitfunc):
         logy=False,
         csize=(126, 126),
         legend_pos=(0.20, 0.7, 0.35, 0.85),
-        ltitle="#pi^{0} #rightarrow #gamma #gamma",
+        ltitle=ltitle,
         oname=oname
     )
     # validate(br.hist2dict(efficiency), "efficiency_tag")

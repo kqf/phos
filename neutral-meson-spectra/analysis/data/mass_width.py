@@ -33,7 +33,7 @@ def oname(particle, quant):
     "mass",
     "width",
 ])
-def test_mass_width_parametrization(particle, hparms, oname):
+def test_mass_width_parametrization(particle, hparms, oname, ltitle):
     hist, params = hparms
     hist.SetTitle("Data")
     fitf = ROOT.TF1(hist.GetName(), params.func, *params.frange)
@@ -49,7 +49,7 @@ def test_mass_width_parametrization(particle, hparms, oname):
     plot(
         [hist, fitf],
         logy=False,
-        ltitle="{} #rightarrow #gamma #gamma".format(particle),
+        ltitle=ltitle,
         oname=oname,
         more_logs=False,
         yoffset=2.05,

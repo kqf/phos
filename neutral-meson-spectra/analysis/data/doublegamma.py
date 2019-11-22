@@ -9,17 +9,21 @@ from spectrum.analysis import Analysis
 from spectrum.ptplotter import MassesPlot
 
 
+@pytest.fixture
+def oname(particle):
+    ofile = "results/analysis/data/gammagamma_{}.pdf"
+    return ofile.format(br.spell(particle))
+
+
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_simple(particle, data):
+def test_simple(particle, data, oname):
     analysis = Analysis(Options(particle=particle))
     with open_loggs() as loggs:
-        ofile = "results/analysis/data/gammagamma_{}.pdf"
-        ofile = ofile.format(br.spell(particle))
-        with plt.pcanvas(size=(96, 128), stop=True, oname=ofile) as canvas:
+        with plt.pcanvas(size=(96, 128), stop=True, oname=oname) as canvas:
             ROOT.gStyle.SetStatY(0.88)
             ROOT.gStyle.SetStatX(0.88)
             ROOT.gStyle.SetStatW(0.15)

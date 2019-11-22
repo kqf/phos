@@ -101,6 +101,6 @@ def test_cball_parameters(particle, data, hists, quantity, oname, ltitle):
         logy=False,
         ylimits=hist.ylimits,
         legend_pos=(0.58, 0.7, 0.68, 0.85),
-        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        ltitle=ltitle,
         oname=oname,
     )
