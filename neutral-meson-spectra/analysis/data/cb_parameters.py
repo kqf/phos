@@ -36,7 +36,8 @@ class SelectAndFitHistograms(TransformerBase):
         for hist, func, limits in args:
             self._fit_histogram(hist, func, self.opt.analysis.particle)
             hist.ylimits = limits
-        return output
+            hist.SetTitle("Data")
+        return data._asdict()
 
     def _fit_histogram(self, histogram, func, particle):
         histogram.Fit(func, 'q')
@@ -61,32 +62,45 @@ class CballParametersEstimator(TransformerBase):
         ])
 
 
+@pytest.fixture
+def hists(particle, data):
+    estimator = CballParametersEstimator(
+        CbFitOptions(particle=particle), plot=False)
+
+    with open_loggs("test cball parameters {}".format(particle)) as loggs:
+        data = estimator.transform(data, loggs=loggs)
+    return data
+
+
+@pytest.fixture
+def oname(particle, quantity):
+    quantity = quantity.replace("cball_", "")
+    pattern = "results/analysis/data/{}_{}.pdf"
+    return pattern.format(quantity, br.spell(particle))
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta"
+    # "#eta",
 ])
-def test_cball_parameters(particle, data):
-    estimator = CballParametersEstimator(
-        CbFitOptions(particle=particle), plot=False)
-
-    with open_loggs("test cball parameters {}".format(particle)) as loggs:
-        outputs = estimator.transform(data, loggs=loggs)
-
-    for hist in outputs:
-        hist.SetTitle("Data")
-        func = hist.GetListOfFunctions()[0]
-        func.SetTitle("Constant fit")
-        func.SetLineStyle(9)
-        func.SetLineColor(ROOT.kBlack)
-        oname = "results/analysis/data/{}_{}.pdf"
-        plot(
-            [hist, func],
-            logy=False,
-            ylimits=hist.ylimits,
-            legend_pos=(0.58, 0.7, 0.68, 0.85),
-            ltitle="{} #rightarrow #gamma#gamma".format(particle),
-            oname=oname.format(func.GetName(), br.spell(particle)),
-        )
+@pytest.mark.parametrize("quantity", [
+    "cball_n",
+    "cball_alpha",
+])
+def test_cball_parameters(particle, data, hists, quantity, oname, ltitle):
+    hist = hists[quantity]
+    func = hist.GetListOfFunctions()[0]
+    func.SetTitle("Constant fit")
+    func.SetLineStyle(9)
+    func.SetLineColor(ROOT.kBlack)
+    plot(
+        [hist, func],
+        logy=False,
+        ylimits=hist.ylimits,
+        legend_pos=(0.58, 0.7, 0.68, 0.85),
+        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        oname=oname,
+    )
