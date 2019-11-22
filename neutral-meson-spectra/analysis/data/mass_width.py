@@ -8,41 +8,49 @@ from spectrum.analysis import Analysis
 from spectrum.plotter import plot
 
 
-def fit(hist, quant, particle):
-    hist.SetTitle("Data")
-    fitf = ROOT.TF1(hist.GetName(), quant.func, *quant.frange)
-    # fitf = ROOT.TF1(hist.GetName(), quant.func, min(bins), 2)
-    fitf.SetTitle("Fit")
-    fitf.SetLineColor(ROOT.kBlack)
-    fitf.SetLineStyle(9)
-    for i, (p, n) in enumerate(zip(quant.pars, quant.names)):
-        fitf.SetParName(i, n)
-        fitf.SetParameter(i, p)
+@pytest.fixture
+def hparms(data, particle, quant):
+    options = Options(particle=particle)
+    with open_loggs() as loggs:
+        output = Analysis(options).transform(data, loggs)
+    return output._asdict()[quant], options.calibration[quant]
 
-    hist.Fit(fitf, "Q")
-    # print(br.pars(fitf))
-    br.report(fitf, particle)
+
+@pytest.fixture
+def oname(particle, quant):
     pattern = "results/analysis/data/{}_{}.pdf"
-    plot(
-        [hist, fitf],
-        logy=False,
-        ltitle="{} #rightarrow #gamma #gamma".format(particle),
-        oname=pattern.format(hist.GetName(), br.spell(particle)),
-        more_logs=False,
-        yoffset=2.05,
-    )
+    return pattern.format(quant, br.spell(particle))
 
 
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta"
 ])
-def test_mass_width_parametrization(particle, data):
-    options = Options(particle=particle)
-    with open_loggs("test mass width parameters") as loggs:
-        output = Analysis(options).transform(data, loggs)
+@pytest.mark.parametrize("quant", [
+    "mass",
+    "width",
+])
+def test_mass_width_parametrization(particle, hparms, oname):
+    hist, params = hparms
+    hist.SetTitle("Data")
+    fitf = ROOT.TF1(hist.GetName(), params.func, *params.frange)
+    fitf.SetTitle("Fit")
+    fitf.SetLineColor(ROOT.kBlack)
+    fitf.SetLineStyle(9)
+    for i, (p, n) in enumerate(zip(params.pars, params.names)):
+        fitf.SetParName(i, n)
+        fitf.SetParameter(i, p)
 
-    fit(output.mass, options.calibration.mass, particle)
-    fit(output.width, options.calibration.width, particle)
+    hist.Fit(fitf, "Q")
+    br.report(fitf, particle)
+    plot(
+        [hist, fitf],
+        logy=False,
+        ltitle="{} #rightarrow #gamma #gamma".format(particle),
+        oname=oname,
+        more_logs=False,
+        yoffset=2.05,
+    )
