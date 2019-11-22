@@ -44,13 +44,9 @@ class SelectAndFitHistograms(TransformerBase):
         histogram.SetLineColor(ROOT.kRed + 1)
         func.SetLineColor(ROOT.kBlue + 1)
         func.SetLineWidth(2)
-        val, err = func.GetParameter(0), func.GetParError(0)
-        name, pname = func.GetName(), br.spell(particle)
+        func.SetParName(0, "Value")
         print()
-        print(r"\def \{}{}Value {{{:.3g}}}".format(name, pname, val))
-        print(r"\def \{}{}ValueError {{{:.3g}}}".format(name, pname, err))
-        print(r"\def \{}{}Chi {{{:.3g}}}".format(name, pname,
-                                                 br.chi2ndff(func)))
+        br.report(func, particle)
 
 
 class CballParametersEstimator(TransformerBase):
@@ -67,7 +63,7 @@ def hists(particle, data):
     estimator = CballParametersEstimator(
         CbFitOptions(particle=particle), plot=False)
 
-    with open_loggs("test cball parameters {}".format(particle)) as loggs:
+    with open_loggs() as loggs:
         data = estimator.transform(data, loggs=loggs)
     return data
 

@@ -5,9 +5,6 @@ integrity-test:
 		analysis/data/tof.py \
 		analysis/efficiency/spmc_efficiency.py
 
-simple-test:
-	pytest -s analysis/yield/observables.py
-
 update-datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.
 
@@ -18,14 +15,22 @@ ifeq (, $(shell which phos-download))
 endif
 
 systematics:
-	pytest analysis/systematics/yields.py
-	pytest analysis/systematics/nonlinearity.py
-	pytest analysis/systematics/gscale.py
-	pytest analysis/systematics/tof.py
-	pytest analysis/systematics/acceptance.py # TODO: Update selection
-	pytest analysis/systematics/feeddown.py
-	pytest analysis/systematics/material.py
-	pytest analysis/systematics/systematics.py
+	pytest -s analysis/systematics/yields.py
+	pytest -s analysis/systematics/nonlinearity.py
+	pytest -s analysis/systematics/gscale.py
+	pytest -s analysis/systematics/tof.py
+	pytest -s analysis/systematics/acceptance.py # TODO: Update selection
+	pytest -s analysis/systematics/feeddown.py
+	pytest -s analysis/systematics/material.py
+	pytest -s analysis/systematics/systematics.py
+
+
+data:
+	pytest -s analysis/data/doublegamma.py
+	pytest -s analysis/data/cb_parameters.py
+	pytest -s analysis/data/mass_width.py
+	pytest -s analysis/data/yields.py
+	pytest -s analysis/data/tof.py
 
 clean:
 	rm -f *.pdf *.png *.root
