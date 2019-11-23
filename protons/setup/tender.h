@@ -3,7 +3,7 @@
 
 AliPHOSTenderTask * AddPHOSTender(Bool_t isMC, TString & msg)
 {
-    TString decalibration = isMC ? "Run2Tune" : "Run2Tune";
+    TString decalibration = "Run2Tune";
     AliPHOSTenderTask * tender = AddAODPHOSTender(
         "PHOSTenderTask",  // Task Name
         "PHOStender",      // Container Name
@@ -15,7 +15,7 @@ AliPHOSTenderTask * AddPHOSTender(Bool_t isMC, TString & msg)
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
-    TString nonlinearity = isMC ? "Run2Tune": "Run2Tune";
+    TString nonlinearity = isMC ? "Run2TuneMC": "Run2Tune";
     supply->SetNonlinearityVersion(nonlinearity);  
 
     if (isMC)
