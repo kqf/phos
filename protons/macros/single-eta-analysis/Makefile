@@ -6,10 +6,10 @@ MC = kTRUE
 PROTONS_PATH=../../
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Run the analysis on the newest nonlinearity function
+# Run the analysis with the correct nonlinearity function
 #
 DATASET = LHC17j3c1
-OUTDIR = results/mc/single/eta/run2tune_run2tune
+OUTDIR = results/mc/single/pi0/extended_pt_range_2
 TEST_SELECTION = PhysEff
 # Dirty?!? hack to avoid grid(plugin) limitations.
 # Add all necessary taks
