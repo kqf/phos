@@ -3,7 +3,7 @@
 
 AliPHOSTenderTask * AddPHOSTender(Bool_t isMC, TString & msg)
 {
-    TString decalibration = "Run2Tune";
+    TString decalibration = "Run2Default";
     AliPHOSTenderTask * tender = AddAODPHOSTender(
         "PHOSTenderTask",  // Task Name
         "PHOStender",      // Container Name
