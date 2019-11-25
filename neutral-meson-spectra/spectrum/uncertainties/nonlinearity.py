@@ -1,13 +1,15 @@
 import spectrum.broot as br
 from joblib import Memory
 from spectrum.pipeline import RebinTransformer
-from spectrum.pipeline import Pipeline
+from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import FunctionTransformer
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions, Options
+from spectrum.options import CompositeOptions
 from spectrum.output import open_loggs
 from spectrum.pipeline import ParallelPipeline, TransformerBase
 from spectrum.plotter import plot
+from spectrum.analysis import Analysis
 from vault.datavault import DataVault
 
 
@@ -33,6 +35,27 @@ def _eff(data, plot=False):
     mc = ParallelPipeline([
         ("efficiency_" + str(i), Efficiency(options.eff, plot))
         for i in range(options.nbins ** 2)
+    ], disable=False)
+    with open_loggs() as loggs:
+        output = mc.transform(data, loggs)
+    return output
+
+
+# TODO: Handle loggs
+@memory.cache()
+def _masses(prod):
+    def mass():
+        options = CompositeOptions(particle="#pi^{0}")
+        return Pipeline([
+            ("Analysis", Analysis(options)),
+            ("mass", HistogramSelector("mass")),
+        ])
+
+    nbins = NonlinearityUncertaintyOptions().nbins
+    data = nonlinearity_scan_data(nbins, prod)
+    mc = ParallelPipeline([
+        ("mass_" + str(i), mass())
+        for i in range(nbins ** 2)
     ], disable=False)
     with open_loggs() as loggs:
         output = mc.transform(data, loggs)
