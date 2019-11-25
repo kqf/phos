@@ -229,7 +229,7 @@
         "high": {
             "default_selection": "PhysNonlinScan",
             "description": "Restrict the search range to be withing the errors",
-            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_8/LHC17j3b2.root",
+            "file": "input-data/mc/single/pi0/final_nonlinearity_scan_9/LHC17j3b2.root",
             "hsum": "65202444dc92a150230c4ce54aedabc06d28b944a1d85e847f98f5b8f5eb8de6",
             "pt_range": [4.0, 20.0]
         },
