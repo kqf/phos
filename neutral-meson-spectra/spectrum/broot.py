@@ -439,6 +439,20 @@ def systematic_deviation(histograms):
     return syst, rms, mean
 
 
+def maximum_deviation(histograms, central_value=1.):
+    matrix = np.array([bins(h)[0] for h in histograms])
+    normalized = matrix / matrix.mean(axis=0)
+    deviations = np.max(np.abs(normalized - 1), axis=0)
+
+    setp(histograms[0])
+    syst = copy(histograms[0], "MaxDeviation")
+    syst.GetYaxis().SetTitle("Max deviation")
+
+    for i, r in enumerate(deviations):
+        syst.SetBinContent(i + 1, r)
+    return syst, syst, syst
+
+
 def hrange(hist, axis="x", start=1, edges=False):
     nbins = hist.GetNbinsX() if "x" in axis.lower() else hist.GetNbinsY()
     # NB: Default value should be 1

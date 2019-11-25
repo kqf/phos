@@ -69,8 +69,7 @@ def visualise(effs, loggs, stop=False):
         ltext_size=0.015
     )
 
-    uncert, rms, mean = br.systematic_deviation(effs)
-    uncert.logy = False
+    uncert, rms, mean = br.maximum_deviation(effs)
     loggs.update({"uncertainty": uncert})
     loggs.update({"rms": rms})
     loggs.update({"mean": mean})
