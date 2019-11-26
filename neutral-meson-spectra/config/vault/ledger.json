@@ -37,9 +37,9 @@
         },
         "staging LHC16": {
             "default_selection": "Phys",
-            "description": "All corrections + tof study",
-            "file": "input-data/data/LHC16/extended_pt_range_1/LHC16.root",
-            "hsum": "f4203b744a5067919cd2b2717a0999f1f91d1c487269e843c460ea4443b1e8be",
+            "description": "All corrections + tof study + no nonlinearity",
+            "file": "input-data/data/LHC16/extended_pt_range_2/LHC16.root",
+            "hsum": "b6421e331f9959d8ff5308ba2c3338d8585a4578da83b4b67cde320a00192347",
             "pt_range": [0, 20]
         },
         "latest LHC17": {

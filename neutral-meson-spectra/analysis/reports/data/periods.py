@@ -60,8 +60,8 @@ def oname(particle, quant):
 ])
 @pytest.mark.parametrize("quant", [
     "mass",
-    "width",
-    "spectrum",
+    # "width",
+    # "spectrum",
 ])
 def test_periods(particle, data, quant, oname):
     labels = "LHC16", "LHC17", "LHC18"
@@ -70,7 +70,7 @@ def test_periods(particle, data, quant, oname):
         (l, analysis(particle, quant))
         for l in labels
     ])
-    with open_loggs() as loggs:
+    with open_loggs("particles") as loggs:
         hists = estimator.transform(data, loggs)
         for hist, label in zip(hists, labels):
             hist.SetTitle(label)
