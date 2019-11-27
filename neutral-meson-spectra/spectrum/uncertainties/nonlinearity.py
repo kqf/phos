@@ -36,6 +36,7 @@ def _eff(data, plot=False):
         ("efficiency_" + str(i), Efficiency(options.eff, plot))
         for i in range(options.nbins ** 2)
     ], disable=False)
+
     with open_loggs() as loggs:
         output = mc.transform(data, loggs)
     return output
@@ -51,7 +52,6 @@ def _masses(prod):
             ("Analysis", Analysis(options)),
             ("mass", HistogramSelector("mass")),
         ])
-
     nbins = NonlinearityUncertaintyOptions().nbins
     data = nonlinearity_scan_data(nbins, prod)
     mc = ParallelPipeline([
@@ -64,6 +64,8 @@ def _masses(prod):
 
 
 def visualise(effs, loggs, stop=False):
+    for i, eff in enumerate(effs):
+        eff.Scale(1 + 0.001 * i)
     plot(
         effs,
         xtitle="p_{T} (GeV/#it{c})",
@@ -79,6 +81,10 @@ def visualise(effs, loggs, stop=False):
 
     average = br.average(effs, "averaged yield")
     average.GetYaxis().SetTitle("average")
+    ratios = list(map(lambda x: br.ratio(x, average), effs))
+    for i, r in enumerate(ratios):
+        if any(br.bins(r).contents < 0.94):
+            print("The problematic index: ", i)
     plot(
         list(map(lambda x: br.ratio(x, average), effs)),
         logy=False,

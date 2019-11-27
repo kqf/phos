@@ -6,8 +6,9 @@ from spectrum.comparator import Comparator
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
 from spectrum.uncertainties.nonlinearity import nonlinearity_scan_data
-
+from spectrum.pipeline import ParallelPipeline
 from spectrum.efficiency import Efficiency
+
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.pipeline import ComparePipeline
 from vault.datavault import DataVault
@@ -21,7 +22,7 @@ def nbins():
 # Benchmark:
 # In the 5 TeV analysis U_nonlin ~ 0.01
 
-# @pytest.mark.skip()
+@pytest.mark.skip()
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -70,3 +71,19 @@ def test_spmc_efficiency(spmc_data, scan_data):
     ], plot=True)
     with open_loggs("test") as loggs:
         estimator.transform((spmc_data, scan_data), loggs)
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_problematic_productions(nbins):
+    prod = "single #pi^{0} nonlinearity scan"
+    data = nonlinearity_scan_data(nbins, prod)[:3]
+    options = NonlinearityUncertaintyOptions()
+    mc = ParallelPipeline([
+        ("efficiency_" + str(i), Efficiency(options.eff))
+        for i, _ in enumerate(data)
+    ], disable=False)
+
+    with open_loggs("nonlinearity-issues") as loggs:
+        output = mc.transform(data, loggs)
+    Comparator().compare(output)
