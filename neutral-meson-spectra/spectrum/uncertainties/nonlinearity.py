@@ -44,6 +44,7 @@ def _eff(data, plot=False):
 # TODO: Handle loggs
 @memory.cache()
 def _masses(prod):
+
     def mass():
         options = CompositeOptions(particle="#pi^{0}")
         return Pipeline([
