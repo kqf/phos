@@ -77,16 +77,17 @@ train=/alice/cern.ch/user/a/alitrain/PWGGA/GA_pp_AOD/
 # run=1092_20191024-1523_child_
 # run=1089_20191024-1506_child_
 # run=1090_20191024-1507_child_
-run=1138_20191122-2350_child_
+# run=1138_20191122-2350_child_
+run=1139_20191124-2020_child_
 
 # This scheme is valid for LHC16 data.
 # fill the map in the following way ([child number]=runlist number)
-declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
-declare -A names=([4]=LHC16g [5]=LHC16h [6]=LHC16i [7]=LHC16j [8]=LHC16k [9]=LHC16l [10]=LHC16o [11]=LHC16p)
+# declare -A children=([4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
+# declare -A names=([4]=LHC16g [5]=LHC16h [6]=LHC16i [7]=LHC16j [8]=LHC16k [9]=LHC16l [10]=LHC16o [11]=LHC16p)
 
 # LHC17 data
-# declare -A children=([1]=5 [2]=5 [3]=5 [4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
-# declare -A names=([1]=LHC17c [2]=LHC17e [3]=LHC17f [4]=LHC17h [5]=LHC17i [6]=LHC17j [7]=LHC17k [8]=LHC17l [9]=LHC17m [10]=LHC17o [11]=LHC17r)
+declare -A children=([1]=5 [2]=5 [3]=5 [4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [11]=5)
+declare -A names=([1]=LHC17c [2]=LHC17e [3]=LHC17f [4]=LHC17h [5]=LHC17i [6]=LHC17j [7]=LHC17k [8]=LHC17l [9]=LHC17m [10]=LHC17o [11]=LHC17r)
 
 # LHC18 data
 # declare -A children=([1]=5 [2]=5 [3]=5 [4]=5 [5]=5 [6]=5 [7]=5 [8]=5 [9]=5 [10]=5 [12]=5 [13]=5 [14]=5)
