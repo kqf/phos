@@ -52,8 +52,8 @@
         "staging LHC17": {
             "default_selection": "Phys",
             "description": "All corrections + tof study",
-            "file": "input-data/data/LHC17/extended_pt_range_1/LHC17.root",
-            "hsum": "04e24e70a3f87f112657673705dd259e5a7cc882dfeb7c4570bfbbd25c220a2b",
+            "file": "input-data/data/LHC17/extended_pt_range_2/LHC17.root",
+            "hsum": "848ace7ad6f04b341b134c275bc6d2626b36a7140cd1f7c508d78aba1bcd10a6",
             "pt_range": [0, 20]
         },
         "latest LHC18": {
@@ -66,8 +66,8 @@
         "staging LHC18": {
             "default_selection": "Phys",
             "description": "All corrections + tof study",
-            "file": "input-data/data/LHC18/extended_pt_range_1/LHC18.root",
-            "hsum": "2baaea21a6d6c847922dff418ebf8d4d86113c57933c312c4f584017bc2691be",
+            "file": "input-data/data/LHC18/extended_pt_range_2/LHC18.root",
+            "hsum": "b55ebe81783bcfe43e7a5dabd185d4ccbce761a4bfef2f66c77d4f55ea45e25f",
             "pt_range": [0, 20]
         },
         "latest": {
