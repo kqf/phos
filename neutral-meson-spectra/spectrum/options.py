@@ -86,6 +86,7 @@ class CompositeOptions(object):
         self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
         if particle == "#eta":
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
+        self.particle = particle
 
 
 class EfficiencyOptions(object):

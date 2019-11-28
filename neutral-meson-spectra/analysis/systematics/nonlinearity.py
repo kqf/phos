@@ -22,7 +22,6 @@ def nbins():
 # Benchmark:
 # In the 5 TeV analysis U_nonlin ~ 0.01
 
-@pytest.mark.skip()
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -73,6 +72,7 @@ def test_spmc_efficiency(spmc_data, scan_data):
         estimator.transform((spmc_data, scan_data), loggs)
 
 
+@pytest.mark.skip
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_problematic_productions(nbins):
@@ -84,6 +84,6 @@ def test_problematic_productions(nbins):
         for i, _ in enumerate(data)
     ], disable=False)
 
-    with open_loggs("nonlinearity-issues") as loggs:
+    with open_loggs() as loggs:
         output = mc.transform(data, loggs)
     Comparator().compare(output)

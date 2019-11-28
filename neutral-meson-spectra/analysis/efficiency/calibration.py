@@ -41,7 +41,7 @@ def spmc(particle):
 
 @pytest.fixture
 def data():
-    return DataVault().input("data", histname="MassPtSM0")
+    return DataVault().input("data", "staging", histname="MassPtSM0")
 
 
 @pytest.fixture

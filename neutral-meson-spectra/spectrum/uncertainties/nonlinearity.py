@@ -58,14 +58,15 @@ def _masses(prod):
         ("mass_" + str(i), mass())
         for i in range(nbins ** 2)
     ], disable=False)
+
     with open_loggs() as loggs:
         output = mc.transform(data, loggs)
     return output
 
 
 def visualise(effs, loggs, stop=False):
-    for i, eff in enumerate(effs):
-        eff.Scale(1 + 0.001 * i)
+    # for i, eff in enumerate(effs):
+    #     eff.Scale(1 + 0.001 * i)
     plot(
         effs,
         xtitle="p_{T} (GeV/#it{c})",
