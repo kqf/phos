@@ -4,15 +4,15 @@
     "#pi^{0}":
     {
         "preliminary": {
-            "mass_limits":   [0.132, 0.1345],
+            "mass_limits":   [0.132, 0.139],
             "width_limits":  [0.004, 0.012],
-            "range":         [0.132, 0.1345],
-            "parameters":    [0, 0.135, 0.005, 0.1],
+            "range":         [0.132, 0.139],
+            "parameters":    [0, 0.134, 0.005, 0.1],
             "par_names":     ["A", "M", "#sigma", "a_{0}"]
         },
         "fit_range":         [0.06, 0.22],
         "fit_mass":          0.135,
-        "fit_mass_limits":   [0.132, 0.1345],
+        "fit_mass_limits":   [0.132, 0.139],
         "fit_width_limits":  [0.004, 0.012],
         "cb_n":              2.42,
         "cb_alpha":          1.56,
