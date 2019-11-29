@@ -20,7 +20,7 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
 
     AliAnalysisTaskPP13 * task = AddAnalysisTaskPPDebug(isMC, msg);
     task->SelectCollisionCandidates(AliVEvent::kINT7);
-    AddTaskPHOSEpRatio(isMC);
+    // AddTaskPHOSEpRatio(isMC);
 
     manager->InitAnalysis();
     manager->PrintStatus();
