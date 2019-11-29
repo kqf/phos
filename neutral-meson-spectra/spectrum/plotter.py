@@ -150,7 +150,7 @@ def plot(
         list(map(lambda x: x.GetHistogram(), functions)) +
         list(map(br.graph2hist, graphs))
     )
-    x = xlimits or np.concatenate([br.bins(h).centers for h in histogrammed])
+    x = xlimits or np.concatenate([br.edges(h) for h in histogrammed])
     y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
 
     graphed = graphs + list(map(br.hist2graph, hists))

@@ -649,7 +649,10 @@ def tf1_sum(func1, func2, name="sum"):
 
 
 def edges(x):
-    return [x.GetBinLowEdge(i) for i in hrange(x, edges=True)]
+    return np.array([x.GetBinLowEdge(i) for i in hrange(x, edges=True)])
+
+def widths(x):
+    return np.array([x.GetBinWidth(i) for i in hrange(x)])
 
 
 def same_binning(hist1, hist2):
@@ -697,9 +700,11 @@ def graph2hist(graph, hist=None):
     return hist
 
 
-def hist2graph(hist, option=None):
+def hist2graph(hist, option=None, use_widths=False):
     contents, errors, centers = bins(hist)
-    hgraph = graph(hist.GetTitle(), x=centers, y=contents, dy=errors)
+    hgraph = graph(hist.GetTitle(), x=centers, y=contents,
+        dx=int(use_widths) * widths(hist) / 2, dy=errors)
+
     if option == "positive":
         idx = contents > 0
         hgraph = graph(hist.GetTitle(), centers[idx],

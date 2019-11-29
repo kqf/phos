@@ -13,7 +13,7 @@ from spectrum.constants import invariant_cross_section_code
     "#pi^{0}",
     "#eta",
 ])
-def test_tcm_fit(particle, tcm, tsallis, oname):
+def test_tsallis_tcm_fit(particle, tcm, tsallis, oname):
     cs = spectrum(particle)
     cs.SetTitle("Data")
     cs.Fit(tcm, "RQ")
