@@ -6,7 +6,6 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.pipeline import FunctionTransformer
 from spectrum.analysis import Analysis
-from spectrum.outputcreator import output_histogram
 from vault.datavault import DataVault
 
 
@@ -40,6 +39,7 @@ class CorrectionEstimator(TransformerBase):
         corr = ROOT.TH1F("feeddown", "Feed-down", len(self.pt) - 1, self.pt)
         for b in br.hrange(corr):
             corr.SetBinContent(b, 1. - self.fitf.Eval(corr.GetBinCenter(b)))
+            corr.SetBinError(b, 0)
         return corr
 
 

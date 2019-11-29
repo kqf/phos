@@ -16,7 +16,7 @@ from spectrum.uncertainties.acceptance import acceptance_data
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta"
+    "#eta"
 ])
 def test_acceptance(particle):
     estimator = Acceptance(
@@ -25,5 +25,4 @@ def test_acceptance(particle):
 
     with open_loggs() as loggs:
         uncertanity = estimator.transform(acceptance_data(particle), loggs)
-        print(uncertanity)
         Comparator().compare(uncertanity)
