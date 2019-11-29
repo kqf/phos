@@ -14,7 +14,6 @@ from spectrum.plotter import plot
 
 
 def cyield_data(particle, cut):
-    mc_production = "single {}".format(particle)
     data_input = (
         DataVault().input(
             "data",
@@ -22,6 +21,8 @@ def cyield_data(particle, cut):
             histname="MassPtSM0"),
         data_feeddown(particle != "#pi^{0}"),
     )
+
+    mc_production = "single {}".format(particle)
     mc_inputs = (
         DataVault().input(
             mc_production, "low",
