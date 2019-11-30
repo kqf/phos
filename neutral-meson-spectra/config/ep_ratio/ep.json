@@ -11,7 +11,7 @@
             "nsigmas": 2,
             "fit_range": [0, 20],
             "quantity": "width",
-            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
+            "title": "Parametrized {} peak width; p_{{T}}, GeV/#it{c}; #sigma, GeV",
             "fit": true
         },
         "width": {
@@ -20,7 +20,7 @@
             "names": ["a", "b"],
             "fit_range": [0, 20],
             "quantity": "width",
-            "title": "Parametrized {} peak width; p_{{T}}, GeV/c; #sigma, GeV",
+            "title": "Parametrized {} peak width; p_{{T}}, GeV/#it{c}; #sigma, GeV",
             "fit": true
         },
         "nsigmas": 2

@@ -22,7 +22,7 @@ def ensure_directory(name):
 def clean_name(name):
     name = (
         name.strip()
-        .replace(" GeV/c", "")
+        .replace(" GeV/#it{c}", "")
         .replace("p_{T}", "pT")
         .replace("<", "")
         .replace(">", "")

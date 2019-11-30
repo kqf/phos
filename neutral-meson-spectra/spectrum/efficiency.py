@@ -101,7 +101,7 @@ class CompositeEfficiency(TransformerBase):
         ])
 
     def _stepname(self, ranges):
-        return "{0} < p_{{T}} < {1} GeV/c".format(*ranges)
+        return "{0} < p_{{T}} < {1} GeV/#it{c}".format(*ranges)
 
     def _reduce_function(self, options):
         if options.reduce_function != "standard":

@@ -57,7 +57,7 @@ class MassComparator(TransformerBase):
         ], rrange=(0, 4))
 
     def _stepname(self, ranges):
-        return "{0} < p_{T} < {1} GeV/c".format(*ranges, T='{T}')
+        return "{0} < p_{T} < {1} GeV/#it{c}".format(*ranges, T='{T}')
 
 
 @pytest.fixture

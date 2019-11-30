@@ -27,7 +27,7 @@ class HepdataInput(TransformerBase):
         br.io.hepdata(item["hepdata"], filename, item["table"])
         graph = br.io.read(filename, item["table"], self.histname)
         hist = br.graph2hist(graph)
-        hist.GetXaxis().SetTitle("p_{T} (GeV/c)")
+        hist.GetXaxis().SetTitle("p_{T} (GeV/#it{c})")
         hist.SetTitle(item["title"])
         hist.Scale(item["scale"])
         hist.energy = item["energy"]

@@ -22,7 +22,7 @@ def mass():
     title = """
         pp at #sqrt{s} = 13 TeV,|
         #pi^{0} #rightarrow #gamma#gamma,|
-        15 < p_{T} < 20 GeV/c |
+        15 < p_{T} < 20 GeV/#it{c} |
     """
     data.SetTitle(title)
     data.FillRandom(measured.GetName(), 10000)

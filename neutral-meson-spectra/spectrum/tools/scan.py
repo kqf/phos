@@ -40,7 +40,7 @@ class NonlinearityParamExtractor(TransformerBase):
         a, sigma = zip(*self.labels)
         bins = list(br.vec_to_bins(set(a))) + list(br.vec_to_bins(set(sigma)))
         hist = ROOT.TH2F("nonlinearity_scan",
-                         "Chi2/ndf for data and mc; a; #sigma, GeV/c", *bins)
+                         "Chi2/ndf for data and mc; a; #sigma, GeV/#it{c}", *bins)
         chi2_params = {}
         for c, b in zip(chi2, self.labels):
             hist.Fill(b[0], b[1], c)
