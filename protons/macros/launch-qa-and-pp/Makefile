@@ -2,10 +2,10 @@ include ../../base.mk
 
 PROTONS_PATH=../../
 
-DATASET = LHC16g-pass1
+DATASET = LHC16l-pass1
 DPART = first
 MC = kFALSE
-OUTDIR = results/data/LHC17/debug_tender_lhc16g
+OUTDIR = results/data/LHC16/debug_tender
 ALICE_SITE =
 
 
