@@ -25,8 +25,6 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain)
 	);
 
-	mc_weights.fNonA = 0;
-	mc_weights.fNonGlobal = -1.0; // Take into account the right scale
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));
 	selections->Add(new AliPP13EfficiencySelectionMC("NoWeights", "Physics efficiency no corrections", cuts_pi0, &no_weights));

@@ -66,13 +66,6 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPPDebug(Bool_t isMC = kFALSE, TString descr
 		// Nonlinearity for zs 20 Run2Default (Daiki's approximation)
 		// The pi^0 peak is misplaced in this fit: A * 1.03274e+00 (global energy scale)
 		// Calculated for the updated version for the corrected Data
-		// mc_weights.fNonA = -0.020025549129372242;
-		// mc_weights.fNonSigma = 1.1154536660217529;
-		// mc_weights.fNonGlobal = 1.0493128193171741;
-
-		mc_weights_only.fNonGlobal = 1.0;
-		mc_weights_only.fNonA = 0.0;
-
 		// selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 		// selections->Add(new AliPP13EfficiencySelectionMC("PhysEffPlain", "Physics efficiency for neutral particles, no nonlinearity", cuts_pi0, &mc_weights_only));
 		// selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights));

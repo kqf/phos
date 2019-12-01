@@ -20,18 +20,15 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, Bool_t calculate_ac
 	AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(
 		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kSinglePi0MC)
 	);
-
-	mc_weights.fNonGlobal = 1.0; // Take into account the right scale
-	mc_weights.fNonA = -0.455062; // uncertainty 0.0002
-    mc_weights.fNonSigma = 0.133812; // uncertainty 0.0005
-
 	selections->Add(new AliPP13EfficiencySelectionMC("PhysEff", "Physics efficiency for neutral particles fully corrected", cuts_pi0, &mc_weights));
 
-	Int_t nbins = 9;
-	Int_t nsigma = 1;
-	Float_t precA = nsigma * 0.0002 * 2 / nbins * mc_weights.fNonA;
-	Float_t precSigma = nsigma * 0.0005 * 2 / nbins * mc_weights.fNonSigma;
-	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &mc_weights, precA, precSigma));
+	AliPP13SelectionWeightsMC & scan_weights = dynamic_cast<AliPP13SelectionWeightsScan &>(
+		AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kScan)
+	);
+
+	Float_t precA = nsigma * 0.0005 * 2 / nbins * scan_weights.fE;
+	Float_t precD = nsigma * 0.0002 * 2 / nbins * scan_weights.fD;
+	selections->Add(new AliPP13NonlinearityScanSelection("PhysNonlinScan", "Physics efficiency for neutral particles", cuts_pi0, &scan_weights, precA, precSigma));
 
 	// Setup task
 	AliAnalysisTaskPP13 * task = new AliAnalysisTaskPP13("PhosProtons", selections);
