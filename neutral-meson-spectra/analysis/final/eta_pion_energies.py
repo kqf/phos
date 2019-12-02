@@ -8,11 +8,12 @@ from spectrum.plotter import plot
 @pytest.fixture
 def data():
     raw = pd.read_json("config/physics/eta_pion_energies.json")
+    pp = raw[raw["system"] == "pp"]
     return br.graph(
         "; #sqrt{s} (GeV); #eta/#pi^{0}",
-        raw["energy"],
-        raw["eta_pion"],
-        dy=raw["eta_pion_err"])
+        pp["energy"],
+        pp["eta_pion"],
+        dy=pp["eta_pion_err"])
 
 
 @pytest.fixture
@@ -29,12 +30,14 @@ def oname():
     return "results/eta_pion_energies.pdf"
 
 
+@pytest.mark.onlylocal
 def test_reports_energies(data, delimeter, oname):
     plot(
         [data, delimeter],
         logy=False,
         legend_pos=None,
         ylimits=(0, 1),
+        xlimits=(13.5, 13100),
         csize=(126, 96),
         oname=oname,
     )
