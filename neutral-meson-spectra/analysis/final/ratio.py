@@ -8,7 +8,7 @@ from spectrum.plotter import plot
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_ratio(pythia6_eta_pion_ratio, ptmin=5.5, ptmax=22):
+def test_ratio(pythia6_eta_pion_ratio, ptmin=2.0, ptmax=22):
     data = ratio()
     data.SetTitle("Data")
 
