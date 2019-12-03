@@ -1,7 +1,7 @@
 from __future__ import print_function
-import ROOT
 import pytest
 
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.options import CompositeNonlinearityScanOptions
 from spectrum.options import CompositeNonlinearityOptions
@@ -9,16 +9,6 @@ from spectrum.output import open_loggs
 from spectrum.tools.mc import Nonlinearity
 from spectrum.tools.scan import NonlinearityScan, form_histnames
 from vault.datavault import DataVault
-
-
-def final_nonliearity_data(production, histname):
-    return (
-        DataVault().input("data", listname="Phys", histname="MassPtSM0"),
-        (
-            DataVault().input(production, "low", histname=histname),
-            DataVault().input(production, "high", histname=histname),
-        )
-    )
 
 
 @pytest.fixture
@@ -50,10 +40,9 @@ def test_scan_nonlinearities(nbins):
             loggs
         )
 
-        # TODO: Add this to the output
-        ofile = ROOT.TFile("nonlinearity_scan.root", "recreate")
-        chi2ndf.Write()
-        ofile.Close()
+        with br.tfile("nonlinearity_scan.root", "recreate"):
+            chi2ndf.Write()
+
         Comparator().compare(chi2ndf)
 
 

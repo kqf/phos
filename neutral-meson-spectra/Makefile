@@ -31,7 +31,7 @@ systematics:
 	pytest -s analysis/systematics/nonlinearity.py
 	pytest -s analysis/systematics/gscale.py
 	pytest -s analysis/systematics/tof.py
-	pytest -s analysis/systematics/acceptance.py # TODO: Update selection
+	pytest -s analysis/systematics/acceptance.py
 	pytest -s analysis/systematics/feeddown.py
 	pytest -s analysis/systematics/material.py
 	pytest -s analysis/systematics/systematics.py
