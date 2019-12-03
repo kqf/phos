@@ -651,6 +651,7 @@ def tf1_sum(func1, func2, name="sum"):
 def edges(x):
     return np.array([x.GetBinLowEdge(i) for i in hrange(x, edges=True)])
 
+
 def widths(x):
     return np.array([x.GetBinWidth(i) for i in hrange(x)])
 
@@ -702,13 +703,15 @@ def graph2hist(graph, hist=None):
 
 def hist2graph(hist, option=None, use_widths=False):
     contents, errors, centers = bins(hist)
-    hgraph = graph(hist.GetTitle(), x=centers, y=contents,
+    hgraph = graph(
+        hist.GetTitle(), x=centers, y=contents,
         dx=int(use_widths) * widths(hist) / 2, dy=errors)
 
     if option == "positive":
         idx = contents > 0
         hgraph = graph(hist.GetTitle(), centers[idx],
                        contents[idx], dy=errors[idx])
+
     hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     hgraph.SetLineColor(hist.GetLineColor())

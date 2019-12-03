@@ -196,6 +196,10 @@ def plot(
                 graph.SetMarkerColor(color)
 
             options = graph.GetDrawOption() or "p"
+
+            if "E5" in options:
+                graph.SetFillColor(ROOT.kWhite)
+
             graph.Draw(options)
 
         for i, func in enumerate(functions):
