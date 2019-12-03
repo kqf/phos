@@ -1,6 +1,7 @@
 import ROOT
 import pytest
 
+import spectrum.broot as br
 from spectrum.spectra import ratio
 from spectrum.plotter import plot
 
@@ -8,7 +9,7 @@ from spectrum.plotter import plot
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_ratio(pythia6_eta_pion_ratio, ptmin=2.0, ptmax=22):
+def test_ratio(pythia6_eta_pion_ratio, ptmin=4.5, ptmax=22):
     data = ratio()
     data.SetTitle("Data")
 
@@ -28,8 +29,11 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=2.0, ptmax=22):
     ff.SetLineStyle(7)
     ff.SetTitle("Constant fit")
 
+    data = br.hist2graph(data, use_widths=True)
+    data.GetDrawOption = lambda: "pE5"
+
     plot(
-        [data, pythia6_eta_pion_ratio, ff],
+        [data, pythia6_eta_pion_ratio],
         ytitle="R_{#eta / #pi^{0}}",
         xtitle="p_{T} (GeV/#it{c})",
         logy=False,
