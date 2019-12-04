@@ -37,8 +37,6 @@ class SignalExtractor(MassTransformer):
         # Subtraction
         imass.signal = mass.Clone()
         imass.signal.Add(background, -1.)
-
-        # TODO: SetAxisRange aswell
         imass.signal.SetAxisRange(*imass.fit_range)
         imass.signal.GetYaxis().SetTitle("Real - background")
         return imass.signal

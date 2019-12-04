@@ -501,7 +501,6 @@ def set_to_zero(hist, rrange):
     #     othervise we will count twice the same point
     #     in sum_trimm method
 
-    # TODO: Check this!?
     for bin in bins:
         hist.SetBinContent(bin, 0)
         hist.SetBinError(bin, 0)

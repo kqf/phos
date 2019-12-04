@@ -16,9 +16,6 @@ from spectrum.ptplotter import MulipleOutput
 from spectrum.vis import MultipleVisualizer, Visualizer
 
 
-# TODO: Introduce more log items for compare etc.
-#
-
 def save_tobject(obj):
     if type(obj) not in {ROOT.TCanvas, ROOT.TH1F, ROOT.TH1D,
                          MulipleOutput, Visualizer, MultipleVisualizer}:
