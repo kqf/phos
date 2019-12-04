@@ -8,9 +8,6 @@
 // --- AliRoot header files ---
 #include <AliVCluster.h>
 
-// TODO: Fix logic for pointers
-//
-
 // NB: Don't use pointers in the array, this way will be easier
 //
 class AliPP13NonlinearityScanSelection : public AliPP13SpectrumSelectionMC

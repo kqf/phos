@@ -49,11 +49,6 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPPDebug(Bool_t isMC = kFALSE, TString descr
 		delete &data_weights_plain;
 	}
 	
-	// selections->Add(new AliPP13EpRatioSelection("EpRatio", "E/p ratio selection for electrons", cuts_pi0, &data_weights));
-	// TODO: This should be available only in for the data
-	//
-	// selections->Add(new AliPP13TriggerEfficiency("TriggerEfficiency", "Trigger efficiency", cuts_pi0, &data_weights));
-
 	if (isMC)
 	{
 		AliPP13SelectionWeightsMC & mc_weights = dynamic_cast<AliPP13SelectionWeightsMC &>(

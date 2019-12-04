@@ -25,5 +25,5 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->InitAnalysis();
     manager->PrintStatus();
     manager->StartAnalysis (runmode);
-    gObjectTable->Print( );
+    gObjectTable->Print();
 }

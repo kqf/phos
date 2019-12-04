@@ -27,7 +27,6 @@ AliAnalysisTaskPP13 * AddAnalysisTaskPP(TString description, TString period)
 		throw "Doesn't work";
 	}
 
-	// TODO: Add plain selections
 	AliPP13SelectionWeights & data_weights_plain = AliPP13SelectionWeights::Init(AliPP13SelectionWeights::kPlain);
 
 	TList * selections = new TList();
