@@ -76,27 +76,6 @@ class EpRatioEstimator(TransformerBase):
         ])
 
 
-# TODO: switch to br.report
-def report(func):
-    print(r"\def \uncertaintyEpChi {{{val:.3g}}}".format(
-        val=br.chi2ndff(func)
-    ))
-    print(r"\def \uncertaintyEp {{{val:.5g}}}".format(
-        val=func.GetParameter(0)
-    ))
-    print(r"\def \uncertaintyEpError {{{val:.5g}}}".format(
-        val=func.GetParError(0)
-    ))
-    xmin, xmax = ROOT.Double(0), ROOT.Double(0)
-    func.GetRange(xmin, xmax)
-    print(r"\def \uncertaintyEpLowPt {{{val:.3g}}}".format(
-        val=xmin
-    ))
-    print(r"\def \uncertaintyEpHighPt {{{val:.3g}}}".format(
-        val=xmax
-    ))
-
-
 def double_ratio(histograms, loggs, fitf, labels):
     for h, l in zip(histograms, labels):
         h.SetTitle(l)
@@ -118,7 +97,9 @@ def double_ratio(histograms, loggs, fitf, labels):
     fitf.SetTitle("Constant fit")
     fitf.SetLineStyle(9)
     fitf.SetLineColor(ROOT.kBlack)
-    report(fitf)
+    fitf.SetName("uncertaintyEp")
+    fitf.SetParName(0, "")
+    br.report(fitf, limits=True)
 
     plot(
         [ratio, fitf],

@@ -232,6 +232,4 @@ class DataExtractor(object):
 
         decorated = self._decorate_hists(histos, nevents)
         loggs.update({"invariant_masses": MulipleOutput(masses["invmasses"])})
-        # TODO: Don't save here, add another step to the pipeline
-        # loggs.update({"analysis_output": decorated._asdict()})
         return decorated
