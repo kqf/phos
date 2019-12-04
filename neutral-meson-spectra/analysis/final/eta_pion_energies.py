@@ -6,9 +6,9 @@ from spectrum.plotter import plot
 
 
 @pytest.fixture
-def data():
+def data(system):
     raw = pd.read_json("config/physics/eta_pion_energies.json")
-    pp = raw[raw["system"] == "pp"]
+    pp = raw[(raw["system"] == system) | (system == "all")]
     return br.graph(
         "; #sqrt{s} (GeV); R_{#eta / #pi^{0}}",
         pp["energy"],
@@ -31,6 +31,10 @@ def oname():
 
 
 @pytest.mark.onlylocal
+@pytest.mark.parametrize("system", [
+    "pp",
+    "all",
+])
 def test_reports_energies(data, delimeter, oname):
     plot(
         [data, delimeter],
