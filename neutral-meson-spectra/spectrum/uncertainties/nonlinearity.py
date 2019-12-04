@@ -28,7 +28,6 @@ class NonlinearityUncertaintyOptions(object):
 memory = Memory(".joblib-cachedir", verbose=0)
 
 
-# TODO: Handle loggs
 @memory.cache()
 def _eff(data, plot=False):
     options = NonlinearityUncertaintyOptions()
@@ -42,7 +41,6 @@ def _eff(data, plot=False):
     return output
 
 
-# TODO: Handle loggs
 @memory.cache()
 def _masses(prod):
     def mass():
