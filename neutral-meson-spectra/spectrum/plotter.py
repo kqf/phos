@@ -246,17 +246,17 @@ def hplot(
         canvas.SetLogy(logy)
         box.Draw()
         for i, hist in enumerate(data):
-            if colors == 'auto' and hist.GetLineColor() < 0:
+            if colors == 'auto':
                 color, marker = br.auto_color_marker(i)
                 hist.SetLineColor(color)
                 hist.SetMarkerColor(color)
 
-            if colors == 'levels' and hist.GetLineColor() < 0:
+            if colors == 'levels':
                 alpha = np.logspace(0, 0.9, len(data))[i]
                 hist.SetLineColorAlpha(ROOT.kRed + 1, alpha)
                 hist.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
 
-            if colors == 'coolwarm' and hist.GetLineColor() < 0:
+            if colors == 'coolwarm':
                 palette = sns.color_palette("coolwarm", len(data))
                 color, _ = define_color(*palette[i])
                 hist.SetLineColor(color)
