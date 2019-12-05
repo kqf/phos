@@ -119,6 +119,17 @@ def separate(data):
     return hists, graphs, functions
 
 
+def draw_box(data, x, y, xtitle, ytitle, yoffset, more_logs):
+    box = ROOT.TH1F("box", "", 1000, min(x), max(x))
+    box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
+    box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
+    box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
+    box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
+    box.GetXaxis().SetMoreLogLabels(more_logs)
+    box.GetYaxis().SetTitleOffset(yoffset)
+    return box
+
+
 @lru_cache(maxsize=1024)
 def define_color(r, g, b, alpha=1):
     colorindex = ROOT.TColor.GetFreeColorIndex()
@@ -232,18 +243,11 @@ def hplot(
     y = ylimits or np.concatenate([br.bins(h).contents for h in data])
 
     with style(), pcanvas("cn", size=csize, stop=stop, oname=oname) as canvas:
-        box = ROOT.TH1F("box", "", 1000, min(x), max(x))
-        box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
-        box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
-        box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
-        box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
-        box.GetXaxis().SetMoreLogLabels(more_logs)
-        box.GetYaxis().SetTitleOffset(yoffset)
-
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
+        box = draw_box(data, x, y, xtitle, ytitle, yoffset, more_logs)
         box.Draw()
         for i, hist in enumerate(data):
             if colors == 'auto':
@@ -265,7 +269,6 @@ def hplot(
             hist.SetFillStyle(0)
             hist.SetMarkerStyle(20)
             hist.SetMarkerSize(1)
-            # hist.SetLineWidth(2)
             hist.Draw("same hist")
 
         if legend_pos is not None:

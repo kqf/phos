@@ -137,6 +137,7 @@ class TotalUncertainty(TransformerBase):
         total_uncert = (uncertainties ** 2).sum(axis=0) ** 0.5
         total_hist = data[0].Clone("total_uncertainty")
         total_hist.SetTitle("total")
+        # The total histogram should be black
         total_hist.SetLineColor(ROOT.kBlack)
         for i in br.hrange(total_hist):
             total_hist.SetBinContent(i, total_uncert[i - 1])
