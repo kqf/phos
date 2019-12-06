@@ -120,7 +120,7 @@ def separate(data):
 
 
 @lru_cache(maxsize=1024)
-def adjus_canas(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
+def adjust_canas(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
     x = xlimits or np.concatenate([br.edges(h) for h in data])
     y = ylimits or np.concatenate([br.bins(h).contents for h in data])
     box = ROOT.TH1F("box", "", 1000, min(x), max(x))
