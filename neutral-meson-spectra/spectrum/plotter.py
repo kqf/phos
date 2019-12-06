@@ -119,7 +119,8 @@ def separate(data):
     return hists, graphs, functions
 
 
-def draw_box(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
+@lru_cache(maxsize=1024)
+def adjus_canas(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
     x = xlimits or np.concatenate([br.edges(h) for h in data])
     y = ylimits or np.concatenate([br.bins(h).contents for h in data])
     box = ROOT.TH1F("box", "", 1000, min(x), max(x))
@@ -129,6 +130,7 @@ def draw_box(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
     box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
     box.GetXaxis().SetMoreLogLabels(more_logs)
     box.GetYaxis().SetTitleOffset(yoffset)
+    box.Draw()
     return box
 
 
@@ -169,8 +171,8 @@ def plot(
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
-        box = draw_box(
-            histogrammed,
+        adjust_canas(
+            tuple(histogrammed),
             xlimits,
             ylimits,
             xtitle,
@@ -178,7 +180,6 @@ def plot(
             yoffset,
             more_logs
         )
-        box.Draw()
         for i, graph in enumerate(graphed):
             if colors == 'auto':
                 color, marker = br.auto_color_marker(i)
@@ -244,8 +245,8 @@ def hplot(
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
-        box = draw_box(
-            data,
+        adjust_canas(
+            tuple(data),
             xlimits,
             ylimits,
             xtitle,
@@ -253,7 +254,6 @@ def hplot(
             yoffset,
             more_logs
         )
-        box.Draw()
         for i, hist in enumerate(data):
             if colors == 'auto':
                 color, marker = br.auto_color_marker(i)
