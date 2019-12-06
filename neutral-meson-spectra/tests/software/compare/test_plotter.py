@@ -21,8 +21,13 @@ def stop():
     return True
 
 
-def test_plots_histograms(data, stop):
-    plot(data, "p_{T}", "y", logy=True, logx=True, stop=stop)
+@pytest.mark.parametrize("colors", [
+    "coolwarm",
+    "levels",
+    "auto"
+])
+def test_plots_histograms(data, colors, stop):
+    plot(data, "p_{T}", "y", logy=True, logx=True, colors=colors, stop=stop)
 
 
 def test_plots_functions(data, functions, stop):

@@ -163,23 +163,21 @@ def plot(
         list(map(lambda x: x.GetHistogram(), functions)) +
         list(map(br.graph2hist, graphs))
     )
-    x = xlimits or np.concatenate([br.edges(h) for h in histogrammed])
-    y = ylimits or np.concatenate([br.bins(h).contents for h in histogrammed])
-
     graphed = graphs + list(map(br.hist2graph, hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
-        box = ROOT.TH1F("box", "", 1000, min(x) * 0.95, max(x) * 1.05)
-        box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
-        box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
-        box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
-        box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
-        box.GetXaxis().SetMoreLogLabels(more_logs)
-        box.GetYaxis().SetTitleOffset(yoffset)
-
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
+        box = draw_box(
+            histogrammed,
+            xlimits,
+            ylimits,
+            xtitle,
+            ytitle,
+            yoffset,
+            more_logs
+        )
         box.Draw()
         for i, graph in enumerate(graphed):
             if colors == 'auto':
