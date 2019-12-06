@@ -7,11 +7,18 @@ from vault.formulas import FVault
 @pytest.fixture
 def functions(data):
     funcs = []
-    for d in data:
+    for spectrum in data:
         func = FVault().tf1("tsallis")
-        d.Fit(func)
+        func.SetTitle("Tsallis fit")
+        func.SetRange(0.3, 15)
+        spectrum.Fit(func, "RQ0")
         funcs.append(func)
     return funcs
+
+
+@pytest.fixture
+def stop():
+    return True
 
 
 def test_plots_histograms(data, stop):

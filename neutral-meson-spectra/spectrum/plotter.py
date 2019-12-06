@@ -119,12 +119,14 @@ def separate(data):
     return hists, graphs, functions
 
 
-def draw_box(data, x, y, xtitle, ytitle, yoffset, more_logs):
+def draw_box(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
+    x = xlimits or np.concatenate([br.edges(h) for h in data])
+    y = ylimits or np.concatenate([br.bins(h).contents for h in data])
     box = ROOT.TH1F("box", "", 1000, min(x), max(x))
-    box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
-    box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
     box.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
     box.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
+    box.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
+    box.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
     box.GetXaxis().SetMoreLogLabels(more_logs)
     box.GetYaxis().SetTitleOffset(yoffset)
     return box
@@ -239,15 +241,20 @@ def hplot(
     colors='auto',
     ltext_size=0.035,
 ):
-    x = xlimits or np.concatenate([br.edges(h) for h in data])
-    y = ylimits or np.concatenate([br.bins(h).contents for h in data])
-
     with style(), pcanvas("cn", size=csize, stop=stop, oname=oname) as canvas:
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
-        box = draw_box(data, x, y, xtitle, ytitle, yoffset, more_logs)
+        box = draw_box(
+            data,
+            xlimits,
+            ylimits,
+            xtitle,
+            ytitle,
+            yoffset,
+            more_logs
+        )
         box.Draw()
         for i, hist in enumerate(data):
             if colors == 'auto':
