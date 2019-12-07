@@ -26,12 +26,12 @@ def stop():
     "levels",
     "auto"
 ])
-@pytest.mark.parametrize("logy", [True, False])
-@pytest.mark.parametrize("logx", [True, False])
-def test_plots_histograms(data, logy, logx, colors, stop):
-    plot(data, logy=logy, logx=logx, colors=colors, stop=stop)
+@pytest.mark.parametrize("options", ["p", ["E5", "E5", "E5"]])
+def test_plots_histograms(data, colors, options, stop):
+    plot(data, colors=colors, options=options, stop=stop)
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
     "levels",
@@ -41,12 +41,11 @@ def test_plots_functions(data, functions, colors, stop):
     plot(data + functions, colors=colors, stop=stop)
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
     "levels",
     "auto"
 ])
-@pytest.mark.parametrize("logy", [True, False])
-@pytest.mark.parametrize("logx", [True, False])
-def test_hplots_histograms(data, logy, logx, colors, stop):
-    hplot(data, logy=logy, logx=logx, colors=colors, stop=stop)
+def test_hplots_histograms(data, colors, stop):
+    hplot(data, colors=colors, stop=stop)

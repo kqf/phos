@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 
+import six
 import numpy as np
 import ROOT
 import seaborn as sns
@@ -141,6 +142,12 @@ def define_color(r, g, b, alpha=1):
     return colorindex, color
 
 
+def ensure_options(ngraphs, options):
+    if isinstance(options, six.string_types):
+        return [options] * ngraphs
+    return options
+
+
 def plot(
     data,
     xtitle=None,
@@ -158,6 +165,7 @@ def plot(
     yoffset=1.2,
     colors='auto',
     ltext_size=0.035,
+    options="p"
 ):
     hists, graphs, functions = separate(data)
     histogrammed = (
@@ -180,7 +188,8 @@ def plot(
             yoffset,
             more_logs
         )
-        for i, graph in enumerate(graphed):
+        options = ensure_options(len(graphed), options)
+        for i, (graph, option) in enumerate(zip(graphed, options)):
             if colors == 'auto':
                 color, marker = br.auto_color_marker(i)
                 graph.SetMarkerStyle(marker)
@@ -207,12 +216,10 @@ def plot(
                 graph.SetFillColor(color)
                 graph.SetMarkerColor(color)
 
-            options = graph.GetDrawOption() or "p"
+                if "E5" in option:
+                    graph.SetFillColor(ROOT.kWhite)
 
-            if "E5" in options:
-                graph.SetFillColor(ROOT.kWhite)
-
-            graph.Draw(options)
+            graph.Draw(option)
 
         for i, func in enumerate(functions):
             func.Draw("same " + func.GetDrawOption())
