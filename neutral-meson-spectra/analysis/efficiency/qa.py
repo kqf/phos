@@ -78,7 +78,7 @@ def test_spectral_shape(particle, data, ltitle, selection, wname):
         plt.plot(
             hists,
             logx=True,
-            xtitle="p_{T}, (GeV/#it{c})",
+            xtitle="p_{T} (GeV/#it{c})",
             ytitle="#frac{dN}{dp_{T}} (GeV/#it{c})^{-1} ",
             xlimits=(0.3, 100),
             ltitle=ltitle,
