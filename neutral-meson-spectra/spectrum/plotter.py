@@ -165,7 +165,7 @@ def plot(
         list(map(lambda x: x.GetHistogram(), functions)) +
         list(map(br.graph2hist, graphs))
     )
-    graphed = graphs + list(map(br.hist2graph, hists))
+    graphed = graphs + list(map(lambda x: br.hist2graph(x), hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
         canvas.SetLeftMargin(0.15)
         canvas.SetRightMargin(0.05)
