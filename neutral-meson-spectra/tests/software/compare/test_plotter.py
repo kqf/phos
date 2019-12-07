@@ -16,9 +16,9 @@ def functions(data):
     return funcs
 
 
-@pytest.fixture
-def stop():
-    return True
+# @pytest.fixture
+# def stop():
+#     return True
 
 
 @pytest.mark.parametrize("colors", [
