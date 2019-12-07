@@ -30,9 +30,20 @@ def test_plots_histograms(data, colors, stop):
     plot(data, "p_{T}", "y", logy=True, logx=True, colors=colors, stop=stop)
 
 
-def test_plots_functions(data, functions, stop):
-    plot(data + functions, "p_{T}", "y", logy=True, logx=True, stop=stop)
+@pytest.mark.parametrize("colors", [
+    "coolwarm",
+    "levels",
+    "auto"
+])
+def test_plots_functions(data, functions, colors, stop):
+    plot(data + functions, "p_{T}", "y",
+         logy=True, logx=True, colors=colors, stop=stop)
 
 
-def test_hplots_histograms(data, stop):
-    hplot(data, "p_{T}", "y", logy=True, logx=True, stop=stop)
+@pytest.mark.parametrize("colors", [
+    "coolwarm",
+    "levels",
+    "auto"
+])
+def test_hplots_histograms(data, colors, stop):
+    hplot(data, "p_{T}", "y", logy=True, logx=True, colors=colors, stop=stop)
