@@ -148,6 +148,38 @@ def ensure_options(ngraphs, options):
     return options
 
 
+@lru_cache(maxsize=1024)
+def _draw_graph(i, graph, colors, option, ngraphs):
+    graph = graph.Clone()
+    if colors == 'auto':
+        color, marker = br.auto_color_marker(i)
+        graph.SetMarkerStyle(marker)
+        graph.SetMarkerSize(1)
+        graph.SetLineColor(color)
+        graph.SetFillColor(color)
+        graph.SetFillColorAlpha(color, 0.50)
+        graph.SetMarkerColor(color)
+    if colors == 'levels':
+        alpha = np.logspace(0, 0.9, ngraphs)[i]
+        graph.SetMarkerStyle(20)
+        graph.SetMarkerSize(1)
+        graph.SetLineColorAlpha(ROOT.kRed + 1, alpha)
+        graph.SetFillColorAlpha(ROOT.kRed + 1, alpha)
+        graph.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
+    if colors == 'coolwarm':
+        palette = sns.color_palette("coolwarm", ngraphs)
+        color, _ = define_color(*palette[i])
+        graph.SetMarkerStyle(20)
+        graph.SetMarkerSize(1)
+        graph.SetLineColor(color)
+        graph.SetFillColor(color)
+        graph.SetMarkerColor(color)
+    if "e5" in option.lower():
+        graph.SetFillColor(ROOT.kWhite)
+    graph.Draw(option)
+    return graph
+
+
 def plot(
     data,
     xtitle=None,
@@ -190,36 +222,7 @@ def plot(
         )
         options = ensure_options(len(graphed), options)
         for i, (graph, option) in enumerate(zip(graphed, options)):
-            if colors == 'auto':
-                color, marker = br.auto_color_marker(i)
-                graph.SetMarkerStyle(marker)
-                graph.SetMarkerSize(1)
-                graph.SetLineColor(color)
-                graph.SetFillColor(color)
-                graph.SetFillColorAlpha(color, 0.50)
-                graph.SetMarkerColor(color)
-
-            if colors == 'levels':
-                alpha = np.logspace(0, 0.9, len(graphed))[i]
-                graph.SetMarkerStyle(20)
-                graph.SetMarkerSize(1)
-                graph.SetLineColorAlpha(ROOT.kRed + 1, alpha)
-                graph.SetFillColorAlpha(ROOT.kRed + 1, alpha)
-                graph.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
-
-            if colors == 'coolwarm':
-                palette = sns.color_palette("coolwarm", len(graphed))
-                color, _ = define_color(*palette[i])
-                graph.SetMarkerStyle(20)
-                graph.SetMarkerSize(1)
-                graph.SetLineColor(color)
-                graph.SetFillColor(color)
-                graph.SetMarkerColor(color)
-
-            if "e5" in option.lower():
-                graph.SetFillColor(ROOT.kWhite)
-
-            graph.Draw(option)
+            _draw_graph(i, graph, colors, option, len(graphed))
 
         for i, func in enumerate(functions):
             func.Draw("same " + func.GetDrawOption())
