@@ -221,14 +221,18 @@ def plot(
             more_logs
         )
         options = ensure_options(len(graphed), options)
+        plotted = []
         for i, (graph, option) in enumerate(zip(graphed, options)):
-            _draw_graph(i, graph, colors, option, len(graphed))
+            plotted.append(
+                _draw_graph(i, graph, colors, option, len(graphed))
+            )
 
         for i, func in enumerate(functions):
+            plotted.append(func)
             func.Draw("same " + func.GetDrawOption())
 
         if legend_pos is not None:
-            ll = legend(graphed + functions, legend_pos, ltitle, ltext_size)
+            ll = legend(plotted, legend_pos, ltitle, ltext_size)
             ll.Draw("same")
 
 
