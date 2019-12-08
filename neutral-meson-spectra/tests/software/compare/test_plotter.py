@@ -26,7 +26,7 @@ def stop():
     "levels",
     "auto"
 ])
-@pytest.mark.parametrize("options", ["p", ["E5", "E5", "E5"]])
+@pytest.mark.parametrize("options", ["p"])
 def test_plots_histograms(data, colors, options, stop):
     plot(data, colors=colors, options=options, stop=stop)
 

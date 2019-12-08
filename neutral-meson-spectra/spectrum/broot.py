@@ -700,7 +700,7 @@ def graph2hist(graph, hist=None):
     return hist
 
 
-def hist2graph(hist, option=None, use_widths=False):
+def hist2graph(hist, option=None, use_widths=True):
     contents, errors, centers = bins(hist)
     hgraph = graph(
         hist.GetTitle(), x=centers, y=contents,
