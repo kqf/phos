@@ -152,13 +152,6 @@ def ensure_options(ngraphs, options):
 def _draw_graph(i, graph, colors, option, ngraphs):
     graph = graph.Clone()
 
-    if "e5" in option.lower():
-        graph.SetFillColor(ROOT.kWhite)
-
-    if "e5" not in option.lower():
-        for point in range(graph.GetN()):
-            graph.SetPointError(point, 0, graph.GetErrorY(point))
-
     if colors == 'auto':
         color, marker = br.auto_color_marker(i)
         graph.SetMarkerStyle(marker)
@@ -182,6 +175,15 @@ def _draw_graph(i, graph, colors, option, ngraphs):
         graph.SetLineColor(color)
         graph.SetFillColor(color)
         graph.SetMarkerColor(color)
+
+    if "e5" in option.lower():
+        graph.SetFillColor(ROOT.kWhite)
+
+    # Remove x-errors for tgraph styled plots
+    if "e5" not in option.lower():
+        for point in range(graph.GetN()):
+            graph.SetPointError(point, 0, graph.GetErrorY(point))
+
     graph.Draw(option)
     return graph
 
