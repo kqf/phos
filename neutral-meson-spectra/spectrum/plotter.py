@@ -216,8 +216,8 @@ def plot(
                 graph.SetFillColor(color)
                 graph.SetMarkerColor(color)
 
-                if "E5" in option:
-                    graph.SetFillColor(ROOT.kWhite)
+            if "e5" in option.lower():
+                graph.SetFillColor(ROOT.kWhite)
 
             graph.Draw(option)
 
