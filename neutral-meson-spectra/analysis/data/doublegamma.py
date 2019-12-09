@@ -44,5 +44,7 @@ def test_simple(particle, data, oname):
             ROOT.gStyle.SetTitleSize(0.04, "Z")
 
             analysis.transform(data, loggs=loggs)
+            canvas.SetLeftMargin(0.15)
+            canvas.SetRightMargin(0.05)
             data = loggs["parametrize"]["output"].loc[12]
             MassesPlot().transform(data["invmasses"], canvas)

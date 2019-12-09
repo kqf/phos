@@ -54,7 +54,7 @@ class RawMass(object):
         )
         mass.SetTitle(title)
         mass.GetXaxis().SetTitle(self.xaxis[self.particle])
-        mass.GetYaxis().SetTitle()
+        mass.GetYaxis().SetTitle("counts")
         mass.SetLineColor(ROOT.kRed + 1)
 
         if not mass.GetSumw2N():
