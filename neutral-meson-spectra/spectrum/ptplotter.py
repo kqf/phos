@@ -4,6 +4,7 @@ from operator import mul
 
 import spectrum.sutils as su
 import spectrum.broot as br
+from repoze.lru import lru_cache
 
 
 class MassesPlot(object):
@@ -35,7 +36,7 @@ class MassesPlot(object):
         self.draw(bgrf, color=br.BR_COLORS[5])
         self.draw_chisquare(sigf)
         self._draw_line(mass, *integration_region)
-        self._draw_text(mass, title)
+        self._draw_text(title)
         pad.Update()
 
     def draw_chisquare(self, func):
@@ -81,6 +82,7 @@ class MassesPlot(object):
             max(mbins) + 3 * max(merrors)
         )
 
+    @lru_cache(maxsize=1024)
     def _draw_line(self, mass, lower, upper):
         # Draw integration region, when specified
         def lline(pos):
@@ -90,10 +92,10 @@ class MassesPlot(object):
             line.Draw()
             return line
         # Dirty hack for root memory management
-        mass.line_low = lline(lower)
-        mass.line_upper = lline(upper)
+        return lline(lower), lline(upper)
 
-    def _draw_text(self, hist, title, sep="|"):
+    @lru_cache(maxsize=1024)
+    def _draw_text(self, title, sep="|"):
         pave = ROOT.TPaveText(0.18, 0.75, 0.38, 0.88, "NDC")
         entries = title.split(sep)
         for entry in entries:
@@ -105,8 +107,8 @@ class MassesPlot(object):
         pave.SetFillStyle(0)
         pave.SetTextAlign(13)
         pave.SetTextFont(42)
-        hist.pave = pave
         pave.Draw()
+        return pave
 
 
 class MultiplePlotter(object):
