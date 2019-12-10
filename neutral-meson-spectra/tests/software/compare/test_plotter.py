@@ -21,6 +21,7 @@ def stop():
     return False
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
     "levels",
@@ -41,7 +42,6 @@ def test_plots_functions(data, functions, colors, stop):
     plot(data + functions, colors=colors, stop=stop)
 
 
-@pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
     "levels",

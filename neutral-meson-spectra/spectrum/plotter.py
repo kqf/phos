@@ -188,6 +188,27 @@ def _draw_graph(i, graph, colors, option, ngraphs):
     return graph
 
 
+@lru_cache(maxsize=1024)
+def _draw_histogram(i, hist, colors, nhists=1):
+    if colors == 'auto':
+        color, marker = br.auto_color_marker(i)
+        hist.SetLineColor(color)
+        hist.SetMarkerColor(color)
+    if colors == 'levels':
+        alpha = np.logspace(0, 0.9, nhists)[i]
+        hist.SetLineColorAlpha(ROOT.kRed + 1, alpha)
+        hist.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
+    if colors == 'coolwarm':
+        palette = sns.color_palette("coolwarm", nhists)
+        color, _ = define_color(*palette[i])
+        hist.SetLineColor(color)
+        hist.SetMarkerColor(color)
+    hist.SetFillStyle(0)
+    hist.SetMarkerStyle(20)
+    hist.SetMarkerSize(1)
+    hist.Draw("same hist")
+
+
 def plot(
     data,
     xtitle=None,
@@ -277,26 +298,7 @@ def hplot(
             more_logs
         )
         for i, hist in enumerate(data):
-            if colors == 'auto':
-                color, marker = br.auto_color_marker(i)
-                hist.SetLineColor(color)
-                hist.SetMarkerColor(color)
-
-            if colors == 'levels':
-                alpha = np.logspace(0, 0.9, len(data))[i]
-                hist.SetLineColorAlpha(ROOT.kRed + 1, alpha)
-                hist.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
-
-            if colors == 'coolwarm':
-                palette = sns.color_palette("coolwarm", len(data))
-                color, _ = define_color(*palette[i])
-                hist.SetLineColor(color)
-                hist.SetMarkerColor(color)
-
-            hist.SetFillStyle(0)
-            hist.SetMarkerStyle(20)
-            hist.SetMarkerSize(1)
-            hist.Draw("same hist")
+            _draw_histogram(i, hist, colors, len(data))
 
         if legend_pos is not None:
             ll = legend(data, legend_pos, ltitle, ltext_size)
