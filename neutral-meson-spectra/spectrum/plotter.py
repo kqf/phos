@@ -207,6 +207,7 @@ def _draw_histogram(i, hist, colors, nhists=1):
     hist.SetMarkerStyle(20)
     hist.SetMarkerSize(1)
     hist.Draw("same hist")
+    return hist
 
 
 def plot(
