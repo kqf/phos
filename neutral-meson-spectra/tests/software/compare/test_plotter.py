@@ -21,7 +21,7 @@ def stop():
     return False
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
     "levels",
@@ -32,7 +32,7 @@ def test_plots_histograms(data, colors, options, stop):
     plot(data, colors=colors, options=options, stop=stop)
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
     "levels",

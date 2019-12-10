@@ -297,9 +297,12 @@ def hplot(
             yoffset,
             more_logs
         )
+        plotted = []
         for i, hist in enumerate(data):
-            _draw_histogram(i, hist, colors, len(data))
+            plotted.append(
+                _draw_histogram(i, hist, colors, len(data))
+            )
 
         if legend_pos is not None:
-            ll = legend(data, legend_pos, ltitle, ltext_size)
+            ll = legend(plotted, legend_pos, ltitle, ltext_size)
             ll.Draw("same")
