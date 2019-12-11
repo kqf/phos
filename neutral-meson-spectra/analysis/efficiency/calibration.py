@@ -31,15 +31,6 @@ def calibration_data(particle, spmc, data, quant):
 
 
 @pytest.fixture
-def spmc(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
-
-
-@pytest.fixture
 def data():
     return DataVault().input("data", "staging", histname="MassPtSM0")
 

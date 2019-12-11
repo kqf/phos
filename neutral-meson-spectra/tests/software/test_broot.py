@@ -178,9 +178,6 @@ def test_projection_saves_area(stop):
     #
     carter, ncarter = lambda n: int(n * (n + 1) / 2 + 1), 16
 
-    # TODO: figure out what is why do we should nbinsx, not nbinsy
-    #       this contradicts regular logic
-
     nbinsx, startx, stopx = carter(ncarter), -10, 10
     nbinsy, starty, stopy = 100, -10, 10
 
@@ -688,11 +685,9 @@ def test_sets_to_zero(stop):
 
     a, b = bin_range
     for bin in range(1, hist1.GetNbinsX()):
-        # TODO: Check this condition range
         if a - 1 < bin < b:
             continue
 
-        # print(a, bin, b, hist1.GetBinContent(bin))
         assert hist1.GetBinContent(bin) == 0
 
 
