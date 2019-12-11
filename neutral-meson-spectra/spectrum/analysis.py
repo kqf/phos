@@ -43,16 +43,14 @@ class CompositeAnalysis(TransformerBase):
                 if area:
                     spec.Scale(1. / area)
 
-        # Transpose
         truncated = [
             br.sum_trimm(obs_pt, self.mergeranges)
             for obs_pt in zip(*hists)
         ]
 
         # Use the same container as normal analysis
-        # TODO: Fix me!
-        results = hists[0]._make(truncated)
-        return results
+        AnalysisOutputType = type(next(iter(hists)))
+        return AnalysisOutputType._make(truncated)
 
 
 class Analysis(TransformerBase):
