@@ -128,8 +128,6 @@ def form_histnames(nbins=4):
     return histnames
 
 
-# TODO: Add Generated Histogram to the nonlinearity scan selection
-#
 def nonlinearity_scan_data(nbins, prod, eff_prod="PhysEff"):
     histnames = form_histnames(nbins)
     low = DataVault().input(prod, "low", inputs=histnames)
