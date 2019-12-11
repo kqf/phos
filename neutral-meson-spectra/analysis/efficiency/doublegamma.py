@@ -7,7 +7,6 @@ from spectrum.output import open_loggs
 from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
 from spectrum.ptplotter import MassesPlot
-from vault.datavault import DataVault
 
 
 @pytest.fixture
@@ -16,25 +15,17 @@ def oname(particle):
     return ofile.format(br.spell(particle))
 
 
-@pytest.fixture
-def data(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_simple(particle, data, oname):
+def test_simple(particle, spmc, oname):
     analysis = Analysis(CompositeOptions(particle=particle))
     with open_loggs() as loggs:
         with plt.pcanvas(size=(96, 128), stop=True, oname=oname) as canvas:
+            # TODO: Use same alignment as for real data
             ROOT.gStyle.SetStatY(0.88)
             ROOT.gStyle.SetStatX(0.88)
             ROOT.gStyle.SetStatW(0.15)
@@ -54,7 +45,7 @@ def test_simple(particle, data, oname):
             ROOT.gStyle.SetTitleSize(0.04, "Y")
             ROOT.gStyle.SetTitleSize(0.04, "Z")
 
-            analysis.transform(data, loggs=loggs)
+            analysis.transform(spmc, loggs=loggs)
             # import IPython; IPython.embed()
-            data = loggs["steps"]["analysis-0"]["parametrize"]["output"].loc[11]
+            data = loggs["steps"]["analysis-0"]["parametrize"]["output"].loc[9]
             MassesPlot().transform(data["invmasses"], canvas)
