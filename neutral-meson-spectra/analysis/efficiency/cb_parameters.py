@@ -8,7 +8,6 @@ from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import TransformerBase
 from spectrum.plotter import plot
-from vault.datavault import DataVault
 
 
 class CbFitOptions(object):
@@ -61,12 +60,12 @@ class CballParametersEstimator(TransformerBase):
 
 
 @pytest.fixture
-def hists(particle, data):
+def hists(particle, spmc):
     estimator = CballParametersEstimator(
         CbFitOptions(particle=particle), plot=False)
 
     with open_loggs() as loggs:
-        data = estimator.transform(data, loggs=loggs)
+        data = estimator.transform(spmc, loggs=loggs)
     return data
 
 
@@ -77,27 +76,18 @@ def oname(particle, quantity):
     return pattern.format(quantity, br.spell(particle))
 
 
-@pytest.fixture
-def data(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
+    "#pi^{0}",
     "#eta",
 ])
 @pytest.mark.parametrize("quantity", [
     "cball_n",
     "cball_alpha",
 ])
-def test_cball_parameters(particle, data, hists, quantity, oname, ltitle=""):
+def test_cball_parameters(particle, hists, quantity, oname, ltitle=""):
     hist = hists[quantity]
     func = hist.GetListOfFunctions()[0]
     func.SetTitle("Constant fit")
