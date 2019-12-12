@@ -25,29 +25,23 @@ def oname(particle):
     return "results/analysis/spmc/eta_phi_{}.pdf".format(br.spell(particle))
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_eta_phi(particle, data, oname):
+def test_eta_phi(particle, spmc, oname):
     with plt.style(), plt.pcanvas(oname=oname), open_loggs() as loggs:
         ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
         ROOT.gPad.SetLogz(True)
         ROOT.gPad.SetRightMargin(0.12)
         summed = br.hsum([
             SingleHistInput("hEtaPhi_#gamma").transform(d, loggs)
-            for d in data.values()
+            for d in spmc
         ])
         summed.GetYaxis().SetTitleOffset(1.0)
         summed.Draw("colz")
-
-
-@pytest.fixture
-def ltitle(particle):
-    return "{} #rightarrow #gamma#gamma".format(particle)
 
 
 @pytest.fixture
