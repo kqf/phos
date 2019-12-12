@@ -5,7 +5,6 @@ import spectrum.broot as br
 from spectrum.output import open_loggs
 from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
 from spectrum.plotter import plot
 
 
@@ -27,25 +26,16 @@ def fit(hist, quant, particle):
     plot([hist, fitf], logy=False)
 
 
-@pytest.fixture
-def data(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
-
-
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta"
 ])
-def test_mass_width_parametrization(particle, data):
+def test_mass_width_parametrization(particle, spmc):
     options = CompositeOptions(particle=particle)
     with open_loggs() as loggs:
-        output = Analysis(options).transform(data, loggs)
+        output = Analysis(options).transform(spmc, loggs)
 
     fit(output.mass, options.steps[0][1].calibration.mass, particle)
     fit(output.width, options.steps[0][1].calibration.width, particle)
