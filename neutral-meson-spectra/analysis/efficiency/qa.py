@@ -8,16 +8,6 @@ from spectrum.comparator import Comparator  # noqa
 
 import spectrum.plotter as plt
 from spectrum.tools.validate import validate  # noqa
-from vault.datavault import DataVault
-
-
-@pytest.fixture
-def data(particle):
-    production = "single {}".format(particle)
-    return {
-        "low p_{T}": DataVault().input(production, "low", "PhysEff"),
-        "high p_{T}": DataVault().input(production, "high", "PhysEff"),
-    }
 
 
 @pytest.fixture
