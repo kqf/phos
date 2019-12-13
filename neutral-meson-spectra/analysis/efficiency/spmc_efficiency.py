@@ -7,17 +7,7 @@ import spectrum.broot as br  # noqa
 from spectrum.comparator import Comparator  # noqa
 
 from spectrum.tools.validate import validate  # noqa
-from vault.datavault import DataVault
 from spectrum.plotter import plot
-
-
-@pytest.fixture
-def data(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
 
 
 @pytest.fixture
@@ -29,13 +19,13 @@ def oname(particle):
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta",
+    "#eta",
 ])
-def test_spmc_efficiency(particle, data, oname):
+def test_spmc_efficiency(particle, spmc, oname):
     options = CompositeEfficiencyOptions(particle)
     # with open_loggs("efficiency{}".format(particle)) as loggs:
     with open_loggs("efficiency{}".format(particle)) as loggs:
-        efficiency = Efficiency(options).transform(data, loggs)
+        efficiency = Efficiency(options).transform(spmc, loggs)
         # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
         # Comparator().compare(efficiency)
         plot(
