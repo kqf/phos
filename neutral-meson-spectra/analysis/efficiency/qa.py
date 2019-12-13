@@ -60,10 +60,10 @@ def wname(particle, selection):
     "NoWeights",
     "PhysEff",
 ])
-def test_spectral_shape(particle, data, ltitle, selection, wname):
+def test_spectral_shape(particle, spmc, ltitle, selection, wname):
     with open_loggs() as loggs:
         hists = []
-        for name, d in data.items():
+        for name, d in zip(["low p_{T}", "high p_{T}"], spmc):
             hist = SingleHistInput(
                 "hPtLong_{}".format(particle), selection).transform(d, loggs)
             hist.SetTitle(name)
@@ -74,7 +74,7 @@ def test_spectral_shape(particle, data, ltitle, selection, wname):
             logx=True,
             xtitle="p_{T} (GeV/#it{c})",
             ytitle="#frac{dN}{dp_{T}} (GeV/#it{c})^{-1} ",
-            xlimits=(0.3, 100),
+            xlimits=(0.8, 100),
             ltitle=ltitle,
             oname=wname,
             legend_pos=(0.7, 0.7, 0.85, 0.85),

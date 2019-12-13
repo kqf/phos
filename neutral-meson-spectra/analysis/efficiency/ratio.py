@@ -9,7 +9,7 @@ from vault.datavault import DataVault
 
 
 @pytest.fixture
-def data():
+def ratio_data():
     eta_data = (
         DataVault().input("single #eta", "low", "PhysEff"),
         DataVault().input("single #eta", "high", "PhysEff"),
@@ -23,7 +23,7 @@ def data():
 
 @pytest.mark.interactive
 @pytest.mark.onlylocal
-def test_efficiency_ratio(data):
+def test_efficiency_ratio(ratio_data):
     pt = "config/pt-same.json"
     opt_eta = CompositeEfficiencyOptions("#eta", pt=pt)
     opt_pi0 = CompositeEfficiencyOptions("#pi^{0}", pt=pt)
@@ -32,4 +32,4 @@ def test_efficiency_ratio(data):
         ("#pi^{0}", Efficiency(opt_pi0)),
     ])
     with open_loggs("efficiency ratio", shallow=True) as loggs:
-        estimator.transform(data, loggs)
+        estimator.transform(ratio_data, loggs)
