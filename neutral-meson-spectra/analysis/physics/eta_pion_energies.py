@@ -27,6 +27,7 @@ def delimeter(level=0.5):
 
 @pytest.fixture
 def oname():
+    # NB: Don't include this to thesis plots
     return "results/eta_pion_energies.pdf"
 
 

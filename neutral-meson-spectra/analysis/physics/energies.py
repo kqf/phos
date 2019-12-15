@@ -71,5 +71,5 @@ def test_downloads_from_hepdata(particle, data):
         legend_pos=(0.52, 0.72, 0.78, 0.88),
         yoffset=1.4,
         more_logs=False,
-        oname="results/energies/{}.pdf".format(br.spell(particle))
+        oname="results/discussion/energies/{}.pdf".format(br.spell(particle))
     )

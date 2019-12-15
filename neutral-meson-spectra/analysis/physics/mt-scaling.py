@@ -61,7 +61,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         xtitle="p_{T} (GeV/#it{c})",
         ytitle=invariant_cross_section_code(),
         csize=(96, 128),
-        oname="results/mt_scaling/fits.pdf"
+        oname="results/discussion/mt_scaling/fits.pdf"
     )
 
     plot([
@@ -75,7 +75,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         xtitle="p_{T} (GeV/#it{c})",
         csize=(96, 128),
         legend_pos=(0.45, 0.7, 0.75, 0.85),
-        oname="results/mt_scaling/ratio.pdf"
+        oname="results/discussion/mt_scaling/ratio.pdf"
     )
 
 
@@ -122,5 +122,5 @@ def test_ratio(asymptotic_eta_pion_ratio):
         csize=(96 * 1.5, 96),
         ytitle="#eta / #pi^{0}",
         xtitle="p_{T} (GeV/#it{c})",
-        oname="results/mt_scaling/eta_pion_ratio.pdf"
+        oname="results/discussion/mt_scaling/eta_pion_ratio.pdf"
     )

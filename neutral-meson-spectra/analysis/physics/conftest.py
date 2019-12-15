@@ -80,7 +80,7 @@ def tcm(particle):
 
 @pytest.fixture
 def oname(particle):
-    return "results/{{}}{}.pdf".format(br.spell(particle))
+    return "results/discussion/{{}}{}.pdf".format(br.spell(particle))
 
 
 def read_pythia6(particle):

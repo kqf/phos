@@ -26,7 +26,10 @@ def data():
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_pion_spectrum(data):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+])
+def test_pion_spectrum(data, oname):
     pion = spectrum("#pi^{0}")
     pion.SetTitle("Data")
     histograms = [pion] + list(data)
@@ -45,5 +48,5 @@ def test_pion_spectrum(data):
         legend_pos=(0.52, 0.72, 0.78, 0.88),
         yoffset=1.4,
         more_logs=True,
-        oname="results/pQCD/pion.pdf"
+        oname=oname.format("/pQCD/")
     )
