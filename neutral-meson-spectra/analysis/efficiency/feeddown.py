@@ -12,17 +12,18 @@ from spectrum.plotter import plot
 def plot_func(data, loggs):
     func_feeddown = ROOT.TF1(
         "feeddown",
-        "[2] * (1 + [0]*TMath::Exp(-x * x / [1] / [1] / 2))",
-        0.8, 7
+        "[2] * (1 + [0]*TMath::Exp(-x * x / [1] / [1] / 2) + x * [3])",
+        0.8, 10
     )
     func_feeddown.SetTitle("Fit")
     func_feeddown.SetLineColor(ROOT.kBlack)
     func_feeddown.SetLineStyle(9)
     func_feeddown.SetParNames("A", "Sigma", "Scale")
-    func_feeddown.FixParameter(0, 0.486)
-    func_feeddown.FixParameter(1, 1.280)
-    func_feeddown.FixParameter(2, 0.048)
-    data.Fit(func_feeddown, "RQ")
+    func_feeddown.SetParameter(0, 0.486)
+    func_feeddown.SetParameter(1, 1.280)
+    func_feeddown.SetParameter(2, 0.048)
+    func_feeddown.SetParameter(3, 0.048)
+    data.Fit(func_feeddown, "RQWW")
     data.SetTitle(
         "MC; p_{T} (GeV/#it{c});"
         "#frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
