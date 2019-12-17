@@ -222,12 +222,12 @@ class FeeddownOptions(object):
         func_feeddown = ROOT.TF1(
             "func_feeddown",
             "[2] * (1 + [0]*TMath::Exp(-x * x / [1] / [1] / 2))",
-            0.8, 7
+            0.8, 10
         )
-        func_feeddown.SetParNames("A", "#sigma", "E_{scale}")
-        func_feeddown.SetParameter(0, 0.486)
-        func_feeddown.SetParameter(1, 1.280)
-        func_feeddown.SetParameter(2, 0.048)
+        func_feeddown.SetParNames("A", "Sigma", "Scale")
+        func_feeddown.FixParameter(0, 0.453)
+        func_feeddown.FixParameter(1, 1.35)
+        func_feeddown.FixParameter(2, 0.0478)
         return func_feeddown
 
 
