@@ -71,6 +71,11 @@ class OptionsSPMC(Options):
 
 class CompositeOptions(object):
 
+    _mergeranges = {
+        "#pi^{0}": [(0.0, 7.0), (7.0, 20.0)],
+        "#eta": [(0.0, 6.0), (6.0, 20.0)],
+    }
+
     def __init__(self, particle, n_ranges=2,
                  pt="config/pt.json",
                  *args, **kwargs):
@@ -82,10 +87,7 @@ class CompositeOptions(object):
 
         names = ["{0}".format(rr) for rr in range(n_ranges)]
         self.steps = list(zip(names, options))
-
-        self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
-        if particle == "#eta":
-            self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
+        self.mergeranges = self._mergeranges[particle]
         self.particle = particle
 
 
@@ -113,6 +115,11 @@ class EfficiencyOptions(object):
 
 
 class CompositeEfficiencyOptions(object):
+    # TODO: Use the same _mergeranges as in CompositeOptions
+    _mergeranges = {
+        "#pi^{0}": [(0.0, 7.0), (7.0, 20.0)],
+        "#eta": [(0.0, 7.0), (7.0, 20.0)],
+    }
 
     def __init__(self, particle,
                  genname="hPt_{0}_primary_standard",
@@ -130,10 +137,9 @@ class CompositeEfficiencyOptions(object):
                 *args, **kwargs)
             for _ in range(n_ranges)
         ]
-        self.mergeranges = [(0.0, 7.0), (7.0, 20.0)]
+        self.mergeranges = self._mergeranges[particle]
         if len(self.suboptions[0].analysis.pt.ptedges) <= 14:  # eta size
             self.mergeranges = [(0.0, 6.0), (6.0, 20.0)]
-
         self.analysis = CompositeOptions(particle)
         self.reduce_function = "standard"
 
