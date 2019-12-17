@@ -1,9 +1,9 @@
 .PHONY: integrity-test update-datasets clean
 
 integrity-test:
-	pytest analysis/yield/observables.py \
-		analysis/data/tof.py \
-		analysis/efficiency/spmc_efficiency.py
+	pytest scripts/yield/observables.py \
+		scripts/data/tof.py \
+		scripts/efficiency/spmc_efficiency.py
 
 update-datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.
@@ -27,22 +27,22 @@ ifeq (, $(shell which phos-download))
 endif
 
 systematics:
-	pytest -s analysis/systematics/yields.py
-	pytest -s analysis/systematics/nonlinearity.py
-	pytest -s analysis/systematics/gscale.py
-	pytest -s analysis/systematics/tof.py
-	pytest -s analysis/systematics/acceptance.py
-	pytest -s analysis/systematics/feeddown.py
-	pytest -s analysis/systematics/material.py
-	pytest -s analysis/systematics/systematics.py
+	pytest -s scripts/systematics/yields.py
+	pytest -s scripts/systematics/nonlinearity.py
+	pytest -s scripts/systematics/gscale.py
+	pytest -s scripts/systematics/tof.py
+	pytest -s scripts/systematics/acceptance.py
+	pytest -s scripts/systematics/feeddown.py
+	pytest -s scripts/systematics/material.py
+	pytest -s scripts/systematics/systematics.py
 
 
 data:
-	pytest -s analysis/data/doublegamma.py
-	pytest -s analysis/data/cb_parameters.py
-	pytest -s analysis/data/mass_width.py
-	pytest -s analysis/data/yields.py
-	pytest -s analysis/data/tof.py
+	pytest -s scripts/data/doublegamma.py
+	pytest -s scripts/data/cb_parameters.py
+	pytest -s scripts/data/mass_width.py
+	pytest -s scripts/data/yields.py
+	pytest -s scripts/data/tof.py
 
 clean:
 	rm -f *.pdf *.png *.root
