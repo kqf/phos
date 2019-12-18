@@ -15,7 +15,9 @@ AliPHOSTenderTask * AddPHOSTender(Bool_t isMC, TString & msg)
     AliPHOSTenderSupply * supply = tender->GetPHOSTenderSupply();
     supply->ForceUsingBadMap("../../datasets/BadMap_LHC16-updated.root");
 
-    TString nonlinearity = isMC ? "Run2TuneMC": "Run2Tune";
+    // TODO: Use this only for tests
+    //
+    TString nonlinearity = isMC ? "Run2TuneMC": "Run2TuneMC";
     supply->SetNonlinearityVersion(nonlinearity);  
 
     if (isMC)

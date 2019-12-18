@@ -5,7 +5,9 @@ PROTONS_PATH=../../
 DATASET = LHC16l-pass1
 DPART = first
 MC = kFALSE
-OUTDIR = results/data/LHC16/debug_tender
+# Use the same nonlinearity version for the both productions
+#
+OUTDIR = results/data/LHC16/debug_tender_2
 ALICE_SITE =
 
 
