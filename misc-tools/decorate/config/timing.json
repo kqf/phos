@@ -1,13 +1,21 @@
 {
-    "multiplot": 
-    {
-        "input/EPOS-LHC16.root/QualTender/hClusterEvsTM%d": {"normalize": 1, "option": "colz", "oname": "results/epos-timing.pdf", "separate":"" },
-        "input/Pythia-LHC16.root/QualTender/hClusterEvsTM%d": {"normalize": 1, "option": "colz", "oname": "results/pythia-timing.pdf", "separate":"" }
-    },
-    "canvas":
-    {
-        "size":  6,
+    "canvas": {
         "gridx": 1,
-        "gridy": 1
+        "gridy": 1,
+        "size": 6
+    },
+    "multiplot": {
+        "input/EPOS-LHC16.root/QualTender/hClusterEvsTM%d": {
+            "normalize": 1,
+            "oname": "results/epos-timing.pdf",
+            "option": "colz",
+            "separate": ""
+        },
+        "input/Pythia-LHC16.root/QualTender/hClusterEvsTM%d": {
+            "normalize": 1,
+            "oname": "results/pythia-timing.pdf",
+            "option": "colz",
+            "separate": ""
+        }
     }
 }

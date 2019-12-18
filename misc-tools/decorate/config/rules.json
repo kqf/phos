@@ -1,25 +1,47 @@
 {
-    "histograms": 
-    {
-        "input/LHC16.root/QualTender/hClusterTime0": {"label": "noisy cells", "color": 37, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}", "option": ""},
-        "input/LHC16.root/QualOnlyTender/hClusterTime0": {"label": "clean x3", "color": 46, "normalize": 1, "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}", "option": ""}
-    },
-    "multiplot": 
-    {
-        "input/LHC16.root/QualTender/hCluNXZM_0_SM%d": {"label": "strict-map", "color": 46, "normalize": 1, "title": "Number of hits in module 1; x; z", "option": "colz", "oname": "results/test.pdf"},
-        "input/LHC16.root/QualOnlyTender/hCluNXZM_0_SM%d": {"label": "only-tender-map", "color": 46, "normalize": 1, "title": "Number of hits in module 1; x; z", "option": "colz", "oname": "results/test.pdf"}
-    },
-    "canvas":
-    {
-        "size":  5,
-        "logy":  1,
+    "canvas": {
         "gridx": 1,
         "legend": [0.7, 0.7, 0.89, 0.88],
-        "output": "results/timecut.pdf"
+        "logy": 1,
+        "output": "results/timecut.pdf",
+        "size": 5
     },
-    "canvas_per_module":
-    {
-        "size":  5,
-        "output": "results/multiplot.pdf"
-    } 
+    "canvas_per_module": {
+        "output": "results/multiplot.pdf",
+        "size": 5
+    },
+    "histograms": {
+        "input/LHC16.root/QualOnlyTender/hClusterTime0": {
+            "color": 46,
+            "label": "clean x3",
+            "normalize": 1,
+            "option": "",
+            "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"
+        },
+        "input/LHC16.root/QualTender/hClusterTime0": {
+            "color": 37,
+            "label": "noisy cells",
+            "normalize": 1,
+            "option": "",
+            "title": "Time distribution in all modules; t, seconds; E #frac{dN}{dt}"
+        }
+    },
+    "multiplot": {
+        "input/LHC16.root/QualOnlyTender/hCluNXZM_0_SM%d": {
+            "color": 46,
+            "label": "only-tender-map",
+            "normalize": 1,
+            "oname": "results/test.pdf",
+            "option": "colz",
+            "title": "Number of hits in module 1; x; z"
+        },
+        "input/LHC16.root/QualTender/hCluNXZM_0_SM%d": {
+            "color": 46,
+            "label": "strict-map",
+            "normalize": 1,
+            "oname": "results/test.pdf",
+            "option": "colz",
+            "title": "Number of hits in module 1; x; z"
+        }
+    }
 }
