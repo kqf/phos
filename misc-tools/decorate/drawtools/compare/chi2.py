@@ -34,16 +34,9 @@ def compare_files(file1, file2, selection, ignore, comparator):
 
 
 @click.command()
-@click.option("--first", "-f",
-              type=click.Path(exists=True),
-              help="Path to the first file",
-              required=True)
-@click.option("--second", "-s",
-              type=click.Path(exists=True),
-              help="Path to the second file")
-@click.option("--selection",
-              type=click.Path(exists=True),
-              help="The requested selection")
+@click.option("--first", "-f", type=click.Path(exists=True), required=True)
+@click.option("--second", "-s", type=click.Path(exists=True), required=True)
+@click.option("--selection", type=click.Path(exists=True))
 def main(first, second, selection):
     """
     Use this script to compare the root files.

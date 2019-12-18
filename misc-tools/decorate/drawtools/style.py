@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import ROOT
 import json
 import pprint
@@ -67,8 +69,8 @@ class SingleStyler(object):
             if not n:
                 continue
             obj = obj.FindObject(n)
-        print lst
-        print obj.GetName()
+        print(lst)
+        print(obj.GetName())
 
         # assert obj, 'Specify right path to histogram. ' + lst + \
         #     ' Current path: ' + path + '. Or check your .root file.'

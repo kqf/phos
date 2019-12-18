@@ -1,12 +1,13 @@
+from __future__ import print_function
 import ROOT
 
 
 def error(message):
-    print "Error:  {}".format(message)
+    print("Error:  {}".format(message))
 
 
 def warning(message):
-    print "Warning: {}".format(message)
+    print("Warning: {}".format(message))
 
 
 def draw_and_save(name, draw=False, save=True):
@@ -30,7 +31,7 @@ def hist_cut(h, name_cut=lambda x: True):
 
 
 def extract_data_lists(filename='AnalysisResults.root'):
-    print 'Processing %s file:' % filename
+    print('Processing %s file:' % filename)
     mfile = ROOT.TFile(filename)
     # Without this line your Clones are created inside FILENAME directory.
     # mfile -> local, so this object will when we reach the end of this
@@ -56,7 +57,7 @@ def find_similar_in(lst, ref):
 
 def extract_selection(filename="AnalysisResults.root",
                       selection="PhysTender"):
-    print "Processing  file:".format(filename)
+    print("Processing  file:".format(filename))
     mfile = ROOT.TFile(filename)
     mlist = mfile.Get(selection)
 
@@ -83,11 +84,11 @@ def fsum(lst):
 
 def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_chi):
     if len(l1) != len(l2):
-        print 'Warning files have different shape'
+        print('Warning files have different shape')
 
     if fsum(l1) != fsum(l2):
-        print 'Total entries in the the lists: {} {}'.format(
-            fsum(l1), fsum(l2))
+        print('Total entries in the the lists: {} {}'.format(
+            fsum(l1), fsum(l2)))
 
     diffs = []
     for h in l1:
@@ -96,5 +97,5 @@ def compare_lists_of_histograms(l1, l2, ignore=[], compare=compare_chi):
             continue
         diffs.append(compare(h, candidate))
 
-    print "That's it!! Your computation is done"
+    print("That's it!! Your computation is done")
     return diffs
