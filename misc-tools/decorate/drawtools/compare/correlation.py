@@ -19,9 +19,10 @@ NOT_RELIABLE = [
 
 
 def compare_visually(hist1, hist2, scale=8, aspect_ratio=3):
-    canvas = ROOT.TCanvas("c1", "canvas",
-                          hist1.GetNbinsX() * scale * aspect_ratio,
-                          hist1.GetNbinsY() * scale)
+    canvas = ROOT.TCanvas(
+        "c1", "canvas",
+        hist1.GetNbinsX() * scale * aspect_ratio,
+        hist1.GetNbinsY() * scale)
     canvas.Divide(3, 1)
     canvas.cd(1)
     hist1.Draw("colz")

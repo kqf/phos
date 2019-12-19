@@ -4,6 +4,8 @@ import ROOT
 import json
 import pprint
 import click
+from drawtools.utils import draw_and_save
+
 
 ROOT.TH1.AddDirectory(False)
 
@@ -228,7 +230,7 @@ class SingleStyler(object):
 
         mainpad.Update()
         ratio = self.ratioplot(ratio)
-        raw_input()
+        draw_and_save("", save=False)
 
     def decorate_pad(self, pad, props):
         ROOT.gPad.SetTickx()
@@ -310,7 +312,7 @@ class MultipleStyler(SingleStyler):
         if oname:
             canvas.SaveAs(oname)
 
-        raw_input()
+        draw_and_save("", save=False)
 
     def draw_multiple(self, hists, canvas):
         for i, sm in enumerate(hists):
@@ -319,10 +321,7 @@ class MultipleStyler(SingleStyler):
 
 
 @click.command()
-@click.option('--config', '-c',
-              type=click.Path(exists=True),
-              help='Path to the config file',
-              required=True)
+@click.option('--config', '-c', type=click.Path(exists=True), required=True)
 def main(config):
     """
     Draw plots according to predefined rules. Usage:
