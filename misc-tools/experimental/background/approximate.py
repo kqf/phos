@@ -7,12 +7,12 @@ FILE = "../../../neutral-meson-spectra/input-data/data/LHC16/final_nonlinearity_
 @contextmanager
 def create_canvas(logy=True, scale=5):
     canvas = ROOT.TCanvas("c1", "c1", 192 * scale, 98 * scale)
-    try:
-        yield canvas
-    finally:
-        canvas.SetLogy(logy)
-        canvas.Update()
-        raw_input()
+    yield canvas
+    canvas.SetLogy(logy)
+    canvas.Update()
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    ROOT.gApplication.Run(True)
 
 
 def approximate(mixing):
