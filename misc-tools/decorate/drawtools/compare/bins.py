@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ROOT
 import click
 from drawtools.utils import extract_data_lists
@@ -15,17 +16,12 @@ def compare_bin_by_bin(hist1, hist2):
         return [x.GetBinContent(i + 1) for i in range(x.GetNbinsX())]
     if not f(hist1) == [i for i in f(hist2)]:
         error("Some bins are different in " + hist1.GetName())
-    print "Histograms are".format(hist1.GetName())
+    print("Histograms are".format(hist1.GetName()))
 
 
 @click.command()
-@click.option("--left", "-l",
-              type=click.Path(exists=True),
-              help="Path to the first file",
-              required=True)
-@click.option("--right", "-r",
-              type=click.Path(exists=True),
-              help="Path to the second file")
+@click.option("--left", "-l", type=click.Path(exists=True), required=True)
+@click.option("--right", "-r", type=click.Path(exists=True), required=True)
 def main(left, right):
     """
     Use this script to compare the root files.

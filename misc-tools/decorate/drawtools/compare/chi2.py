@@ -1,10 +1,11 @@
+from __future__ import print_function
 import click
 from drawtools.utils import draw_and_save, error, find_similar_in
 from drawtools.utils import extract_selection, compare_chi
 
 
 def compare_visually(hist1, hist2):
-    print hist1, hist2
+    print(hist1, hist2)
     hist1.SetLineColor(37)
     hist2.SetLineColor(48)
 
@@ -24,7 +25,7 @@ def compare_lists_of_histograms(l1, l2, ignore, compare=compare_chi):
         if (not candidate) or candidate.GetName() in ignore:
             continue
         compare(h, candidate)
-    print "That's it!! The comparison is over."
+    print("That's it!! The comparison is over.")
 
 
 def compare_files(file1, file2, selection, ignore, comparator):

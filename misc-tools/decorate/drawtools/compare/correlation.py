@@ -40,14 +40,8 @@ def compare_visually(hist1, hist2, scale=8, aspect_ratio=3):
 
 
 @click.command()
-@click.option("--file1",
-              type=click.Path(exists=True),
-              help="Path to the first .root file",
-              required=True)
-@click.option("--file2",
-              type=click.Path(exists=True),
-              help="Path to the second .root file",
-              required=True)
+@click.option("--file1", type=click.Path(exists=True), required=True)
+@click.option("--file2", type=click.Path(exists=True), required=True)
 def main(file1, file2):
     ROOT.gROOT.cd()
     ROOT.gStyle.SetOptStat(False)
