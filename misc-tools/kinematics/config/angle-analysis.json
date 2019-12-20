@@ -1,5 +1,4 @@
 {
-    "generator_type": "randomized",
     "generator": {
         "decay_masses": [
             0,
@@ -7,6 +6,7 @@
         ],
         "original_mass": 0.134
     },
+    "generator_type": "randomized",
     "momentum_distribution": {
         "function": [
             "x[0] * [0]/ 2./3.1415*([2]-1.)*([2]-2.)/([2]*[1]*([2]*[1]+[4]*([2]-2.))) * (1.+(sqrt((x[0])*(x[0])+[3]*[3])-[4])/([2]*[1])) ** (-[2])",

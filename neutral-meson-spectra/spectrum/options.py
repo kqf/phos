@@ -5,11 +5,6 @@ import six
 
 from recordclass import recordclass
 
-PDG_BR_RATIO = {
-    "#pi^{0}": 0.9882,
-    "#eta": 0.3931,
-}
-
 
 def _option_hook(particle, ignore=("comment", "#pi^{0}", "#eta", "electrons")):
     def _hook(data):

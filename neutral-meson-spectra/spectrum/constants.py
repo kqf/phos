@@ -8,6 +8,11 @@ PAVE_PREFIX = """
 pp at #sqrt{s} = 13 TeV
 """
 
+PDG_BR_RATIO = {
+    "#pi^{0}": 0.9882,
+    "#eta": 0.3931,
+}
+
 
 def mass(particle):
     return PARTICLE_MASSES[particle]
