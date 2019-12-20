@@ -7,7 +7,9 @@ def canvas():
     canvas = ROOT.TCanvas("canvas", "", 500, 500)
     yield canvas
     canvas.Update()
-    input()
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    ROOT.gApplication.Run(True)
 
 
 @contextmanager

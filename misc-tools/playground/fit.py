@@ -14,7 +14,9 @@ def canvas():
     canvas = ROOT.TCanvas("canvas", "", 500, 500)
     yield canvas
     canvas.Update()
-    input()
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    ROOT.gApplication.Run(True)
 
 
 def main():
@@ -30,8 +32,8 @@ def main():
         initial = fitf.Clone()
         initial.SetLineColor(ROOT.kOrange + 1)
 
-        # hist.Fit(fitf, "R", *[0.06, 0.22])
-        # hist.Draw()
+        hist.Fit(fitf, "R", *[0.06, 0.22])
+        hist.Draw()
         initial.Draw()
 
 
