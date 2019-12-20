@@ -25,15 +25,16 @@ def option(config, particle):
 
 
 class Options(object):
-    def __init__(self,
-                 particle="#pi^{0}",
-                 pt="config/pt.json",
-                 calibration="config/data/calibration.json",
-                 invmass="config/data/mass-fit.json",
-                 signal="config/data/cball.json",
-                 background="config/data/cball.json",
-                 output="config/data/output.json",
-                 ):
+    def __init__(
+        self,
+        particle="#pi^{0}",
+        pt="config/pt.json",
+        calibration="config/data/calibration.json",
+        invmass="config/data/mass-fit.json",
+        signal="config/data/cball.json",
+        background="config/data/cball.json",
+        output="config/data/output.json",
+    ):
         super(Options, self).__init__()
         self.calibration = option(calibration, particle)
         self.pt = option(pt, particle)
@@ -46,14 +47,15 @@ class Options(object):
 
 class OptionsSPMC(Options):
 
-    def __init__(self,
-                 particle="#pi^{0}",
-                 pt="config/pt.json",
-                 invmass="config/spmc/mass-fit.json",
-                 calibration="config/spmc/calibration.json",
-                 signal="config/spmc/cball.json",
-                 background="config/spmc/cball.json",
-                 *args, **kwargs):
+    def __init__(
+            self,
+            particle="#pi^{0}",
+            pt="config/pt.json",
+            invmass="config/spmc/mass-fit.json",
+            calibration="config/spmc/calibration.json",
+            signal="config/spmc/cball.json",
+            background="config/spmc/cball.json",
+            *args, **kwargs):
         super(OptionsSPMC, self).__init__(
             particle=particle,
             pt=pt,
@@ -71,9 +73,10 @@ class CompositeOptions(object):
         "#eta": [(0.0, 6.0), (6.0, 20.0)],
     }
 
-    def __init__(self, particle, n_ranges=2,
-                 pt="config/pt.json",
-                 *args, **kwargs):
+    def __init__(
+            self, particle, n_ranges=2,
+            pt="config/pt.json",
+            *args, **kwargs):
         super(CompositeOptions, self).__init__()
         options = [
             OptionsSPMC(particle, pt=pt, *args, **kwargs)
@@ -94,11 +97,12 @@ class EfficiencyOptions(object):
     ; p_{{T}} (GeV/#it{{c}}); #varepsilon #times A 
     """  # noqa
 
-    def __init__(self, particle="#pi^{0}",
-                 genname="hPt_{0}_primary_standard",
-                 scale=0.075,
-                 pt="config/pt.json",
-                 otype=Options, **kwargs):
+    def __init__(
+            self, particle="#pi^{0}",
+            genname="hPt_{0}_primary_standard",
+            scale=0.075,
+            pt="config/pt.json",
+            otype=Options, **kwargs):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
         self.analysis = otype(particle=particle, pt=pt, **kwargs)
@@ -116,11 +120,12 @@ class CompositeEfficiencyOptions(object):
         "#eta": [(0.0, 7.0), (7.0, 20.0)],
     }
 
-    def __init__(self, particle,
-                 genname="hPt_{0}_primary_standard",
-                 pt="config/pt.json",
-                 use_particle=True,
-                 scale=0.075, n_ranges=2, *args, **kwargs):
+    def __init__(
+            self, particle,
+            genname="hPt_{0}_primary_standard",
+            pt="config/pt.json",
+            use_particle=True,
+            scale=0.075, n_ranges=2, *args, **kwargs):
         super(CompositeEfficiencyOptions, self).__init__()
         self.suboptions = [
             EfficiencyOptions(
@@ -175,8 +180,7 @@ class CompositeCorrectedYieldOptions(object):
         #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}
     """
 
-    def __init__(self, particle="#pi^{0}", n_ranges=2,
-                 pt="config/pt.json"):
+    def __init__(self, particle="#pi^{0}", n_ranges=2, pt="config/pt.json"):
         super(CompositeCorrectedYieldOptions, self).__init__()
         self.analysis = Options(particle=particle, pt=pt)
         self.analysis.output.scalew_spectrum = True
