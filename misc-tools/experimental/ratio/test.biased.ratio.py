@@ -15,11 +15,11 @@ def std_ratio(a, b, option="B"):
 @contextmanager
 def draw_canvas(scale=6):
     canvas = ROOT.TCanvas("canvas", "canvas", 128 * scale, 96 * scale)
-    try:
-        yield canvas
-    finally:
-        canvas.Update()
-        raw_input("Press enter...")
+    yield canvas
+    canvas.Update()
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    ROOT.gApplication.Run(True)
 
 
 def data(a, b, size=1e6, ratio=0.9):

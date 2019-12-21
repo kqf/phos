@@ -5,11 +5,11 @@ import ROOT
 @contextmanager
 def draw_canvas(scale=6):
     canvas = ROOT.TCanvas("canvas", "canvas", 128 * scale, 96 * scale)
-    try:
-        yield canvas
-    finally:
-        canvas.Update()
-        raw_input("Press enter...")
+    yield canvas
+    canvas.Update()
+    canvas.Connect("Closed()", "TApplication",
+                   ROOT.gApplication, "Terminate()")
+    ROOT.gApplication.Run(True)
 
 
 def bincenterf(hist, isxaxis=True):
