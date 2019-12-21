@@ -120,6 +120,8 @@ class GScale(TransformerBase):
             [lower, upper],
             logy=False,
             csize=(96, 128),
+            ytitle="f(p_{T} #pm #delta p_{T})/f(p_{T})",
+            yoffset=1.6,
             oname="results/systematics/gescale/{}.pdf".format(
                 br.spell(self.options.particle)),
             ltitle="{} #rightarrow #gamma #gamma".format(

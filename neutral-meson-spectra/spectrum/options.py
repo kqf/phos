@@ -98,11 +98,12 @@ class EfficiencyOptions(object):
     """  # noqa
 
     def __init__(
-            self, particle="#pi^{0}",
-            genname="hPt_{0}_primary_standard",
-            scale=0.075,
-            pt="config/pt.json",
-            otype=Options, **kwargs):
+        self, particle="#pi^{0}",
+        genname="hPt_{0}_primary_standard",
+        scale=0.075,
+        pt="config/pt.json",
+        otype=Options, **kwargs
+    ):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
         self.analysis = otype(particle=particle, pt=pt, **kwargs)
@@ -125,7 +126,10 @@ class CompositeEfficiencyOptions(object):
             genname="hPt_{0}_primary_standard",
             pt="config/pt.json",
             use_particle=True,
-            scale=0.075, n_ranges=2, *args, **kwargs):
+            scale=0.075,
+            n_ranges=2,
+            *args, **kwargs
+    ):
         super(CompositeEfficiencyOptions, self).__init__()
         self.suboptions = [
             EfficiencyOptions(
