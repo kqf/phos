@@ -141,14 +141,14 @@ class YieldExtractioin(TransformerBase):
             spectrums,
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
-            legend_pos=(0.72, 0.6, 0.88, 0.88),
+            legend_pos=(0.53, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/spectra-{}.pdf".format(
                 br.spell(self.options.particle)),
             stop=self.plot,
             colors='coolwarm',
             more_logs=False,
             yoffset=1.6,
-            ltext_size=0.015
+            ltext_size=0.025
         )
 
         average = br.average(spectrums, "averaged yield")
@@ -158,14 +158,14 @@ class YieldExtractioin(TransformerBase):
             logy=False,
             xtitle="p_{T} (GeV/#it{c})",
             csize=(96, 128),
-            legend_pos=(0.72, 0.6, 0.88, 0.88),
+            legend_pos=(0.53, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/ratios-{}.pdf".format(
                 br.spell(self.options.particle)),
             stop=self.plot,
             colors='coolwarm',
             more_logs=False,
             yoffset=1.6,
-            ltext_size=0.015
+            ltext_size=0.025
         )
 
         uncert, rms, mean = br.systematic_deviation(spectrums)

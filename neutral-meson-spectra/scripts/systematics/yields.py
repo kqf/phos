@@ -2,7 +2,6 @@ import pytest
 
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
-from spectrum.plotter import plot
 
 from spectrum.uncertainties.yields import YieldExtractioin
 from spectrum.uncertainties.yields import YieldExtractioinUncertanityOptions
