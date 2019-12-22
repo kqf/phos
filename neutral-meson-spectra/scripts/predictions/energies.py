@@ -10,7 +10,6 @@ from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.input import SingleHistInput
-from spectrum.pipeline import FunctionTransformer
 from vault.datavault import DataVault
 
 
@@ -32,7 +31,9 @@ class HepdataInput(TransformerBase):
 
 class XTtransformer(TransformerBase):
     def transform(self, x, loggs):
-        edges = np.array([x.GetBinLowEdge(i) for i in br.hrange(x, edges=True)])
+        edges = np.array([
+            x.GetBinLowEdge(i)
+            for i in br.hrange(x, edges=True)])
         xtedges = edges / x.energy
         xt = ROOT.TH1F(
             "{}_xt".format(x.GetName()), x.GetTitle(),

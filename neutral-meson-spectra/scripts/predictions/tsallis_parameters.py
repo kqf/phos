@@ -2,9 +2,8 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-import ROOT
-from array import array
 
+import spectrum.broot as br
 import spectrum.sutils as su
 
 
@@ -15,20 +14,10 @@ def pars():
     return pd.DataFrame(data.values())
 
 
-def tgraph(x, y, ex, ey):
-    print(y, ey)
-    return ROOT.TGraphErrors(
-        len(x),
-        array('f', x),
-        array('f', y),
-        array('f', ex),
-        array('f', ey)
-    )
-
-
 def test_tsallis_parameter_dependence(pars):
     print(pars)
-    graph = tgraph(
+    graph = br.graph(
+        "test",
         pars["energy"],
         pars["C"],
         np.zeros_like(pars["energy"]),
