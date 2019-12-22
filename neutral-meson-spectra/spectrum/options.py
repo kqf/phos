@@ -55,7 +55,8 @@ class OptionsSPMC(Options):
             calibration="config/spmc/calibration.json",
             signal="config/spmc/cball.json",
             background="config/spmc/cball.json",
-            *args, **kwargs):
+            *args, **kwargs
+    ):
         super(OptionsSPMC, self).__init__(
             particle=particle,
             pt=pt,
@@ -91,11 +92,7 @@ class CompositeOptions(object):
 
 class EfficiencyOptions(object):
 
-    histpattern = """
-    #varepsilon = #Delta #phi #Delta y/ 2 #pi
-    #frac{{Number of reconstructed {particle}}}{{Number of generated primary {particle}}}
-    ; p_{{T}} (GeV/#it{{c}}); #varepsilon #times A 
-    """  # noqa
+    histpattern = "; p_{{T}} (GeV/#it{{c}}); #varepsilon #times A"  # noqa
 
     def __init__(
         self, particle="#pi^{0}",
