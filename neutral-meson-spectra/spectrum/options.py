@@ -107,8 +107,11 @@ class EfficiencyOptions(object):
         self.genname = genname
         self.scale = scale
 
-        histname = self.histpattern.format(particle=particle)
-        self.decorate = "eff_" + particle, histname, "efficiency"
+        self.decorate = {
+            "histname": "eff_{}".format(particle),
+            "title": self.histpattern.format(particle=particle),
+            "label": "efficiency",
+        }
 
 
 class CompositeEfficiencyOptions(object):
@@ -170,7 +173,6 @@ class CorrectedYieldOptions(object):
             "histname": "corrected_yield",
             "title": self.histpattern.format(particle=particle),
             "label": particle,
-            # "label": "ALICE, pp #sqrt{s} = 13 TeV",
         }
 
 

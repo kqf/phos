@@ -40,7 +40,7 @@ class SimpleEfficiency(TransformerBase):
 
         self.pipeline = Pipeline([
             ('efficiency', efficiency),
-            ('decorate', OutputDecorator(*options.decorate))
+            ('decorate', OutputDecorator(**options.decorate))
         ])
 
     def transform(self, data, loggs):
