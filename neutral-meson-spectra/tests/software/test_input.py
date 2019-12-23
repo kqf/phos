@@ -2,7 +2,7 @@ import os
 import pytest
 import tqdm
 
-from spectrum.input import Input, NoMixingInput, read_histogram
+from spectrum.input import Input, NoMixingInput
 from tests.software.test_broot import write_histograms
 from vault.datavault import DataVault
 
@@ -36,14 +36,6 @@ def nomixing():
     oreal, ocntr = write_histograms(ofilename, selection, histnames)
     yield oreal, None, ocntr, ofilename, selection, histnames
     os.remove(ofilename)
-
-
-def test_reads_single_histogram(single):
-    original, ofilename, selection, histnames, myhist = single
-    fromfile = read_histogram(ofilename, selection, myhist)
-    assert fromfile is not None
-    assert fromfile is not original[0], "The histograms the same instance"
-    assert fromfile.GetEntries() == original[0].GetEntries()
 
 
 def test_reads_standard_input(standard):

@@ -3,20 +3,6 @@ from collections import OrderedDict
 import spectrum.broot as br
 
 
-def read_histogram(filename, listname, histname,
-                   label='', priority=999, norm=False):
-    hist = br.io.read(filename, listname, histname)
-    br.set_nevents(hist,
-                   Input(filename,
-                         listname,
-                         histname,
-                         label).events(filename, listname),
-                   norm)
-    hist.priority = priority
-    hist.label = label
-    return hist
-
-
 class SingleHistInput(object):
 
     def __init__(self, histname, listname=None, priority=999, norm=False):
@@ -106,11 +92,6 @@ class Input(object):
             IdentityInput(h, self.pt_range, single)
             for h in zip(*(iter(data),) * n_groups)
         ]
-
-    def read_single(self, histname=None):
-        histname = histname or self.histname
-        hist = br.io.read(self.filename, self.listname, histname)
-        return hist
 
     def transform(self, data=None, outputs=None):
         return self.read()

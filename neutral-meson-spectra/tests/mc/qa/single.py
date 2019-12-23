@@ -32,14 +32,3 @@ def reconstructed(particle, data):
 @pytest.mark.parametrize("region", ["low", "high"])
 def test_reconstructed(particle, data):
     Comparator().compare(reconstructed(particle, data))
-
-
-@pytest.mark.onlylocal
-@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
-@pytest.mark.parametrize("region", ["low", "high"])
-@pytest.mark.parametrize("quantity", ["hEtaPhi_{0}", "hPt_{0}_primary_"])
-def test_distribution(particle, region, data, quantity):
-    hist = data.read_single(quantity.format(particle))
-    if "_primary_" in quantity:
-        hist.logy = True
-    Comparator().compare(hist)
