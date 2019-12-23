@@ -2,7 +2,6 @@ import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.input import read_histogram
 from spectrum.comparator import Comparator
 from vault.datavault import DataVault
 
@@ -10,7 +9,7 @@ from vault.datavault import DataVault
 @pytest.fixture
 def data(particle, region):
     return DataVault().input(
-        "single {}".foramt(particle),
+        "single {}".format(particle),
         region,
         "PhysEff", label="{} p_{{T}}".format(region)
     )
@@ -19,11 +18,6 @@ def data(particle, region):
 @pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
 @pytest.mark.parametrize("region", ["low", "high"])
 def reconstructed(particle, data):
-    if "gamma" in particle:
-        reconstructed = read_histogram(*data)
-        reconstructed.SetTitle("Inclusive " + reconstructed.GetTitle().lower())
-        return reconstructed
-
     reconstructed = Analysis(Options(particle=particle)).transform(data, {})
     reconstructed = reconstructed.spectrum
     reconstructed.SetTitle(reconstructed.GetTitle())
