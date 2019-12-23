@@ -2,6 +2,8 @@ from collections import OrderedDict
 
 import spectrum.broot as br
 
+# TODO: Fix this logic, remove Input class
+
 
 class SingleHistInput(object):
 
@@ -134,28 +136,3 @@ class NoMixingInput(Input):
         raw = br.io.read(self.filename, self.listname, self.prefix + histo)
         br.set_nevents(raw, self._events)
         return raw, None
-
-
-class ExampleInput(Input):
-    def __init__(self, filename, listname='Data',
-                 histname='MassPtA10vtx10', mixprefix='Mi'):
-        super(ExampleInput, self).__init__(
-            filename, listname, histname, mixprefix)
-
-    @staticmethod
-    def events(filename, listname):
-        return br.io.read(filename, listname, 'hSelEvents').GetBinContent(4)
-
-
-class TimecutInput(Input):
-    def __init__(self, filename, listname, histname, mixprefix='Mix'):
-        super(TimecutInput, self).__init__(
-            filename, listname, histname, mixprefix)
-
-    @staticmethod
-    def events(filename, listname):
-        return br.io.read(
-            filename,
-            'PhysTender',
-            'EventCounter'
-        ).GetBinContent(2)
