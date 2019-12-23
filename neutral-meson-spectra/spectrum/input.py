@@ -107,10 +107,10 @@ class Input(object):
             for h in zip(*(iter(data),) * n_groups)
         ]
 
-    def read_single(self, histname=None, norm=False):
+    def read_single(self, histname=None):
         histname = histname or self.histname
-        return read_histogram(filename=self.filename, listname=self.listname,
-                              histname=histname, label=self.label, norm=norm)
+        hist = br.io.read(self.filename, self.listname, histname)
+        return hist
 
     def transform(self, data=None, outputs=None):
         return self.read()
