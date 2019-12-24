@@ -1,6 +1,4 @@
 {
-	"Comment 1":"This file should serve as the input for both pt-analyzer and tag_and_probe classes",
-	"Comment 2":"Here ptbins are in Energy bins but we keep the same labels here",
     "#pi^{0}":
     {
         "ptedges": [0.8, 1.4482203317578066, 1.9066746630151736, 2.5102591027509447, 3.3049166096218423, 3.7921148603219317, 4.9925616737083054, 6.5730266576537737, 8.6538098607275025, 11.39329398861069, 13.0728501035222, 15.0],

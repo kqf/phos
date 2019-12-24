@@ -1,6 +1,6 @@
 {
-	"Comment 1":"This file should serve as the input for both pt-analyzer and tag_and_probe classes",
-	"Comment 2":"Here ptbins are in Energy bins but we keep the same labels here",
+	"Comment1":"This file should serve as the input for both pt-analyzer and tag_and_probe classes",
+	"Comment2":"Here ptbins are in Energy bins but we keep the same labels here",
 	"particle": "#pi^{0}",
 	"erange": [0.0, 20.0],
 	"nsigma": 3,
