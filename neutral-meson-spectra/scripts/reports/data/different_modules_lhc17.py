@@ -1,5 +1,6 @@
 import pytest
 
+import spectrum.broot as br
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.output import open_loggs
@@ -9,7 +10,12 @@ from vault.datavault import DataVault
 
 @pytest.fixture
 def data():
-    return DataVault().modules_input("data", "LHC17 qa1", "Phys", True)
+    return [
+        DataVault().input(
+            "data", "LHC17 qa1", "Phys",
+            histname='MassPt{}'.format(modules))
+        for modules in br.module_names(same_module=True)
+    ]
 
 
 @pytest.mark.qa
@@ -18,7 +24,7 @@ def data():
     "#pi^{0}",
     "#eta",
 ])
-def analyze(particle, data):
+def test_analyze(particle, data):
     options = Options(
         particle=particle,
         pt="config/test_different_modules.json"

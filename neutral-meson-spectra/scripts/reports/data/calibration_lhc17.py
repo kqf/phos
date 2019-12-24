@@ -1,5 +1,6 @@
 from __future__ import print_function
 import pytest
+import spectrum.broot as br
 from spectrum.analysis import Analysis
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline
@@ -10,6 +11,7 @@ from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
+# TODO: Use normal fixtures in this analysis
 
 
 class CalibrationAnalysis(TransformerBase):
@@ -65,9 +67,13 @@ def test_calibration(atype, periods):
 
 def test_mass_different_modules(periods):
     def data(period):
-        vault = DataVault("debug-ledger.json")
-        period_name = "LHC17{}".format(period)
-        return vault.modules_input("LHC17 qa1", period_name, "Phys", True)
+        return [
+            DataVault("debug-ledger.json").input(
+                "LHC17 qa1", "LHC17{}".format(period), "Phys", True,
+                histname="MassPt{}".format(modulename)
+            )
+            for modulename in br.module_names(same_module=True)
+        ]
 
     options = Options(pt="config/test_different_modules.json")
     masses = [

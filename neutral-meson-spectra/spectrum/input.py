@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 import spectrum.broot as br
 
 # TODO: Fix this logic, remove Input class
@@ -82,6 +80,7 @@ class Input(object):
             self.inputs
         )
 
+        # TODO: Why do we need this?
         for h in raw_mix:
             if not h:
                 continue
@@ -97,32 +96,6 @@ class Input(object):
 
     def transform(self, data=None, outputs=None):
         return self.read()
-
-    @classmethod
-    def read_per_module(klass, filename, listname, histname='MassPt',
-                        label='', mixprefix='Mix', same_module=False):
-        pairs = [(i, j) for i in range(1, 5)
-                 for j in range(i, 5) if abs(i - j) < 2]
-        if same_module:
-            pairs = [pair for pair in pairs if pair[0] == pair[1]]
-
-        names = ['SM{0}SM{1}'.format(*pair) for pair in pairs]
-
-        output = [
-            (
-                klass(
-                    filename,
-                    listname,
-                    histname + name,
-                    label=name,
-                    mixprefix=mixprefix
-                ),
-                name
-            ) for name in names]
-        return OrderedDict(output)
-
-    def __repr__(self):
-        return self.filename
 
 
 class NoMixingInput(Input):

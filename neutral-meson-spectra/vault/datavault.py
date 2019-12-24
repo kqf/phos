@@ -47,12 +47,3 @@ class DataVault(object):
         transformer = Input if use_mixing else NoMixingInput
         return transformer(filename, str(listname), pt_range=pt_range,
                            *args, **kwargs)
-
-    def modules_input(self, production, version="latest", listname="Phys",
-                      same_module=True, *args, **kwargs):
-        inputs = Input.read_per_module(
-            self.file(production, version),
-            listname,
-            same_module=same_module
-        )
-        return inputs
