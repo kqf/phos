@@ -1,6 +1,6 @@
 PERIOD=LHC16k
 DIRECTORY=phosqa-$(shell echo $(PERIOD) | tr A-Z a-z)-muon-calo-pass1-heatmap
-MPATH=alice/cern.ch/user/o/okovalen/$(DIRECTORY)/output
+MPATH=alice/cern.ch/user/o/$(USER)/$(DIRECTORY)/output
 
 
 $(PERIOD)-clusters.pdf: | $(PERIOD)
