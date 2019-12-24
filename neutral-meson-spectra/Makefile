@@ -1,14 +1,13 @@
-.PHONY: integrity-test update-datasets clean
 
-integrity-test:
+sanity-test:
 	pytest scripts/yield/observables.py \
 		scripts/data/tof.py \
 		scripts/efficiency/spmc_efficiency.py
 
-update-datasets: phos-download
+datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.
 
-merge-datasets:
+merge:
 	mkdir input-data/data/merged/$(production)/
 
 	hadd input-data/data/merged/$(production)/LHC16-LHC17-LHC18.root \
@@ -47,3 +46,6 @@ data:
 clean:
 	rm -f *.pdf *.png *.root
 	rm -rf results/*
+
+
+.PHONY: sanity-test datasets clean phos-download systematics data clean merge
