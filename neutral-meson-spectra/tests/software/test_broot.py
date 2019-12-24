@@ -896,3 +896,8 @@ def test_plots_shaded_area(stop):
     shaded = br.shaded_region("test hysteresis", sin, cos)
     with su.canvas(stop=stop):
         shaded.Draw(shaded.GetDrawOption())
+
+
+def test_modulenames(n_modules=4, max_combinations=7):
+    assert len(br.module_names(same_module=True)) == n_modules
+    assert len(br.module_names(same_module=False)) == max_combinations

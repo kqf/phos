@@ -830,3 +830,12 @@ def report(func, particle="", limits=False):
 
 def ratio_uncert(a, b, da, db):
     return (a / b) * ((da / a) ** 2 + (db / b) ** 2) ** 0.5
+
+
+def module_names(same_module=False):
+    pairs = [(i, j) for i in range(1, 5)
+             for j in range(i, 5) if abs(i - j) < 2]
+    if same_module:
+        pairs = [pair for pair in pairs if pair[0] == pair[1]]
+
+    return ['SM{}SM{}'.format(*pair) for pair in pairs]
