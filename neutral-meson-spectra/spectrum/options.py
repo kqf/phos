@@ -99,13 +99,17 @@ class EfficiencyOptions(object):
         genname="hPt_{0}_primary_standard",
         scale=0.075,
         pt="config/pt.json",
-        otype=Options, **kwargs
+        otype=Options,
+        genlist=None,  # Use the one from the data
+        **kwargs
     ):
         super(EfficiencyOptions, self).__init__()
         genname = genname.format(particle)
         self.analysis = otype(particle=particle, pt=pt, **kwargs)
         self.genname = genname
         self.scale = scale
+        # Nonlinearity scan requires this parameter
+        self.genlist = genlist
 
         self.decorate = {
             "histname": "eff_{}".format(particle),
@@ -128,6 +132,7 @@ class CompositeEfficiencyOptions(object):
             use_particle=True,
             scale=0.075,
             n_ranges=2,
+            genlist=None,  # use the one from the data
             *args, **kwargs
     ):
         super(CompositeEfficiencyOptions, self).__init__()
@@ -138,6 +143,7 @@ class CompositeEfficiencyOptions(object):
                 pt=pt,
                 scale=scale,
                 otype=OptionsSPMC,
+                genlist=genlist,
                 *args, **kwargs)
             for _ in range(n_ranges)
         ]

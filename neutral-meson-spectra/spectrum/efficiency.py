@@ -26,7 +26,7 @@ class SimpleEfficiency(TransformerBase):
         ])
 
         generated = Pipeline([
-            ("raw", SingleHistInput(options.genname)),
+            ("raw", SingleHistInput(options.genname, options.genlist)),
             ("rebinned", RebinTransformer(
                 normalized=False,
                 edges=options.analysis.pt.ptedges,
