@@ -116,31 +116,14 @@ class NonlinearityUncertainty(TransformerBase):
         ])
 
 
-def form_histnames(nbins=4):
-    histnames = sum([
-        [
-            "hMassPt_{}_{}".format(i, j),
-            "hMixMassPt_{}_{}".format(i, j),
-        ]
-        for j in range(nbins)
-        for i in range(nbins)
-    ], [])
-    return histnames
-
-
 def nonlinearity_scan_data(nbins, prod, eff_prod="PhysEff"):
-    histnames = form_histnames(nbins)
-    low = DataVault().input(prod, "low", inputs=histnames)
-    high = DataVault().input(prod, "high", inputs=histnames)
-
-    efficiency_inputs = (
-        DataVault().input(prod, "low", "PhysEff"),
-        DataVault().input(prod, "high", "PhysEff")
-    )
-
-    spmc = [(l, h) for l, h in zip(
-        low.read_multiple(single=efficiency_inputs[0]),
-        high.read_multiple(single=efficiency_inputs[1])
-    )]
-
+    spmc = []
+    for i in range(nbins):
+        for j in range(nbins):
+            histname = "MassPt_{}_{}".format(i, j)
+            selection = (
+                DataVault().input(prod, "low", histname=histname),
+                DataVault().input(prod, "high", histname=histname)
+            )
+            spmc.append(selection)
     return spmc
