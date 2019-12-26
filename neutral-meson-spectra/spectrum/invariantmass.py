@@ -22,8 +22,8 @@ class RawMass(object):
     }
 
     xaxis = {
-        "#pi^{0}": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
-        "#eta": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
+        "#pi^{0}": "M_{#gamma#gamma} (GeV/#it{{c}}^{{2}})",
+        "#eta": "M_{#gamma#gamma} (GeV/#it{{c}}^{{2}})",
         "electrons": "E/p ratio",
     }
 
@@ -35,6 +35,8 @@ class RawMass(object):
         label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
         self.pt_label = label.format(*self.pt_range)
         self.template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
+        if len(inhists) == 1:
+            inhists = inhists + [None]
         self.mass, self.background = map(self._extract_histogram, inhists)
 
     def _extract_histogram(self, hist):

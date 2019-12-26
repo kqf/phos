@@ -12,7 +12,7 @@ def data_old_selection(prod="data", version="ep_ratio"):
         version=version,
         listname="EpRatio",
         histname="EpElectronsPSM0",
-        use_mixing=False)
+        suffixes=None)
 
 
 def data(prod="data", version="ep_ratio"):
@@ -21,7 +21,7 @@ def data(prod="data", version="ep_ratio"):
         version=version,
         listname="PHOSEpRatioCoutput1",
         histname="Ep_ele",
-        use_mixing=False)
+        suffixes=None)
 
 
 @pytest.fixture
