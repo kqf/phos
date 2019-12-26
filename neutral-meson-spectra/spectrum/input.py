@@ -21,32 +21,40 @@ class SingleHistInput(object):
         br.set_nevents(hist, inputs.events(
             inputs.filename, inputs.listname), self.norm)
         hist.priority = self.priority
-        hist.label = inputs.label
         return hist
 
 
 class Input(object):
-    def __init__(self, filename, listname,
-                 histname='MassPt', pt_range=(0., 20.), label='',
-                 mixprefix='Mix', histnames=None,
-                 n_events=None, inputs=None,
-                 prefix='h'):
+    def __init__(
+        self,
+        filename,
+        listname,
+        histname='MassPt',
+        pt_range=(0., 20.),
+        suffixes=('', 'Mix'),
+        histnames=None,
+        n_events=None,
+        inputs=None,
+        prefix='h',
+        use_mixing=False
+    ):
         super(Input, self).__init__()
         self.filename = filename
         self.listname = listname
         self.histname = histname
         self.histnames = histnames
-        self.mixprefix = '', mixprefix
+        self.suffixes = suffixes
         self.prefix = prefix
         self._n_events = n_events
         self._events = self.events(filename, listname)
-        self.label = label
         self.inputs = inputs
         self.pt_range = pt_range
+        self.use_mixing = use_mixing
         if self.inputs:
             return
-        self.inputs = ['{}{}{}'.format(self.prefix, p, self.histname)
-                       for p in self.mixprefix]
+        self.inputs = [
+            "{}{}{}".format(self.prefix, p, self.histname)
+            for p in self.suffixes]
 
     def events(self, filename, listname):
         try:
@@ -60,18 +68,18 @@ class Input(object):
             return -137
 
     def read(self):
-        raw_mix = br.io.read_multiple(
+        hists = br.io.read_multiple(
             self.filename,
             self.listname,
             self.inputs
         )
 
         # TODO: Why do we need this?
-        for h in raw_mix:
+        for h in hists:
             if not h:
                 continue
             br.set_nevents(h, self._events)
-        return raw_mix
+        return hists
 
     def transform(self, data=None, outputs=None):
         return self.read()
