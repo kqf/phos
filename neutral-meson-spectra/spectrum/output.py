@@ -11,7 +11,7 @@ from flatten_dict import flatten
 import spectrum.sutils as su
 
 from spectrum.comparator import Comparator
-from spectrum.input import Input, IdentityInput
+from spectrum.input import Input
 from spectrum.ptplotter import MulipleOutput
 from spectrum.vis import MultipleVisualizer, Visualizer
 
@@ -47,7 +47,7 @@ def save_composite(obj, stop, skip_merged):
 
 def save_iterables(obj):
     container = obj.__class__.__bases__[0] == tuple or type(obj) == tuple
-    content = type(obj[0]) not in {Input, IdentityInput}
+    content = type(obj[0]) not in {Input}
     if container and content:
         for hist in obj:
             hist.Write()

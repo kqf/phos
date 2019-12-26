@@ -13,9 +13,6 @@ class SingleHistInput(object):
         self.norm = norm
 
     def transform(self, inputs, loggs=None):
-        if type(inputs) == IdentityInput:
-            inputs = inputs.single
-
         hist = br.io.read(
             inputs.filename,
             self.listname or inputs.listname,
@@ -26,17 +23,6 @@ class SingleHistInput(object):
         hist.priority = self.priority
         hist.label = inputs.label
         return hist
-
-
-class IdentityInput(object):
-    def __init__(self, inputs, pt_range, single=None):
-        self.inputs = inputs
-        self.pt_range = pt_range
-        # Input Object for single hist selection
-        self.single = single
-
-    def transform(self, data=None, outputs=None):
-        return self.inputs
 
 
 class Input(object):
@@ -86,13 +72,6 @@ class Input(object):
                 continue
             br.set_nevents(h, self._events)
         return raw_mix
-
-    def read_multiple(self, n_groups=2, single=None):
-        data = self.read()
-        return [
-            IdentityInput(h, self.pt_range, single)
-            for h in zip(*(iter(data),) * n_groups)
-        ]
 
     def transform(self, data=None, outputs=None):
         return self.read()
