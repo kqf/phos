@@ -22,7 +22,7 @@ def ep_data(prod="data", version="latest"):
         version=version,
         listname="EpRatio",
         histname="EpElectronsPSM0",
-        use_mixing=False)
+        suffixes=None)
 
 
 def ge_scale_data(particle):

@@ -29,13 +29,13 @@ class Input(object):
         self,
         filename,
         listname,
-        histname='MassPt',
+        histname="MassPt",
         pt_range=(0., 20.),
-        suffixes=('', 'Mix'),
+        suffixes=("", "Mix"),
         histnames=None,
         n_events=None,
         inputs=None,
-        prefix='h',
+        prefix="h",
         use_mixing=False
     ):
         super(Input, self).__init__()
@@ -43,7 +43,7 @@ class Input(object):
         self.listname = listname
         self.histname = histname
         self.histnames = histnames
-        self.suffixes = suffixes
+        self.suffixes = suffixes or ("", )
         self.prefix = prefix
         self._n_events = n_events
         self._events = self.events(filename, listname)
@@ -63,35 +63,28 @@ class Input(object):
             return br.io.read(
                 filename,
                 listname,
-                'EventCounter').GetBinContent(2)
+                "EventCounter").GetBinContent(2)
         except IOError:
             return -137
 
-    def read(self):
+    def transform(self, data=None, outputs=None):
         hists = br.io.read_multiple(
             self.filename,
             self.listname,
             self.inputs
         )
-
-        # TODO: Why do we need this?
         for h in hists:
-            if not h:
-                continue
             br.set_nevents(h, self._events)
         return hists
-
-    def transform(self, data=None, outputs=None):
-        return self.read()
 
 
 class NoMixingInput(Input):
     def __init__(self, filename, listname, pt_range=(0, 20.),
-                 histname='MassPt', *args, **kwargs):
+                 histname="MassPt", *args, **kwargs):
         super(NoMixingInput, self).__init__(filename, listname,
                                             histname, *args, **kwargs)
 
-    def read(self, histo=''):
+    def transform(self, histo=""):
         histo = histo if histo else self.histname
         raw = br.io.read(self.filename, self.listname, self.prefix + histo)
         br.set_nevents(raw, self._events)

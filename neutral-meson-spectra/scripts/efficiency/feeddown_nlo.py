@@ -29,8 +29,8 @@ def data():
         DataVault().input(
             "pythia8",
             listname="MCStudy",
-            use_mixing=False,
             histname="MassPt_#pi^{0}_primary_#omega",
+            suffixes=None,
         ),
         DataVault().input("pythia8", listname="FeeddownSelection"),
     )

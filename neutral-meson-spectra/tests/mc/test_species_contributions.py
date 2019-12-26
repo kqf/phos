@@ -37,7 +37,7 @@ def test_species_contributions(origin, particles):
         inputs = DataVault().input("pythia8",
                                    listname="MCStudy",
                                    histname=histname,
-                                   use_mixing=False)
+                                   suffixes=None)
         estimator.transform((inputs,) * 2, {})
 
 
