@@ -36,7 +36,6 @@ class Input(object):
         n_events=None,
         inputs=None,
         prefix="h",
-        use_mixing=False
     ):
         super(Input, self).__init__()
         self.filename = filename
@@ -49,7 +48,6 @@ class Input(object):
         self._events = self.events(filename, listname)
         self.inputs = inputs
         self.pt_range = pt_range
-        self.use_mixing = use_mixing
         if self.inputs:
             return
         self.inputs = [

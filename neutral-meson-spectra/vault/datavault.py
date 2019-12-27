@@ -34,7 +34,7 @@ class DataVault(object):
         return self.dataset(production, version)["file"]
 
     def input(self, production, version="latest",
-              listname=None, pt_range=None, use_mixing=True,
+              listname=None, pt_range=None,
               *args, **kwargs):
 
         filename = self.file(production, version)
