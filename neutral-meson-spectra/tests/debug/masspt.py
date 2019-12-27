@@ -26,7 +26,7 @@ def debug_input(prod="low"):
         "debug efficiency",
         prod,
         n_events=1,
-        inputs=('hSparseMgg_proj_0_1_3_yx', ''),
+        histnames=('hSparseMgg_proj_0_1_3_yx', ''),
         label=prod)
 
 

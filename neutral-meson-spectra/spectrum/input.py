@@ -34,7 +34,6 @@ class Input(object):
         suffixes=("", "Mix"),
         histnames=None,
         n_events=None,
-        inputs=None,
         prefix="h",
     ):
         super(Input, self).__init__()
@@ -46,11 +45,10 @@ class Input(object):
         self.prefix = prefix
         self._n_events = n_events
         self._events = self.events(filename, listname)
-        self.inputs = inputs
         self.pt_range = pt_range
-        if self.inputs:
+        if self.histograms:
             return
-        self.inputs = [
+        self.histnames = [
             "{}{}{}".format(self.prefix, p, self.histname)
             for p in self.suffixes]
 
@@ -69,7 +67,7 @@ class Input(object):
         hists = br.io.read_multiple(
             self.filename,
             self.listname,
-            self.inputs
+            self.histnames
         )
         for h in hists:
             br.set_nevents(h, self._events)
