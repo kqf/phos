@@ -40,7 +40,7 @@ def nomixing():
 
 def test_reads_standard_input(standard):
     oreal, omixed, ocntr, ofilename, selection, histnames = standard
-    real, mixed = Input(ofilename, selection).read()
+    real, mixed = Input(ofilename, selection).transform()
     assert real is not None
     assert mixed is not None
     assert real.GetEntries() == oreal.GetEntries()
@@ -51,7 +51,7 @@ def test_reads_standard_input(standard):
 
 def test_reads_nomixing_input(nomixing):
     oreal, omixed, ocntr, ofilename, selection, histnames = nomixing
-    real, mixed = NoMixingInput(ofilename, selection).read()
+    real, mixed = NoMixingInput(ofilename, selection).transform()
     assert real is not None
     assert mixed is None
     assert real.GetEntries() == oreal.GetEntries()
