@@ -2,7 +2,7 @@ import os
 import pytest
 import tqdm
 
-from spectrum.input import Input, NoMixingInput
+from spectrum.input import Input
 from tests.software.test_broot import write_histograms
 from vault.datavault import DataVault
 
@@ -51,9 +51,8 @@ def test_reads_standard_input(standard):
 
 def test_reads_nomixing_input(nomixing):
     oreal, omixed, ocntr, ofilename, selection, histnames = nomixing
-    real, mixed = NoMixingInput(ofilename, selection).transform()
+    real = next(iter(Input(ofilename, selection, suffixes=None).transform()))
     assert real is not None
-    assert mixed is None
     assert real.GetEntries() == oreal.GetEntries()
     assert real.nevents == ocntr.GetBinContent(2)
 

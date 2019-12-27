@@ -76,16 +76,3 @@ class Input(object):
         for h in hists:
             br.set_nevents(h, self._events)
         return hists
-
-
-class NoMixingInput(Input):
-    def __init__(self, filename, listname, pt_range=(0, 20.),
-                 histname="MassPt", *args, **kwargs):
-        super(NoMixingInput, self).__init__(filename, listname,
-                                            histname, *args, **kwargs)
-
-    def transform(self, histo=""):
-        histo = histo if histo else self.histname
-        raw = br.io.read(self.filename, self.listname, self.prefix + histo)
-        br.set_nevents(raw, self._events)
-        return raw, None

@@ -1,7 +1,7 @@
 import hashlib
 import json
 
-from spectrum.input import Input, NoMixingInput
+from spectrum.input import Input
 
 
 class DataVault(object):
@@ -44,6 +44,5 @@ class DataVault(object):
         if not pt_range:
             pt_range = self.dataset(production, version)['pt_range']
 
-        transformer = Input if use_mixing else NoMixingInput
-        return transformer(filename, str(listname), pt_range=pt_range,
-                           *args, **kwargs)
+        return Input(
+            filename, str(listname), pt_range=pt_range, *args, **kwargs)
