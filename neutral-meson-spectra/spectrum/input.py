@@ -19,6 +19,8 @@ class SingleHistInput(AnalysisReaderBase):
         self.norm = norm
 
     def transform(self, data, loggs=None):
+        # TODO: Fix this, histname should be always taken from the data
+
         hist = br.io.read(
             data.filename,
             self.listname or data.listname,
@@ -52,3 +54,4 @@ class Input(object):
         self.histnames = histnames or [
             "{}{}{}".format(self.prefix, p, self.histname)
             for p in self.suffixes]
+        self.histname = None

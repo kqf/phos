@@ -21,10 +21,13 @@ def oname(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_spmc_efficiency(particle, spmc, oname):
+@pytest.mark.parametrize("logname", [
+    "",
+    # "efficiency-{}",
+])
+def test_spmc_efficiency(particle, spmc, oname, logname):
     options = CompositeEfficiencyOptions(particle)
-    # with open_loggs("efficiency{}".format(particle)) as loggs:
-    with open_loggs("efficiency{}".format(particle)) as loggs:
+    with open_loggs(logname.format(particle)) as loggs:
         efficiency = Efficiency(options).transform(spmc, loggs)
         # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
         # Comparator().compare(efficiency)
