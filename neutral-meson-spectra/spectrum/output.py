@@ -30,7 +30,7 @@ def save_composite(obj, stop, skip_merged):
         return False
 
     exclude = {MulipleOutput, Visualizer,
-               MultipleVisualizer, pd.DataFrame}
+               MultipleVisualizer, pd.DataFrame, Input}
 
     if type(obj) == list or type == tuple:
         if obj and type(obj[0]) == tuple:
@@ -47,10 +47,15 @@ def save_composite(obj, stop, skip_merged):
 
 def save_iterables(obj):
     container = obj.__class__.__bases__[0] == tuple or type(obj) == tuple
-    content = type(obj[0]) not in {Input}
+    # Fix the problems with the with the inputs later
+    # content = type(obj[0]) not in {Input}
+    content = True
     if container and content:
         for hist in obj:
-            hist.Write()
+            try:
+                hist.Write()
+            except AttributeError:
+                return True
         return True
     return False
 
@@ -58,6 +63,9 @@ def save_iterables(obj):
 def save_item(ofile, name, obj, skip_merged, stop=False):
     ofile.mkdir(name)
     ofile.cd(name)
+
+    if type(obj) == Input:
+        return
 
     if type(obj) == pd.DataFrame:
         return

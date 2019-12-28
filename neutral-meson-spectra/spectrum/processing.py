@@ -19,7 +19,7 @@ class DataSlicer(object):
         self.opt = options
 
     def transform(self, inputs, loggs):
-        input_data = inputs.transform()
+        input_data, pt_range = inputs  # .transform()
 
         intervals = list(zip(self.opt.ptedges[:-1], self.opt.ptedges[1:]))
         assert len(intervals) == len(self.opt.rebins), \
@@ -33,13 +33,13 @@ class DataSlicer(object):
         def common_inputs(x, y):
             return RawMass(
                 input_data, x, y,
-                self.opt.particle, pt_interval=inputs.pt_range)
+                self.opt.particle, pt_interval=pt_range)
 
         output = list(map(common_inputs, intervals, self.opt.rebins))
         return pd.DataFrame(
             {
                 "intervals": intervals,
-                "pt_interval": [inputs.pt_range] * len(intervals),
+                "pt_interval": [pt_range] * len(intervals),
                 "pt_edges": [self.opt.ptedges] * len(intervals),
                 "raw": output,
             }
