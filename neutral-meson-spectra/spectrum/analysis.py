@@ -4,7 +4,20 @@ from spectrum.processing import InvariantMassExtractor
 from spectrum.options import Options, OptionsSPMC, CompositeOptions
 from spectrum.pipeline import Pipeline, ParallelPipeline, ReducePipeline
 from spectrum.pipeline import TransformerBase
+from spectrum.input import AnalysisReaderBase
 import spectrum.broot as br
+
+
+class DataReader(AnalysisReaderBase, TransformerBase):
+    def transform(self, data, loggs):
+        hists = br.io.read_multiple(
+            data.filename,
+            data.listname,
+            data.histnames
+        )
+        for h in hists:
+            br.set_nevents(h, self._events(data.filename, data.listname))
+        return hists, data.pt_range
 
 
 class SimpleAnalysis(TransformerBase):
@@ -13,6 +26,7 @@ class SimpleAnalysis(TransformerBase):
         super(SimpleAnalysis, self).__init__(plot)
         self.options = options
         self.pipeline = Pipeline([
+            ("read", DataReader()),
             ("slice", DataSlicer(options.pt)),
             ("parametrize", InvariantMassExtractor(options.invmass)),
             ("fitmasses", MassFitter(options.invmass.use_mixed)),

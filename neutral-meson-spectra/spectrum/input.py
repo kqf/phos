@@ -1,9 +1,7 @@
 import spectrum.broot as br
 
-# TODO: Fix this logic, remove Input class
 
-
-class AnalysisInputBase(object):
+class AnalysisReaderBase(object):
     def _events(self, filename, listname):
         return br.io.read(
             filename,
@@ -11,7 +9,8 @@ class AnalysisInputBase(object):
             "EventCounter").GetBinContent(2)
 
 
-class SingleHistInput(AnalysisInputBase):
+# TODO: Fix this logic, convert to single input reader class
+class SingleHistInput(AnalysisReaderBase):
 
     def __init__(self, histname, listname=None, norm=False):
         super(SingleHistInput, self).__init__()
@@ -19,19 +18,19 @@ class SingleHistInput(AnalysisInputBase):
         self.listname = listname
         self.norm = norm
 
-    def transform(self, inputs, loggs=None):
+    def transform(self, data, loggs=None):
         hist = br.io.read(
-            inputs.filename,
-            self.listname or inputs.listname,
+            data.filename,
+            self.listname or data.listname,
             self.histname
         )
         br.set_nevents(hist, self._events(
-            inputs.filename,
-            inputs.listname), self.norm)
+            data.filename,
+            data.listname), self.norm)
         return hist
 
 
-class Input(AnalysisInputBase):
+class Input(object):
     def __init__(
         self,
         filename,
@@ -49,17 +48,7 @@ class Input(AnalysisInputBase):
         self.histname = histname
         self.suffixes = suffixes or ("", )
         self.prefix = prefix
-        self.pt_range = pt_range
+        self.pt_range = tuple(pt_range)
         self.histnames = histnames or [
             "{}{}{}".format(self.prefix, p, self.histname)
             for p in self.suffixes]
-
-    def transform(self, data=None, outputs=None):
-        hists = br.io.read_multiple(
-            self.filename,
-            self.listname,
-            self.histnames
-        )
-        for h in hists:
-            br.set_nevents(h, self._events(self.filename, self.listname))
-        return hists
