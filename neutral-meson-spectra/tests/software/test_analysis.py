@@ -24,9 +24,13 @@ def data_spmc():
     "#pi^{0}",
     # "#eta",
 ])
-def test_simple(particle, data):
+@pytest.mark.parametrize("logname", [
+    "",
+    # "test the single analysis",
+])
+def test_simple(particle, data, logname):
     analysis = Analysis(Options(particle=particle))
-    with open_loggs("test the single analysis") as loggs:
+    with open_loggs(logname) as loggs:
         output = analysis.transform(data, loggs=loggs)
     assert len(output) > 0
 
@@ -36,8 +40,12 @@ def test_simple(particle, data):
     "#pi^{0}",
     # "#eta",
 ])
-def test_composite(particle, data_spmc):
+@pytest.mark.parametrize("logname", [
+    "",
+    # "test the composite analysis",
+])
+def test_composite(particle, data_spmc, logname):
     analysis = Analysis(CompositeOptions(particle=particle))
-    with open_loggs("test the composite analysis") as loggs:
+    with open_loggs(logname) as loggs:
         output = analysis.transform(data_spmc, loggs=loggs)
     assert len(output) > 0

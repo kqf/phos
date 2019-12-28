@@ -3,7 +3,15 @@ import spectrum.broot as br
 # TODO: Fix this logic, remove Input class
 
 
-class SingleHistInput(object):
+class AnalysisInputBase(object):
+    def _events(self, filename, listname):
+        return br.io.read(
+            filename,
+            listname,
+            "EventCounter").GetBinContent(2)
+
+
+class SingleHistInput(AnalysisInputBase):
 
     def __init__(self, histname, listname=None, priority=999, norm=False):
         super(SingleHistInput, self).__init__()
@@ -18,13 +26,14 @@ class SingleHistInput(object):
             self.listname or inputs.listname,
             self.histname
         )
-        br.set_nevents(hist, inputs.events(
-            inputs.filename, inputs.listname), self.norm)
+        br.set_nevents(hist, self._events(
+            inputs.filename,
+            inputs.listname), self.norm)
         hist.priority = self.priority
         return hist
 
 
-class Input(object):
+class Input(AnalysisInputBase):
     def __init__(
         self,
         filename,
@@ -40,28 +49,12 @@ class Input(object):
         self.filename = filename
         self.listname = listname
         self.histname = histname
-        self.histnames = histnames
         self.suffixes = suffixes or ("", )
         self.prefix = prefix
-        self._n_events = n_events
-        self._events = self.events(filename, listname)
         self.pt_range = pt_range
-        if self.histograms:
-            return
-        self.histnames = [
+        self.histnames = histnames or [
             "{}{}{}".format(self.prefix, p, self.histname)
             for p in self.suffixes]
-
-    def events(self, filename, listname):
-        try:
-            if self._n_events:
-                return self._n_events
-            return br.io.read(
-                filename,
-                listname,
-                "EventCounter").GetBinContent(2)
-        except IOError:
-            return -137
 
     def transform(self, data=None, outputs=None):
         hists = br.io.read_multiple(
@@ -70,5 +63,5 @@ class Input(object):
             self.histnames
         )
         for h in hists:
-            br.set_nevents(h, self._events)
+            br.set_nevents(h, self._events(self.filename, self.listname))
         return hists
