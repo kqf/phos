@@ -11,29 +11,6 @@ def test_compares_multiple(data, stop):
     diff.compare(data)
 
 
-def test_priority(data, stop):
-    diff = cmpr.Comparator(stop=stop)
-
-    for h in data:
-        h.SetTitle("Checking priority of the histograms")
-
-    hist = data[0].Clone()
-    hist.label = "distorted"
-
-    # Distort the data intentionally
-    hist.SetBinContent(2, hist.GetBinContent(2) * 100)
-    hist.SetBinContent(55, -1 * hist.GetBinContent(55))
-
-    # Without priority
-    diff.compare(data[0], hist)
-
-    hist.priority = 0
-    data[0].priority = 999
-
-    # With priority
-    diff.compare(data[0], hist)
-
-
 # NB: This is needed to check if behaviour changes
 #     after double usage of a comparator. Also this test assures that
 #     comparison "A" and "B" and "B" and "A" work as needed.

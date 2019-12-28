@@ -13,11 +13,10 @@ class AnalysisInputBase(object):
 
 class SingleHistInput(AnalysisInputBase):
 
-    def __init__(self, histname, listname=None, priority=999, norm=False):
+    def __init__(self, histname, listname=None, norm=False):
         super(SingleHistInput, self).__init__()
         self.histname = histname
         self.listname = listname
-        self.priority = priority
         self.norm = norm
 
     def transform(self, inputs, loggs=None):
@@ -29,7 +28,6 @@ class SingleHistInput(AnalysisInputBase):
         br.set_nevents(hist, self._events(
             inputs.filename,
             inputs.listname), self.norm)
-        hist.priority = self.priority
         return hist
 
 

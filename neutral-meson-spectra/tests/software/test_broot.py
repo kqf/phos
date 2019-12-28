@@ -110,7 +110,7 @@ def test_clone(stop):
         ROOT.TH1F,
         "refhistClone",
         "Testing updated Clone method", 100, -10, 10,
-        label="test prop", logy=True, logx=False, priority=3)
+        label="test prop", logy=True, logx=False)
 
     hist.FillRandom("gaus")
 
@@ -129,7 +129,7 @@ def test_copy(stop):
         ROOT.TH1F,
         "refhistCopy",
         "Testing updated Clone method", 100, -10, 10,
-        label="test prop", logy=True, logx=False, priority=3)
+        label="test prop", logy=True, logx=False)
 
     hist.FillRandom("gaus")
 
@@ -151,7 +151,7 @@ def test_bh2_draws_projection_range(stop):
         "Testing updated ProjectX method for BH2F",  # Title
         100, 20, 30, 100, -10, 10,                 # Xbins, Ybins
         label="test prop",                        # Label
-        logy=1, logx=0, priority=3            # Misc properties
+        logy=1, logx=0            # Misc properties
     )
 
     # Fill random values
@@ -188,7 +188,7 @@ def test_projection_saves_area(stop):
         nbinsx, startx, stopx,  # Xbins
         nbinsy, starty, stopy,  # Ybins
         label="test prop",  # Label
-        logy=1, logx=0, priority=3  # Misc properties
+        logy=1, logx=0  # Misc properties
     )
 
     # Fill random values
@@ -250,13 +250,13 @@ def test_ratio(stop):
         ROOT.TH1F,
         "refhistRatio1",
         "Testing the ratio method", 100, -10, 10,
-        label="test ratio", logy=True, logx=False, priority=3)
+        label="test ratio", logy=True, logx=False)
 
     hist2 = br.BH(
         ROOT.TH1F,
         "refhistRatio2",
         "Testing the ratio method", 100, -10, 10,
-        label="test ratio b", logy=True, logx=False, priority=3)
+        label="test ratio b", logy=True, logx=False)
 
     hist1.FillRandom("gaus")
     hist1.FillRandom("expo")
@@ -273,7 +273,7 @@ def test_sets_events(stop):
     hist1 = br.BH(
             ROOT.TH1F,
         "refhistSetEvents", "Testing set events", 100, -10, 10,
-        label="test ratio", logy=True, logx=False, priority=3)
+        label="test ratio", logy=True, logx=False)
 
     hist1.FillRandom("gaus")
     events, integral = 1000, hist1.Integral()
@@ -298,7 +298,7 @@ def test_rebins_proba(stop, edges):
     hist1 = br.BH(
             ROOT.TH1F,
         "refhistRebinProba1", "Testing rebins proba", 200, 0, 20,
-        label="test ratio", logy=True, logx=False, priority=3)
+        label="test ratio", logy=True, logx=False)
     hist1.Sumw2()
     hist1.FillRandom("pol0")
     rebinned = br.rebin_proba(hist1, edges=edges)
@@ -315,12 +315,12 @@ def test_rebins(stop):
     hist1 = br.BH(
             ROOT.TH1F,
         "refhistRebin1", "Testing rebins", 200, -10, 10,
-        label="test ratio", logy=True, logx=False, priority=3)
+        label="test ratio", logy=True, logx=False)
 
     hist2 = br.BH(
             ROOT.TH1F,
         "refhistRebin2", "Testing rebins", 100, -10, 10,
-        label="test ratio", logy=True, logx=False, priority=3)
+        label="test ratio", logy=True, logx=False)
 
     hist1.FillRandom("gaus")
     hist2.FillRandom("gaus")
@@ -341,7 +341,7 @@ def test_sum(stop):
     hists = [br.BH(
         ROOT.TH1F,
         "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
-        label="%dth histogram" % i, logy=True, logx=False, priority=3)
+        label="%dth histogram" % i, logy=True, logx=False)
         for i in range(10)]
 
     for hist in hists:
@@ -360,7 +360,7 @@ def test_average(stop):
     hists = [br.BH(
         ROOT.TH1F,
         "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
-        label="%dth histogram" % i, logy=True, logx=False, priority=3)
+        label="%dth histogram" % i, logy=True, logx=False)
         for i in range(10)]
 
     for hist in hists:
@@ -381,7 +381,7 @@ def test_scales_histogram(stop):
     hist = br.BH(
         ROOT.TH1F,
         "refhistScale", "Testing scalew", nbins, start, stop,
-        label="scale", logy=True, logx=False, priority=3)
+        label="scale", logy=True, logx=False)
 
     hist.FillRandom('gaus')
 
@@ -413,7 +413,7 @@ def test_scales_for_binwith(stop):
     hist = br.BH(
         ROOT.TH1F,
         "refhistScale", "Testing scalew", nbins, start, stop,
-        label="scale", logy=True, logx=False, priority=3)
+        label="scale", logy=True, logx=False)
 
     hist.FillRandom('gaus')
 
@@ -440,7 +440,7 @@ def test_calculates_area_and_error(stop):
     hist = br.BH(
         ROOT.TH1F,
         "refhistAreaError", "Testing area and error", nbins, start, stop,
-        label="scale", logy=True, logx=False, priority=3)
+        label="scale", logy=True, logx=False)
     hist.Sumw2()
 
     for i in range(nbins):
@@ -475,7 +475,7 @@ def test_saves_histogram(stop):
     hist = br.BH(
         ROOT.TH1F,
         histname, "Testing scalew", 200, -10, 10,
-        label="scale", logy=True, logx=False, priority=3)
+        label="scale", logy=True, logx=False)
     hist.FillRandom('gaus')
     integral = hist.Integral()
     entries = hist.GetEntries()

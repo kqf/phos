@@ -114,7 +114,7 @@ class MultipleVisualizer(object):
             for h, l in zip(hists, self.labels):
                 h.label = l
 
-        first_hist = sorted(hists, key=lambda x: x.priority)[0]
+        first_hist = next(iter(hists))
         try:
             first_hist.SetStats(False)
         except AttributeError:

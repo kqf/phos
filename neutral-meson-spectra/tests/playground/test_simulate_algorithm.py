@@ -33,9 +33,6 @@ def test_recreates_the_same_shape(data):
     )
 
     generated = generator.generate(1000)
-    generated.priority = 1
-    generated.logy = 1
-
     with open_loggs("reconstructing generated spectra") as loggs:
         reconstructed = Analysis(Options()).transform(
             Input(gen_file_name, generator.selname), loggs
