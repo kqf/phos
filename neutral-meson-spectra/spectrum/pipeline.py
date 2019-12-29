@@ -10,6 +10,7 @@ from tqdm import tqdm
 import spectrum.sutils as st
 import spectrum.broot as br
 from spectrum.comparator import Comparator
+from spectrum.input import AnalysisReaderBase
 
 
 class TransformerBase(object):
@@ -20,6 +21,19 @@ class TransformerBase(object):
 
     def transform(self, inputs, loggs):
         return self.pipeline.transform(inputs, loggs)
+
+
+class SingleHistReader(AnalysisReaderBase):
+
+    def __init__(self, norm=False):
+        super(SingleHistReader, self).__init__()
+        self.norm = norm
+
+    def transform(self, data, loggs=None):
+        hist = br.io.read(data.filename, data.listname, data.histname)
+        br.set_nevents(hist, self._events(data.filename, data.listname),
+                       self.norm)
+        return hist
 
 
 class ComparePipeline(TransformerBase):

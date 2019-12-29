@@ -98,9 +98,9 @@
             "hsum": "fab4be9671f4ee0f7eefc9d3a2428b1c9fb8bdc2540f6ee807bf595634697b0c",
             "pt_range": [0, 20]
         },
-        "tof plots": {
-            "default_selection": "Phys",
-            "description": "Raw data with TOF correction. Based on LHC16 pass1 reconstruction",
+        "timing plots": {
+            "default_selection": "QualTender",
+            "description": "Use this production only for Energy vs Timing plots, since newest versions of Physics Selections have past-future protection",
             "file": "input-data/data/LHC16/deprecated/iteration_1/LHC16.root",
             "hsum": "a340256c4138894412ea87df53e5813fd92c3f90bd0e06883a18bef49ebf4c90",
             "pt_range": [0, 20]
