@@ -11,8 +11,9 @@ void run(TString period, const char * runmode = "local", const char * pluginmode
     manager->SetGridHandler(CreatePlugin(pluginmode, period, dpart, useJDL, isMC));
     manager->SetInputEventHandler(new AliAODInputHandler());
 
-    Bool_t enablePileupCuts = kTRUE;
-    AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
+    // TODO: Reenable the cuts asap
+    // Bool_t enablePileupCuts = kTRUE;
+    // AddTaskPhysicsSelection (isMC, enablePileupCuts);  //false for data, true for MC
 
     TString msg = message("Real data", period);
     AddPHOSTender(isMC, msg);

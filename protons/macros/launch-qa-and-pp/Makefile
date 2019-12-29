@@ -7,7 +7,7 @@ DPART = first
 MC = kFALSE
 # Use the same nonlinearity version for the both productions
 #
-OUTDIR = results/data/LHC16/debug_tender_2
+OUTDIR = results/data/LHC16/no_physics_selection_test1
 ALICE_SITE =
 
 
