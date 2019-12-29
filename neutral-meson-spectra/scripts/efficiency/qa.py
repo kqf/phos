@@ -31,6 +31,8 @@ def test_eta_phi(particle, spmc, oname):
             for d in spmc
         ])
         summed.GetYaxis().SetTitleOffset(1.0)
+        summed.GetYaxis().SetTitleFont(62)
+        summed.GetXaxis().SetTitleFont(62)
         summed.Draw("colz")
 
 
