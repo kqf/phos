@@ -4,7 +4,7 @@ import pytest
 import spectrum.broot as br
 from spectrum.constants import mass
 from spectrum.output import open_loggs
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from vault.datavault import DataVault
 from vault.formulas import FVault
 
@@ -83,16 +83,17 @@ def oname(particle):
     return "results/discussion/{{}}{}.pdf".format(br.spell(particle))
 
 
+# TODO: Fix me later
 def read_pythia6(particle):
     histnames = {
         "#pi^{0}": "hxsPi0PtInv",
         "#eta": "hxsEtaPtInv"
     }
-    data = DataVault().input("theory", "pythia6")
+    data = DataVault().input("theory", "pythia6", histname=histnames[particle])
     with open_loggs() as loggs:
-        mc = SingleHistInput(histnames[particle]).transform(data, loggs)
-        mc.Scale(1e-6)
-        mc.SetTitle("PYTHIA 6")
+        mc = SingleHistReader(nevents=1).transform(data, loggs)
+    mc.Scale(1e-6)
+    mc.SetTitle("PYTHIA 6")
     return mc
 
 
