@@ -734,8 +734,7 @@ def print_fit_results(fitf):
 
 
 def shaded_region(title, lower, upper,
-                  fill_color=16, fill_style=1001,
-                  option="f"):
+                  fill_color=16, fill_style=1001):
     x_lower = np.linspace(lower.GetXmin(), lower.GetXmax(), lower.GetNpx())
     y_lower = np.array(list(map(lower.Eval, x_lower)))
     x_upper = np.linspace(upper.GetXmin(), upper.GetXmax(), upper.GetNpx())
@@ -743,30 +742,29 @@ def shaded_region(title, lower, upper,
     y_upper = np.array(list(map(upper.Eval, x_upper)))
     x = np.concatenate([x_lower, x_upper])
     y = np.concatenate([y_lower, y_upper])
-    graph = ROOT.TGraph(len(x), x, y)
+    graph = ROOT.TGraphErrors(len(x), x, y)
     graph.SetTitle(title)
     graph.SetFillStyle(fill_style)
     graph.SetFillColor(fill_color)
     graph.SetFillColorAlpha(fill_color, 0.36)
-    graph.GetDrawOption = lambda: option
+    # Always plot it with the with the "F" option!
     return graph
 
 
 def shaded_region_hist(title, lower, upper,
-                       fill_color=16, fill_style=1001,
-                       option="f"):
+                       fill_color=16, fill_style=1001):
     y_upper, _, x_upper = bins(upper)
     y_lower, _, x_lower = bins(lower)
     x_upper = x_upper[::-1]
     y_upper = y_upper[::-1]
     x = np.concatenate([x_lower, x_upper])
     y = np.concatenate([y_lower, y_upper])
-    graph = ROOT.TGraph(len(x), x, y)
+    graph = ROOT.TGraphErrors(len(x), x, y)
     graph.SetTitle(title)
     graph.SetFillStyle(fill_style)
     graph.SetFillColor(fill_color)
     graph.SetFillColorAlpha(fill_color, 0.36)
-    graph.GetDrawOption = lambda: option
+    # Always plot it with the with the "F" option!
     return graph
 
 
