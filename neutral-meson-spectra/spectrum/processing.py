@@ -154,7 +154,6 @@ class PtFitter(object):
             masses["pt_interval"].values[0],
             masses2edges(masses["invmasses"]),
             {self.opt.quantity: title},
-            ""
         )
         return self._fit(target_quantity[0])
 
@@ -221,7 +220,6 @@ class DataExtractor(object):
             masses["pt_interval"].values[0],
             masses2edges(masses["invmasses"]),
             self.opt.output,
-            ""
         )
 
         # Decorate the histograms

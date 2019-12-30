@@ -93,11 +93,8 @@ class SpectrumExtractor(object):
         return map(extractor.eval, masses)
 
 
-def output_histogram(ptrange, name, label, bins, data):
-    if label:
-        name = "{}_{}".format(name, filter(str.isalnum, label))
-
-    hist = ROOT.TH1F(name, label, len(bins) - 1, array('d', bins))
+def output_histogram(ptrange, name, title, bins, data):
+    hist = ROOT.TH1F(name, title, len(bins) - 1, array('d', bins))
 
     if not hist.GetSumw2N():
         hist.Sumw2()
@@ -117,7 +114,7 @@ def output_histogram(ptrange, name, label, bins, data):
 
 
 # TODO: Check the parameters
-def analysis_output(typename, data, order, ptrange, ptedges, titles, label):
+def analysis_output(typename, data, order, ptrange, ptedges, titles):
     AnalysisOutType = collections.namedtuple(typename, order)
 
     iter_collection = zip(
@@ -129,11 +126,11 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles, label):
     # Don't use format, as it confuses root/latex syntax
     output = {
         quant: output_histogram(
-            ptrange,
-            quant,
-            titles[str(quant)],
-            ptedges,
-            datapoints
+            ptrange=ptrange,
+            name=quant,
+            title=titles[str(quant)],
+            bins=ptedges,
+            data=datapoints
         ) for quant, datapoints in iter_collection
     }
 
