@@ -3,7 +3,8 @@ import pytest
 import ROOT
 
 from spectrum.comparator import Comparator
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
+from vault.datavault import DataVault
 
 
 @pytest.fixture
@@ -19,15 +20,21 @@ def fitf(particle):
 
 
 @pytest.fixture
-def target_hist():
-    return "hPt_#pi^{0}_primary_standard"
+def spmc(particle):
+    production = "single {}".format(particle)
+    hname = "hPt_{}_primary_standard".format(particle)
+    return (
+        DataVault().input(production, "low", "PhysEff", histname=hname),
+        DataVault().input(production, "high", "PhysEff", histname=hname),
+    )
 
 
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
 ])
-def test_generated_distribution(particle, target_hist, fitf, spmc):
+def test_generated_distribution(particle, fitf, spmc):
     for prod in spmc:
-        generated = SingleHistInput(target_hist).transform(prod)
+        generated = SingleHistReader().transform(prod)
+        generated.logy = True
         generated.Scale(1. / generated.Integral())
         Comparator().compare(generated, fitf.GetHistogram())
