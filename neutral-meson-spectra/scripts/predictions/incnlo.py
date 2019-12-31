@@ -5,7 +5,7 @@ from spectrum.corrected_yield import CorrectedYield
 from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline, Pipeline
 from spectrum.pipeline import FunctionTransformer
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from spectrum.pipeline import TransformerBase
 from spectrum.tools.feeddown import data_feeddown
 import spectrum.broot as br
@@ -24,7 +24,7 @@ def data():
             DataVault().input("single #pi^{0}", "high", "PhysEff"),
         )
     )
-    incnlo = DataVault().input("theory", "incnlo")
+    incnlo = DataVault().input("theory", "incnlo", histname="#sigma_{total}")
     return (cyield, incnlo)
 
 
@@ -43,7 +43,7 @@ def normalize(hist, loggs):
 
 def theory_prediction():
     pipeline = Pipeline([
-        ("raw", SingleHistInput("#sigma_{total}")),
+        ("raw", SingleHistReader(nevents=1)),
         ("errors", ErrorsTransformer()),
         ("integral", FunctionTransformer(func=normalize)),
     ])
