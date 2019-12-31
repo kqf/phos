@@ -9,7 +9,7 @@ import spectrum.broot as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from vault.datavault import DataVault
 
 
@@ -113,7 +113,7 @@ def xt(edges=None):
 
 def theory_prediction():
     pipeline = Pipeline([
-        ("raw", SingleHistInput("#sigma_{total}")),
+        ("raw", SingleHistReader(nevents=1)),
         ("errors", ErrorsTransformer())
     ])
     return pipeline
@@ -134,7 +134,9 @@ def test_downloads_from_hepdata(data):
     steps = [(l, hepdata()) for l in labels]
     steps.append(("incnlo", theory_prediction()))
     links = list(links)
-    links.append(DataVault().input("theory", "7 TeV"))
+    links.append(
+        DataVault().input("theory", "7 TeV", histname="#sigma_{total}")
+    )
     with open_loggs() as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
 
