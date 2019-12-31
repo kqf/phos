@@ -4,7 +4,7 @@ import ROOT
 import spectrum.broot as br
 from spectrum.pipeline import RebinTransformer
 from spectrum.tools.kaon2pion import KaonToPionDoubleRatio
-from spectrum.tools.kaon2pion import DoubleK2POptions, K2POptions
+from spectrum.tools.kaon2pion import DoubleK2POptions
 from spectrum.output import open_loggs
 from vault.datavault import DataVault
 from spectrum.plotter import plot
@@ -83,18 +83,6 @@ def reduce_func(inputs, loggs):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 def test_ratio(data):
-    options = DoubleK2POptions(
-        data=K2POptions(
-            kaons="hstat_kaon_pp13_sum",
-            pions="hstat_pion_pp13_sum"
-        ),
-        mc=K2POptions(
-            kaons=["hPt_K^{+}_", "hPt_K^{-}_"],
-            pions=["hPt_#pi^{+}_", "hPt_#pi^{-}_"]
-        ),
-        reduce_func=reduce_func
-    )
-
-    estimator = KaonToPionDoubleRatio(options, plot=True)
+    estimator = KaonToPionDoubleRatio(DoubleK2POptions(reduce_func))
     with open_loggs() as loggs:
         estimator.transform(data, loggs)

@@ -1,4 +1,3 @@
-from collections import namedtuple
 import spectrum.broot as br
 from spectrum.pipeline import SingleHistReader
 from spectrum.pipeline import TransformerBase
@@ -19,9 +18,9 @@ class HistSum(TransformerBase):
         )
 
 
-K2POptions = namedtuple("K2POptions", ["pions", "kaons"])
-DoubleK2POptions = namedtuple("DoubleK2POptions", ["data", "mc",
-                                                   "reduce_func"])
+class DoubleK2POptions(object):
+    def __init__(self, reduce_func):
+        self.reduce_func = reduce_func
 
 
 class KaonToPionRatioMC(TransformerBase):
