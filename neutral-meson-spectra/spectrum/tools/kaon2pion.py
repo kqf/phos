@@ -1,17 +1,19 @@
 from collections import namedtuple
 import spectrum.broot as br
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline, ParallelPipeline
 from spectrum.pipeline import ComparePipeline
 
 
 class HistSum(TransformerBase):
-    def __init__(self, names):
+    def __init__(self):
         super(HistSum, self).__init__()
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                (name, SingleHistInput(name)) for name in names
+                ("kaons", SingleHistReader(nevents=1)),
+                ("pions", SingleHistReader(nevents=1)),
+
             ]),
             lambda x, loggs: br.hsum(x)
         )
@@ -23,22 +25,22 @@ DoubleK2POptions = namedtuple("DoubleK2POptions", ["data", "mc",
 
 
 class KaonToPionRatioMC(TransformerBase):
-    def __init__(self, options, plot=False):
+    def __init__(self, plot=False):
         super(KaonToPionRatioMC, self).__init__()
         self.pipeline = ComparePipeline([
-            ("kaons", HistSum(options.kaons)),
-            ("pions", HistSum(options.pions))
+            ("kaons", HistSum()),
+            ("pions", HistSum())
         ], plot)
 
 
 # NB: Real Data distributions are stored in
 #     separate files produced by ALCIE
 class KaonToPionRatioData(TransformerBase):
-    def __init__(self, options, plot=False):
+    def __init__(self, plot=False):
         super(KaonToPionRatioData, self).__init__()
         self.pipeline = ComparePipeline([
-            ("kaons", SingleHistInput(options.kaons)),
-            ("pions", SingleHistInput(options.pions)),
+            ("kaons", SingleHistReader(nevents=1)),
+            ("pions", SingleHistReader(nevents=1)),
         ], plot)
 
 
@@ -47,8 +49,8 @@ class KaonToPionDoubleRatio(TransformerBase):
         super(KaonToPionDoubleRatio, self).__init__()
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("data", KaonToPionRatioData(options.data)),
-                ("mc", KaonToPionRatioMC(options.mc)),
+                ("data", KaonToPionRatioData()),
+                ("mc", KaonToPionRatioMC()),
             ]),
             options.reduce_func
         )

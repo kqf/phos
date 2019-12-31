@@ -13,18 +13,18 @@ from spectrum.plotter import plot
 @pytest.fixture
 def data():
     real_data = (
-        DataVault().input("kaon2pion"),
-        DataVault().input("kaon2pion"),
+        DataVault().input("kaon2pion", histname="hstat_kaon_pp13_sum"),
+        DataVault().input("kaon2pion", histname="hstat_pion_pp13_sum"),
     )
 
     mc_data = (
         (
-            DataVault().input("pythia8", "kaon2pion"),
-            DataVault().input("pythia8", "kaon2pion"),
+            DataVault().input("pythia8", "kaon2pion", histname="hPt_K^{+}_"),
+            DataVault().input("pythia8", "kaon2pion", histname="hPt_K^{-}_"),
         ),
         (
-            DataVault().input("pythia8", "kaon2pion"),
-            DataVault().input("pythia8", "kaon2pion"),
+            DataVault().input("pythia8", "kaon2pion", histname="hPt_#pi^{+}_"),
+            DataVault().input("pythia8", "kaon2pion", histname="hPt_#pi^{-}_"),
         ),
     )
     return real_data, mc_data
