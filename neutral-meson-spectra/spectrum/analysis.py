@@ -16,7 +16,8 @@ class DataReader(AnalysisReaderBase, TransformerBase):
             data.histnames
         )
         for h in hists:
-            br.set_nevents(h, self._events(data.filename, data.listname))
+            br.set_nevents(
+                h, data.n_events or self._events(data.filename, data.listname))
         return hists, data.pt_range
 
 

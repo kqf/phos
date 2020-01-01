@@ -54,3 +54,4 @@ class Input(object):
         self.histnames = histnames or [
             "{}{}{}".format(self.prefix, p, self.histname)
             for p in self.suffixes]
+        self.n_events = n_events
