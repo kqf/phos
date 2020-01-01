@@ -5,7 +5,7 @@ import ROOT
 from vault.datavault import DataVault
 from vault.formulas import FVault
 from spectrum.comparator import Comparator
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 import spectrum.broot as br
 
 
@@ -13,15 +13,15 @@ import spectrum.broot as br
 def low_pt():
     input_low = DataVault().input(
         "debug efficiency", "low", n_events=1e6,
-        histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        histname="hGenPi0Pt_clone")
     return input_low
 
 
-@pytest.onlylocal
-@pytest.interactive
+@pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_weight_like_debug(low_pt, rrange=(0, 20)):
     # Define the transformations
-    nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(low_pt)
+    nominal_low = SingleHistReader(nevents=1).transform(low_pt)
 
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
     parameters = [0.6216964179825611 / 0.0989488446585,
@@ -49,24 +49,26 @@ def test_weight_like_debug(low_pt, rrange=(0, 20)):
 
 @pytest.fixture
 def data():
-    return DataVault().input("single #pi^{0}", "high", listname="PhysEff")
+    histname = "hPt_#pi^{0}_primary_"
+    return DataVault().input(
+        "single #pi^{0}", "high", listname="PhysEff", histname=histname)
 
 
 @pytest.fixture
 def high_pt():
     return DataVault().input(
         "debug efficiency", "high", n_events=1e6,
-        histnames=('hSparseMgg_proj_0_1_3_yx', ''))
+        histname="hGenPi0Pt_clone")
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_different_inputs(data, high_pt):
-    production = SingleHistInput("hPt_#pi^{0}_primary_").transform(data)
+    production = SingleHistReader(nevents=1).transform(data)
     production.label = "data"
     production.logy = True
     br.scalew(production)
 
-    nominal = SingleHistInput("hGenPi0Pt_clone").transform(high_pt)
+    nominal = SingleHistReader(nevents=1).transform(high_pt)
     nominal.label = "nominal"
     Comparator().compare(*br.rebin_as(production, nominal))
