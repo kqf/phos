@@ -7,15 +7,19 @@ from vault.datavault import DataVault
 
 
 @pytest.fixture
-def data():
+def data(etaname, pionname):
     return (
-        DataVault().input("pythia8", histname="hPtLong_#eta"),
-        DataVault().input("pythia8", histname="hPtLong_#pi^{0}"),
+        DataVault().input("pythia8", histname=etaname),
+        DataVault().input("pythia8", histname=pionname),
     )
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.parametrize("etaname, pionname", [
+    ("hPtLong_#eta", "hPtLong_#pi^{0}"),
+    ("hPt_#eta_primary_standard", "hPt_#pi^{0}_primary_standard"),
+])
 def test_calculate_eta_pion_ratio(data):
     estimator = ComparePipeline([
         ("#eta", SingleHistReader()),

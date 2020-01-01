@@ -13,9 +13,6 @@ from spectrum.options import CorrectedYieldOptions
 from spectrum.comparator import Comparator
 from spectrum.tools.feeddown import data_feeddown
 
-from spectrum.input import SingleHistInput
-from spectrum.pipeline import TransformerBase
-
 
 @pytest.fixture
 def dataset():
@@ -23,23 +20,6 @@ def dataset():
         DataVault().input("pythia8", listname="PhysEff"),
         DataVault().input("pythia8", listname="PhysEff")
     )
-
-
-class EtaPionRatio(TransformerBase):
-    def __init__(self, options=None, plot=False):
-        super(EtaPionRatio, self).__init__()
-        self.pipeline = ComparePipeline([
-            ("#eta", SingleHistInput("hPt_#eta_primary_standard")),
-            ("#pi^{0}", SingleHistInput("hPt_#pi^{0}_primary_standard")),
-        ], plot)
-
-
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_calculate_eta_pion_ratio(dataset):
-    with open_loggs("eta pion ratio generated") as loggs:
-        ratio = EtaPionRatio().transform(dataset, loggs)
-        Comparator().compare(ratio)
 
 
 @pytest.fixture
