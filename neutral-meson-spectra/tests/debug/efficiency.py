@@ -10,8 +10,7 @@ from spectrum.comparator import Comparator
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, ReducePipeline
 from spectrum.pipeline import ParallelPipeline, FunctionTransformer
-from spectrum.input import SingleHistInput
-
+from spectrum.pipeline import SingleHistReader
 import spectrum.broot as br
 from array import array
 
@@ -23,7 +22,7 @@ class StanadrtizeOutput(TransformerBase):
 
     def transform(self, histogram, loggs):
         ohist = ROOT.TH1F(
-            histogram.GetName() + histogram.label,
+            histogram.GetName(),
             histogram.GetTitle(),
             len(self.ptedges) - 1,
             array("d", self.ptedges)
@@ -33,7 +32,6 @@ class StanadrtizeOutput(TransformerBase):
             ohist.SetBinContent(ibin, content)
             ohist.SetBinError(ibin, error)
         ohist.Sumw2()
-        ohist.label = histogram.label
         return ohist
 
 
@@ -44,8 +42,8 @@ class ReadCompositeDistribution(TransformerBase):
             ParallelPipeline([
                 ("efficiency-{0}".format(ranges),
                  Pipeline([
-                            ("raw_efficiency", SingleHistInput(name)),
-                            ("standard-output", StanadrtizeOutput())
+                     ("raw_efficiency", SingleHistReader(nevents=1)),
+                     ("standard-output", StanadrtizeOutput())
                  ]))
                 for ranges in zip(options.mergeranges)
             ]),
@@ -66,13 +64,13 @@ class CompareEfficiencies(TransformerBase):
 
 
 class CompareGeneratedSpectra(TransformerBase):
-    def __init__(self, options, names, plot=False):
+    def __init__(self, options, plot=False):
         super(CompareGeneratedSpectra, self).__init__(plot)
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("custom_spectrum", SingleHistInput(names[0])),
+                ("custom_spectrum", SingleHistReader(nevents=1)),
                 ("debug_spectrum", Pipeline([
-                    ("single", SingleHistInput(names[1])),
+                    ("single", SingleHistReader(nevents=1)),
                     ("scale", FunctionTransformer(br.scalew))
                 ])
                 )
@@ -86,8 +84,19 @@ def debug_input(prod="low"):
         "debug efficiency",
         prod,
         n_events=1,
-        histnames=("hSparseMgg_proj_0_1_3_yx", ""),
-        label=prod)
+        histnames=("hSparseMgg_proj_0_1_3_yx",),
+        histname="hGenPi0Pt_clone"
+    )
+
+
+def debug_efficiency_input(prod="low"):
+    return DataVault().input(
+        "debug efficiency",
+        prod,
+        n_events=1,
+        histnames=("hSparseMgg_proj_0_1_3_yx",),
+        histname="h1efficiency",
+    )
 
 
 @pytest.fixture
@@ -136,9 +145,10 @@ def test_efficiency_evaluation(particle, debug_inputs, options):
 
 @pytest.fixture
 def data():
+    histname = "hPt_#pi^{0}_primary_standard"
     return (
-        DataVault().input("single #pi^{0}", "low"),
-        DataVault().input("single #pi^{0}", "high"),
+        DataVault().input("single #pi^{0}", "low", histname=histname),
+        DataVault().input("single #pi^{0}", "high", histname=histname),
     )
 
 
@@ -146,27 +156,25 @@ def data():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_generated_spectrum(particle, debug_inputs, data):
-    names = "hPt_#pi^{0}_primary_standard", "hGenPi0Pt_clone"
     CompareGeneratedSpectra(
-        CompositeEfficiencyOptions(particle), names=names).transform(
+        CompositeEfficiencyOptions(particle)).transform(
         [data[0], debug_inputs[0]],
         "compare the debug efficiency"
     )
 
 
 @pytest.fixture
-def data_debug_low():
+def data_debug_low_single():
     return DataVault().input(
-        "debug efficiency", "low", n_events=1e6,
-        histnames=("hSparseMgg_proj_0_1_3_yx", ""))
+        "debug efficiency", "low", histname="hGenPi0Pt_clone")
 
 
 @pytest.mark.skip("")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_weight_like_debug(data_debug_low):
+def test_weight_like_debug(data_debug_low_single):
     # Define the transformations
-    nominal_low = SingleHistInput("hGenPi0Pt_clone").transform(data_debug_low)
+    nominal_low = SingleHistReader(nevents=1).transform(data_debug_low_single)
 
     rrange = 0, 10
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
@@ -179,4 +187,5 @@ def test_weight_like_debug(data_debug_low):
     br.scalew(nominal_low, 1. / nominal_low.Integral())
     nominal_low.Fit(tsallis)
     print(br.pars(tsallis))
+
     Comparator().compare(nominal_low)
