@@ -656,6 +656,8 @@ def widths(x):
 
 
 def same_binning(hist1, hist2):
+    if type(hist1) != type(hist2):
+        return False
     edges1, edges2 = edges(hist1), edges(hist2)
     if len(edges1) != len(edges2):
         return False
