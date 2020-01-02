@@ -6,7 +6,7 @@ from spectrum.analysis import Analysis
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
@@ -21,7 +21,7 @@ from vault.datavault import DataVault
 def data():
     return (
         DataVault().input("data", histname="MassPtSM0"),
-        DataVault().input("pythia8"),
+        DataVault().input("pythia8", histname="hPt_#pi^{0}_primary_"),
     )
 
 
@@ -46,9 +46,9 @@ def test_species_contributions(data, spectrumf):
             ("analysis", Analysis(Options())),
             ("spectrum", HistogramSelector("spectrum")),
         ])),
-        ("generated", SingleHistInput("hPt_#pi^{0}_primary_")),
+        ("generated", SingleHistReader()),
     ])
-    with open_loggs("relative particle contribution") as loggs:
+    with open_loggs() as loggs:
         spectrum = estimator.transform(data, loggs)
         spectrum.Fit(spectrumf)
         Comparator().compare(spectrum)
