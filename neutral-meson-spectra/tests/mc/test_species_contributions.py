@@ -6,18 +6,19 @@ from spectrum.analysis import Analysis
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import Pipeline
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
 
 @pytest.fixture
-def particles():
+def particles(origin):
     with open("config/test_species.json") as f:
-        return json.load(f)
+        return json.load(f)[origin]
 
 
+@pytest.mark.skip
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("origin", [
     "primary",
@@ -25,28 +26,40 @@ def particles():
     "feeddown"
 ])
 def test_species_contributions(origin, particles):
-    for particle in particles[origin]:
+    for particle in particles:
         estimator = ComparePipeline([
             (particle, Pipeline([
                 ("analysis", Analysis(Options())),
                 ("spectrum", HistogramSelector("spectrum")),
             ])),
-            ("#pi^0", SingleHistInput("hPt_#pi^{0}", "MCStudy")),
+            ("#pi^0", SingleHistReader(nevents=1)),
         ])
-        histname = "MassPt_#pi^{0}_%s_%s" % (origin, particle)
-        inputs = DataVault().input("pythia8",
-                                   listname="MCStudy",
-                                   histname=histname,
-                                   suffixes=None)
-        estimator.transform((inputs,) * 2, {})
+        data = (
+            DataVault().input(
+                "pythia8",
+                listname="MCStudy",
+                histname="MassPt_#pi^{{0}}_{}_{}".format(origin, particle),
+            ),
+            DataVault().input(
+                "pythia8",
+                listname="MCStudy",
+                histname="hPt_#pi^{0}",
+            )
+        )
+        with open_loggs() as loggs:
+            estimator.transform(data, loggs)
 
 
 @pytest.fixture
-def data():
-    return (
-        DataVault().input("pythia8", listname="MCStudy"),
-        DataVault().input("pythia8", listname="MCStudy"),
-    )
+def data(origin, particles):
+    selections = []
+    for particle in particles:
+        hname = "hPt_#pi^{{0}}_{}_{}".format(origin, particle)
+        selections.append((
+            DataVault().input("pythia8", listname="MCStudy", histname=hname),
+            DataVault().input("pythia8", listname="MCStudy", histname="hPt_#pi^{0}"),  # noqa
+        ))
+    return selections
 
 
 @pytest.mark.onlylocal
@@ -56,12 +69,11 @@ def data():
     "feeddown"
 ])
 def test_relative_contributions(origin, data, particles):
-    for particle in particles[origin]:
-        histname = 'hPt_#pi^{0}_%s_%s' % (origin, particle)
+    for selection, particle in zip(data, particles):
         estimator = ComparePipeline([
-            (particle, SingleHistInput(histname, "MCStudy")),
-            ("#pi^0", SingleHistInput("hPt_#pi^{0}", "MCStudy")),
-        ])
+            (particle, SingleHistReader()),
+            ("#pi^0", SingleHistReader()),
+        ], plot=False)
         msg = "{} {} distribution".format(origin, particle)
         with open_loggs(msg) as loggs:
-            estimator.transform(data, loggs)
+            estimator.transform(selection, loggs)
