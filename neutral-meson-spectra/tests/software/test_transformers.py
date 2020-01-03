@@ -9,7 +9,7 @@ from spectrum.pipeline import RebinTransformer
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 import spectrum.broot as br
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 
 from vault.datavault import DataVault
 
@@ -62,11 +62,10 @@ def test_rebins_flat_data(edges, edges_eta, func, stop):
 
 @pytest.mark.skip()
 @pytest.fixture
-def pion_data():
-    return (
-        DataVault().input("single #pi^{0}", "low", "PhysEff"),
-        DataVault().input("single #pi^{0}", "high", "PhysEff"),
-    )
+def pion_data(region):
+    histname = "hPt_#pi^{0}_primary_standard"
+    return DataVault().input("single #pi^{0}", region,
+                             "PhysEff", histname=histname)
 
 
 # @pytest.mark.skip()
@@ -74,15 +73,17 @@ def pion_data():
 @pytest.mark.parametrize("etype", [
     "#pi^{0}",
 ])
+@pytest.mark.parametrize("region", [
+    "low",
+    "high",
+])
 def test_rebins_data(etype, edges, pion_data, stop):
-    for data in pion_data:
-        histname = "hPt_#pi^{0}_primary_standard"
-        with open_loggs() as loggs:
-            hist = SingleHistInput(histname).transform(data, loggs)
-            hist.label = "original"
-            hist.logy = True
+    with open_loggs() as loggs:
+        hist = SingleHistReader().transform(pion_data, loggs)
+        hist.label = "original"
+        hist.logy = True
 
-            rebinned = RebinTransformer(False, edges).transform(hist, loggs)
-            rebinned.label = "transformed"
-            rebinned.logy = True
-            Comparator(stop=stop).compare(hist, rebinned)
+        rebinned = RebinTransformer(False, edges).transform(hist, loggs)
+        rebinned.label = "transformed"
+        rebinned.logy = True
+        Comparator(stop=stop).compare(hist, rebinned)
