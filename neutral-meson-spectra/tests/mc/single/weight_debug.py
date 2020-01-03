@@ -1,14 +1,14 @@
 import ROOT
 import pytest
 
+import spectrum.broot as br
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.pipeline import HistogramFitter
-from spectrum.input import SingleHistInput
-from spectrum.options import Options
+from spectrum.pipeline import SingleHistReader
+from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
 # from spectrum.comparator import Comparator
-# import spectrum.broot as br
 
 from vault.datavault import DataVault
 from vault.formulas import FVault
@@ -16,14 +16,19 @@ from vault.formulas import FVault
 
 @pytest.fixture
 def data():
-    return DataVault().input("single #pi^{0}", "low", listname="PhysEff")
+    return DataVault().input(
+        "single #pi^{0}", "low",
+        listname="PhysEff", histname="hPt_#pi^{0}_primary_standard")
 
 
 @pytest.fixture
 def compare_data():
+    histname = "hPt_#pi^{0}_primary_standard"
     return (
-        DataVault().input("single #pi^{0}", "low", listname="PhysEff"),
-        DataVault().input("single #eta", "low", listname="PhysEff"),
+        DataVault().input(
+            "single #pi^{0}", "low", listname="PhysEff", histname=histname),
+        DataVault().input(
+            "single #eta", "low", listname="PhysEff", histname=histname),
     )
 
 
@@ -54,12 +59,11 @@ def spectrumf():
 @pytest.mark.onlylocal
 def test_corrected_yield_for_pi0(data, spectrumf):
     estimator = Pipeline([
-        ("data", SingleHistInput(
-            "hPt_#pi^{0}_primary_standard", norm=True)),
+        ("data", SingleHistReader()),
+        ("normalize", FunctionTransformer(br.scalew, no_loggs=True)),
         ("attributes", Attributes()),
         ("fit", HistogramFitter(fitfunc=spectrumf)),
     ])
-
     with open_loggs("corrected yield #pi{0}") as loggs:
         estimator.transform(data, loggs)
 
@@ -68,10 +72,8 @@ def test_corrected_yield_for_pi0(data, spectrumf):
 @pytest.mark.interactive
 def test_corrected_different_spectra(compare_data):
     estimator = ComparePipeline([
-        ("mcdata", SingleHistInput(
-            "hPt_#pi^{0}_primary_standard", norm=False)),
-        ("original", SingleHistInput(
-            "hPt_#pi^{0}_primary_standard", norm=False)),
+        ("mcdata", SingleHistReader()),
+        ("original", SingleHistReader()),
     ], True)
-    with open_loggs("corrected yield #pi^{0}") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(compare_data, loggs)
