@@ -3,7 +3,7 @@ import json
 import pytest
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from spectrum.output import open_loggs
 import array
 
@@ -24,8 +24,12 @@ class MockInput(TransformerBase):
 @pytest.fixture
 def data():
     return (
-        DataVault().input("single #pi^{0}", "low", "PhysEff"),
-        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input(
+            "single #pi^{0}", "low", "PhysEff",
+            histname="hPt_#pi^{0}_primary_"),
+        DataVault().input(
+            "single #pi^{0}", "low", "PhysEff",
+            histname="hPt_#pi^{0}_primary_"),
     )
 
 
@@ -37,8 +41,8 @@ def empty_data(nhist=3):
 @pytest.mark.onlylocal
 def test_compares_single_inputs(data):
     estimator = ComparePipeline([
-        ('normal1', SingleHistInput("hPt_#pi^{0}_primary_")),
-        ('normal2', SingleHistInput("hPt_#pi^{0}_primary_standard")),
+        ('normal1', SingleHistReader()),
+        ('normal2', SingleHistReader()),
     ])
 
     with open_loggs() as loggs:
