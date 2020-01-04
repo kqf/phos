@@ -1,6 +1,6 @@
 from spectrum.pipeline import TransformerBase
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
-from spectrum.input import SingleHistInput
+from spectrum.pipeline import SingleHistReader
 from spectrum.analysis import Analysis
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import OutputDecorator
@@ -9,24 +9,58 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import RebinTransformer
 import spectrum.broot as br
 from spectrum.processing import RangeEstimator
+from vault.datavault import DataVault
 
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
 #
 
 
+def simple_efficiency_data(
+        particle="#pi^{0}",
+        prod="pythia8",
+        listname="PhysEff",
+        histname="hPt_{0}_primary_standard",
+):
+    histname = histname.format(particle)
+    return (
+        DataVault().input(prod, listname=listname),
+        DataVault().input(prod, listname=listname, histname=histname),
+    )
+
+
+def efficiency_data(
+    particle="#pi^{0}",
+    prod=None,
+    listname="PhysEff",
+    histname="hPt_{0}_primary_standard",
+):
+    histname = histname.format(particle)
+    prod = prod or "single {}".format(particle)
+    return (
+        (
+            DataVault().input(prod, "low", listname),
+            DataVault().input(prod, "low", listname, histname=histname),
+        ),
+        (
+            DataVault().input(prod, "high", listname),
+            DataVault().input(prod, "high", listname, histname=histname),
+        )
+    )
+
+
 class SimpleEfficiency(TransformerBase):
 
     def __init__(self, options, plot=False):
         super(SimpleEfficiency, self).__init__(plot)
-        scaled_ryield = Pipeline([
+        reconstructed = Pipeline([
             ("analysis", Analysis(options.analysis)),
             ("nmesons", HistogramSelector("nmesons")),
             ("scale-for-acceptance", HistogramScaler(options.scale))
         ])
 
         generated = Pipeline([
-            ("raw", SingleHistInput(options.genname, options.genlist)),
+            ("raw", SingleHistReader()),
             ("rebinned", RebinTransformer(
                 normalized=False,
                 edges=options.analysis.pt.ptedges,
@@ -34,7 +68,7 @@ class SimpleEfficiency(TransformerBase):
         ])
 
         efficiency = ComparePipeline([
-            ("reconstructed", scaled_ryield),
+            ("reconstructed", reconstructed),
             ("generated", generated),
         ], ratio="B")
 
@@ -42,11 +76,6 @@ class SimpleEfficiency(TransformerBase):
             ('efficiency', efficiency),
             ('decorate', OutputDecorator(**options.decorate))
         ])
-
-    def transform(self, data, loggs):
-        # NB: Compare pipeline takes the intput two times
-        return super(SimpleEfficiency, self).transform(
-            (data, data), loggs=loggs)
 
 
 class PeakPositionWidthEstimator(TransformerBase):
@@ -58,6 +87,7 @@ class PeakPositionWidthEstimator(TransformerBase):
         self.restimator = RangeEstimator(option.calibration)
 
     def _estimate(self, data, loggs):
+        data = data[0][0], data[1][0]
         output = self.pipeline.transform(data, loggs)
         pt_range = data[0].pt_range[0], data[1].pt_range[1]
         output.mass.GetXaxis().SetRangeUser(*pt_range)

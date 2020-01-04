@@ -1,37 +1,18 @@
 import pytest
 
 from spectrum.efficiency import Efficiency
-from vault.datavault import DataVault
+from spectrum.efficiency import simple_efficiency_data, efficiency_data
 from spectrum.options import EfficiencyOptions
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
 
-def mc_data():
-    return DataVault().input("pythia8")
-
-
-def spmc_data():
-    return (
-        DataVault().input("single #pi^{0}", "low", "PhysEff"),
-        DataVault().input("single #pi^{0}", "high", "PhysEff"),
-    )
-
-
-@pytest.fixture
-def data(name):
-    return {
-        "simple": mc_data(),
-        "composite": spmc_data(),
-    }.get(name)
-
-
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("name, options", [
-    ("simple", EfficiencyOptions()),
-    # ("composite", CompositeEfficiencyOptions("#pi^{0}")),
+@pytest.mark.parametrize("name, options, data", [
+    ("simple", EfficiencyOptions(), simple_efficiency_data()),
+    ("composite", CompositeEfficiencyOptions("#pi^{0}"), efficiency_data()),
 ])
 def test_efficiency(name, options, data):
     estimator = Efficiency(options)
