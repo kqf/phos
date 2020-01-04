@@ -4,7 +4,7 @@ import json
 
 
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 from spectrum.output import open_loggs
 from spectrum.pipeline import ComparePipeline, Pipeline
 from spectrum.pipeline import FunctionTransformer

@@ -3,7 +3,7 @@ from __future__ import print_function
 import ROOT
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import DataMCEpRatioOptions
 from spectrum.pipeline import ReduceArgumentPipeline

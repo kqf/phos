@@ -2,7 +2,7 @@ import pytest  # noqa
 
 import spectrum.broot as br
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 from spectrum.output import open_loggs
 from spectrum.plotter import plot
 
@@ -19,14 +19,14 @@ def oname(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_fit_the_corrected_yield(particle, data_cyield, oname):
+def test_fit_the_corrected_yield(particle, cyield_data, oname):
     with open_loggs() as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
                 particle=particle
             )
         )
-        cyield = estimator.transform(data_cyield, loggs)
+        cyield = estimator.transform(cyield_data, loggs)
 
     plot(
         [cyield],

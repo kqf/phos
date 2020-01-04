@@ -5,7 +5,7 @@ import joblib
 import spectrum.broot as br
 from spectrum.options import Options, CompositeCorrectedYieldOptions
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
 from spectrum.tools.feeddown import data_feeddown

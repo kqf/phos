@@ -11,7 +11,7 @@ from spectrum.pipeline import RebinTransformer
 from spectrum.constants import cross_section
 
 
-from spectrum.corrected_yield import CorrectedYield, data_cyield
+from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.options import CompositeCorrectedYieldOptions
 
 from spectrum.uncertainties.total import TotalUncertainty, data_total_uncert
@@ -20,7 +20,7 @@ from spectrum.uncertainties.total import TotalUncertaintyOptions
 
 def data_spectrum(particle):
     return (
-        data_cyield(particle),
+        cyield_data(particle),
         data_total_uncert(particle)
     )
 

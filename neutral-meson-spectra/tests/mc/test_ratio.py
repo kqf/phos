@@ -8,7 +8,7 @@ from spectrum.output import open_loggs
 
 from vault.datavault import DataVault
 
-from spectrum.corrected_yield import YieldRatio
+from spectrum.cyield import YieldRatio
 from spectrum.options import CorrectedYieldOptions
 from spectrum.comparator import Comparator
 from spectrum.tools.feeddown import data_feeddown

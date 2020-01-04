@@ -2,7 +2,7 @@ import ROOT
 import pytest  # noqa
 
 from spectrum.options import CompositeCorrectedYieldOptions
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 from spectrum.output import open_loggs
 
 from vault.datavault import DataVault

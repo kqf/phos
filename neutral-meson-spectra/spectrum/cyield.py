@@ -3,6 +3,7 @@ from math import pi
 from spectrum.analysis import Analysis
 from spectrum.options import CorrectedYieldOptions
 from spectrum.efficiency import Efficiency
+from spectrum.efficiency import simple_efficiency_data, efficiency_data
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector, OutputDecorator
 from spectrum.pipeline import ParallelPipeline, ReducePipeline
@@ -16,36 +17,26 @@ from spectrum.tools.feeddown import data_feeddown
 from vault.datavault import DataVault
 
 
-def pion_data():
+def simple_cyield_data(particle):
+    needs_dummy_feeddown = particle == "#eta"
     return (
         (
             DataVault().input("data", histname="MassPtSM0"),
-            data_feeddown(),
+            data_feeddown(dummy=needs_dummy_feeddown),
         ),
-        (
-            DataVault().input("single #pi^{0}", "low", "PhysEff"),
-            DataVault().input("single #pi^{0}", "high", "PhysEff"),
-        )
+        simple_efficiency_data(particle=particle)
     )
 
 
-def eta_data():
+def cyield_data(particle):
+    needs_dummy_feeddown = particle == "#eta"
     return (
         (
             DataVault().input("data", histname="MassPtSM0"),
-            data_feeddown(dummy=True)
+            data_feeddown(dummy=needs_dummy_feeddown),
         ),
-        (
-            DataVault().input("single #eta", "low"),
-            DataVault().input("single #eta", "high"),
-        )
+        efficiency_data(particle=particle)
     )
-
-
-def data_cyield(particle):
-    if particle == "#pi^{0}":
-        return pion_data()
-    return eta_data()
 
 
 class InvariantYield(TransformerBase):

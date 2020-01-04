@@ -4,7 +4,7 @@ from spectrum.output import open_loggs
 from spectrum.analysis import Analysis
 from spectrum.tools.feeddown import data_feeddown
 from spectrum.options import Options
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions

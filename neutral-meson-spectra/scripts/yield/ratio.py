@@ -1,7 +1,7 @@
 import pytest
 
-from spectrum.corrected_yield import YieldRatio
-from spectrum.corrected_yield import eta_data, pion_data
+from spectrum.cyield import YieldRatio
+from spectrum.cyield import cyield_data
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
@@ -9,7 +9,7 @@ from spectrum.comparator import Comparator
 
 @pytest.fixture
 def data():
-    return eta_data(), pion_data()
+    return cyield_data("#eta"), cyield_data("#pi^{0}")
 
 
 @pytest.fixture

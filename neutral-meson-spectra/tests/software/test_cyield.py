@@ -2,53 +2,33 @@ import pytest
 
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import CorrectedYieldOptions
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield, cyield_data, simple_cyield_data
 from spectrum.output import open_loggs
 
-from vault.datavault import DataVault
-from spectrum.tools.feeddown import data_feeddown
+
+@pytest.fixture
+def cdata():
+    return cyield_data(particle="#pi^{0}")
 
 
 @pytest.fixture
-def raw_yield_data():
-    return (
-        DataVault().input("data", histname="MassPtSM0"),
-        data_feeddown(),
-    )
-
-
-@pytest.fixture
-def pythia_data(raw_yield_data):
-    return (
-        raw_yield_data,
-        DataVault().input("pythia8"),
-    )
-
-
-@pytest.fixture
-def spmc_data(raw_yield_data):
-    return (
-        raw_yield_data,
-        (
-            DataVault().input("single #pi^{0}", "low", "PhysEff"),
-            DataVault().input("single #pi^{0}", "high", "PhysEff"),
-        )
-    )
+def simple_cdata():
+    return simple_cyield_data(particle="#pi^{0}")
 
 
 @pytest.mark.onlylocal
-def test_corrected_yield(pythia_data):
+def test_corrected_yield(simple_cdata):
     estimator = CorrectedYield(
         CorrectedYieldOptions(particle="#pi^{0}")
     )
     with open_loggs() as loggs:
-        estimator.transform(pythia_data, loggs)
+        estimator.transform(simple_cdata, loggs)
 
 
 @pytest.mark.onlylocal
-def test_composite_yield(spmc_data):
+def test_composite_yield(cdata):
     estimator = CorrectedYield(
         CompositeCorrectedYieldOptions(particle="#pi^{0}")
     )
     with open_loggs() as loggs:
-        estimator.transform(spmc_data, loggs)
+        estimator.transform(cdata, loggs)

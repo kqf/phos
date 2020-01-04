@@ -5,7 +5,7 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
 from spectrum.options import Options, CorrectedYieldOptions
 from spectrum.output import open_loggs
-from spectrum.corrected_yield import YieldRatio
+from spectrum.cyield import YieldRatio
 from spectrum.tools.feeddown import data_feeddown
 
 from vault.datavault import DataVault

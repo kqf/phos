@@ -1,6 +1,7 @@
 import pytest
 from vault.datavault import DataVault
-from spectrum.corrected_yield import data_cyield as cyield
+from spectrum.cyield import cyield_data as cyield
+from spectrum.efficiency import efficiency_data
 
 
 @pytest.fixture
@@ -14,14 +15,10 @@ def data():
 
 
 @pytest.fixture
-def data_cyield(particle):
+def cyield_data(particle):
     return cyield(particle)
 
 
 @pytest.fixture
 def spmc(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
+    return efficiency_data(particle)

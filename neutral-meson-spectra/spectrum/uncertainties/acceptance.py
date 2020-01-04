@@ -4,7 +4,7 @@ from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import RebinTransformer
-from spectrum.corrected_yield import CorrectedYield
+from spectrum.cyield import CorrectedYield
 import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import UnityFitTransformer

@@ -8,11 +8,18 @@ from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
 
+@pytest.fixture
+def data(name):
+    if name == "simple":
+        return simple_efficiency_data()
+    return efficiency_data()
+
+
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("name, options, data", [
-    ("simple", EfficiencyOptions(), simple_efficiency_data()),
-    ("composite", CompositeEfficiencyOptions("#pi^{0}"), efficiency_data()),
+@pytest.mark.parametrize("name, options", [
+    ("simple", EfficiencyOptions()),
+    ("composite", CompositeEfficiencyOptions("#pi^{0}")),
 ])
 def test_efficiency(name, options, data):
     estimator = Efficiency(options)
