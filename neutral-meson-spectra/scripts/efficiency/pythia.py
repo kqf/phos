@@ -1,15 +1,14 @@
 import pytest
 
-from spectrum.efficiency import Efficiency
+from spectrum.efficiency import Efficiency, simple_efficiency_data
 from spectrum.options import EfficiencyOptions
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator  # noqa
-from vault.datavault import DataVault
 
 
 @pytest.fixture
-def pythia():
-    return DataVault().input("pythia8", listname="PhysEff")
+def pythia(particle):
+    return simple_efficiency_data(particle=particle)
 
 
 @pytest.mark.thesis

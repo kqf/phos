@@ -1,4 +1,5 @@
 import pytest
+from spectrum.efficiency import efficiency_data
 from vault.datavault import DataVault
 
 
@@ -14,8 +15,4 @@ def data():
 
 @pytest.fixture
 def spmc(particle):
-    production = "single {}".format(particle)
-    return (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
+    return efficiency_data(particle)
