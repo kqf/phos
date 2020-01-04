@@ -1,49 +1,22 @@
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeCorrectedYieldOptions, Options
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import RebinTransformer
-from spectrum.cyield import CorrectedYield
-import spectrum.broot as br
+from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import UnityFitTransformer
-from spectrum.tools.feeddown import data_feeddown
-from vault.datavault import DataVault
 from spectrum.plotter import plot
-
-
-def cyield_data(particle, cut):
-    data_input = (
-        DataVault().input(
-            "data",
-            listname="Phys{}".format(cut),
-            histname="MassPtSM0"),
-        data_feeddown(particle != "#pi^{0}"),
-    )
-
-    mc_production = "single {}".format(particle)
-    mc_inputs = (
-        DataVault().input(
-            mc_production, "low",
-            listname="PhysEff{}".format(cut),
-            # histname="MassPtSM0"
-        ),
-        DataVault().input(
-            mc_production, "high",
-            listname="PhysEff{}".format(cut),
-            # histname="MassPtSM0"
-        ),
-    )
-    return data_input, mc_inputs
 
 
 def acceptance_data(particle="#pi^{0}"):
     return (
-        cyield_data("#pi^{0}", cut=1),
-        cyield_data("#pi^{0}", cut=2),
-        # cyield_data("#pi^{0}", cut=3),
-        # cyield_data("#pi^{0}", cut=4),
+        cyield_data("#pi^{0}", listname_eff="PhysEff1"),
+        cyield_data("#pi^{0}", listname_eff="PhysEff2"),
+        # cyield_data("#pi^{0}", listname_eff="PhysEff3"),
+        # cyield_data("#pi^{0}", listname_eff="PhysEff4"),
     )
 
 

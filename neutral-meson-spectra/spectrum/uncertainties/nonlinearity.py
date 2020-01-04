@@ -118,12 +118,21 @@ class NonlinearityUncertainty(TransformerBase):
 
 def nonlinearity_scan_data(nbins, prod, eff_prod="PhysEff"):
     spmc = []
+    genname = "hPt_#pi^{0}_primary_standard"
     for i in range(nbins):
         for j in range(nbins):
             histname = "MassPt_{}_{}".format(i, j)
             selection = (
-                DataVault().input(prod, "low", histname=histname),
-                DataVault().input(prod, "high", histname=histname)
+                (
+                    DataVault().input(prod, "low", histname=histname),
+                    DataVault().input(prod, "low", "PhysEff",
+                                      histname=genname),
+                ),
+                (
+                    DataVault().input(prod, "high", histname=histname),
+                    DataVault().input(prod, "high", "PhysEff",
+                                      histname=genname),
+                )
             )
             spmc.append(selection)
     return spmc

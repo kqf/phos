@@ -18,7 +18,7 @@ from spectrum.uncertainties.tof import tof_data
 
 from spectrum.uncertainties.gscale import GScale
 from spectrum.uncertainties.gscale import GScaleOptions
-from spectrum.uncertainties.gscale import ge_scale_data
+from spectrum.uncertainties.gscale import gscale_data
 
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertainty
 from spectrum.uncertainties.nonlinearity import NonlinearityUncertaintyOptions
@@ -49,7 +49,7 @@ def data_total_uncert(particle):
         yield_extraction_data(particle=particle),
         nonlinearity_scan_data(NBINS, "single #pi^{0} nonlinearity scan"),
         tof_data(),
-        ge_scale_data(particle),
+        gscale_data(particle),
         acceptance_data(),
         material_budget_data(),
     ]
