@@ -1,4 +1,4 @@
-## Analysis scripts
+# Analysis scripts
 
 This folder contains the scripts for the nuetral meson spectra extraction from the histograms created by the grid-selection [tasks](/protons/). The scripts are implemented in the form of unit tests with fixtures (usually data) to solve the problem of the automatic discovery.
 

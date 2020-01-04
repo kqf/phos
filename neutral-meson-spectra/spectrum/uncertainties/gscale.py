@@ -3,7 +3,7 @@ from __future__ import print_function
 import ROOT
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
-from spectrum.cyield import CorrectedYield
+from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.options import DataMCEpRatioOptions
 from spectrum.pipeline import ReduceArgumentPipeline
@@ -25,23 +25,13 @@ def ep_data(prod="data", version="latest"):
         suffixes=None)
 
 
-def ge_scale_data(particle):
-    mcproduction = "single {}".format(particle)
+def gscale_data(particle):
     return (
         (
             ep_data("data", "tof"),
             ep_data("pythia8"),
         ),
-        (
-            (
-                DataVault().input("data", histname="MassPtSM0"),
-                data_feeddown(particle == "#eta"),
-            ),
-            (
-                DataVault().input(mcproduction, "low", "PhysEff"),
-                DataVault().input(mcproduction, "high", "PhysEff"),
-            )
-        ),
+        cyield_data(particle)
     )
 
 
