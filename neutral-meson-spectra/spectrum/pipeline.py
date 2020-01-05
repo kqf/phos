@@ -22,7 +22,7 @@ class TransformerBase(object):
         return self.pipeline.transform(inputs, loggs)
 
 
-class SingleHistReader(object):
+class SingleHistReader(TransformerBase):
 
     def __init__(self, nevents=None, norm=False):
         super(SingleHistReader, self).__init__()
@@ -31,6 +31,25 @@ class SingleHistReader(object):
 
     def transform(self, data, loggs=None):
         return br.io.read(data.filename, data.listname, data.histname)
+
+
+class AnalysisDataReader(TransformerBase):
+    def _events(self, filename, listname):
+        return br.io.read(
+            filename,
+            listname,
+            "EventCounter").GetBinContent(2)
+
+    def transform(self, data, loggs):
+        hists = br.io.read_multiple(
+            data.filename,
+            data.listname,
+            data.histnames
+        )
+        for h in hists:
+            br.set_nevents(
+                h, data.n_events or self._events(data.filename, data.listname))
+        return hists, data.pt_range
 
 
 class ComparePipeline(TransformerBase):

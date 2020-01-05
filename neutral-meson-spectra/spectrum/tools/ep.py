@@ -1,6 +1,5 @@
 import ROOT
 import spectrum.broot as br
-from spectrum.analysis import DataReader
 from spectrum.processing import DataSlicer, InvariantMassExtractor
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ReducePipeline
@@ -9,6 +8,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.processing import RangeEstimator, DataExtractor
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
+from spectrum.pipeline import AnalysisDataReader
 from spectrum.comparator import Comparator
 from spectrum.plotter import plot
 
@@ -67,7 +67,7 @@ class EpRatioEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(EpRatioEstimator, self).__init__(plot)
         self.pipeline = Pipeline([
-            ("read", DataReader()),
+            ("read", AnalysisDataReader()),
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
             ("fit", EpFitter(options.analysis.invmass.signal)),
