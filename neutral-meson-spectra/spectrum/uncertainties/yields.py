@@ -5,33 +5,17 @@ import joblib
 import spectrum.broot as br
 from spectrum.options import Options, CompositeCorrectedYieldOptions
 from spectrum.options import CompositeEfficiencyOptions
-from spectrum.cyield import CorrectedYield
+from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
-from spectrum.tools.feeddown import data_feeddown
 from spectrum.plotter import plot
-from vault.datavault import DataVault
 
 
 memory = joblib.Memory('.joblib-cachedir', verbose=0)
 
 
 def yield_extraction_data(particle="#pi^{0}"):
-    production = "single {particle}".format(particle=particle)
-    spmc_inputs = (
-        DataVault().input(production, "low", "PhysEff"),
-        DataVault().input(production, "high", "PhysEff"),
-    )
-
-    needs_feeddown = particle != "#pi^{0}"
-    cyield = (
-        (
-            DataVault().input("data", histname="MassPtSM0"),
-            data_feeddown(dummy=needs_feeddown),
-        ),
-        spmc_inputs
-    )
-    return cyield
+    return cyield_data(particle)
 
 
 @memory.cache()

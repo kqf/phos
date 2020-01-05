@@ -28,14 +28,14 @@ def simple_cyield_data(particle):
     )
 
 
-def cyield_data(particle):
+def cyield_data(particle, listname_eff="PhysEff"):
     needs_dummy_feeddown = particle == "#eta"
     return (
         (
             DataVault().input("data", histname="MassPtSM0"),
             data_feeddown(dummy=needs_dummy_feeddown),
         ),
-        efficiency_data(particle=particle)
+        efficiency_data(particle=particle, listname=listname_eff)
     )
 
 
