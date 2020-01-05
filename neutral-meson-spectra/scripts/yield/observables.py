@@ -7,7 +7,7 @@ from spectrum.options import Options
 from spectrum.output import open_loggs
 
 from spectrum.tools.validate import validate
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture(scope="module")

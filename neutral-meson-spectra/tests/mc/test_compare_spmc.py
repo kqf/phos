@@ -4,7 +4,7 @@ from spectrum.efficiency import Efficiency
 from spectrum.options import EfficiencyOptions
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import open_loggs
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

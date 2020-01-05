@@ -11,8 +11,8 @@ from spectrum.analysis import Analysis
 
 from spectrum.options import Options
 
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 
 
 class IdentityTransform(object):

@@ -6,7 +6,7 @@ from spectrum.pipeline import ComparePipeline,
 from spectrum.pipeline import ParallelPipeline, HistogramSelector, Pipeline
 from spectrum.options import Options
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.plotter import plot
 
 

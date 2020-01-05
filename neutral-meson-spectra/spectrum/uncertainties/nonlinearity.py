@@ -10,7 +10,7 @@ from spectrum.output import open_loggs
 from spectrum.pipeline import ParallelPipeline, TransformerBase
 from spectrum.plotter import plot
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 class NonlinearityUncertaintyOptions(object):

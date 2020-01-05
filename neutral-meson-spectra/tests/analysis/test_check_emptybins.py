@@ -1,6 +1,6 @@
 import pytest
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.pipeline import ComparePipeline
 from spectrum.analysis import Analysis
 from spectrum.options import Options

@@ -4,7 +4,7 @@ from spectrum.spectra import spectrum, ratio
 from spectrum.plotter import plot
 from spectrum.constants import mass
 from spectrum.constants import invariant_cross_section_code
-from vault.formulas import FVault
+from spectrum.vault import FVault
 import spectrum.broot as br
 
 

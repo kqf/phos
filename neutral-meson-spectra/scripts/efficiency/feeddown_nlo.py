@@ -2,7 +2,7 @@ import pytest
 import ROOT
 
 from spectrum.tools.feeddown import FeeddownEstimator
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 from spectrum.options import FeeddownOptions
 from spectrum.output import open_loggs

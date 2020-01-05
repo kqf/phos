@@ -6,7 +6,7 @@ from spectrum.options import Options
 from spectrum.analysis import Analysis
 from spectrum.pipeline import ParallelPipeline
 from spectrum.plotter import plot
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

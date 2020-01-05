@@ -2,14 +2,14 @@ from __future__ import print_function
 import ROOT
 import pytest
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
 from spectrum.output import open_loggs  # noqa
 from spectrum.tools.mc import Nonlinearity
 from spectrum.tools.mc import Decalibration
 import spectrum.broot as br
 from spectrum.comparator import Comparator  # noqa
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture

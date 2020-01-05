@@ -14,7 +14,7 @@ from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 DATA_CONFIG = {
     "#pi^{0}": "config/predictions/hepdata-pion.json",

@@ -2,10 +2,10 @@ import os
 import pytest
 import tqdm
 
-from spectrum.input import Input
+from spectrum.vault import AnalysisInput
 from spectrum.pipeline import AnalysisDataReader
 from tests.software.test_broot import write_histograms
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture(scope="module")
@@ -41,7 +41,7 @@ def nomixing():
 
 def test_reads_standard_input(standard):
     oreal, omixed, ocntr, ofilename, selection, histnames = standard
-    data = Input(ofilename, selection)
+    data = AnalysisInput(ofilename, selection)
     (real, mixed), pt_range = AnalysisDataReader().transform(data, None)
     assert real is not None
     assert mixed is not None
@@ -53,7 +53,7 @@ def test_reads_standard_input(standard):
 
 def test_reads_nomixing_input(nomixing):
     oreal, omixed, ocntr, ofilename, selection, histnames = nomixing
-    data = Input(ofilename, selection, suffixes=None)
+    data = AnalysisInput(ofilename, selection, suffixes=None)
     real = next(iter(AnalysisDataReader().transform(data, None)))
     assert real[0] is not None
     assert real[0].GetEntries() == oreal.GetEntries()

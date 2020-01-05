@@ -1,7 +1,7 @@
 import pytest
 
 from spectrum.plotter import plot, hplot
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture

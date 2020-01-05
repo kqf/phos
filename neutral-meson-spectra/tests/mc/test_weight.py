@@ -10,7 +10,7 @@ from spectrum.pipeline import SingleHistReader
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 # NB: MC generated pT spectrum differs from the real one
 #     this should be taken into account as it might

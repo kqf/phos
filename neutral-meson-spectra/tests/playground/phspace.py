@@ -8,7 +8,7 @@ from array import array
 from itertools import combinations, product
 
 from spectrum.outputcreator import output_histogram
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 
 def tsallis(rrange=(0., 20.)):

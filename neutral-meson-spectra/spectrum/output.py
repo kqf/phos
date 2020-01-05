@@ -11,7 +11,7 @@ from flatten_dict import flatten
 import spectrum.sutils as su
 
 from spectrum.comparator import Comparator
-from spectrum.input import Input
+from spectrum.vault import AnalysisInput
 from spectrum.ptplotter import MulipleOutput
 from spectrum.vis import MultipleVisualizer, Visualizer
 
@@ -30,7 +30,7 @@ def save_composite(obj, stop, skip_merged):
         return False
 
     exclude = {MulipleOutput, Visualizer,
-               MultipleVisualizer, pd.DataFrame, Input}
+               MultipleVisualizer, pd.DataFrame, AnalysisInput}
 
     if type(obj) == list or type == tuple:
         if obj and type(obj[0]) == tuple:
@@ -48,7 +48,7 @@ def save_composite(obj, stop, skip_merged):
 def save_iterables(obj):
     container = obj.__class__.__bases__[0] == tuple or type(obj) == tuple
     # Fix the problems with the with the inputs later
-    # content = type(obj[0]) not in {Input}
+    # content = type(obj[0]) not in {AnalysisInput}
     content = True
     if container and content:
         for hist in obj:
@@ -64,7 +64,7 @@ def save_item(ofile, name, obj, skip_merged, stop=False):
     ofile.mkdir(name)
     ofile.cd(name)
 
-    if type(obj) == Input:
+    if type(obj) == AnalysisInput:
         return
 
     if type(obj) == pd.DataFrame:

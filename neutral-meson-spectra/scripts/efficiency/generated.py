@@ -4,7 +4,7 @@ import ROOT
 
 from spectrum.comparator import Comparator
 from spectrum.pipeline import SingleHistReader
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

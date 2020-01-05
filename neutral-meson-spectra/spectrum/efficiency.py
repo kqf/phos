@@ -9,7 +9,7 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import RebinTransformer
 import spectrum.broot as br
 from spectrum.processing import RangeEstimator
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 # NB: This test is to compare different efficiencies
 #     estimated from different productions

@@ -6,7 +6,7 @@ from spectrum.output import open_loggs
 from spectrum.efficiency import Efficiency
 from spectrum.options import CompositeEfficiencyOptions
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def artificial_data(self):

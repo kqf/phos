@@ -14,7 +14,7 @@ import spectrum.broot as br
 
 from spectrum.tools.feeddown import FeeddownEstimator
 from spectrum.tools.feeddown import data_feeddown
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def simple_cyield_data(particle):

@@ -8,7 +8,7 @@ from spectrum.comparator import Comparator  # noqa
 
 import spectrum.plotter as plt
 from spectrum.tools.validate import validate  # noqa
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

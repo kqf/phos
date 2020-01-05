@@ -11,7 +11,7 @@ from spectrum.efficiency import Efficiency
 
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.pipeline import ComparePipeline
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

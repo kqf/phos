@@ -2,7 +2,7 @@ import json
 
 import pytest
 import ROOT
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture()

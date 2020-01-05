@@ -2,13 +2,13 @@ import pytest
 
 from spectrum.analysis import Analysis
 from spectrum.options import Options
-from spectrum.input import Input
+from spectrum.vault import AnalysisInput
 from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 
 import spectrum.broot as br
 from tests.playground.phspace import InclusiveGenerator
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def test_recreates_the_same_shape(data):
     generated = generator.generate(1000)
     with open_loggs("reconstructing generated spectra") as loggs:
         reconstructed = Analysis(Options()).transform(
-            Input(gen_file_name, generator.selname), loggs
+            AnalysisInput(gen_file_name, generator.selname), loggs
         )
     Comparator.compare(
         map(br.scalew, [reconstructed, generated])

@@ -3,7 +3,7 @@ from spectrum.comparator import Comparator
 from spectrum.options import DataMCEpRatioOptions, EpRatioOptions
 from spectrum.output import open_loggs
 from spectrum.tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def data_old_selection(prod="data", version="ep_ratio"):

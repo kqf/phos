@@ -1,6 +1,6 @@
 import pytest
 from spectrum.efficiency import efficiency_data
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

@@ -6,7 +6,7 @@ from spectrum.options import CompositeEfficiencyOptions
 from spectrum.efficiency import PeakPositionWidthEstimator
 from spectrum.comparator import Comparator
 import spectrum.broot as br
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

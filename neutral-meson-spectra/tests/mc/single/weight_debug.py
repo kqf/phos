@@ -10,8 +10,8 @@ from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
 # from spectrum.comparator import Comparator
 
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture

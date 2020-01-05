@@ -3,7 +3,7 @@ import pytest
 from spectrum.output import open_loggs
 from spectrum.options import Options, CompositeOptions
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

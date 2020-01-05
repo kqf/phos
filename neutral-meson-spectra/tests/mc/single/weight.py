@@ -5,8 +5,8 @@ from spectrum.options import CompositeCorrectedYieldOptions
 from spectrum.cyield import CorrectedYield
 from spectrum.output import open_loggs
 
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 from spectrum.tools.feeddown import data_feeddown
 
 

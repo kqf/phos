@@ -13,7 +13,7 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.comparator import Comparator
 from spectrum.tools.unityfit import unityfit
 from spectrum.plotter import plot
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def tof_data():

@@ -7,7 +7,7 @@ from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
 from spectrum.output import open_loggs
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

@@ -6,7 +6,7 @@ from spectrum.options import Options
 from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.processing import DataSlicer, MassFitter
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 class MassExtractor(object):

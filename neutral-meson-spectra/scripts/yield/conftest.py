@@ -1,5 +1,5 @@
 import pytest
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.cyield import cyield_data as cyield
 from spectrum.efficiency import efficiency_data
 

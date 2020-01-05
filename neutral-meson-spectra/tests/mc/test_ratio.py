@@ -6,7 +6,7 @@ from spectrum.pipeline import Pipeline, ComparePipeline, HistogramSelector
 from spectrum.options import Options, EfficiencyOptions
 from spectrum.output import open_loggs
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 from spectrum.cyield import YieldRatio
 from spectrum.options import CorrectedYieldOptions

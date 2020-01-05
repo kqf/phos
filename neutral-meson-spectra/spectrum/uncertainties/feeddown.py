@@ -7,7 +7,7 @@ from spectrum.pipeline import TransformerBase
 import spectrum.broot as br
 from spectrum.tools.kaon2pion import K2POptions
 from spectrum.tools.kaon2pion import KaonToPionRatioData
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def feeddown_data():

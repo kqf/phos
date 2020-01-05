@@ -8,7 +8,7 @@ from spectrum.output import open_loggs
 import array
 
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 class MockInput(TransformerBase):

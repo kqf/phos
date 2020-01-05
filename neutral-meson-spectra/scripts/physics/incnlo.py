@@ -6,8 +6,8 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import SingleHistReader
 from spectrum.plotter import plot
 import spectrum.broot as br
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture

@@ -2,8 +2,8 @@ from __future__ import print_function
 import pytest  # noqa
 import ROOT
 
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 from spectrum.comparator import Comparator
 from spectrum.pipeline import SingleHistReader
 import spectrum.broot as br

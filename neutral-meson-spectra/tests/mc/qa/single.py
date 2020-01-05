@@ -3,7 +3,7 @@ import pytest
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.comparator import Comparator
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

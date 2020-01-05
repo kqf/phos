@@ -9,7 +9,7 @@ from spectrum.pipeline import SingleHistReader
 from spectrum.pipeline import TransformerBase
 from spectrum.tools.feeddown import data_feeddown
 import spectrum.broot as br
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

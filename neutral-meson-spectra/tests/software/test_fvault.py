@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import ROOT
 # import spectrum.sutils as su
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture

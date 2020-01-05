@@ -5,7 +5,7 @@ from spectrum.pipeline import ComparePipeline
 from spectrum.options import EfficiencyOptions, CompositeEfficiencyOptions
 from spectrum.output import open_loggs
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.comparator import Comparator
 
 

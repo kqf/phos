@@ -10,9 +10,9 @@ from spectrum.pipeline import ReduceArgumentPipeline
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import Pipeline
 from spectrum.plotter import plot
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.tools.feeddown import data_feeddown
 
 

@@ -10,7 +10,7 @@ from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 from spectrum.pipeline import SingleHistReader
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 class HepdataInput(TransformerBase):

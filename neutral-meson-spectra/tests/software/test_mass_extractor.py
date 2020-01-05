@@ -8,7 +8,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.processing import InvariantMassExtractor
 
 from spectrum.options import Options
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 class UpdatedAnalysis(TransformerBase):

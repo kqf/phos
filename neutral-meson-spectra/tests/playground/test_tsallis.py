@@ -3,7 +3,7 @@ from __future__ import print_function
 import ROOT
 import pytest
 
-from vault.formulas import FVault
+from spectrum.vault import FVault
 from spectrum.comparator import Comparator
 
 

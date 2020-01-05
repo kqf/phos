@@ -5,7 +5,7 @@ from spectrum.pipeline import SingleHistReader
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

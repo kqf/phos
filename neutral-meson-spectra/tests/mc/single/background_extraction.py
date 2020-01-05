@@ -4,14 +4,14 @@ import pytest  # noqa
 import spectrum.sutils as su
 import spectrum.broot as br  # noqa
 from spectrum.comparator import Comparator  # noqa
-from spectrum.input import Input
+from spectrum.vault import AnalysisInput
 from spectrum.options import Options
 from spectrum.parametrisation import PeakParametrisation
 from spectrum.pipeline import Pipeline
 from spectrum.processing import DataSlicer, MassFitter
 from spectrum.ptplotter import MassesPlot
 from spectrum.output import open_loggs
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 class BackgroundTransformer:
@@ -44,9 +44,10 @@ class MassExtractor(object):
         return output
 
 
+# TODO: use datavault
 @pytest.fixture
 def single_input():
-    return Input("LHC16-single.root", "PhysEff")
+    return AnalysisInput("LHC16-single.root", "PhysEff")
 
 
 @pytest.mark.skip("")

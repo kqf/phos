@@ -7,7 +7,7 @@ import spectrum.broot as br
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ComparePipeline
 from spectrum.output import open_loggs
-from vault.formulas import FVault
+from spectrum.vault import FVault
 
 
 class HepdataInput(TransformerBase):

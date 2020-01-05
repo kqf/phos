@@ -4,7 +4,7 @@ import spectrum.comparator as cmpr
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.output import open_loggs
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 # This test is needed to check if the dataset does contain

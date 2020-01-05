@@ -1,7 +1,7 @@
 import pytest
 import ROOT
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.options import NonlinearityOptions
 from spectrum.output import open_loggs
 from spectrum.tools.mc import Nonlinearity

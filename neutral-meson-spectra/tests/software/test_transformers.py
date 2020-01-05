@@ -11,7 +11,7 @@ from spectrum.comparator import Comparator
 import spectrum.broot as br
 from spectrum.pipeline import SingleHistReader
 
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture

@@ -6,7 +6,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
 from spectrum.pipeline import FunctionTransformer
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def data_feeddown(dummy=False):

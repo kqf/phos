@@ -2,7 +2,7 @@ import pytest
 
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.output import open_loggs
 from spectrum.options import EfficiencyOptions
 

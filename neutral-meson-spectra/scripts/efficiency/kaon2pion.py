@@ -6,7 +6,7 @@ from spectrum.pipeline import RebinTransformer
 from spectrum.tools.kaon2pion import KaonToPionDoubleRatio
 from spectrum.tools.kaon2pion import DoubleK2POptions
 from spectrum.output import open_loggs
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.plotter import plot
 
 

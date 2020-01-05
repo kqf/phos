@@ -3,7 +3,7 @@ import pytest
 from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 from spectrum.comparator import Comparator
 

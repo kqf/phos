@@ -1,5 +1,5 @@
 import pytest
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 def validate_all_datasets(vault):

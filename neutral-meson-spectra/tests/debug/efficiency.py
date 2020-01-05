@@ -2,8 +2,8 @@ from __future__ import print_function
 import pytest
 import ROOT
 
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 from spectrum.options import CompositeEfficiencyOptions, Options
 from spectrum.efficiency import Efficiency
 from spectrum.comparator import Comparator

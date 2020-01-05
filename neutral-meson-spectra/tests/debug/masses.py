@@ -8,7 +8,7 @@ from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
 from spectrum.processing import InvariantMassExtractor
 from spectrum.output import open_loggs
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.comparator import Comparator
 import spectrum.broot as br
 # NB: This test is to compare different efficiencies

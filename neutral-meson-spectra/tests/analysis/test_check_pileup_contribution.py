@@ -5,7 +5,7 @@ from spectrum.options import Options
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import Pipeline, HistogramSelector
 from spectrum.pipeline import ComparePipeline
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 from spectrum.output import open_loggs
 
 

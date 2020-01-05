@@ -5,7 +5,7 @@ from spectrum.options import CompositeEfficiencyOptions
 from spectrum.pipeline import Pipeline, ComparePipeline
 from spectrum.processing import DataSlicer, MassFitter
 from spectrum.output import open_loggs
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 # NB: This test is to compare different efficiencies
 #     estimated from different productions
 #

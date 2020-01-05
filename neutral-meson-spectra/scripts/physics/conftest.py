@@ -5,8 +5,8 @@ import spectrum.broot as br
 from spectrum.constants import mass
 from spectrum.output import open_loggs
 from spectrum.pipeline import SingleHistReader
-from vault.datavault import DataVault
-from vault.formulas import FVault
+from spectrum.vault import DataVault
+from spectrum.vault import FVault
 
 
 @pytest.fixture

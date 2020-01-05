@@ -4,7 +4,7 @@ from spectrum.output import open_loggs
 from spectrum.options import Options
 from spectrum.analysis import Analysis
 from spectrum.pipeline import ComparePipeline, Pipeline, HistogramSelector
-from vault.datavault import DataVault
+from spectrum.vault import DataVault
 
 
 @pytest.fixture
