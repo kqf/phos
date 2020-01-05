@@ -10,8 +10,17 @@ from spectrum.vault import DataVault
 
 
 @pytest.fixture
-def calibration_data(particle, spmc, data, quant):
-    data = [data] + list(spmc)
+def data(particle="#pi^{0}"):
+    prod = "single {}".format(particle)
+    return (
+        DataVault().input("data", histname="MassPtSM0"),
+        DataVault().input(prod, "low", "PhysEff"),
+        DataVault().input(prod, "high", "PhysEff"),
+    )
+
+
+@pytest.fixture
+def calibration_data(particle, data, quant):
     labels = "Data", "Low p_{T}", "High p_{T}"
     scales = [1, 1.0189, 1.0189]
     with open_loggs() as loggs:
@@ -28,11 +37,6 @@ def calibration_data(particle, spmc, data, quant):
             hist.SetTitle(name)
             targets.append(br.hist2graph(hist, "positive"))
     return targets
-
-
-@pytest.fixture
-def data():
-    return DataVault().input("data", "staging", histname="MassPtSM0")
 
 
 @pytest.fixture

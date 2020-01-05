@@ -25,10 +25,10 @@ def oname(particle):
     "",
     # "efficiency-{}",
 ])
-def test_spmc_efficiency(particle, spmc, oname, logname):
+def test_spmc_efficiency(particle, efficiency_data, oname, logname):
     options = CompositeEfficiencyOptions(particle)
     with open_loggs(logname.format(particle)) as loggs:
-        efficiency = Efficiency(options).transform(spmc, loggs)
+        efficiency = Efficiency(options).transform(efficiency_data, loggs)
         # validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
         # Comparator().compare(efficiency)
         plot(

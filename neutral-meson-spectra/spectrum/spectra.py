@@ -1,15 +1,14 @@
 import joblib
 from collections import namedtuple
 
+import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
-from spectrum.output import open_loggs
-import spectrum.broot as br
-from spectrum.comparator import Comparator
 from spectrum.pipeline import RebinTransformer
+from spectrum.output import open_loggs
 from spectrum.constants import cross_section
-
+from spectrum.comparator import Comparator
 
 from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.options import CompositeCorrectedYieldOptions
