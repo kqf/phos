@@ -1,5 +1,5 @@
 DIRECTORY :=../results/LHC16/iteration3_kphi7
-BASEPATH := ../../../neutral-meson-spectra/input-data/data
+BASEPATH := ../../../analysis/input-data/data
 FILEPATH := $(BASEPATH)/LHC16/trigger_qa/iteration3_kphi7/
 
 INPUTS := $(wildcard $(FILEPATH)/*.root)

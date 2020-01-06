@@ -13,7 +13,7 @@ env = Env()
 LXPLUS = "lxplus.cern.ch"
 LXPLUS_USER = env("LXPLUS_USER")
 LXPLUS_HOME = env("LXPLUS_HOME")
-DATA_PATH = "/phos/neutral-meson-spectra"
+DATA_PATH = "/phos/analysis"
 
 
 @contextmanager

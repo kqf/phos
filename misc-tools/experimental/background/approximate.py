@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 import ROOT
 
-FILE = "../../../neutral-meson-spectra/input-data/data/LHC16/final_nonlinearity_1/LHC16.root"  # noqa
+FILE = "../../../analysis/input-data/data/LHC16/final_nonlinearity_1/LHC16.root"  # noqa
 
 
 @contextmanager

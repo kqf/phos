@@ -6,10 +6,10 @@ Main repository consists of several scripts, analysis tasks and various utilitie
 ## Roadmap
 
 - [x] Quality assurance ([QA](qa/)) of the reconstructed PHOS data.
-  1.  Map of bad channels.  
-  2.  Check stability of the observables in time.
+  - [x] Map of bad channels.  
+  - [x]  Check stability of the observables in time.
  
-- [x] Neutral pion and $\eta$ [meson production](neutral-meson-spectra)
+- [x] Neutral pion and $\eta$ [meson production](analysis)
   - [x] Grid [analysis task](protons)
   - [x] Timing cut efficiency study
   - [x] Raw uncorrected yield extraction
@@ -19,11 +19,17 @@ Main repository consists of several scripts, analysis tasks and various utilitie
     - [x] Efficiency calculation
     - [x] Feed-down correction
     - [x] Corrected yield extraction
-  - [ ] Systematic uncertainties estimation
+  - [x] Systematic uncertainties estimation
     - [x] Corrected yiled extraction
-    - [ ] Timing cut efficiency
-    - [ ] Feed-down correction
-    - [ ] Nonlinearity correction
-    - [ ] Global energy scale
-    - [ ] Acceptance
-    - [ ] Matherial budget
+    - [x] Timing cut efficiency
+    - [x] Feed-down correction
+    - [x] Nonlinearity correction
+    - [x] Global energy scale
+    - [x] Acceptance
+    - [x] Matherial budget
+
+- [x] Analysis
+  - [x] Phenomenological description
+  - [x] Previous experiments
+  - [x] Theory predictions
+  - [ ] Scaling laws
