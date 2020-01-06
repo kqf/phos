@@ -8,7 +8,6 @@ Main repository consists of several scripts, analysis tasks and various utilitie
 - [x] Quality assurance ([QA](qa/)) of the reconstructed PHOS data.
   - [x] Map of bad channels.  
   - [x]  Check stability of the observables in time.
- 
 - [x] Neutral pion and $\eta$ [meson production](analysis)
   - [x] Grid [analysis task](protons)
   - [x] Timing cut efficiency study
@@ -26,8 +25,7 @@ Main repository consists of several scripts, analysis tasks and various utilitie
     - [x] Nonlinearity correction
     - [x] Global energy scale
     - [x] Acceptance
-    - [x] Matherial budget
-
+    - [x] Material budget
 - [x] Analysis
   - [x] Phenomenological description
   - [x] Previous experiments

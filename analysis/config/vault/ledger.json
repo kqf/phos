@@ -204,15 +204,15 @@
         "high": {
             "default_selection": "PhysNonlinScan",
             "description": "Efficiency selection + acceptance for corrected nonlinearity",
-            "file": "input-data/mc/single/pi0/extended_pt_range_1/LHC17j3b2.root",
-            "hsum": "745e255be343d6c7b2c4cb2163a30a5fa907d47ec7aa365d2c0005072a417f04",
+            "file": "input-data/mc/single/pi0/extended_pt_range_2/LHC17j3b2.root",
+            "hsum": "07d13148ab2e8c56b5285eab08e1df58e183ac3b1fa4c905af52410d88135640",
             "pt_range": [4.0, 20.0]
         },
         "low": {
             "default_selection": "PhysNonlinScan",
             "description": "Efficiency selection + acceptance for corrected nonlinearity",
-            "file": "input-data/mc/single/pi0/extended_pt_range_1/LHC17j3b1.root",
-            "hsum": "750a620d01a4c139e0f1d401d72eefd7ee175db0a190bcc0f5160439e639ff4c",
+            "file": "input-data/mc/single/pi0/extended_pt_range_2/LHC17j3b1.root",
+            "hsum": "9316c7baa8da35e3cf9e2b5f912cb4d08018f52b6c8a1994de248bb143f151ca",
             "pt_range": [0.0, 8.0]
         }
     },
