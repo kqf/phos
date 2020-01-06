@@ -699,6 +699,12 @@ def graph2hist(graph, hist=None):
     for i, v in zip(hrange(hist), values):
         hist.SetBinContent(i, v)
         hist.SetBinError(i, graph.GetErrorY(i - 1))
+
+    hist.GetXaxis().SetTitle(graph.GetXaxis().GetTitle())
+    hist.GetYaxis().SetTitle(graph.GetYaxis().GetTitle())
+    hist.SetLineColor(graph.GetLineColor())
+    hist.SetMarkerColor(graph.GetMarkerColor())
+    hist.SetMarkerStyle(graph.GetMarkerStyle())
     return hist
 
 
