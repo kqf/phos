@@ -196,7 +196,7 @@
             "default_selection": "PhysEffNoA",
             "description": "Efficiency + acceptance for corrected nonlinearity",
             "file": "input-data/mc/single/eta/final_nonlinearity_3/LHC17j3c1.root",
-            "hsum": "9252d1a3009d3d7b655b0629efe20f9e70b929f5b2deae45b5d6205c0607066d",
+            "hsum": "63207d04287a2149397ab455df447f1e0bac84e2b3807a521b0921dfac191342",
             "pt_range": [0.0, 10.0]
         }
     },
