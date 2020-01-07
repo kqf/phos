@@ -96,7 +96,6 @@ class EfficiencyOptions(object):
 
     def __init__(
         self, particle="#pi^{0}",
-        genname="hPt_{0}_primary_standard",
         scale=0.075,
         pt="config/pt.json",
         otype=Options,
@@ -104,9 +103,7 @@ class EfficiencyOptions(object):
         **kwargs
     ):
         super(EfficiencyOptions, self).__init__()
-        genname = genname.format(particle)
         self.analysis = otype(particle=particle, pt=pt, **kwargs)
-        self.genname = genname
         self.scale = scale
         # Nonlinearity scan requires this parameter
         self.genlist = genlist
@@ -127,7 +124,6 @@ class CompositeEfficiencyOptions(object):
 
     def __init__(
             self, particle,
-            genname="hPt_{0}_primary_standard",
             pt="config/pt.json",
             use_particle=True,
             scale=0.075,
@@ -139,7 +135,6 @@ class CompositeEfficiencyOptions(object):
         self.suboptions = [
             EfficiencyOptions(
                 particle=particle,
-                genname=genname,
                 pt=pt,
                 scale=scale,
                 otype=OptionsSPMC,
@@ -166,11 +161,7 @@ class CorrectedYieldOptions(object):
         self.analysis = Options(particle=particle, pt=pt)
         self.analysis.output.scalew_spectrum = True
         self.spectrum = "spectrum"
-        self.efficiency = EfficiencyOptions(
-            particle=particle,
-            genname="hPt_{0}_primary_standard",
-            pt=pt
-        )
+        self.efficiency = EfficiencyOptions(particle=particle, pt=pt)
         self.feeddown = FeeddownOptions(particle=particle)
         self.normalization = 1.
         self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)
