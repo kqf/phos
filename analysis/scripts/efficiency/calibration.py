@@ -10,7 +10,7 @@ from spectrum.vault import DataVault
 
 
 @pytest.fixture
-def data(particle="#pi^{0}"):
+def data(particle):
     prod = "single {}".format(particle)
     return (
         DataVault().input("data", histname="MassPtSM0"),
