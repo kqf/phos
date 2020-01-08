@@ -17,8 +17,8 @@ class NonlinearityUncertaintyOptions(object):
 
     def __init__(self, particle="#pi^{0}", nbins=9, n_ranges=2):
         super(NonlinearityUncertaintyOptions, self).__init__()
+        self.eff = CompositeEfficiencyOptions("#pi^{0}")
         self.nbins = nbins
-        self.eff = CompositeEfficiencyOptions("#pi^{0}", genlist="PhysEff")
         self.edges = None
         if particle != "#pi^{0}":
             self.edges = Options(particle=particle).pt.ptedges
