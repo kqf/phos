@@ -23,12 +23,6 @@ class TransformerBase(object):
 
 
 class SingleHistReader(TransformerBase):
-
-    def __init__(self, nevents=None, norm=False):
-        super(SingleHistReader, self).__init__()
-        self.nevents = nevents
-        self.norm = norm
-
     def transform(self, data, loggs=None):
         return br.io.read(data.filename, data.listname, data.histname)
 
