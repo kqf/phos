@@ -8,6 +8,7 @@ import spectrum.constants as ct
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.vault import FVault
 from spectrum.plotter import plot
+from spectrum.output import open_loggs
 
 
 class HepdataInput(TransformerBase):
@@ -19,51 +20,8 @@ class HepdataInput(TransformerBase):
         filename = ".hepdata-cachedir/{}".format(item["file"])
         br.io.hepdata(item["hepdata"], filename, item["table"])
         hist = br.io.read(filename, item["table"], self.histname)
-        hist.logy = True
-        hist.logx = True
         hist.Scale(item["scale"])
-        hist.energy = item["energy"]
-        # fitf = ROOT.TF1("tsallis", tsallis, 0, 100, 4)
-        fitf = ROOT.TF1("tsallis", FVault().func("tsallis"), 0, 100, 4)
-        fitf = FVault().tf1("tsallis")
-        fitf.FixParameter(0, 2.4 * 100000)
-        fitf.FixParameter(1, 0.139)
-        fitf.FixParameter(2, 6.88)
-        fitf.FixParameter(3, 0.134976)
-        fitf.FixParameter(4, 0.134976)
-        hist.Fit(fitf)
-        return hist
-
-
-def scale_bin_width(hist, rebins=None):
-    hist = hist.Clone()
-    width = 1
-    for i in br.hrange(hist):
-        if rebins is not None:
-            width = rebins[i - 1] + 1
-        hist.SetBinContent(i, hist.GetBinContent(i) / width)
-    return hist
-
-
-def meregd_bins(new, old):
-    new, old = br.edges(new), br.edges(old)
-
-    def nbins(a, b):
-        return [pT for pT in old if a < pT < b]
-
-    rebins = [len(nbins(*edge)) for edge in zip(new[:-1], new[1:])]
-    return rebins
-
-
-class SpectrumFitter(TransformerBase):
-    def __init__(self, parameters):
-        self.parameters = parameters
-
-    def transform(self, hist, loggs):
-        fitf = FVault().tf1("tsallis")
-        for i, p in enumerate(self.parameters):
-            fitf.FixParameter(i, p)
-        hist.Fit(fitf)
+        # hist.Scale(1. / hist.Integral())
         return hist
 
 
@@ -75,12 +33,16 @@ class ErrorsTransformer(TransformerBase):
         return data
 
 
-def hepdata(parameters):
-    return Pipeline([
+@pytest.fixture
+def hepdata(data):
+    estimator = Pipeline([
         ("raw", HepdataInput()),
         ("errors", ErrorsTransformer()),
-        ("fit", SpectrumFitter(parameters))
     ])
+
+    with open_loggs() as loggs:
+        output = estimator.transform(data, loggs)
+    return output
 
 
 @pytest.fixture
@@ -92,14 +54,16 @@ def data(system):
 
 @pytest.fixture
 def tcm(data, eta=0.12, particle="#pi^{0}"):
+    # The formulas are taken from arXiv:1501.05235v1
     energy = data["energy"]
     mass = ct.mass(particle)
-    doublemass = 2 * ct.mass(particle)
+    doublemass = 2 * 0.938
     func = FVault().tf1("tcm")
+    # func = ROOT.TF1("func", "[0] * TMath::Exp(-(TMath::Sqrt(x[0] * x[0] + [5] * [5]) - [5]) / [1]) + [2] * TMath::Power(1 + x[0] * x[0] / [3] / [3] / [4], -[4])", 0, 20) # noqa
     eta_prime = eta - np.log(energy / doublemass)
     eta_prime_prime = eta + np.log(energy / doublemass)
-    Te = 409 * np.exp(0.06 * eta_prime_prime) * doublemass ** 0.6
-    T = 98 * np.exp(0.06 * eta_prime_prime) * doublemass ** 0.6
+    T = 409 * np.exp(0.06 * eta_prime_prime) * doublemass ** 0.06 / 1000
+    Te = 98 * np.exp(0.06 * eta_prime_prime) * doublemass ** 0.06 / 1000
     n = 5.04 + 0.27 * eta_prime
 
     Aexp = 0.76 * (energy ** 2) ** 0.106
@@ -117,9 +81,10 @@ def tcm(data, eta=0.12, particle="#pi^{0}"):
     func.SetParameter("n", n)
     func.SetParameter("T", T)
     func.SetParameter("Te", Te)
-    func.SetParameter("Ae", Ae)
-    func.SetParameter("A", A)
+    func.SetParameter("Ae", Ae * 1000)
+    func.SetParameter("A", A * 1000)
     func.SetParameter("M", mass)
+    # br.report(func)
     return func
 
 
@@ -131,5 +96,8 @@ def tcm(data, eta=0.12, particle="#pi^{0}"):
     "pp 2.76 TeV",
     "pp 8 TeV"
 ])
-def test_downloads_from_hepdata(data, tcm):
-    plot([tcm], logy=False, logx=False)
+def test_downloads_from_hepdata(hepdata, tcm):
+    plot([
+        tcm,
+        hepdata
+    ])
