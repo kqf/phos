@@ -113,7 +113,7 @@ def xt(edges=None):
 
 def theory_prediction():
     pipeline = Pipeline([
-        ("raw", SingleHistReader(nevents=1)),
+        ("raw", SingleHistReader()),
         ("errors", ErrorsTransformer())
     ])
     return pipeline

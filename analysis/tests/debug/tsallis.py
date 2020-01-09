@@ -21,7 +21,7 @@ def low_pt():
 @pytest.mark.interactive
 def test_weight_like_debug(low_pt, rrange=(0, 20)):
     # Define the transformations
-    nominal_low = SingleHistReader(nevents=1).transform(low_pt)
+    nominal_low = SingleHistReader().transform(low_pt)
 
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)
     parameters = [0.6216964179825611 / 0.0989488446585,
@@ -64,11 +64,11 @@ def high_pt():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 def test_different_inputs(data, high_pt):
-    production = SingleHistReader(nevents=1).transform(data)
+    production = SingleHistReader().transform(data)
     production.label = "data"
     production.logy = True
     br.scalew(production)
 
-    nominal = SingleHistReader(nevents=1).transform(high_pt)
+    nominal = SingleHistReader().transform(high_pt)
     nominal.label = "nominal"
     Comparator().compare(*br.rebin_as(production, nominal))

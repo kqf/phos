@@ -43,7 +43,7 @@ def normalize(hist, loggs):
 
 def theory_prediction():
     pipeline = Pipeline([
-        ("raw", SingleHistReader(nevents=1)),
+        ("raw", SingleHistReader()),
         ("errors", ErrorsTransformer()),
         ("integral", FunctionTransformer(func=normalize)),
     ])

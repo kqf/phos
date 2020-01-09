@@ -10,8 +10,8 @@ class HistSum(TransformerBase):
         super(HistSum, self).__init__()
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("kaons", SingleHistReader(nevents=1)),
-                ("pions", SingleHistReader(nevents=1)),
+                ("kaons", SingleHistReader()),
+                ("pions", SingleHistReader()),
 
             ]),
             lambda x, loggs: br.hsum(x)
@@ -38,8 +38,8 @@ class KaonToPionRatioData(TransformerBase):
     def __init__(self, plot=False):
         super(KaonToPionRatioData, self).__init__()
         self.pipeline = ComparePipeline([
-            ("kaons", SingleHistReader(nevents=1)),
-            ("pions", SingleHistReader(nevents=1)),
+            ("kaons", SingleHistReader()),
+            ("pions", SingleHistReader()),
         ], plot)
 
 

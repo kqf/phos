@@ -32,7 +32,7 @@ def test_species_contributions(origin, particles):
                 ("analysis", Analysis(Options())),
                 ("spectrum", HistogramSelector("spectrum")),
             ])),
-            ("#pi^0", SingleHistReader(nevents=1)),
+            ("#pi^0", SingleHistReader()),
         ])
         data = (
             DataVault().input(

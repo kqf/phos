@@ -42,7 +42,7 @@ class ReadCompositeDistribution(TransformerBase):
             ParallelPipeline([
                 ("efficiency-{0}".format(ranges),
                  Pipeline([
-                     ("raw_efficiency", SingleHistReader(nevents=1)),
+                     ("raw_efficiency", SingleHistReader()),
                      ("standard-output", StanadrtizeOutput())
                  ]))
                 for ranges in zip(options.mergeranges)
@@ -68,9 +68,9 @@ class CompareGeneratedSpectra(TransformerBase):
         super(CompareGeneratedSpectra, self).__init__(plot)
         self.pipeline = ReducePipeline(
             ParallelPipeline([
-                ("custom_spectrum", SingleHistReader(nevents=1)),
+                ("custom_spectrum", SingleHistReader()),
                 ("debug_spectrum", Pipeline([
-                    ("single", SingleHistReader(nevents=1)),
+                    ("single", SingleHistReader()),
                     ("scale", FunctionTransformer(br.scalew))
                 ])
                 )
@@ -174,7 +174,7 @@ def data_debug_low_single():
 @pytest.mark.interactive
 def test_weight_like_debug(data_debug_low_single):
     # Define the transformations
-    nominal_low = SingleHistReader(nevents=1).transform(data_debug_low_single)
+    nominal_low = SingleHistReader().transform(data_debug_low_single)
 
     rrange = 0, 10
     tsallis = ROOT.TF1("f", FVault().func("tsallis"), *rrange)

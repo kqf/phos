@@ -91,7 +91,7 @@ def read_pythia6(particle):
     }
     data = DataVault().input("theory", "pythia6", histname=histnames[particle])
     with open_loggs() as loggs:
-        mc = SingleHistReader(nevents=1).transform(data, loggs)
+        mc = SingleHistReader().transform(data, loggs)
     mc.Scale(1e-6)
     mc.SetTitle("PYTHIA 6")
     return mc

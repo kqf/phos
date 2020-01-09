@@ -18,8 +18,8 @@ def data():
     )
     with open_loggs() as loggs:
         predictions = ParallelPipeline([
-            ("mu1", SingleHistReader(nevents=1)),
-            ("mu2", SingleHistReader(nevents=1)),
+            ("mu1", SingleHistReader()),
+            ("mu2", SingleHistReader()),
         ]).transform(data, loggs=loggs)
     return predictions
 
