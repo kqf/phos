@@ -20,7 +20,7 @@ def minuit_config():
 
 @pytest.fixture
 def data(selection):
-    return DataVault().input("data", "stable", selection, label='test')
+    return DataVault().input("data", "stable", selection)
 
 
 @pytest.mark.onlylocal
@@ -36,4 +36,3 @@ def test_extracts_spectrum(particle, selection, data, minuit_config):
         h.GetName(): list(br.bins(h).contents) for h in output
     }
     validate(actual, "test_observables/{}".format(particle))
-    # validate_particle(particle, dataset)

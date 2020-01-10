@@ -79,8 +79,11 @@ class InvariantMass(object):
         self.pt_interval = rmass.pt_interval
 
         # Setup the fit function
+        # _signal = measured - combinatorial background = signal + residual
         self._signal = parametrisation(options.signal)
-        self._background = parametrisation(options.background)
+
+        # _measured distribution = signal + combinatorial background
+        self._measured = parametrisation(options.background)
         self.fit_range = self._signal.opt.fit_range
 
         # Extract the data

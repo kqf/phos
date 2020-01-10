@@ -58,6 +58,7 @@ def test_estimate_tof_efficiency(efficiency, oname, fitfunc, ltitle):
         csize=(126, 126),
         legend_pos=(0.20, 0.7, 0.35, 0.85),
         ltitle=ltitle,
+        stop=False,
         oname=oname
     )
-    # validate(br.hist2dict(efficiency), "efficiency_tag")
+    validate(br.hist2dict(efficiency), "efficiency_tag")
