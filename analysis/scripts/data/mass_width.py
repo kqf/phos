@@ -45,7 +45,6 @@ def test_mass_width_parametrization(particle, hparms, oname, ltitle):
         fitf.SetParameter(i, p)
 
     hist.Fit(fitf, "Q")
-    print()
     br.report(fitf, particle)
     plot(
         [hist, fitf],

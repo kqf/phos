@@ -18,7 +18,6 @@ def test_tsallis_tcm_fit(particle, tcm, tsallis, oname):
     cs.SetTitle("Data")
     cs.Fit(tcm, "RQ")
     cs.Fit(tsallis, "RQ")
-    print()
     br.report(tcm, particle)
     br.report(tsallis, particle)
     plot(

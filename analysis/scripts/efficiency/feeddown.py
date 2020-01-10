@@ -36,7 +36,6 @@ def plot_func(data, loggs):
         oname="results/analysis/feeddown.pdf",
 
     )
-    print()
     br.report(func_feeddown, limits=True)
     return data
 

@@ -791,6 +791,7 @@ def spell(text):
 
 
 def report(func, particle="", limits=False):
+    print()
     particle = spell(particle)
     pattern = r"\def \{particle}{func}{par}{err} {{{val:.3g}}}"
     for i in range(func.GetNpar()):

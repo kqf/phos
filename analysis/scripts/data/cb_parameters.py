@@ -45,7 +45,6 @@ class SelectAndFitHistograms(TransformerBase):
         func.SetLineColor(ROOT.kBlue + 1)
         func.SetLineWidth(2)
         func.SetParName(0, "Value")
-        print()
         br.report(func, particle)
 
 
