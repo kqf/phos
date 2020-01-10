@@ -3,7 +3,8 @@ sanity-test:
 	pytest --no-stop \
 		scripts/yield/observables.py \
 		scripts/data/tof.py \
-		scripts/efficiency/spmc.py
+		scripts/efficiency/spmc.py \
+		scripts/systematics/ep.py
 
 datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.
@@ -26,27 +27,9 @@ ifeq (, $(shell which phos-download))
 	pip install -e ../misc-tools/io
 endif
 
-systematics:
-	pytest -s scripts/systematics/yields.py
-	pytest -s scripts/systematics/nonlinearity.py
-	pytest -s scripts/systematics/gscale.py
-	pytest -s scripts/systematics/tof.py
-	pytest -s scripts/systematics/acceptance.py
-	pytest -s scripts/systematics/feeddown.py
-	pytest -s scripts/systematics/material.py
-	pytest -s scripts/systematics/systematics.py
-
-
-data:
-	pytest -s scripts/data/doublegamma.py
-	pytest -s scripts/data/cb_parameters.py
-	pytest -s scripts/data/mass_width.py
-	pytest -s scripts/data/yields.py
-	pytest -s scripts/data/tof.py
-
 clean:
 	rm -f *.pdf *.png *.root
 	rm -rf results/*
 
 
-.PHONY: sanity-test datasets clean phos-download systematics data clean merge
+.PHONY: sanity-test datasets clean phos-download clean merge

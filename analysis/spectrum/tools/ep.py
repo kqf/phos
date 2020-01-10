@@ -78,12 +78,13 @@ class EpRatioEstimator(TransformerBase):
         ])
 
 
-def double_ratio(histograms, loggs, fitf, labels):
+def double_ratio(histograms, loggs, fitf, labels, stop):
     for h, l in zip(histograms, labels):
         h.SetTitle(l)
 
     plot(
         histograms,
+        stop=stop,
         logy=False,
         logx=False,
         xtitle="p_{T} (GeV/#it{c})",
@@ -105,6 +106,7 @@ def double_ratio(histograms, loggs, fitf, labels):
 
     plot(
         [ratio, fitf],
+        stop=stop,
         logy=False,
         logx=False,
         ytitle="(E/p)_{Data} / (E/p)_{MC}",
@@ -128,5 +130,6 @@ class DataMCEpRatioEstimator(TransformerBase):
         labels = list(zip(*estimators))[0]
         self.pipeline = ReducePipeline(
             ParallelPipeline(estimators),
-            lambda x, loggs: double_ratio(x, loggs, options.data.fitf, labels)
+            lambda x, loggs:
+                double_ratio(x, loggs, options.data.fitf, labels, stop=plot)
         )
