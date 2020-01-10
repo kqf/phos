@@ -1,3 +1,18 @@
+import pytest
+
+
+@pytest.fixture
+def stop(request):
+    return request.config.getoption("--no-stop")
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--no-stop",
+        action="store_false",
+        help="Don't stop to show plots",
+    )
+
 
 def pytest_configure(config):
     config.addinivalue_line(

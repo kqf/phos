@@ -1,8 +1,9 @@
 
 sanity-test:
-	pytest scripts/yield/observables.py \
+	pytest --no-stop \
+		scripts/yield/observables.py \
 		scripts/data/tof.py \
-		scripts/efficiency/spmc_efficiency.py
+		scripts/efficiency/spmc.py
 
 datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.

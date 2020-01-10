@@ -47,18 +47,18 @@ def oname():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_estimate_tof_efficiency(efficiency, oname, fitfunc, ltitle):
+def test_estimate_tof_efficiency(efficiency, oname, fitfunc, ltitle, stop):
     bins = br.edges(efficiency)
     fitfunc.SetRange(min(bins), max(bins))
     efficiency.Fit(fitfunc, "RWW")
     br.report(fitfunc)
     plot(
         [efficiency, fitfunc],
+        stop=stop,
         logy=False,
         csize=(126, 126),
         legend_pos=(0.20, 0.7, 0.35, 0.85),
         ltitle=ltitle,
-        stop=False,
         oname=oname
     )
     validate(br.hist2dict(efficiency), "efficiency_tag")
