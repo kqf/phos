@@ -20,7 +20,7 @@ class BackgroundEstimator(MassTransformer):
     out_col = "background"
 
     def apply(self, imass, mass):
-        sigf, bgrf = imass._background.fit(mass)
+        sigf, bgrf = imass._measured.fit(mass)
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
@@ -61,7 +61,7 @@ class MixingBackgroundEstimator(MassTransformer):
         ratio = br.ratio(mass, background, '')
         ratio.GetYaxis().SetTitle("Same event / mixed event")
 
-        fitf, bckgrnd = imass._background.fit(ratio)
+        fitf, bckgrnd = imass._measured.fit(ratio)
         background.Multiply(bckgrnd)
         background.SetLineColor(46)
         imass.ratio = ratio
@@ -105,7 +105,7 @@ class ZeroBinsCleaner(MassTransformer):
         if not zeros:
             return h
 
-        fitf, bckgrnd = mass._background.fit(h, is_mixing=is_background)
+        fitf, bckgrnd = mass._measured.fit(h, is_mixing=is_background)
 
         # If we failed to fit: do nothing
         if not (fitf and bckgrnd):

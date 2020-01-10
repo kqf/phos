@@ -1,9 +1,11 @@
 import pytest
+import spectrum.broot as br
 from spectrum.comparator import Comparator
 from spectrum.options import DataMCEpRatioOptions, EpRatioOptions
 from spectrum.output import open_loggs
 from spectrum.tools.ep import DataMCEpRatioEstimator, EpRatioEstimator
 from spectrum.vault import DataVault
+from spectrum.tools.validate import validate
 
 
 def data_old_selection(prod="data", version="ep_ratio"):
@@ -40,7 +42,7 @@ def validation_data():
     )
 
 
-@pytest.mark.skip("")
+@pytest.mark.skip
 def test_ep_ratio_mc():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)
@@ -50,7 +52,7 @@ def test_ep_ratio_mc():
     Comparator().compare(output)
 
 
-@pytest.mark.skip("")
+@pytest.mark.skip
 def test_ep_ratio_data():
     options = EpRatioOptions()
     estimator = EpRatioEstimator(options, plot=True)
@@ -66,11 +68,11 @@ def test_ep_ratio_data():
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_data_mc_ratio(double_ratio_data):
+def test_data_mc_ratio(double_ratio_data, stop):
     estimator = DataMCEpRatioEstimator(
-        DataMCEpRatioOptions(), plot=True
+        DataMCEpRatioOptions(), plot=stop
     )
     with open_loggs() as loggs:
         output = estimator.transform(double_ratio_data, loggs)
-        Comparator().compare(output)
-    assert len(output) > 0
+        Comparator(stop=stop).compare(output)
+    validate(br.hist2dict(output), "double_ep_ratio")
