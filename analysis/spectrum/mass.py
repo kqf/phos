@@ -6,9 +6,8 @@ import spectrum.sutils as su
 import spectrum.broot as br
 
 
+# TODO: Generalize for multiple output columns
 class MassTransformer(object):
-    in_col = "invmasses"
-
     def transform(self, data, loggs):
         data[self.out_col] = data[self.in_cols].apply(
             lambda data: self.apply(*data[self.in_cols]), axis=1)
@@ -24,8 +23,7 @@ class BackgroundEstimator(MassTransformer):
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
-        imass.background = bgrf
-        imass.background_fitted = sigf
+        imass.measuredf = sigf
         return bgrf
 
 
@@ -69,7 +67,7 @@ class MixingBackgroundEstimator(MassTransformer):
         imass.ratio = ratio
 
         # background = bckgrnd
-        imass.background_fitted = fitf
+        imass.measuredf = fitf
         return mass
 
 

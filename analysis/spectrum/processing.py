@@ -19,7 +19,7 @@ class DataSlicer(object):
         self.opt = options
 
     def transform(self, inputs, loggs):
-        histograms, pt_range = inputs  # .transform()
+        histograms, pt_range = inputs
         if len(histograms) == 1:
             histograms = histograms + [None]
         same, mixed = histograms

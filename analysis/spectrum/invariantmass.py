@@ -90,10 +90,14 @@ class InvariantMass(object):
         self._integration_region = self._signal.opt.fit_range
         self.ratio = None
         self.signal = None
-        self.background_fitted = None
+        self.measuredf = None
 
     @property
     def mass(self):
+        raise IOError("No such attribute")
+
+    @property
+    def background(self):
         raise IOError("No such attribute")
 
     @property

@@ -72,17 +72,17 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def background_cball_alpha(self, mass):
-        return self.parameter(mass.background_fitted, "#alpha")
+        return self.parameter(mass.measuredf, "#alpha")
 
     @handle_empty_fit
     def background_cball_n(self, mass):
-        return self.parameter(mass.background_fitted, "n")
+        return self.parameter(mass.measuredf, "n")
 
     @handle_empty_fit
     def background_chi2(self, mass):
-        ndf = mass.background_fitted.GetNDF()
+        ndf = mass.measuredf.GetNDF()
         ndf = ndf if ndf > 0 else 1
-        return mass.background_fitted.GetChisquare() / ndf, 0
+        return mass.measuredf.GetChisquare() / ndf, 0
 
     def eval(self, mass):
         return [f(mass) for f in self.quantities]
