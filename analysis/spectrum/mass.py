@@ -35,6 +35,8 @@ class SignalExtractor(MassTransformer):
 
     def apply(self, imass, mass, background):
         # Subtraction
+        # imass.mass = mass
+        # imass.background = background
         imass.signal = mass.Clone()
         imass.signal.Add(background, -1.)
         imass.signal.SetAxisRange(*imass.fit_range)

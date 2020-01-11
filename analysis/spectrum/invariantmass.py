@@ -27,7 +27,7 @@ class RawMass(object):
         "electrons": "E/p ratio",
     }
 
-    def __init__(self, inhists, pt_range, nrebin, particle, pt_interval):
+    def __init__(self, pt_range, nrebin, particle, pt_interval):
         self.pt_interval = pt_interval
         self.pt_range = pt_range
         self.nrebin = nrebin
@@ -35,11 +35,8 @@ class RawMass(object):
         label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
         self.pt_label = label.format(*self.pt_range)
         self.template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
-        if len(inhists) == 1:
-            inhists = inhists + [None]
-        self.mass, self.background = map(self._extract_histogram, inhists)
 
-    def _extract_histogram(self, hist):
+    def transform(self, hist):
         if not hist:
             return None
         return self.read_mass(
@@ -72,8 +69,8 @@ class InvariantMass(object):
     def __init__(self, rmass, options):
         super(InvariantMass, self).__init__()
         self.opt = options
-        self.mass = rmass.mass
-        self.background = rmass.background
+        # self.mass = rmass.mass
+        # self.background = rmass.background
         self.pt_range = rmass.pt_range
         self.pt_label = rmass.pt_label
         self.pt_interval = rmass.pt_interval
@@ -94,6 +91,10 @@ class InvariantMass(object):
         self.ratio = None
         self.signal = None
         self.background_fitted = None
+
+    @property
+    def mass(self):
+        raise IOError("No such attribute")
 
     @property
     def integration_region(self):

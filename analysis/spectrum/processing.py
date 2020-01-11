@@ -19,7 +19,10 @@ class DataSlicer(object):
         self.opt = options
 
     def transform(self, inputs, loggs):
-        input_data, pt_range = inputs  # .transform()
+        histograms, pt_range = inputs  # .transform()
+        if len(histograms) == 1:
+            histograms = histograms + [None]
+        same, mixed = histograms
 
         intervals = list(zip(self.opt.ptedges[:-1], self.opt.ptedges[1:]))
         assert len(intervals) == len(self.opt.rebins), \
@@ -31,17 +34,18 @@ class DataSlicer(object):
         )
 
         def common_inputs(x, y):
-            return RawMass(
-                input_data, x, y,
-                self.opt.particle, pt_interval=pt_range)
+            return RawMass(x, y, self.opt.particle, pt_interval=pt_range)
 
-        output = list(map(common_inputs, intervals, self.opt.rebins))
+        readers = list(map(common_inputs, intervals, self.opt.rebins))
         return pd.DataFrame(
             {
                 "intervals": intervals,
                 "pt_interval": [pt_range] * len(intervals),
                 "pt_edges": [self.opt.ptedges] * len(intervals),
-                "raw": output,
+                "raw": readers,
+                "mass": [r.transform(same) for r in readers],
+                "background": [r.transform(mixed) for r in readers],
+                "nevents": [same.nevents] * len(intervals)
             }
         )
 
@@ -55,9 +59,6 @@ class InvariantMassExtractor(object):
     def transform(self, rmasses, loggs):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(x, self.opt))
-        rmasses["mass"] = rmasses["invmasses"].apply(lambda x: x.mass)
-        rmasses["background"] = rmasses["invmasses"].apply(
-            lambda x: x.background)
         rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
         rmasses["pt_label"] = rmasses["invmasses"].apply(lambda x: x.pt_label)
         return rmasses
@@ -222,12 +223,7 @@ class DataExtractor(object):
             self.opt.output,
         )
 
-        # Decorate the histograms
-        try:
-            nevents = next(iter(masses["invmasses"])).mass.nevents
-        except AttributeError:
-            nevents = 1
-
+        nevents = next(iter(masses["nevents"]))
         decorated = self._decorate_hists(histos, nevents)
         loggs.update({"invariant_masses": MulipleOutput(masses["invmasses"])})
         return decorated
