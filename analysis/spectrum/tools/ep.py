@@ -14,52 +14,47 @@ from spectrum.plotter import plot
 
 
 class IdentityExtractor(object):
+    in_cols = ["invmasses", "mass"]
+    out_col = ["sigf", "bgrf", "signal"]
+
     def __init__(self, options):
         super(IdentityExtractor, self).__init__()
         self.options = options
 
-    def transform(self, mass, loggs):
+    def transform(self, masses, loggs):
+        local_loggs = {}
+        masses[self.out_col] = masses[self.in_cols].apply(
+            lambda mases: self.apply(
+                *mases[self.in_cols], loggs=local_loggs),
+            axis=1, result_type="expand")
+        loggs.update({"IdentityExtractor": local_loggs})
+        return masses
+
+    def apply(self, invmass, mass, loggs):
         ROOT.gStyle.SetOptFit()
-        mass.signal = mass.mass.Clone()
+        invmass.signal = mass.Clone()
         formula = "gaus(0) + {}(3)".format(self.options.background)
         func = ROOT.TF1("func", formula, *self.options.fit_range)
 
         func.SetParNames(*self.options.par_names)
         func.SetParameters(*self.options.start_paremeters)
         func.SetLineColor(ROOT.kRed + 1)
-        mass.signal.Fit(func, "RQ0")
+        invmass.signal.Fit(func, "RQ0")
         bkgrnd = ROOT.TF1("bkgrnd", self.options.background,
                           *self.options.fit_range)
         for i in range(3, func.GetNpar()):
             bkgrnd.SetParameter(i - 3, func.GetParameter(i))
-        mass.sigf = func
-        mass.bgrf = bkgrnd
+        invmass.sigf = func
+        invmass.bgrf = bkgrnd
         chi2ndf = func.GetChisquare() / (func.GetNDF() or 1)
         title = ", #chi^{{2}} / ndf = {:.3f}".format(chi2ndf)
-        mass.mass.SetTitle(mass.mass.GetTitle() + title)
-        mass.signal.SetTitle(mass.signal.GetTitle() + title)
+        mass.SetTitle(mass.GetTitle() + title)
+        invmass.signal.SetTitle(invmass.signal.GetTitle() + title)
         a, b = self.options.fit_range
-        mass.signal.GetXaxis().SetRangeUser(a, b)
-        # mass.signal.Scale(1. / mass.signal.Integral())
-        loggs.update({mass.signal.GetName(): mass.signal})
-        return mass
-
-
-class EpFitter(object):
-
-    def __init__(self, options):
-        super(EpFitter, self).__init__()
-        self.pipeline = [
-            IdentityExtractor(options),
-        ]
-
-    def transform(self, masses, loggs):
-        local_loggs = {}
-        for estimator in self.pipeline:
-            for mass in masses["invmasses"].values:
-                estimator.transform(mass, local_loggs)
-        loggs.update({"epfitter": local_loggs})
-        return masses
+        invmass.signal.GetXaxis().SetRangeUser(a, b)
+        # invmass.signal.Scale(1. / invmass.signal.Integral())
+        loggs.update({invmass.signal.GetName(): invmass.signal})
+        return invmass.sigf, invmass.bgrf, invmass.signal
 
 
 class EpRatioEstimator(TransformerBase):
@@ -70,7 +65,7 @@ class EpRatioEstimator(TransformerBase):
             ("read", AnalysisDataReader()),
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
-            ("fit", EpFitter(options.analysis.invmass.signal)),
+            ("fit", IdentityExtractor(options.analysis.invmass.signal)),
             ("ranges", RangeEstimator(options.analysis.calibration)),
             ("data", DataExtractor(options.analysis.output)),
             ("ep", HistogramSelector("mass", plot)),
