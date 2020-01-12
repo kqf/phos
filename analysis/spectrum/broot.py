@@ -562,8 +562,7 @@ def chi2ndf(hist1, hist2):
 # Use multipledispatch
 def chi2ndff(func):
     ndf = func.GetNDF()
-    if ndf == 0:
-        ndf = 1
+    ndf = ndf if ndf > 0 else 1
     return func.GetChisquare() / ndf
 
 

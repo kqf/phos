@@ -10,7 +10,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
 from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
-from spectrum.mass import SignalFitExtractor
+from spectrum.mass import SignalFitExtractor, FitQualityExtractor
 import spectrum.broot as br
 
 
@@ -99,7 +99,10 @@ class MassFitter(object):
                 SignalExtractor(),
                 SignalFitter(),
                 SignalFitExtractor(in_cols=["signalf"]),
-                SignalFitExtractor(in_cols=["measuredf"]),
+                SignalFitExtractor(in_cols=["measuredf"], prefix="background"),
+                FitQualityExtractor(in_cols=["signalf"]),
+                FitQualityExtractor(in_cols=["measuredf"],
+                                    prefix="background"),
             ]
         return [
             MixingBackgroundEstimator(),
@@ -107,7 +110,9 @@ class MassFitter(object):
             SignalExtractor(),
             SignalFitter(),
             SignalFitExtractor(in_cols=["signalf"]),
-            SignalFitExtractor(in_cols=["measuredf"]),
+            SignalFitExtractor(in_cols=["measuredf"], prefix="background"),
+            FitQualityExtractor(in_cols=["signalf"]),
+            FitQualityExtractor(in_cols=["measuredf"], prefix="background"),
         ]
 
 

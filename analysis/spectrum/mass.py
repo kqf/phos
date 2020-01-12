@@ -90,6 +90,18 @@ class SignalFitExtractor(MassTransformer):
         return [par, par_error]
 
 
+class FitQualityExtractor(MassTransformer):
+    result_type = "expand"
+    out_cols = ["chi2", "chi2_error"]
+
+    def __init__(self, in_cols=["signalf"], prefix=""):
+        self.out_cols = ["{}{}".format(prefix, col) for col in self.out_cols]
+        self.in_cols = in_cols
+
+    def apply(self, function):
+        return br.chi2ndff(function), 0
+
+
 class MixingBackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "measured", "background"]
     out_cols = ["signal", "measuredf"]
