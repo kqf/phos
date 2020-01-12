@@ -84,7 +84,7 @@ class InvariantMass(object):
         self.fit_range = self._signal.opt.fit_range
 
         # Extract the data
-        self.sigf = None
+        self.signalf = None
         self.bgrf = None
         self.area_error = None
         self._integration_region = self._signal.opt.fit_range
@@ -119,4 +119,4 @@ class InvariantMass(object):
         return area, areae
 
     def fitted(self):
-        return self.bgrf and self.sigf
+        return self.bgrf and self.signalf

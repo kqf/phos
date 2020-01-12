@@ -19,15 +19,16 @@ class MassTransformer(object):
 
 class BackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "measured"]
-    out_cols = "background"
+    out_cols = ["background", "measuredf"]
+    result_type = "expand"
 
     def apply(self, imass, measured):
-        sigf, bgrf = imass._measured.fit(measured)
+        signalf, bgrf = imass._measured.fit(measured)
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
-        imass.measuredf = sigf
-        return bgrf
+        imass.measuredf = signalf
+        return bgrf, imass.measuredf
 
 
 class SignalExtractor(MassTransformer):
@@ -47,18 +48,52 @@ class SignalExtractor(MassTransformer):
 
 class SignalFitter(MassTransformer):
     in_cols = ["invmasses", "signal"]
-    out_cols = "signal_fitf"
+    out_cols = "signalf"
 
     def apply(self, imass, signal):
-        imass.sigf, imass.bgrf = imass._signal.fit(signal)
-        imass.sigf.SetLineStyle(9)
+        imass.signalf, imass.bgrf = imass._signal.fit(signal)
+        imass.signalf.SetLineStyle(9)
         # with su.canvas(): # signal.Draw()
-        return imass.sigf
+        return imass.signalf
+
+
+class SignalFitExtractor(MassTransformer):
+    result_type = "expand"
+    types = "", "_error"
+    mappings = {
+        "mass": "M",
+        "width": "#sigma",
+        "cball_n": "n",
+        "cball_alpha": "#alpha",
+    }
+
+    def __init__(self, in_cols=["signalf"], prefix=""):
+        self.in_cols = in_cols
+        self.order = tuple(self.mappings.keys())
+        self.out_cols = [
+            "{}{}{}".format(prefix, col, error) for col in self.order
+            for error in self.types
+        ]
+
+    def apply(self, function):
+        output = [self._par(function, self.mappings[o]) for o in self.order]
+        return sum(output, [])
+
+    def _par(self, func, parname):
+        position = func.GetParNumber(parname)
+
+        if position < 0:
+            return 0, 0
+
+        par = func.GetParameter(position)
+        par_error = func.GetParError(position)
+        return [par, par_error]
 
 
 class MixingBackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "measured", "background"]
-    out_cols = "signal"
+    out_cols = ["signal", "measuredf"]
+    result_type = "expand"
 
     def apply(self, imass, measured, background):
         ratio = br.ratio(measured, background, '')
@@ -71,7 +106,7 @@ class MixingBackgroundEstimator(MassTransformer):
 
         # background = bckgrnd
         imass.measuredf = fitf
-        return measured
+        return measured, imass.measuredf
 
 
 class ZeroBinsCleaner(MassTransformer):

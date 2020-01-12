@@ -46,19 +46,19 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def mass(self, mass):
-        return self.parameter(mass.sigf, "M")
+        return self.parameter(mass.signalf, "M")
 
     @handle_empty_fit
     def width(self, mass):
-        return self.parameter(mass.sigf, "#sigma")
+        return self.parameter(mass.signalf, "#sigma")
 
     @handle_empty_fit
     def cball_alpha(self, mass):
-        return self.parameter(mass.sigf, "#alpha")
+        return self.parameter(mass.signalf, "#alpha")
 
     @handle_empty_fit
     def cball_n(self, mass):
-        return self.parameter(mass.sigf, "n")
+        return self.parameter(mass.signalf, "n")
 
     @handle_empty_fit
     def nmesons(self, mass):
@@ -66,9 +66,9 @@ class SpectrumExtractor(object):
 
     @handle_empty_fit
     def chi2(self, mass):
-        ndf = mass.sigf.GetNDF()
+        ndf = mass.signalf.GetNDF()
         ndf = ndf if ndf > 0 else 1
-        return mass.sigf.GetChisquare() / ndf, 0
+        return mass.signalf.GetChisquare() / ndf, 0
 
     @handle_empty_fit
     def background_cball_alpha(self, mass):

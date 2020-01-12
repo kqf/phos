@@ -33,7 +33,7 @@ def mass():
 
     data.mass = data
     data.background = None
-    data.sigf = measured
+    data.signalf = measured
     data.bgrf = background
 
     signal = data.Clone()

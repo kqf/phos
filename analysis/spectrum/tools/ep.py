@@ -16,7 +16,7 @@ from spectrum.plotter import plot
 
 class IdentityExtractor(MassTransformer):
     in_cols = ["invmasses", "measured"]
-    out_cols = ["sigf", "bgrf", "signal"]
+    out_cols = ["signalf", "bgrf", "signal"]
     result_type = "expand"
 
     def __init__(self, options):
@@ -38,7 +38,7 @@ class IdentityExtractor(MassTransformer):
                           *self.options.fit_range)
         for i in range(3, func.GetNpar()):
             bkgrnd.SetParameter(i - 3, func.GetParameter(i))
-        invmass.sigf = func
+        invmass.signalf = func
         invmass.bgrf = bkgrnd
         chi2ndf = func.GetChisquare() / (func.GetNDF() or 1)
         title = ", #chi^{{2}} / ndf = {:.3f}".format(chi2ndf)
@@ -48,7 +48,7 @@ class IdentityExtractor(MassTransformer):
         invmass.signal.GetXaxis().SetRangeUser(a, b)
         # invmass.signal.Scale(1. / invmass.signal.Integral())
         loggs.update({invmass.signal.GetName(): invmass.signal})
-        return invmass.sigf, invmass.bgrf, invmass.signal
+        return invmass.signalf, invmass.bgrf, invmass.signal
 
 
 class EpRatioEstimator(TransformerBase):

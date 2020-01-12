@@ -10,6 +10,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
 from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
+from spectrum.mass import SignalFitExtractor
 import spectrum.broot as br
 
 
@@ -76,7 +77,7 @@ class MassFitter(object):
         for estimator in pipeline:
             estimator.transform(masses, loggs)
 
-        params = masses["signal_fitf"].apply(
+        params = masses["signalf"].apply(
             lambda f: {
                 f.GetParName(i): f.GetParameter(i) for i in range(f.GetNpar())}
         )
@@ -96,13 +97,17 @@ class MassFitter(object):
             return [
                 BackgroundEstimator(),
                 SignalExtractor(),
-                SignalFitter()
+                SignalFitter(),
+                SignalFitExtractor(in_cols=["signalf"]),
+                SignalFitExtractor(in_cols=["measuredf"]),
             ]
         return [
             MixingBackgroundEstimator(),
             ZeroBinsCleaner(),
             SignalExtractor(),
-            SignalFitter()
+            SignalFitter(),
+            SignalFitExtractor(in_cols=["signalf"]),
+            SignalFitExtractor(in_cols=["measuredf"]),
         ]
 
 
@@ -213,7 +218,6 @@ class DataExtractor(object):
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(self.opt.output_order,
                                            masses["invmasses"])
-
         # pt = masses["pt_edges"][0]
         # for o in self.opt.output_order:
         #     print(table2hist(o, self.opt.output[o], masses[o], masses[o], pt))

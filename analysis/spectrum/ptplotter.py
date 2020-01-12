@@ -10,11 +10,12 @@ from repoze.lru import lru_cache
 class MassesPlot(object):
 
     def transform(self, imass, pad):
-        self._evaluate(imass.mass, imass.sigf, imass.background, imass.signal,
+        self._evaluate(imass.mass, imass.signalf,
+                       imass.background, imass.signal,
                        imass.bgrf, imass.fit_range,
                        imass.integration_region, pad)
 
-    def _evaluate(self, mass, sigf, background, signal, bgrf,
+    def _evaluate(self, mass, signalf, background, signal, bgrf,
                   fit_range, integration_region, pad):
         su.ticks(pad)
         pad.cd()
@@ -31,10 +32,10 @@ class MassesPlot(object):
         self._set_axis_limits(mass, signal, fit_range)
         self.draw(mass, "histe")
         self.draw(signal, color=br.BR_COLORS[2])
-        self.draw(sigf, color=br.BR_COLORS[1])
+        self.draw(signalf, color=br.BR_COLORS[1])
         self.draw(background, color=br.BR_COLORS[1])
         self.draw(bgrf, color=br.BR_COLORS[5])
-        self.draw_chisquare(sigf)
+        self.draw_chisquare(signalf)
         self._draw_line(mass, *integration_region)
         self._draw_text(title)
         pad.Update()
