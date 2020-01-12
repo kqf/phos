@@ -15,7 +15,7 @@ from spectrum.plotter import plot
 
 
 class IdentityExtractor(MassTransformer):
-    in_cols = ["invmasses", "mass"]
+    in_cols = ["invmasses", "measured"]
     out_cols = ["sigf", "bgrf", "signal"]
     result_type = "expand"
 

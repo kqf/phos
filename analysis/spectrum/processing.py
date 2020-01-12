@@ -43,7 +43,7 @@ class DataSlicer(object):
                 "pt_interval": [pt_range] * len(intervals),
                 "pt_edges": [self.opt.ptedges] * len(intervals),
                 "raw": readers,
-                "mass": [r.transform(same) for r in readers],
+                "measured": [r.transform(same) for r in readers],
                 "background": [r.transform(mixed) for r in readers],
                 "nevents": [same.nevents] * len(intervals)
             }
@@ -213,6 +213,10 @@ class DataExtractor(object):
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(self.opt.output_order,
                                            masses["invmasses"])
+
+        # pt = masses["pt_edges"][0]
+        # for o in self.opt.output_order:
+        #     print(table2hist(o, self.opt.output[o], masses[o], masses[o], pt))
 
         histos = analysis_output(
             "SpectrumAnalysisOutput",
