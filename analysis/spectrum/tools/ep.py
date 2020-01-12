@@ -10,27 +10,21 @@ from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import AnalysisDataReader
 from spectrum.comparator import Comparator
+from spectrum.mass import MassTransformer
 from spectrum.plotter import plot
 
 
-class IdentityExtractor(object):
+class IdentityExtractor(MassTransformer):
     in_cols = ["invmasses", "mass"]
-    out_col = ["sigf", "bgrf", "signal"]
+    out_cols = ["sigf", "bgrf", "signal"]
+    result_type = "expand"
 
     def __init__(self, options):
         super(IdentityExtractor, self).__init__()
         self.options = options
 
-    def transform(self, masses, loggs):
-        local_loggs = {}
-        masses[self.out_col] = masses[self.in_cols].apply(
-            lambda mases: self.apply(
-                *mases[self.in_cols], loggs=local_loggs),
-            axis=1, result_type="expand")
-        loggs.update({"IdentityExtractor": local_loggs})
-        return masses
-
-    def apply(self, invmass, mass, loggs):
+    # TODO: Add logging support for the base class
+    def apply(self, invmass, mass, loggs={}):
         ROOT.gStyle.SetOptFit()
         invmass.signal = mass.Clone()
         formula = "gaus(0) + {}(3)".format(self.options.background)

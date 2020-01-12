@@ -6,17 +6,20 @@ import spectrum.sutils as su
 import spectrum.broot as br
 
 
-# TODO: Generalize for multiple output columns
 class MassTransformer(object):
+    # Reduce all outputs to a single column
+    result_type = "reduce"
+
     def transform(self, data, loggs):
-        data[self.out_col] = data[self.in_cols].apply(
-            lambda data: self.apply(*data[self.in_cols]), axis=1)
+        data[self.out_cols] = data[self.in_cols].apply(
+            lambda data: self.apply(
+                *data[self.in_cols]), axis=1, result_type=self.result_type)
         return data
 
 
 class BackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "mass"]
-    out_col = "background"
+    out_cols = "background"
 
     def apply(self, imass, mass):
         sigf, bgrf = imass._measured.fit(mass)
@@ -29,7 +32,7 @@ class BackgroundEstimator(MassTransformer):
 
 class SignalExtractor(MassTransformer):
     in_cols = ["invmasses", "mass", "background"]
-    out_col = "signal"
+    out_cols = "signal"
 
     def apply(self, imass, mass, background):
         # Subtraction
@@ -44,7 +47,7 @@ class SignalExtractor(MassTransformer):
 
 class SignalFitter(MassTransformer):
     in_cols = ["invmasses", "signal"]
-    out_col = "signal_fitf"
+    out_cols = "signal_fitf"
 
     def apply(self, imass, signal):
         imass.sigf, imass.bgrf = imass._signal.fit(signal)
@@ -55,7 +58,7 @@ class SignalFitter(MassTransformer):
 
 class MixingBackgroundEstimator(MassTransformer):
     in_cols = ["invmasses", "mass", "background"]
-    out_col = "signal"
+    out_cols = "signal"
 
     def apply(self, imass, mass, background):
         ratio = br.ratio(mass, background, '')
@@ -80,7 +83,7 @@ class ZeroBinsCleaner(MassTransformer):
         replace empty bins with interpolations
     """
     in_cols = ["invmasses", "mass", "background"]
-    out_col = "invmasses"
+    out_cols = "invmasses"
 
     def apply(self, imass, mass, background):
         zeros = set()
