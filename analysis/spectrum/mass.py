@@ -83,7 +83,7 @@ class SignalFitExtractor(MassTransformer):
         position = func.GetParNumber(parname)
 
         if position < 0:
-            return 0, 0
+            return [0, 0]
 
         par = func.GetParameter(position)
         par_error = func.GetParError(position)

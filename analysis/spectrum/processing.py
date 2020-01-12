@@ -1,5 +1,6 @@
 from __future__ import print_function
 import ROOT
+import numpy as np
 import pandas as pd
 
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
@@ -11,6 +12,7 @@ from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
 from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
 from spectrum.mass import SignalFitExtractor, FitQualityExtractor
+from spectrum.comparator import Comparator
 import spectrum.broot as br
 
 
@@ -87,7 +89,13 @@ class MassFitter(object):
         out = []
         for col in params:
             title = "Signal parametrisation parameter {}".format(col)
-            hist = table2hist(col, title, params[col], masses["pt_edges"][0])
+            hist = table2hist(
+                col,
+                title,
+                params[col],
+                np.zeros_like(params[col]),
+                masses["pt_edges"][0],
+            )
             out.append(hist)
         loggs.update({"output": tuple(out)})
         return masses
@@ -165,10 +173,21 @@ class PtFitter(object):
             masses["pt_interval"].values[0],
             masses2edges(masses["invmasses"]),
             {self.opt.quantity: title},
-        )
-        return self._fit(target_quantity[0])
+        )[0]
 
-    def _fit(self, hist):
+        # TODO: Fix the problem with the histograms from
+        # the different (low, high) pt intervals
+        # target_quantity2 = table2hist(
+        #     self.opt.quantity,
+        #     self.opt.title.format(self.opt.particle),
+        #     masses[self.opt.quantity],
+        #     masses["{}_error".format(self.opt.quantity)],
+        #     masses["pt_edges"][0],
+        # )
+        # Comparator().compare(target_quantity, target_quantity2)
+        return self._fit(target_quantity, loggs)
+
+    def _fit(self, hist, loggs={}):
         fitquant = ROOT.TF1("fit_{}".format(self.opt.quantity), self.opt.func)
         fitquant.SetParameters(*self.opt.pars)
         fitquant.SetParNames(*self.opt.names)

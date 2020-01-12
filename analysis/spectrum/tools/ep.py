@@ -1,11 +1,12 @@
 import ROOT
 import spectrum.broot as br
+from spectrum.processing import RangeEstimator, DataExtractor
 from spectrum.processing import DataSlicer, InvariantMassExtractor
+from spectrum.mass import SignalFitExtractor
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ReducePipeline
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import TransformerBase
-from spectrum.processing import RangeEstimator, DataExtractor
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import AnalysisDataReader
@@ -60,6 +61,7 @@ class EpRatioEstimator(TransformerBase):
             ("slice", DataSlicer(options.analysis.pt)),
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
             ("fit", IdentityExtractor(options.analysis.invmass.signal)),
+            ("massextractor", SignalFitExtractor(in_cols=["signalf"])),
             ("ranges", RangeEstimator(options.analysis.calibration)),
             ("data", DataExtractor(options.analysis.output)),
             ("ep", HistogramSelector("mass", plot)),

@@ -138,9 +138,9 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles):
     return AnalysisOutType(**output)
 
 
-def table2hist(name, title, data, edges, errors=None):
+def table2hist(name, title, data, errors, edges):
     hist = ROOT.TH1F(name, title, len(edges) - 1, array('f', edges))
-    for i, (c, error) in enumerate(zip(data, errors or np.zeros_like(data))):
+    for i, (c, error) in enumerate(zip(data, errors)):
         hist.SetBinContent(i + 1, c)
         hist.SetBinError(i + 1, error)
     return hist
