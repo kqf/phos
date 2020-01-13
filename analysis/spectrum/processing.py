@@ -6,13 +6,12 @@ import pandas as pd
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
 from spectrum.outputcreator import analysis_output, SpectrumExtractor
 from spectrum.outputcreator import table2hist
-from spectrum.pipeline import Pipeline
 
 from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
 from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
 from spectrum.mass import SignalFitExtractor, FitQualityExtractor
-from spectrum.comparator import Comparator
+from spectrum.mass import MassTransformer
 import spectrum.broot as br
 
 
@@ -124,48 +123,12 @@ class MassFitter(object):
         ]
 
 
-class RangeEstimator(object):
-    def __init__(self, options):
-        super(RangeEstimator, self).__init__()
-        self.mass = PtFitter(
-            in_cols=["mass", "mass_error"],
-            out_col="mass_pt_f",
-            options=options.mass)
-        self.width = PtFitter(
-            in_cols=["width", "width_error"],
-            out_col="width_pt_f",
-            options=options.width)
-        self.nsigmas = options.nsigmas
-
-    def transform(self, masses, loggs):
-        ranges = self._fit(masses, loggs)
-        for mass, region in zip(masses["invmasses"], ranges):
-            mass.integration_region = region
-        return masses
-
-    def _fit(self, masses, loggs):
-        ROOT.gStyle.SetOptStat("")
-        mass = self.mass.transform(masses, loggs)
-        sigma = self.width.transform(masses, loggs)
-
-        massf = mass.fitf
-        sigmaf = sigma.fitf
-
-        def mass_range(pt):
-            return (
-                massf.Eval(pt) - self.nsigmas * sigmaf.Eval(pt),
-                massf.Eval(pt) + self.nsigmas * sigmaf.Eval(pt)
-            )
-
-        pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
-        return list(map(mass_range, pt_values))
-
-
 class PtFitter(object):
 
-    def __init__(self, in_cols, out_col, options):
+    def __init__(self, col, err, out_col, options):
         super(PtFitter, self).__init__()
-        self.in_cols = in_cols
+        self.col = col
+        self.err = err
         self.out_col = out_col
         self.opt = options
 
@@ -173,14 +136,14 @@ class PtFitter(object):
         target_quantity = table2hist(
             self.out_col,
             self.opt.title.format(self.opt.particle),
-            masses[self.in_cols[0]],
-            masses[self.in_cols[1]],
+            masses[self.col],
+            masses[self.err],
             masses["pt_edges"][0],
             roi=masses["pt_interval"].values[0],
         )
         hist = self._fit(target_quantity, loggs)
         masses[self.out_col] = [hist.fitf] * len(masses)
-        return hist
+        return masses
 
     def _fit(self, hist, loggs={}):
         fitquant = ROOT.TF1("fit_{}".format(self.opt.quantity), self.opt.func)
@@ -213,6 +176,24 @@ class PtFitter(object):
         hist.fitf = fitquant
         loggs.update({"output": hist})
         return hist
+
+
+class RangeEstimator(MassTransformer):
+    in_cols = ["invmasses", "pposition_pt_f", "pwidth_pt_f", "intervals"]
+    out_cols = "integration_region"
+
+    def __init__(self, options):
+        super(RangeEstimator, self).__init__()
+        self.nsigmas = options.nsigmas
+
+    def apply(self, imass, position, width, intervals):
+        pt = intervals[0] + (intervals[1] - intervals[0]) / 2
+        integration_region = (
+            position.Eval(pt) - self.nsigmas * width.Eval(pt),
+            position.Eval(pt) + self.nsigmas * width.Eval(pt)
+        )
+        imass.integration_region = integration_region
+        return integration_region
 
 
 class DataExtractor(object):

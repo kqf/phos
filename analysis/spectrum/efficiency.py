@@ -8,7 +8,7 @@ from spectrum.pipeline import ReducePipeline, ParallelPipeline, HistogramScaler
 from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import RebinTransformer
 import spectrum.broot as br
-from spectrum.processing import RangeEstimator
+from spectrum.processing import PtFitter
 from spectrum.vault import DataVault
 
 # NB: This test is to compare different efficiencies
@@ -84,7 +84,10 @@ class PeakPositionWidthEstimator(TransformerBase):
         self.options = options
         self.pipeline = Analysis(options.analysis)
         name, option = options.analysis.steps[0]
-        self.restimator = RangeEstimator(option.calibration)
+        self.mass = PtFitter(col=None, err=None, out_col=None,
+                             options=option.calibration.mass)
+        self.width = PtFitter(col=None, err=None, out_col=None,
+                              options=option.calibration.width)
 
     def _estimate(self, data, loggs):
         data = data[0][0], data[1][0]
@@ -93,8 +96,8 @@ class PeakPositionWidthEstimator(TransformerBase):
         output.mass.GetXaxis().SetRangeUser(*pt_range)
         output.width.GetXaxis().SetRangeUser(*pt_range)
 
-        massf = self.restimator.mass._fit(output.mass).fitf
-        widthf = self.restimator.width._fit(output.width).fitf
+        massf = self.mass._fit(output.mass).fitf
+        widthf = self.width._fit(output.width).fitf
         return output.mass, massf, output.width, widthf
 
     def transform(self, data, loggs):

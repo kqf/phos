@@ -1,5 +1,5 @@
 from spectrum.processing import DataSlicer, RangeEstimator
-from spectrum.processing import DataExtractor, MassFitter
+from spectrum.processing import DataExtractor, MassFitter, PtFitter
 from spectrum.processing import InvariantMassExtractor
 from spectrum.options import Options, OptionsSPMC, CompositeOptions
 from spectrum.pipeline import Pipeline, ParallelPipeline, ReducePipeline
@@ -18,6 +18,16 @@ class SimpleAnalysis(TransformerBase):
             ("slice", DataSlicer(options.pt)),
             ("parametrize", InvariantMassExtractor(options.invmass)),
             ("fitmasses", MassFitter(options.invmass.use_mixed)),
+            ("peak-position", PtFitter(
+                col="mass",
+                err="mass_error",
+                out_col="pposition_pt_f",
+                options=options.calibration.mass)),
+            ("peak-width", PtFitter(
+                col="width",
+                err="width_error",
+                out_col="pwidth_pt_f",
+                options=options.calibration.width)),
             ("ranges", RangeEstimator(options.calibration)),
             ("data", DataExtractor(options.output))
         ])
