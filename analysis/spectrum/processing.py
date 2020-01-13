@@ -127,8 +127,14 @@ class MassFitter(object):
 class RangeEstimator(object):
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
-        self.mass = Pipeline([("mass", PtFitter(options.mass))])
-        self.width = Pipeline([("width", PtFitter(options.width))])
+        self.mass = PtFitter(
+            in_cols=["mass", "mass_error"],
+            out_col="mass_pt_f",
+            options=options.mass)
+        self.width = PtFitter(
+            in_cols=["width", "width_error"],
+            out_col="width_pt_f",
+            options=options.width)
         self.nsigmas = options.nsigmas
 
     def transform(self, masses, loggs):
@@ -152,25 +158,29 @@ class RangeEstimator(object):
             )
 
         pt_values = [mass.GetBinCenter(i + 1) for i in range(mass.GetNbinsX())]
-        return map(mass_range, pt_values)
+        return list(map(mass_range, pt_values))
 
 
 class PtFitter(object):
 
-    def __init__(self, options):
+    def __init__(self, in_cols, out_col, options):
         super(PtFitter, self).__init__()
+        self.in_cols = in_cols
+        self.out_col = out_col
         self.opt = options
 
     def transform(self, masses, loggs):
         target_quantity = table2hist(
-            self.opt.quantity,
+            self.out_col,
             self.opt.title.format(self.opt.particle),
-            masses[self.opt.quantity],
-            masses["{}_error".format(self.opt.quantity)],
+            masses[self.in_cols[0]],
+            masses[self.in_cols[1]],
             masses["pt_edges"][0],
             roi=masses["pt_interval"].values[0],
         )
-        return self._fit(target_quantity, loggs)
+        hist = self._fit(target_quantity, loggs)
+        masses[self.out_col] = [hist.fitf] * len(masses)
+        return hist
 
     def _fit(self, hist, loggs={}):
         fitquant = ROOT.TF1("fit_{}".format(self.opt.quantity), self.opt.func)
@@ -196,14 +206,12 @@ class PtFitter(object):
         ndf = fitquant.GetNDF()
         chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.
         # print(chi2_ndf, self.opt.opt.fit_range, par)
-        hist.SetTitle(
-            hist.GetTitle() + ", #chi^{2}/ndf" + " = {chi2:0.4g}".format(
-                chi2=chi2_ndf
-            )
-        )
+        title = "{}, #chi^{{2}}/ndf = {:0.4g}"
+        hist.SetTitle(title.format(hist.GetTitle(), chi2_ndf))
         # print([fitquant.GetParameter(i) for i, p in enumerate(par)])
         hist.SetLineColor(37)
         hist.fitf = fitquant
+        loggs.update({"output": hist})
         return hist
 
 
