@@ -141,8 +141,8 @@ class PtFitter(object):
             masses["pt_edges"][0],
             roi=masses["pt_interval"].values[0],
         )
-        hist = self._fit(target_quantity, loggs)
-        masses[self.out_col] = [hist.fitf] * len(masses)
+        fitf = self._fit(target_quantity, loggs)
+        masses[self.out_col] = [fitf] * len(masses)
         return masses
 
     def _fit(self, hist, loggs={}):
@@ -166,16 +166,11 @@ class PtFitter(object):
         for i in range(fitquant.GetNpar()):
             self.opt.pars[i] = fitquant.GetParameter(i)
 
-        ndf = fitquant.GetNDF()
-        chi2_ndf = fitquant.GetChisquare() / ndf if ndf else 0.
-        # print(chi2_ndf, self.opt.opt.fit_range, par)
         title = "{}, #chi^{{2}}/ndf = {:0.4g}"
-        hist.SetTitle(title.format(hist.GetTitle(), chi2_ndf))
-        # print([fitquant.GetParameter(i) for i, p in enumerate(par)])
+        hist.SetTitle(title.format(hist.GetTitle(), br.chi2ndff(fitquant)))
         hist.SetLineColor(37)
-        hist.fitf = fitquant
         loggs.update({"output": hist})
-        return hist
+        return fitquant
 
 
 class RangeEstimator(MassTransformer):
