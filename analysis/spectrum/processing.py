@@ -162,29 +162,14 @@ class PtFitter(object):
         self.opt = options
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract([self.opt.quantity],
-                                           masses["invmasses"])
-
-        title = self.opt.title.format(self.opt.particle)
-        target_quantity = analysis_output(
+        target_quantity = table2hist(
             self.opt.quantity,
-            values,
-            [self.opt.quantity],
-            masses["pt_interval"].values[0],
-            masses2edges(masses["invmasses"]),
-            {self.opt.quantity: title},
-        )[0]
-
-        # TODO: Fix the problem with the histograms from
-        # the different (low, high) pt intervals
-        # target_quantity2 = table2hist(
-        #     self.opt.quantity,
-        #     self.opt.title.format(self.opt.particle),
-        #     masses[self.opt.quantity],
-        #     masses["{}_error".format(self.opt.quantity)],
-        #     masses["pt_edges"][0],
-        # )
-        # Comparator().compare(target_quantity, target_quantity2)
+            self.opt.title.format(self.opt.particle),
+            masses[self.opt.quantity],
+            masses["{}_error".format(self.opt.quantity)],
+            masses["pt_edges"][0],
+            roi=masses["pt_interval"].values[0],
+        )
         return self._fit(target_quantity, loggs)
 
     def _fit(self, hist, loggs={}):

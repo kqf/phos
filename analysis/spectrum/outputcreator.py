@@ -138,9 +138,15 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles):
     return AnalysisOutType(**output)
 
 
-def table2hist(name, title, data, errors, edges):
+def table2hist(name, title, data, errors, edges, roi=None):
     hist = ROOT.TH1F(name, title, len(edges) - 1, array('f', edges))
     for i, (c, error) in enumerate(zip(data, errors)):
+        outside_roi = (
+            roi is not None and
+            roi[0] < hist.GetBinCenter(i + 1) < roi[1]
+        )
+        if not outside_roi:
+            continue
         hist.SetBinContent(i + 1, c)
         hist.SetBinError(i + 1, error)
     return hist
