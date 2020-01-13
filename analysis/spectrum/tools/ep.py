@@ -10,6 +10,7 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import AnalysisDataReader
+from spectrum.processing import PtFitter
 from spectrum.comparator import Comparator
 from spectrum.mass import MassTransformer
 from spectrum.plotter import plot
@@ -62,6 +63,16 @@ class EpRatioEstimator(TransformerBase):
             ("parametrize", InvariantMassExtractor(options.analysis.invmass)),
             ("fit", IdentityExtractor(options.analysis.invmass.signal)),
             ("massextractor", SignalFitExtractor(in_cols=["signalf"])),
+            ("peak-position", PtFitter(
+                col="mass",
+                err="mass_error",
+                out_col="pposition_pt_f",
+                options=options.analysis.calibration.mass)),
+            ("peak-width", PtFitter(
+                col="width",
+                err="width_error",
+                out_col="pwidth_pt_f",
+                options=options.analysis.calibration.width)),
             ("ranges", RangeEstimator(options.analysis.calibration)),
             ("data", DataExtractor(options.analysis.output)),
             ("ep", HistogramSelector("mass", plot)),
