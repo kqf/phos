@@ -192,6 +192,24 @@ class RangeEstimator(MassTransformer):
         return integration_region
 
 
+class PeakAreaEstimator(MassTransformer):
+    in_cols = ["signal", "integration_region"]
+    out_cols = ["nmesons", "nmesons_error"]
+    result_type = "expand"
+
+    def apply(self, signal, integration_region):
+        area, areae = br.area_and_error(signal, *integration_region)
+        return area, areae
+
+
+class SpectrumEstimator(object):
+    def transform(self, masses, loggs):
+        bin_widths = masses["intervals"].str[1] - masses["intervals"].str[0]
+        masses["nmesons"] = masses["nmesons"] / bin_widths / masses["nevents"]
+        masses["spectrum"] = masses["nmesons"]
+        return masses
+
+
 class PeakPropertiesEstimator(TransformerBase):
     def __init__(self, options, plot=False):
         super(PeakPropertiesEstimator, self).__init__(plot=plot)
@@ -207,6 +225,8 @@ class PeakPropertiesEstimator(TransformerBase):
                 out_col="pwidth_pt_f",
                 options=options.width)),
             ("ranges", RangeEstimator(options)),
+            ("area", PeakAreaEstimator()),
+            ("spectrum", SpectrumEstimator()),
         ])
 
 
