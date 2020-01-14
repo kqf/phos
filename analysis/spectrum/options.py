@@ -196,7 +196,7 @@ class CompositeCorrectedYieldOptions(object):
 
 
 class FeeddownOptions(object):
-    def __init__(self, pt="config/pt.json", particle="#pi^{0}"):
+    def __init__(self, pt="config/pt.json", stop=False, particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()
         self.particle = particle
         self.feeddown = Options(
@@ -215,6 +215,7 @@ class FeeddownOptions(object):
         self.plot_func = lambda x, loggs: x
         # Ensure the right pT binning for the final particle histogram
         self.pt = Options(particle=particle).pt.ptedges
+        self.stop = stop
 
     @staticmethod
     def feeddown_paramerization():

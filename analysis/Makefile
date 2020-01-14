@@ -4,7 +4,8 @@ sanity-test:
 		scripts/yield/observables.py \
 		scripts/data/tof.py \
 		scripts/efficiency/spmc.py \
-		scripts/systematics/ep.py
+		scripts/efficiency/feeddown.py \
+		scripts/systematics/ep.py \
 
 datasets: phos-download
 	phos-download --finput=config/vault/ledger.json --output=.
