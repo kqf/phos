@@ -107,10 +107,11 @@ class MassFitter(object):
                 SignalExtractor(),
                 SignalFitter(),
                 SignalFitExtractor(in_cols=["signalf"]),
-                SignalFitExtractor(in_cols=["measuredf"], prefix="background"),
+                SignalFitExtractor(in_cols=["measuredf"],
+                                   prefix="background_"),
                 FitQualityExtractor(in_cols=["signalf"]),
                 FitQualityExtractor(in_cols=["measuredf"],
-                                    prefix="background"),
+                                    prefix="background_"),
             ]
         return [
             MixingBackgroundEstimator(),
@@ -118,9 +119,9 @@ class MassFitter(object):
             SignalExtractor(),
             SignalFitter(),
             SignalFitExtractor(in_cols=["signalf"]),
-            SignalFitExtractor(in_cols=["measuredf"], prefix="background"),
+            SignalFitExtractor(in_cols=["measuredf"], prefix="background_"),
             FitQualityExtractor(in_cols=["signalf"]),
-            FitQualityExtractor(in_cols=["measuredf"], prefix="background"),
+            FitQualityExtractor(in_cols=["measuredf"], prefix="background_"),
         ]
 
 
