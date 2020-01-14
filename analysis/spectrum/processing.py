@@ -2,6 +2,7 @@ from __future__ import print_function
 import ROOT
 import numpy as np
 import pandas as pd
+import collections
 
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
 from spectrum.outputcreator import analysis_output, SpectrumExtractor
@@ -206,8 +207,9 @@ class PeakAreaEstimator(MassTransformer):
 class SpectrumEstimator(object):
     def transform(self, masses, loggs):
         bin_widths = masses["intervals"].str[1] - masses["intervals"].str[0]
-        masses["nmesons"] = masses["nmesons"] / bin_widths / masses["nevents"]
-        masses["spectrum"] = masses["nmesons"]
+        masses["nmesons"] = masses["nmesons"] / bin_widths
+        masses["spectrum"] = masses["nmesons"] / masses["nevents"]
+        masses["spectrum_error"] = masses["nmesons_error"]
         return masses
 
 
@@ -236,6 +238,8 @@ class DataExtractor(object):
     def __init__(self, options):
         super(DataExtractor, self).__init__()
         self.opt = options
+        self.otype = collections.namedtuple(
+            "SpectrumAnalysisOutput", self.opt.output_order)
 
     def _decorate_hists(self, histograms, nevents):
         # Scale by the number of events
@@ -251,9 +255,16 @@ class DataExtractor(object):
     def transform(self, masses, loggs):
         values = SpectrumExtractor.extract(self.opt.output_order,
                                            masses["invmasses"])
-        # pt = masses["pt_edges"][0]
-        # for o in self.opt.output_order:
-        #     print(table2hist(o, self.opt.output[o], masses[o], masses[o], pt))
+        # data = []
+        # for o in self.otype._fields:
+        #     data.append(
+        #         table2hist(
+        #             o,
+        #             self.opt.output[o],
+        #             masses[o],
+        #             masses["{}_error".format(o)],
+        #             masses["pt_edges"][0])
+        #     )
 
         histos = analysis_output(
             "SpectrumAnalysisOutput",
@@ -267,4 +278,5 @@ class DataExtractor(object):
         nevents = next(iter(masses["nevents"]))
         decorated = self._decorate_hists(histos, nevents)
         loggs.update({"invariant_masses": MulipleOutput(masses["invmasses"])})
+        # return self.otype(*data)
         return decorated

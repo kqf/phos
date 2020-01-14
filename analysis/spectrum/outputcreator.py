@@ -145,8 +145,9 @@ def table2hist(name, title, data, errors, edges, roi=None):
             roi is not None and
             roi[0] < hist.GetBinCenter(i + 1) < roi[1]
         )
-        if not outside_roi:
-            continue
+        if roi is not None:
+            if not outside_roi:
+                continue
         hist.SetBinContent(i + 1, c)
         hist.SetBinError(i + 1, error)
     return hist
