@@ -6,6 +6,7 @@ import pandas as pd
 from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
 from spectrum.outputcreator import analysis_output, SpectrumExtractor
 from spectrum.outputcreator import table2hist
+from spectrum.pipeline import Pipeline, TransformerBase
 
 from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
@@ -189,6 +190,24 @@ class RangeEstimator(MassTransformer):
         )
         imass.integration_region = integration_region
         return integration_region
+
+
+class PeakPropertiesEstimator(TransformerBase):
+    def __init__(self, options, plot=False):
+        super(PeakPropertiesEstimator, self).__init__(plot=plot)
+        self.pipeline = Pipeline([
+            ("peak-position", PtFitter(
+                col="mass",
+                err="mass_error",
+                out_col="pposition_pt_f",
+                options=options.mass)),
+            ("peak-width", PtFitter(
+                col="width",
+                err="width_error",
+                out_col="pwidth_pt_f",
+                options=options.width)),
+            ("ranges", RangeEstimator(options)),
+        ])
 
 
 class DataExtractor(object):
