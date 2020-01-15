@@ -25,11 +25,10 @@ def test_simple(particle, spmc, oname):
     analysis = Analysis(CompositeOptions(particle=particle))
     with open_loggs() as loggs:
         with plt.pcanvas(size=(96, 128), stop=True, oname=oname) as canvas:
-            # TODO: Use same alignment as for real data
-            ROOT.gStyle.SetStatY(0.88)
-            ROOT.gStyle.SetStatX(0.88)
+            ROOT.gStyle.SetStatX(0.92)
             ROOT.gStyle.SetStatW(0.15)
             ROOT.gStyle.SetStatH(0.15)
+
             ROOT.gStyle.SetTitleFont(62, "X")
             ROOT.gStyle.SetTitleFont(62, "Y")
             ROOT.gStyle.SetTitleFont(62, "Z")
