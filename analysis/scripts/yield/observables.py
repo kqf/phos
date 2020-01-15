@@ -32,7 +32,8 @@ def test_extracts_spectrum(particle, selection, data, minuit_config):
     with open_loggs() as loggs:
         output = Analysis(Options(particle=particle)).transform(data, loggs)
 
-    actual = {
-        h.GetName(): list(br.bins(h).contents) for h in output
-    }
-    validate(actual, "test_observables/{}".format(particle))
+    for h in output:
+        name = h.GetName()
+        path = "test_observables/{}/{}".format(particle, name)
+        print(path)
+        validate(br.hist2dict(h), path)
