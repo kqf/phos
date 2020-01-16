@@ -235,6 +235,15 @@ class PeakPropertiesEstimator(TransformerBase):
         ])
 
 
+class InvariantMassPlotter(TransformerBase):
+    def transform(self, masses, loggs):
+        loggs.update({
+            "output":
+            MulipleOutput(masses.to_dict(orient="records"))
+        })
+        return masses
+
+
 class DataExtractor(object):
 
     def __init__(self, options):
@@ -279,9 +288,5 @@ class DataExtractor(object):
 
         nevents = next(iter(masses["nevents"]))
         decorated = self._decorate_hists(histos, nevents)
-        loggs.update({
-            "invariant_masses":
-            MulipleOutput(masses.to_dict(orient="records"))
-        })
         # return self.otype(*data)
         return decorated
