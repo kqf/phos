@@ -65,6 +65,8 @@ class InvariantMassExtractor(object):
             lambda x: InvariantMass(x, self.opt))
         rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
         rmasses["pt_label"] = rmasses["invmasses"].apply(lambda x: x.pt_label)
+        rmasses["fit_range"] = rmasses["invmasses"].apply(
+            lambda x: x.fit_range)
         return rmasses
 
 
@@ -277,6 +279,9 @@ class DataExtractor(object):
 
         nevents = next(iter(masses["nevents"]))
         decorated = self._decorate_hists(histos, nevents)
-        loggs.update({"invariant_masses": MulipleOutput(masses["invmasses"])})
+        loggs.update({
+            "invariant_masses":
+            MulipleOutput(masses.to_dict(orient="records"))
+        })
         # return self.otype(*data)
         return decorated
