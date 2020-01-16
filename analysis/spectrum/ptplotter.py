@@ -7,6 +7,8 @@ import spectrum.broot as br
 from repoze.lru import lru_cache
 
 
+# TODO: Fix the signature for this method
+# TODO: Fix the tests
 class MassesPlot(object):
 
     def transform(self, imass, pad):
@@ -134,7 +136,16 @@ class MultiplePlotter(object):
                 canvas.Divide(*canvas_shape + self.widths)
                 plotter = MassesPlot()
                 for j, mass in enumerate(masses[i:i + n_plots]):
-                    plotter.transform(mass, canvas.cd(j + 1))
+                    plotter._evaluate(
+                        mass=mass["signal"],
+                        signalf=mass["signalf"],
+                        background=mass["background"],
+                        signal=mass["signal"],
+                        bgrf=mass["measured"],
+                        fit_range=mass["fit_range"],
+                        integration_region=mass["integration_region"],
+                        pad=canvas.cd(j + 1)
+                    )
                 canvas.Write("masses_{}".format(i))
 
 
@@ -146,12 +157,9 @@ class MulipleOutput(object):
 
     def Write(self):
         for mass in self.masses:
-            mass.mass.Write()
-
-            if mass.ratio:
-                mass.ratio.Write()
-
-            if mass.background:
-                mass.background.Write()
-
+            mass["signal"].Write()
+            mass["measured"].Write()
+            # TODO: Save the ratio as well
+            # mass["ratio"].Write()
+            mass["background"].Write()
         MultiplePlotter().transform(self.masses)
