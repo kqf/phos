@@ -48,4 +48,13 @@ def test_simple(particle, data, oname):
             canvas.SetLeftMargin(0.15)
             canvas.SetRightMargin(0.05)
             data = loggs["parametrize"]["output"].loc[12]
-            MassesPlot().transform(data["invmasses"], canvas)
+            MassesPlot().transform(
+                pad=canvas,
+                mass=data["measured"],
+                signalf=data["signalf"],
+                background=data["background"],
+                signal=data["signal"],
+                bgrf=data["measuredf"],
+                fit_range=data["fit_range"],
+                integration_region=data["integration_region"],
+            )
