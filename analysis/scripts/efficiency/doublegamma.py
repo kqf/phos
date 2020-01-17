@@ -45,6 +45,14 @@ def test_simple(particle, spmc, oname):
             ROOT.gStyle.SetTitleSize(0.04, "Z")
 
             analysis.transform(spmc, loggs=loggs)
-            # import IPython; IPython.embed()
             data = loggs["steps"]["analysis-0"]["parametrize"]["output"].loc[9]
-            MassesPlot().transform(data["invmasses"], canvas)
+            MassesPlot().transform(
+                pad=canvas,
+                mass=data["measured"],
+                signalf=data["signalf"],
+                background=data["background"],
+                signal=data["signal"],
+                bgrf=data["measuredf"],
+                fit_range=data["fit_range"],
+                integration_region=data["integration_region"],
+            )
