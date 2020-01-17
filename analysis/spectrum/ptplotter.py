@@ -158,9 +158,10 @@ class MulipleOutput(object):
     def Write(self):
         MultiplePlotter().transform(self.masses)
 
-        for mass in self.masses:
-            mass["signal"].Write()
-            mass["measured"].Write()
-            # TODO: Save the ratio as well
-            # mass["ratio"].Write()
-            mass["background"].Write()
+        with br.tdirectory("raw"):
+            for mass in self.masses:
+                mass["signal"].Write()
+                mass["measured"].Write()
+                # TODO: Save the ratio as well
+                # mass["ratio"].Write()
+                mass["background"].Write()

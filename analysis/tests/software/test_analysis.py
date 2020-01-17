@@ -25,8 +25,8 @@ def data_spmc():
     # "#eta",
 ])
 @pytest.mark.parametrize("logname", [
-    "",
-    # "test the single analysis",
+    # "",
+    "test the single analysis",
 ])
 def test_simple(particle, data, logname):
     analysis = Analysis(Options(particle=particle))
@@ -37,12 +37,12 @@ def test_simple(particle, data, logname):
 
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
+    # "#pi^{0}",
     # "#eta",
 ])
 @pytest.mark.parametrize("logname", [
-    "",
-    # "test the composite analysis",
+    # "",
+    "test the composite analysis",
 ])
 def test_composite(particle, data_spmc, logname):
     analysis = Analysis(CompositeOptions(particle=particle))

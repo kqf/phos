@@ -845,3 +845,12 @@ def module_names(same_module=False):
         pairs = [pair for pair in pairs if pair[0] == pair[1]]
 
     return ['SM{}SM{}'.format(*pair) for pair in pairs]
+
+
+@contextmanager
+def tdirectory(dirname):
+    path = ROOT.gDirectory.GetPath()
+    ROOT.gDirectory.mkdir(dirname)
+    print(path)
+    yield ROOT.gDirectory.cd(dirname)
+    ROOT.gDirectory.cd(path)
