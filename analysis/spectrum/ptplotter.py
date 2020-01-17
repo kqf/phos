@@ -7,17 +7,11 @@ import spectrum.broot as br
 from repoze.lru import lru_cache
 
 
-# TODO: Fix the signature for this method
+# TODO: Fix the name of the parameters in the signature for this method
 # TODO: Fix the tests
 class MassesPlot(object):
 
-    def transform(self, imass, pad):
-        self._evaluate(imass.mass, imass.signalf,
-                       imass.background, imass.signal,
-                       imass.bgrf, imass.fit_range,
-                       imass.integration_region, pad)
-
-    def _evaluate(self, mass, signalf, background, signal, bgrf,
+    def transform(self, mass, signalf, background, signal, bgrf,
                   fit_range, integration_region, pad):
         su.ticks(pad)
         pad.cd()
@@ -136,7 +130,8 @@ class MultiplePlotter(object):
                 canvas.Divide(*canvas_shape + self.widths)
                 plotter = MassesPlot()
                 for j, mass in enumerate(masses[i:i + n_plots]):
-                    plotter._evaluate(
+                    plotter.transform(
+                        pad=canvas.cd(j + 1),
                         mass=mass["signal"],
                         signalf=mass["signalf"],
                         background=mass["background"],
@@ -144,7 +139,6 @@ class MultiplePlotter(object):
                         bgrf=mass["measured"],
                         fit_range=mass["fit_range"],
                         integration_region=mass["integration_region"],
-                        pad=canvas.cd(j + 1)
                     )
                 canvas.Write("masses_{}".format(i))
 
