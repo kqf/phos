@@ -1,6 +1,6 @@
 {
     "comment": "Number of pt bins is #ptedges - 1. Therefore #rebins = #ptedges -1",
-    "output_order": ["mass", "width", "spectrum", "chi2", "nmesons", "cball_alpha", "cball_n", "background_chi2", "background_cball_alpha", "background_cball_n"],
+    "output_order": ["mass", "width", "spectrum", "chi2", "nmesons", "cball_alpha", "cball_n"],
     "scalew_spectrum": true,
     "#pi^{0}":
     {
@@ -9,13 +9,10 @@
             "mass": "Reconstructed #pi^{0} mass position; p_{T} (GeV/#it{c}); m (GeV/#it{c}^{2})",
             "width": "Reconstructed #pi^{0} peak width ; p_{T} (GeV/#it{c}); #sigma (GeV/#it{c}^{2})",
             "spectrum": "Reconstructed #pi^{0} spectrum ; p_{T} (GeV/#it{c}); #frac{dN_{rec} }{dp_{T}}",  
-            "chi2": "#chi^{2} / N_{dof} for #pi^{0} spectrum; p_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
+            "chi2": "#chi^{2} / N_{dof} for #pi^{0} spectrum; p_{T}(GeV/#it{c}); #chi^{2} / N_{dof}",
             "nmesons": "Number of #pi^{0}s in each p_{T} bin; p_{T} (GeV/#it{c}); #frac{dN}{dp_{T}}",  
             "cball_alpha": "Crystal ball parameter #alpha for #pi^{0} peak; p_{T} (GeV/#it{c}); #alpha",
-            "cball_n": "Crystal ball parameter n for #pi^{0} peak; p_{T} (GeV/#it{c}); n",
-            "background_chi2": "Singnal + background #chi^{2} / N_{dof} for #pi^{0} spectrum; p_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
-            "background_cball_alpha": "Singnal + background crystal ball parameter #alpha for #pi^{0} peak; p_{T} (GeV/#it{c}); #alpha",
-            "background_cball_n": "Singnal + background crystal ball parameter n for #pi^{0} peak; p_{T} (GeV/#it{c}); n"
+            "cball_n": "Crystal ball parameter n for #pi^{0} peak; p_{T} (GeV/#it{c}); n"
         }
    },
     "#eta":
@@ -28,10 +25,7 @@
             "chi2": "#chi^{2} / N_{dof} for #eta spectrum; p_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
             "nmesons": "Number of #etas in each p_{T} bin; p_{T} (GeV/#it{c}); #frac{dN}{dp_{T}}",  
             "cball_alpha": "Crystal ball parameter #alpha for #eta peak; p_{T} (GeV/#it{c}); #alpha",
-            "cball_n": "Crystal ball parameter n for #eta peak; p_{T} (GeV/#it{c}); n",
-            "background_chi2": "Singnal + background #chi^{2} / N_{dof} for #eta spectrum; p_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
-            "background_cball_alpha": "Singnal + background crystal ball parameter #alpha for #eta peak; p_{T} (GeV/#it{c}); #alpha",
-            "background_cball_n": "Singnal + background crystal ball parameter n for #eta peak; p_{T} (GeV/#it{c}); n"
+            "cball_n": "Crystal ball parameter n for #eta peak; p_{T} (GeV/#it{c}); n"
         }
    } 
 }
