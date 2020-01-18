@@ -209,9 +209,10 @@ class PeakAreaEstimator(MassTransformer):
 class SpectrumEstimator(object):
     def transform(self, masses, loggs):
         bin_widths = masses["intervals"].str[1] - masses["intervals"].str[0]
+        masses["spectrum"] = masses["nmesons"] / masses["nevents"] / bin_widths
         masses["nmesons"] = masses["nmesons"] / bin_widths
-        masses["spectrum"] = masses["nmesons"] / masses["nevents"]
-        masses["spectrum_error"] = masses["nmesons_error"]
+        masses["spectrum_error"] = masses["nmesons_error"] / masses["nevents"]
+        masses["nmesons_error"] = masses["nmesons_error"]
         return masses
 
 
@@ -264,29 +265,15 @@ class DataExtractor(object):
         return histograms
 
     def transform(self, masses, loggs):
-        values = SpectrumExtractor.extract(self.opt.output_order,
-                                           masses["invmasses"])
-        # data = []
-        # for o in self.otype._fields:
-        #     data.append(
-        #         table2hist(
-        #             o,
-        #             self.opt.output[o],
-        #             masses[o],
-        #             masses["{}_error".format(o)],
-        #             masses["pt_edges"][0])
-        #     )
+        data = []
+        for o in self.otype._fields:
+            data.append(
+                table2hist(
+                    o,
+                    self.opt.output[o],
+                    masses[o],
+                    masses["{}_error".format(o)],
+                    masses["pt_edges"][0])
+            )
 
-        histos = analysis_output(
-            "SpectrumAnalysisOutput",
-            values,
-            self.opt.output_order,
-            masses["pt_interval"].values[0],
-            masses2edges(masses["invmasses"]),
-            self.opt.output,
-        )
-
-        nevents = next(iter(masses["nevents"]))
-        decorated = self._decorate_hists(histos, nevents)
-        # return self.otype(*data)
-        return decorated
+        return self.otype(*data)
