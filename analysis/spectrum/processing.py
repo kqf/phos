@@ -209,10 +209,11 @@ class PeakAreaEstimator(MassTransformer):
 class SpectrumEstimator(object):
     def transform(self, masses, loggs):
         bin_widths = masses["intervals"].str[1] - masses["intervals"].str[0]
-        masses["spectrum"] = masses["nmesons"] / masses["nevents"] / bin_widths
         masses["nmesons"] = masses["nmesons"] / bin_widths
+        masses["spectrum"] = masses["nmesons"] / masses["nevents"]
+
+        masses["nmesons_error"] = masses["nmesons_error"] / bin_widths
         masses["spectrum_error"] = masses["nmesons_error"] / masses["nevents"]
-        masses["nmesons_error"] = masses["nmesons_error"]
         return masses
 
 
