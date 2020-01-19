@@ -253,17 +253,6 @@ class DataExtractor(object):
         self.otype = collections.namedtuple(
             "SpectrumAnalysisOutput", self.opt.output_order)
 
-    def _decorate_hists(self, histograms, nevents):
-        # Scale by the number of events
-        if self.opt.scalew_spectrum:
-            br.scalewidth(histograms.spectrum)
-            br.scalewidth(histograms.nmesons)
-
-        histograms.spectrum.Scale(1. / nevents)
-        histograms.spectrum.logy = True
-        histograms.nmesons.logy = True
-        return histograms
-
     def transform(self, masses, loggs):
         data = []
         for o in self.otype._fields:
