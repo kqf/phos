@@ -4,9 +4,7 @@ import numpy as np
 import pandas as pd
 import collections
 
-from spectrum.invariantmass import InvariantMass, RawMass, masses2edges
-from spectrum.outputcreator import analysis_output, SpectrumExtractor
-from spectrum.outputcreator import table2hist
+from spectrum.invariantmass import InvariantMass, RawMass,
 from spectrum.pipeline import Pipeline, TransformerBase
 
 from spectrum.ptplotter import MulipleOutput
@@ -70,6 +68,7 @@ class InvariantMassExtractor(object):
         return rmasses
 
 
+# TODO: Simplify me (split for a sepparate logger transformer)
 class MassFitter(object):
 
     def __init__(self, use_mixed):
@@ -92,7 +91,7 @@ class MassFitter(object):
         out = []
         for col in params:
             title = "Signal parametrisation parameter {}".format(col)
-            hist = table2hist(
+            hist = br.table2hist(
                 col,
                 title,
                 params[col],
@@ -138,7 +137,7 @@ class PtFitter(object):
         self.opt = options
 
     def transform(self, masses, loggs):
-        target_quantity = table2hist(
+        target_quantity = br.table2hist(
             self.out_col,
             self.opt.title.format(self.opt.particle),
             masses[self.col],
@@ -269,7 +268,7 @@ class DataExtractor(object):
         data = []
         for o in self.otype._fields:
             data.append(
-                table2hist(
+                br.table2hist(
                     o,
                     self.opt.output[o],
                     masses[o],
