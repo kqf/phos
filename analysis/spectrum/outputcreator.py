@@ -93,26 +93,6 @@ class SpectrumExtractor(object):
         return map(extractor.eval, masses)
 
 
-def output_histogram(ptrange, name, title, bins, data):
-    hist = ROOT.TH1F(name, title, len(bins) - 1, array('d', bins))
-
-    if not hist.GetSumw2N():
-        hist.Sumw2()
-
-    for i, (d, e) in enumerate(data):
-        hist.SetBinContent(i + 1, d)
-        hist.SetBinError(i + 1, e)
-
-    xmin, xmax = ptrange
-    for i in br.hrange(hist):
-        if xmin < hist.GetBinCenter(i) < xmax:
-            continue
-        hist.SetBinError(i, 0)
-        hist.SetBinContent(i, 0)
-
-    return hist
-
-
 # TODO: Check the parameters
 def analysis_output(typename, data, order, ptrange, ptedges, titles):
     AnalysisOutType = collections.namedtuple(typename, order)
@@ -125,7 +105,7 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles):
     # Extract the data
     # Don't use format, as it confuses root/latex syntax
     output = {
-        quant: output_histogram(
+        quant: br.table2hist(
             ptrange=ptrange,
             name=quant,
             title=titles[str(quant)],
@@ -136,18 +116,3 @@ def analysis_output(typename, data, order, ptrange, ptedges, titles):
 
     # Convert to a proper datastructure
     return AnalysisOutType(**output)
-
-
-def table2hist(name, title, data, errors, edges, roi=None):
-    hist = ROOT.TH1F(name, title, len(edges) - 1, array('f', edges))
-    for i, (c, error) in enumerate(zip(data, errors)):
-        outside_roi = (
-            roi is not None and
-            roi[0] < hist.GetBinCenter(i + 1) < roi[1]
-        )
-        if roi is not None:
-            if not outside_roi:
-                continue
-        hist.SetBinContent(i + 1, c)
-        hist.SetBinError(i + 1, error)
-    return hist

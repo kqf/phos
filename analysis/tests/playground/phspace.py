@@ -7,8 +7,28 @@ import tqdm
 from array import array
 from itertools import combinations, product
 
-from spectrum.outputcreator import output_histogram
+import spectrum.broot as br
 from spectrum.vault import FVault
+
+
+def output_histogram(ptrange, name, title, bins, data):
+    hist = ROOT.TH1F(name, title, len(bins) - 1, array('d', bins))
+
+    if not hist.GetSumw2N():
+        hist.Sumw2()
+
+    for i, (d, e) in enumerate(data):
+        hist.SetBinContent(i + 1, d)
+        hist.SetBinError(i + 1, e)
+
+    xmin, xmax = ptrange
+    for i in br.hrange(hist):
+        if xmin < hist.GetBinCenter(i) < xmax:
+            continue
+        hist.SetBinError(i, 0)
+        hist.SetBinContent(i, 0)
+
+    return hist
 
 
 def tsallis(rrange=(0., 20.)):
