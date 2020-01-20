@@ -26,8 +26,8 @@ def nbins():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+    # "#pi^{0}",
+    "#eta",
 ])
 def test_nonlinearity_uncertainty(particle, nbins):
     prod = "single #pi^{0} nonlinearity scan"

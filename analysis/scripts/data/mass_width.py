@@ -22,6 +22,7 @@ def oname(particle, quant):
     return pattern.format(quant, br.spell(particle))
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
