@@ -15,15 +15,20 @@ def generate_from_data(conf, particle="#pi^{0}"):
 
 
 @pytest.fixture(scope="module")
-def mass():
-    measured = generate_from_data("config/data/gaus.json")
-    data = ROOT.TH1F(
-        "test", ";M_{#gamma#gamma}; M_{#gamma#gamma}", 400, 0, 1.5)
+def title():
     title = """
         pp at #sqrt{s} = 13 TeV,|
         #pi^{0} #rightarrow #gamma#gamma,|
         15 < p_{T} < 20 GeV/#it{c} |
     """
+    return title
+
+
+@pytest.fixture(scope="module")
+def mass(title):
+    measured = generate_from_data("config/data/gaus.json")
+
+    data = ROOT.TH1F("test", ";M_{#gamma#gamma}; counts", 400, 0, 1.5)
     data.SetTitle(title)
     data.FillRandom(measured.GetName(), 10000)
     data.Fit(measured, "Q0")
@@ -31,24 +36,24 @@ def mass():
     background = measured.Clone("backgroundf")
     background.SetParameter(0, 0)
 
-    data.mass = data
-    data.background = None
-    data.signalf = measured
-    data.bgrf = background
-
     signal = data.Clone()
     signal.Add(background, -1)
-    data.signal = signal
 
-    data.integration_region = (0.125, 0.146)
-    data.fit_range = (0.08, 0.2)
-    return data
+    output = {}
+    output["mass"] = signal
+    output["signalf"] = measured
+    output["background"] = background
+    output["signal"] = data
+    output["measured"] = measured
+    output["fit_range"] = (0.08, 0.2)
+    output["integration_region"] = (0.125, 0.146)
+    return output
 
 
 def test_plots_ivnariatmass(mass, stop):
     with su.canvas(stop=stop) as canvas:
         canvas.Clear()
-        MassesPlot().transform(mass, canvas)
+        MassesPlot().transform(**mass, pad=canvas)
 
 
 @pytest.mark.parametrize("nhists", [1, 4, 6, 9, 12])

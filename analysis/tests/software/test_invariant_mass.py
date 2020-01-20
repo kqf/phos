@@ -5,6 +5,7 @@ from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
 from spectrum.processing import (DataSlicer, InvariantMassExtractor,
                                  MassFitter, RangeEstimator)
+
 from spectrum.vault import DataVault
 
 

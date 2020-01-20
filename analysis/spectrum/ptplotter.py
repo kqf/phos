@@ -11,7 +11,7 @@ from repoze.lru import lru_cache
 # TODO: Fix the tests
 class MassesPlot(object):
 
-    def transform(self, mass, signalf, background, signal, bgrf,
+    def transform(self, mass, signalf, background, signal, measured,
                   fit_range, integration_region, pad):
         su.ticks(pad)
         pad.cd()
@@ -30,7 +30,7 @@ class MassesPlot(object):
         self.draw(signal, color=br.BR_COLORS[2])
         self.draw(signalf, color=br.BR_COLORS[1])
         self.draw(background, color=br.BR_COLORS[1])
-        self.draw(bgrf, color=br.BR_COLORS[5])
+        self.draw(measured, color=br.BR_COLORS[5])
         self.draw_chisquare(signalf)
         self._draw_line(mass, *integration_region)
         self._draw_text(title)
@@ -136,7 +136,7 @@ class MultiplePlotter(object):
                         signalf=mass["signalf"],
                         background=mass["background"],
                         signal=mass["signal"],
-                        bgrf=mass["measured"],
+                        measured=mass["measured"],
                         fit_range=mass["fit_range"],
                         integration_region=mass["integration_region"],
                     )
