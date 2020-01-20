@@ -240,8 +240,8 @@ def plot(
     )
     graphed = graphs + list(map(br.hist2graph, hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
-        canvas.SetLeftMargin(0.15)
-        canvas.SetRightMargin(0.05)
+        canvas.SetLeftMargin(0.18)
+        canvas.SetRightMargin(0.02)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
         adjust_canas(
