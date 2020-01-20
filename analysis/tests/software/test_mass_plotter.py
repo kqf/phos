@@ -53,7 +53,9 @@ def mass(title):
 def test_plots_ivnariatmass(mass, stop):
     with su.canvas(stop=stop) as canvas:
         canvas.Clear()
-        MassesPlot().transform(**mass, pad=canvas)
+        params = dict(mass)
+        params["pad"] = canvas
+        MassesPlot().transform(**params)
 
 
 @pytest.mark.parametrize("nhists", [1, 4, 6, 9, 12])

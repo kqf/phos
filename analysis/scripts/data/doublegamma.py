@@ -54,7 +54,7 @@ def test_simple(particle, data, oname):
                 signalf=data["signalf"],
                 background=data["background"],
                 signal=data["signal"],
-                bgrf=data["measuredf"],
+                measured=data["measuredf"],
                 fit_range=data["fit_range"],
                 integration_region=data["integration_region"],
             )
