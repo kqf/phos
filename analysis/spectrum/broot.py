@@ -857,7 +857,7 @@ def tdirectory(dirname):
 
 
 def table2hist(name, title, data, errors, edges, roi=None):
-    hist = ROOT.TH1F(name, title, len(edges) - 1, array('f', edges))
+    hist = ROOT.TH1F(name, title, len(edges) - 1, array.array('f', edges))
     for i, (c, error) in enumerate(zip(data, errors)):
         outside_roi = (
             roi is not None and

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import collections
 
-from spectrum.invariantmass import InvariantMass, RawMass,
+from spectrum.invariantmass import InvariantMass, RawMass
 from spectrum.pipeline import Pipeline, TransformerBase
 
 from spectrum.ptplotter import MulipleOutput
