@@ -83,7 +83,13 @@ def oname(particle):
     return "results/discussion/{{}}{}.pdf".format(br.spell(particle))
 
 
+@pytest.fixture
+def ltitle(particle):
+    return "{} #rightarrow #gamma#gamma".format(particle)
+
 # TODO: Fix me later
+
+
 def read_pythia6(particle):
     histnames = {
         "#pi^{0}": "hxsPi0PtInv",

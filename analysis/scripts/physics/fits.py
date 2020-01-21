@@ -13,20 +13,20 @@ from spectrum.constants import invariant_cross_section_code
     "#pi^{0}",
     "#eta",
 ])
-def test_tsallis_tcm_fit(particle, tcm, tsallis, oname):
+def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
-    cs.SetTitle("Data")
     cs.Fit(tcm, "RQ")
     cs.Fit(tsallis, "RQ")
     br.report(tcm, particle)
     br.report(tsallis, particle)
     plot(
         [cs, tcm, tsallis],
+        stop=stop,
         ytitle=invariant_cross_section_code(),
         xtitle="p_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),
         csize=(96, 128),
-        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        ltitle=ltitle,
         legend_pos=(0.65, 0.7, 0.8, 0.88),
         yoffset=1.4,
         more_logs=False,

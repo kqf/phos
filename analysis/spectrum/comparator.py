@@ -1,4 +1,3 @@
-import ROOT
 import spectrum.broot as br
 from spectrum.vis import VisHub
 
@@ -7,7 +6,6 @@ class Comparator(object):
     def __init__(self, size=(128, 96), rrange=(), crange=(),
                  stop=True, oname='', labels=None, **kwargs):
         super(Comparator, self).__init__()
-        ROOT.gROOT.SetBatch(not stop)
         self.vi = VisHub(size, rrange, crange, stop, oname, labels, **kwargs)
 
     def compare(self, *args, **kwargs):
