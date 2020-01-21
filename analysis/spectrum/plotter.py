@@ -18,6 +18,7 @@ def pcanvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
     canvas.SetGridx()
     canvas.SetGridy()
 
+    old = ROOT.gROOT.IsBatch()
     ROOT.gROOT.SetBatch(not stop)
     yield canvas
     canvas.Update()
@@ -29,6 +30,7 @@ def pcanvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
     canvas.Connect("Closed()", "TApplication",
                    ROOT.gApplication, "Terminate()")
     ROOT.gApplication.Run(True)
+    ROOT.gROOT.SetBatch(old)
 
 
 @contextmanager
