@@ -6,7 +6,7 @@ import plotting
 
 try:
     import root_numpy as rnp
-except ValueError:
+except ModuleNotFoundError:
     import utils as rnp
 
 from utils import select_tru

@@ -6,8 +6,8 @@ from spectrum.options import FeeddownOptions
 from spectrum.output import open_loggs
 try:
     import root_numpy as rp
-except ValueError:
-    from spectrum.broot import BROOT as rp
+except ModuleNotFoundError:
+    import spectrum.broot as rp
 
 
 @pytest.mark.onlylocal

@@ -28,7 +28,7 @@ def hist1d():
 def test_hist2array(hist):
     try:
         import root_numpy as rnp
-    except BaseException as e:
+    except ModuleNotFoundError as e:
         print(e)
         return  # Skip checks for the machines that don't support root_numpy
 

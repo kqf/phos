@@ -5,8 +5,8 @@ import spectrum.broot as br
 
 try:
     import root_numpy as rp
-except ValueError:
-    from spectrum.broot import BROOT as rp
+except ModuleNotFoundError:
+    import spectrum.broot as rp
 
 
 def max_value(hist, prec):

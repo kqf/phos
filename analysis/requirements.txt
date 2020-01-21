@@ -1,12 +1,12 @@
 ipdb
 pandas
 repoze.lru
-root_numpy
+# root_numpy switch it back when py38 is released
 pytest
 tqdm
 flatten_dict
 humanize
-recordclass==0.11.1 # no support of python 2.7
+recordclass
 joblib
 six
 seaborn
