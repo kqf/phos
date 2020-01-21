@@ -39,6 +39,7 @@ class Spectrum(TransformerBase):
 
     def reduce(self, data, loggs):
         spectrum, uncertainty = data
+        spectrum.SetTitle("Data")
         spectrum.Scale(cross_section())
         statistics = spectrum.Clone("statistics")
         systematics = spectrum.Clone("systematics")
@@ -76,10 +77,6 @@ def spectrum(particle):
 def ratio(stop=False):
     pion = spectrum("#pi^{0}")
     eta = spectrum("#eta")
-    eta.logy = True
-    eta.logx = True
-    eta.label = "#eta"
-    eta.label = "#pi^{0}"
     with open_loggs() as loggs:
         pion = RebinTransformer(True, br.edges(eta)).transform(pion, loggs)
     ratio = Comparator(stop=stop).compare(eta, pion)
