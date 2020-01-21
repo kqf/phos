@@ -18,6 +18,7 @@ def pcanvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
     canvas.SetGridx()
     canvas.SetGridy()
 
+    ROOT.gROOT.SetBatch(not stop)
     yield canvas
     canvas.Update()
     if oname is not None:
