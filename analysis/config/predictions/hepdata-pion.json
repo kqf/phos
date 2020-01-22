@@ -21,9 +21,9 @@
         "func": "#pi^{0} 2.76 TeV",
         "title": "pp, #sqrt{s} = 2.76 TeV",
         "file": "pion-2760-gev-pp.root",
-        "hepdata": "ins1296306",
+        "hepdata": "ins1512110",
         "scale": 1e-6,
-        "table": "Table 2",
+        "table": "Table 3",
         "energy": 2760
     },
     "pp 8 TeV": {
