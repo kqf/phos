@@ -9,17 +9,17 @@ from spectrum.constants import invariant_cross_section_code
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    "#eta",
+@pytest.mark.parametrize("particle, ranges", [
+    ("#pi^{0}", [0.8, 20]),
+    ("#eta", [2.0, 20]),
 ])
-def test_tsallis_tcm_fit(particle, tsallis, ltitle, stop, oname):
+def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
-    tsallis.SetRange(0.8, 20)
+    tsallis.SetRange(*ranges)
     cs.Fit(tsallis, "Q")
     br.report(tsallis, particle)
     plot(
-        [cs],
+        [cs, tsallis],
         ytitle=invariant_cross_section_code(),
         xtitle="p_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),

@@ -22,8 +22,8 @@ def tsallis(particle):
     if particle == "#pi^{0}":
         tsallis.SetParameter(0, 1)
         tsallis.SetParameter(1, 0.125)
-        tsallis.SetParLimits(1, 0.100, 0.300)
         tsallis.FixParameter(2, 6.500)
+        tsallis.SetParLimits(1, 0.100, 0.130)
         tsallis.SetParLimits(2, 6.000, 8.000)
         tsallis.FixParameter(3, mass(particle))
         tsallis.SetRange(1.4, 20)
