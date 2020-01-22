@@ -1,4 +1,13 @@
 {
+    "pp 2.76 TeV": {
+        "func": "#pi^{0} 2.76 TeV",
+        "title": "pp, #sqrt{s} = 2.76 TeV",
+        "file": "eta-2760-gev-pp.root",
+        "hepdata": "ins1512110",
+        "scale": 1e-6,
+        "table": "Table 4",
+        "energy": 2760
+    },
     "pp 7 TeV": {
         "func": "#pi^{0} 7 TeV",
         "title": "pp, #sqrt{s} = 7 TeV",
