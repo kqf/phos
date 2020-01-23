@@ -23,10 +23,10 @@ def tsallis(particle):
         tsallis.SetParameter(0, 1)
         tsallis.SetParameter(1, 0.125)
         tsallis.FixParameter(2, 6.500)
-        tsallis.SetParLimits(1, 0.100, 0.130)
-        tsallis.SetParLimits(2, 6.000, 8.000)
+        tsallis.SetParLimits(1, 0.100, 0.630)
+        tsallis.SetParLimits(2, 6.000, 9.000)
         tsallis.FixParameter(3, mass(particle))
-        tsallis.SetRange(1.4, 20)
+        tsallis.SetRange(2.0, 10)
 
     if particle == "#eta":
         tsallis.SetParameter(0, 1)
