@@ -9,17 +9,18 @@ from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle, ranges", [
     ("#pi^{0}", [0.8, 20]),
-    ("#eta", [2.0, 20]),
+    # ("#eta", [2.0, 20]),
 ])
 def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
     tsallis.SetRange(*ranges)
-    cs.Fit(tsallis, "Q")
+    cs.Fit(tsallis, "QR")
     br.report(tsallis, particle)
     plot(
         [cs, tsallis],
@@ -31,7 +32,7 @@ def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
         legend_pos=(0.65, 0.7, 0.8, 0.88),
         yoffset=1.4,
         more_logs=False,
-        oname=oname.format("phenomenology/fits_"),
+        oname=oname.format("phenomenology/tsallis_issues_"),
     )
     ratio = cs.Clone()
     ratio.Divide(tsallis)
@@ -58,7 +59,6 @@ def pars():
     return pd.DataFrame(data.values())
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -85,13 +85,12 @@ def test_tsallis_parameter_dependence(pars, parameter, stop, ltitle, oname):
         [graph],
         stop=stop,
         logy=False,
-        ytitle=invariant_cross_section_code(),
-        xtitle="p_{T} (GeV/#it{c})",
+        ytitle=parameter,
+        xtitle="#sqrt{s} (GeV)",
         xlimits=(0.8, 14),
         csize=(96, 128),
         ltitle=ltitle,
         legend_pos=(0.65, 0.7, 0.8, 0.88),
         yoffset=1.4,
-        more_logs=False,
         oname=oname.format("phenomenology/tsallis_"),
     )
