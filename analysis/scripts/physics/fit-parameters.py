@@ -30,7 +30,7 @@ class HepdataInput(TransformerBase):
 
 
 @pytest.fixture
-def data(particle, tsallis, stop):
+def data(particle, tsallis, tcm, stop):
     with open("config/predictions/hepdata.json") as f:
         data = json.load(f)[particle]
     labels, links = zip(*six.iteritems(data))
@@ -44,10 +44,10 @@ def data(particle, tsallis, stop):
     spectra.append(measured)
     for data in spectra:
         tsallis.SetRange(0, 40)
+        tcm.SetRange(0, 40)
         data.Fit(tsallis, "QR", "", 0, 40)
-        print(data.energy)
-        br.report(tsallis)
-        plot([data, tsallis], stop=stop)
+        data.Fit(tcm, "QR", "", 0, 40)
+        plot([data, tsallis, tcm], stop=stop)
     return spectra
 
 
