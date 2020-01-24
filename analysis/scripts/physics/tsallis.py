@@ -9,7 +9,6 @@ from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -19,11 +18,13 @@ from spectrum.constants import invariant_cross_section_code
 ])
 def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
+    tsallis.SetName("TsallisFullRange")
     tsallis.SetRange(*ranges)
     cs.Fit(tsallis, "QR")
     br.report(tsallis, particle)
     plot(
         [cs, tsallis],
+        stop=stop,
         ytitle=invariant_cross_section_code(),
         xtitle="p_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),
@@ -40,15 +41,13 @@ def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
         [ratio],
         stop=stop,
         logy=False,
-        ytitle=invariant_cross_section_code(),
+        ytitle="#frac{Data}{Tsallis fit}",
         xtitle="p_{T} (GeV/#it{c})",
-        # xlimits=(0.7, 22),
         csize=(96, 128),
-        ltitle=ltitle,
-        legend_pos=(0.65, 0.7, 0.8, 0.88),
+        legend_pos=None,
         yoffset=1.4,
         more_logs=False,
-        oname=oname.format("phenomenology/tsallis_"),
+        oname=oname.format("phenomenology/tsallis_issues_ratio_"),
     )
 
 
@@ -59,6 +58,7 @@ def pars():
     return pd.DataFrame(data.values())
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
