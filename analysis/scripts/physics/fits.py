@@ -11,12 +11,12 @@ from spectrum.constants import invariant_cross_section_code
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta",
+    "#eta",
 ])
 def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
     cs.Fit(tcm, "RQ")
-    cs.Fit(tsallis, "R")
+    cs.Fit(tsallis, "QR")
     br.report(tcm, particle)
     br.report(tsallis, particle)
     tsallis.SetRange(tcm.GetXmin(), tcm.GetXmax())

@@ -31,11 +31,11 @@ def tsallis(particle):
     if particle == "#eta":
         tsallis.SetParameter(0, 1)
         tsallis.SetParameter(1, 0.238)
-        tsallis.SetParLimits(1, 0.200, 0.300)
+        tsallis.SetParLimits(1, 0.238, 0.300)
         tsallis.SetParameter(2, 6.19)
-        tsallis.SetParLimits(2, 5.5, 7.000)
+        tsallis.SetParLimits(2, 6.03, 7.000)
         tsallis.FixParameter(3, mass(particle))
-        tsallis.SetRange(2.2, 20)
+        tsallis.SetRange(2.0, 20)
 
     tsallis.FixParameter(3, mass(particle))
     tsallis.FixParameter(4, mass(particle))
@@ -81,6 +81,11 @@ def tcm(particle):
 @pytest.fixture
 def oname(particle):
     return "images/discussion/{{}}{}.pdf".format(br.spell(particle))
+
+
+@pytest.fixture
+def coname(target):
+    return "images/discussion/{{}}{}.pdf".format(target)
 
 
 @pytest.fixture

@@ -30,7 +30,7 @@ class HepdataInput(TransformerBase):
 
 
 @pytest.fixture
-def data(particle, tsallis):
+def data(particle, tsallis, stop):
     with open("config/predictions/hepdata.json") as f:
         data = json.load(f)[particle]
     labels, links = zip(*six.iteritems(data))
@@ -40,12 +40,14 @@ def data(particle, tsallis):
     spectra = sorted(histograms, key=lambda x: x.energy)
     measured = spectrum(particle)
     measured.SetTitle("pp, #sqrt{s} = 13 TeV")
+    measured.energy = 13
     spectra.append(measured)
     for data in spectra:
         tsallis.SetRange(0, 40)
         data.Fit(tsallis, "QR", "", 0, 40)
+        print(data.energy)
         br.report(tsallis)
-        plot([data, tsallis])
+        plot([data, tsallis], stop=stop)
     return spectra
 
 
@@ -55,9 +57,10 @@ def data(particle, tsallis):
     "#pi^{0}",
     "#eta",
 ])
-def test_downloads_from_hepdata(particle, data):
+def test_downloads_from_hepdata(particle, stop, data):
     plot(
         data,
+        stop=stop,
         ytitle=invariant_cross_section_code(),
         xtitle="p_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),
@@ -66,6 +69,5 @@ def test_downloads_from_hepdata(particle, data):
         # legend_pos=(0.65, 0.7, 0.8, 0.88),
         legend_pos=(0.52, 0.72, 0.78, 0.88),
         yoffset=1.4,
-        more_logs=False,
-        oname="results/discussion/energies/{}.pdf".format(br.spell(particle))
+        more_logs=True,
     )
