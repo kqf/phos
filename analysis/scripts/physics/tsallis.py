@@ -9,6 +9,7 @@ from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -52,45 +53,46 @@ def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
 
 
 @pytest.fixture
-def pars():
-    with open("config/predictions/tsallis-pion.json") as f:
+def data():
+    with open("config/predictions/tsallis.json") as f:
         data = json.load(f)
-    return pd.DataFrame(data.values())
+    return data
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    # "#eta",
+@pytest.mark.parametrize("target, ytitle, ylimits", [
+    ("n", "q", (1.1, 1.25)),
+    ("C", "T (GeV)", (0.1, 0.3)),
 ])
-@pytest.mark.parametrize("parameter", [
-    "n",
-    "C"
-])
-def test_tsallis_parameter_dependence(pars, parameter, stop, ltitle, oname):
-    print(pars)
-    graph = br.graph(
-        "test",
-        pars["energy"],
-        pars[parameter],
-        np.zeros_like(pars["energy"]),
-        pars["d{}".format(parameter)])
-    graph.SetMarkerColor(4)
-    graph.SetMarkerStyle(21)
+def test_params(data, ytitle, ylimits, target, stop, coname):
+    # print(pars)
+
+    def data2graph(particle):
+        pars = pd.DataFrame(data[particle].values())
+        x = pars["energy"]
+        y = pars[target]
+        dy = pars["d{}".format(target)]
+        if target == "n":
+            dy = dy / (y - 1) ** 2
+            y = 1 + 1 / (y - 1)
+        graph = br.graph("test", x, y, np.zeros_like(x), dy)
+        graph.SetMarkerColor(4)
+        graph.SetMarkerStyle(21)
+        graph.SetTitle(particle)
+        return graph
 
     plot(
-        [graph],
+        [data2graph("#pi^{0}"), data2graph("#eta")],
         stop=stop,
         logy=False,
-        ytitle=parameter,
+        ytitle=ytitle,
         xtitle="#sqrt{s} (GeV)",
-        xlimits=(0.8, 14),
+        ylimits=ylimits,
+        xlimits=(0.7, 15),
         csize=(96, 128),
-        ltitle=ltitle,
-        legend_pos=(0.65, 0.7, 0.8, 0.88),
+        legend_pos=(0.75, 0.7, 0.9, 0.80),
         yoffset=1.4,
-        oname=oname.format("phenomenology/tsallis_"),
+        oname=coname.format("phenomenology/tsallis_parameter_"),
     )
