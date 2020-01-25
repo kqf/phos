@@ -19,7 +19,11 @@ def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     cs.Fit(tsallis, "QR")
     br.report(tcm, particle, limits=True)
     br.report(tsallis, particle, limits=True)
-    tsallis.SetRange(tcm.GetXmin(), tcm.GetXmax())
+
+    # Apply only after fitting. Extend the pT range for better visualisation
+    if particle == "#pi^{0}":
+        tsallis.SetRange(1.5, tcm.GetXmax())
+
     plot(
         [cs, tcm, tsallis],
         stop=stop,
