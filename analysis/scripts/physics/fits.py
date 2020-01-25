@@ -17,8 +17,8 @@ def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
     cs.Fit(tcm, "RQ")
     cs.Fit(tsallis, "QR")
-    br.report(tcm, particle)
-    br.report(tsallis, particle)
+    br.report(tcm, particle, limits=True)
+    br.report(tsallis, particle, limits=True)
     tsallis.SetRange(tcm.GetXmin(), tcm.GetXmax())
     plot(
         [cs, tcm, tsallis],

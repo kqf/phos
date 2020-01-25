@@ -46,7 +46,7 @@ def test_r(data, stop, coname):
         [data2graph("#pi^{0}"), data2graph("#eta")],
         stop=stop,
         logy=False,
-        ytitle="R(s)",
+        ytitle="R_{TCM}(s)",
         xtitle="#sqrt{s} (GeV)",
         ylimits=(0.01, 2.6),
         xlimits=(0.7, 15),
