@@ -10,3 +10,4 @@ recordclass
 joblib
 six
 seaborn
+uncertainties
