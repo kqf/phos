@@ -183,7 +183,7 @@ def _draw_graph(i, graph, colors, option, ngraphs):
         graph.SetFillColor(ROOT.kWhite)
 
     # Remove x-errors for tgraph styled plots
-    if "e5" not in option.lower():
+    if "e5" not in option.lower() and "q" not in option.lower():
         for point in range(graph.GetN()):
             graph.SetPointError(point, 0, graph.GetErrorY(point))
 
