@@ -7,12 +7,6 @@ from spectrum.parametrisation import parametrisation
 from spectrum.constants import PAVE_PREFIX
 
 
-def masses2edges(masses):
-    return sorted(set(
-        sum([list(i.pt_range) for i in masses], [])
-    ))
-
-
 class RawMass(object):
 
     reactions = {
@@ -27,8 +21,7 @@ class RawMass(object):
         "electrons": "E/p ratio",
     }
 
-    def __init__(self, pt_range, nrebin, particle, pt_interval):
-        self.pt_interval = pt_interval
+    def __init__(self, pt_range, nrebin, particle):
         self.pt_range = pt_range
         self.nrebin = nrebin
         self.particle = particle
@@ -38,10 +31,9 @@ class RawMass(object):
     def transform(self, hist):
         if not hist:
             return None
-        return self.read_mass(
-            hist, self.pt_range, self.nrebin, self.pt_interval)
+        return self.read_mass(hist, self.pt_range, self.nrebin)
 
-    def read_mass(self, hist, pt_range, nrebin, pt_interval):
+    def read_mass(self, hist, pt_range, nrebin):
         mass = br.project_range(hist, *pt_range)
         mass.nevents = hist.nevents
         template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
@@ -73,7 +65,6 @@ class InvariantMass(object):
         # self.background = rmass.background
         self.pt_range = rmass.pt_range
         self.pt_label = rmass.pt_label
-        self.pt_interval = rmass.pt_interval
 
         # Setup the fit function
         # _signal = measured - combinatorial background = signal + residual

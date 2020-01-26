@@ -45,20 +45,19 @@ class DataPreprocessor(object):
         )
 
         def common_inputs(x, y):
-            return RawMass(x, y, self.opt.particle, pt_interval=pt_range)
+            return RawMass(x, y, self.opt.particle)
 
         readers = list(map(common_inputs, intervals, self.opt.rebins))
-        return pd.DataFrame(
-            {
-                "intervals": intervals,
-                "pt_interval": [pt_range] * len(intervals),
-                "pt_edges": [self.opt.ptedges] * len(intervals),
-                "raw": readers,
-                "measured": [r.transform(same) for r in readers],
-                "background": [r.transform(mixed) for r in readers],
-                "nevents": [same.nevents] * len(intervals)
-            }
-        )
+        df = pd.DataFrame({
+            "intervals": intervals,
+            "pt_interval": [pt_range] * len(intervals),
+            "pt_edges": [self.opt.ptedges] * len(intervals),
+            "raw": readers,
+            "measured": [r.transform(same) for r in readers],
+            "background": [r.transform(mixed) for r in readers],
+        })
+        df["nevents"] = same.nevents
+        return df
 
 
 class InvariantMassExtractor(object):
