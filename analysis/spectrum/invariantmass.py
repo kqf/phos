@@ -21,19 +21,20 @@ class RawMass(object):
         "electrons": "E/p ratio",
     }
 
-    def __init__(self, pt_range, nrebin, particle):
+    def __init__(self, pt_range, nrebin, pt_label, particle):
         self.pt_range = pt_range
         self.nrebin = nrebin
         self.particle = particle
-        label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
-        self.pt_label = label.format(*self.pt_range)
+        self.pt_label = pt_label
 
     def transform(self, hist):
         if not hist:
             return None
-        return self.read_mass(hist, self.pt_range, self.nrebin)
+        return self.read_mass(
+            hist, self.pt_range, self.nrebin,
+            self.pt_label, self.particle)
 
-    def read_mass(self, hist, pt_range, nrebin):
+    def read_mass(self, hist, pt_range, nrebin, pt_label, particle):
         mass = br.project_range(hist, *pt_range)
         mass.nevents = hist.nevents
         template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"

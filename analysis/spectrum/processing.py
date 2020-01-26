@@ -44,10 +44,14 @@ class DataPreprocessor(object):
                 len(self.opt.rebins)
         )
 
-        def common_inputs(x, y):
-            return RawMass(x, y, self.opt.particle)
+        def rmass(x, y, z):
+            return RawMass(x, y, z, particle=self.opt.particle)
 
-        readers = list(map(common_inputs, intervals, self.opt.rebins))
+        label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
+        pt_labels = [label.format(*i) for i in intervals]
+
+        readers = list(map(rmass, intervals, self.opt.rebins, pt_labels))
+
         df = pd.DataFrame({
             "intervals": intervals,
             "pt_interval": [pt_range] * len(intervals),
@@ -55,6 +59,7 @@ class DataPreprocessor(object):
             "raw": readers,
             "measured": [r.transform(same) for r in readers],
             "background": [r.transform(mixed) for r in readers],
+            "pt_label": pt_labels,
         })
         df["nevents"] = same.nevents
         return df
@@ -70,7 +75,6 @@ class InvariantMassExtractor(object):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(x, self.opt))
         rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
-        rmasses["pt_label"] = rmasses["invmasses"].apply(lambda x: x.pt_label)
         rmasses["fit_range"] = rmasses["invmasses"].apply(
             lambda x: x.fit_range)
         return rmasses
