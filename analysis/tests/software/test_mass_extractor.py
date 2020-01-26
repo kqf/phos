@@ -1,6 +1,6 @@
 import pytest
 
-from spectrum.processing import DataSlicer
+from spectrum.processing import DataPreparator
 from spectrum.processing import MassFitter
 from spectrum.output import open_loggs
 from spectrum.pipeline import TransformerBase
@@ -17,7 +17,7 @@ class UpdatedAnalysis(TransformerBase):
         super(UpdatedAnalysis, self).__init__()
         self.options = options
         self.pipeline = Pipeline([
-            ('data_slicer', DataSlicer(self.options.pt)),
+            ('data_slicer', DataPreparator(self.options.pt)),
             ('mass_extractor', InvariantMassExtractor(self.options.invmass)),
             ('mass_fitter', MassFitter(self.options.invmass.use_mixed))
         ])

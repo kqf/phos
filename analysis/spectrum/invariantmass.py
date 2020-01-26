@@ -34,7 +34,6 @@ class RawMass(object):
         self.particle = particle
         label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
         self.pt_label = label.format(*self.pt_range)
-        self.template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
 
     def transform(self, hist):
         if not hist:
@@ -45,7 +44,8 @@ class RawMass(object):
     def read_mass(self, hist, pt_range, nrebin, pt_interval):
         mass = br.project_range(hist, *pt_range)
         mass.nevents = hist.nevents
-        title = self.template.format(
+        template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
+        title = template.format(
             pref=PAVE_PREFIX,
             reaction=self.reactions[self.particle],
             pt=self.pt_label,

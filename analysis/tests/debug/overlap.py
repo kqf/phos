@@ -3,7 +3,7 @@ import pytest
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.pipeline import Pipeline, ComparePipeline
-from spectrum.processing import DataSlicer, MassFitter
+from spectrum.processing import DataPreparator, MassFitter
 from spectrum.output import open_loggs
 from spectrum.vault import DataVault
 # NB: This test is to compare different efficiencies
@@ -39,7 +39,7 @@ class SimpleAnalysis(TransformerBase):
         super(SimpleAnalysis, self).__init__(plot)
         self.options = options
         self.pipeline = Pipeline([
-            ("slice", DataSlicer(options.pt)),
+            ("slice", DataPreparator(options.pt)),
             ("fitmasses", MassFitter(options.invmass)),
             ("signals", SignalExtractor()),
             ("scale", SignalScaler(options))

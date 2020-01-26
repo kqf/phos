@@ -5,7 +5,7 @@ import pytest
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeEfficiencyOptions, OptionsSPMC
 from spectrum.pipeline import Pipeline, ComparePipeline
-from spectrum.processing import DataSlicer, MassFitter
+from spectrum.processing import DataPreparator, MassFitter
 from spectrum.processing import InvariantMassExtractor
 from spectrum.output import open_loggs
 from spectrum.vault import DataVault
@@ -62,7 +62,7 @@ class SimpleAnalysis(TransformerBase):
         super(SimpleAnalysis, self).__init__(plot)
         self.options = options
         self.pipeline = Pipeline([
-            ("slice", DataSlicer(options.pt)),
+            ("slice", DataPreparator(options.pt)),
             ("parametrize", InvariantMassExtractor(options.invmass)),
             ("fitmasses", MassFitter(options.invmass)),
             ("cut", SignalCutOff(options.output.ptrange)),

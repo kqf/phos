@@ -5,7 +5,7 @@ from spectrum.comparator import Comparator
 from spectrum.options import Options
 from spectrum.output import open_loggs
 from spectrum.pipeline import Pipeline
-from spectrum.processing import DataSlicer, MassFitter
+from spectrum.processing import DataPreparator, MassFitter
 from spectrum.vault import DataVault
 
 
@@ -19,7 +19,7 @@ class MassExtractor(object):
     def transform(self, inputs, loggs):
         pipeline = Pipeline([
             ("input", inputs),
-            ("slice", DataSlicer(self.options.pt)),
+            ("slice", DataPreparator(self.options.pt)),
             ("fitmasses", MassFitter(self.options.invmass)),
         ])
 

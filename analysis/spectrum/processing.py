@@ -15,9 +15,18 @@ from spectrum.mass import MassTransformer
 import spectrum.broot as br
 
 
-class DataSlicer(object):
+class DataPreparator(TransformerBase):
     def __init__(self, options):
-        super(DataSlicer, self).__init__()
+        super(DataPreparator, self).__init__()
+        self.opt = options
+        self.pipeline = Pipeline([
+            ("slicer", DataPreprocessor(self.opt))
+        ])
+
+
+class DataPreprocessor(object):
+    def __init__(self, options):
+        super(DataPreprocessor, self).__init__()
         self.opt = options
 
     def transform(self, inputs, loggs):

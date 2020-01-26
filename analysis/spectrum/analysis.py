@@ -1,4 +1,4 @@
-from spectrum.processing import DataSlicer, PeakPropertiesEstimator
+from spectrum.processing import DataPreparator, PeakPropertiesEstimator
 from spectrum.processing import DataExtractor, MassFitter
 from spectrum.processing import InvariantMassExtractor
 from spectrum.processing import InvariantMassPlotter
@@ -16,7 +16,7 @@ class SimpleAnalysis(TransformerBase):
         self.options = options
         self.pipeline = Pipeline([
             ("read", AnalysisDataReader()),
-            ("slice", DataSlicer(options.pt)),
+            ("slice", DataPreparator(options.pt)),
             ("parametrize", InvariantMassExtractor(options.invmass)),
             ("fitmasses", MassFitter(options.invmass.use_mixed)),
             ("ranges", PeakPropertiesEstimator(options.calibration)),
