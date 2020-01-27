@@ -11,7 +11,7 @@ def data(particle, region):
     return DataVault().input(
         "single {}".format(particle),
         region,
-        "PhysEff", label="{} p_{{T}}".format(region)
+        "PhysEff", label="{} #it{{p}}_{{T}}".format(region)
     )
 
 

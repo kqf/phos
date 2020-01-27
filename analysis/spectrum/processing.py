@@ -47,7 +47,7 @@ class DataPreprocessor(object):
         def rmass(x, y, z):
             return RawMass(x, y, z, particle=self.opt.particle)
 
-        label = "{:.4g} < p_{{T}} < {:.4g} GeV/#it{{c}}"
+        label = "{:.4g} < #it{{p}}_{{T}} < {:.4g} GeV/#it{{c}}"
         pt_labels = [label.format(*i) for i in intervals]
 
         readers = list(map(rmass, intervals, self.opt.rebins, pt_labels))

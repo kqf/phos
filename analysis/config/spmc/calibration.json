@@ -10,7 +10,7 @@
             "names": ["A", "B", "C", "D"],
             "frange": [0.8, 20],
             "quantity": "width",
-            "title": "{} peak width; p_{{T}} (GeV/#it{{c}}); #sigma (GeV/#it{{c}})^{{2}}",
+            "title": "{} peak width; #it{{p}}_{{T}} (GeV/#it{{c}}); #sigma (GeV/#it{{c}})^{{2}}",
             "fit": true
         },
         "mass": {
@@ -19,7 +19,7 @@
             "names": ["A", "B", "C", "D"],
             "frange": [0.8, 20],
             "quantity": "mass",
-            "title": "{} mass position; p_{{T}} (GeV/#it{{c}}); m (GeV/#it{{c}})^{{2}}",
+            "title": "{} mass position; #it{{p}}_{{T}} (GeV/#it{{c}}); m (GeV/#it{{c}})^{{2}}",
             "fit": true
         },
         "nsigmas": 2
@@ -32,7 +32,7 @@
             "names": ["A", "B", "C"],
             "frange": [2, 20],
             "quantity": "width",
-            "title": "{} peak width; p_{{T}} (GeV/#it{{c}}); #sigma (GeV/#it{{c}})^{{2}}",
+            "title": "{} peak width; #it{{p}}_{{T}} (GeV/#it{{c}}); #sigma (GeV/#it{{c}})^{{2}}",
             "fit": true
         },
         "mass": {
@@ -41,7 +41,7 @@
             "names": ["A", "B", "C", "D"],
             "frange": [2, 20],
             "quantity": "mass",
-            "title": "{} mass position; p_{{T}} (GeV/#it{{c}}); m (GeV/#it{{c}})^{{2}}",
+            "title": "{} mass position; #it{{p}}_{{T}} (GeV/#it{{c}}); m (GeV/#it{{c}})^{{2}}",
             "fit": true
         },
         "nsigmas": 2

@@ -92,7 +92,7 @@ class CompositeOptions(object):
 
 class EfficiencyOptions(object):
 
-    histpattern = "; p_{{T}} (GeV/#it{{c}}); #varepsilon #times A"  # noqa
+    histpattern = "; #it{{p}}_{{T}} (GeV/#it{{c}}); #varepsilon #times A"  # noqa
 
     def __init__(
         self, particle="#pi^{0}",
@@ -146,8 +146,8 @@ class CompositeEfficiencyOptions(object):
 class CorrectedYieldOptions(object):
 
     histpattern = """
-        Corrected {particle} yield; p_{{T}} (GeV/#it{{c}});
-        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}}}
+        Corrected {particle} yield; #it{{p}}_{{T}} (GeV/#it{{c}});
+        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d #it{{p}}_{{T}}}}}}
     """
 
     def __init__(self, particle="#pi^{0}", pt="config/pt.json"):
@@ -170,8 +170,8 @@ class CorrectedYieldOptions(object):
 class CompositeCorrectedYieldOptions(object):
 
     histpattern = """
-        Corrected {particle} yield; p_{{T}} (GeV/#it{{c}});
-        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d p_{{T}}}}
+        Corrected {particle} yield; #it{{p}}_{{T}} (GeV/#it{{c}});
+        #frac{{1}}{{N_{{events}}}} #frac{{dN}}{{d #it{{p}}_{{T}}}}
     """
 
     def __init__(self, particle="#pi^{0}", n_ranges=2, pt="config/pt.json"):
