@@ -69,7 +69,7 @@ def wname(particle, selection):
 def test_spectral_shape(particle, spmc, ltitle, selection, wname):
     with open_loggs() as loggs:
         hists = []
-        for name, d in zip(["low p_{T}", "high p_{T}"], spmc):
+        for name, d in zip(["low #it{p}_{T}", "high #it{p}_{T}"], spmc):
             hist = SingleHistReader().transform(d, loggs)
             hist.SetTitle(name)
             hists.append(br.hist2graph(hist, "positive"))
@@ -77,8 +77,8 @@ def test_spectral_shape(particle, spmc, ltitle, selection, wname):
         plt.plot(
             hists,
             logx=True,
-            xtitle="p_{T} (GeV/#it{c})",
-            ytitle="#frac{dN}{dp_{T}} (GeV/#it{c})^{-1} ",
+            xtitle="#it{p}_{T} (GeV/#it{c})",
+            ytitle="#frac{dN}{d#it{p}_{T}} (GeV/#it{c})^{-1} ",
             xlimits=(0.8, 100),
             ltitle=ltitle,
             oname=wname,

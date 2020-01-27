@@ -101,16 +101,16 @@ class GScale(TransformerBase):
         lower = self.ratiofunc(fitf, "low", ep_ratio, 38)
         upper = self.ratiofunc(fitf, "up", -ep_ratio, 47)
 
-        upper.SetTitle("f(p_{T} + #delta p_{T})/f(p_{T})")
+        upper.SetTitle("f(#it{p}_{T} + #delta #it{p}_{T})/f(#it{p}_{T})")
         upper.SetLineColor(ROOT.kBlue + 1)
-        lower.SetTitle("f(p_{T} - #delta p_{T})/f(p_{T})")
+        lower.SetTitle("f(#it{p}_{T} - #delta #it{p}_{T})/f(#it{p}_{T})")
         lower.SetLineColor(ROOT.kRed + 1)
-        lower.GetXaxis().SetTitle("p_{T} (GeV/#it{c})")
+        lower.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
         plot(
             [lower, upper],
             logy=False,
             csize=(96, 128),
-            ytitle="f(p_{T} #pm #delta p_{T})/f(p_{T})",
+            ytitle="f(#it{p}_{T} #pm #delta #it{p}_{T})/f(#it{p}_{T})",
             yoffset=1.6,
             oname="results/systematics/gescale/{}.pdf".format(
                 br.spell(self.options.particle)),

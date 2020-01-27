@@ -43,5 +43,5 @@ def options(edges, rebins):
 def test_high_momentum(particle, data, options):
     with open_loggs("test high momentum {}".format(particle)) as loggs:
         efficiency = Efficiency(options).transform(data, loggs)
-        efficiency.SetTitle('Efficiency at high p_{T}')
+        efficiency.SetTitle('Efficiency at high #it{p}_{T}')
         Comparator().compare(efficiency)

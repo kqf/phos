@@ -21,7 +21,7 @@ def acceptance_data(particle="#pi^{0}"):
 
 
 class AcceptanceOptions(object):
-    title = "Acceptance ; p_{T} (GeV/#it{c}); rel. sys. error"
+    title = "Acceptance ; #it{p}_{T} (GeV/#it{c}); rel. sys. error"
 
     def __init__(self, particle="#pi^{0}"):
         super(AcceptanceOptions, self).__init__()
@@ -80,7 +80,7 @@ class Acceptance(TransformerBase):
 
         plot(
             spectrums,
-            xtitle="p_{T} (GeV/#it{c})",
+            xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.5, 0.7, 0.7, 0.85),
             oname="results/systematics/acceptance/yields.pdf",
@@ -99,7 +99,7 @@ class Acceptance(TransformerBase):
         plot(
             ratios,
             logy=False,
-            xtitle="p_{T} (GeV/#it{c})",
+            xtitle="#it{p}_{T} (GeV/#it{c})",
             ytitle="{} / average".format(spectrums[0].GetYaxis().GetTitle()),
             csize=(96, 128),
             legend_pos=(0.5, 0.7, 0.7, 0.85),

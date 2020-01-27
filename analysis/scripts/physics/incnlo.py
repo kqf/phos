@@ -40,7 +40,7 @@ def test_pion_spectrum(data, oname):
     plot(
         [ratios[0], confidence],
         ytitle="#frac{Data, NLO}{TCM fit}",
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,
         logx=True,
         ylimits=(0, 10.),

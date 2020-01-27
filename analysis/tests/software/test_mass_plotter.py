@@ -19,7 +19,7 @@ def title():
     title = """
         pp at #sqrt{#it{s}} = 13 TeV,|
         #pi^{0} #rightarrow #gamma#gamma,|
-        15 < p_{T} < 20 GeV/#it{c} |
+        15 < #it{p}_{T} < 20 GeV/#it{c} |
     """
     return title
 

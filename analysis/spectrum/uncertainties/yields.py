@@ -123,7 +123,7 @@ class YieldExtractioin(TransformerBase):
         spectrums = list(spectrums.values())
         plot(
             spectrums,
-            xtitle="p_{T} (GeV/#it{c})",
+            xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.53, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/spectra-{}.pdf".format(
@@ -140,7 +140,7 @@ class YieldExtractioin(TransformerBase):
         plot(
             list(map(lambda x: br.ratio(x, average), spectrums)),
             logy=False,
-            xtitle="p_{T} (GeV/#it{c})",
+            xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.53, 0.6, 0.88, 0.88),
             oname="results/systematics/yields/ratios-{}.pdf".format(

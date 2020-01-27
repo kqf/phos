@@ -66,7 +66,7 @@ def visualise(effs, loggs, stop=False):
     #     eff.Scale(1 + 0.001 * i)
     plot(
         effs,
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         csize=(96, 128),
         legend_pos=None,
         oname="results/systematics/nonlinearity/efficiencies.pdf",
@@ -86,7 +86,7 @@ def visualise(effs, loggs, stop=False):
     plot(
         list(map(lambda x: br.ratio(x, average), effs)),
         logy=False,
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         csize=(96, 128),
         legend_pos=None,
         oname="results/systematics/nonlinearity/ratios.pdf",

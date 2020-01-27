@@ -23,7 +23,7 @@ def clean_name(name):
     name = (
         name.strip()
         .replace(" GeV/#it{c}", "")
-        .replace("p_{T}", "pT")
+        .replace("#it{p}_{T}", "pT")
         .replace("<", "")
         .replace(">", "")
         .replace("_", "-")

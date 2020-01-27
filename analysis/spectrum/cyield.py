@@ -40,7 +40,7 @@ def cyield_data(particle, listname_eff="PhysEff"):
 
 
 class InvariantYield(TransformerBase):
-    _ytitle = "#frac{1}{2 #pi p_{T}}"
+    _ytitle = "#frac{1}{2 #pi #it{p}_{T}}"
 
     def transform(self, hist, loggs):
         normalized = br.divide_by_bin_centers(hist)

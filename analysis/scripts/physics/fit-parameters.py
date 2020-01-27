@@ -22,7 +22,7 @@ class HepdataInput(TransformerBase):
         br.io.hepdata(item["hepdata"], filename, item["table"])
         graph = br.io.read(filename, item["table"], self.histname)
         hist = br.graph2hist(graph)
-        hist.GetXaxis().SetTitle("p_{T} (GeV/#it{c})")
+        hist.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
         hist.SetTitle(item["title"])
         hist.Scale(item["scale"])
         hist.energy = item["energy"]
@@ -62,7 +62,7 @@ def test_downloads_from_hepdata(particle, stop, data):
         data,
         stop=stop,
         ytitle=invariant_cross_section_code(),
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),
         csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),

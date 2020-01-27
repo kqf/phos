@@ -23,7 +23,7 @@ class FeedDownOptions(object):
         if particle != "#pi^{0}":
             raise IOError("Feeddown for {} is not defined".format(particle))
         self.edges = Options(particle).pt.ptedges
-        self.title = "; p_{T} (GeV/#it{c}) ;relative sys. uncertainty"
+        self.title = "; #it{p}_{T} (GeV/#it{c}) ;relative sys. uncertainty"
         # The value borrowed from the 5 TeV analysis
         self.uncertainty_value = 0.02
 

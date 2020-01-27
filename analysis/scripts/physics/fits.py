@@ -28,7 +28,7 @@ def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
         [cs, tcm, tsallis],
         stop=stop,
         ytitle=invariant_cross_section_code(),
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         # xlimits=(0.7, 22),
         csize=(96, 128),
         ltitle=ltitle,

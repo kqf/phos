@@ -42,7 +42,7 @@ def tof_ratio(histograms, loggs, fitf):
         histograms,
         logy=True,
         logx=True,
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         csize=(96, 128),
         oname="results/systematics/tof/yields.pdf",
         more_logs=False,
@@ -64,7 +64,7 @@ def tof_ratio(histograms, loggs, fitf):
         logy=False,
         logx=True,
         ytitle="R_{TOF}",
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         xlimits=(0.8, 9.6),
         ylimits=(0, 2.5),
         csize=(96, 128),
@@ -91,7 +91,7 @@ class TofUncertaintyOptions(object):
 
 
 class RatioFitter(TransformerBase):
-    title = "TOF uncertainty; p_{T} (GeV/#it{c}); Relateive error, %"
+    title = "TOF uncertainty; #it{p}_{T} (GeV/#it{c}); Relateive error, %"
 
     def __init__(self, fit_range, plot=False):
         super(RatioFitter, self).__init__(plot)

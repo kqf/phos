@@ -24,7 +24,7 @@ def test_compare_with_pythia(pythia6, particle, tcm, oname):
     plot(
         [cs, pythia6, tcm],
         ytitle=invariant_cross_section_code(),
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         xlimits=(2, 22),
         ylimits=(0.0002, 400),
         csize=(96, 128),

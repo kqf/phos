@@ -96,7 +96,7 @@ def errors(data, particle):
 
 class TotalUncertaintyOptions():
     title = "Total systematic uncertainty; " \
-        "p_{T} (GeV/#it{c}), relative sys. err."
+        "#it{p}_{T} (GeV/#it{c}), relative sys. err."
 
     def __init__(self, particle):
         self.yields = YieldExtractioinUncertanityOptions(particle=particle)
@@ -146,7 +146,7 @@ class TotalUncertainty(TransformerBase):
             list(data) + [total_hist],
             logx=False,
             logy=False,
-            xtitle="p_{T} (GeV/#it{c})",
+            xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.2, 0.7, 0.4, 0.85),
             oname="results/systematics/total/{}.pdf".format(

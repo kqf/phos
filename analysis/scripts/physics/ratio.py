@@ -35,7 +35,7 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=4.5, ptmax=22):
     plot(
         [data, pythia6_eta_pion_ratio],
         ytitle="R_{#eta / #pi^{0}}",
-        xtitle="p_{T} (GeV/#it{c})",
+        xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,
         logx=True,
         xlimits=(1.9, 22),

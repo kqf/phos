@@ -25,9 +25,9 @@ def plot_func(data, loggs, stop):
     func_feeddown.FixParameter(2, 0.0478)
     data.Fit(func_feeddown, "RQ")
     data.SetTitle(
-        "MC; p_{T} (GeV/#it{c});"
-        "#frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
-        "#frac{dN(all)}{dp_{T}}"
+        "MC; #it{p}_{T} (GeV/#it{c});"
+        "#frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{d#it{p}_{T}} / "
+        "#frac{dN(all)}{d#it{p}_{T}}"
     )
     plot(
         [data, func_feeddown],

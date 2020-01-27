@@ -21,7 +21,7 @@ def data(particle):
 
 @pytest.fixture
 def calibration_data(particle, data, quant):
-    labels = "Data", "Low p_{T}", "High p_{T}"
+    labels = "Data", "Low #it{p}_{T}", "High #it{p}_{T}"
     scales = [1, 1.0189, 1.0189]
     with open_loggs() as loggs:
         estimator = ParallelPipeline([

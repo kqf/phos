@@ -32,9 +32,9 @@ class CorrectionEstimator(TransformerBase):
         self.pt = array.array('f', pt)
 
     def transform(self, feeddown, loggs):
-        title = "MC; p_{T} (GeV/#it{c})"
-        title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{dp_{T}} / "
-        title += "#frac{dN(all)}{dp_{T}}"
+        title = "MC; #it{p}_{T} (GeV/#it{c})"
+        title += "; #frac{dN(#pi^{0} #leftarrow K_{0}^{s})}{d#it{p}_{T}} / "
+        title += "#frac{dN(all)}{d#it{p}_{T}}"
         feeddown.Fit(self.fitf, "QR")
         corr = ROOT.TH1F("feeddown", "Feed-down", len(self.pt) - 1, self.pt)
         for b in br.hrange(corr):

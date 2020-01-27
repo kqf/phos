@@ -47,11 +47,11 @@ def reduce_func(inputs, loggs):
 
     data, mc_ = inputs
     data.SetTitle(
-        "Data; p_{T} (GeV/#it{c});"
+        "Data; #it{p}_{T} (GeV/#it{c});"
         "(#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}})^{data}"
     )
     mc_.SetTitle(
-        "MC; p_{T} (GeV/#it{c});"
+        "MC; #it{p}_{T} (GeV/#it{c});"
         "(#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}})^{mc}"
     )
     mc = RebinTransformer(True, br.edges(data)).transform(mc_, loggs)
