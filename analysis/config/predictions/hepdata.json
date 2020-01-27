@@ -2,7 +2,7 @@
     "#pi^{0}": {
         "pp 7 TeV": {
             "func": "#pi^{0} 7 TeV",
-            "title": "pp, #sqrt{s} = 7 TeV",
+            "title": "pp, #sqrt{#it{s}} = 7 TeV",
             "file": "pion-7000-gev-pp.root",
             "hepdata": "ins1116147",
             "scale": 1,
@@ -11,7 +11,7 @@
         },
         "pp 0.9 TeV": {
             "func": "#pi^{0} 0.9 TeV",
-            "title": "pp, #sqrt{s} = 0.9 TeV",
+            "title": "pp, #sqrt{#it{s}} = 0.9 TeV",
             "file": "pion-0900-gev-pp.root",
             "hepdata": "ins1116147",
             "scale": 1,
@@ -20,7 +20,7 @@
         },
         "pp 2.76 TeV": {
             "func": "#pi^{0} 2.76 TeV",
-            "title": "pp, #sqrt{s} = 2.76 TeV",
+            "title": "pp, #sqrt{#it{s}} = 2.76 TeV",
             "file": "pion-2760-gev-pp.root",
             "hepdata": "ins1512110",
             "scale": 1e-6,
@@ -29,7 +29,7 @@
         },
         "pp 8 TeV": {
             "func": "#pi^{0} 8 TeV",
-            "title": "pp, #sqrt{s} = 8 TeV",
+            "title": "pp, #sqrt{#it{s}} = 8 TeV",
             "file": "pion-8000-gev-pp.root",
             "hepdata": "ins1620477",
             "scale": 1e-6,
@@ -40,7 +40,7 @@
     "#eta": {
         "pp 2.76 TeV": {
             "func": "#pi^{0} 2.76 TeV",
-            "title": "pp, #sqrt{s} = 2.76 TeV",
+            "title": "pp, #sqrt{#it{s}} = 2.76 TeV",
             "file": "eta-2760-gev-pp.root",
             "hepdata": "ins1512110",
             "scale": 1e-6,
@@ -49,7 +49,7 @@
         },
         "pp 7 TeV": {
             "func": "#pi^{0} 7 TeV",
-            "title": "pp, #sqrt{s} = 7 TeV",
+            "title": "pp, #sqrt{#it{s}} = 7 TeV",
             "file": "eta-7000-gev-pp.root",
             "hepdata": "ins1116147",
             "scale": 1,
@@ -58,7 +58,7 @@
         },
         "pp 8 TeV": {
             "func": "#pi^{0} 8 TeV",
-            "title": "pp, #sqrt{s} = 8 TeV",
+            "title": "pp, #sqrt{#it{s}} = 8 TeV",
             "file": "eta-8000-gev-pp.root",
             "hepdata": "ins1620477",
             "scale": 1e-6,

@@ -47,7 +47,7 @@ def test_r(data, stop, coname):
         stop=stop,
         logy=False,
         ytitle="R_{TCM}(s)",
-        xtitle="#sqrt{s} (GeV)",
+        xtitle="#sqrt{#it{s}} (GeV)",
         ylimits=(0.01, 2.6),
         xlimits=(0.7, 15),
         csize=(96, 128),

@@ -10,7 +10,7 @@ from spectrum.style import style
 def info(hist):
     pave = ROOT.TPaveText(.3, .6, .4, .8, "NBNDC")
     pave.AddText("ALICE, PHOS")
-    pave.AddText("pp at #sqrt{s}=13 TeV")
+    pave.AddText("pp at #sqrt{#it{s}}=13 TeV")
     pave.SetFillStyle(0)
     pave.SetLineColor(0)
     # pave.SetTextSize(12)

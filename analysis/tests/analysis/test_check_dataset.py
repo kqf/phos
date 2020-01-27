@@ -25,7 +25,7 @@ def test_dataset(particle, data):
     estimator = Analysis(options)
 
     # Analyze the data
-    with open_loggs("ALICE, #sqrt{s} = 13 TeV", "#pi^{0}") as loggs:
+    with open_loggs("ALICE, #sqrt{#it{s}} = 13 TeV", "#pi^{0}") as loggs:
         observables = estimator.transform(data, loggs)
         diff = cmpr.Comparator()
         for obs in observables:

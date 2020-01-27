@@ -10,7 +10,7 @@ def data(system):
     raw = pd.read_json("config/physics/eta_pion_energies.json")
     pp = raw[(raw["system"] == system) | (system == "all")]
     return br.graph(
-        "; #sqrt{s} (GeV); R_{#eta / #pi^{0}}",
+        "; #sqrt{#it{s}} (GeV); R_{#eta / #pi^{0}}",
         pp["energy"],
         pp["eta_pion"],
         dy=pp["eta_pion_err"])

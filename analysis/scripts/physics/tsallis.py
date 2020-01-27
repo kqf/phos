@@ -87,7 +87,7 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
         stop=stop,
         logy=False,
         ytitle=ytitle,
-        xtitle="#sqrt{s} (GeV)",
+        xtitle="#sqrt{#it{s}} (GeV)",
         ylimits=ylimits,
         xlimits=(0.7, 15),
         csize=(96, 128),

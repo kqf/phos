@@ -68,7 +68,7 @@ class XTtransformer(TransformerBase):
             "{}_xt".format(x.GetName()), x.GetTitle(),
             len(xtedges) - 1,
             xtedges)
-        xt.GetXaxis().SetTitle("x_{T}")
+        xt.GetXaxis().SetTitle("#it{x}_{T}")
 
         for i in br.hrange(x):
             xt.SetBinContent(i, x.GetBinContent(i))
@@ -246,7 +246,7 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
         logy=False,
         xlimits=(0.0001, 0.011),
         ylimits=(0, 12),
-        ytitle="n(x_{T}, #sqrt{s_{1}}, #sqrt{s_{2}})",
+        ytitle="#it{n}(#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
         xtitle="x_{T}",
         csize=(96 * 1.5, 96),
         legend_pos=(0.65, 0.6, 0.88, 0.88),
@@ -264,7 +264,8 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
 def test_scaled_spectra(particle, data, oname, combined_n):
     for h in data:
         h.Scale(h.energy ** combined_n)
-    title = "(#sqrt{{s}})^{{{n}}} (GeV)^{{{n}}} #times ".format(n=combined_n)
+    template = "(#sqrt{{#it{{s}}}})^{{{n}}} (GeV)^{{{n}}} #times "
+    title = template.format(n=combined_n)
     title += invariant_cross_section_code().strip()
     plot(
         data,

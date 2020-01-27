@@ -17,7 +17,7 @@ def generate_from_data(conf, particle="#pi^{0}"):
 @pytest.fixture(scope="module")
 def title():
     title = """
-        pp at #sqrt{s} = 13 TeV,|
+        pp at #sqrt{#it{s}} = 13 TeV,|
         #pi^{0} #rightarrow #gamma#gamma,|
         15 < p_{T} < 20 GeV/#it{c} |
     """

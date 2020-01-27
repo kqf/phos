@@ -44,7 +44,7 @@ def data(particle):
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
     measured = spectrum(particle)
-    measured.SetTitle("pp, #sqrt{s} = 13 TeV")
+    measured.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
     spectra.append(measured)
 
     for i, cs in enumerate(spectra):

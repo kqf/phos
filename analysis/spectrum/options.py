@@ -189,7 +189,7 @@ class CompositeCorrectedYieldOptions(object):
             "histname": "corrected_yield",
             "title": self.histpattern.format(particle=particle),
             "label": particle,
-            # "label": "ALICE, pp #sqrt{s} = 13 TeV",
+            # "label": "ALICE, pp #sqrt{#it{s}} = 13 TeV",
         }
         self.normalization = 1.
         self.branching_ratio = 1  # PDG_BR_RATIO.get(particle)
