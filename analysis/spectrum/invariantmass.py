@@ -12,13 +12,13 @@ class RawMass(object):
     reactions = {
         "#pi^{0}": "#pi^{0} #rightarrow #gamma #gamma",
         "#eta": "#eta #rightarrow #gamma #gamma",
-        "electrons": "e^{#pm}",
+        "electrons": "#it{e}^{#pm}",
     }
 
     xaxis = {
         "#pi^{0}": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
         "#eta": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
-        "electrons": "E/p ratio",
+        "electrons": "#it{E}/#it{p} ratio",
     }
 
     def __init__(self, pt_range, nrebin, pt_label, particle):
