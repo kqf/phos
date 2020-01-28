@@ -14,7 +14,7 @@ def nonlinearity_function():
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
         0, 100
     )
-    func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
+    func_nonlin.SetParNames("A", "#sigma", "#it{E}_{scale}")
     func_nonlin.SetParameter(0, -0.05)
     func_nonlin.SetParameter(1, 0.6)
     func_nonlin.SetParLimits(1, 0, 10)

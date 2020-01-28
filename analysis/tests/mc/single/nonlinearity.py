@@ -28,7 +28,7 @@ def data():
 def nonlinearity_function_official():
     func_nonlin = ROOT.TF1(
         "func_nonlin", FVault().func("nonlinearity"), 0, 20)
-    func_nonlin.SetParNames("A", "#sigma", "E_{scale}")
+    func_nonlin.SetParNames("A", "#sigma", "#it{E}_{scale}")
     func_nonlin.SetParameters(1., 0.6, 1.04)
     return func_nonlin
 

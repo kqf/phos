@@ -15,7 +15,7 @@ def feeddown_paramerization():
         "[2] * (1.+[0]*TMath::Exp(-x/2*x/2/2./[1]/[1]))",
         0, 100
     )
-    func_feeddown.SetParNames("A", "#sigma", "E_{scale}")
+    func_feeddown.SetParNames("A", "#sigma", "#it{E}_{scale}")
     func_feeddown.SetParameter(0, -1.4)
     func_feeddown.SetParameter(1, 0.33)
     func_feeddown.SetParLimits(1, 0, 10)
