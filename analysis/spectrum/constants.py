@@ -23,6 +23,9 @@ def cross_section():
 
 
 def invariant_cross_section_code(scale="mb"):
-    return """
-    E #frac{{ d^{{3}}#sigma }}{{ dp^{{3}} }} ({} GeV^{{-2}} #it{{c^{{3}}}})
-    """.format(scale)
+    output = (
+        "#it{{E}} "
+        "#frac{{ d^{{3}}#sigma }}{{ d#it{{p}}^{{3}} }} "
+        "({} GeV^{{-2}} #it{{c^{{3}}}})"
+    ).format(scale).strip().replace("\n", "")
+    return output
