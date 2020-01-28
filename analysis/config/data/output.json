@@ -12,7 +12,7 @@
             "chi2": "#chi^{2} / N_{dof} for #pi^{0} spectrum; #it{p}_{T}(GeV/#it{c}); #chi^{2} / N_{dof}",
             "nmesons": "Number of #pi^{0}s in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{dN}{d#it{p}_{T}}",  
             "cball_alpha": "Crystal ball parameter #alpha for #pi^{0} peak; #it{p}_{T} (GeV/#it{c}); #alpha",
-            "cball_n": "Crystal ball parameter n for #pi^{0} peak; #it{p}_{T} (GeV/#it{c}); n"
+            "cball_n": "Crystal ball parameter #it{n} for #pi^{0} peak; #it{p}_{T} (GeV/#it{c}); #it{n}"
         }
    },
     "#eta":
@@ -25,7 +25,7 @@
             "chi2": "#chi^{2} / N_{dof} for #eta spectrum; #it{p}_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
             "nmesons": "Number of #etas in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{dN}{d#it{p}_{T}}",  
             "cball_alpha": "Crystal ball parameter #alpha for #eta peak; #it{p}_{T} (GeV/#it{c}); #alpha",
-            "cball_n": "Crystal ball parameter n for #eta peak; #it{p}_{T} (GeV/#it{c}); n"
+            "cball_n": "Crystal ball parameter #it{n} for #eta peak; #it{p}_{T} (GeV/#it{c}); #it{n}"
         }
    } 
 }
