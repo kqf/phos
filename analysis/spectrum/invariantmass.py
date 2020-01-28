@@ -16,8 +16,8 @@ class RawMass(object):
     }
 
     xaxis = {
-        "#pi^{0}": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
-        "#eta": "M_{#gamma#gamma} (GeV/#it{c}^{2})",
+        "#pi^{0}": "#it{M}_{#gamma#gamma} (GeV/#it{c}^{2})",
+        "#eta": "#it{M}_{#gamma#gamma} (GeV/#it{c}^{2})",
         "electrons": "#it{E}/#it{p} ratio",
     }
 

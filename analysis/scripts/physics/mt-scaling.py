@@ -35,7 +35,7 @@ def eta_mtf(pionf):
     eta_mtf = ROOT.TF1("eta_mtf", lambda x,
                        p: pionf.Eval(x[0]) * p[0], 2, 20, 1)
     eta_mtf.SetParameter(0, 0.5)
-    eta_mtf.SetTitle("m_{T} scaled")
+    eta_mtf.SetTitle("#it{m}_{T} scaled")
     eta_mtf.SetLineColor(ROOT.kBlack)
     eta_mtf.SetLineStyle(7)
     return eta_mtf
@@ -66,7 +66,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
 
     plot([
         tcmratio(pionf, pion, "TCM-fit"),
-        tcmratio(eta_mtf, eta, "m_{T} scaled TCM-fit"),
+        tcmratio(eta_mtf, eta, "#it{m}_{T} scaled TCM-fit"),
     ],
         xlimits=(0.8, 20.0),
         ylimits=(0, 3.4),
@@ -115,7 +115,7 @@ def test_ratio(asymptotic_eta_pion_ratio):
     upper.SetParameter(2, 14)
     plot([
         ratio(stop=False),
-        br.shaded_region("m_{T} scaling", upper, lower),
+        br.shaded_region("#it{m}_{T} scaling", upper, lower),
     ],
         logy=False,
         logx=False,

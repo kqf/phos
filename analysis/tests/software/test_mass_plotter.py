@@ -28,7 +28,7 @@ def title():
 def mass(title):
     measured = generate_from_data("config/data/gaus.json")
 
-    data = ROOT.TH1F("test", ";M_{#gamma#gamma}; counts", 400, 0, 1.5)
+    data = ROOT.TH1F("test", ";#it{M}_{#gamma#gamma}; counts", 400, 0, 1.5)
     data.SetTitle(title)
     data.FillRandom(measured.GetName(), 10000)
     data.Fit(measured, "Q0")
