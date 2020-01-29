@@ -15,7 +15,6 @@ def data():
     return data
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -47,7 +46,7 @@ def test_r(data, stop, coname):
         [data2graph("#pi^{0}"), data2graph("#eta")],
         stop=stop,
         logy=False,
-        ytitle="R_{TCM}(s)",
+        ytitle="#it{R}_{_{TCM}}",
         xtitle="#sqrt{#it{s}} (GeV)",
         ylimits=(0.01, 2.6),
         xlimits=(0.7, 15),
@@ -92,8 +91,8 @@ def test_corr(data, stop, coname):
         stop=stop,
         logy=False,
         logx=False,
-        ytitle="T^{2} (GeV^{2})",
-        xtitle="T_{e}^{2} (GeV^{2})",
+        ytitle="#it{T}^{ 2} (GeV^{2})",
+        xtitle="#it{T}_{#it{e}}^{ 2} (GeV^{2})",
         # ylimits=(0.01, 2.6),
         # xlimits=(0.7, 15),
         csize=(96, 128),
