@@ -15,6 +15,7 @@ def data():
     return data
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -68,12 +69,19 @@ def test_corr(data, stop, coname):
         pars = pd.DataFrame(data[particle].values())
         ux = unp.uarray(pars["Te"], pars["dTe"]) ** 2
         uy = unp.uarray(pars["T"], pars["dT"]) ** 2
+        # print(particle)
+        # print(unp.nominal_values(ux))
+        pars["Te2"] = unp.nominal_values(ux)
+        pars["T2"] = unp.nominal_values(uy)
+        pars["dTe2"] = unp.std_devs(ux)
+        pars["dT2"] = unp.std_devs(uy)
+        print(pars[["energy", "Te", "dTe", "T", "dT", "Te2", "dTe2", "dT2"]])
         graph = br.graph(
             "test",
-            unp.nominal_values(ux),
-            unp.nominal_values(uy),
-            unp.std_devs(ux),
-            unp.std_devs(uy),
+            pars["Te"],
+            pars["T"],
+            pars["dTe2"],
+            pars["dT2"],
         )
         graph.SetMarkerStyle(21)
         graph.SetTitle(particle)
