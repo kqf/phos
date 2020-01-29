@@ -3,12 +3,6 @@ import pytest
 from spectrum.spectra import spectrum
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
-import spectrum.broot as br
-
-
-def ratio(hist, func):
-    param = br.function2histogram(func, hist)
-    return br.ratio(hist, param)
 
 
 @pytest.mark.onlylocal
