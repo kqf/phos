@@ -229,7 +229,7 @@ def test_read(stop):
 def test_read_multiple(stop):
     ofilename = 'test_read.root'
     selection = 'testSelection'
-    histnames = ['testHistogra#it{M}_{0}'.format(i) for i in range(10)]
+    histnames = ['testHistogram_{0}'.format(i) for i in range(10)]
 
     write_histograms(ofilename, selection, histnames)
 
