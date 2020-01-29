@@ -6,8 +6,8 @@
     {
         "mass": "#it{E}/#it{p} ratio for electrons; matched cluster #it{p}_{T} (GeV/#it{c}); #it{E}/#it{p} ratio; electrons",
         "width": "#it{E}/#it{p} ratio width ; matched cluster #it{p}_{T}; #sigma_{#it{E}/#it{p}}; electrons",
-        "chi2": "#chi^{2} / N_{dof} for #it{E}/#it{p} ratio; #it{p}_{T} (GeV/#it{c}); #chi^{2} / N_{dof}; electrons",
-        "nmesons": "Number of electrons in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{dN}{d#it{p}_{T}}; electrons",
-        "spectrum": "Number of electrons in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{dN}{d#it{p}_{T}}; electrons"
+        "chi2": "#chi^{2} / #it{N}_{dof} for #it{E}/#it{p} ratio; #it{p}_{T} (GeV/#it{c}); #chi^{2} / #it{N}_{dof}; electrons",
+        "nmesons": "Number of electrons in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}}{d#it{p}_{T}}; electrons",
+        "spectrum": "Number of electrons in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}}{d#it{p}_{T}}; electrons"
     }
 }

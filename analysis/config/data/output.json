@@ -8,9 +8,9 @@
         {
             "mass": "Reconstructed #pi^{0} mass position; #it{p}_{T} (GeV/#it{c}); m (GeV/#it{c}^{2})",
             "width": "Reconstructed #pi^{0} peak width ; #it{p}_{T} (GeV/#it{c}); #sigma (GeV/#it{c}^{2})",
-            "spectrum": "Reconstructed #pi^{0} spectrum ; #it{p}_{T} (GeV/#it{c}); #frac{dN_{rec} }{d#it{p}_{T}}",  
-            "chi2": "#chi^{2} / N_{dof} for #pi^{0} spectrum; #it{p}_{T}(GeV/#it{c}); #chi^{2} / N_{dof}",
-            "nmesons": "Number of #pi^{0}s in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{dN}{d#it{p}_{T}}",  
+            "spectrum": "Reconstructed #pi^{0} spectrum ; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}_{rec} }{d#it{p}_{T}}",  
+            "chi2": "#chi^{2} / #it{N}_{dof} for #pi^{0} spectrum; #it{p}_{T}(GeV/#it{c}); #chi^{2} / #it{N}_{dof}",
+            "nmesons": "Number of #pi^{0}s in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}}{d#it{p}_{T}}",  
             "cball_alpha": "Crystal ball parameter #alpha for #pi^{0} peak; #it{p}_{T} (GeV/#it{c}); #alpha",
             "cball_n": "Crystal ball parameter #it{n} for #pi^{0} peak; #it{p}_{T} (GeV/#it{c}); #it{n}"
         }
@@ -21,9 +21,9 @@
         {
             "mass": "Reconstructed #eta mass position; #it{p}_{T} (GeV/#it{c}); m (GeV/#it{c}^{2})",
             "width": "Reconstructed #eta peak width ; #it{p}_{T} (GeV/#it{c}); #sigma (GeV/#it{c}^{2})",
-            "spectrum": "Reconstructed #eta spectrum ; #it{p}_{T} (GeV/#it{c}); #frac{dN_{rec} }{d#it{p}_{T}}",  
-            "chi2": "#chi^{2} / N_{dof} for #eta spectrum; #it{p}_{T} (GeV/#it{c}); #chi^{2} / N_{dof}",
-            "nmesons": "Number of #etas in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{dN}{d#it{p}_{T}}",  
+            "spectrum": "Reconstructed #eta spectrum ; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}_{rec} }{d#it{p}_{T}}",  
+            "chi2": "#chi^{2} / #it{N}_{dof} for #eta spectrum; #it{p}_{T} (GeV/#it{c}); #chi^{2} / #it{N}_{dof}",
+            "nmesons": "Number of #etas in each #it{p}_{T} bin; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}}{d#it{p}_{T}}",  
             "cball_alpha": "Crystal ball parameter #alpha for #eta peak; #it{p}_{T} (GeV/#it{c}); #alpha",
             "cball_n": "Crystal ball parameter #it{n} for #eta peak; #it{p}_{T} (GeV/#it{c}); #it{n}"
         }

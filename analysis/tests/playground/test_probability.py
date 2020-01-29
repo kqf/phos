@@ -26,7 +26,7 @@ def reconstruct(hist, label, weightf=lambda x, y: 1):
 def test_probability_normalization():
     nmesons = 30000
     title = '"Gnerated" (exponential distribution) #pi^{0} energy ' + \
-        ' spectrum N_{#pi^{0}} = %d; E, GeV'
+        ' spectrum #it{N}_{#pi^{0}} = %d; E, GeV'
     hist = ROOT.TH1F('hGenerated', title % nmesons, 20, 0, 40)
     spectrumf = ROOT.TF1('pi0spectrum', 'TMath::Exp(-0.1 * x)', 0, 40)
     hist.FillRandom(spectrumf.GetName(), nmesons)

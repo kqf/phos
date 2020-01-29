@@ -37,9 +37,13 @@ class RawMass(object):
     def read_mass(self, hist, pt_range, nrebin, pt_label, particle):
         mass = br.project_range(hist, *pt_range)
         mass.nevents = hist.nevents
-        template = "{pref} | {reaction} | {pt} | N_{{events}} = {events}"
-        title = template.format(
-            pref=PAVE_PREFIX,
+        title = (
+            "{prefix} "
+            "| {reaction} "
+            "| {pt} "
+            "| #it{{N}}_{{events}} = {events}"
+        ).format(
+            prefix=PAVE_PREFIX,
             reaction=self.reactions[self.particle],
             pt=self.pt_label,
             events=humanize.intword(mass.nevents)

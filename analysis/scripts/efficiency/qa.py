@@ -78,7 +78,7 @@ def test_spectral_shape(particle, spmc, ltitle, selection, wname):
             hists,
             logx=True,
             xtitle="#it{p}_{T} (GeV/#it{c})",
-            ytitle="#frac{dN}{d#it{p}_{T}} (GeV/#it{c})^{-1} ",
+            ytitle="#frac{d#it{N}}{d#it{p}_{T}} (GeV^{-1}#it{c})",
             xlimits=(0.8, 100),
             ltitle=ltitle,
             oname=wname,
