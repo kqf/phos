@@ -169,13 +169,6 @@ def _draw_graph(i, graph, colors, option, ngraphs):
         graph.SetFillColor(color)
         graph.SetFillColorAlpha(color, 0.50)
         graph.SetMarkerColor(color)
-    if colors == 'levels':
-        alpha = np.logspace(0, 0.9, ngraphs)[i]
-        graph.SetMarkerStyle(20)
-        graph.SetMarkerSize(1)
-        graph.SetLineColorAlpha(ROOT.kRed + 1, alpha)
-        graph.SetFillColorAlpha(ROOT.kRed + 1, alpha)
-        graph.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
     if colors == 'coolwarm':
         palette = sns.color_palette("coolwarm", ngraphs)
         color, _ = define_color(*palette[i])
@@ -203,10 +196,6 @@ def _draw_histogram(i, hist, colors, nhists=1):
         color, marker = br.auto_color_marker(i)
         hist.SetLineColor(color)
         hist.SetMarkerColor(color)
-    if colors == 'levels':
-        alpha = np.logspace(0, 0.9, nhists)[i]
-        hist.SetLineColorAlpha(ROOT.kRed + 1, alpha)
-        hist.SetMarkerColorAlpha(ROOT.kRed + 1, alpha)
     if colors == 'coolwarm':
         palette = sns.color_palette("coolwarm", nhists)
         color, _ = define_color(*palette[i])

@@ -24,7 +24,6 @@ def stop():
 # @pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
-    "levels",
     "auto"
 ])
 @pytest.mark.parametrize("options", ["p"])
@@ -35,7 +34,6 @@ def test_plots_histograms(data, colors, options, stop):
 # @pytest.mark.skip
 @pytest.mark.parametrize("colors", [
     "coolwarm",
-    "levels",
     "auto"
 ])
 def test_plots_functions(data, functions, colors, stop):
@@ -44,7 +42,6 @@ def test_plots_functions(data, functions, colors, stop):
 
 @pytest.mark.parametrize("colors", [
     "coolwarm",
-    "levels",
     "auto"
 ])
 def test_hplots_histograms(data, colors, stop):
