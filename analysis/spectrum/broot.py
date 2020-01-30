@@ -872,6 +872,8 @@ def table2hist(name, title, data, errors, edges, roi=None):
 
 
 class PhysicsHistogram:
+    options = "", "e5", ""
+
     def __init__(self, tot, stat, syst):
         self.all = tot, stat, syst
         self.tot = tot
@@ -891,8 +893,9 @@ class PhysicsHistogram:
         return self.tot.GetTitle()
 
     def Draw(self, option):
-        for hist in self.all:
-            hist.Draw("{},{}".format("same", option))
+        self.graphs_ = list(map(hist2graph, self.all))
+        for hist, o in zip(self.graphs_, self.options):
+            hist.Draw("{},{},{}".format("same", option, o))
 
 
 def from_hepdata(item, cachedir=".hepdata-cachedir"):
@@ -901,6 +904,12 @@ def from_hepdata(item, cachedir=".hepdata-cachedir"):
     histnames = ["Graph1D_y1", "Hist1D_y1_e1", "Hist1D_y1_e2"]
     hists = [io.read(filename, item["table"], h) for h in histnames]
     hists[0] = graph2hist(hists[0])
+
+    # The bin contents of Hist1D_y1_e* are the bin errors,
+    # which is super strange
+    for i, c in enumerate(bins(hists[0]).contents):
+        hists[1].SetBinContent(i + 1, c)
+        hists[2].SetBinContent(i + 1, c)
 
     for hist in hists:
         hist.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
