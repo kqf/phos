@@ -3,7 +3,7 @@ import json
 import six
 
 import spectrum.broot as br
-from spectrum.pipeline import TransformerBase
+from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
@@ -16,30 +16,12 @@ DATA_CONFIG = {
 }
 
 
-class HepdataInput(TransformerBase):
-    def __init__(self, table_name="Table 1",
-                 histname="Graph1D_y1", plot=False):
-        super(HepdataInput, self).__init__(plot)
-        self.histname = histname
-
-    def transform(self, item, loggs):
-        filename = ".hepdata-cachedir/{}".format(item["file"])
-        br.io.hepdata(item["hepdata"], filename, item["table"])
-        graph = br.io.read(filename, item["table"], self.histname)
-        hist = br.graph2hist(graph)
-        hist.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
-        hist.SetTitle(item["title"])
-        hist.Scale(item["scale"])
-        hist.energy = item["energy"]
-        return hist
-
-
 @pytest.fixture
 def data(particle):
     with open(DATA_CONFIG[particle]) as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
-    steps = [(l, HepdataInput()) for l in labels]
+    steps = [(l, FunctionTransformer(br.from_hepdata, True)) for l in labels]
     with open_loggs() as loggs:
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)

@@ -869,3 +869,41 @@ def table2hist(name, title, data, errors, edges, roi=None):
         hist.SetBinContent(i + 1, c)
         hist.SetBinError(i + 1, error)
     return hist
+
+
+class PhysicsHistogram:
+    def __init__(self, tot, stat, syst):
+        self.all = tot, stat, syst
+        self.tot = tot
+        self.stat = stat
+        self.syst = syst
+        self.energy = None
+
+    def Scale(self, factor):
+        for hist in self.all:
+            hist.Scale(factor)
+
+    def SetTitle(self, title):
+        for hist in self.all:
+            hist.SetTitle(title)
+
+    def GetTitle(self):
+        return self.tot.GetTitle()
+
+
+def from_hepdata(item, cachedir=".hepdata-cachedir"):
+    filename = "{}/{}".format(cachedir, item["file"])
+    io.hepdata(item["hepdata"], filename, item["table"])
+    histnames = ["Graph1D_y1", "Hist1D_y1_e1", "Hist1D_y1_e2"]
+    hists = [io.read(filename, item["table"], h) for h in histnames]
+    hists[0] = graph2hist(hists[0])
+
+    for hist in hists:
+        hist.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
+        hist.SetTitle(item["title"])
+        hist.Scale(item["scale"])
+        hist.energy = item["energy"]
+
+    measurement = PhysicsHistogram(*hists)
+    measurement.energy = item["energy"]
+    return measurement
