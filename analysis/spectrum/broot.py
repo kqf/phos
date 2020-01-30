@@ -890,6 +890,10 @@ class PhysicsHistogram:
     def GetTitle(self):
         return self.tot.GetTitle()
 
+    def Draw(self, option):
+        for hist in self.all:
+            hist.Draw("{},{}".format("same", option))
+
 
 def from_hepdata(item, cachedir=".hepdata-cachedir"):
     filename = "{}/{}".format(cachedir, item["file"])

@@ -112,7 +112,7 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
 
 
 def separate(data):
-    hists, graphs, functions = [], [], []
+    hists, graphs, functions, measurements = [], [], [], []
     for entry in data:
         if issubclass(type(entry), ROOT.TH1):
             hists.append(entry)
@@ -120,7 +120,9 @@ def separate(data):
             functions.append(entry)
         if issubclass(type(entry), ROOT.TGraph):
             graphs.append(entry)
-    return hists, graphs, functions
+        if issubclass(type(entry), br.PhysicsHistogram):
+            measurements.append(entry)
+    return hists, graphs, functions, measurements
 
 
 @lru_cache(maxsize=1024)
@@ -232,11 +234,12 @@ def plot(
     ltext_size=0.035,
     options="p"
 ):
-    hists, graphs, functions = separate(data)
+    hists, graphs, functions, measurements = separate(data)
     histogrammed = (
         hists +
         list(map(lambda x: x.GetHistogram(), functions)) +
-        list(map(br.graph2hist, graphs))
+        list(map(br.graph2hist, graphs)) +
+        [hist for measurement in measurements for hist in measurement.all]
     )
     graphed = graphs + list(map(br.hist2graph, hists))
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
@@ -263,6 +266,10 @@ def plot(
         for i, func in enumerate(functions):
             plotted.append(func)
             func.Draw("same " + func.GetDrawOption())
+
+        for i, measurement in enumerate(measurements):
+            # plotted.append(measurement)
+            measurement.Draw("same")
 
         if legend_pos is not None:
             ll = legend(plotted, legend_pos, ltitle, ltext_size)
