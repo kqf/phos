@@ -103,7 +103,11 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
 
     for entry in data:
         options = "f" if entry.GetFillStyle() > 1000 else "pl"
-        legend.AddEntry(entry, entry.GetTitle(), options)
+        try:
+            legend.AddEntry(entry, entry.GetTitle(), options)
+        except TypeError:
+            graph = entry.graphs[1]
+            legend.AddEntry(graph, entry.GetTitle(), options)
 
     legend.SetFillColor(0)
     legend.SetTextColor(1)
@@ -126,7 +130,7 @@ def separate(data):
 
 
 @lru_cache(maxsize=1024)
-def adjust_canas(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
+def adjust_canvas(data, xlimits, ylimits, xtitle, ytitle, yoffset, more_logs):
     x = xlimits or np.concatenate([br.edges(h) for h in data])
     y = ylimits or np.concatenate([br.bins(h).contents for h in data])
     box = ROOT.TH1F("box", "", 1000, min(x), max(x))
@@ -241,13 +245,13 @@ def plot(
         list(map(br.graph2hist, graphs)) +
         [hist for measurement in measurements for hist in measurement.all]
     )
-    graphed = graphs + list(map(br.hist2graph, hists))
+    graphed = graphs + list(map(br.hist2graph, hists)) + measurements
     with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
         canvas.SetLeftMargin(0.18)
         canvas.SetRightMargin(0.02)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
-        adjust_canas(
+        adjust_canvas(
             tuple(histogrammed),
             xlimits,
             ylimits,
@@ -266,10 +270,6 @@ def plot(
         for i, func in enumerate(functions):
             plotted.append(func)
             func.Draw("same " + func.GetDrawOption())
-
-        for i, measurement in enumerate(measurements):
-            # plotted.append(measurement)
-            measurement.Draw("same")
 
         if legend_pos is not None:
             ll = legend(plotted, legend_pos, ltitle, ltext_size)
@@ -299,7 +299,7 @@ def hplot(
         canvas.SetRightMargin(0.05)
         canvas.SetLogx(logx)
         canvas.SetLogy(logy)
-        adjust_canas(
+        adjust_canvas(
             tuple(data),
             xlimits,
             ylimits,

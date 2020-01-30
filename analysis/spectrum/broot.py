@@ -880,6 +880,14 @@ class PhysicsHistogram:
         self.stat = stat
         self.syst = syst
         self.energy = None
+        self._graphs = None
+
+    @property
+    def graphs(self):
+        if self._graphs:
+            return self._graphs
+        self._graphs = list(map(hist2graph, self.all))
+        return self._graphs
 
     def Scale(self, factor):
         for hist in self.all:
@@ -893,9 +901,41 @@ class PhysicsHistogram:
         return self.tot.GetTitle()
 
     def Draw(self, option):
-        self.graphs_ = list(map(hist2graph, self.all))
-        for hist, o in zip(self.graphs_, self.options):
+        for hist, o in zip(self.graphs, self.options):
             hist.Draw("{},{},{}".format("same", option, o))
+
+    def Clone(self):
+        return self
+
+    def GetN(self):
+        return 0
+
+    def SetPointError(self, *args):
+        pass
+
+    def GetErrorY(self):
+        pass
+
+    def SetMarkerStyle(self, style):
+        pass
+
+    def SetMarkerSize(self, size):
+        pass
+
+    def SetMarkerColor(self, color):
+        pass
+
+    def SetLineColor(self, color):
+        pass
+
+    def SetFillColor(self, color):
+        pass
+
+    def SetFillColorAlpha(self, color, *args):
+        pass
+
+    def GetFillStyle(self):
+        return 1000
 
 
 def from_hepdata(item, cachedir=".hepdata-cachedir"):
