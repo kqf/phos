@@ -233,7 +233,7 @@ def plot(
         list(map(br.graph2hist, graphs)) +
         [hist for measurement in measurements for hist in measurement.all]
     )
-    graphed = graphs + list(map(br.hist2graph, hists)) + measurements
+    graphed = measurements + graphs + list(map(br.hist2graph, hists))
     with style(), canvas(size=csize, stop=stop, oname=oname) as figure:
         figure.SetLeftMargin(0.18)
         figure.SetRightMargin(0.02)

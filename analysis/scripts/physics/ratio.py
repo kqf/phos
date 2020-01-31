@@ -29,9 +29,6 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=4.5, ptmax=22):
     ff.SetLineStyle(7)
     ff.SetTitle("Constant fit")
 
-    data = br.hist2graph(data, use_widths=True)
-    data.GetDrawOption = lambda: "pE5"
-
     plot(
         [data, pythia6_eta_pion_ratio],
         ytitle="#eta / #pi^{0}",

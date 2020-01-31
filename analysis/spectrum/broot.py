@@ -921,8 +921,10 @@ class PhysicsHistogram:
         return self.tot.GetTitle()
 
     def Draw(self, option):
-        self.graphs[2].Draw("{},pe5z".format(option))
+        for graph in self.graphs:
+            graph.SetFillColorAlpha(0, 0)
         self.graphs[1].Draw("{},pez".format(option))
+        self.graphs[2].Draw("{},pe5z".format(option))
 
     def Clone(self):
         return self

@@ -33,8 +33,7 @@ def test_pion_spectrum(data, tcm, oname):
     pion.Fit(tcm, "R")
     pion.SetTitle("Data")
     histograms = [pion] + list(data)
-    param = br.function2histogram(tcm, pion.tot)
-    ratios = [br.ratio(h, param) for h in histograms]
+    ratios = [br.ratio(h, tcm) for h in histograms]
     confidence = br.shaded_region_hist("pQCD", *ratios[1:])
     confidence.SetTitle("NLO, PDF: CTEQ5")
     plot(

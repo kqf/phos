@@ -122,5 +122,6 @@ def test_ratio(asymptotic_eta_pion_ratio):
         csize=(96 * 1.5, 96),
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        oname="results/discussion/mt_scaling/eta_pion_ratio.pdf"
+        options=["p", "f"],
+        oname="results/discussion/mt_scaling/eta_pion_ratio.pdf",
     )
