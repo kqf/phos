@@ -29,11 +29,12 @@ def data():
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
 ])
-def test_pion_spectrum(data, oname):
+def test_pion_spectrum(data, tcm, oname):
     pion = spectrum("#pi^{0}")
+    pion.Fit(tcm, "R")
     pion.SetTitle("Data")
     histograms = [pion] + list(data)
-    param = br.function2histogram(FVault().tf1("tcm", "#pi^{0} 13 TeV"), pion)
+    param = br.function2histogram(tcm, pion.tot)
     ratios = [br.ratio(h, param) for h in histograms]
     confidence = br.shaded_region_hist("pQCD", *ratios[1:])
     confidence.SetTitle("NLO, PDF: CTEQ5")

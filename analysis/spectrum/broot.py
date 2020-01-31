@@ -1,11 +1,13 @@
 import ROOT
 import array
 import os
-from collections import namedtuple
 import six
-
-import numpy as np
 import tqdm
+import numpy as np
+
+from collections import namedtuple
+from multimethod import multimethod
+
 from contextlib import contextmanager
 from repoze.lru import lru_cache
 from six.moves import urllib
@@ -273,8 +275,9 @@ def same(hist1, hist2):
         "Neither of hist1 and hist2 have BROOT properties")
 
 
+@multimethod
 def ratio(a, b, option="B", loggs=None):
-    ratio = a.Clone("ratio" + a.GetName())
+    ratio = a.Clone("{}_div_{}".format(a.GetName(), b.GetName()))
     _prop.copy_everything(ratio, a)
 
     # if ratio.GetNbinsX() != b.GetNbinsX():
@@ -974,3 +977,12 @@ def from_hepdata(item, cachedir=".hepdata-cachedir"):
     measurement = PhysicsHistogram(*hists)
     measurement.energy = item["energy"]
     return measurement
+
+
+@ratio.register(PhysicsHistogram, ROOT.TH1)
+def _(a, b, option="", loggs=None):
+    return PhysicsHistogram(
+        ratio(a.tot, b, option=option, loggs=loggs),
+        ratio(a.stat, b, option=option, loggs=loggs),
+        ratio(a.syst, b, option=option, loggs=loggs),
+    )
