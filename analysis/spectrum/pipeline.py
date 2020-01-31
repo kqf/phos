@@ -1,8 +1,9 @@
 from __future__ import print_function
 
+import ROOT
 import array
 from collections import defaultdict
-
+from multimethod import multimethod
 from flatten_dict import flatten, unflatten
 import six
 from tqdm import tqdm
@@ -83,6 +84,7 @@ class RebinTransformer(TransformerBase):
         widths = [func(nbins(*edge)) for edge in zip(new[:-1], new[1:])]
         return widths
 
+    @multimethod
     def transform(self, hist, loggs):
         if self.edges is None:
             return hist
@@ -98,6 +100,15 @@ class RebinTransformer(TransformerBase):
             normalized=self.normalized)
 
         return rebinned
+
+    @transform.register(TransformerBase, br.PhysicsHistogram)
+    def _(self, hist, loggs):
+        result = br.PhysicsHistogram(
+            self.transform(hist.tot, loggs),
+            self.transform(hist.stat, loggs),
+            self.transform(hist.syst, loggs),
+        )
+        return result
 
 
 class FitfunctionAssigner(TransformerBase):

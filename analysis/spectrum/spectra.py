@@ -78,9 +78,7 @@ def ratio(stop=False):
     pion = spectrum("#pi^{0}")
     eta = spectrum("#eta")
     with open_loggs() as loggs:
-        pion = RebinTransformer(True, br.edges(eta)).transform(pion, loggs)
-    ratio = Comparator(stop=stop).compare(eta, pion)
-    ratio.SetTitle("#eta / #pi^{0}; p_T; #eta / #pi^{0}")
-    ratio.logy = False
-    ratio.GetXaxis().SetRangeUser(2, 10)
+        pion = RebinTransformer(True, br.edges(eta.tot)).transform(pion, loggs)
+    ratio = br.ratio(eta, pion)
+    ratio.SetTitle("#eta / #pi^{0}; #it{p}_T (GeV/#it{c}); #eta / #pi^{0}")
     return ratio

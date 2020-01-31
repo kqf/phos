@@ -42,7 +42,7 @@ def eta_mtf(pionf):
 
 
 def tcmratio(func, hist, title):
-    histratio = br.ratio(hist, br.function2histogram(func, hist))
+    histratio = br.ratio(hist, func)
     histratio.SetTitle("{}, data / {}".format(hist.GetTitle(), title))
     return histratio
 

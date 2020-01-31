@@ -10,24 +10,24 @@ from repoze.lru import lru_cache
 
 
 @contextmanager
-def pcanvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
-    canvas = ROOT.TCanvas(name, "canvas",
+def canvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
+    figure = ROOT.TCanvas(name, "figure",
                           int(size[0] * scale), int(size[1] * scale))
-    canvas.SetTickx()
-    canvas.SetTicky()
-    canvas.SetGridx()
-    canvas.SetGridy()
+    figure.SetTickx()
+    figure.SetTicky()
+    figure.SetGridx()
+    figure.SetGridy()
 
     old = ROOT.gROOT.IsBatch()
     ROOT.gROOT.SetBatch(not stop)
-    yield canvas
-    canvas.Update()
+    yield figure
+    figure.Update()
     if oname is not None:
-        canvas.SaveAs(su.ensure_directory(oname))
+        figure.SaveAs(su.ensure_directory(oname))
 
     if not stop:
         return
-    canvas.Connect("Closed()", "TApplication",
+    figure.Connect("Closed()", "TApplication",
                    ROOT.gApplication, "Terminate()")
     ROOT.gApplication.Run(True)
     ROOT.gROOT.SetBatch(old)
@@ -102,7 +102,7 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
         legend.AddEntry(0, ltitle, "")
 
     for entry in data:
-        options = "pf" if entry.GetFillStyle() > 1000 else "pl"
+        options = "f" if entry.GetFillStyle() > 1000 else "pl"
         try:
             legend.AddEntry(entry, entry.GetTitle(), options)
         except TypeError:
@@ -234,11 +234,11 @@ def plot(
         [hist for measurement in measurements for hist in measurement.all]
     )
     graphed = graphs + list(map(br.hist2graph, hists)) + measurements
-    with style(), pcanvas(size=csize, stop=stop, oname=oname) as canvas:
-        canvas.SetLeftMargin(0.18)
-        canvas.SetRightMargin(0.02)
-        canvas.SetLogx(logx)
-        canvas.SetLogy(logy)
+    with style(), canvas(size=csize, stop=stop, oname=oname) as figure:
+        figure.SetLeftMargin(0.18)
+        figure.SetRightMargin(0.02)
+        figure.SetLogx(logx)
+        figure.SetLogy(logy)
         adjust_canvas(
             tuple(histogrammed),
             xlimits,
@@ -282,11 +282,11 @@ def hplot(
     colors='auto',
     ltext_size=0.035,
 ):
-    with style(), pcanvas("cn", size=csize, stop=stop, oname=oname) as canvas:
-        canvas.SetLeftMargin(0.15)
-        canvas.SetRightMargin(0.05)
-        canvas.SetLogx(logx)
-        canvas.SetLogy(logy)
+    with style(), canvas("cn", size=csize, stop=stop, oname=oname) as figure:
+        figure.SetLeftMargin(0.15)
+        figure.SetRightMargin(0.05)
+        figure.SetLogx(logx)
+        figure.SetLogy(logy)
         adjust_canvas(
             tuple(data),
             xlimits,

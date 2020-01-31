@@ -302,6 +302,16 @@ def ratio(a, b, option="B", loggs=None):
     return ratio
 
 
+@ratio.register(ROOT.TH1, ROOT.TF1)
+def _(a, b, option="B", loggs=None):
+    ratio = a.Clone("{}_div_{}".format(a.GetName(), b.GetName()))
+    _prop.copy_everything(ratio, a)
+    ratio.Divide(b)
+    if not ratio.GetSumw2N():
+        ratio.Sumw2()
+    return ratio
+
+
 def set_nevents(hist, nevents, norm=False):
     hist.nevents = nevents
     if norm:
@@ -979,10 +989,19 @@ def from_hepdata(item, cachedir=".hepdata-cachedir"):
     return measurement
 
 
-@ratio.register(PhysicsHistogram, ROOT.TH1)
+@ratio.register(PhysicsHistogram)
 def _(a, b, option="", loggs=None):
     return PhysicsHistogram(
         ratio(a.tot, b, option=option, loggs=loggs),
         ratio(a.stat, b, option=option, loggs=loggs),
         ratio(a.syst, b, option=option, loggs=loggs),
+    )
+
+
+@ratio.register(PhysicsHistogram, PhysicsHistogram)
+def _(a, b, option="", loggs=None):
+    return PhysicsHistogram(
+        ratio(a.tot, b.tot, option=option, loggs=loggs),
+        ratio(a.stat, b.stat, option=option, loggs=loggs),
+        ratio(a.syst, b.syst, option=option, loggs=loggs),
     )
