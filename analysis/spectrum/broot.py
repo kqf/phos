@@ -871,8 +871,13 @@ def table2hist(name, title, data, errors, edges, roi=None):
     return hist
 
 
+def reset_graph_errors(graph):
+    for point in range(graph.GetN()):
+        graph.SetPointError(point, 0, graph.GetErrorY(point))
+    return graph
+
+
 class PhysicsHistogram:
-    options = "", "e5", ""
 
     def __init__(self, tot, stat, syst):
         self.all = tot, stat, syst
@@ -887,6 +892,8 @@ class PhysicsHistogram:
         if self._graphs:
             return self._graphs
         self._graphs = list(map(hist2graph, self.all))
+        # Don't draw "x-errors" for stat. uncertainty
+        reset_graph_errors(self.graphs[1])
         return self._graphs
 
     def Scale(self, factor):
@@ -901,8 +908,8 @@ class PhysicsHistogram:
         return self.tot.GetTitle()
 
     def Draw(self, option):
-        for hist, o in zip(self.graphs, self.options):
-            hist.Draw("{},{},{}".format("same", option, o))
+        self.graphs[2].Draw("{},pe5z".format(option))
+        self.graphs[1].Draw("{},pez".format(option))
 
     def Clone(self):
         return self
@@ -917,16 +924,21 @@ class PhysicsHistogram:
         pass
 
     def SetMarkerStyle(self, style):
-        pass
+        for graph in self.graphs:
+            graph.SetMarkerStyle(style)
 
     def SetMarkerSize(self, size):
-        pass
+        for graph in self.graphs:
+            graph.SetMarkerSize(size)
 
     def SetMarkerColor(self, color):
-        pass
+        print("marker color")
+        for graph in self.graphs:
+            graph.SetMarkerColor(color)
 
     def SetLineColor(self, color):
-        pass
+        for graph in self.graphs:
+            graph.SetLineColor(color)
 
     def SetFillColor(self, color):
         pass

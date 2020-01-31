@@ -106,7 +106,7 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
         try:
             legend.AddEntry(entry, entry.GetTitle(), options)
         except TypeError:
-            graph = entry.graphs[1]
+            graph = entry.graphs[-1]
             legend.AddEntry(graph, entry.GetTitle(), options)
 
     legend.SetFillColor(0)
@@ -183,8 +183,7 @@ def _draw_graph(i, graph, colors, option, ngraphs):
 
     # Remove x-errors for tgraph styled plots
     if "e5" not in option.lower() and "q" not in option.lower():
-        for point in range(graph.GetN()):
-            graph.SetPointError(point, 0, graph.GetErrorY(point))
+        br.reset_graph_errors(graph)
 
     graph.Draw(option)
     return graph
