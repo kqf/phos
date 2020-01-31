@@ -537,6 +537,7 @@ def confidence_intervals(hist, func, options="R", histbining=None):
     return ci
 
 
+# TODO: remove me
 def function2histogram(func, hist, scale=1):
     newhist = copy(hist)
     for b in hrange(hist):

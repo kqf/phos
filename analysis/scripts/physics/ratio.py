@@ -13,24 +13,19 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=4.5, ptmax=22):
     data = ratio()
     data.SetTitle("Data")
 
-    ff = ROOT.TF1("ff", "[0]", ptmin, ptmax)
+    ff = ROOT.TF1("etaPionRatio", "[0]", ptmin, ptmax)
     ff.SetParameter(0, 0.5)
+    ff.SetParName(0, "Value")
     data.Fit(ff, "RQ")
-    print()
-    print(r"\def \etaPionRatioValue {{{:.3g}}}".format(ff.GetParameter(0)))
-    print(r"\def \etaPionRatioValueError {{{:.3g}}}".format(ff.GetParError(0)))
-    print(r"\def \minEtaPionRatioFit {{{:.3g}}}".format(ptmin))
-    print(r"\def \maxEtaPionRatioFit {{{:.3g}}}".format(ptmax))
-    print(r"\def \etaPionRatioChi {{{:.3g}}}".format(
-        ff.GetChisquare() / ff.GetNDF()
-    ))
+
+    br.report(ff, limits=True)
     ff.SetRange(2, 22)
     ff.SetLineColor(ROOT.kBlack)
     ff.SetLineStyle(7)
     ff.SetTitle("Constant fit")
 
     plot(
-        [data, pythia6_eta_pion_ratio],
+        [data, pythia6_eta_pion_ratio, ff],
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,
