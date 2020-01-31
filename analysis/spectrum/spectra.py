@@ -71,7 +71,7 @@ def spectrum(particle):
     estimator = Spectrum(particle=particle)
     with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
-    return output.spectrum
+    return br.PhysicsHistogram(*output)
 
 
 def ratio(stop=False):

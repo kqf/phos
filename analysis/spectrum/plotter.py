@@ -102,12 +102,12 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
         legend.AddEntry(0, ltitle, "")
 
     for entry in data:
-        options = "f" if entry.GetFillStyle() > 1000 else "pl"
+        options = "pf" if entry.GetFillStyle() > 1000 else "pl"
         try:
             legend.AddEntry(entry, entry.GetTitle(), options)
         except TypeError:
             graph = entry.graphs[-1]
-            legend.AddEntry(graph, entry.GetTitle(), options)
+            legend.AddEntry(graph, entry.GetTitle(), "pF")
 
     legend.SetFillColor(0)
     legend.SetTextColor(1)

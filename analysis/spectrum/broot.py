@@ -932,7 +932,6 @@ class PhysicsHistogram:
             graph.SetMarkerSize(size)
 
     def SetMarkerColor(self, color):
-        print("marker color")
         for graph in self.graphs:
             graph.SetMarkerColor(color)
 
@@ -948,6 +947,9 @@ class PhysicsHistogram:
 
     def GetFillStyle(self):
         return 1000
+
+    def Fit(self, *args):
+        self.tot.Fit(*args)
 
 
 def from_hepdata(item, cachedir=".hepdata-cachedir"):
