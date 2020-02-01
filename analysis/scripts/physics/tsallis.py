@@ -94,25 +94,69 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
         graph.SetTitle(particle)
         return graph
 
-    fitf = ROOT.TF1("qEnergyDep", "[0] * TMath::Log(x[0]) + [1]", 0.8, 1400)
-    fitf.SetTitle("#it{a} log(#it{s}) + #it{b}")
-    fitf.SetParNames(*["a", "b"])
-    fitf.SetLineColor(ROOT.kBlack)
-    fitf.SetLineWidth(2)
-    fitf.SetParameter(0, 0)
-    fitf.SetParameter(1, 0.138)
-
     pion = data2graph("#pi^{0}")
     eta = data2graph("#eta")
 
-    multigraph = ROOT.TMultiGraph()
-    multigraph.Add(pion)
-    multigraph.Add(eta)
-    multigraph.Fit(fitf)
+    if target == "n":
+        fitf = ROOT.TF1(
+            "etaPionEnergyq",
+            "[0] * TMath::Log(x[0]) + [1]",
+            0.8, 1400)
+        fitf.SetTitle("#it{a} log(#it{s}) + #it{b}")
+        fitf.SetParNames(*["A", "B"])
+        fitf.SetLineColor(ROOT.kBlack)
+        fitf.SetLineWidth(2)
+        fitf.SetParameter(0, 0)
+        fitf.SetParameter(1, 0.11)
 
-    br.report(fitf)
+        multigraph = ROOT.TMultiGraph()
+        multigraph.Add(pion)
+        multigraph.Add(eta)
+        multigraph.Fit(fitf)
+        br.report(fitf)
+        plots = [pion, eta, fitf]
+
+    if target == "C":
+        title = "#it{{T}}_{{{title}}} = {a:4.3f} #pm {b:4.3f}"
+        fitf_pion = ROOT.TF1("pionEnergyT", "[0]", 0.8, 1400)
+        fitf_pion.SetTitle("#it{a} log(#it{s}) + #it{b}")
+        fitf_pion.SetParName(0, "T")
+        fitf_pion.SetLineColor(ROOT.kRed + 1)
+        fitf_pion.SetLineWidth(4)
+        # fitf_pion.SetLineStyle(7)
+        fitf_pion.SetParameter(0, 0)
+        pion.Fit(fitf_pion, "0QN")
+        br.report(fitf_pion)
+        fitf_pion.SetTitle(
+            title.format(
+                title="#pi^{0}",
+                a=fitf_pion.GetParameter(0),
+                b=fitf_pion.GetParError(0),
+            )
+        )
+
+        fitf_eta = ROOT.TF1("etaEnergyT", "[0]", 0.8, 1400)
+        fitf_eta.SetTitle("#it{T}_{#eta}")
+        fitf_eta.SetParName(0, "T")
+        fitf_eta.SetLineColor(ROOT.kBlue + 1)
+        fitf_eta.SetLineWidth(4)
+        # fitf_eta.SetLineStyle(7)
+        fitf_eta.SetParameter(0, 0)
+        eta.Fit(fitf_eta, "0QN")
+        br.report(fitf_eta)
+        fitf_eta.SetTitle(
+            title.format(
+                title="#eta",
+                a=fitf_eta.GetParameter(0),
+                b=fitf_eta.GetParError(0)
+            )
+        )
+
+        plots = [pion, eta, fitf_pion, fitf_eta]
+
+    ROOT.gStyle.SetOptFit(0)
     plot(
-        [pion, eta, fitf],
+        plots,
         stop=stop,
         logy=False,
         ytitle=ytitle,
@@ -120,7 +164,7 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
         ylimits=ylimits,
         xlimits=(0.7, 15),
         csize=(96, 128),
-        legend_pos=(0.7, 0.7, 0.85, 0.80),
+        legend_pos=(0.6, 0.7, 0.75, 0.85),
         yoffset=1.4,
         oname=coname.format("phenomenology/tsallis_parameter_"),
     )
