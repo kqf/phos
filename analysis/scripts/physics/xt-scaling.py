@@ -3,6 +3,8 @@ import pytest
 import json
 import six
 import numpy as np
+import uncertainties as uc
+import uncertainties.unumpy as unp
 import itertools
 
 import spectrum.broot as br
@@ -17,10 +19,7 @@ from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 from spectrum.vault import FVault
 
-DATA_CONFIG = {
-    "#pi^{0}": "config/predictions/hepdata-pion.json",
-    "#eta": "config/predictions/hepdata-eta.json",
-}
+NOISY_COMBINATIONS = {(8000, 13000), (7000, 8000), (7000, 13000)}
 
 
 class DataExtractor(TransformerBase):
@@ -34,7 +33,7 @@ class DataExtractor(TransformerBase):
 class XTtransformer(TransformerBase):
     def transform(self, x, loggs):
         edges = br.edges(x.tot)
-        xtedges = edges / (x.energy / 2)
+        xtedges = 2 * edges / x.energy
 
         xt = br.PhysicsHistogram(
             self._transform(x.tot, xtedges),
@@ -62,7 +61,7 @@ class DataFitter(TransformerBase):
 
     def transform(self, x, loggs):
         fitf = self.fitf.Clone()
-        x.Fit(fitf)
+        x.Fit(fitf, "Q")
         x.fitf = fitf
         return x
 
@@ -88,35 +87,31 @@ def xt_measured(particle, tcm):
 
 
 @multimethod
-def n_factor(hist1, hist2, s1, s2, func):
-    nxt = hist1.Clone()
-    nxt2 = br.function2histogram(func, nxt, s2 / 2)
-    nxt.Divide(nxt2)
-    contents, errors, centers = br.bins(nxt)
-    logcontents = - np.log(contents)
-    logerrors = 4 * errors / contents
-    for (i, c, e) in zip(br.hrange(nxt), logcontents, logerrors):
-        nxt.SetBinContent(i, c)
-        nxt.SetBinError(i, e)
-    nxt.Scale(1. / np.log(s1 / s2))
-    # nxt.label = "n(x_{{T}}, {}, {})".format(hist1.label, hist2.label)
-    # nxt.SetTitle(nxt.label.replace("pp", ""))
+def n_factor(cs1, cs2_approx, s1, s2,):
+    contents, errors, xT = br.bins(cs1)
+    spectrum1 = unp.uarray(contents, errors)
+    pT = xT * s2 / 2
+    spectrum2 = np.fromiter(map(cs2_approx.Eval, pT), np.float64)
+    n = -unp.log(spectrum1 / spectrum2) / np.log(s1 / s2)
+    nxt = cs1.Clone()
+    for i, c in zip(br.hrange(nxt), n):
+        nxt.SetBinContent(i, uc.nominal_value(c))
+        nxt.SetBinError(i, uc.std_dev(c))
     return nxt
 
 
 @n_factor.register(br.PhysicsHistogram, br.PhysicsHistogram)
 def _(hist1, hist2):
-    ignore = {(8000, 13000), (7000, 8000), (7000, 13000)}
     s1 = hist1.energy
     s2 = hist2.energy
 
-    if (s1, s2) in ignore:
+    if (s1, s2) in NOISY_COMBINATIONS:
         return None
 
     results = br.PhysicsHistogram(
-        n_factor(hist1.tot, hist2.tot, s1, s2, hist2.fitf),
-        n_factor(hist1.stat, hist2.stat, s1, s2, hist2.fitf),
-        n_factor(hist1.syst, hist2.syst, s1, s2, hist2.fitf),
+        n_factor(hist1.tot, hist2.fitf, s1, s2),
+        n_factor(hist1.stat, hist2.fitf, s1, s2),
+        n_factor(hist1.syst, hist2.fitf, s1, s2),
     )
     template = "#it{{n}} (#it{{x}}_{{T}}, {:.3g} TeV, {:.3g} TeV)"
     results.SetTitle(template.format(s1 / 1000., s2 / 1000))
@@ -125,8 +120,8 @@ def _(hist1, hist2):
 
 @pytest.fixture
 def xt_data(particle, tcm, xt_measured):
-    with open(DATA_CONFIG[particle]) as f:
-        data = json.load(f)
+    with open("config/predictions/hepdata.json") as f:
+        data = json.load(f)[particle]
     labels, links = zip(*six.iteritems(data))
     with open_loggs() as loggs:
         steps = [(l, xt(tcm)) for l in labels]
@@ -145,18 +140,21 @@ def n_factors(xt_data):
     return n_factors
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
+
+
 ])
-def test_plot_xt_distribution(xt_data, particle, ltitle, oname):
+def test_plot_xt_distribution(xt_data, ltitle, oname):
     plot(
         xt_data,
         ytitle=invariant_cross_section_code(),
+        xtitle="#it{x}_{T}",
         csize=(96, 128),
         ltitle=ltitle,
         legend_pos=(0.72, 0.7, 0.88, 0.88),
@@ -185,7 +183,7 @@ def test_separate_fits(n_factors, xtrange):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_combined_fits(n_factors, xtrange):
+def test_calculate_combined_n(particle, n_factors, xtrange):
     multigraph = ROOT.TMultiGraph()
     for i, n in enumerate(n_factors):
         ngraph = br.hist2graph(n.tot)
@@ -195,27 +193,25 @@ def test_combined_fits(n_factors, xtrange):
         ngraph.SetMarkerSize(1)
         multigraph.Add(ngraph)
 
-    fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 1.5e-02)
+    fitf = ROOT.TF1("fitpol0", "[0]", 1.e-04, 1.5e-02)
     fitf.SetLineWidth(3)
     fitf.SetParameter(0, 5.0)
     fitf.SetLineStyle(7)
     fitf.SetLineColor(ROOT.kBlack)
     multigraph.Fit(fitf, "RF", "", *xtrange)
-    br.print_fit_results(fitf)
-    plot(n_factors + [fitf], logy=False)
+    br.report(fitf)
+    # plot(n_factors + [fitf], logy=False)
+    return fitf.GetParameter(0), fitf.GetParError(0)
+
+
+@pytest.fixture
+def combined_n(n_factors, xtrange):
+    return 5.04, 0.00919
 
 
 @pytest.fixture
 def xtrange():
     return 2.9e-03, 1.05e-02
-
-
-@pytest.fixture
-def combined_n():
-    # chi^{2}/ndf = 1.868
-    # p0 = 5.302
-    # Delta p0 = 0.044
-    return 5.302
 
 
 @pytest.mark.thesis
@@ -224,10 +220,10 @@ def combined_n():
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
 def test_n_scaling_scaling(n_factors, xtrange, combined_n):
     fitf = ROOT.TF1("nxt", "[0]", *xtrange)
-    fitf.SetParameter(0, combined_n)
+    fitf.SetParameter(0, combined_n[0])
     fitf.SetLineColor(ROOT.kBlack)
     fitf.SetLineStyle(9)
-    fitf.SetTitle("const = {}".format(combined_n))
+    fitf.SetTitle("const = {:.3g} #pm {:.3g}".format(*combined_n))
     plot(
         [fitf] +
         n_factors,
@@ -236,30 +232,28 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n):
         xlimits=(0.0001, 0.011),
         ylimits=(0, 12),
         ytitle="#it{n} (#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
-        xtitle="x_{T}",
+        xtitle="#it{x}_{T}",
         csize=(96 * 1.5, 96),
         legend_pos=(0.65, 0.6, 0.88, 0.88),
         oname="results/discussion/xt_scaling/n_factor_fit.pdf",
     )
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
-])
-def test_scaled_spectra(particle, xt_data, combined_n, ltitle, oname):
+], scope="module")
+def test_scaled_spectra(xt_data, combined_n, ltitle, oname):
     for h in xt_data:
-        h.Scale(h.energy ** combined_n)
-    template = "(#sqrt{{#it{{s}}}})^{{{n}}} (GeV)^{{{n}}} #times "
-    title = template.format(n=combined_n)
-    title += invariant_cross_section_code().strip()
+        h.Scale(h.energy ** combined_n[0])
+    title = "(#sqrt{{#it{{s}}}})^{{{n:.3g}}} (GeV)^{{{n:.3g}}} #times {t}"
     plot(
         xt_data,
-        ytitle=title,
+        ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         ylimits=(0.1e16, 0.5e26),
         xlimits=(1e-4, 0.013),
         csize=(96, 128),
