@@ -14,7 +14,7 @@ from spectrum.constants import invariant_cross_section_code
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle, ranges", [
     ("#pi^{0}", [0.8, 20]),
-    # ("#eta", [2.0, 20]),
+    ("#eta", [2.0, 20]),
 ])
 def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
@@ -35,10 +35,8 @@ def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
         more_logs=False,
         oname=oname.format("phenomenology/tsallis_issues_"),
     )
-    ratio = cs.Clone()
-    ratio.Divide(tsallis)
     plot(
-        [ratio],
+        [br.ratio(cs, tsallis)],
         stop=stop,
         logy=False,
         ytitle="#frac{Data}{Tsallis fit}",

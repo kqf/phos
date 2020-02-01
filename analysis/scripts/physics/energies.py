@@ -10,16 +10,11 @@ from spectrum.spectra import spectrum
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
-DATA_CONFIG = {
-    "#pi^{0}": "config/predictions/hepdata-pion.json",
-    "#eta": "config/predictions/hepdata-eta.json",
-}
-
 
 @pytest.fixture
 def data(particle):
-    with open(DATA_CONFIG[particle]) as f:
-        data = json.load(f)
+    with open("config/predictions/hepdata.json") as f:
+        data = json.load(f)[particle]
     labels, links = zip(*six.iteritems(data))
     steps = [(l, FunctionTransformer(br.from_hepdata, True)) for l in labels]
     with open_loggs() as loggs:

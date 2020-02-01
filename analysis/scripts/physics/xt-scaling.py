@@ -6,9 +6,10 @@ import numpy as np
 import itertools
 
 import spectrum.broot as br
+from multimethod import multimethod
 
 from spectrum.pipeline import TransformerBase, Pipeline
-from spectrum.pipeline import ParallelPipeline
+from spectrum.pipeline import ParallelPipeline, FunctionTransformer
 from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
@@ -22,89 +23,63 @@ DATA_CONFIG = {
 }
 
 
-class HepdataInput(TransformerBase):
-    def __init__(self, table_name="Table 1",
-                 histname="Graph1D_y1", plot=False):
-        super(HepdataInput, self).__init__(plot)
-        self.histname = histname
-
-    def transform(self, item, loggs):
-        filename = ".hepdata-cachedir/{}".format(item["file"])
-        br.io.hepdata(item["hepdata"], filename, item["table"])
-        graph = br.io.read(filename, item["table"], self.histname)
-        hist = br.graph2hist(graph)
-        hist = br.scale_clone(hist, item["scale"])
-        hist.logx = True
-        hist.logy = True
-        hist.label = item["title"]
-        hist.func = item["func"]
-        hist.energy = item["energy"]
-        hist.title = item["title"]
-        hist.SetTitle(item["title"])
-        return hist
-
-
 class DataExtractor(TransformerBase):
     def transform(self, particle, loggs):
         hist = spectrum(particle)
-        for i in br.hrange(hist):
-            hist.SetBinContent(i, hist.GetBinContent(i))
-        hist.logx = True
-        hist.logy = True
-        hist.label = "13 TeV"
         hist.energy = 13000
-        hist.title = "pp 13 TeV"
-        hist.func = "#pi^{0} 13 TeV"
-        hist.SetTitle("pp 13 TeV")
+        hist.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
         return hist
 
 
 class XTtransformer(TransformerBase):
     def transform(self, x, loggs):
-        edges = np.array([x.GetBinLowEdge(i)
-                          for i in br.hrange(x, edges=True)])
+        edges = br.edges(x.tot)
         xtedges = edges / (x.energy / 2)
-        xt = ROOT.TH1F(
-            "{}_xt".format(x.GetName()), x.GetTitle(),
-            len(xtedges) - 1,
-            xtedges)
-        xt.GetXaxis().SetTitle("#it{x}_{T}")
 
-        for i in br.hrange(x):
-            xt.SetBinContent(i, x.GetBinContent(i))
-            xt.SetBinError(i, x.GetBinError(i))
-
-        xt.logx = True
-        xt.logy = True
-        xt.label = x.label
+        xt = br.PhysicsHistogram(
+            self._transform(x.tot, xtedges),
+            self._transform(x.stat, xtedges),
+            self._transform(x.syst, xtedges),
+        )
         xt.energy = x.energy
-        xt.fitfunc = x.fitfunc
+        xt.fitf = x.fitf
         return xt
+
+    @staticmethod
+    def _transform(hist, edges):
+        return br.table2hist(
+            "{}_xt".format(hist.GetName()),
+            hist.GetTitle(),
+            br.bins(hist).contents,
+            br.bins(hist).errors,
+            edges
+        )
 
 
 class DataFitter(TransformerBase):
-    def __init__(self):
-        with open("config/predictions/tsallis-pion.json") as f:
-            self.data = json.load(f)
+    def __init__(self, fitf):
+        self.fitf = fitf
 
     def transform(self, x, loggs):
-        tsallis = FVault().tf1("tsallis", x.func)
-        x.fitfunc = tsallis
+        fitf = self.fitf.Clone()
+        x.Fit(fitf)
+        x.fitf = fitf
         return x
 
 
-def xt(edges=None):
+def xt(fitf):
     return Pipeline([
-        ("cyield", HepdataInput()),
-        ("fit", DataFitter()),
+        ("cyield", FunctionTransformer(br.from_hepdata, True)),
+        ("fit", DataFitter(fitf)),
         ("xt", XTtransformer()),
     ])
 
 
-def xt_measured(particle):
+@pytest.fixture
+def xt_measured(particle, tcm):
     estimator = Pipeline([
         ("cyield", DataExtractor()),
-        ("fit", DataFitter()),
+        ("fit", DataFitter(tcm)),
         ("xt", XTtransformer())
     ])
     with open_loggs() as loggs:
@@ -112,12 +87,10 @@ def xt_measured(particle):
     return result
 
 
-def n_factor(hist1, hist2):
-    ignore = {(8000, 13000), (7000, 8000), (7000, 13000)}
-    if (hist1.energy, hist2.energy) in ignore:
-        return None
+@multimethod
+def n_factor(hist1, hist2, s1, s2, func):
     nxt = hist1.Clone()
-    nxt2 = br.function2histogram(hist2.fitfunc, nxt, hist2.energy / 2)
+    nxt2 = br.function2histogram(func, nxt, s2 / 2)
     nxt.Divide(nxt2)
     contents, errors, centers = br.bins(nxt)
     logcontents = - np.log(contents)
@@ -125,25 +98,54 @@ def n_factor(hist1, hist2):
     for (i, c, e) in zip(br.hrange(nxt), logcontents, logerrors):
         nxt.SetBinContent(i, c)
         nxt.SetBinError(i, e)
-    nxt.Scale(1. / np.log(hist1.energy / hist2.energy))
-    nxt.label = "n(x_{{T}}, {}, {})".format(hist1.label, hist2.label)
-    nxt.SetTitle(nxt.label.replace("pp", ""))
+    nxt.Scale(1. / np.log(s1 / s2))
+    # nxt.label = "n(x_{{T}}, {}, {})".format(hist1.label, hist2.label)
+    # nxt.SetTitle(nxt.label.replace("pp", ""))
     return nxt
 
 
+@n_factor.register(br.PhysicsHistogram, br.PhysicsHistogram)
+def _(hist1, hist2):
+    ignore = {(8000, 13000), (7000, 8000), (7000, 13000)}
+    s1 = hist1.energy
+    s2 = hist2.energy
+
+    if (s1, s2) in ignore:
+        return None
+
+    results = br.PhysicsHistogram(
+        n_factor(hist1.tot, hist2.tot, s1, s2, hist2.fitf),
+        n_factor(hist1.stat, hist2.stat, s1, s2, hist2.fitf),
+        n_factor(hist1.syst, hist2.syst, s1, s2, hist2.fitf),
+    )
+    template = "#it{{n}} (#it{{x}}_{{T}}, {:.3g} TeV, {:.3g} TeV)"
+    results.SetTitle(template.format(s1 / 1000., s2 / 1000))
+    return results
+
+
 @pytest.fixture
-def data(particle):
+def xt_data(particle, tcm, xt_measured):
     with open(DATA_CONFIG[particle]) as f:
         data = json.load(f)
     labels, links = zip(*six.iteritems(data))
-    steps = [(l, xt()) for l in labels]
     with open_loggs() as loggs:
+        steps = [(l, xt(tcm)) for l in labels]
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
-    spectra.append(xt_measured(particle))
+    spectra.append(xt_measured)
     return spectra
 
 
+@pytest.fixture
+def n_factors(xt_data):
+    spectra = sorted(xt_data, key=lambda x: x.energy)
+    n_factors = [n_factor(*pair)
+                 for pair in itertools.combinations(spectra, 2)]
+    n_factors = [n for n in n_factors if n is not None]
+    return n_factors
+
+
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -151,12 +153,12 @@ def data(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_plot_xt_distribution(data, particle, oname):
+def test_plot_xt_distribution(xt_data, particle, ltitle, oname):
     plot(
-        data,
+        xt_data,
         ytitle=invariant_cross_section_code(),
         csize=(96, 128),
-        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        ltitle=ltitle,
         legend_pos=(0.72, 0.7, 0.88, 0.88),
         yoffset=1.4,
         more_logs=False,
@@ -168,12 +170,7 @@ def test_plot_xt_distribution(data, particle, oname):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_separate_fits(data, xtrange):
-    spectra = sorted(data, key=lambda x: x.energy)
-    n_factors = [n_factor(*pair)
-                 for pair in itertools.combinations(spectra, 2)]
-    n_factors = [n for n in n_factors if n is not None]
-
+def test_separate_fits(n_factors, xtrange):
     for n in n_factors:
         fitf = ROOT.TF1("fitpol0", "[0]", 1.e-03, 5.e-02)
         fitf.SetLineWidth(3)
@@ -188,14 +185,10 @@ def test_separate_fits(data, xtrange):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_combined_fits(data, xtrange):
-    n_factors = [n_factor(*pair)
-                 for pair in itertools.combinations(data, 2)]
-    n_factors = [n for n in n_factors if n is not None]
-
+def test_combined_fits(n_factors, xtrange):
     multigraph = ROOT.TMultiGraph()
     for i, n in enumerate(n_factors):
-        ngraph = br.hist2graph(n)
+        ngraph = br.hist2graph(n.tot)
         ngraph.SetMarkerColor(br.icolor(i))
         ngraph.SetLineColor(br.icolor(i))
         ngraph.SetMarkerStyle(20)
@@ -229,24 +222,20 @@ def combined_n():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_n_scaling_scaling(data, xtrange, combined_n):
-    spectra = sorted(data, key=lambda x: x.energy)
-    n_factors = [n_factor(*pair)
-                 for pair in itertools.combinations(spectra, 2)]
-    n_factors = [n for n in n_factors if n is not None]
-    fitfunc = ROOT.TF1("nxt", "[0]", *xtrange)
-    fitfunc.SetParameter(0, combined_n)
-    fitfunc.SetLineColor(ROOT.kBlack)
-    fitfunc.SetLineStyle(9)
-    fitfunc.SetTitle("const = {}".format(combined_n))
+def test_n_scaling_scaling(n_factors, xtrange, combined_n):
+    fitf = ROOT.TF1("nxt", "[0]", *xtrange)
+    fitf.SetParameter(0, combined_n)
+    fitf.SetLineColor(ROOT.kBlack)
+    fitf.SetLineStyle(9)
+    fitf.SetTitle("const = {}".format(combined_n))
     plot(
-        [fitfunc] +
+        [fitf] +
         n_factors,
         logx=False,
         logy=False,
         xlimits=(0.0001, 0.011),
         ylimits=(0, 12),
-        ytitle="#it{n}(#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
+        ytitle="#it{n} (#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
         xtitle="x_{T}",
         csize=(96 * 1.5, 96),
         legend_pos=(0.65, 0.6, 0.88, 0.88),
@@ -254,6 +243,7 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
     )
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -261,19 +251,19 @@ def test_n_scaling_scaling(data, xtrange, combined_n):
     "#pi^{0}",
     "#eta",
 ])
-def test_scaled_spectra(particle, data, oname, combined_n):
-    for h in data:
+def test_scaled_spectra(particle, xt_data, combined_n, ltitle, oname):
+    for h in xt_data:
         h.Scale(h.energy ** combined_n)
     template = "(#sqrt{{#it{{s}}}})^{{{n}}} (GeV)^{{{n}}} #times "
     title = template.format(n=combined_n)
     title += invariant_cross_section_code().strip()
     plot(
-        data,
+        xt_data,
         ytitle=title,
         ylimits=(0.1e16, 0.5e26),
         xlimits=(1e-4, 0.013),
         csize=(96, 128),
-        ltitle="{} #rightarrow #gamma#gamma".format(particle),
+        ltitle=ltitle,
         legend_pos=(0.72, 0.7, 0.88, 0.88),
         yoffset=1.7,
         more_logs=False,
@@ -288,21 +278,21 @@ def scaledf():
     return func
 
 
-@pytest.mark.skip("")
+@pytest.mark.skip
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_xt_scaling(particle, data, combined_n, scaledf):
-    for h in data:
+def test_xt_scaling(particle, xt_data, combined_n, scaledf):
+    for h in xt_data:
         h.Scale(h.energy ** combined_n)
         if h.energy == 8000:
             scaledf.SetParameter(0, 2e22)
             scaledf.SetParameter(2, 2e22)
             h.Fit(scaledf, "", "", 9e-05, 3.e-02)
         Comparator().compare(h)
-    for h in data:
+    for h in xt_data:
         h.Divide(scaledf)
-    plot(data)
+    plot(xt_data)
