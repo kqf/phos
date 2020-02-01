@@ -47,6 +47,6 @@ def test_pion_spectrum(data, tcm, oname):
         legend_pos=(0.52, 0.72, 0.78, 0.88),
         yoffset=1.4,
         more_logs=True,
-        options=["f", "p"],
+        options=["p", "f"],
         oname=oname.format("/pQCD/")
     )

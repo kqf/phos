@@ -140,15 +140,12 @@ def n_factors(xt_data):
     return n_factors
 
 
-# @pytest.mark.skip
-@pytest.mark.thesis
+pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
-
-
 ])
 def test_plot_xt_distribution(xt_data, ltitle, oname):
     plot(

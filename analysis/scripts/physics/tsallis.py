@@ -1,7 +1,9 @@
+import ROOT
 import json
 import pytest  # noqa
 import numpy as np
 import pandas as pd
+import uncertainties.unumpy as unp
 
 import spectrum.broot as br
 from spectrum.spectra import spectrum
@@ -9,6 +11,7 @@ from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
+@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -56,12 +59,19 @@ def data():
     return data
 
 
+@pytest.fixture
+def fy(target):
+    if target == "n":
+        return lambda x: 1 + 1 / (x - 1)
+    return lambda x: x
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("target, ytitle, ylimits", [
-    ("n", "q", (1.1, 1.25)),
-    ("C", "T (GeV)", (0.1, 0.3)),
+    ("n", "#it{q}", (1.1, 1.25)),
+    ("C", "#it{T} (GeV)", (0.1, 0.3)),
 ])
 def test_params(data, ytitle, ylimits, target, stop, coname):
     # print(pars)
@@ -69,19 +79,33 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
     def data2graph(particle):
         pars = pd.DataFrame(data[particle].values())
         x = pars["energy"]
-        y = pars[target]
-        dy = pars["d{}".format(target)]
+        y = unp.uarray(pars[target], pars["d{}".format(target)])
         if target == "n":
-            dy = dy / (y - 1) ** 2
             y = 1 + 1 / (y - 1)
-        graph = br.graph("test", x, y, np.zeros_like(x), dy)
+        graph = br.graph(
+            "test",
+            x,
+            unp.nominal_values(y),
+            np.zeros_like(x),
+            unp.std_devs(y)
+        )
         graph.SetMarkerColor(4)
         graph.SetMarkerStyle(21)
         graph.SetTitle(particle)
         return graph
 
+    fitf = ROOT.TF1("f", "[1] * TMath::Log(x[0]) + [0]")
+    fitf.SetTitle("#pi^{0} fit")
+    pion = data2graph("#pi^{0}")
+    eta = data2graph("#eta")
+    multigraph = ROOT.TMultiGraph()
+    multigraph.Add(pion)
+    # multigraph.Add(eta)
+    multigraph.Fit(fitf)
+    br.report(fitf)
+
     plot(
-        [data2graph("#pi^{0}"), data2graph("#eta")],
+        [pion, eta, fitf],
         stop=stop,
         logy=False,
         ytitle=ytitle,

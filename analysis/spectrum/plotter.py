@@ -15,8 +15,6 @@ def canvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):
                           int(size[0] * scale), int(size[1] * scale))
     figure.SetTickx()
     figure.SetTicky()
-    figure.SetGridx()
-    figure.SetGridy()
 
     old = ROOT.gROOT.IsBatch()
     ROOT.gROOT.SetBatch(not stop)
@@ -224,6 +222,7 @@ def plot(
     yoffset=1.2,
     colors='auto',
     ltext_size=0.035,
+    grid=False,
     options="p"
 ):
     hists, graphs, functions, measurements = separate(data)
@@ -239,6 +238,9 @@ def plot(
         figure.SetRightMargin(0.02)
         figure.SetLogx(logx)
         figure.SetLogy(logy)
+        figure.SetGridx(grid)
+        figure.SetGridy(grid)
+
         adjust_canvas(
             tuple(histogrammed),
             xlimits,
