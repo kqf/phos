@@ -99,7 +99,7 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
 
     if target == "n":
         fitf = ROOT.TF1(
-            "etaPionEnergyq",
+            "etaPionEnergyTsallisq",
             "[0] * TMath::Log(x[0]) + [1]",
             0.8, 1400)
         fitf.SetTitle("#it{a} log(#it{s}) + #it{b}")
@@ -118,7 +118,7 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
 
     if target == "C":
         title = "#it{{T}}_{{{title}}} = {a:4.3f} #pm {b:4.3f}"
-        fitf_pion = ROOT.TF1("pionEnergyT", "[0]", 0.8, 1400)
+        fitf_pion = ROOT.TF1("pionEnergyTsallisT", "[0]", 0.8, 1400)
         fitf_pion.SetTitle("#it{a} log(#it{s}) + #it{b}")
         fitf_pion.SetParName(0, "T")
         fitf_pion.SetLineColor(ROOT.kRed + 1)
@@ -135,7 +135,7 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
             )
         )
 
-        fitf_eta = ROOT.TF1("etaEnergyT", "[0]", 0.8, 1400)
+        fitf_eta = ROOT.TF1("etaEnergyTsallisT", "[0]", 0.8, 1400)
         fitf_eta.SetTitle("#it{T}_{#eta}")
         fitf_eta.SetParName(0, "T")
         fitf_eta.SetLineColor(ROOT.kBlue + 1)

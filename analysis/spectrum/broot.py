@@ -806,7 +806,7 @@ def spell(text):
 def report(func, particle="", limits=False):
     print()
     particle = spell(particle)
-    pattern = r"\def \{particle}{func}{par}{err} {{{val:.3g}}}"
+    pattern = r"\def \{particle}{func}{par}{err} {{{val:.3f}}}"
     for i in range(func.GetNpar()):
         print(pattern.format(
             particle=particle,
@@ -823,7 +823,7 @@ def report(func, particle="", limits=False):
             err="Error"
         ))
 
-    print(r"\def \{particle}{func}Chi {{{val:.3g}}}".format(
+    print(r"\def \{particle}{func}Chi {{{val:.2f}}}".format(
         particle=particle,
         func=func.GetName(),
         val=func.GetChisquare() / func.GetNDF()
@@ -835,13 +835,13 @@ def report(func, particle="", limits=False):
     xmin, xmax = ROOT.Double(0), ROOT.Double(0)
     func.GetRange(xmin, xmax)
 
-    print(r"\def \{particle}{func}MinPt {{{val:.3g}}}".format(
+    print(r"\def \{particle}{func}MinPt {{{val:.3f}}}".format(
         particle=particle,
         func=func.GetName(),
         val=xmin
     ))
 
-    print(r"\def \{particle}{func}MaxPt {{{val:.3g}}}".format(
+    print(r"\def \{particle}{func}MaxPt {{{val:.3f}}}".format(
         particle=particle,
         func=func.GetName(),
         val=xmax
