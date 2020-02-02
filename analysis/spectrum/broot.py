@@ -835,13 +835,13 @@ def report(func, particle="", limits=False):
     xmin, xmax = ROOT.Double(0), ROOT.Double(0)
     func.GetRange(xmin, xmax)
 
-    print(r"\def \{particle}{func}MinPt {{{val:.3f}}}".format(
+    print(r"\def \{particle}{func}MinPt {{{val:.3g}}}".format(
         particle=particle,
         func=func.GetName(),
         val=xmin
     ))
 
-    print(r"\def \{particle}{func}MaxPt {{{val:.3f}}}".format(
+    print(r"\def \{particle}{func}MaxPt {{{val:.3g}}}".format(
         particle=particle,
         func=func.GetName(),
         val=xmax
