@@ -23,6 +23,8 @@ def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     # Apply only after fitting. Extend the pT range for better visualisation
     if particle == "#pi^{0}":
         tsallis.SetRange(1.5, tcm.GetXmax())
+    if particle == "#eta":
+        tsallis.SetRange(tsallis.GetXmin(), tcm.GetXmax())
 
     plot(
         [cs, tcm, tsallis],

@@ -35,7 +35,7 @@ def tsallis(particle):
         tsallis.SetParameter(2, 6.19)
         tsallis.SetParLimits(2, 6.03, 7.000)
         tsallis.FixParameter(3, mass(particle))
-        tsallis.SetRange(2.0, 20)
+        tsallis.SetRange(3.0, 10)
 
     tsallis.FixParameter(3, mass(particle))
     tsallis.FixParameter(4, mass(particle))

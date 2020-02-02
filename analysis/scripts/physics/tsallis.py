@@ -11,7 +11,6 @@ from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
-@pytest.mark.skip
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
