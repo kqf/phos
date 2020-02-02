@@ -36,13 +36,13 @@ def data(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_downloads_from_hepdata(particle, data, ltitle):
+def test_downloads_from_hepdata(data, ltitle, oname):
     plot(
         data,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",
         logx=False,
         ltitle=ltitle,
-        legend_pos=(0.6, 0.7, 0.7, 0.88),
-        oname="results/discussion/energies/{}.pdf".format(br.spell(particle))
+        legend_pos=(0.55, 0.65, 0.7, 0.85),
+        oname=oname.format("/energies/")
     )

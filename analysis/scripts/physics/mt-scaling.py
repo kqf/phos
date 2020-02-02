@@ -49,7 +49,8 @@ def tcmratio(func, hist, title):
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-def test_spectrum(pion, eta, pionf, eta_mtf):
+@pytest.mark.parametrize("target", [""])
+def test_spectrum(pion, eta, pionf, eta_mtf, coname):
     eta.Fit(eta_mtf, "R0Q")
     plot([
         pion,
@@ -59,7 +60,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
     ],
         xtitle="#it{p}_{T} (GeV/#it{c})",
         ytitle=invariant_cross_section_code(),
-        oname="results/discussion/mt_scaling/fits.pdf"
+        oname=coname.format("mt_scaling/fits")
     )
 
     plot([
@@ -71,8 +72,8 @@ def test_spectrum(pion, eta, pionf, eta_mtf):
         logy=False,
         ytitle="Data / TCM fit",
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        legend_pos=(0.45, 0.7, 0.75, 0.85),
-        oname="results/discussion/mt_scaling/ratio.pdf"
+        legend_pos=(0.4, 0.7, 0.7, 0.85),
+        oname=coname.format("mt_scaling/ratio")
     )
 
 
@@ -100,7 +101,8 @@ def asymptotic_eta_pion_ratio(min_pt=5):
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-def test_ratio(asymptotic_eta_pion_ratio):
+@pytest.mark.parametrize("target", ["mt_scaling/eta_pion_ratio"])
+def test_ratio(asymptotic_eta_pion_ratio, coname):
     lower = ROOT.TF1("lower", eta_pion_ratio, 0, 20, 3)
     lower.SetParameter(0, asymptotic_eta_pion_ratio)
     lower.SetParameter(1, 1.2)
@@ -116,9 +118,14 @@ def test_ratio(asymptotic_eta_pion_ratio):
     ],
         logy=False,
         logx=False,
-        csize=(96 * 1.5, 96),
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
+        csize=(96, 96 * 0.64),
+        tmargin=0.01,
+        rmargin=0.01,
+        lmargin=0.1,
+        yoffset=1.,
+        legend_pos=(0.6, 0.2, 0.8, 0.35),
         options=["p", "f"],
-        oname="results/discussion/mt_scaling/eta_pion_ratio.pdf",
+        oname=coname.format(""),
     )

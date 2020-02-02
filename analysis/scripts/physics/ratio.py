@@ -9,7 +9,8 @@ from spectrum.plotter import plot
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_ratio(pythia6_eta_pion_ratio, ptmin=4.5, ptmax=22):
+@pytest.mark.parametrize("target", ["eta-pion-ratio"])
+def test_ratio(pythia6_eta_pion_ratio, coname, ptmin=4.5, ptmax=22):
     data = ratio()
     data.SetTitle("Data")
 
@@ -24,17 +25,23 @@ def test_ratio(pythia6_eta_pion_ratio, ptmin=4.5, ptmax=22):
     ff.SetLineStyle(7)
     ff.SetTitle("Constant fit")
 
+    pythia6 = br.hist2graph(pythia6_eta_pion_ratio)
+    pythia6.SetTitle("PYTHIA 6")
     plot(
-        [data, pythia6_eta_pion_ratio, ff],
+        [data, pythia6, ff],
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,
         logx=True,
         xlimits=(1.9, 22),
         ylimits=(0, 1.4),
-        csize=(128, 96),
+        csize=(96, 96 * 0.64),
+        tmargin=0.01,
+        rmargin=0.01,
+        lmargin=0.1,
+        yoffset=1.,
         legend_pos=(0.65, 0.7, 0.8, 0.88),
-        # yoffset=1.4,
         more_logs=True,
-        oname="results/discussion/eta-pion-ratio.pdf"
+        options=["p", "lx"],
+        oname=coname.format(""),
     )

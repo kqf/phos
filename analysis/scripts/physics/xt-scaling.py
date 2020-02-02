@@ -149,12 +149,12 @@ def n_factors(xt_data):
 ])
 def test_plot_xt_distribution(xt_data, ltitle, oname):
     plot(
-        xt_data,
+        xt_data[::-1],
         ytitle=invariant_cross_section_code(),
         xtitle="#it{x}_{T}",
         csize=(96, 128),
         ltitle=ltitle,
-        legend_pos=(0.72, 0.7, 0.88, 0.88),
+        legend_pos=(0.24, 0.15, 0.5, 0.35),
         more_logs=False,
         oname=oname.format("xt_scaling/xt_cross_section_"),
     )
@@ -214,24 +214,29 @@ def xtrange():
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
-def test_n_scaling_scaling(n_factors, xtrange, combined_n):
+@pytest.mark.parametrize("target", ["xt_scaling/n_factor_fit"])
+def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
     fitf = ROOT.TF1("nxt", "[0]", *xtrange)
     fitf.SetParameter(0, combined_n[0])
     fitf.SetLineColor(ROOT.kBlack)
     fitf.SetLineStyle(9)
-    fitf.SetTitle("const = {:.3g} #pm {:.3g}".format(*combined_n))
+    fitf.SetTitle("const = {:.3f} #pm {:.3f}".format(*combined_n))
     plot(
         [fitf] +
         n_factors,
         logx=False,
         logy=False,
         xlimits=(0.0001, 0.011),
-        ylimits=(0, 12),
+        ylimits=(2, 8),
         ytitle="#it{n} (#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
         xtitle="#it{x}_{T}",
-        csize=(96 * 1.5, 96),
-        legend_pos=(0.65, 0.55, 0.88, 0.85),
-        oname="results/discussion/xt_scaling/n_factor_fit.pdf",
+        csize=(96, 96 * 0.64),
+        tmargin=0.01,
+        rmargin=0.01,
+        lmargin=0.1,
+        yoffset=1.,
+        legend_pos=(0.65, 0.65, 0.88, 0.95),
+        oname=coname.format(""),
     )
 
 
@@ -248,10 +253,12 @@ def test_scaled_spectra(xt_data, combined_n, ltitle, oname):
         h.Scale(h.energy ** combined_n[0])
     title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
     plot(
-        xt_data,
+        xt_data[::-1],
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
+        xtitle="#it{x}_{T}",
         ltitle=ltitle,
         more_logs=False,
+        legend_pos=(0.24, 0.15, 0.5, 0.35),
         oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
     )
 

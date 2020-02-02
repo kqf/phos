@@ -42,7 +42,11 @@ def test_pion_spectrum(data, tcm, oname):
         xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,
         ylimits=(0, 10.),
-        csize=(128, 96),
+        csize=(96, 96 * 0.64),
+        tmargin=0.01,
+        rmargin=0.01,
+        lmargin=0.1,
+        yoffset=1.,
         options=["p", "f"],
         oname=oname.format("/pQCD/")
     )

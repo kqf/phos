@@ -183,6 +183,10 @@ def _draw_graph(i, graph, colors, option, ngraphs):
     if "e5" not in option.lower() and "q" not in option.lower():
         br.reset_graph_errors(graph)
 
+    if 'lx' in option:
+        graph.SetMarkerStyle(0)
+        graph.SetLineWidth(4)
+
     graph.Draw(option)
     return graph
 
@@ -215,6 +219,10 @@ def plot(
     xlimits=None,
     ylimits=None,
     csize=(96, 128),
+    tmargin=0.1,
+    bmargin=0.1,
+    lmargin=0.18,
+    rmargin=0.02,
     oname=None,
     legend_pos=(0.6, 0.7, 0.8, 0.85),
     ltitle=None,
@@ -234,8 +242,10 @@ def plot(
     )
     graphed = measurements + graphs + list(map(br.hist2graph, hists))
     with style(), canvas(size=csize, stop=stop, oname=oname) as figure:
-        figure.SetLeftMargin(0.18)
-        figure.SetRightMargin(0.02)
+        figure.SetTopMargin(tmargin)
+        figure.SetBottomMargin(bmargin)
+        figure.SetLeftMargin(lmargin)
+        figure.SetRightMargin(rmargin)
         figure.SetLogx(logx)
         figure.SetLogy(logy)
         figure.SetGridx(grid)
@@ -276,6 +286,8 @@ def hplot(
     xlimits=None,
     ylimits=None,
     csize=(96, 128),
+    lmargin=0.18,
+    rmargin=0.02,
     oname=None,
     legend_pos=(0.6, 0.7, 0.7, 0.88),
     ltitle=None,
@@ -285,8 +297,8 @@ def hplot(
     ltext_size=0.035,
 ):
     with style(), canvas("cn", size=csize, stop=stop, oname=oname) as figure:
-        figure.SetLeftMargin(0.15)
-        figure.SetRightMargin(0.05)
+        figure.SetLeftMargin(lmargin)
+        figure.SetRightMargin(rmargin)
         figure.SetLogx(logx)
         figure.SetLogy(logy)
         adjust_canvas(
