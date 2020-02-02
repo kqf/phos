@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import ROOT
 import array
 from collections import defaultdict
 from multimethod import multimethod

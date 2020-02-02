@@ -57,17 +57,12 @@ def data(particle, tsallis, tcm, stop):
     "#pi^{0}",
     "#eta",
 ])
-def test_downloads_from_hepdata(particle, stop, data):
+def test_downloads_from_hepdata(particle, stop, data, ltitle):
     plot(
         data,
         stop=stop,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        # xlimits=(0.7, 22),
-        csize=(96, 128),
-        ltitle="{} #rightarrow #gamma#gamma".format(particle),
-        # legend_pos=(0.65, 0.7, 0.8, 0.88),
-        legend_pos=(0.52, 0.72, 0.78, 0.88),
-        yoffset=1.4,
+        ltitle=ltitle,
         more_logs=True,
     )

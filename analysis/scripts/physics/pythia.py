@@ -24,7 +24,7 @@ def test_compare_with_pythia(pythia6, particle, tcm, oname):
         csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),
         legend_pos=(0.65, 0.7, 0.8, 0.88),
-        yoffset=1.4,
+        # yoffset=1.4,
         more_logs=False,
         oname=oname.format("pythia/"),
     )

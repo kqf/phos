@@ -140,7 +140,7 @@ def n_factors(xt_data):
     return n_factors
 
 
-pytest.mark.thesis
+@pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
@@ -155,7 +155,6 @@ def test_plot_xt_distribution(xt_data, ltitle, oname):
         csize=(96, 128),
         ltitle=ltitle,
         legend_pos=(0.72, 0.7, 0.88, 0.88),
-        yoffset=1.4,
         more_logs=False,
         oname=oname.format("xt_scaling/xt_cross_section_"),
     )
@@ -231,7 +230,7 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n):
         ytitle="#it{n} (#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
         xtitle="#it{x}_{T}",
         csize=(96 * 1.5, 96),
-        legend_pos=(0.65, 0.6, 0.88, 0.88),
+        legend_pos=(0.65, 0.55, 0.88, 0.85),
         oname="results/discussion/xt_scaling/n_factor_fit.pdf",
     )
 
@@ -247,16 +246,11 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n):
 def test_scaled_spectra(xt_data, combined_n, ltitle, oname):
     for h in xt_data:
         h.Scale(h.energy ** combined_n[0])
-    title = "(#sqrt{{#it{{s}}}})^{{{n:.3g}}} (GeV)^{{{n:.3g}}} #times {t}"
+    title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
     plot(
         xt_data,
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
-        ylimits=(0.1e16, 0.5e26),
-        xlimits=(1e-4, 0.013),
-        csize=(96, 128),
         ltitle=ltitle,
-        legend_pos=(0.72, 0.7, 0.88, 0.88),
-        yoffset=1.7,
         more_logs=False,
         oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
     )

@@ -52,7 +52,6 @@ def test_r(data, stop, coname):
         xlimits=(0.7, 15),
         csize=(96, 128),
         legend_pos=(0.75, 0.7, 0.9, 0.80),
-        yoffset=1.4,
         oname=coname.format("phenomenology/tcm_parameter_"),
     )
 
@@ -95,9 +94,8 @@ def test_corr(data, stop, coname):
         xtitle="#it{T}_{#it{e}}^{ 2} (GeV^{2})",
         # ylimits=(0.01, 2.6),
         # xlimits=(0.7, 15),
-        csize=(96, 128),
-        legend_pos=(0.75, 0.7, 0.9, 0.80),
-        yoffset=1.4,
+        # csize=(96, 128),
+        legend_pos=(0.65, 0.7, 0.8, 0.80),
         options="qp",
         oname=coname.format("phenomenology/tcm_parameter_"),
     )

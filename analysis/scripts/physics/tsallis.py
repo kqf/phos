@@ -29,11 +29,8 @@ def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
         stop=stop,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        # xlimits=(0.7, 22),
-        csize=(96, 128),
         ltitle=ltitle,
         legend_pos=(0.65, 0.7, 0.8, 0.88),
-        yoffset=1.4,
         more_logs=False,
         oname=oname.format("phenomenology/tsallis_issues_"),
     )
@@ -43,9 +40,7 @@ def test_tsallis_tcm_fit(particle, ranges, tsallis, ltitle, stop, oname):
         logy=False,
         ytitle="#frac{Data}{Tsallis fit}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        csize=(96, 128),
         legend_pos=None,
-        yoffset=1.4,
         more_logs=False,
         oname=oname.format("phenomenology/tsallis_issues_ratio_"),
     )
@@ -162,8 +157,6 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
         xtitle="#sqrt{#it{s}} (GeV)",
         ylimits=ylimits,
         xlimits=(0.7, 15),
-        csize=(96, 128),
         legend_pos=(0.6, 0.7, 0.75, 0.85),
-        yoffset=1.4,
         oname=coname.format("phenomenology/tsallis_parameter_"),
     )

@@ -27,7 +27,7 @@ def data(particle):
     for i, cs in enumerate(spectra):
         cs.Scale(10 ** i)
         cs.SetTitle(cs.GetTitle() + " #times 10^{{{}}}".format(i))
-    return spectra
+    return spectra[::-1]
 
 
 @pytest.mark.onlylocal
@@ -36,17 +36,13 @@ def data(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_downloads_from_hepdata(particle, data):
+def test_downloads_from_hepdata(particle, data, ltitle):
     plot(
         data,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        # xlimits=(0.7, 22),
-        csize=(96, 128),
-        ltitle="{} #rightarrow #gamma#gamma".format(particle),
-        # legend_pos=(0.65, 0.7, 0.8, 0.88),
-        legend_pos=(0.52, 0.72, 0.78, 0.88),
-        yoffset=1.4,
-        more_logs=False,
+        logx=False,
+        ltitle=ltitle,
+        legend_pos=(0.6, 0.7, 0.7, 0.88),
         oname="results/discussion/energies/{}.pdf".format(br.spell(particle))
     )
