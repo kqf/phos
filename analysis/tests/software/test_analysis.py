@@ -25,8 +25,8 @@ def data_spmc():
     # "#eta",
 ])
 @pytest.mark.parametrize("logname", [
-    "",
-    # "test the single analysis",
+    # "",
+    "test the single analysis",
 ])
 def test_simple(particle, data, logname):
     analysis = Analysis(Options(particle=particle))

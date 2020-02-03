@@ -41,7 +41,7 @@ def draw_text(text, coordinates=(0.58, 0.75, 0.78, 0.88)):
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("module_number", list(range(1, 5)))
 def test_eta_phi(data, module_number, oname):
-    with plt.style(), plt.pcanvas(oname=oname), open_loggs() as loggs:
+    with plt.style(), plt.canvas(oname=oname), open_loggs() as loggs:
         ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
         ROOT.gPad.SetLogz(True)
         ROOT.gPad.SetRightMargin(0.12)

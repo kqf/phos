@@ -23,7 +23,7 @@ def oname(particle):
 def test_simple(particle, data, oname):
     analysis = Analysis(Options(particle=particle))
     with open_loggs() as loggs:
-        with plt.pcanvas(size=(96, 128), stop=True, oname=oname) as canvas:
+        with plt.canvas(size=(96, 128), stop=True, oname=oname) as figure:
             ROOT.gStyle.SetStatY(0.88)
             ROOT.gStyle.SetStatX(0.92)
             ROOT.gStyle.SetStatW(0.15)
@@ -45,11 +45,11 @@ def test_simple(particle, data, oname):
             ROOT.gStyle.SetTitleSize(0.04, "Z")
 
             analysis.transform(data, loggs=loggs)
-            canvas.SetLeftMargin(0.15)
-            canvas.SetRightMargin(0.05)
+            figure.SetLeftMargin(0.15)
+            figure.SetRightMargin(0.05)
             data = loggs["parametrize"]["output"].loc[12]
             MassesPlot().transform(
-                pad=canvas,
+                pad=figure,
                 mass=data["measured"],
                 signalf=data["signalf"],
                 background=data["background"],

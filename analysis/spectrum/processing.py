@@ -102,8 +102,6 @@ class MassFitPtLogger(TransformerBase):
         loggs.update({"output": tuple(out)})
         return masses
 
-# TODO: Simplify me (split for a sepparate logger transformer)
-
 
 class MassFitter(TransformerBase):
 
