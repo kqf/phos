@@ -10,25 +10,21 @@ from spectrum.plotter import plot
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("target", ["eta-pion-ratio"])
-def test_ratio(pythia6_eta_pion_ratio, coname, ptmin=4.5, ptmax=22):
+def test_ratio(pythia6_eta_pion_ratio, eta_pion_ratio_fitf, coname):
     data = ratio()
     data.SetTitle("Data")
+    data.Fit(eta_pion_ratio_fitf, "RQ")
+    br.report(eta_pion_ratio_fitf, limits=True)
 
-    ff = ROOT.TF1("etaPionRatio", "[0]", ptmin, ptmax)
-    ff.SetParameter(0, 0.5)
-    ff.SetParName(0, "Value")
-    data.Fit(ff, "RQ")
-
-    br.report(ff, limits=True)
-    ff.SetRange(2, 22)
-    ff.SetLineColor(ROOT.kBlack)
-    ff.SetLineStyle(7)
-    ff.SetTitle("Constant fit")
+    eta_pion_ratio_fitf.SetRange(2, 22)
+    eta_pion_ratio_fitf.SetLineColor(ROOT.kBlack)
+    eta_pion_ratio_fitf.SetLineStyle(7)
+    eta_pion_ratio_fitf.SetTitle("Constant fit")
 
     pythia6 = br.hist2graph(pythia6_eta_pion_ratio)
     pythia6.SetTitle("PYTHIA 6")
     plot(
-        [data, pythia6, ff],
+        [data, pythia6, eta_pion_ratio_fitf],
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,

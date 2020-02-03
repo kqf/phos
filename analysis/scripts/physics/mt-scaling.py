@@ -88,23 +88,23 @@ def eta_pion_ratio(x, par):
     return c * (numerator / denominator) ** -n
 
 
-@pytest.fixture(scope="module")
-def asymptotic_eta_pion_ratio(min_pt=5):
+@pytest.fixture
+def asymptotic_value_eta_pion_ratio(eta_pion_ratio_fitf):
     rratio = ratio(stop=False)
-    fitf = ROOT.TF1("eta_pion", "[0]", min_pt, 20)
-    rratio.Fit(fitf, "R")
-    etapion = fitf.GetParameter(0)
+    rratio.Fit(eta_pion_ratio_fitf, "R")
+    etapion = eta_pion_ratio_fitf.GetParameter(0)
+    etapione = eta_pion_ratio_fitf.GetParError(0)
     print()
-    print("Asymptotic #eta / #pi^{0} ratio: ", etapion)
+    print("Asymptotic #eta / #pi^{0} ratio: ", etapion, etapione)
     return etapion
 
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("target", ["mt_scaling/eta_pion_ratio"])
-def test_ratio(asymptotic_eta_pion_ratio, coname):
+def test_ratio(asymptotic_value_eta_pion_ratio, coname):
     lower = ROOT.TF1("lower", eta_pion_ratio, 0, 20, 3)
-    lower.SetParameter(0, asymptotic_eta_pion_ratio)
+    lower.SetParameter(0, asymptotic_value_eta_pion_ratio)
     lower.SetParameter(1, 1.2)
     lower.SetParameter(2, 10)
 

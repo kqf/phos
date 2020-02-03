@@ -118,3 +118,11 @@ def pythia6_eta_pion_ratio():
     mc = br.ratio(read_pythia6("#eta"), read_pythia6("#pi^{0}"))
     mc.SetTitle("PYTHIA 6")
     return mc
+
+
+@pytest.fixture
+def eta_pion_ratio_fitf(ptmin=4.5, ptmax=22):
+    ff = ROOT.TF1("etaPionRatio", "[0]", ptmin, ptmax)
+    ff.SetParameter(0, 0.5)
+    ff.SetParName(0, "Value")
+    return ff
