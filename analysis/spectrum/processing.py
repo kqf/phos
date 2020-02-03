@@ -80,24 +80,12 @@ class InvariantMassExtractor(object):
         return rmasses
 
 
-# TODO: Simplify me (split for a sepparate logger transformer)
-class MassFitter(object):
-
-    def __init__(self, use_mixed):
-        super(MassFitter, self).__init__()
-        self.use_mixed = use_mixed
-
+class MassFitPtLogger(TransformerBase):
     def transform(self, masses, loggs):
-        pipeline = self._pipeline()
-
-        for estimator in pipeline:
-            estimator.transform(masses, loggs)
-
         params = masses["signalf"].apply(
             lambda f: {
                 f.GetParName(i): f.GetParameter(i) for i in range(f.GetNpar())}
         )
-
         params = pd.DataFrame(params.to_dict()).T
 
         out = []
@@ -114,29 +102,35 @@ class MassFitter(object):
         loggs.update({"output": tuple(out)})
         return masses
 
-    def _pipeline(self):
-        if not self.use_mixed:
-            return [
-                BackgroundEstimator(),
-                SignalExtractor(),
-                SignalFitter(),
-                SignalFitExtractor(in_cols=["signalf"]),
-                SignalFitExtractor(in_cols=["measuredf"],
-                                   prefix="background_"),
-                FitQualityExtractor(in_cols=["signalf"]),
-                FitQualityExtractor(in_cols=["measuredf"],
-                                    prefix="background_"),
-            ]
-        return [
-            MixingBackgroundEstimator(),
-            ZeroBinsCleaner(),
-            SignalExtractor(),
-            SignalFitter(),
-            SignalFitExtractor(in_cols=["signalf"]),
-            SignalFitExtractor(in_cols=["measuredf"], prefix="background_"),
-            FitQualityExtractor(in_cols=["signalf"]),
-            FitQualityExtractor(in_cols=["measuredf"], prefix="background_"),
+# TODO: Simplify me (split for a sepparate logger transformer)
+
+
+class MassFitter(TransformerBase):
+
+    def __init__(self, use_mixed):
+        super(MassFitter, self).__init__()
+        self.pipeline = Pipeline(self.background(use_mixed) + [
+            ("signal", SignalExtractor()),
+            ("signal-fit", SignalFitter()),
+            ("extract-signal", SignalFitExtractor(in_cols=["signalf"])),
+            ("extract-measured", SignalFitExtractor(in_cols=["measuredf"],
+                                                    prefix="background_")),
+            ("quality-signal", FitQualityExtractor(in_cols=["signalf"])),
+            ("quality-measured", FitQualityExtractor(in_cols=["measuredf"],
+                                                     prefix="background_")),
+            ("signal-fit-log", MassFitPtLogger()),
+        ])
+
+    @staticmethod
+    def background(use_mixed):
+        if not use_mixed:
+            return [("background", BackgroundEstimator())]
+
+        steps = [
+            ("mixing", MixingBackgroundEstimator()),
+            ("background", ZeroBinsCleaner())
         ]
+        return steps
 
 
 class PtFitter(object):
