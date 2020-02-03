@@ -189,7 +189,9 @@ def test_calculate_combined_n(particle, n_factors, xtrange):
         ngraph.SetMarkerSize(1)
         multigraph.Add(ngraph)
 
-    fitf = ROOT.TF1("fitpol0", "[0]", 1.e-04, 1.5e-02)
+    fitf = ROOT.TF1("xtCombined", "[0]", 1.e-04, 1.5e-02)
+    fitf.SetParName(0, "n")
+
     fitf.SetLineWidth(3)
     fitf.SetParameter(0, 5.0)
     fitf.SetLineStyle(7)
