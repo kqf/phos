@@ -734,16 +734,6 @@ def test_calculates_confidence_intervals(stop):
     assert hist1.GetEntries() != 0
 
 
-def test_subtracts_histogram(stop):
-    hist = br.BH(ROOT.TH1F, "f2h", "Test BROOT: func2hist", 100, -4, 4)
-    for b in br.hrange(hist):
-        hist.Fill(hist.GetBinCenter(b), 5)
-    func = ROOT.TF1("testFunc", "5", -4, 4)
-    output = br.function2histogram(func, hist)
-    output.Add(hist, -1)
-    assert output.Integral() == 0
-
-
 def test_chi2(stop):
     histogram = ROOT.TH1F("TestChi2", "Test BROOT: chi2", 100, -1, 1)
     histogram.Sumw2()

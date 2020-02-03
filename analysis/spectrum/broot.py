@@ -537,14 +537,6 @@ def confidence_intervals(hist, func, options="R", histbining=None):
     return ci
 
 
-# TODO: remove me
-def function2histogram(func, hist, scale=1):
-    newhist = copy(hist)
-    for b in hrange(hist):
-        newhist.SetBinContent(b, func.Eval(hist.GetBinCenter(b) * scale))
-    return newhist
-
-
 def chi2(hist1, hist2, rrange=None):
     assert hist1.GetNbinsX() == hist2.GetNbinsX(), \
         "Histograms should have the same binning"
