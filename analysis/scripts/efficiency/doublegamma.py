@@ -24,7 +24,7 @@ def oname(particle):
 def test_simple(particle, spmc, oname):
     analysis = Analysis(CompositeOptions(particle=particle))
     with open_loggs() as loggs:
-        with plt.pcanvas(size=(96, 128), stop=True, oname=oname) as canvas:
+        with plt.canvas(size=(96, 128), stop=True, oname=oname) as figure:
             ROOT.gStyle.SetStatX(0.92)
             ROOT.gStyle.SetStatW(0.15)
             ROOT.gStyle.SetStatH(0.15)
@@ -47,7 +47,7 @@ def test_simple(particle, spmc, oname):
             analysis.transform(spmc, loggs=loggs)
             data = loggs["steps"]["analysis-0"]["parametrize"]["output"].loc[9]
             MassesPlot().transform(
-                pad=canvas,
+                pad=figure,
                 mass=data["measured"],
                 signalf=data["signalf"],
                 background=data["background"],
