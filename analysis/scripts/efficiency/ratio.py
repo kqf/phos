@@ -19,5 +19,5 @@ def test_efficiency_ratio(ratio_data):
         ("#eta", Efficiency(CompositeEfficiencyOptions("#eta", pt=pt))),
         ("#pi^{0}", Efficiency(CompositeEfficiencyOptions("#pi^{0}", pt=pt))),
     ])
-    with open_loggs("efficiency ratio", shallow=True) as loggs:
+    with open_loggs() as loggs:
         estimator.transform(ratio_data, loggs)

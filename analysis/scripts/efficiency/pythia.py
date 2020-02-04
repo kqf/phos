@@ -19,6 +19,6 @@ def pythia(particle):
 ])
 def test_efficiency(pythia, particle):
     options = EfficiencyOptions(particle)
-    with open_loggs("efficiency pytia8 {}".format(particle)) as loggs:
+    with open_loggs() as loggs:
         efficiency = Efficiency(options).transform(pythia, loggs)
         Comparator().compare(efficiency)

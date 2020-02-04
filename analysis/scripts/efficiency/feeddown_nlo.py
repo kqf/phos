@@ -42,7 +42,7 @@ def test_feeddown_correction(data):
     options = FeeddownOptions()
     options.fitf = feeddown_paramerization()
     estimator = FeeddownEstimator(options)
-    with open_loggs("feeddown nlo correction") as loggs:
+    with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
         Comparator().compare(output)
     assert output.GetEntries() > 0
