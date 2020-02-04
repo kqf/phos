@@ -35,7 +35,7 @@ def oname(particle):
 @pytest.mark.parametrize("selection", ["PhysEff"])
 @pytest.mark.parametrize("histname", ["hEtaPhi_#gamma"])
 def test_eta_phi(particle, spmc, oname):
-    with plt.style(), plt.pcanvas(oname=oname), open_loggs() as loggs:
+    with plt.style(), plt.canvas(oname=oname), open_loggs() as loggs:
         ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
         ROOT.gPad.SetLogz(True)
         ROOT.gPad.SetRightMargin(0.12)
@@ -43,6 +43,7 @@ def test_eta_phi(particle, spmc, oname):
             SingleHistReader().transform(d, loggs)
             for d in spmc
         ])
+        summed.GetYaxis().SetTitle("#it{y}")
         summed.GetYaxis().SetTitleOffset(1.0)
         summed.GetYaxis().SetTitleFont(62)
         summed.GetXaxis().SetTitleFont(62)
@@ -79,7 +80,7 @@ def test_spectral_shape(particle, spmc, ltitle, selection, wname):
             logx=True,
             xtitle="#it{p}_{T} (GeV/#it{c})",
             ytitle="#frac{d#it{N}}{d#it{p}_{T}} (GeV^{-1}#it{c})",
-            xlimits=(0.8, 100),
+            xlimits=(0.8, 99),
             ltitle=ltitle,
             oname=wname,
             legend_pos=(0.7, 0.7, 0.85, 0.85),
