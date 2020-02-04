@@ -48,21 +48,20 @@ def reduce_func(inputs, loggs):
     data, mc_ = inputs
     data.SetTitle(
         "Data; #it{p}_{T} (GeV/#it{c});"
-        "(#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}})^{data}"
+        "(#frac{#it{K}^{ +} + #it{K}^{ -}}{#pi^{+} + #pi^{-}})^{data}"
     )
     mc_.SetTitle(
         "MC; #it{p}_{T} (GeV/#it{c});"
-        "(#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}})^{mc}"
+        "(#frac{#it{K}^{ +} + #it{K}^{ -}}{#pi^{+} + #pi^{-}})^{mc}"
     )
     mc = RebinTransformer(True, br.edges(data)).transform(mc_, loggs)
     plot(
         [data, mc],
         xlimits=(0.3, 20),
         ylimits=(0.0, 0.7),
-        ytitle="#frac{K^{+} + K^{-}}{#pi^{+} + #pi^{-}}",
+        ytitle="#frac{#it{K}^{ +} + #it{K}^{ -}}{#pi^{+} + #pi^{-}}",
         logy=False,
         logx=False,
-        yoffset=1.6,
         legend_pos=(0.2, 0.7, 0.4, 0.85),
         oname="results/analysis/kaon2pion_ratio.pdf",
     )
