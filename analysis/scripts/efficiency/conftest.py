@@ -1,4 +1,6 @@
 import pytest
+import spectrum.broot as br
+
 from spectrum.efficiency import efficiency_data as edata
 from spectrum.vault import DataVault
 
@@ -25,3 +27,9 @@ def spmc(particle):
 @pytest.fixture
 def efficiency_data(particle):
     return edata(particle)
+
+
+@pytest.fixture
+def oname(particle, target):
+    pattern = "results/analysis/spmc/{}_{}.pdf"
+    return pattern.format(target, br.spell(particle))
