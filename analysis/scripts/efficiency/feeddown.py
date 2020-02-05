@@ -26,15 +26,15 @@ def plot_func(data, loggs, stop):
     data.Fit(func_feeddown, "RQ")
     data.SetTitle(
         "MC; #it{p}_{T} (GeV/#it{c});"
-        "#frac{d#it{N}(#pi^{0} #leftarrow K_{0}^{s})}{d#it{p}_{T}} / "
-        "#frac{d#it{N}(all)}{d#it{p}_{T}}"
+        "#frac{d#it{N} (#pi^{0} #leftarrow #it{K}_{0}^{s})}{d#it{p}_{T}} / "
+        "#frac{d#it{N} (all)}{d#it{p}_{T}}"
     )
     plot(
         [data, func_feeddown],
         stop=stop,
         logy=False,
         csize=(156, 126),
-        yoffset=1.75,
+        yoffset=2,
         oname="results/analysis/feeddown.pdf",
 
     )
