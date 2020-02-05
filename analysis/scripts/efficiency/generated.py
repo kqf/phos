@@ -32,9 +32,9 @@ def spmc(particle):
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
 ])
-def test_generated_distribution(particle, fitf, spmc):
+def test_generated_distribution(particle, fitf, spmc, stop):
     for prod in spmc:
         generated = SingleHistReader().transform(prod)
         generated.logy = True
         generated.Scale(1. / generated.Integral())
-        Comparator().compare(generated, fitf.GetHistogram())
+        Comparator(stop=stop).compare(generated, fitf.GetHistogram())

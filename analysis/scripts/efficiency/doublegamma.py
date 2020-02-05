@@ -21,10 +21,10 @@ def oname(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_simple(particle, spmc, oname):
+def test_simple(particle, spmc, stop, oname):
     analysis = Analysis(CompositeOptions(particle=particle))
     with open_loggs() as loggs:
-        with plt.canvas(size=(96, 128), stop=True, oname=oname) as figure:
+        with plt.canvas(size=(96, 128), stop=stop, oname=oname) as figure:
             ROOT.gStyle.SetStatX(0.92)
             ROOT.gStyle.SetStatW(0.15)
             ROOT.gStyle.SetStatH(0.15)

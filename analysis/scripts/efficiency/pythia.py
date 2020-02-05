@@ -17,8 +17,8 @@ def pythia(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_efficiency(pythia, particle):
+def test_efficiency(pythia, particle, stop):
     options = EfficiencyOptions(particle)
     with open_loggs() as loggs:
         efficiency = Efficiency(options).transform(pythia, loggs)
-        Comparator().compare(efficiency)
+        Comparator(stop=stop).compare(efficiency)

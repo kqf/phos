@@ -38,11 +38,11 @@ def data():
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_feeddown_correction(data):
+def test_feeddown_correction(data, stop):
     options = FeeddownOptions()
     options.fitf = feeddown_paramerization()
     estimator = FeeddownEstimator(options)
-    with open_loggs() as loggs:
+    with open_loggs(stop=stop) as loggs:
         output = estimator.transform(data, loggs)
-        Comparator().compare(output)
+        Comparator(stop=stop).compare(output)
     assert output.GetEntries() > 0

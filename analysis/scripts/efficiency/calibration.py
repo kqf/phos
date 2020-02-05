@@ -10,7 +10,7 @@ from spectrum.vault import DataVault
 
 
 @pytest.fixture
-def data(particle):
+def raw_data(particle):
     prod = "single {}".format(particle)
     return (
         DataVault().input("data", histname="MassPtSM0"),
@@ -20,7 +20,7 @@ def data(particle):
 
 
 @pytest.fixture
-def calibration_data(particle, data, quant):
+def data(particle, raw_data, quant):
     labels = "Data", "Low #it{p}_{T}", "High #it{p}_{T}"
     scales = [1, 1.0189, 1.0189]
     with open_loggs() as loggs:
@@ -28,7 +28,7 @@ def calibration_data(particle, data, quant):
             (label, Analysis(Options(particle)))
             for label in labels
         ])
-        output = estimator.transform(data, loggs)
+        output = estimator.transform(raw_data, loggs)
         targets = []
         for name, hists, s in zip(labels, output, scales):
             hist = hists._asdict()[quant]
@@ -60,9 +60,10 @@ def oname(particle, quant):
     "mass",
     "width",
 ])
-def test_mass_width_parametrization(calibration_data, quant, oname, ltitle):
+def test_mass_width_parametrization(data, quant, stop, oname, ltitle):
     plot(
-        calibration_data,
+        data,
+        stop=stop,
         oname=oname,
         ltitle=ltitle,
         logy=False,

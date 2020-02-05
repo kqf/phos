@@ -34,20 +34,21 @@ def oname(particle):
 ])
 @pytest.mark.parametrize("selection", ["PhysEff"])
 @pytest.mark.parametrize("histname", ["hEtaPhi_#gamma"])
-def test_eta_phi(particle, spmc, oname):
-    with plt.style(), plt.canvas(oname=oname), open_loggs() as loggs:
-        ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
-        ROOT.gPad.SetLogz(True)
-        ROOT.gPad.SetRightMargin(0.12)
-        summed = br.hsum([
-            SingleHistReader().transform(d, loggs)
-            for d in spmc
-        ])
-        summed.GetYaxis().SetTitle("#it{y}")
-        summed.GetYaxis().SetTitleOffset(1.0)
-        summed.GetYaxis().SetTitleFont(62)
-        summed.GetXaxis().SetTitleFont(62)
-        summed.Draw("colz")
+def test_eta_phi(particle, spmc, oname, stop):
+    with plt.style(), plt.canvas(oname=oname, stop=stop):
+        with open_loggs() as loggs:
+            ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
+            ROOT.gPad.SetLogz(True)
+            ROOT.gPad.SetRightMargin(0.12)
+            summed = br.hsum([
+                SingleHistReader().transform(d, loggs)
+                for d in spmc
+            ])
+            summed.GetYaxis().SetTitle("#it{y}")
+            summed.GetYaxis().SetTitleOffset(1.0)
+            summed.GetYaxis().SetTitleFont(62)
+            summed.GetXaxis().SetTitleFont(62)
+            summed.Draw("colz")
 
 
 @pytest.fixture
@@ -67,7 +68,7 @@ def wname(particle, selection):
     "PhysEff",
 ])
 @pytest.mark.parametrize("histname", ["hPtLong_{}"])
-def test_spectral_shape(particle, spmc, ltitle, selection, wname):
+def test_spectral_shape(particle, spmc, ltitle, selection, stop, wname):
     with open_loggs() as loggs:
         hists = []
         for name, d in zip(["low #it{p}_{T}", "high #it{p}_{T}"], spmc):
@@ -77,6 +78,7 @@ def test_spectral_shape(particle, spmc, ltitle, selection, wname):
 
         plt.plot(
             hists,
+            stop=stop,
             logx=True,
             xtitle="#it{p}_{T} (GeV/#it{c})",
             ytitle="#frac{d#it{N}}{d#it{p}_{T}} (GeV^{-1}#it{c})",
