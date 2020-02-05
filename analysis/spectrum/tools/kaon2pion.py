@@ -51,5 +51,5 @@ class KaonToPionDoubleRatio(TransformerBase):
                 ("data", KaonToPionRatioData()),
                 ("mc", KaonToPionRatioMC()),
             ]),
-            options.reduce_func
+            lambda x, loggs: options.reduce_func(x, loggs, stop=plot)
         )

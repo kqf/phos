@@ -30,7 +30,7 @@ def data():
     return real_data, mc_data
 
 
-def reduce_func(inputs, loggs):
+def reduce_func(inputs, loggs, stop):
     fitfunc = ROOT.TF1(
         "KpiRatio",
         "[3] * x * x + [4] * x * x - [4] * x + "
@@ -57,6 +57,7 @@ def reduce_func(inputs, loggs):
     mc = RebinTransformer(True, br.edges(data)).transform(mc_, loggs)
     plot(
         [data, mc],
+        stop=stop,
         xlimits=(0.3, 20),
         ylimits=(0.0, 0.7),
         ytitle="#frac{#it{K}^{ +} + #it{K}^{ -}}{#pi^{+} + #pi^{-}}",
@@ -70,6 +71,7 @@ def reduce_func(inputs, loggs):
     double_ratio.Fit(fitfunc, "RQWW")
     plot(
         [double_ratio, fitfunc],
+        stop=stop,
         xlimits=(0.3, 20),
         logy=False,
         logx=True,
@@ -81,7 +83,7 @@ def reduce_func(inputs, loggs):
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-def test_ratio(data):
-    estimator = KaonToPionDoubleRatio(DoubleK2POptions(reduce_func))
+def test_ratio(data, stop):
+    estimator = KaonToPionDoubleRatio(DoubleK2POptions(reduce_func), plot=stop)
     with open_loggs() as loggs:
         estimator.transform(data, loggs)
