@@ -1,18 +1,11 @@
 import ROOT
 import pytest
 
-import spectrum.broot as br
 import spectrum.plotter as plt
 from spectrum.output import open_loggs
 from spectrum.options import CompositeOptions
 from spectrum.analysis import Analysis
 from spectrum.ptplotter import MassesPlot
-
-
-@pytest.fixture
-def oname(particle):
-    ofile = "results/analysis/spmc/gammagamma_{}.pdf"
-    return ofile.format(br.spell(particle))
 
 
 @pytest.mark.thesis
@@ -21,6 +14,7 @@ def oname(particle):
     "#pi^{0}",
     "#eta",
 ])
+@pytest.mark.parametrize("target", ["gammagamma"])
 def test_simple(particle, spmc, stop, oname):
     analysis = Analysis(CompositeOptions(particle=particle))
     with open_loggs() as loggs:

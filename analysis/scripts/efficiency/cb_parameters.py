@@ -68,13 +68,6 @@ def hists(particle, spmc):
     return data
 
 
-@pytest.fixture
-def oname(particle, quantity):
-    quantity = quantity.replace("cball_", "")
-    pattern = "results/analysis/spmc/{}_{}.pdf"
-    return pattern.format(quantity, br.spell(particle))
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -82,12 +75,12 @@ def oname(particle, quantity):
     "#pi^{0}",
     "#eta",
 ])
-@pytest.mark.parametrize("quantity", [
+@pytest.mark.parametrize("target", [
     "cball_n",
     "cball_alpha",
 ])
-def test_cball_parameters(particle, hists, quantity, stop, oname, ltitle=""):
-    hist = hists[quantity]
+def test_cball_parameters(particle, hists, target, stop, oname, ltitle):
+    hist = hists[target]
     func = hist.GetListOfFunctions()[0]
     func.SetTitle("Constant fit")
     func.SetLineStyle(9)
@@ -97,7 +90,6 @@ def test_cball_parameters(particle, hists, quantity, stop, oname, ltitle=""):
         stop=stop,
         logy=False,
         ylimits=hist.ylimits,
-        legend_pos=(0.58, 0.7, 0.68, 0.85),
         ltitle=ltitle,
         oname=oname,
     )

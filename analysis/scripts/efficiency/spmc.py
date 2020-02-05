@@ -10,12 +10,6 @@ from spectrum.tools.validate import validate  # noqa
 from spectrum.plotter import plot
 
 
-@pytest.fixture
-def oname(particle):
-    pattern = "results/analysis/spmc/efficiency_{}.pdf"
-    return pattern.format(br.spell(particle))
-
-
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
@@ -25,19 +19,19 @@ def oname(particle):
     "",
     # "efficiency-{}",
 ])
-def test_spmc_efficiency(particle, efficiency_data, oname, logname, stop):
-    options = CompositeEfficiencyOptions(particle)
+@pytest.mark.parametrize("target", ["efficiency"])
+def test_spmc_efficiency(particle, efficiency_data, logname, stop, oname):
     with open_loggs(logname.format(particle)) as loggs:
+        options = CompositeEfficiencyOptions(particle)
         efficiency = Efficiency(options).transform(efficiency_data, loggs)
-        # Comparator().compare(efficiency)
-        print(stop)
-        plot(
-            [efficiency],
-            stop=stop,
-            logy=False,
-            logx=False,
-            oname=oname,
-            legend_pos=None,
-            yoffset=2
-        )
-        validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
+
+    plot(
+        [efficiency],
+        stop=stop,
+        logy=False,
+        logx=False,
+        oname=oname,
+        legend_pos=None,
+        yoffset=2
+    )
+    validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)
