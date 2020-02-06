@@ -45,6 +45,11 @@ def test_eta_phi(particle, spmc, oname, stop):
             summed.Draw("colz")
 
 
+def trimm(x, y, dx, dy):
+    idx = y > 0
+    return x[idx], y[idx], dx[idx], dy[idx]
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
@@ -62,7 +67,7 @@ def test_spectral_shape(particle, spmc, ltitle, selection, stop, oname):
         for name, d in zip(["low #it{p}_{T}", "high #it{p}_{T}"], spmc):
             hist = SingleHistReader().transform(d, loggs)
             hist.SetTitle(name)
-            hists.append(br.hist2graph(hist, "positive"))
+            hists.append(br.hist2graph(hist, func=trimm))
 
         plt.plot(
             hists,
