@@ -1,14 +1,12 @@
 import pytest
 
 import ROOT
-from spectrum.pipeline import SingleHistReader
-from spectrum.output import open_loggs
-import spectrum.broot as br  # noqa
-from spectrum.comparator import Comparator  # noqa
-
+import spectrum.broot as br
 import spectrum.plotter as plt
-from spectrum.tools.validate import validate  # noqa
+
 from spectrum.vault import DataVault
+from spectrum.output import open_loggs
+from spectrum.pipeline import SingleHistReader
 
 
 @pytest.fixture
@@ -21,17 +19,13 @@ def spmc(particle, selection, histname):
     )
 
 
-@pytest.fixture
-def oname(particle):
-    return "results/analysis/spmc/eta_phi_{}.pdf".format(br.spell(particle))
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
+@pytest.mark.parametrize("target", ["eta_phi"])
 @pytest.mark.parametrize("selection", ["PhysEff"])
 @pytest.mark.parametrize("histname", ["hEtaPhi_#gamma"])
 def test_eta_phi(particle, spmc, oname, stop):
@@ -51,24 +45,18 @@ def test_eta_phi(particle, spmc, oname, stop):
             summed.Draw("colz")
 
 
-@pytest.fixture
-def wname(particle, selection):
-    pattern = "results/analysis/spmc/{}_{}.pdf"
-    return pattern.format(selection.lower(), br.spell(particle))
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-@pytest.mark.parametrize("selection", [
-    "NoWeights",
-    "PhysEff",
+@pytest.mark.parametrize("selection, target", [
+    ("NoWeights", "noweights"),
+    ("PhysEff", "physeff"),
 ])
 @pytest.mark.parametrize("histname", ["hPtLong_{}"])
-def test_spectral_shape(particle, spmc, ltitle, selection, stop, wname):
+def test_spectral_shape(particle, spmc, ltitle, selection, stop, oname):
     with open_loggs() as loggs:
         hists = []
         for name, d in zip(["low #it{p}_{T}", "high #it{p}_{T}"], spmc):
@@ -84,7 +72,7 @@ def test_spectral_shape(particle, spmc, ltitle, selection, stop, wname):
             ytitle="#frac{d#it{N}}{d#it{p}_{T}} (GeV^{-1}#it{c})",
             xlimits=(0.8, 99),
             ltitle=ltitle,
-            oname=wname,
+            oname=oname,
             legend_pos=(0.7, 0.7, 0.85, 0.85),
             yoffset=1.4,
         )
