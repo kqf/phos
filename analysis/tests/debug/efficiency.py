@@ -27,7 +27,7 @@ class StanadrtizeOutput(TransformerBase):
             len(self.ptedges) - 1,
             array("d", self.ptedges)
         )
-        for (content, error, center) in zip(*br.bins(histogram)):
+        for (content, error, center, _) in zip(*br.bins(histogram)):
             ibin = ohist.FindBin(center)
             ohist.SetBinContent(ibin, content)
             ohist.SetBinError(ibin, error)
