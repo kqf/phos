@@ -426,9 +426,10 @@ def bins(hist):
     contents = np.array([hist.GetBinContent(i) for i in hrange(hist)])
     errors = np.array([hist.GetBinError(i) for i in hrange(hist)])
     centers = np.array([hist.GetBinCenter(i) for i in hrange(hist)])
+    widths = np.array([hist.GetBinWidth(i) for i in hrange(hist)])
     HistMatrix = namedtuple(
-        "HistMatrix", ["contents", "errors", "centers"])
-    return HistMatrix(contents, errors, centers)
+        "HistMatrix", ["contents", "errors", "centers", "widths"])
+    return HistMatrix(contents, errors, centers, widths)
 
 
 def hist2dict(hist):
@@ -656,10 +657,6 @@ def edges(x):
     return np.array([x.GetBinLowEdge(i) for i in hrange(x, edges=True)])
 
 
-def widths(x):
-    return np.array([x.GetBinWidth(i) for i in hrange(x)])
-
-
 def same_binning(hist1, hist2):
     if type(hist1) != type(hist2):
         return False
@@ -713,17 +710,10 @@ def graph2hist(graph, hist=None):
     return hist
 
 
-def hist2graph(hist, option=None, use_widths=True):
-    contents, errors, centers = bins(hist)
-    hgraph = graph(
-        hist.GetTitle(), x=centers, y=contents,
-        dx=int(use_widths) * widths(hist) / 2, dy=errors)
-
-    if option == "positive":
-        idx = contents > 0
-        hgraph = graph(hist.GetTitle(), centers[idx],
-                       contents[idx], dy=errors[idx])
-
+def hist2graph(hist, func=lambda *args: args):
+    contents, errors, centers, widths = bins(hist)
+    x, y, dx, dy = func(centers, contents, widths, errors)
+    hgraph = graph(hist.GetTitle(), x=x, y=y, dx=dx / 2, dy=dy)
     hgraph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
     hgraph.GetYaxis().SetTitle(hist.GetYaxis().GetTitle())
     hgraph.SetLineColor(hist.GetLineColor())

@@ -65,7 +65,7 @@ class MassesPlot(object):
         yaxis = mass.GetYaxis()
 
         def bins_errors(hist, a, b):
-            bins, berrors, centers = br.bins(hist)
+            bins, berrors, centers, _ = br.bins(hist)
             roi = (centers > a) & (centers < b)
             bins = bins[roi]
             berrors = berrors[roi]

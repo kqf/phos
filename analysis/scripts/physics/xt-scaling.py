@@ -88,7 +88,7 @@ def xt_measured(particle, tcm):
 
 @multimethod
 def n_factor(cs1, cs2_approx, s1, s2,):
-    contents, errors, xT = br.bins(cs1)
+    contents, errors, xT, _ = br.bins(cs1)
     spectrum1 = unp.uarray(contents, errors)
     pT = xT * s2 / 2
     spectrum2 = np.fromiter(map(cs2_approx.Eval, pT), np.float64)

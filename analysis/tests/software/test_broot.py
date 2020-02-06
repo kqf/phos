@@ -569,7 +569,7 @@ def test_extracts_bins(stop):
     for i in br.hrange(hist):
         hist.Fill(i - 0.5, i), hist.GetBinContent(i)
 
-    bins, errors, centers = br.bins(hist)
+    bins, errors, centers, widths = br.bins(hist)
     assert len(bins) == hist.GetNbinsX()
     assert len(errors) == hist.GetNbinsX()
 
@@ -807,8 +807,8 @@ def exp_data():
 
 def test_calculates_bin_centers(exp_data):
     centers = br.bin_centers(exp_data)
-    orig_contents, orig_errors, orig_centers = br.bins(exp_data)
-    cent_contents, cent_errors, cent_centers = br.bins(centers)
+    orig_contents, orig_errors, orig_centers, _ = br.bins(exp_data)
+    cent_contents, cent_errors, cent_centers, _ = br.bins(centers)
 
     np.testing.assert_almost_equal(orig_centers, cent_centers)
     np.testing.assert_almost_equal(orig_centers, cent_contents)

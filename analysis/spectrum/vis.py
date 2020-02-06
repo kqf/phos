@@ -229,7 +229,7 @@ class Visualizer(MultipleVisualizer):
         return ratio
 
     def set_ratio_yaxis(self, ratio, n=3):
-        bins, _, _ = br.bins(ratio)
+        bins, _, _, _ = br.bins(ratio)
         try:
             ymin, ymax = self.rrange
             ratio.SetAxisRange(ymin, ymax, 'Y')
@@ -241,7 +241,7 @@ class Visualizer(MultipleVisualizer):
         except ValueError:
             pass
 
-        bins, _, _ = br.bins(ratio)
+        bins, _, _, _ = br.bins(ratio)
         mean, std = np.mean(bins), np.std(bins)
         no_outliers = [b for b in bins if abs(b - mean) < n * std]
 
