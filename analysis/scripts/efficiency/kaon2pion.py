@@ -64,7 +64,7 @@ def reduce_func(inputs, loggs, stop):
         logy=False,
         logx=False,
         legend_pos=(0.2, 0.7, 0.4, 0.85),
-        oname="results/analysis/kaon2pion_ratio.pdf",
+        oname="images/analysis/kaon2pion_ratio.pdf",
     )
 
     double_ratio = br.ratio(data, mc)
@@ -75,7 +75,7 @@ def reduce_func(inputs, loggs, stop):
         xlimits=(0.3, 20),
         logy=False,
         logx=True,
-        oname="results/analysis/kaon2pion_doubleratio.pdf",
+        oname="images/analysis/kaon2pion_doubleratio.pdf",
     )
     br.report(fitfunc)
     return double_ratio

@@ -31,5 +31,5 @@ def efficiency_data(particle):
 
 @pytest.fixture
 def oname(particle, target):
-    pattern = "results/analysis/spmc/{}_{}.pdf"
+    pattern = "images/analysis/spmc/{}_{}.pdf"
     return pattern.format(target, br.spell(particle))

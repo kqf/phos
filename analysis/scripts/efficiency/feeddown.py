@@ -35,7 +35,7 @@ def plot_func(data, loggs, stop):
         logy=False,
         csize=(156, 126),
         yoffset=2,
-        oname="results/analysis/feeddown.pdf",
+        oname="images/analysis/feeddown.pdf",
 
     )
     br.report(func_feeddown, limits=True)
