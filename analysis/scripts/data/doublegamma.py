@@ -1,7 +1,6 @@
 import ROOT
 import pytest
 
-import spectrum.broot as br
 import spectrum.plotter as plt
 from spectrum.output import open_loggs
 from spectrum.options import Options
@@ -10,16 +9,12 @@ from spectrum.ptplotter import MassesPlot
 
 
 @pytest.fixture
-def oname(particle):
-    ofile = "results/analysis/data/gammagamma_{}.pdf"
-    return ofile.format(br.spell(particle))
-
-
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
+@pytest.mark.parametrize("target", ["gammagamma"])
 def test_simple(particle, data, oname):
     analysis = Analysis(Options(particle=particle))
     with open_loggs() as loggs:

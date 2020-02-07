@@ -67,25 +67,18 @@ def hists(particle, data):
     return data
 
 
-@pytest.fixture
-def oname(particle, quantity):
-    quantity = quantity.replace("cball_", "")
-    pattern = "results/analysis/data/{}_{}.pdf"
-    return pattern.format(quantity, br.spell(particle))
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    # "#eta",
+    "#eta",
 ])
-@pytest.mark.parametrize("quantity", [
-    "cball_n",
-    "cball_alpha",
+@pytest.mark.parametrize("quantity, target", [
+    ("cball_n", "n"),
+    ("cball_alpha", "alpha"),
 ])
-def test_cball_parameters(particle, data, hists, quantity, oname, ltitle):
+def test_cball_parameters(hists, quantity, ltitle, oname):
     hist = hists[quantity]
     func = hist.GetListOfFunctions()[0]
     func.SetTitle("Constant fit")

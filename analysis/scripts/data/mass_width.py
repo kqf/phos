@@ -9,17 +9,11 @@ from spectrum.plotter import plot
 
 
 @pytest.fixture
-def hparms(data, particle, quant):
+def hparms(data, particle, target):
     options = Options(particle=particle)
     with open_loggs() as loggs:
         output = Analysis(options).transform(data, loggs)
-    return output._asdict()[quant], options.calibration[quant]
-
-
-@pytest.fixture
-def oname(particle, quant):
-    pattern = "results/analysis/data/{}_{}.pdf"
-    return pattern.format(quant, br.spell(particle))
+    return output._asdict()[target], options.calibration[target]
 
 
 # @pytest.mark.skip
@@ -30,7 +24,7 @@ def oname(particle, quant):
     "#pi^{0}",
     "#eta"
 ])
-@pytest.mark.parametrize("quant", [
+@pytest.mark.parametrize("target", [
     "mass",
     "width",
 ])
