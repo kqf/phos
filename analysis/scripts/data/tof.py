@@ -40,7 +40,7 @@ def efficiency(tof_data):
 
 @pytest.fixture
 def oname():
-    return "results/analysis/data/tof.pdf"
+    return "images/analysis/data/tof.pdf"
 
 
 @pytest.mark.thesis

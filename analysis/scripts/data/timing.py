@@ -11,7 +11,7 @@ import spectrum.plotter as plt
 
 @pytest.fixture
 def oname(module_number):
-    pattern = "results/analysis/timing/EnergyVsTimingSM{}.pdf"
+    pattern = "images/analysis/timing/EnergyVsTimingSM{}.pdf"
     return pattern.format(module_number)
 
 
