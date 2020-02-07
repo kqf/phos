@@ -20,11 +20,12 @@ def validate(output, path,
     for p in path.split('/'):
         nominal = nominal[p]
 
+    # TODO: Should one iterate over nominal or actual values?
     msg = '\n\n'
     msg += 'Actual values:\n'
-    for label, actual in six.iteritems(output):
+    for label, actual in six.iteritems(nominal):
         msg += '"{}": {},\n'.format(label, dump_dict(actual))
 
-    for label, actual in six.iteritems(output):
+    for label, actual in six.iteritems(nominal):
         print('Checking {}'.format(label))
         np.testing.assert_almost_equal(actual, nominal[label], err_msg=msg)
