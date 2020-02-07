@@ -15,10 +15,10 @@ from spectrum.ptplotter import MassesPlot
     "#eta",
 ])
 @pytest.mark.parametrize("target", ["gammagamma"])
-def test_simple(particle, data, oname):
+def test_simple(particle, data, oname, stop):
     analysis = Analysis(Options(particle=particle))
     with open_loggs() as loggs:
-        with plt.canvas(size=(96, 128), stop=True, oname=oname) as figure:
+        with plt.canvas(size=(96, 128), stop=stop, oname=oname) as figure:
             ROOT.gStyle.SetStatY(0.88)
             ROOT.gStyle.SetStatX(0.92)
             ROOT.gStyle.SetStatW(0.15)

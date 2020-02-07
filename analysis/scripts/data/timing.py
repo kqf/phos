@@ -40,16 +40,17 @@ def draw_text(text, coordinates=(0.58, 0.75, 0.78, 0.88)):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("module_number", list(range(1, 5)))
-def test_eta_phi(data, module_number, oname):
-    with plt.style(), plt.canvas(oname=oname), open_loggs() as loggs:
-        ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
-        ROOT.gPad.SetLogz(True)
-        ROOT.gPad.SetRightMargin(0.12)
-        hist = SingleHistReader().transform(data, loggs)
-        hist.GetYaxis().SetTitleOffset(1.5)
-        hist.GetYaxis().SetTitle("cluster timing (seconds)")
-        hist.GetXaxis().SetTitle("cluster energy (GeV)")
-        hist.GetYaxis().SetTitleFont(62)
-        hist.GetXaxis().SetTitleFont(62)
-        hist.Draw("colz")
-        draw_text("Module {}".format(module_number))
+def test_eta_phi(data, module_number, oname, stop):
+    with plt.style(), plt.canvas(oname=oname, stop=stop):
+        with open_loggs() as loggs:
+            ROOT.gStyle.SetPalette(ROOT.kLightTemperature)
+            ROOT.gPad.SetLogz(True)
+            ROOT.gPad.SetRightMargin(0.12)
+            hist = SingleHistReader().transform(data, loggs)
+            hist.GetYaxis().SetTitleOffset(1.5)
+            hist.GetYaxis().SetTitle("cluster timing (seconds)")
+            hist.GetXaxis().SetTitle("cluster energy (GeV)")
+            hist.GetYaxis().SetTitleFont(62)
+            hist.GetXaxis().SetTitleFont(62)
+            hist.Draw("colz")
+            draw_text("Module {}".format(module_number))

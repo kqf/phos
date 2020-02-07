@@ -28,13 +28,14 @@ def hparms(data, particle, target):
     "mass",
     "width",
 ])
-def test_mass_width_parametrization(particle, hparms, oname, ltitle):
+def test_mass_width_parametrization(particle, hparms, oname, ltitle, stop):
     hist, params = hparms
     hist.SetTitle("Data")
     fitf = ROOT.TF1(hist.GetName(), params.func, *params.frange)
     fitf.SetTitle("Fit")
     fitf.SetLineColor(ROOT.kBlack)
     fitf.SetLineStyle(9)
+
     for i, (p, n) in enumerate(zip(params.pars, params.names)):
         fitf.SetParName(i, n)
         fitf.SetParameter(i, p)
@@ -43,9 +44,9 @@ def test_mass_width_parametrization(particle, hparms, oname, ltitle):
     br.report(fitf, particle)
     plot(
         [hist, fitf],
+        stop=stop,
         logy=False,
         ltitle=ltitle,
         oname=oname,
-        # more_logs=False,
         yoffset=2.05,
     )

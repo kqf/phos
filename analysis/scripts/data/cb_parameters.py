@@ -78,7 +78,7 @@ def hists(particle, data):
     ("cball_n", "n"),
     ("cball_alpha", "alpha"),
 ])
-def test_cball_parameters(hists, quantity, ltitle, oname):
+def test_cball_parameters(hists, quantity, ltitle, oname, stop):
     hist = hists[quantity]
     func = hist.GetListOfFunctions()[0]
     func.SetTitle("Constant fit")
@@ -86,6 +86,7 @@ def test_cball_parameters(hists, quantity, ltitle, oname):
     func.SetLineColor(ROOT.kBlack)
     plot(
         [hist, func],
+        stop=stop,
         logy=False,
         ylimits=hist.ylimits,
         legend_pos=(0.58, 0.7, 0.68, 0.85),

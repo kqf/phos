@@ -19,7 +19,7 @@ def oname(particle):
     "#pi^{0}",
     "#eta"
 ])
-def test_spectrum(particle, data, oname, ltitle):
+def test_spectrum(particle, data, oname, ltitle, stop):
     options = Options(particle=particle)
     with open_loggs() as loggs:
         spectrum = Analysis(options).transform(data, loggs).spectrum
@@ -27,6 +27,7 @@ def test_spectrum(particle, data, oname, ltitle):
     spectrum.SetTitle("Data")
     plot(
         [spectrum],
+        stop=stop,
         ltitle=ltitle,
         oname=oname,
         more_logs=False,
