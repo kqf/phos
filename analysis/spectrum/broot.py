@@ -438,7 +438,7 @@ def hist2dict(hist):
 
 
 def systematic_deviation(histograms):
-    matrix = np.array([bins(h)[0] for h in histograms])
+    matrix = np.array([bins(h).contents for h in histograms])
 
     rms, mean = np.std(matrix, axis=0), np.mean(matrix, axis=0)
 
@@ -454,7 +454,7 @@ def systematic_deviation(histograms):
 
 
 def maximum_deviation(histograms, central_value=1.):
-    matrix = np.array([bins(h)[0] for h in histograms])
+    matrix = np.array([bins(h).contents for h in histograms])
     normalized = matrix / matrix.mean(axis=0)
     deviations = np.max(np.abs(normalized - 1), axis=0)
 
@@ -491,8 +491,8 @@ def empty_bins(hist, tolerance=1e-10):
 
 
 def diff(hist1, hist2, tol=1e-10):
-    bins1, errors1, centers = bins(hist1)
-    bins2, errors2, centers = bins(hist2)
+    bins1, errors1, centers, _ = bins(hist1)
+    bins2, errors2, centers, _ = bins(hist2)
 
     def kernel(x, y):
         return abs(x - y) < tol
@@ -552,7 +552,7 @@ def chi2(hist1, hist2, rrange=None):
 
     chi2 = [
         (b / err) ** 2
-        for b, err, center in zip(*bins(difference))
+        for b, err, center, _ in zip(*bins(difference))
         if within_range(center)
     ]
     chi2 = sum(chi2)
@@ -754,10 +754,11 @@ def shaded_region(title, lower, upper,
     return graph
 
 
+# TODO: Use multiple dispatch
 def shaded_region_hist(title, lower, upper,
                        fill_color=16, fill_style=1001):
-    y_upper, _, x_upper = bins(upper)
-    y_lower, _, x_lower = bins(lower)
+    y_upper, _, x_upper, _ = bins(upper)
+    y_lower, _, x_lower, _ = bins(lower)
     x_upper = x_upper[::-1]
     y_upper = y_upper[::-1]
     x = np.concatenate([x_lower, x_upper])
