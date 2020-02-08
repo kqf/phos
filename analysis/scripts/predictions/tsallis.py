@@ -92,8 +92,8 @@ def data():
 
 @pytest.fixture
 def tsallis_pars():
-    with open("config/predictions/tsallis-pion.json") as f:
-        data = json.load(f)
+    with open("config/predictions/tsallis.json") as f:
+        data = json.load(f)["#pi^{0}"]
 
     pars = {
         label: [v["A"], v["C"], v["n"], v["M"]]
