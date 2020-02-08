@@ -85,8 +85,8 @@ def hepdata(parameters):
 
 @pytest.fixture
 def data():
-    with open("config/predictions/hepdata-pion.json") as f:
-        data = json.load(f)
+    with open("config/predictions/hepdata.json") as f:
+        data = json.load(f)["#pi^{0}"]
     return data
 
 
