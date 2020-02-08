@@ -149,21 +149,3 @@ def test_xt_distribution(data):
     steps = [(l, xt()) for l in labels]
     with open_loggs("compare yields") as loggs:
         ComparePipeline(steps, plot=True).transform(links, loggs)
-
-
-@pytest.fixture
-def xt_scaling_pairs():
-    with open("config/predictions/same-binning.json") as f:
-        data = json.load(f)
-    return data
-
-
-@pytest.mark.skip("")
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_xt_scaling(xt_scaling_pairs, data):
-    for pair in xt_scaling_pairs:
-        with open_loggs() as loggs:
-            steps = [(l, xt(pair["edges"])) for l in pair["energies"]]
-            links = [data[l] for l in pair["energies"]]
-            ComparePipeline(steps, plot=True).transform(links, loggs)
