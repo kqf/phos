@@ -18,11 +18,11 @@ from spectrum.uncertainties.acceptance import acceptance_data
     "#pi^{0}",
     "#eta"
 ])
-def test_acceptance(particle):
+def test_acceptance(particle, stop):
     estimator = Acceptance(
         AcceptanceOptions(particle=particle),
-        plot=True)
+        plot=stop)
 
     with open_loggs() as loggs:
         uncertanity = estimator.transform(acceptance_data(particle), loggs)
-        Comparator().compare(uncertanity)
+        Comparator(stop=stop).compare(uncertanity)
