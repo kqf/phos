@@ -29,17 +29,17 @@ def nbins():
     # "#pi^{0}",
     "#eta",
 ])
-def test_nonlinearity_uncertainty(particle, nbins):
+def test_nonlinearity_uncertainty(particle, nbins, stop):
     prod = "single #pi^{0} nonlinearity scan"
     options = NonlinearityUncertaintyOptions(particle=particle, nbins=nbins)
     options.factor = 1.
 
     with open_loggs() as loggs:
-        uncert = NonlinearityUncertainty(options).transform(
+        uncert = NonlinearityUncertainty(options, plot=stop).transform(
             nonlinearity_scan_data(nbins, prod),
             loggs
         )
-        Comparator().compare(uncert)
+        Comparator(stop=stop).compare(uncert)
 
 
 @pytest.fixture

@@ -117,7 +117,7 @@ class GScale(TransformerBase):
             csize=(96, 128),
             ytitle=self.options.ytitle,
             yoffset=1.6,
-            oname="results/systematics/gescale/{}.pdf".format(
+            oname="images/systematics/gescale/{}.pdf".format(
                 br.spell(self.options.particle)),
             ltitle="{} #rightarrow #gamma #gamma".format(
                 self.options.particle

@@ -23,8 +23,8 @@ def data():
     "#pi^{0}",
     "#eta",
 ])
-def test_material_budget(particle, data):
+def test_material_budget(particle, data, stop):
     material = MaterialBudget(MaterialBudgetOptions(particle=particle))
     with open_loggs() as loggs:
         output = material.transform(data, loggs)
-        Comparator().compare(output)
+        Comparator(stop=stop).compare(output)
