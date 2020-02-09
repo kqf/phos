@@ -18,8 +18,8 @@ from spectrum.uncertainties.gscale import gscale_data
     "#pi^{0}",
     "#eta",
 ])
-def test_interface_composite(particle):
-    estimator = GScale(GScaleOptions(particle=particle), plot=True)
+def test_interface_composite(particle, stop):
+    estimator = GScale(GScaleOptions(particle=particle), plot=stop)
     with open_loggs() as loggs:
         uncertanity = estimator.transform(gscale_data(particle), loggs)
-    Comparator().compare(uncertanity)
+    Comparator(stop=stop).compare(uncertanity)

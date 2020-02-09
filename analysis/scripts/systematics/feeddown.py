@@ -16,9 +16,9 @@ def data():
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_feeddown(data):
+def test_feeddown(data, stop):
     tof = FeedDown(FeedDownOptions(particle="#pi^{0}"))
     with open_loggs() as loggs:
         output = tof.transform(data, loggs)
-        Comparator().compare(output)
+        Comparator(stop=stop).compare(output)
     assert len(output) > 0

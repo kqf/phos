@@ -36,6 +36,8 @@ def gscale_data(particle):
 
 
 class GScaleOptions(object):
+    ytitle = "#it{f} (#it{p}_{T} #pm #delta #it{p}_{T})/#it{f} (#it{p}_{T})"
+
     def __init__(self, particle="#pi^{0}"):
         self.cyield = CompositeCorrectedYieldOptions(particle=particle)
         self.ep_ratio = DataMCEpRatioOptions()
@@ -101,16 +103,19 @@ class GScale(TransformerBase):
         lower = self.ratiofunc(fitf, "low", ep_ratio, 38)
         upper = self.ratiofunc(fitf, "up", -ep_ratio, 47)
 
-        upper.SetTitle("f(#it{p}_{T} + #delta #it{p}_{T})/f(#it{p}_{T})")
+        # TODO: move all options constants to Options
+        f, pt = "#it{f}", "#it{p}_{T}"
+        upper.SetTitle("{f}({pt} + #delta {pt})/{f}({pt})".format(f=f, pt=pt))
         upper.SetLineColor(ROOT.kBlue + 1)
-        lower.SetTitle("f(#it{p}_{T} - #delta #it{p}_{T})/f(#it{p}_{T})")
+        lower.SetTitle("{f}({pt} - #delta {pt})/{f}({pt})".format(f=f, pt=pt))
         lower.SetLineColor(ROOT.kRed + 1)
         lower.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
         plot(
             [lower, upper],
+            stop=self.plot,
             logy=False,
             csize=(96, 128),
-            ytitle="f(#it{p}_{T} #pm #delta #it{p}_{T})/f(#it{p}_{T})",
+            ytitle=self.options.ytitle,
             yoffset=1.6,
             oname="results/systematics/gescale/{}.pdf".format(
                 br.spell(self.options.particle)),
