@@ -151,7 +151,7 @@ class TotalUncertainty(TransformerBase):
             xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.2, 0.7, 0.4, 0.85),
-            oname="results/systematics/total/{}.pdf".format(
+            oname="images/systematics/total/{}.pdf".format(
                 br.spell(self.options.particle)
             ),
             more_logs=False,

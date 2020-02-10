@@ -46,7 +46,7 @@ def tof_ratio(histograms, loggs, fitf, stop):
         logx=True,
         xtitle="#it{p}_{T} (GeV/#it{c})",
         csize=(96, 128),
-        oname="results/systematics/tof/yields.pdf",
+        oname="images/systematics/tof/yields.pdf",
         more_logs=False,
         yoffset=1.6,
         ltitle="#pi^{0} #rightarrow #gamma #gamma",
@@ -71,7 +71,7 @@ def tof_ratio(histograms, loggs, fitf, stop):
         xlimits=(0.8, 9.6),
         ylimits=(0, 2.5),
         csize=(96, 128),
-        oname="results/systematics/tof/ratios.pdf",
+        oname="images/systematics/tof/ratios.pdf",
         more_logs=False,
         ltitle="#pi^{0} #rightarrow #gamma #gamma",
     )

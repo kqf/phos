@@ -127,7 +127,7 @@ class YieldExtractioin(TransformerBase):
             xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.53, 0.6, 0.88, 0.88),
-            oname="results/systematics/yields/spectra-{}.pdf".format(
+            oname="images/systematics/yields/spectra-{}.pdf".format(
                 br.spell(self.options.particle)),
             colors='coolwarm',
             more_logs=False,
@@ -143,7 +143,7 @@ class YieldExtractioin(TransformerBase):
             xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
             legend_pos=(0.53, 0.6, 0.88, 0.88),
-            oname="results/systematics/yields/ratios-{}.pdf".format(
+            oname="images/systematics/yields/ratios-{}.pdf".format(
                 br.spell(self.options.particle)),
             stop=self.plot,
             colors='coolwarm',
