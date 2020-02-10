@@ -19,7 +19,10 @@ def dataset(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_calculates_total_uncertainty(particle, dataset):
+def test_calculates_total_uncertainty(particle, dataset, stop):
     with open_loggs() as loggs:
-        tot = TotalUncertainty(TotalUncertaintyOptions(particle=particle))
+        tot = TotalUncertainty(
+            TotalUncertaintyOptions(particle=particle),
+            plot=stop
+        )
         Comparator().compare(tot.transform(dataset, loggs))

@@ -126,11 +126,12 @@ class TotalUncertainty(TransformerBase):
     def __init__(self, options, plot=False):
         particle = options.particle
         self.options = options
+        self.steps = options.steps
+        self.plot = plot
         self.pipeline = Pipeline([
             ("errors", FunctionTransformer(errors, True, particle=particle)),
             ("sum", FunctionTransformer(self.sum))
         ])
-        self.steps = options.steps
 
     def sum(self, data, loggs):
         uncertainties = np.array([br.bins(h).contents for h in data])
@@ -144,6 +145,7 @@ class TotalUncertainty(TransformerBase):
 
         hplot(
             list(data) + [total_hist],
+            stop=self.plot,
             logx=False,
             logy=False,
             xtitle="#it{p}_{T} (GeV/#it{c})",

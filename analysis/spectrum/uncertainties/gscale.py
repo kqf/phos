@@ -70,7 +70,7 @@ class TsallisFitter(TransformerBase):
 
 class GScale(TransformerBase):
 
-    def __init__(self, options, plot=True):
+    def __init__(self, options, plot=False):
         super(GScale, self).__init__(plot)
         self.options = options
         # This should be studied on corrected yield

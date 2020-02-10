@@ -106,7 +106,7 @@ def visualise(effs, loggs, stop=False):
 
 class NonlinearityUncertainty(TransformerBase):
     def __init__(self, options=NonlinearityUncertaintyOptions(),
-                 plot=True):
+                 plot=False):
         super(NonlinearityUncertainty, self).__init__()
         self.options = options
         self.pipeline = Pipeline([
