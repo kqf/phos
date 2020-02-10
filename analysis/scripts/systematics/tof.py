@@ -23,8 +23,8 @@ def data():
     "#pi^{0}",
     # "#eta"
 ])
-def test_tof(data, particle):
-    tof = TofUncertainty(TofUncertaintyOptions(particle=particle), plot=True)
+def test_tof(data, particle, stop):
+    tof = TofUncertainty(TofUncertaintyOptions(particle=particle), plot=stop)
     with open_loggs() as loggs:
         output = tof.transform(data, loggs)
         # Comparator().compare(output)

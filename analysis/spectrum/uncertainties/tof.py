@@ -1,4 +1,5 @@
 import ROOT
+from functools import partial
 
 import spectrum.broot as br
 from spectrum.analysis import Analysis
@@ -30,7 +31,7 @@ def tof_data_stable():
     )
 
 
-def tof_ratio(histograms, loggs, fitf):
+def tof_ratio(histograms, loggs, fitf, stop):
     for i in br.hrange(histograms[1]):
         if histograms[1].GetBinContent(i) < 0:
             histograms[1].SetBinContent(i, abs(histograms[1].GetBinContent(i)))
@@ -40,6 +41,7 @@ def tof_ratio(histograms, loggs, fitf):
 
     plot(
         histograms,
+        stop=stop,
         logy=True,
         logx=True,
         xtitle="#it{p}_{T} (GeV/#it{c})",
@@ -61,6 +63,7 @@ def tof_ratio(histograms, loggs, fitf):
 
     plot(
         [ratio, fitf],
+        stop=stop,
         logy=False,
         logx=True,
         ytitle="R_{TOF}",
@@ -132,7 +135,7 @@ class TofUncertainty(TransformerBase):
         # labels = list(zip(*estimators))[0]
         ratio = ReducePipeline(
             ParallelPipeline(estimators),
-            lambda x, loggs: tof_ratio(x, loggs, fitf=options.fitf)
+            partial(tof_ratio, fitf=options.fitf, stop=plot)
         )
 
         self.pipeline = Pipeline([
