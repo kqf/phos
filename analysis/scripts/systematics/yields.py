@@ -20,14 +20,14 @@ from spectrum.uncertainties.yields import yield_extraction_data
     "#pi^{0}",
     "#eta",
 ])
-def test_yield_extraction_uncertanity_pion(particle):
+def test_yield_extraction_uncertanity_pion(particle, stop):
     estimator = YieldExtractioin(
         YieldExtractioinUncertanityOptions(particle=particle),
-        plot=True
+        plot=stop
     )
     with open_loggs("cyield uncertainty", shallow=True) as loggs:
         output = estimator.transform(
             yield_extraction_data(particle=particle),
             loggs
         )
-    Comparator().compare(output)
+    Comparator(stop=stop).compare(output)
