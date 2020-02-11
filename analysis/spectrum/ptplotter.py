@@ -75,8 +75,8 @@ class MassesPlot(object):
         sbins, serrors = bins_errors(signal, *limits)
 
         yaxis.SetRangeUser(
-            min(sbins) - 2 * max(serrors),
-            max(mbins) + 3 * max(merrors)
+            min(sbins) - 1 * max(serrors),
+            max(mbins) + 4 * max(merrors)
         )
 
     @lru_cache(maxsize=1024)
