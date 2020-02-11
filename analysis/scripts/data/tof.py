@@ -20,7 +20,7 @@ def fitfunc():
     tof_eff.SetTitle("Fit")
     tof_eff.SetLineColor(ROOT.kBlack)
     tof_eff.SetLineStyle(9)
-    tof_eff.SetParNames(*["A", "B", "C", "D"])
+    tof_eff.SetParNames(*["A", "B", "C", "D", "E"])
 
     tof_eff.SetParameter(0, -1.02802e+00)
     tof_eff.SetParameter(1, 8.51857e+00)
