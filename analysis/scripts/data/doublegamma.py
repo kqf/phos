@@ -8,7 +8,6 @@ from spectrum.analysis import Analysis
 from spectrum.ptplotter import MassesPlot
 
 
-@pytest.fixture
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
@@ -19,6 +18,8 @@ def test_simple(particle, data, oname, stop):
     analysis = Analysis(Options(particle=particle))
     with open_loggs() as loggs:
         with plt.canvas(size=(96, 128), stop=stop, oname=oname) as figure:
+
+
             ROOT.gStyle.SetStatY(0.88)
             ROOT.gStyle.SetStatX(0.92)
             ROOT.gStyle.SetStatW(0.15)
@@ -38,7 +39,8 @@ def test_simple(particle, data, oname, stop):
             ROOT.gStyle.SetTitleSize(0.04, "X")
             ROOT.gStyle.SetTitleSize(0.04, "Y")
             ROOT.gStyle.SetTitleSize(0.04, "Z")
-
+            ROOT.gStyle.SetOptStat(0)
+            ROOT.gStyle.SetOptFit(1)
             analysis.transform(data, loggs=loggs)
             figure.SetLeftMargin(0.15)
             figure.SetRightMargin(0.05)
@@ -53,3 +55,5 @@ def test_simple(particle, data, oname, stop):
                 fit_range=data["fit_range"],
                 integration_region=data["integration_region"],
             )
+            figure.SetGridx(False)
+            figure.SetGridy(False)
