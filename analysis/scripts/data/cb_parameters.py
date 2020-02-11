@@ -72,7 +72,7 @@ def hists(particle, data):
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta",
+    # "#eta",
 ])
 @pytest.mark.parametrize("quantity, target", [
     ("cball_n", "n"),
