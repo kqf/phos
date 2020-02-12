@@ -32,6 +32,6 @@ def test_spmc_efficiency(particle, efficiency_data, logname, stop, oname):
         logx=False,
         oname=oname,
         legend_pos=None,
-        yoffset=2
+        yoffset=2.2
     )
     validate(br.hist2dict(efficiency), "spmc_efficiency/" + particle)

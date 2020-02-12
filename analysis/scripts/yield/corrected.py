@@ -9,7 +9,7 @@ from spectrum.plotter import plot
 
 @pytest.fixture
 def oname(particle):
-    return "results/analysis/corrected_{}.pdf".format(br.spell(particle))
+    return "images/analysis/corrected_{}.pdf".format(br.spell(particle))
 
 
 @pytest.mark.thesis
