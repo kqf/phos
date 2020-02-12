@@ -82,7 +82,7 @@ def double_ratio(histograms, loggs, fitf, labels, stop):
         logx=False,
         xtitle="#it{p}_{T} (GeV/#it{c})",
         csize=(96, 128),
-        oname="results/systematics/gescale/ep.pdf",
+        oname="images/systematics/gescale/ep.pdf",
         more_logs=False,
         yoffset=1.6,
     )
@@ -105,7 +105,7 @@ def double_ratio(histograms, loggs, fitf, labels, stop):
         ytitle="(#it{E}/#it{p})_{Data} / (#it{E}/#it{p})_{MC}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
         csize=(96, 128),
-        oname="results/systematics/gescale/double-ep.pdf",
+        oname="images/systematics/gescale/double-ep.pdf",
         more_logs=False,
         yoffset=1.6,
     )
