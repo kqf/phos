@@ -191,17 +191,21 @@ def _draw_graph(i, graph, colors, option, ngraphs):
     return graph
 
 
+def color_marker(i, hist, colors, nhists):
+    if hist.GetLineColor() == ROOT.kBlack:
+        return ROOT.kBlack, 20
+    if colors == 'auto':
+        return br.auto_color_marker(i)
+    palette = sns.color_palette("coolwarm", nhists)
+    color, _ = define_color(*palette[i])
+    return color, 20
+
+
 @lru_cache(maxsize=1024)
 def _draw_histogram(i, hist, colors, nhists=1):
-    if colors == 'auto':
-        color, marker = br.auto_color_marker(i)
-        hist.SetLineColor(color)
-        hist.SetMarkerColor(color)
-    if colors == 'coolwarm':
-        palette = sns.color_palette("coolwarm", nhists)
-        color, _ = define_color(*palette[i])
-        hist.SetLineColor(color)
-        hist.SetMarkerColor(color)
+    color, marker = color_marker(i, hist, colors, nhists)
+    hist.SetLineColor(color)
+    hist.SetMarkerColor(color)
     hist.SetFillStyle(0)
     hist.SetMarkerStyle(20)
     hist.SetMarkerSize(1)
