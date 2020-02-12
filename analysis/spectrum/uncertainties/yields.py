@@ -81,12 +81,12 @@ class YieldExtractioinUncertanityOptions(object):
         "#pi^{0}": {
             "low": [0.06, 0.22],
             "mid": [0.04, 0.20],
-            "wide": [0.08, 0.24]
+            "wide": [0.08, 0.24],
         },
         "#eta": {
             "low": [0.35, 0.65],
             "mid": [0.4, 0.7],
-            "wide": [0.45, 0.78]
+            "wide": [0.45, 0.78],
         },
     }
 
@@ -100,6 +100,7 @@ class YieldExtractioinUncertanityOptions(object):
             "CrystalBall": "config/data/cball.json",
             "Gaus": "config/data/gaus.json",
         }
+        self.dummy = "nodummy"
         self.nsigmas = [
             2,
             3
@@ -126,7 +127,7 @@ class YieldExtractioin(TransformerBase):
             stop=self.plot,
             xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
-            legend_pos=(0.53, 0.6, 0.88, 0.88),
+            legend_pos=(0.58, 0.6, 0.95, 0.88),
             oname="images/systematics/yields/spectra-{}.pdf".format(
                 br.spell(self.options.particle)),
             colors='coolwarm',
@@ -142,7 +143,7 @@ class YieldExtractioin(TransformerBase):
             logy=False,
             xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
-            legend_pos=(0.53, 0.6, 0.88, 0.88),
+            legend_pos=(0.58, 0.6, 0.95, 0.88),
             oname="images/systematics/yields/ratios-{}.pdf".format(
                 br.spell(self.options.particle)),
             stop=self.plot,

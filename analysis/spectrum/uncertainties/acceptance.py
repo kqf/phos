@@ -101,6 +101,7 @@ class Acceptance(TransformerBase):
             logy=False,
             xtitle="#it{p}_{T} (GeV/#it{c})",
             ytitle="{} / average".format(spectrums[0].GetYaxis().GetTitle()),
+            ylimits=(0.85, 1.2),
             csize=(96, 128),
             legend_pos=(0.5, 0.7, 0.7, 0.85),
             oname="images/systematics/acceptance/ratios.pdf",
