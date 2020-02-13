@@ -94,6 +94,17 @@ def style():
     # old_style.cd()
 
 
+@singledispatch
+def lentry(entry, legend):
+    options = "f" if entry.GetFillStyle() > 1000 else "pl"
+    legend.AddEntry(entry, entry.GetTitle(), options)
+
+
+@lentry.register(br.PhysicsHistogram)
+def _(entry, legend):
+    legend.AddEntry(entry.graphs[-1], entry.GetTitle(), "pF")
+
+
 def legend(data, coordinates, ltitle=None, ltext_size=0.035):
     legend = ROOT.TLegend(*coordinates)
     legend.SetBorderSize(0)
@@ -102,12 +113,7 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
         legend.AddEntry(0, ltitle, "")
 
     for entry in data:
-        options = "f" if entry.GetFillStyle() > 1000 else "pl"
-        try:
-            legend.AddEntry(entry, entry.GetTitle(), options)
-        except TypeError:
-            graph = entry.graphs[-1]
-            legend.AddEntry(graph, entry.GetTitle(), "pF")
+        lentry(entry, legend)
 
     legend.SetFillColor(0)
     legend.SetTextColor(1)
