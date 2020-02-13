@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 
+
 import six
 import numpy as np
 import ROOT
@@ -156,9 +157,9 @@ def ensure_options(ngraphs, options):
 
 
 @lru_cache(maxsize=1024)
-def _draw_graph(i, graph, colors, option, ngraphs):
+def _draw_graph(graph, colors, option, i, ngraphs):
     graph = graph.Clone()
-    color, marker = color_marker(i, graph, colors, ngraphs)
+    color, marker = color_marker(graph, colors, i, ngraphs)
     graph.SetMarkerStyle(marker)
     graph.SetMarkerSize(1)
     graph.SetLineColor(color)
@@ -181,7 +182,7 @@ def _draw_graph(i, graph, colors, option, ngraphs):
     return graph
 
 
-def color_marker(i, hist, colors, nhists):
+def color_marker(hist, colors, i, nhists):
     if hist.GetLineColor() == ROOT.kBlack:
         return ROOT.kBlack, 20
     if colors == 'auto':
@@ -193,7 +194,7 @@ def color_marker(i, hist, colors, nhists):
 
 @lru_cache(maxsize=1024)
 def _draw_histogram(i, hist, colors, nhists=1):
-    color, marker = color_marker(i, hist, colors, nhists)
+    color, marker = color_marker(hist, colors, i, nhists)
     hist.SetLineColor(color)
     hist.SetMarkerColor(color)
     hist.SetFillStyle(0)
@@ -258,7 +259,7 @@ def plot(
         plotted = []
         for i, (graph, option) in enumerate(zip(graphed, options)):
             plotted.append(
-                _draw_graph(i, graph, colors, option, len(graphed))
+                _draw_graph(graph, colors, option, i, len(graphed))
             )
 
         for i, func in enumerate(functions):
@@ -307,7 +308,7 @@ def hplot(
         plotted = []
         for i, hist in enumerate(data):
             plotted.append(
-                _draw_histogram(i, hist, colors, len(data))
+                _draw_histogram(hist, colors, i, len(data))
             )
 
         if legend_pos is not None:
