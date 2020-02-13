@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from functools import singledispatch
 
 
 import six
@@ -182,14 +183,20 @@ def _draw_graph(graph, colors, option, i, ngraphs):
     return graph
 
 
+@singledispatch
 def color_marker(hist, colors, i, nhists):
-    if hist.GetLineColor() == ROOT.kBlack:
-        return ROOT.kBlack, 20
     if colors == 'auto':
         return br.auto_color_marker(i)
     palette = sns.color_palette("coolwarm", nhists)
     color, _ = define_color(*palette[i])
     return color, 20
+
+
+@color_marker.register(ROOT.TH1)
+def _(hist, colors, i, nhists):
+    if hist.GetLineColor() == ROOT.kBlack:
+        return ROOT.kBlack, 20
+    return br.auto_color_marker(i)
 
 
 @lru_cache(maxsize=1024)
