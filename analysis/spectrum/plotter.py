@@ -158,23 +158,13 @@ def ensure_options(ngraphs, options):
 @lru_cache(maxsize=1024)
 def _draw_graph(i, graph, colors, option, ngraphs):
     graph = graph.Clone()
-
-    if colors == 'auto':
-        color, marker = br.auto_color_marker(i)
-        graph.SetMarkerStyle(marker)
-        graph.SetMarkerSize(1)
-        graph.SetLineColor(color)
-        graph.SetFillColor(color)
-        graph.SetFillColorAlpha(color, 0.50)
-        graph.SetMarkerColor(color)
-    if colors == 'coolwarm':
-        palette = sns.color_palette("coolwarm", ngraphs)
-        color, _ = define_color(*palette[i])
-        graph.SetMarkerStyle(20)
-        graph.SetMarkerSize(1)
-        graph.SetLineColor(color)
-        graph.SetFillColor(color)
-        graph.SetMarkerColor(color)
+    color, marker = color_marker(i, graph, colors, ngraphs)
+    graph.SetMarkerStyle(marker)
+    graph.SetMarkerSize(1)
+    graph.SetLineColor(color)
+    graph.SetFillColor(color)
+    graph.SetFillColorAlpha(color, 0.50)
+    graph.SetMarkerColor(color)
 
     if "e5" in option.lower():
         graph.SetFillColor(ROOT.kWhite)

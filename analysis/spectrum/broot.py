@@ -904,6 +904,9 @@ class PhysicsHistogram:
     def GetTitle(self):
         return self.tot.GetTitle()
 
+    def GetLineColor(self):
+        return self.syst.GetLineColor()
+
     def Draw(self, option):
         for graph in self.graphs:
             graph.SetFillColorAlpha(0, 0)
