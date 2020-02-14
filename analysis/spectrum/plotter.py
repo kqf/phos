@@ -105,7 +105,10 @@ def _(entry, legend):
     legend.AddEntry(entry.graphs[-1], entry.GetTitle(), "pF")
 
 
+@lru_cache(maxsize=1024)
 def legend(data, coordinates, ltitle=None, ltext_size=0.035):
+    if coordinates is None:
+        return
     legend = ROOT.TLegend(*coordinates)
     legend.SetBorderSize(0)
 
@@ -118,6 +121,7 @@ def legend(data, coordinates, ltitle=None, ltext_size=0.035):
     legend.SetFillColor(0)
     legend.SetTextColor(1)
     legend.SetTextSize(ltext_size)
+    legend.Draw("same")
     return legend
 
 
@@ -279,9 +283,7 @@ def plot(
             plotted.append(func)
             func.Draw("same " + func.GetDrawOption())
 
-        if legend_pos is not None:
-            ll = legend(plotted, legend_pos, ltitle, ltext_size)
-            ll.Draw("same")
+        legend(tuple(plotted), legend_pos, ltitle, ltext_size)
 
 
 def hplot(
@@ -324,6 +326,4 @@ def hplot(
                 _draw_histogram(hist, colors, option, i, len(data))
             )
 
-        if legend_pos is not None:
-            ll = legend(plotted, legend_pos, ltitle, ltext_size)
-            ll.Draw("same")
+        legend(tuple(plotted), legend_pos, ltitle, ltext_size)
