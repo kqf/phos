@@ -167,8 +167,9 @@ def ensure_options(ngraphs, options):
     return options
 
 
+@singledispatch
 @lru_cache(maxsize=1024)
-def _draw_graph(graph, colors, option, i, ngraphs):
+def draw(graph, colors, option, i, ngraphs):
     graph = graph.Clone()
     color, marker = color_marker(graph, colors, i, ngraphs)
     graph.SetMarkerStyle(marker)
@@ -193,6 +194,26 @@ def _draw_graph(graph, colors, option, i, ngraphs):
     return graph
 
 
+@draw.register(ROOT.TH1)
+@lru_cache(maxsize=1024)
+def _(hist, colors, option, i, nhists=1):
+    color, marker = color_marker(hist, colors, i, nhists)
+    hist.SetLineColor(color)
+    hist.SetMarkerColor(color)
+    hist.SetFillStyle(0)
+    hist.SetMarkerStyle(20)
+    hist.SetMarkerSize(1)
+    hist.Draw("same hist")
+    return hist
+
+
+@draw.register(ROOT.TF1)
+@lru_cache(maxsize=1024)
+def _(func, colors, option, i, nhists=1):
+    func.Draw("same,{},{}".format(func.GetDrawOption(), option))
+    return func
+
+
 @singledispatch
 def color_marker(hist, colors, i, nhists):
     if colors == 'auto':
@@ -207,18 +228,6 @@ def _(hist, colors, i, nhists):
     if hist.GetLineColor() == ROOT.kBlack:
         return ROOT.kBlack, 20
     return br.auto_color_marker(i)
-
-
-@lru_cache(maxsize=1024)
-def _draw_histogram(hist, colors, option, i, nhists=1):
-    color, marker = color_marker(hist, colors, i, nhists)
-    hist.SetLineColor(color)
-    hist.SetMarkerColor(color)
-    hist.SetFillStyle(0)
-    hist.SetMarkerStyle(20)
-    hist.SetMarkerSize(1)
-    hist.Draw("same hist")
-    return hist
 
 
 def plot(
@@ -275,9 +284,7 @@ def plot(
         options = ensure_options(len(graphed), options)
         plotted = []
         for i, (graph, option) in enumerate(zip(graphed, options)):
-            plotted.append(
-                _draw_graph(graph, colors, option, i, len(graphed))
-            )
+            plotted.append(draw(graph, colors, option, i, len(graphed)))
 
         for i, func in enumerate(functions):
             plotted.append(func)
@@ -322,8 +329,5 @@ def hplot(
         )
         plotted, option = [], ""
         for i, hist in enumerate(data):
-            plotted.append(
-                _draw_histogram(hist, colors, option, i, len(data))
-            )
-
+            plotted.append(draw(hist, colors, option, i, len(data)))
         legend(tuple(plotted), legend_pos, ltitle, ltext_size)
