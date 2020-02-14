@@ -6,6 +6,7 @@ import tqdm
 import numpy as np
 
 from collections import namedtuple
+from functools import singledispatch
 from multimethod import multimethod
 
 from contextlib import contextmanager
@@ -652,6 +653,16 @@ def same_binning(hist1, hist2):
 
 def unbufer(iterable):
     return [x for x in iterable]
+
+
+@singledispatch
+def drawable(graph):
+    return graph
+
+
+@drawable.register(ROOT.TH1)
+def _(hist):
+    return hist2graph(hist)
 
 
 def graph(title, x, y, dx=None, dy=None):

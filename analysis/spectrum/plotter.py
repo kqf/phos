@@ -210,7 +210,7 @@ def _(hist, colors, option, i, nhists=1):
 @draw.register(ROOT.TF1)
 @lru_cache(maxsize=1024)
 def _(func, colors, option, i, nhists=1):
-    func.Draw("same,{},{}".format(func.GetDrawOption(), option))
+    func.Draw("same,l,{}".format(func.GetDrawOption()))
     return func
 
 
@@ -261,7 +261,7 @@ def plot(
         list(map(br.graph2hist, graphs)) +
         [hist for measurement in measurements for hist in measurement.all]
     )
-    graphed = measurements + graphs + list(map(br.hist2graph, hists))
+    drawables = tuple(map(br.drawable, data))
     with style(), canvas(size=csize, stop=stop, oname=oname) as figure:
         figure.SetTopMargin(tmargin)
         figure.SetBottomMargin(bmargin)
@@ -281,15 +281,10 @@ def plot(
             yoffset,
             more_logs
         )
-        options = ensure_options(len(graphed), options)
+        options = ensure_options(len(drawables), options)
         plotted = []
-        for i, (graph, option) in enumerate(zip(graphed, options)):
-            plotted.append(draw(graph, colors, option, i, len(graphed)))
-
-        for i, func in enumerate(functions):
-            plotted.append(func)
-            func.Draw("same " + func.GetDrawOption())
-
+        for i, (graph, option) in enumerate(zip(drawables, options)):
+            plotted.append(draw(graph, colors, option, i, len(drawables)))
         legend(tuple(plotted), legend_pos, ltitle, ltext_size)
 
 
