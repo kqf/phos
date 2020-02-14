@@ -59,16 +59,3 @@ def high_pt():
     return DataVault().input(
         "debug efficiency", "high", n_events=1e6,
         histname="hGenPi0Pt_clone")
-
-
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_different_inputs(data, high_pt):
-    production = SingleHistReader().transform(data)
-    production.label = "data"
-    production.logy = True
-    br.scalew(production)
-
-    nominal = SingleHistReader().transform(high_pt)
-    nominal.label = "nominal"
-    Comparator().compare(*br.rebin_as(production, nominal))

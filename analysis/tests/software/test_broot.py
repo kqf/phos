@@ -311,32 +311,6 @@ def test_rebins_proba(stop, edges):
     assert ratio.GetEntries()
 
 
-def test_rebins(stop):
-    hist1 = br.BH(
-            ROOT.TH1F,
-        "refhistRebin1", "Testing rebins", 200, -10, 10,
-        label="test ratio", logy=True, logx=False)
-
-    hist2 = br.BH(
-            ROOT.TH1F,
-        "refhistRebin2", "Testing rebins", 100, -10, 10,
-        label="test ratio", logy=True, logx=False)
-
-    hist1.FillRandom("gaus")
-    hist2.FillRandom("gaus")
-
-    rebinned, hist2 = br.rebin_as(hist1, hist2)
-
-    assert hist1.GetNbinsX() != hist2.GetNbinsX()
-
-    assert rebinned.GetNbinsX() == hist2.GetNbinsX()
-
-    # Just check if ratio gives warnings
-    ratio = br.ratio(rebinned, hist2)
-    assert br.same(rebinned, hist1)
-    assert ratio.GetEntries()
-
-
 def test_sum(stop):
     hists = [br.BH(
         ROOT.TH1F,

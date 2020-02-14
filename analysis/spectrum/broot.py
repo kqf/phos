@@ -318,22 +318,6 @@ def set_nevents(hist, nevents, norm=False):
         hist.Scale(1. / nevents)
 
 
-def rebin_as(hist1, hist2):
-    if type(hist2) == ROOT.TF1:
-        return hist1, hist2
-
-    if hist1.GetNbinsX() == hist2.GetNbinsY():
-        return hist1, hist2
-
-    def nbins(x):
-        return x.GetNbinsX()
-
-    a, b = (hist1, hist2) if nbins(
-        hist1) > nbins(hist2) else (hist2, hist1)
-    rebinned = rebin_proba(a, edges(b))
-    return (rebinned, b) if a == hist1 else (b, rebinned)
-
-
 def rebin_proba(hist, edges, name="_rebinned"):
     edges = array.array("d", edges)
     rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
