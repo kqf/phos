@@ -206,7 +206,7 @@ def _(hist, colors, i, nhists):
 
 
 @lru_cache(maxsize=1024)
-def _draw_histogram(i, hist, colors, nhists=1):
+def _draw_histogram(hist, colors, option, i, nhists=1):
     color, marker = color_marker(hist, colors, i, nhists)
     hist.SetLineColor(color)
     hist.SetMarkerColor(color)
@@ -318,10 +318,10 @@ def hplot(
             yoffset,
             more_logs
         )
-        plotted = []
+        plotted, option = [], ""
         for i, hist in enumerate(data):
             plotted.append(
-                _draw_histogram(hist, colors, i, len(data))
+                _draw_histogram(hist, colors, option, i, len(data))
             )
 
         if legend_pos is not None:
