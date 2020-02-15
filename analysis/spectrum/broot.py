@@ -908,18 +908,6 @@ class PhysicsHistogram:
         self.graphs[1].Draw("{},pez".format(option))
         self.graphs[2].Draw("{},pe5z".format(option))
 
-    def Clone(self):
-        return self
-
-    def GetN(self):
-        return 0
-
-    def SetPointError(self, *args):
-        pass
-
-    def GetErrorY(self):
-        pass
-
     def SetMarkerStyle(self, style):
         for graph in self.graphs:
             graph.SetMarkerStyle(style)
@@ -935,15 +923,6 @@ class PhysicsHistogram:
     def SetLineColor(self, color):
         for graph in self.graphs:
             graph.SetLineColor(color)
-
-    def SetFillColor(self, color):
-        pass
-
-    def SetFillColorAlpha(self, color, *args):
-        pass
-
-    def GetFillStyle(self):
-        return 1000
 
     def Fit(self, *args):
         self.tot.Fit(*args)

@@ -179,17 +179,26 @@ def draw(graph, colors, option, i, ngraphs):
     graph.SetFillColorAlpha(color, 0.50)
     graph.SetMarkerColor(color)
 
-    if "e5" in option.lower():
-        graph.SetFillColor(ROOT.kWhite)
-
     # Remove x-errors for tgraph styled plots
-    if "e5" not in option.lower() and "q" not in option.lower():
+    if "q" not in option.lower():
         br.reset_graph_errors(graph)
 
     if 'lx' in option:
         graph.SetMarkerStyle(0)
         graph.SetLineWidth(4)
 
+    graph.Draw(option)
+    return graph
+
+
+@draw.register(br.PhysicsHistogram)
+@lru_cache(maxsize=1024)
+def _(graph, colors, option, i, ngraphs):
+    color, marker = color_marker(graph, colors, i, ngraphs)
+    graph.SetMarkerSize(1)
+    graph.SetMarkerStyle(marker)
+    graph.SetMarkerColor(color)
+    graph.SetLineColor(color)
     graph.Draw(option)
     return graph
 
