@@ -224,8 +224,7 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
     fitf.SetLineStyle(9)
     fitf.SetTitle("const = {:.3f} #pm {:.3f}".format(*combined_n))
     plot(
-        [fitf] +
-        n_factors,
+        n_factors + [fitf],
         logx=False,
         logy=False,
         xlimits=(0.0001, 0.011),

@@ -38,6 +38,6 @@ def test_ratio(pythia6_eta_pion_ratio, eta_pion_ratio_fitf, coname):
         yoffset=1.,
         legend_pos=(0.65, 0.7, 0.8, 0.88),
         more_logs=True,
-        options=["p", "lx"],
+        options=["p", "lx", "l"],
         oname=coname.format(""),
     )
