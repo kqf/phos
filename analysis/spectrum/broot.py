@@ -731,40 +731,40 @@ def print_fit_results(fitf):
         print("{} = {:.3f}".format(title, val))
 
 
-def shaded_region(title, lower, upper,
-                  fill_color=16, fill_style=1001):
+@multimethod
+def shaded_region(title, xedges, yedges, fill_color=16, fill_style=1001):
+    x = np.concatenate(xedges)
+    y = np.concatenate(yedges)
+    graph = ROOT.TGraphErrors(len(x), x, y)
+    graph.SetTitle(title)
+    graph.SetFillStyle(fill_style)
+    graph.SetFillColor(fill_color)
+    graph.SetFillColorAlpha(fill_color, 0.36)
+    # Always plot it with the with the "F" option!
+    return graph
+
+
+@shaded_region.register(str, ROOT.TF1, ROOT.TF1)
+def _(title, lower, upper, fill_color=16, fill_style=1001):
     x_lower = np.linspace(lower.GetXmin(), lower.GetXmax(), lower.GetNpx())
     y_lower = np.array(list(map(lower.Eval, x_lower)))
     x_upper = np.linspace(upper.GetXmin(), upper.GetXmax(), upper.GetNpx())
     x_upper = x_upper[::-1]
     y_upper = np.array(list(map(upper.Eval, x_upper)))
-    x = np.concatenate([x_lower, x_upper])
-    y = np.concatenate([y_lower, y_upper])
-    graph = ROOT.TGraphErrors(len(x), x, y)
-    graph.SetTitle(title)
-    graph.SetFillStyle(fill_style)
-    graph.SetFillColor(fill_color)
-    graph.SetFillColorAlpha(fill_color, 0.36)
-    # Always plot it with the with the "F" option!
-    return graph
+    xedges = [x_lower, x_upper]
+    yedges = [y_lower, y_upper]
+    return shaded_region(title, xedges, yedges, fill_color, fill_style)
 
 
-# TODO: Use multiple dispatch
-def shaded_region_hist(title, lower, upper,
-                       fill_color=16, fill_style=1001):
+@shaded_region.register(str, ROOT.TH1, ROOT.TH1)
+def _(title, lower, upper, fill_color=16, fill_style=1001):
     y_upper, _, x_upper, _ = bins(upper)
     y_lower, _, x_lower, _ = bins(lower)
     x_upper = x_upper[::-1]
     y_upper = y_upper[::-1]
-    x = np.concatenate([x_lower, x_upper])
-    y = np.concatenate([y_lower, y_upper])
-    graph = ROOT.TGraphErrors(len(x), x, y)
-    graph.SetTitle(title)
-    graph.SetFillStyle(fill_style)
-    graph.SetFillColor(fill_color)
-    graph.SetFillColorAlpha(fill_color, 0.36)
-    # Always plot it with the with the "F" option!
-    return graph
+    xedges = [x_lower, x_upper]
+    yedges = [y_lower, y_upper]
+    return shaded_region(title, xedges, yedges, fill_color, fill_style)
 
 
 def auto_color_marker(index=0):

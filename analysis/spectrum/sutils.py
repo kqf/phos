@@ -74,14 +74,14 @@ def save_canvas_root(canvas, outdir, name):
     ofile.Close()
 
 
-def create_canvas(name="c1", size=(128, 96), scale=6):
+def create_canvas(name="c1", size=(96, 96), scale=6):
     canvas = ROOT.TCanvas(name, "canvas",
                           int(size[0] * scale), int(size[1] * scale))
     ticks(canvas)
     return adjust_canvas(canvas)
 
 
-def gcanvas(name="c1", size=(128, 96), resize=False, scale=6):
+def gcanvas(name="c1", size=(96, 96), resize=False, scale=6):
     ccanvas = ROOT.gROOT.FindObject(name)
     if ccanvas:
         if not resize:
@@ -96,7 +96,7 @@ def gcanvas(name="c1", size=(128, 96), resize=False, scale=6):
 
 
 @contextmanager
-def canvas(name="c1", size=(128, 96), resize=False, scale=6, stop=True):
+def canvas(name="c1", size=(96, 96), resize=False, scale=6, stop=True):
     canvas = gcanvas(name=name, size=size, resize=resize, scale=scale)
     try:
         yield canvas
