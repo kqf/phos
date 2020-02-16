@@ -56,6 +56,8 @@ class MassesPlot(object):
         if self.no_stats:
             try:
                 hist.SetStats(0)
+                for f in hist.GetListOfFunctions():
+                    f.SetBit(ROOT.TF1.kNotDraw)
             except AttributeError:
                 pass
         hist.Draw(option)

@@ -13,6 +13,17 @@ def oname(particle):
     return pattern.format(br.spell(particle))
 
 
+def change_binning(masses, particle):
+    # Fix binning for the last eta bin to improve the plots
+    if particle != "#eta":
+        return
+    data = masses[-1]
+    for key in ["measured", "signal", "background"]:
+        data[key].Rebin(2)
+        for i in br.hrange(data[key]):
+            data[key].SetBinContent(i, abs(data[key].GetBinContent(i)))
+
+
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
@@ -24,5 +35,6 @@ def test_invmasses(particle, data, oname, ltitle, stop):
     with open_loggs() as loggs:
         Analysis(options).transform(data, loggs)
     masses = loggs["invmasses"]["output"].masses
-    print(len(masses))
+
+    change_binning(masses, particle)
     MultiplePlotter(no_stats=True).transform(masses, stop=stop)
