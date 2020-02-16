@@ -11,28 +11,25 @@ from repoze.lru import lru_cache
 # TODO: Fix the tests
 class MassesPlot(object):
 
-    def transform(self, mass, signalf, background, signal, measured,
+    def transform(self, measured, signal, background, signalf,
                   fit_range, integration_region, pad):
-        su.ticks(pad)
+        # su.ticks(pad)
         pad.cd()
 
-        title = mass.GetTitle()
-        if mass is not None:
-            mass.SetTitle("")
-            # mass.SetStats(False)
+        title = measured.GetTitle()
+        if measured is not None:
+            measured.SetTitle("")
 
         if signal is not None:
             signal.SetTitle("")
-            # signal.SetStats(False)
 
-        self._set_axis_limits(mass, signal, fit_range)
-        self.draw(mass, "histe")
+        self._set_axis_limits(measured, signal, fit_range)
+        self.draw(measured, "histe")
         self.draw(signal, color=br.BR_COLORS[2])
         self.draw(signalf, color=br.BR_COLORS[1])
         self.draw(background, color=br.BR_COLORS[1])
-        self.draw(measured, color=br.BR_COLORS[5])
         self.draw_chisquare(signalf)
-        self._draw_line(mass, *integration_region)
+        self._draw_line(measured, *integration_region)
         self._draw_text(title)
         pad.Update()
 
@@ -118,6 +115,7 @@ class MultiplePlotter(object):
         5: [3, 2],
         6: [3, 2],
         9: [3, 3],
+        33: [2, 2],
     }
     default = [4, 3]
 
@@ -132,11 +130,10 @@ class MultiplePlotter(object):
                 for j, mass in enumerate(masses[i:i + n_plots]):
                     plotter.transform(
                         pad=canvas.cd(j + 1),
-                        mass=mass["signal"],
-                        signalf=mass["signalf"],
-                        background=mass["background"],
-                        signal=mass["signal"],
                         measured=mass["measured"],
+                        signal=mass["signal"],
+                        background=mass["background"],
+                        signalf=mass["signalf"],
                         fit_range=mass["fit_range"],
                         integration_region=mass["integration_region"],
                     )
