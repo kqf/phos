@@ -40,11 +40,10 @@ def mass(title):
     signal.Add(background, -1)
 
     output = {}
-    output["mass"] = signal
     output["signalf"] = measured
-    output["background"] = background
+    output["background"] = background.GetHistogram()
     output["signal"] = data
-    output["measured"] = measured
+    output["measured"] = measured.GetHistogram()
     output["fit_range"] = (0.08, 0.2)
     output["integration_region"] = (0.125, 0.146)
     return output

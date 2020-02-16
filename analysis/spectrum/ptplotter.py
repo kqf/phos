@@ -11,7 +11,7 @@ from repoze.lru import lru_cache
 # TODO: Fix the tests
 class MassesPlot(object):
 
-    def __init__(self, no_stats):
+    def __init__(self, no_stats=False):
         self.no_stats = no_stats
 
     def transform(self, measured, signal, background, signalf,
