@@ -187,6 +187,10 @@ def draw(graph, colors, option, i, ngraphs):
         graph.SetMarkerStyle(0)
         graph.SetLineWidth(4)
 
+    if 'f' in option:
+        graph.SetLineWidth(0)
+        graph.SetLineColor(ROOT.kWhite)
+
     graph.Draw(option)
     return graph
 

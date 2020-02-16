@@ -32,7 +32,7 @@ class MassesPlot(object):
         self.draw(background, color=br.BR_COLORS[1])
         self.draw(measured, color=br.BR_COLORS[5])
         self.draw_chisquare(signalf)
-        self._line(mass, *integration_region).Draw()
+        self._draw_line(mass, *integration_region)
         self._draw_text(title)
         pad.Update()
 
