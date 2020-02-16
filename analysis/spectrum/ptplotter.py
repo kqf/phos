@@ -11,9 +11,12 @@ from repoze.lru import lru_cache
 # TODO: Fix the tests
 class MassesPlot(object):
 
+    def __init__(self, no_stats):
+        self.no_stats = no_stats
+
     def transform(self, measured, signal, background, signalf,
                   fit_range, integration_region, pad):
-        # su.ticks(pad)
+        su.ticks(pad)
         pad.cd()
 
         title = measured.GetTitle()
@@ -50,6 +53,11 @@ class MassesPlot(object):
     def draw(self, hist, option="same", color=1):
         if not hist:
             return
+        if self.no_stats:
+            try:
+                hist.SetStats(0)
+            except AttributeError:
+                pass
         hist.Draw(option)
         hist.SetMarkerColor(color)
         hist.SetLineColor(color)
@@ -90,7 +98,8 @@ class MassesPlot(object):
 
     @lru_cache(maxsize=1024)
     def _draw_text(self, title, sep="|"):
-        pave = ROOT.TPaveText(0.18, 0.75, 0.38, 0.88, "NDC")
+        offset = self.no_stats * 0.5
+        pave = ROOT.TPaveText(0.18 + offset, 0.75, 0.38 + offset, 0.88, "NDC")
         entries = title.split(sep)
         for entry in entries:
             if "event" in entry:
@@ -115,9 +124,11 @@ class MultiplePlotter(object):
         5: [3, 2],
         6: [3, 2],
         9: [3, 3],
-        33: [2, 2],
     }
     default = [4, 3]
+
+    def __init__(self, no_stats=False):
+        self.no_stats = no_stats
 
     def transform(self, masses, stop=False):
         canvas_shape = self.layouts.get(len(masses), self.default)
@@ -126,7 +137,7 @@ class MultiplePlotter(object):
             with su.canvas(stop=stop) as canvas:
                 canvas.Clear()
                 canvas.Divide(*canvas_shape + self.widths)
-                plotter = MassesPlot()
+                plotter = MassesPlot(no_stats=self.no_stats)
                 for j, mass in enumerate(masses[i:i + n_plots]):
                     plotter.transform(
                         pad=canvas.cd(j + 1),

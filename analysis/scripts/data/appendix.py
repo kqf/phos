@@ -25,4 +25,4 @@ def test_invmasses(particle, data, oname, ltitle, stop):
         Analysis(options).transform(data, loggs)
     masses = loggs["invmasses"]["output"].masses
     print(len(masses))
-    MultiplePlotter().transform(masses, stop=stop)
+    MultiplePlotter(no_stats=True).transform(masses, stop=stop)
