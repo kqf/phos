@@ -1,3 +1,4 @@
+import ROOT
 import json
 import pytest
 import numpy as np
@@ -73,11 +74,13 @@ def test_corr(data, stop, coname):
         pars["T2"] = unp.nominal_values(uy)
         pars["dTe2"] = unp.std_devs(ux)
         pars["dT2"] = unp.std_devs(uy)
-        print(pars[["energy", "Te", "dTe", "T", "dT", "Te2", "dTe2", "dT2"]])
+        print()
+        print(pars[["energy", "Te2", "dTe2", "T2", "dT2"]])
+        print(pars[["energy", "Te", "dTe", "T", "dT"]])
         graph = br.graph(
             "test",
-            pars["Te"],
-            pars["T"],
+            pars["Te2"],
+            pars["T2"],
             pars["dTe2"],
             pars["dT2"],
         )
@@ -85,15 +88,20 @@ def test_corr(data, stop, coname):
         graph.SetTitle(particle)
         return graph
 
+    # func = ROOT.TF1("f", "17.5 * x[0]", 0, 1)
     plot(
-        [data2graph("#pi^{0}"), data2graph("#eta")],
+        [
+            data2graph("#pi^{0}"),
+            data2graph("#eta"),
+            # func,
+        ],
         stop=stop,
         logy=False,
         logx=False,
         ytitle="#it{T}^{ 2} (GeV^{2})",
         xtitle="#it{T}_{#it{e}}^{ 2} (GeV^{2})",
-        # ylimits=(0.01, 2.6),
-        # xlimits=(0.7, 15),
+        ylimits=(0.01, 2.6),
+        xlimits=(0., 0.1),
         # csize=(96, 128),
         legend_pos=(0.65, 0.7, 0.8, 0.80),
         options="qp",
