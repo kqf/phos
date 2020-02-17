@@ -9,7 +9,7 @@ from spectrum.ptplotter import MultiplePlotter
 
 @pytest.fixture
 def oname(particle):
-    pattern = "images/analysis/data/{}.pdf"
+    pattern = "images/appendix_c/{}-masses"
     return pattern.format(br.spell(particle))
 
 
@@ -37,4 +37,4 @@ def test_invmasses(particle, data, oname, ltitle, stop):
     masses = loggs["invmasses"]["output"].masses
 
     change_binning(masses, particle)
-    MultiplePlotter(no_stats=True).transform(masses, stop=stop)
+    MultiplePlotter(oname, no_stats=True).transform(masses, stop=stop)

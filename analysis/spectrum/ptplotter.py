@@ -7,8 +7,6 @@ import spectrum.broot as br
 from repoze.lru import lru_cache
 
 
-# TODO: Fix the name of the parameters in the signature for this method
-# TODO: Fix the tests
 class MassesPlot(object):
 
     def __init__(self, no_stats=False):
@@ -129,20 +127,21 @@ class MultiplePlotter(object):
     }
     default = [4, 3]
 
-    def __init__(self, no_stats=False):
+    def __init__(self, oname="", no_stats=False):
         self.no_stats = no_stats
+        self.oname = oname
 
     def transform(self, masses, stop=False):
         canvas_shape = self.layouts.get(len(masses), self.default)
         n_plots = mul(*canvas_shape)
         for i in range(0, len(masses), n_plots):
-            with su.canvas(stop=stop) as canvas:
-                canvas.Clear()
-                canvas.Divide(*canvas_shape + self.widths)
+            with su.canvas(stop=stop) as figure:
+                figure.Clear()
+                figure.Divide(*canvas_shape + self.widths)
                 plotter = MassesPlot(no_stats=self.no_stats)
                 for j, mass in enumerate(masses[i:i + n_plots]):
                     plotter.transform(
-                        pad=canvas.cd(j + 1),
+                        pad=figure.cd(j + 1),
                         measured=mass["measured"],
                         signal=mass["signal"],
                         background=mass["background"],
@@ -150,7 +149,10 @@ class MultiplePlotter(object):
                         fit_range=mass["fit_range"],
                         integration_region=mass["integration_region"],
                     )
-                canvas.Write("masses_{}".format(i))
+                figure.Write("masses_{}".format(i))
+                if self.oname:
+                    oname = "{}-{}.pdf".format(self.oname, i)
+                    figure.SaveAs(su.ensure_directory(oname))
 
 
 class MulipleOutput(object):
