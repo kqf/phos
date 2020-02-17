@@ -23,5 +23,8 @@ def test_invmasses(particle, spmc, oname, ltitle, stop):
     options = CompositeOptions(particle=particle)
     with open_loggs() as loggs:
         Analysis(options).transform(spmc, loggs)
-    masses = loggs['steps']['analysis-0']["invmasses"]["output"].masses
-    MultiplePlotter(oname, no_stats=True).transform(masses, stop=stop)
+    low = loggs['steps']['analysis-0']["invmasses"]["output"].masses
+    high = loggs['steps']['analysis-1']["invmasses"]["output"].masses
+    low = [l for l in low if l["pt_range"][-1] < 7]
+    high = [h for h in high if h["pt_range"][0] > 7]
+    MultiplePlotter(oname, no_stats=True).transform(low + high, stop=stop)
