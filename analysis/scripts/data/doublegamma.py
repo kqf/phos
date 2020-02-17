@@ -45,11 +45,10 @@ def test_simple(particle, data, oname, stop):
             data = loggs["parametrize"]["output"].loc[12]
             MassesPlot().transform(
                 pad=figure,
-                mass=data["measured"],
+                measured=data["measured"],
                 signalf=data["signalf"],
                 background=data["background"],
                 signal=data["signal"],
-                measured=data["measuredf"],
                 fit_range=data["fit_range"],
                 integration_region=data["integration_region"],
             )

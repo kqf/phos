@@ -42,11 +42,10 @@ def test_simple(particle, spmc, stop, oname):
             data = loggs["steps"]["analysis-0"]["parametrize"]["output"].loc[9]
             MassesPlot().transform(
                 pad=figure,
-                mass=data["measured"],
+                measured=data["measured"],
                 signalf=data["signalf"],
                 background=data["background"],
                 signal=data["signal"],
-                measured=data["measuredf"],
                 fit_range=data["fit_range"],
                 integration_region=data["integration_region"],
             )
