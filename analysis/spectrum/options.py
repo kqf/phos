@@ -118,7 +118,7 @@ class CompositeEfficiencyOptions(object):
     # TODO: Use the same _mergeranges as in CompositeOptions
     _mergeranges = {
         "#pi^{0}": [(0.0, 7.0), (7.0, 20.0)],
-        "#eta": [(0.0, 7.0), (7.0, 20.0)],
+        "#eta": [(0.0, 6.0), (6.0, 20.0)],
     }
 
     def __init__(
