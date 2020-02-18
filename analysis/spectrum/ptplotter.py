@@ -128,9 +128,10 @@ class MultiplePlotter(object):
     }
     default = [4, 3]
 
-    def __init__(self, oname="", no_stats=False):
+    def __init__(self, oname="", use_legend=False, no_stats=False):
         self.no_stats = no_stats
         self.oname = oname
+        self.use_legend = use_legend
 
     def transform(self, masses, stop=False):
         canvas_shape = self.layouts.get(len(masses), self.default)
@@ -141,9 +142,16 @@ class MultiplePlotter(object):
                 figure.Clear()
                 figure.Divide(*canvas_shape + self.widths)
                 plotter = MassesPlot(no_stats=self.no_stats)
+                self.legend(
+                    pad=figure.cd(1),
+                    measured=masses[0]["measured"],
+                    signal=masses[0]["signal"],
+                    background=masses[0]["background"],
+                    signalf=masses[0]["signalf"],
+                )
                 for j, mass in enumerate(masses[i:i + n_plots]):
                     plotter.transform(
-                        pad=figure.cd(j + 1),
+                        pad=figure.cd(j + 1 + int(self.use_legend)),
                         measured=mass["measured"],
                         signal=mass["signal"],
                         background=mass["background"],
@@ -155,6 +163,24 @@ class MultiplePlotter(object):
                 if self.oname:
                     oname = "{}-{}.pdf".format(self.oname, i)
                     figure.SaveAs(su.ensure_directory(oname))
+
+    @lru_cache(maxsize=1024)
+    def legend(self, pad, measured, signal, background, signalf):
+        if not self.use_legend:
+            return
+        legend = ROOT.TLegend(0.15, 0.5, 0.5, 0.85)
+        legend.SetBorderSize(0)
+        # legend.AddEntry(0, ltitle, "")
+        legend.AddEntry(measured, "measured")
+        legend.AddEntry(signal, "signal")
+        legend.AddEntry(background, "background")
+        legend.AddEntry(signalf, "signal approximation")
+
+        legend.SetFillColor(0)
+        legend.SetTextColor(1)
+        # legend.SetTextSize(ltext_size)
+        legend.Draw("same")
+        return legend
 
 
 class MulipleOutput(object):
