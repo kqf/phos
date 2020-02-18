@@ -35,6 +35,6 @@ def test_invmasses(particle, data, oname, ltitle, stop):
     with open_loggs() as loggs:
         Analysis(options).transform(data, loggs)
     masses = loggs["invmasses"]["output"].masses
-
     change_binning(masses, particle)
-    MultiplePlotter(oname, no_stats=True).transform(masses, stop=stop)
+    plotter = MultiplePlotter(oname, ltitle=ltitle, no_stats=True)
+    plotter.transform(masses, stop=stop)

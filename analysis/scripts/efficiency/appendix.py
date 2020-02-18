@@ -28,5 +28,5 @@ def test_invmasses(particle, pivot, spmc, oname, ltitle, stop):
     low = [l for l in low if l["pt_range"][0] < pivot]
     high = [h for h in high if h["pt_range"][-1] > pivot]
 
-    plotter = MultiplePlotter(oname, use_legend=True, no_stats=True)
+    plotter = MultiplePlotter(oname, ltitle=ltitle, no_stats=True)
     plotter.transform(low + high, stop=stop)

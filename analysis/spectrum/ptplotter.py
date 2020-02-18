@@ -128,10 +128,11 @@ class MultiplePlotter(object):
     }
     default = [4, 3]
 
-    def __init__(self, oname="", use_legend=False, no_stats=False):
+    def __init__(self, oname="", ltitle="", no_stats=False):
         self.no_stats = no_stats
         self.oname = oname
-        self.use_legend = use_legend
+        self.use_legend = len(ltitle) > 0
+        self.ltitle = ltitle
 
     def transform(self, masses, stop=False):
         canvas_shape = self.layouts.get(len(masses), self.default)
@@ -170,7 +171,7 @@ class MultiplePlotter(object):
             return
         legend = ROOT.TLegend(0.15, 0.5, 0.5, 0.85)
         legend.SetBorderSize(0)
-        # legend.AddEntry(0, ltitle, "")
+        legend.AddEntry(0, self.ltitle, "")
         legend.AddEntry(measured, "measured")
         legend.AddEntry(signal, "signal")
         legend.AddEntry(background, "background")
