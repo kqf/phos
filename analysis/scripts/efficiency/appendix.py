@@ -9,22 +9,22 @@ from spectrum.ptplotter import MultiplePlotter
 
 @pytest.fixture
 def oname(particle):
-    pattern = "images/appendix_c/{}-masses"
+    pattern = "images/appendix_d/{}-masses"
     return pattern.format(br.spell(particle))
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle", [
-    "#pi^{0}",
-    "#eta"
+@pytest.mark.parametrize("particle, pivot", [
+    ("#pi^{0}", 6),
+    ("#eta", 7),
 ])
-def test_invmasses(particle, spmc, oname, ltitle, stop):
+def test_invmasses(particle, pivot, spmc, oname, ltitle, stop):
     options = CompositeOptions(particle=particle)
     with open_loggs() as loggs:
         Analysis(options).transform(spmc, loggs)
     low = loggs['steps']['analysis-0']["invmasses"]["output"].masses
     high = loggs['steps']['analysis-1']["invmasses"]["output"].masses
-    low = [l for l in low if l["pt_range"][-1] < 7]
-    high = [h for h in high if h["pt_range"][0] > 7]
+    low = [l for l in low if l["pt_range"][-1] < pivot]
+    high = [h for h in high if h["pt_range"][0] > pivot]
     MultiplePlotter(oname, no_stats=True).transform(low + high, stop=stop)
