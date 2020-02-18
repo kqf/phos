@@ -124,6 +124,7 @@ class MultiplePlotter(object):
         5: [3, 2],
         6: [3, 2],
         9: [3, 3],
+        19: [5, 4],
     }
     default = [4, 3]
 
@@ -133,6 +134,7 @@ class MultiplePlotter(object):
 
     def transform(self, masses, stop=False):
         canvas_shape = self.layouts.get(len(masses), self.default)
+        print(len(masses), canvas_shape)
         n_plots = mul(*canvas_shape)
         for i in range(0, len(masses), n_plots):
             with su.canvas(stop=stop) as figure:

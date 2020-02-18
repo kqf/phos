@@ -25,6 +25,6 @@ def test_invmasses(particle, pivot, spmc, oname, ltitle, stop):
         Analysis(options).transform(spmc, loggs)
     low = loggs['steps']['analysis-0']["invmasses"]["output"].masses
     high = loggs['steps']['analysis-1']["invmasses"]["output"].masses
-    low = [l for l in low if l["pt_range"][-1] < pivot]
-    high = [h for h in high if h["pt_range"][0] > pivot]
+    low = [l for l in low if l["pt_range"][0] < pivot]
+    high = [h for h in high if h["pt_range"][-1] > pivot]
     MultiplePlotter(oname, no_stats=True).transform(low + high, stop=stop)
