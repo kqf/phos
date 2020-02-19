@@ -100,7 +100,7 @@ class MassesPlot(object):
     @lru_cache(maxsize=1024)
     def _draw_text(self, title, sep="|"):
         offset = self.no_stats * 0.5
-        pave = ROOT.TPaveText(0.18 + offset, 0.75, 0.38 + offset, 0.88, "NDC")
+        pave = ROOT.TPaveText(0.15 + offset, 0.75, 0.35 + offset, 0.88, "NDC")
         entries = title.split(sep)
         for entry in entries:
             if "event" in entry:
@@ -127,7 +127,7 @@ class MultiplePlotter(object):
         9: [3, 3],
         19: [5, 4],
     }
-    default = [4, 3]
+    default = [3, 4]
 
     def __init__(self, oname="", ltitle="", no_stats=False):
         self.no_stats = no_stats
@@ -139,8 +139,14 @@ class MultiplePlotter(object):
         canvas_shape = self.layouts.get(len(masses), self.default)
         offset = int(self.use_legend)
         n_plots = mul(*canvas_shape) - offset
+        canvas_options = {
+            "stop": stop,
+            "size": canvas_shape,
+            "resize": True,
+            "scale": 240,
+        }
         for i in range(0, len(masses), n_plots):
-            with su.canvas(stop=stop) as figure:
+            with su.canvas(**canvas_options) as figure:
                 figure.Clear()
                 figure.Divide(*canvas_shape + self.widths)
                 plotter = MassesPlot(no_stats=self.no_stats)
