@@ -136,8 +136,8 @@ class MultiplePlotter(object):
 
     def transform(self, masses, stop=False):
         canvas_shape = self.layouts.get(len(masses), self.default)
-        print(len(masses), canvas_shape)
-        n_plots = mul(*canvas_shape)
+        offset = int(self.use_legend)
+        n_plots = mul(*canvas_shape) - offset
         for i in range(0, len(masses), n_plots):
             with su.canvas(stop=stop) as figure:
                 figure.Clear()
@@ -152,7 +152,7 @@ class MultiplePlotter(object):
                 )
                 for j, mass in enumerate(masses[i:i + n_plots]):
                     plotter.transform(
-                        pad=figure.cd(j + 1 + int(self.use_legend)),
+                        pad=figure.cd(j + 1 + offset),
                         measured=mass["measured"],
                         signal=mass["signal"],
                         background=mass["background"],
