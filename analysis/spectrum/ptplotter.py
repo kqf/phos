@@ -27,8 +27,9 @@ class MassesPlot(object):
         self._set_axis_limits(measured, signal, fit_range)
         self.draw(measured, "histe")
         self.draw(signal, color=br.BR_COLORS[2])
-        self.draw(signalf, color=br.BR_COLORS[1])
         self.draw(background, color=br.BR_COLORS[1])
+        self.draw(signalf)
+        signalf.SetLineStyle(7)
         self.draw_chisquare(signalf)
         self._draw_line(measured, *integration_region)
         self._draw_text(title)
@@ -48,7 +49,7 @@ class MassesPlot(object):
             func.chi2ndf = chi2ndf
         return latex
 
-    def draw(self, hist, option="same", color=1):
+    def draw(self, hist, option="same", color=ROOT.kBlack):
         if not hist:
             return
         if self.no_stats:
@@ -169,13 +170,13 @@ class MultiplePlotter(object):
     def legend(self, pad, measured, signal, background, signalf):
         if not self.use_legend:
             return
-        legend = ROOT.TLegend(0.15, 0.5, 0.5, 0.85)
+        legend = ROOT.TLegend(0.15, 0.3, 0.8, 0.85)
         legend.SetBorderSize(0)
         legend.AddEntry(0, self.ltitle, "")
-        legend.AddEntry(measured, "measured")
-        legend.AddEntry(signal, "signal")
-        legend.AddEntry(background, "background")
-        legend.AddEntry(signalf, "signal approximation")
+        legend.AddEntry(measured, "measured", "l")
+        legend.AddEntry(signal, "signal", "l")
+        legend.AddEntry(background, "background", "l")
+        legend.AddEntry(signalf, "signal approximation", "l")
 
         legend.SetFillColor(0)
         legend.SetTextColor(1)
