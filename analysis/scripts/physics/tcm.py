@@ -125,4 +125,10 @@ def test_corr(data, stop, coname):
 def test_charged_particles(charge_particles_t2):
     plot(
         [charge_particles_t2],
+        logy=False,
+        logx=False,
+        xlimits=(0., 0.04),
+        ylimits=(0., 0.8),
+        csize=(128, 96),
+        legend_pos=None,
     )
