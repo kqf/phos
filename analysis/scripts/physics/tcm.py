@@ -1,4 +1,3 @@
-import ROOT
 import json
 import pytest
 import numpy as np
@@ -14,6 +13,20 @@ def data():
     with open("config/predictions/tcm.json") as f:
         data = json.load(f)
     return data
+
+
+@pytest.fixture
+def charge_particles_t2():
+    df = pd.read_csv("config/predictions/tcm-t2-te2-charged.csv")
+    graph = br.graph(
+        "charged",
+        df["Te2"],
+        df["T2"],
+        dy=df["upper errors"] - df["lower errors"],
+    )
+    graph.SetMarkerStyle(21)
+    # graph.SetTitle(particle)
+    return graph
 
 
 @pytest.mark.thesis
@@ -106,4 +119,10 @@ def test_corr(data, stop, coname):
         legend_pos=(0.65, 0.7, 0.8, 0.80),
         options="qp",
         oname=coname.format("phenomenology/tcm_parameter_"),
+    )
+
+
+def test_charged_particles(charge_particles_t2):
+    plot(
+        [charge_particles_t2],
     )
