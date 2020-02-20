@@ -25,7 +25,7 @@ def charge_particles_t2():
         dy=df["upper errors"] - df["lower errors"],
     )
     graph.SetMarkerStyle(21)
-    # graph.SetTitle(particle)
+    graph.SetTitle("Charged particles")
     return graph
 
 
@@ -74,7 +74,7 @@ def test_r(data, stop, coname):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("target", ["corr"])
-def test_corr(data, stop, coname):
+def test_corr(data, charge_particles_t2, stop, coname):
     # print(pars)
 
     def data2graph(particle):
@@ -106,6 +106,7 @@ def test_corr(data, stop, coname):
         [
             data2graph("#pi^{0}"),
             data2graph("#eta"),
+            charge_particles_t2,
             # func,
         ],
         stop=stop,
@@ -122,6 +123,7 @@ def test_corr(data, stop, coname):
     )
 
 
+@pytest.mark.skip
 def test_charged_particles(charge_particles_t2):
     plot(
         [charge_particles_t2],
@@ -129,6 +131,5 @@ def test_charged_particles(charge_particles_t2):
         logx=False,
         xlimits=(0., 0.04),
         ylimits=(0., 0.8),
-        csize=(128, 96),
         legend_pos=None,
     )
