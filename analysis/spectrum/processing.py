@@ -75,8 +75,7 @@ class InvariantMassExtractor(object):
     def transform(self, rmasses, loggs):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(self.opt))
-        rmasses["fit_range"] = rmasses["invmasses"].apply(
-            lambda x: x.fit_range)
+        rmasses["fit_range"] = [self.opt.signal.fit_range] * len(rmasses)
         return rmasses
 
 

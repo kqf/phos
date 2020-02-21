@@ -73,7 +73,6 @@ class InvariantMass(object):
 
         # _measured distribution = signal + combinatorial background
         self._measured = parametrisation(options.background)
-        self.fit_range = self._signal.opt.fit_range
 
     @property
     def mass(self):

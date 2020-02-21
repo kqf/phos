@@ -32,16 +32,16 @@ class BackgroundEstimator(MassTransformer):
 
 
 class SignalExtractor(MassTransformer):
-    in_cols = ["invmasses", "measured", "background"]
+    in_cols = ["invmasses", "measured", "background", "fit_range"]
     out_cols = "signal"
 
-    def apply(self, imass, measured, background):
+    def apply(self, imass, measured, background, fit_range):
         # Subtraction
         # imass.measured = measured
         # imass.background = background
         imass.signal = measured.Clone()
         imass.signal.Add(background, -1.)
-        imass.signal.SetAxisRange(*imass.fit_range)
+        imass.signal.SetAxisRange(*fit_range)
         imass.signal.GetYaxis().SetTitle("Real - background")
         return imass.signal
 
@@ -129,10 +129,10 @@ class ZeroBinsCleaner(MassTransformer):
         it's not a well determined operation when subtracting empty - nonempty
         replace empty bins with interpolations
     """
-    in_cols = ["invmasses", "measured", "background"]
+    in_cols = ["invmasses", "measured", "background", "fit_range"]
     out_cols = "invmasses"
 
-    def apply(self, imass, measured, background):
+    def apply(self, imass, measured, background, fit_range):
         zeros = set()
         zsig = br.empty_bins(measured, imass.opt.tol)
 
@@ -144,11 +144,11 @@ class ZeroBinsCleaner(MassTransformer):
         # Remove all zero bins and don't
         # touch bins that are zeros in both cases.
         #
-        measured = self._clean_histogram(measured, zeros, imass)
-        background = self._clean_histogram(background, zeros, imass, True)
+        measured = self._clean(measured, zeros, imass, fit_range, False)
+        background = self._clean(background, zeros, imass, fit_range, True)
         return imass
 
-    def _clean_histogram(self, h, zeros, measured, is_background=False):
+    def _clean(self, h, zeros, measured, fit_range, is_background):
         if not measured.opt.clean_empty_bins:
             return h
 
@@ -164,7 +164,7 @@ class ZeroBinsCleaner(MassTransformer):
         # Delete bin only if it's empty
         def valid(i):
             return h.GetBinContent(i) < measured.opt.tol and \
-                su.in_range(h.GetBinCenter(i), measured.fit_range)
+                su.in_range(h.GetBinCenter(i), fit_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
         for i, c in six.iteritems(centers):
