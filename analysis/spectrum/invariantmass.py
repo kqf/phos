@@ -95,4 +95,4 @@ class InvariantMass(object):
         raise IOError("No such attribute")
 
     def fitted(self):
-        return self.bgrf and self.signalf
+        raise IOError("No such attribute")

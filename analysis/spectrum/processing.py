@@ -182,14 +182,14 @@ class PtFitter(object):
 
 
 class RangeEstimator(MassTransformer):
-    in_cols = ["invmasses", "pposition_pt_f", "pwidth_pt_f", "intervals"]
+    in_cols = ["pposition_pt_f", "pwidth_pt_f", "intervals"]
     out_cols = "integration_region"
 
     def __init__(self, options):
         super(RangeEstimator, self).__init__()
         self.nsigmas = options.nsigmas
 
-    def apply(self, imass, position, width, intervals):
+    def apply(self, position, width, intervals):
         pt = intervals[0] + (intervals[1] - intervals[0]) / 2
         integration_region = (
             position.Eval(pt) - self.nsigmas * width.Eval(pt),
