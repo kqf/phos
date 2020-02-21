@@ -74,8 +74,7 @@ class InvariantMassExtractor(object):
 
     def transform(self, rmasses, loggs):
         rmasses["invmasses"] = rmasses["raw"].apply(
-            lambda x: InvariantMass(x, self.opt))
-        # rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
+            lambda x: InvariantMass(self.opt))
         rmasses["fit_range"] = rmasses["invmasses"].apply(
             lambda x: x.fit_range)
         return rmasses
@@ -196,7 +195,6 @@ class RangeEstimator(MassTransformer):
             position.Eval(pt) - self.nsigmas * width.Eval(pt),
             position.Eval(pt) + self.nsigmas * width.Eval(pt)
         )
-        imass.integration_region = integration_region
         return integration_region
 
 

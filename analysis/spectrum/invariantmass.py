@@ -63,12 +63,9 @@ class RawMass(object):
 
 class InvariantMass(object):
 
-    def __init__(self, rmass, options):
+    def __init__(self, options):
         super(InvariantMass, self).__init__()
         self.opt = options
-        # self.mass = rmass.mass
-        # self.background = rmass.background
-        self.pt_label = rmass.pt_label
 
         # Setup the fit function
         # _signal = measured - combinatorial background = signal + residual
@@ -88,21 +85,14 @@ class InvariantMass(object):
 
     @property
     def integration_region(self):
-        return self._integration_region
+        raise IOError("No such attribute")
 
     @integration_region.setter
     def integration_region(self, value):
-        if not value:
-            return
-        self._integration_region = value
+        raise IOError("No such attribute")
 
     def number_of_mesons(self):
-        # print(self.integration_region)
-        # self.integration_region = (0.08, 0.2)
-        area, areae = br.area_and_error(self.signal, *self.integration_region)
-        # self.area_error = area, areae
-        # return self.signal.Integral(), self.signal.GetEntries() ** 0.5
-        return area, areae
+        raise IOError("No such attribute")
 
     def fitted(self):
         return self.bgrf and self.signalf
