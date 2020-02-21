@@ -55,6 +55,7 @@ class DataPreprocessor(object):
         df = pd.DataFrame({
             "intervals": intervals,
             "pt_interval": [pt_range] * len(intervals),
+            "pt_range": [r.pt_range for r in readers],
             "pt_edges": [self.opt.ptedges] * len(intervals),
             "raw": readers,
             "measured": [r.transform(same) for r in readers],
@@ -74,7 +75,7 @@ class InvariantMassExtractor(object):
     def transform(self, rmasses, loggs):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(x, self.opt))
-        rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
+        # rmasses["pt_range"] = rmasses["invmasses"].apply(lambda x: x.pt_range)
         rmasses["fit_range"] = rmasses["invmasses"].apply(
             lambda x: x.fit_range)
         return rmasses

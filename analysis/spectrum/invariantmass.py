@@ -68,7 +68,6 @@ class InvariantMass(object):
         self.opt = options
         # self.mass = rmass.mass
         # self.background = rmass.background
-        self.pt_range = rmass.pt_range
         self.pt_label = rmass.pt_label
 
         # Setup the fit function
@@ -78,15 +77,6 @@ class InvariantMass(object):
         # _measured distribution = signal + combinatorial background
         self._measured = parametrisation(options.background)
         self.fit_range = self._signal.opt.fit_range
-
-        # Extract the data
-        self.signalf = None
-        self.bgrf = None
-        self.area_error = None
-        self._integration_region = self._signal.opt.fit_range
-        self.ratio = None
-        self.signal = None
-        self.measuredf = None
 
     @property
     def mass(self):
