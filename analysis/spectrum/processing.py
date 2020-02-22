@@ -77,6 +77,7 @@ class InvariantMassExtractor(object):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(self.opt))
         nbins = len(rmasses)
+        rmasses["tol"] = [self.opt.tol] * nbins
         rmasses["fit_range"] = [self.opt.signal.fit_range] * nbins
         rmasses["measured_fitter"] = [pr(self.opt.background)] * nbins
         rmasses["signal_fitter"] = [pr(self.opt.signal)] * nbins

@@ -123,33 +123,33 @@ class ZeroBinsCleaner(MassTransformer):
         it's not a well determined operation when subtracting empty - nonempty
         replace empty bins with interpolations
     """
-    in_cols = ["invmasses", "measured", "background", "fit_range"]
-    out_cols = "invmasses"
+    in_cols = ["measured_fitter", "measured", "background", "fit_range", "tol"]
+    out_cols = "measured", "background"
 
-    def apply(self, imass, measured, background, fit_range):
+    def apply(self, measured_fitter, measured, background, fit_range, tol):
         zeros = set()
-        zsig = br.empty_bins(measured, imass.opt.tol)
+        zsig = br.empty_bins(measured, tol)
 
         # if measured.background else []
-        zmix = br.empty_bins(background, imass.opt.tol)
+        zmix = br.empty_bins(background, tol)
         zeros.symmetric_difference_update(zsig)
         zeros.symmetric_difference_update(zmix)
 
         # Remove all zero bins and don't
         # touch bins that are zeros in both cases.
         #
-        measured = self._clean(measured, zeros, imass, fit_range, False)
-        background = self._clean(background, zeros, imass, fit_range, True)
-        return imass
+        return (
+            self._clean(measured, zeros, measured_fitter,
+                        fit_range, tol, False),
+            self._clean(background, zeros, measured_fitter,
+                        fit_range, tol, True)
+        )
 
-    def _clean(self, h, zeros, measured, fit_range, is_background):
-        if not measured.opt.clean_empty_bins:
-            return h
-
+    def _clean(self, h, zeros, fitter, fit_range, tol, is_background):
         if not zeros:
             return h
 
-        fitf, bckgrnd = measured._measured.fit(h, is_mixing=is_background)
+        fitf, bckgrnd = fitter.fit(h, is_mixing=is_background)
 
         # If we failed to fit: do nothing
         if not (fitf and bckgrnd):
@@ -157,7 +157,7 @@ class ZeroBinsCleaner(MassTransformer):
 
         # Delete bin only if it's empty
         def valid(i):
-            return h.GetBinContent(i) < measured.opt.tol and \
+            return h.GetBinContent(i) < tol and \
                 su.in_range(h.GetBinCenter(i), fit_range)
 
         centers = {i: h.GetBinCenter(i) for i in zeros if valid(i)}
