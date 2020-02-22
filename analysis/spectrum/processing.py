@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import collections
 
-from spectrum.invariantmass import InvariantMass, RawMass
+from spectrum.invariantmass import RawMass
 from spectrum.pipeline import Pipeline, TransformerBase
 from spectrum.parametrisation import parametrisation as pr
 
@@ -68,14 +68,11 @@ class DataPreprocessor(object):
 
 
 class InvariantMassExtractor(object):
-
     def __init__(self, options):
         super(InvariantMassExtractor, self).__init__()
         self.opt = options
 
     def transform(self, rmasses, loggs):
-        rmasses["invmasses"] = rmasses["raw"].apply(
-            lambda x: InvariantMass(self.opt))
         nbins = len(rmasses)
         rmasses["tol"] = [self.opt.tol] * nbins
         rmasses["fit_range"] = [self.opt.signal.fit_range] * nbins

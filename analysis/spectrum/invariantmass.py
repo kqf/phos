@@ -59,39 +59,3 @@ class RawMass(object):
         if nrebin:
             mass.Rebin(nrebin)
         return mass
-
-
-class InvariantMass(object):
-
-    def __init__(self, options):
-        super(InvariantMass, self).__init__()
-        self.opt = options
-
-        # Setup the fit function
-        # _signal = measured - combinatorial background = signal + residual
-        self._signal = parametrisation(options.signal)
-
-        # _measured distribution = signal + combinatorial background
-        self._measured = parametrisation(options.background)
-
-    @property
-    def mass(self):
-        raise IOError("No such attribute")
-
-    @property
-    def background(self):
-        raise IOError("No such attribute")
-
-    @property
-    def integration_region(self):
-        raise IOError("No such attribute")
-
-    @integration_region.setter
-    def integration_region(self, value):
-        raise IOError("No such attribute")
-
-    def number_of_mesons(self):
-        raise IOError("No such attribute")
-
-    def fitted(self):
-        raise IOError("No such attribute")
