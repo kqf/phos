@@ -4,7 +4,11 @@ import numpy as np
 import pandas as pd
 import collections
 
-from spectrum.invariantmass import RawMass
+
+import humanize
+import spectrum.broot as br
+from spectrum.constants import PAVE_PREFIX
+
 from spectrum.pipeline import Pipeline, TransformerBase
 from spectrum.parametrisation import parametrisation as pr
 
@@ -13,7 +17,6 @@ from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
 from spectrum.mass import SignalExtractor, SignalFitter, ZeroBinsCleaner
 from spectrum.mass import SignalFitExtractor, FitQualityExtractor
 from spectrum.mass import MassTransformer
-import spectrum.broot as br
 
 
 class DataPreparator(TransformerBase):
@@ -26,9 +29,22 @@ class DataPreparator(TransformerBase):
 
 
 class DataPreprocessor(object):
+    reactions = {
+        "#pi^{0}": "#pi^{0} #rightarrow #gamma #gamma",
+        "#eta": "#eta #rightarrow #gamma #gamma",
+        "electrons": "#it{e}^{#pm}",
+    }
+
+    xaxis = {
+        "#pi^{0}": "#it{M}_{#gamma#gamma} (GeV/#it{c}^{2})",
+        "#eta": "#it{M}_{#gamma#gamma} (GeV/#it{c}^{2})",
+        "electrons": "#it{E}/#it{p} ratio",
+    }
+
     def __init__(self, options):
         super(DataPreprocessor, self).__init__()
         self.opt = options
+        self.particle = self.opt.particle
 
     def transform(self, inputs, loggs):
         histograms, pt_range = inputs
@@ -45,26 +61,48 @@ class DataPreprocessor(object):
                 len(self.opt.rebins)
         )
 
-        def rmass(x, y, z):
-            return RawMass(x, y, z, particle=self.opt.particle)
-
         label = "{:.4g} < #it{{p}}_{{T}} < {:.4g} GeV/#it{{c}}"
         pt_labels = [label.format(*i) for i in intervals]
-
-        readers = list(map(rmass, intervals, self.opt.rebins, pt_labels))
 
         df = pd.DataFrame({
             "intervals": intervals,
             "pt_interval": [pt_range] * len(intervals),
-            "pt_range": [r.pt_range for r in readers],
+            "pt_range": intervals,
             "pt_edges": [self.opt.ptedges] * len(intervals),
-            "raw": readers,
-            "measured": [r.transform(same) for r in readers],
-            "background": [r.transform(mixed) for r in readers],
             "pt_label": pt_labels,
         })
         df["nevents"] = same.nevents
+        args = list(zip(intervals, self.opt.rebins, pt_labels))
+        df["measured"] = [self.mass(same, *a) for a in args]
+        if mixed is not None:
+            df["background"] = [self.mass(mixed, *a) for a in args]
         return df
+
+    def mass(self, hist, pt_range, nrebin, pt_label):
+        mass = br.project_range(hist, *pt_range)
+        mass.nevents = hist.nevents
+        title = (
+            "{prefix} "
+            "| {reaction} "
+            "| {pt} "
+            "| #it{{N}}_{{events}} = {events}"
+        ).format(
+            prefix=PAVE_PREFIX,
+            reaction=self.reactions[self.particle],
+            pt=pt_label,
+            events=humanize.intword(mass.nevents)
+        )
+        mass.SetTitle(title)
+        mass.GetXaxis().SetTitle(self.xaxis[self.particle])
+        mass.GetYaxis().SetTitle("counts")
+        mass.SetLineColor(ROOT.kRed + 1)
+
+        if not mass.GetSumw2N():
+            mass.Sumw2()
+
+        if nrebin:
+            mass.Rebin(nrebin)
+        return mass
 
 
 class InvariantMassExtractor(object):
