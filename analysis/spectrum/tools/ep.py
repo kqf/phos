@@ -17,7 +17,7 @@ from spectrum.plotter import plot
 
 
 class IdentityExtractor(MassTransformer):
-    in_cols = ["invmasses", "measured"]
+    in_cols = ["measured_fitter", "measured"]
     out_cols = ["signalf", "bgrf", "signal"]
     result_type = "expand"
 
@@ -26,31 +26,29 @@ class IdentityExtractor(MassTransformer):
         self.options = options
 
     # TODO: Add logging support for the base class
-    def apply(self, invmass, mass, loggs={}):
+    def apply(self, imass, mass, loggs={}):
         ROOT.gStyle.SetOptFit()
-        invmass.signal = mass.Clone()
+        signal = mass.Clone()
         formula = "gaus(0) + {}(3)".format(self.options.background)
         func = ROOT.TF1("func", formula, *self.options.fit_range)
 
         func.SetParNames(*self.options.par_names)
         func.SetParameters(*self.options.start_paremeters)
         func.SetLineColor(ROOT.kRed + 1)
-        invmass.signal.Fit(func, "RQ0")
+        signal.Fit(func, "RQ0")
         bkgrnd = ROOT.TF1("bkgrnd", self.options.background,
                           *self.options.fit_range)
         for i in range(3, func.GetNpar()):
             bkgrnd.SetParameter(i - 3, func.GetParameter(i))
-        invmass.signalf = func
-        invmass.bgrf = bkgrnd
         chi2ndf = func.GetChisquare() / (func.GetNDF() or 1)
         title = ", #chi^{{2}} / ndf = {:.3f}".format(chi2ndf)
         mass.SetTitle(mass.GetTitle() + title)
-        invmass.signal.SetTitle(invmass.signal.GetTitle() + title)
+        signal.SetTitle(signal.GetTitle() + title)
         a, b = self.options.fit_range
-        invmass.signal.GetXaxis().SetRangeUser(a, b)
-        # invmass.signal.Scale(1. / invmass.signal.Integral())
-        loggs.update({invmass.signal.GetName(): invmass.signal})
-        return invmass.signalf, invmass.bgrf, invmass.signal
+        signal.GetXaxis().SetRangeUser(a, b)
+        # signal.Scale(1. / signal.Integral())
+        loggs.update({signal.GetName(): signal})
+        return func, bkgrnd, signal
 
 
 class EpRatioEstimator(TransformerBase):
