@@ -6,6 +6,7 @@ import collections
 
 from spectrum.invariantmass import InvariantMass, RawMass
 from spectrum.pipeline import Pipeline, TransformerBase
+from spectrum.parametrisation import parametrisation as pr
 
 from spectrum.ptplotter import MulipleOutput
 from spectrum.mass import BackgroundEstimator, MixingBackgroundEstimator
@@ -75,7 +76,10 @@ class InvariantMassExtractor(object):
     def transform(self, rmasses, loggs):
         rmasses["invmasses"] = rmasses["raw"].apply(
             lambda x: InvariantMass(self.opt))
-        rmasses["fit_range"] = [self.opt.signal.fit_range] * len(rmasses)
+        nbins = len(rmasses)
+        rmasses["fit_range"] = [self.opt.signal.fit_range] * nbins
+        rmasses["measured_fitter"] = [pr(self.opt.background)] * nbins
+        rmasses["signal_fitter"] = [pr(self.opt.signal)] * nbins
         return rmasses
 
 

@@ -18,43 +18,41 @@ class MassTransformer(object):
 
 
 class BackgroundEstimator(MassTransformer):
-    in_cols = ["invmasses", "measured"]
+    in_cols = ["measured_fitter", "measured"]
     out_cols = ["background", "measuredf"]
     result_type = "expand"
 
-    def apply(self, imass, measured):
-        signalf, bgrf = imass._measured.fit(measured)
+    def apply(self, measured_fitter, measured):
+        signalf, bgrf = measured_fitter.fit(measured)
         bgrf.SetLineColor(ROOT.kRed + 1)
         bgrf.SetFillColor(ROOT.kRed + 1)
         bgrf.SetFillStyle(3436)
-        imass.measuredf = signalf
-        return bgrf, imass.measuredf
+        return bgrf, signalf
 
 
 class SignalExtractor(MassTransformer):
-    in_cols = ["invmasses", "measured", "background", "fit_range"]
+    in_cols = ["measured", "background", "fit_range"]
     out_cols = "signal"
 
-    def apply(self, imass, measured, background, fit_range):
+    def apply(self, measured, background, fit_range):
         # Subtraction
         # imass.measured = measured
         # imass.background = background
-        imass.signal = measured.Clone()
-        imass.signal.Add(background, -1.)
-        imass.signal.SetAxisRange(*fit_range)
-        imass.signal.GetYaxis().SetTitle("Real - background")
-        return imass.signal
+        signal = measured.Clone()
+        signal.Add(background, -1.)
+        signal.SetAxisRange(*fit_range)
+        signal.GetYaxis().SetTitle("Real - background")
+        return signal
 
 
 class SignalFitter(MassTransformer):
-    in_cols = ["invmasses", "signal"]
+    in_cols = ["signal_fitter", "signal"]
     out_cols = "signalf"
 
-    def apply(self, imass, signal):
-        imass.signalf, imass.bgrf = imass._signal.fit(signal)
-        imass.signalf.SetLineStyle(9)
-        # with su.canvas(): # signal.Draw()
-        return imass.signalf
+    def apply(self, signal_fitter, signal):
+        signalf, bgrf = signal_fitter.fit(signal)
+        signalf.SetLineStyle(9)
+        return signalf
 
 
 class SignalFitExtractor(MassTransformer):
@@ -103,22 +101,18 @@ class FitQualityExtractor(MassTransformer):
 
 
 class MixingBackgroundEstimator(MassTransformer):
-    in_cols = ["invmasses", "measured", "background"]
+    in_cols = ["measured_fitter", "measured", "background"]
     out_cols = ["signal", "measuredf"]
     result_type = "expand"
 
-    def apply(self, imass, measured, background):
+    def apply(self, measured_fitter, measured, background):
         ratio = br.ratio(measured, background, '')
         ratio.GetYaxis().SetTitle("Same event / mixed event")
 
-        fitf, bckgrnd = imass._measured.fit(ratio)
+        fitf, bckgrnd = measured_fitter.fit(ratio)
         background.Multiply(bckgrnd)
         background.SetLineColor(46)
-        imass.ratio = ratio
-
-        # background = bckgrnd
-        imass.measuredf = fitf
-        return measured, imass.measuredf
+        return measured, fitf
 
 
 class ZeroBinsCleaner(MassTransformer):
