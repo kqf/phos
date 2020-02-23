@@ -19,17 +19,19 @@ def oname(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_fit_the_corrected_yield(particle, cyield_data, oname):
+def test_fit_the_corrected_yield(particle, cyield_data, oname, stop):
     with open_loggs() as loggs:
         estimator = CorrectedYield(
             CompositeCorrectedYieldOptions(
                 particle=particle
-            )
+            ),
+            plot=stop
         )
         cyield = estimator.transform(cyield_data, loggs)
 
     plot(
         [cyield],
+        stop=stop,
         oname=oname,
         legend_pos=None,
         yoffset=1.65,

@@ -23,7 +23,7 @@ def yield_data(data, particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_simple(particle, spmc, data, yield_data):
+def test_simple(particle, spmc, data, yield_data, stop):
     with open_loggs() as loggs:
         estimator = Analysis(Options(particle=particle))
         raw_yield = estimator.transform(data, loggs).spectrum
@@ -36,4 +36,4 @@ def test_simple(particle, spmc, data, yield_data):
         )
         corr_yield = estimator.transform((yield_data, spmc), loggs)
         print([raw_yield, efficiency, corr_yield])
-        Comparator().compare([raw_yield, efficiency, corr_yield])
+        Comparator(stop=stop).compare([raw_yield, efficiency, corr_yield])

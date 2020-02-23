@@ -22,15 +22,15 @@ def options():
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_yield_ratio(data, options):
+def test_yield_ratio(data, options, stop):
     options_eta, options_pi0 = options
 
     estimator = YieldRatio(
         options_eta=options_eta,
         options_pi0=options_pi0,
-        plot=True
+        plot=stop
     )
 
-    with open_loggs("debug eta pion ratio") as loggs:
+    with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
-        Comparator().compare(output)
+        Comparator(stop=stop).compare(output)
