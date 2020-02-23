@@ -626,6 +626,7 @@ def unity(hist):
     return ones
 
 
+# TODO: Dispatch this method
 def tf1_sum(func1, func2, name="sum"):
     np1, np2 = func1.GetNpar(), func2.GetNpar()
     start, stop = ROOT.Double(), ROOT.Double()
