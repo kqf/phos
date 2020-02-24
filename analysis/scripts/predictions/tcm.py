@@ -1,45 +1,21 @@
-import ROOT
 import pytest
 import json
 import numpy as np
 
 import spectrum.broot as br
 import spectrum.constants as ct
-from spectrum.pipeline import TransformerBase, Pipeline
+from spectrum.pipeline import FunctionTransformer
+from spectrum.pipeline import Pipeline
 from spectrum.vault import FVault
 from spectrum.plotter import plot
 from spectrum.output import open_loggs
 
 
-class HepdataInput(TransformerBase):
-    def __init__(self, table_name="Table 1", histname="Hist1D_y1", plot=False):
-        super(HepdataInput, self).__init__(plot)
-        self.histname = histname
-
-    def transform(self, item, loggs):
-        filename = ".hepdata-cachedir/{}".format(item["file"])
-        br.io.hepdata(item["hepdata"], filename, item["table"])
-        hist = br.io.read(filename, item["table"], self.histname)
-        hist.Scale(item["scale"])
-        # hist.Scale(1. / hist.Integral())
-        return hist
-
-
-class ErrorsTransformer(TransformerBase):
-    def transform(self, data, loggs):
-        for i in br.hrange(data):
-            data.SetBinError(i, 0.000001)
-        # print(br.edges(data))
-        return data
-
-
 @pytest.fixture
 def hepdata(data):
     estimator = Pipeline([
-        ("raw", HepdataInput()),
-        ("errors", ErrorsTransformer()),
+        ("raw", FunctionTransformer(br.from_hepdata, True)),
     ])
-
     with open_loggs() as loggs:
         output = estimator.transform(data, loggs)
     return output
@@ -84,6 +60,7 @@ def tcm(data, eta=0.12, particle="#pi^{0}"):
     func.SetParameter("Ae", Ae * 1000)
     func.SetParameter("A", A * 1000)
     func.SetParameter("M", mass)
+    func.SetTitle("TCM")
     # br.report(func)
     return func
 
@@ -98,6 +75,6 @@ def tcm(data, eta=0.12, particle="#pi^{0}"):
 ])
 def test_downloads_from_hepdata(hepdata, tcm):
     plot([
+        hepdata,
         tcm,
-        hepdata
     ])
