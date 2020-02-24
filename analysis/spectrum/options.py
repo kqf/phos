@@ -56,8 +56,8 @@ class OptionsSPMC(Options):
             self,
             particle="#pi^{0}",
             pt="config/pt.json",
-            invmass="config/spmc/mass-fit.json",
             calibration="config/spmc/calibration.json",
+            invmass="config/spmc/mass-fit.json",
             signal="config/spmc/cball.json",
             background="config/spmc/cball.json",
             *args, **kwargs
@@ -65,8 +65,8 @@ class OptionsSPMC(Options):
         super(OptionsSPMC, self).__init__(
             particle=particle,
             pt=pt,
-            invmass=invmass,
             calibration=calibration,
+            invmass=invmass,
             signal=signal,
             background=background,
             *args, **kwargs)
@@ -199,10 +199,9 @@ class FeeddownOptions(object):
     def __init__(self, pt="config/pt.json", stop=False, particle="#pi^{0}"):
         super(FeeddownOptions, self).__init__()
         self.particle = particle
-        self.feeddown = Options(
-            pt=pt,
-            particle=particle,
-            invmass="config/data/feeddown-mass-fit.json")
+        self.feeddown = Options(pt=pt, particle=particle)
+        self.feeddown.invmass.clean_empty_bins = False
+        self.feeddown.invmass.use_mixed = False
         # NB: Don't fit the mass and width and
         #     use the same values from the data
         # self.feeddown.calibration.mass.fit = False
