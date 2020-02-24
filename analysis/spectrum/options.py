@@ -7,7 +7,7 @@ from recordclass import recordclass
 
 MERGERANGES = {
     "#pi^{0}": [(0.0, 7.0), (7.0, 20.0)],
-    "#eta": [(0.0, 6.0), (6.0, 20.0)],
+    "#eta": [(0.0, 7.0), (7.0, 20.0)],
 }
 
 
