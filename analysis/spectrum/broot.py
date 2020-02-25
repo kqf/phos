@@ -265,17 +265,6 @@ def project_range(hist, xa, xb, axis="x"):
     return projection(hist, bin(xa), bin(xb), axis)
 
 
-def same(hist1, hist2):
-    if _prop.has_properties(hist1):
-        return _prop.same_as(hist2, hist1)
-
-    if _prop.has_properties(hist2):
-        return _prop.same_as(hist1, hist2)
-
-    raise AttributeError(
-        "Neither of hist1 and hist2 have BROOT properties")
-
-
 @multimethod
 def ratio(a, b, option="B", loggs=None):
     ratio = a.Clone("{}_div_{}".format(a.GetName(), b.GetName()))

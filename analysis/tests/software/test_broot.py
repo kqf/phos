@@ -73,18 +73,6 @@ def test_draw(stop, testhist):
         testhist.Draw()
 
 
-def test_clone_from_root(stop):
-    hist = br.BH(
-        ROOT.TH1F, "refhistROOT", "Testing set_property method",
-        100, -10, 10)
-
-    hist2 = br.BH(ROOT.TH1F, hist)
-
-    # Properties should not copy when using copy constructor
-    #
-    assert br._prop.has_properties(hist2)
-
-
 def test_clone(stop):
     hist = br.BH(
         ROOT.TH1F,
@@ -99,9 +87,6 @@ def test_clone(stop):
 
     # Copy differs clone
     assert hist.GetEntries() == hist2.GetEntries()
-
-    # Now copy the properties
-    assert br.same(hist2, hist)
 
 
 def test_copy(stop):
@@ -120,9 +105,6 @@ def test_copy(stop):
     # Copy differs clone
     # These should not equal
     assert not hist.GetEntries() == hist2.GetEntries()
-
-    # Now copy the properties
-    assert br.same(hist2, hist)
 
 
 def test_bh2_draws_projection_range(stop):
@@ -147,9 +129,6 @@ def test_bh2_draws_projection_range(stop):
 
     with su.canvas(stop=stop):
         hist2.Draw()
-
-    # Now copy the properties
-    assert br.same(hist2, hist)
 
 
 def test_projection_saves_area(stop):
@@ -241,12 +220,8 @@ def test_ratio(stop):
     hist1.FillRandom("gaus")
     hist1.FillRandom("expo")
     ratio = br.ratio(hist1, hist2)
-
-    # Check if the numerator and the ratio are the same
-    assert br.same(hist1, ratio)
-
-    # Check if the numerator and the ratio are not same
-    assert not br.same(hist2, ratio)
+    assert br.same_binning(ratio, hist1)
+    assert br.same_binning(ratio, hist2)
 
 
 def test_sets_events(stop):
@@ -287,7 +262,6 @@ def test_rebins_proba(stop, edges):
 
     # Just check if ratio gives warnings
     ratio = br.ratio(rebinned, rebinned)
-    assert br.same(rebinned, hist1)
     assert ratio.GetEntries()
 
 
