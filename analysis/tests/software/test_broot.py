@@ -24,18 +24,13 @@ def edges(settings):
 
 
 def write_histogram(filename, selection, histname):
-    hist = br.BH(
-        ROOT.TH1F, histname,
-        'Testing reading histograms from a rootfile',
-        10, -3, 3)
+    hist = ROOT.TH1F(histname, 'reading histograms from a rootfile', 10, -3, 3)
     hist.FillRandom('gaus')
     tlist = ROOT.TList()
     tlist.SetOwner(True)
     tlist.Add(hist)
-
-    ofile = ROOT.TFile(filename, 'recreate')
-    tlist.Write(selection, 1)
-    ofile.Close()
+    with br.tfile(filename, "recreate"):
+        tlist.Write(selection, ROOT.TObject.kSingkeKey)
     return br.clone(hist)
 
 
@@ -279,9 +274,7 @@ def test_sum(stop):
 
     newlabel = 'total'
     total = br.hsum(hists, newlabel)
-
     assert total.GetEntries() == entries
-    assert total.label == newlabel
 
 
 def test_average(stop):

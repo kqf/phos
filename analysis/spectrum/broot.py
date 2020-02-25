@@ -234,8 +234,6 @@ def setp(dest, source=None, force=False):
 def clone(hist, name="_copied", replace=False):
     name = name if replace else hist.GetName() + name
     cloned = hist.Clone(name)
-    prop = hist if _prop.has_properties(hist) else _prop()
-    setp(cloned, prop)
     return cloned
 
 
@@ -329,16 +327,9 @@ def hsum(histograms, label=None):
         raise ValueError("You are trying to sum 0 histograms")
 
     first = histograms[0]
-    label = label if label else first.label
-
-    result = copy(first, label)
-    setp(result, first)
-    result.label = label
-
-    # Finally sum the histograms
+    result = copy(first, first.GetName())
     for h in histograms:
         result.Add(h)
-
     return result
 
 
