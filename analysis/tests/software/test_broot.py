@@ -62,35 +62,15 @@ def write_histograms(filename, selection, histnames):
 
 @pytest.fixture(scope="module")
 def testhist():
-    testhist = br.BH(
-        ROOT.TH1F, "hist" + str(random.randint(0, 1e9)),
-        "Testing creating of the histogram", 100, -10, 10,
-        label='test')
+    testhist = ROOT.TH1F("nominal_hist", "Testing", 100, -10, 10)
     testhist.FillRandom("gaus")
     return testhist
-
-
-def test_properties(stop, testhist):
-    for p in br._prop._properties.keys():
-        assert p in dir(testhist)
 
 
 def test_draw(stop, testhist):
     assert testhist is not None
     with su.canvas(stop=stop):
         testhist.Draw()
-
-
-def test_setp(stop, testhist):
-    hist = ROOT.TH1F(
-        "refhistSet",
-        "Testing set_property method",
-        100, -10, 10)
-
-    # Set properties of root object
-    br.setp(hist, testhist)
-
-    assert br.same(hist, testhist)
 
 
 def test_clone_from_root(stop):
