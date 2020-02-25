@@ -211,7 +211,7 @@ class io(object):
 
 @contextmanager
 def tfile(filename, option=""):
-    if not os.path.isfile(filename):
+    if not os.path.isfile(filename) and not option:
         raise IOError("No such file: {0}".format(filename))
 
     rfile = ROOT.TFile(filename, option)

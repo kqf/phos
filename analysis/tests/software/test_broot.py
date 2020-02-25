@@ -30,29 +30,21 @@ def write_histogram(filename, selection, histname):
     tlist.SetOwner(True)
     tlist.Add(hist)
     with br.tfile(filename, "recreate"):
-        tlist.Write(selection, ROOT.TObject.kSingkeKey)
+        tlist.Write(selection, ROOT.TObject.kSingleKey)
     return br.clone(hist)
 
 
 def write_histograms(filename, selection, histnames):
-    hists = [br.BH(
-        ROOT.TH1F, histname,
-        'Testing reading histograms from a rootfile',
-        10, -3, 3)
-        for histname in histnames
-    ]
-
-    for hist in hists:
-        hist.FillRandom('gaus')
+    hists = [ROOT.TH1F(histname, '', 10, -3, 3) for histname in histnames]
 
     tlist = ROOT.TList()
     tlist.SetOwner(True)
-    list(map(tlist.Add, hists))
+    for hist in hists:
+        hist.FillRandom('gaus')
+        tlist.Add(hist)
 
-    ofile = ROOT.TFile(filename, 'recreate')
-    tlist.Write(selection, 1)
-    ofile.Close()
-    return list(map(br.clone, hists))
+    with br.tfile(filename, "recreate"):
+        tlist.Write(selection, ROOT.TObject.kSingleKey)
 
 
 @pytest.fixture(scope="module")
