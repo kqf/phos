@@ -794,22 +794,6 @@ def test_calculates_ratio_bin_centers(exp_data):
     assert normalized is not exp_data
 
 
-def test_sums_tf1_functions():
-    # functions = [ROOT.TF1("func", "[0]") for i in range(10)]
-    # for f in functions:
-    #     functions.SetParameter(0, 10)
-
-    func1 = ROOT.TF1("func1", "[0]")
-    func1.SetParameter(0, 10)
-
-    func2 = ROOT.TF1("func2", "[0]")
-    func2.SetParameter(0, 20)
-
-    total = br.tf1_sum(func1, func2)
-    total.SetParameters(10, 20)
-    assert total.Eval(100) == 10 + 20
-
-
 def test_retrieves_edges():
     edges_nominal = array.array('d', [0, 1, 2, 3, 4, 5, 10, 100])
     hist = ROOT.TH1F("h", "hist", len(edges_nominal) - 1, edges_nominal)
