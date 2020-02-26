@@ -265,30 +265,21 @@ def project_range(hist, xa, xb, axis="x"):
 @multimethod
 def ratio(a, b, option="B", loggs=None):
     ratio = a.Clone("{}_div_{}".format(a.GetName(), b.GetName()))
-    if type(b) == ROOT.TF1:
-        ratio.Divide(b)
-    else:
-        ratio.Divide(a, b, 1, 1, option)
-
-    titles = a.GetYaxis().GetTitle().strip(), b.GetYaxis().GetTitle().strip()
-    if not any(titles):
-        try:
-            label = a.label + " / " + b.label
-        except AttributeError:
-            label = ""
-    else:
-        label = "{} / {}".format(*titles)
-    ratio.GetYaxis().SetTitle(label)
+    ratio.Divide(a, b, 1, 1, option)
+    ratio.GetYaxis().SetTitle(
+        "{}/{}".format(
+            a.GetYaxis().GetTitle().strip(),
+            b.GetYaxis().GetTitle().strip()
+        )
+    )
     if not ratio.GetSumw2N():
         ratio.Sumw2()
-
     return ratio
 
 
 @ratio.register(ROOT.TH1, ROOT.TF1)
 def _(a, b, option="B", loggs=None):
     ratio = a.Clone("{}_div_{}".format(a.GetName(), b.GetName()))
-    _prop.copy_everything(ratio, a)
     ratio.Divide(b)
     if not ratio.GetSumw2N():
         ratio.Sumw2()

@@ -282,6 +282,7 @@ class Visualizer(MultipleVisualizer):
     def compare_visually(self, hists, loggs=None):
         a, b = hists
         ratio = br.ratio(a, b, self.ratio)
+        br.setp(ratio)
         if loggs is not None and not self.stop:
             self.cached_ratio = ratio
             self.cached_hists = hists

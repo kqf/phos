@@ -170,10 +170,7 @@ def test_sets_events(stop):
 
 
 def test_rebins_proba(stop, edges):
-    hist1 = br.BH(
-            ROOT.TH1F,
-        "refhistRebinProba1", "Testing rebins proba", 200, 0, 20,
-        label="test ratio", logy=True, logx=False)
+    hist1 = ROOT.TH1F("test", "rebins proba", 200, 0, 20)
     hist1.Sumw2()
     hist1.FillRandom("pol0")
     rebinned = br.rebin_proba(hist1, edges=edges)
@@ -182,7 +179,7 @@ def test_rebins_proba(stop, edges):
 
     # Just check if ratio gives warnings
     ratio = br.ratio(rebinned, rebinned)
-    assert ratio.GetEntries()
+    assert ratio.GetEntries() > 0
 
 
 def test_sum(stop):
