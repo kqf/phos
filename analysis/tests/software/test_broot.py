@@ -70,25 +70,6 @@ def test_copy(stop, nominal_hist):
     assert not nominal_hist.GetEntries() == hist2.GetEntries()
 
 
-def test_bh2_draws_projection_range(stop):
-    hist = ROOT.TH2F("", "ProjectX", 100, 20, 30, 100, -10, 10)
-
-    # Fill random values
-    for i in br.hrange(hist):
-        for j in br.hrange(hist, 'y'):
-            hist.SetBinContent(i, j, i * i * j * random.randint(1, 4))
-
-    with su.canvas(stop=stop):
-        hist.Draw('colz')
-
-    # NB: There is no need to manually set properties
-    projection = br.project_range(hist, -5, 5)
-    with su.canvas(stop=stop):
-        projection.Draw()
-
-    assert projection.Integral() > 0
-
-
 def test_projection_saves_area(stop):
     # NB: Bin according to this sequence https://oeis.org/A000124
     #     so the bin width of a projection hist always increases
@@ -97,16 +78,7 @@ def test_projection_saves_area(stop):
 
     nbinsx, startx, stopx = carter(ncarter), -10, 10
     nbinsy, starty, stopy = 100, -10, 10
-
-    hist = br.BH(
-        ROOT.TH2F,
-        "refhistProjArea",  # Name
-        "Testing updated ProjectX method for BH2F",   # Title
-        nbinsx, startx, stopx,  # Xbins
-        nbinsy, starty, stopy,  # Ybins
-        label="test prop",  # Label
-        logy=1, logx=0  # Misc properties
-    )
+    hist = ROOT.TH2F("test", "", nbinsx, startx, stopx, nbinsy, starty, stopy)
 
     # Fill random values
     for i in br.hrange(hist):
