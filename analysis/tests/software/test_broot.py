@@ -71,13 +71,7 @@ def test_copy(stop, nominal_hist):
 
 
 def test_bh2_draws_projection_range(stop):
-    hist = br.BH(
-        ROOT.TH2F, "refhistProj",                  # Name
-        "Testing updated ProjectX method for BH2F",  # Title
-        100, 20, 30, 100, -10, 10,                 # Xbins, Ybins
-        label="test prop",                        # Label
-        logy=1, logx=0            # Misc properties
-    )
+    hist = ROOT.TH2F("", "ProjectX", 100, 20, 30, 100, -10, 10)
 
     # Fill random values
     for i in br.hrange(hist):
@@ -88,10 +82,11 @@ def test_bh2_draws_projection_range(stop):
         hist.Draw('colz')
 
     # NB: There is no need to manually set properties
-    hist2 = br.project_range(hist, -5, 5)
-
+    projection = br.project_range(hist, -5, 5)
     with su.canvas(stop=stop):
-        hist2.Draw()
+        projection.Draw()
+
+    assert projection.Integral() > 0
 
 
 def test_projection_saves_area(stop):

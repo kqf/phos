@@ -254,7 +254,6 @@ def projection(hist, a, b, axis="x"):
     projection = hist.ProjectionX if axis.lower() == "x" else hist.ProjectionY
     project = hist.ProjectionX if axis.lower() == "x" else hist.ProjectionY
     projection = project(name, a, b - 1)
-    setp(projection, hist, force=True)
     return projection
 
 
