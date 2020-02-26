@@ -48,50 +48,26 @@ def write_histograms(filename, selection, histnames):
 
 
 @pytest.fixture(scope="module")
-def testhist():
-    testhist = ROOT.TH1F("nominal_hist", "Testing", 100, -10, 10)
-    testhist.FillRandom("gaus")
-    return testhist
+def nominal_hist():
+    nominal_hist = ROOT.TH1F("nominal_hist", "Testing", 100, -10, 10)
+    nominal_hist.FillRandom("gaus")
+    return nominal_hist
 
 
-def test_draw(stop, testhist):
-    assert testhist is not None
+def test_draw(stop, nominal_hist):
+    assert nominal_hist is not None
     with su.canvas(stop=stop):
-        testhist.Draw()
+        nominal_hist.Draw()
 
 
-def test_clone(stop):
-    hist = br.BH(
-        ROOT.TH1F,
-        "refhistClone",
-        "Testing updated Clone method", 100, -10, 10,
-        label="test prop", logy=True, logx=False)
-
-    hist.FillRandom("gaus")
-
-    # NB: There is no need to manually set properties
-    hist2 = br.clone(hist)
-
-    # Copy differs clone
-    assert hist.GetEntries() == hist2.GetEntries()
+def test_clone(stop, nominal_hist):
+    hist2 = br.clone(nominal_hist)
+    assert nominal_hist.GetEntries() == hist2.GetEntries()
 
 
-def test_copy(stop):
-    hist = br.BH(
-        ROOT.TH1F,
-        "refhistCopy",
-        "Testing updated Clone method", 100, -10, 10,
-        label="test prop", logy=True, logx=False)
-
-    hist.FillRandom("gaus")
-
-    # NB: There is no need to manually set properties
-    # Now try copy instead of clone
-    hist2 = br.copy(hist)
-
-    # Copy differs clone
-    # These should not equal
-    assert not hist.GetEntries() == hist2.GetEntries()
+def test_copy(stop, nominal_hist):
+    hist2 = br.copy(nominal_hist)
+    assert not nominal_hist.GetEntries() == hist2.GetEntries()
 
 
 def test_bh2_draws_projection_range(stop):
