@@ -265,10 +265,6 @@ def project_range(hist, xa, xb, axis="x"):
 @multimethod
 def ratio(a, b, option="B", loggs=None):
     ratio = a.Clone("{}_div_{}".format(a.GetName(), b.GetName()))
-    _prop.copy_everything(ratio, a)
-
-    # if ratio.GetNbinsX() != b.GetNbinsX():
-    # ratio, b = rebin_as(ratio, b)
     if type(b) == ROOT.TF1:
         ratio.Divide(b)
     else:

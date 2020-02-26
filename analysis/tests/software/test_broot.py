@@ -135,18 +135,8 @@ def test_read_multiple(stop):
 
 
 def test_ratio(stop):
-    hist1 = br.BH(
-        ROOT.TH1F,
-        "refhistRatio1",
-        "Testing the ratio method", 100, -10, 10,
-        label="test ratio", logy=True, logx=False)
-
-    hist2 = br.BH(
-        ROOT.TH1F,
-        "refhistRatio2",
-        "Testing the ratio method", 100, -10, 10,
-        label="test ratio b", logy=True, logx=False)
-
+    hist1 = ROOT.TH1F("test1", "numerator", 100, -10, 10)
+    hist2 = ROOT.TH1F("test2", "denominator", 100, -10, 10)
     hist1.FillRandom("gaus")
     hist1.FillRandom("expo")
     ratio = br.ratio(hist1, hist2)
