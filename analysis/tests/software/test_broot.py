@@ -195,18 +195,13 @@ def test_average(stop):
     assert mean.GetBinError(10) == hists[0].GetBinError(10)
 
 
-def test_scales_histogram(stop):
-    nbins, start, stop = 200, -10, 10
-
-    hist = br.BH(
-        ROOT.TH1F,
-        "refhistScale", "Testing scalew", nbins, start, stop,
-        label="scale", logy=True, logx=False)
+def test_scales_histogram(nbins=200, hmin=-10, hmax=10):
+    hist = ROOT.TH1F("refhistScale", "Testing scalew", nbins, hmin, hmax)
 
     hist.FillRandom('gaus')
 
     # Calculate bin width
-    binwidth = nbins * 1. / (stop - start)
+    binwidth = nbins * 1. / (hmax - hmin)
 
     # For normal even binning these numbers are the same
     entries, integral = hist.GetEntries(), hist.Integral()
@@ -622,7 +617,7 @@ def exp_data():
     hist = ROOT.TH1F("random", "Testing bin centers; x", len(data) - 1, data)
     function = ROOT.TF1("function", "TMath::Exp(-0.5 * x)", 0, 100)
     hist.FillRandom(function.GetName())
-    return br.scalewidth(hist)
+    return br.scalew(hist)
 
 
 def test_calculates_bin_centers(exp_data):

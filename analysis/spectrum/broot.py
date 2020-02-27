@@ -321,20 +321,9 @@ def hsum(histograms, label=None):
 def scalew(hist, factor=None):
     if type(hist) == ROOT.TF1:
         return
-
     if factor is None:
         factor = min(hist.GetBinWidth(i) for i in hrange(hist))
     hist.Scale(factor, "width")
-    return hist
-
-
-def scalewidth(hist):
-    if not hist.GetSumw2N():
-        hist.Sumw2()
-
-    for i in hrange(hist):
-        width = hist.GetBinWidth(i)
-        hist.SetBinContent(i, hist.GetBinContent(i) / width)
     return hist
 
 
