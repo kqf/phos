@@ -171,11 +171,7 @@ def test_rebins_proba(stop, edges):
 
 
 def test_sum(stop):
-    hists = [br.BH(
-        ROOT.TH1F,
-        "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
-        label="%dth histogram" % i, logy=True, logx=False)
-        for i in range(10)]
+    hists = [ROOT.TH1F("tt{}".format(i), "", 200, -10, 10) for i in range(10)]
 
     for hist in hists:
         hist.FillRandom('gaus')
@@ -188,22 +184,15 @@ def test_sum(stop):
 
 
 def test_average(stop):
-    hists = [br.BH(
-        ROOT.TH1F,
-        "refhistSum_%d" % i, "Testing sum %d" % i, 200, -10, 10,
-        label="%dth histogram" % i, logy=True, logx=False)
-        for i in range(10)]
-
+    hists = [ROOT.TH1F("tt{}".format(i), "", 200, -10, 10) for i in range(10)]
     for hist in hists:
         for i in range(10):
             hist.Fill(i, i)
-
-    newlabel = 'average'
-    total = br.hsum(hists, newlabel)
-    assert total.GetBinContent(1) == hists[0].GetBinContent(1)
-    assert total.GetBinContent(10) == hists[0].GetBinContent(10)
-    assert total.GetBinError(1) == hists[0].GetBinError(1)
-    assert total.GetBinError(10) == hists[0].GetBinError(10)
+    mean = br.average(hists, label="average")
+    assert mean.GetBinContent(1) == hists[0].GetBinContent(1)
+    assert mean.GetBinContent(10) == hists[0].GetBinContent(10)
+    assert mean.GetBinError(1) == hists[0].GetBinError(1)
+    assert mean.GetBinError(10) == hists[0].GetBinError(10)
 
 
 def test_scales_histogram(stop):
