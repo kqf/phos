@@ -218,40 +218,8 @@ def test_scales_histogram(nbins=200, hmin=-10, hmax=10):
     assert hist.Integral() == integral * binwidth * binwidth * 2
 
 
-def test_scales_for_binwith(stop):
-    nbins, start, stop = 200, -10, 10
-
-    hist = br.BH(
-        ROOT.TH1F,
-        "refhistScale", "Testing scalew", nbins, start, stop,
-        label="scale", logy=True, logx=False)
-
-    hist.FillRandom('gaus')
-
-    # Calculate bin width
-    binwidth = nbins * 1. / (stop - start)
-
-    # For normal even binning these numbers are the same
-    entries, integral = hist.GetEntries(), hist.Integral()
-    assert entries == integral
-
-    br.scalew(hist, 1)
-    assert entries == hist.GetEntries()
-    assert hist.Integral() == integral * binwidth
-
-    # NB: Be careful when applying scalew consecutively
-    #     the factors multiply
-    br.scalew(hist, 2)
-    assert pytest.approx(entries) == hist.GetEntries()
-    assert hist.Integral() == integral * binwidth * binwidth * 2
-
-
-def test_calculates_area_and_error(stop):
-    nbins, start, stop = 10, 0, 10
-    hist = br.BH(
-        ROOT.TH1F,
-        "refhistAreaError", "Testing area and error", nbins, start, stop,
-        label="scale", logy=True, logx=False)
+def test_calculates_area_and_error(nbins=10, hmin=0, hmax=10):
+    hist = ROOT.TH1F("testarea", "", nbins, hmin, hmax)
     hist.Sumw2()
 
     for i in range(nbins):
@@ -259,6 +227,7 @@ def test_calculates_area_and_error(stop):
 
     def histarea(a, b):
         return b - a
+
     # These areas work according to the formula
     test_areas = (0, 10), (5, 10), (0, 0)
     for interval in test_areas:
@@ -274,7 +243,6 @@ def test_calculates_area_and_error(stop):
     for interval in fail_areas:
         area, error = br.area_and_error(hist, *interval)
         true = histarea(*interval)
-
         assert area != true
         # There is no need to compare errors
 
