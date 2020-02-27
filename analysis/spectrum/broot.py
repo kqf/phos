@@ -310,7 +310,6 @@ def rebin_proba(hist, edges, name="_rebinned"):
 def hsum(histograms, label=None):
     if not histograms:
         raise ValueError("You are trying to sum 0 histograms")
-
     first = histograms[0]
     result = copy(first, first.GetName())
     for h in histograms:
@@ -325,12 +324,6 @@ def scalew(hist, factor=None):
         factor = min(hist.GetBinWidth(i) for i in hrange(hist))
     hist.Scale(factor, "width")
     return hist
-
-
-def scale_clone(hist, scale=1.0):
-    scaled = hist.Clone()
-    scaled.Scale(scale)
-    return scaled
 
 
 def bincenterf(hist, isxaxis=True):

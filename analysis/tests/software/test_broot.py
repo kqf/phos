@@ -217,10 +217,6 @@ def test_scales_histogram(nbins=200, hmin=-10, hmax=10):
     assert pytest.approx(entries) == hist.GetEntries()
     assert hist.Integral() == integral * binwidth * binwidth * 2
 
-    scaled = br.scale_clone(hist, 2)
-    assert scaled is not hist
-    assert scaled.Integral() == integral * binwidth * binwidth * 4
-
 
 def test_scales_for_binwith(stop):
     nbins, start, stop = 200, -10, 10
