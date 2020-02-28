@@ -449,10 +449,10 @@ def test_sets_to_zero(stop):
         hist1.Draw()
 
     a, b = bin_range
-    for b in range(1, hist1.GetNbinsX()):
-        if a - 1 < b < b:
+    for i in range(1, hist1.GetNbinsX()):
+        if a - 1 < i < b:
             continue
-        assert hist1.GetBinContent(b) == 0
+        assert hist1.GetBinContent(i) == 0
 
 
 def test_sum_trimm(stop):
@@ -488,10 +488,9 @@ def test_sum_trimm(stop):
 
 
 def test_calculates_confidence_intervals(stop):
-    hist1 = br.BH(ROOT.TH1F, "hFit", "Test BROOT: Trimm", 100, -4, 4)
+    hist1 = ROOT.TH1F("hFit", "Test BROOT: Trimm", 100, -4, 4)
     hist1.FillRandom("gaus")
     function = ROOT.gROOT.FindObject("gaus")
-
     ci = br.confidence_intervals(hist1, function)
 
     assert hist1.GetNbinsX() == ci.GetNbinsX()
