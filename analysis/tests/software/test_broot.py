@@ -247,30 +247,20 @@ def test_calculates_area_and_error(nbins=10, hmin=0, hmax=10):
         # There is no need to compare errors
 
 
-def test_saves_histogram(stop):
-    oname, selection, histname = (
-        'testSave.root', 'testSelection', 'refhistSave')
+@pytest.fixture
+def iohist(nominal_hist, oname="testSave.root", selection='testSelection'):
+    br.io.save(nominal_hist, oname, selection)
+    yield oname, selection, nominal_hist.GetName()
+    os.remove(oname)
 
-    hist = br.BH(
-        ROOT.TH1F,
-        histname, "Testing scalew", 200, -10, 10,
-        label="scale", logy=True, logx=False)
-    hist.FillRandom('gaus')
-    integral = hist.Integral()
-    entries = hist.GetEntries()
 
-    br.io.save(hist, oname, selection)
-
-    # It's important to check if we don't delete
-    # the hist accidentally
-    assert hist is not None
-
+def test_saves_histogram(iohist, nominal_hist):
+    oname, selection, histname = iohist
     assert os.path.isfile(oname)
 
     ffile = br.io.read(oname, selection, histname)
-    assert ffile.GetEntries() == entries
-    assert ffile.Integral() == integral
-    os.remove(oname)
+    assert ffile.GetEntries() == nominal_hist.Integral()
+    assert ffile.Integral() == nominal_hist.Integral()
 
 
 def test_initializes_inputs(stop):

@@ -136,7 +136,6 @@ class io(object):
                 .format(filename, selection, histname))
 
         hist = hist.Clone()
-        _prop.init(hist)
         lst.IsA().Destructor(lst)
         return hist
 
@@ -161,7 +160,6 @@ class io(object):
                     .format(filename, selection, histname))
 
             hist = hist.Clone()
-            _prop.init(hist)
             histograms.append(hist)
         lst.IsA().Destructor(lst)
         return histograms
