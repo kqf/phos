@@ -264,7 +264,7 @@ def test_saves_histogram(iohist, nominal_hist):
     assert ffile.Integral() == nominal_hist.Integral()
 
 
-def test_initializes_inputs(stop):
+def test_initializes_properties_on_inputs(stop):
     # Just to check if init decorator works as expected
     class Empty(object):
 
@@ -275,10 +275,7 @@ def test_initializes_inputs(stop):
         def identity(self, hists):
             return hists
 
-    inputs = (ROOT.TH1F("hTestInitMultiple%d" % i,
-                        "Testing sum %d" % i, 200, -10, 10)
-              for i in range(10))
-
+    inputs = (ROOT.TH1F("tt{}".format(i), "", 200, -10, 10) for i in range(10))
     for hist in inputs:
         hist.FillRandom('gaus')
 
@@ -435,12 +432,10 @@ def test_diffs_histograms(stop):
 
 
 def test_sets_to_zero(stop):
-    hist1 = br.BH(ROOT.TH1F, "hAddTrimm1",
-                  "Test BROOT1: Test add Trimm", 100, -4, 4)
-    hist1.label = 'Remove this label later'
+    hist1 = ROOT.TH1F("test", "Test BROOT1: Test add Trimm", 100, -4, 4)
     hist1.SetLineColor(46)
-    for bin in br.hrange(hist1):
-        hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
+    for b in br.hrange(hist1):
+        hist1.SetBinContent(b, - 2 * hist1.GetBinCenter(b) - 1)
 
     zero_range = (-1, 4)
     bin_range = map(hist1.FindBin, zero_range)
@@ -454,11 +449,10 @@ def test_sets_to_zero(stop):
         hist1.Draw()
 
     a, b = bin_range
-    for bin in range(1, hist1.GetNbinsX()):
-        if a - 1 < bin < b:
+    for b in range(1, hist1.GetNbinsX()):
+        if a - 1 < b < b:
             continue
-
-        assert hist1.GetBinContent(bin) == 0
+        assert hist1.GetBinContent(b) == 0
 
 
 def test_sum_trimm(stop):
