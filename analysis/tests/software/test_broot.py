@@ -45,6 +45,7 @@ def write_histograms(filename, selection, histnames):
 
     with br.tfile(filename, "recreate"):
         tlist.Write(selection, ROOT.TObject.kSingleKey)
+    return list(map(br.clone, hists))
 
 
 @pytest.fixture(scope="module")
