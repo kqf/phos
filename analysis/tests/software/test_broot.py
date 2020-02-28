@@ -456,19 +456,15 @@ def test_sets_to_zero(stop):
 
 
 def test_sum_trimm(stop):
-    hist1 = br.BH(ROOT.TH1F, "hAddTrimm1",
-                  "Test BROOT1: Test add Trimm", 100, -4, 4)
-    hist1.label = 'Remove this label later'
+    hist1 = ROOT.TH1F("hAdd1", "Test BROOT1: Test add Trimm", 100, -4, 4)
     hist1.SetLineColor(46)
-    for bin in br.hrange(hist1):
-        hist1.SetBinContent(bin, - 2 * hist1.GetBinCenter(bin) - 1)
+    for i in br.hrange(hist1):
+        hist1.SetBinContent(i, - 2 * hist1.GetBinCenter(i) - 1)
 
-    hist2 = br.BH(ROOT.TH1F, "hAddTrimm2",
-                  "Test BROOT2: Test add Trimm", 100, -4, 4)
-    hist2.label = 'Remove this label later'
+    hist2 = ROOT.TH1F("hAdd2", "Test BROOT2: Test add Trimm", 100, -4, 4)
     hist2.SetLineColor(37)
-    for bin in br.hrange(hist2):
-        hist2.SetBinContent(bin, hist2.GetBinCenter(bin))
+    for i in br.hrange(hist2):
+        hist2.SetBinContent(i, hist2.GetBinCenter(i))
 
     hists = hist1, hist2
     ranges = (-4, -0.5), (-0.5, 4)
@@ -481,10 +477,10 @@ def test_sum_trimm(stop):
 
     for hh, rr in zip(hists, ranges):
         a, b = map(hist.FindBin, rr)
-        for bin in range(1, hh.GetNbinsX()):
-            if a < bin < b - 1:
-                assert hh.GetBinContent(bin), hist.GetBinContent(bin)
-                # print(hh.GetBinContent(bin), hist.GetBinContent(bin))
+        for i in range(1, hh.GetNbinsX()):
+            if a < i < b - 1:
+                assert hh.GetBinContent(i), hist.GetBinContent(i)
+                # print(hh.GetBinContent(i), hist.GetBinContent(i))
 
 
 def test_calculates_confidence_intervals(stop):
