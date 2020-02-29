@@ -242,7 +242,7 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
 
 
 @pytest.fixture
-def xt_scaled_data(xt_data, combined_n):
+def xt_sdata(xt_data, combined_n):
     scaled = []
     for h in xt_data:
         s = h.Clone("{}_scaled".format(h.GetName()))
@@ -258,10 +258,48 @@ def xt_scaled_data(xt_data, combined_n):
     "#pi^{0}",
     "#eta",
 ], scope="module")
-def test_scaled_spectra(xt_scaled_data, combined_n, ltitle, oname):
+def test_scaled_spectra(xt_sdata, combined_n, ltitle, oname):
     title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
     plot(
-        xt_scaled_data[::-1],
+        xt_sdata[::-1],
+        ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
+        xtitle="#it{x}_{T}",
+        ltitle=ltitle,
+        more_logs=False,
+        legend_pos=(0.24, 0.15, 0.5, 0.35),
+        oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
+    )
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+], scope="module")
+def test_scaled_spectra_ratios(particle, xt_sdata, combined_n, ltitle, oname):
+    title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
+    multigraph = ROOT.TMultiGraph()
+    for i, n in enumerate(xt_sdata):
+        ngraph = br.hist2graph(n.tot)
+        ngraph.SetMarkerColor(br.icolor(i))
+        ngraph.SetLineColor(br.icolor(i))
+        ngraph.SetMarkerStyle(20)
+        ngraph.SetMarkerSize(1)
+        multigraph.Add(ngraph)
+
+    xmax = multigraph.GetXaxis().GetXmax()
+
+    nom = ROOT.TF1("nom", "[0] * x[0]^[1]", 1e-3, xmax)
+    nom.FixParameter(1, -combined_n[0] - 1)
+    nom.SetParameter(0, 300.)
+    nom.SetLineColor(ROOT.kBlack)
+    nom.SetLineStyle(9)
+
+    multigraph.Fit(nom, "R")
+    br.report(nom, particle)
+    plot(
+        xt_sdata[::-1] + [nom],
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         xtitle="#it{x}_{T}",
         ltitle=ltitle,
