@@ -4,7 +4,6 @@ import json
 import six
 import numpy as np
 import uncertainties as uc
-import numpy as np
 import uncertainties.unumpy as unp
 import itertools
 
@@ -12,7 +11,7 @@ import spectrum.broot as br
 from multimethod import multimethod
 
 from spectrum.pipeline import TransformerBase, Pipeline
-from spectrum.pipeline import ParallelPipeline, FunctionTransformer
+from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
 from spectrum.plotter import plot
@@ -22,7 +21,12 @@ NOISY_COMBINATIONS = {(8000, 13000), (7000, 8000), (7000, 13000)}
 
 
 class DataExtractor(TransformerBase):
-    def transform(self, particle, loggs):
+    @multimethod
+    def transform(self, info, loggs):
+        return br.from_hepdata(info)
+
+    @transform.register(TransformerBase, str)
+    def _(self, particle, loggs):
         hist = spectrum(particle)
         hist.energy = 13000
         hist.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
@@ -38,8 +42,8 @@ class XTtransformer(TransformerBase):
             self._transform(x.tot, xtedges),
             self._transform(x.stat, xtedges),
             self._transform(x.syst, xtedges),
+            energy=x.energy,
         )
-        xt.energy = x.energy
         xt.fitf = x.fitf
         return xt
 
@@ -67,22 +71,10 @@ class DataFitter(TransformerBase):
 
 def xt(fitf):
     return Pipeline([
-        ("cyield", FunctionTransformer(br.from_hepdata, True)),
+        ("cyield", DataExtractor()),
         ("fit", DataFitter(fitf)),
         ("xt", XTtransformer()),
     ])
-
-
-@pytest.fixture
-def xt_measured(particle, tcm):
-    estimator = Pipeline([
-        ("cyield", DataExtractor()),
-        ("fit", DataFitter(tcm)),
-        ("xt", XTtransformer())
-    ])
-    with open_loggs() as loggs:
-        result = estimator.transform(particle, loggs)
-    return result
 
 
 @multimethod
@@ -129,18 +121,21 @@ def multispectra(spectra):
     return multigraph
 
 
-@pytest.fixture
-def xt_data(particle, tcm, xt_measured):
+def xt_dataf(particle, tcm):
     with open("config/predictions/hepdata.json") as f:
         data = json.load(f)[particle]
+        data["pp 13 TeV"] = particle
     labels, links = zip(*six.iteritems(data))
     with open_loggs() as loggs:
         steps = [(l, xt(tcm)) for l in labels]
         histograms = ParallelPipeline(steps).transform(links, loggs)
-    spectra = sorted(histograms, key=lambda x: x.energy)
-    print(spectra[0].energy)
-    spectra.append(xt_measured)
-    return spectra[::-1]
+    spectra = sorted(histograms, key=lambda x: -x.energy)
+    return spectra
+
+
+@pytest.fixture
+def xt_data(particle, tcm):
+    return xt_dataf(particle, tcm)
 
 
 @pytest.fixture
