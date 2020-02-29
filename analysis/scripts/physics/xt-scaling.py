@@ -118,6 +118,18 @@ def _(hist1, hist2):
     return results
 
 
+def multispectra(spectra):
+    multigraph = ROOT.TMultiGraph()
+    for i, n in enumerate(spectra):
+        ngraph = br.hist2graph(n.tot)
+        ngraph.SetMarkerColor(br.icolor(i))
+        ngraph.SetLineColor(br.icolor(i))
+        ngraph.SetMarkerStyle(20)
+        ngraph.SetMarkerSize(1)
+        multigraph.Add(ngraph)
+    return multigraph
+
+
 @pytest.fixture
 def xt_data(particle, tcm, xt_measured):
     with open("config/predictions/hepdata.json") as f:
@@ -128,7 +140,7 @@ def xt_data(particle, tcm, xt_measured):
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
     spectra.append(xt_measured)
-    return spectra
+    return spectra[::-1]
 
 
 @pytest.fixture
@@ -149,7 +161,7 @@ def n_factors(xt_data):
 ])
 def test_plot_xt_distribution(xt_data, ltitle, oname):
     plot(
-        xt_data[::-1],
+        xt_data,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{x}_{T}",
         csize=(96, 128),
@@ -180,15 +192,7 @@ def test_separate_fits(n_factors, xtrange):
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", ["#pi^{0}"])
 def test_calculate_combined_n(particle, n_factors, xtrange):
-    multigraph = ROOT.TMultiGraph()
-    for i, n in enumerate(n_factors):
-        ngraph = br.hist2graph(n.tot)
-        ngraph.SetMarkerColor(br.icolor(i))
-        ngraph.SetLineColor(br.icolor(i))
-        ngraph.SetMarkerStyle(20)
-        ngraph.SetMarkerSize(1)
-        multigraph.Add(ngraph)
-
+    multigraph = multispectra(n_factors)
     fitf = ROOT.TF1("xtCombined", "[0]", 1.e-04, 1.5e-02)
     fitf.SetParName(0, "n")
 
@@ -251,6 +255,23 @@ def xt_sdata(xt_data, combined_n):
     return scaled
 
 
+@pytest.fixture
+def xt_asymptotic(particle, xt_sdata, combined_n):
+    multigraph = multispectra(xt_sdata)
+    xmax = multigraph.GetXaxis().GetXmax()
+
+    nom = ROOT.TF1("nom", "[0] * x[0]^[1]", 1e-3, xmax)
+    nom.FixParameter(1, -combined_n[0] - 1)
+    nom.SetParameter(0, 300.)
+    nom.SetLineColor(ROOT.kBlack)
+    nom.SetLineStyle(9)
+    title = "#it{{C}}_{{{p}}} #it{{x_{{T}}}}^{{-#it{{n}} - 1}}"
+    nom.SetTitle(title.format(p=particle))
+    multigraph.Fit(nom, "R")
+    br.report(nom, particle)
+    return nom
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -258,10 +279,10 @@ def xt_sdata(xt_data, combined_n):
     "#pi^{0}",
     "#eta",
 ], scope="module")
-def test_scaled_spectra(xt_sdata, combined_n, ltitle, oname):
+def test_scaled_spectra(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
     plot(
-        xt_sdata[::-1],
+        xt_sdata + [xt_asymptotic],
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         xtitle="#it{x}_{T}",
         ltitle=ltitle,
@@ -277,29 +298,16 @@ def test_scaled_spectra(xt_sdata, combined_n, ltitle, oname):
     "#pi^{0}",
     "#eta",
 ], scope="module")
-def test_scaled_spectra_ratios(particle, xt_sdata, combined_n, ltitle, oname):
+def test_scaled_ratios(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
-    multigraph = ROOT.TMultiGraph()
-    for i, n in enumerate(xt_sdata):
-        ngraph = br.hist2graph(n.tot)
-        ngraph.SetMarkerColor(br.icolor(i))
-        ngraph.SetLineColor(br.icolor(i))
-        ngraph.SetMarkerStyle(20)
-        ngraph.SetMarkerSize(1)
-        multigraph.Add(ngraph)
-
-    xmax = multigraph.GetXaxis().GetXmax()
-
-    nom = ROOT.TF1("nom", "[0] * x[0]^[1]", 1e-3, xmax)
-    nom.FixParameter(1, -combined_n[0] - 1)
-    nom.SetParameter(0, 300.)
-    nom.SetLineColor(ROOT.kBlack)
-    nom.SetLineStyle(9)
-
-    multigraph.Fit(nom, "R")
-    br.report(nom, particle)
+    multigraph = multispectra(xt_sdata)
+    xt_asymptotic.SetRange(
+        multigraph.GetXaxis().GetXmin(),
+        multigraph.GetXaxis().GetXmax(),
+    )
+    ratios = [br.ratio(h, xt_asymptotic) for h in xt_sdata]
     plot(
-        xt_sdata[::-1] + [nom],
+        ratios,
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         xtitle="#it{x}_{T}",
         ltitle=ltitle,
