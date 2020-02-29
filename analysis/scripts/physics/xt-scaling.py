@@ -4,6 +4,7 @@ import json
 import six
 import numpy as np
 import uncertainties as uc
+import numpy as np
 import uncertainties.unumpy as unp
 import itertools
 
@@ -12,12 +13,10 @@ from multimethod import multimethod
 
 from spectrum.pipeline import TransformerBase, Pipeline
 from spectrum.pipeline import ParallelPipeline, FunctionTransformer
-from spectrum.comparator import Comparator
 from spectrum.output import open_loggs
 from spectrum.spectra import spectrum
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
-from spectrum.vault import FVault
 
 NOISY_COMBINATIONS = {(8000, 13000), (7000, 8000), (7000, 13000)}
 
@@ -139,6 +138,7 @@ def xt_data(particle, tcm, xt_measured):
         steps = [(l, xt(tcm)) for l in labels]
         histograms = ParallelPipeline(steps).transform(links, loggs)
     spectra = sorted(histograms, key=lambda x: x.energy)
+    print(spectra[0].energy)
     spectra.append(xt_measured)
     return spectra[::-1]
 
@@ -317,28 +317,44 @@ def test_scaled_ratios(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     )
 
 
-@pytest.fixture
-def scaledf():
-    func = FVault().tf1("tcm", "xT")
-    func.FixParameter(5, func.GetParameter(5))
-    return func
+def critical(hist, nsigma=1):
+    y, dy, x, dx = br.bins(hist)
+    close = np.abs(y - 1) < nsigma * dy
+    if not any(close):
+        print(hist.energy)
+    return x[close], y[close], dx[close], dy[close]
 
 
-@pytest.mark.skip
+def critical_min(hist, nsigma):
+    x, y, dx, dy = critical(hist, nsigma)
+    print(critical(hist, nsigma))
+    return x[0], dx[0]
+
+
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
-])
-def test_xt_scaling(particle, xt_data, combined_n, scaledf):
-    for h in xt_data:
-        h.Scale(h.energy ** combined_n)
-        if h.energy == 8000:
-            scaledf.SetParameter(0, 2e22)
-            scaledf.SetParameter(2, 2e22)
-            h.Fit(scaledf, "", "", 9e-05, 3.e-02)
-        Comparator().compare(h)
-    for h in xt_data:
-        h.Divide(scaledf)
-    plot(xt_data)
+], scope="module")
+def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
+    multigraph = multispectra(xt_sdata)
+    xt_asymptotic.SetRange(
+        multigraph.GetXaxis().GetXmin(),
+        multigraph.GetXaxis().GetXmax(),
+    )
+    ratios = [br.ratio(h, xt_asymptotic) for h in xt_sdata]
+    # graphs = [br.graph("test_{}".format(h.energy), *critical(h, 2))
+    #           for h in ratios]
+    y, dy = zip(*[critical_min(h, 1) for h in ratios])
+    graphs = br.graph("critical", [h.energy for h in ratios], y, dy=dy)
+
+    plot(
+        [graphs],
+        ytitle="#it{x}_{T}^{critical}",
+        xtitle="#it{x}_{T}",
+        ltitle=ltitle,
+        more_logs=False,
+        legend_pos=(0.24, 0.15, 0.5, 0.35),
+        oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
+    )

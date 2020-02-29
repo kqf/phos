@@ -352,6 +352,7 @@ def icolor(i, offset=0):
     return BR_COLORS[(i + offset) % len(BR_COLORS)]
 
 
+@singledispatch
 def bins(hist):
     contents = np.array([hist.GetBinContent(i) for i in hrange(hist)])
     errors = np.array([hist.GetBinError(i) for i in hrange(hist)])
@@ -902,6 +903,7 @@ def _(a, b, option="", loggs=None):
         ratio(a.tot, b, option=option, loggs=loggs),
         ratio(a.stat, b, option=option, loggs=loggs),
         ratio(a.syst, b, option=option, loggs=loggs),
+        energy=a.energy,
     )
 
 
@@ -912,3 +914,8 @@ def _(a, b, option="", loggs=None):
         ratio(a.stat, b.stat, option=option, loggs=loggs),
         ratio(a.syst, b.syst, option=option, loggs=loggs),
     )
+
+
+@bins.register(PhysicsHistogram)
+def _(hist):
+    return bins(hist.tot)
