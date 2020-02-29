@@ -241,7 +241,16 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
     )
 
 
-# @pytest.mark.skip
+@pytest.fixture
+def xt_scaled_data(xt_data, combined_n):
+    scaled = []
+    for h in xt_data:
+        s = h.Clone("{}_scaled".format(h.GetName()))
+        s.Scale(h.energy ** combined_n[0])
+        scaled.append(s)
+    return scaled
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -249,12 +258,10 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
     "#pi^{0}",
     "#eta",
 ], scope="module")
-def test_scaled_spectra(xt_data, combined_n, ltitle, oname):
-    for h in xt_data:
-        h.Scale(h.energy ** combined_n[0])
+def test_scaled_spectra(xt_scaled_data, combined_n, ltitle, oname):
     title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
     plot(
-        xt_data[::-1],
+        xt_scaled_data[::-1],
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         xtitle="#it{x}_{T}",
         ltitle=ltitle,

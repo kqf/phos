@@ -804,12 +804,12 @@ def reset_graph_errors(graph):
 
 class PhysicsHistogram:
 
-    def __init__(self, tot, stat, syst):
+    def __init__(self, tot, stat, syst, energy=None):
         self.all = tot, stat, syst
         self.tot = tot
         self.stat = stat
         self.syst = syst
-        self.energy = None
+        self.energy = energy
         self._graphs = None
 
     @property
@@ -821,6 +821,14 @@ class PhysicsHistogram:
         reset_graph_errors(self.graphs[1])
         return self._graphs
 
+    def Clone(self, title):
+        return PhysicsHistogram(
+            tot=self.tot.Clone(title),
+            stat=self.stat.Clone(title),
+            syst=self.syst.Clone(title),
+            energy=self.energy,
+        )
+
     def Scale(self, factor):
         for hist in self.all:
             hist.Scale(factor)
@@ -831,6 +839,9 @@ class PhysicsHistogram:
 
     def GetTitle(self):
         return self.tot.GetTitle()
+
+    def GetName(self):
+        return self.tot.GetName()
 
     def GetLineColor(self):
         return self.syst.GetLineColor()
