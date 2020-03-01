@@ -37,7 +37,7 @@ def test_r(data, stop, coname):
     # print(pars)
 
     def data2graph(particle):
-        pars = pd.DataFrame(data[particle].values())
+        pars = pd.DataFrame(data[particle])
         A = unp.uarray(pars["A"], pars["dA"])
         n = unp.uarray(pars["n"], pars["dn"])
         Te = unp.uarray(pars["Te"], pars["dTe"])
@@ -78,7 +78,7 @@ def test_corr(data, charge_particles_t2, stop, coname):
     # print(pars)
 
     def data2graph(particle):
-        pars = pd.DataFrame(data[particle].values())
+        pars = pd.DataFrame(data[particle])
         ux = unp.uarray(pars["Te"], pars["dTe"]) ** 2
         uy = unp.uarray(pars["T"], pars["dT"]) ** 2
         # print(particle)

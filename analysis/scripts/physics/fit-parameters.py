@@ -1,34 +1,32 @@
 import pytest
 import json
-import six
 
-from spectrum.spectra import DataExtractor
-from spectrum.pipeline import ParallelPipeline, FunctionTransformer
+import spectrum.broot as br
+from spectrum.spectra import energies, DataExtractor
+from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import DataFitter, Pipeline
-from spectrum.output import open_loggs
-from spectrum.plotter import plot
-from spectrum.constants import invariant_cross_section_code
 
 
 def fitted(fitf):
+    def p(x, loggs):
+        return x
+
+    def fit_results(x, loggs):
+        res = br.fit_results(x.fitf)
+        res["energy"] = x.energy
+        return res
+
     return Pipeline([
         ("cyield", DataExtractor()),
         ("fit", DataFitter(fitf)),
-        ("show", FunctionTransformer(lambda x, **kwargs: plot([x, x.fitf]))),
+        ("show", FunctionTransformer(p)),
+        ("res", FunctionTransformer(fit_results)),
     ])
 
 
 @pytest.fixture
-def data(particle, tcm):
-    with open("config/predictions/hepdata.json") as f:
-        data = json.load(f)[particle]
-        data["pp 13 TeV"] = particle
-    labels, links = zip(*six.iteritems(data))
-    with open_loggs() as loggs:
-        steps = [(l, fitted(tcm)) for l in labels]
-        histograms = ParallelPipeline(steps).transform(links, loggs)
-    spectra = sorted(histograms, key=lambda x: -x.energy)
-    return spectra
+def rawdata(particle, tcm):
+    return energies(particle, fitted(tcm))
 
 
 @pytest.mark.onlylocal
@@ -37,12 +35,9 @@ def data(particle, tcm):
     "#pi^{0}",
     "#eta",
 ])
-def test_downloads_from_hepdata(particle, stop, data, ltitle):
-    plot(
-        data,
-        stop=stop,
-        ytitle=invariant_cross_section_code(),
-        xtitle="#it{p}_{T} (GeV/#it{c})",
-        ltitle=ltitle,
-        more_logs=True,
-    )
+def test_downloads_from_hepdata(particle, stop, rawdata, ltitle):
+    with open("config/predictions/tcm.json") as f:
+        final = json.load(f)
+    final[particle] = rawdata
+    with open("config/predictions/tcm.json", "w") as f:
+        json.dump(final, f, indent=4)

@@ -656,7 +656,7 @@ def fit_results(fitf):
     results["#chi^{2}/ndf"] = fitf.GetChisquare() / fitf.GetNDF()
     for i in range(fitf.GetNpar()):
         results[fitf.GetParName(i)] = fitf.GetParameter(i)
-        results["#Delta {}".format(fitf.GetParName(i))] = fitf.GetParError(i)
+        results["d{}".format(fitf.GetParName(i))] = fitf.GetParError(i)
     return results
 
 

@@ -1,7 +1,5 @@
 import ROOT
 import pytest
-import json
-import six
 import numpy as np
 import uncertainties as uc
 import uncertainties.unumpy as unp
@@ -11,9 +9,7 @@ import spectrum.broot as br
 from multimethod import multimethod
 
 from spectrum.pipeline import TransformerBase, Pipeline, DataFitter
-from spectrum.pipeline import ParallelPipeline
-from spectrum.output import open_loggs
-from spectrum.spectra import DataExtractor
+from spectrum.spectra import energies, DataExtractor
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
@@ -98,14 +94,10 @@ def multispectra(spectra):
 
 
 def _xt_data(particle, tcm):
-    with open("config/predictions/hepdata.json") as f:
-        data = json.load(f)[particle]
-        data["pp 13 TeV"] = particle
-    labels, links = zip(*six.iteritems(data))
-    with open_loggs() as loggs:
-        steps = [(l, xt(tcm)) for l in labels]
-        histograms = ParallelPipeline(steps).transform(links, loggs)
-    spectra = sorted(histograms, key=lambda x: -x.energy)
+    spectra = sorted(
+        energies(particle, xt(tcm)),
+        key=lambda x: -x.energy
+    )
     return spectra
 
 

@@ -1,4 +1,6 @@
 import joblib
+import json
+import six
 from collections import namedtuple
 from multimethod import multimethod
 
@@ -95,3 +97,15 @@ class DataExtractor(TransformerBase):
         hist.energy = 13000
         hist.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
         return hist
+
+
+def energies(particle, transformer):
+    with open("config/predictions/hepdata.json") as f:
+        data = json.load(f)[particle]
+        data["pp 13 TeV"] = particle
+
+    labels, links = zip(*six.iteritems(data))
+    with open_loggs() as loggs:
+        steps = [(l, transformer) for l in labels]
+        data = ParallelPipeline(steps).transform(links, loggs)
+    return data
