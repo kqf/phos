@@ -345,7 +345,7 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     ratios = [br.ratio(h, xt_asymptotic) for h in xt_sdata]
     # graphs = [br.graph("test_{}".format(h.energy), *critical(h, 2))
     #           for h in ratios]
-    y, dy = zip(*[critical_min(h, 1) for h in ratios])
+    y, dy = zip(*[critical_min(h, nsigma=1) for h in ratios])
     graphs = br.graph("critical", [h.energy for h in ratios], y, dy=dy)
 
     plot(
@@ -362,7 +362,8 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_xt_double(combined_n):
+@pytest.mark.parametrize("target", ["xt_scaling/xt_critial"])
+def test_xt_double(combined_n, coname):
     def graph(particle):
         xt_sdata = []
         for h in _xt_data(particle, None):
@@ -379,7 +380,7 @@ def test_xt_double(combined_n):
         ratios = [br.ratio(h, xt_asymptotic) for h in xt_sdata]
         # graphs = [br.graph("test_{}".format(h.energy), *critical(h, 2))
         #           for h in ratios]
-        y, dy = zip(*[critical_min(h, 1) for h in ratios])
+        y, dy = zip(*[critical_min(h, nsigma=1) for h in ratios])
         graphs = br.graph(particle, [h.energy for h in ratios], y, dy=dy)
         return graphs
 
@@ -387,6 +388,9 @@ def test_xt_double(combined_n):
         [graph("#pi^{0}"), graph("#eta")],
         ytitle="#it{x}_{T}^{critical}",
         xtitle="#sqrt{#it{s}} (GeV)",
+        logy=False,
         more_logs=False,
-        legend_pos=(0.24, 0.15, 0.5, 0.35),
+        legend_pos=(0.7, 0.7, 0.9, 0.85),
+        csize=(110, 128),
+        oname=coname,
     )
