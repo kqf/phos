@@ -142,6 +142,20 @@ class HistogramFitter(TransformerBase):
         return histogram
 
 
+class DataFitter(TransformerBase):
+    def __init__(self, fitf):
+        self.fitf = fitf
+
+    def transform(self, x, loggs):
+        if self.fitf is None:
+            x.fitf = None
+            return x
+        fitf = self.fitf.Clone()
+        x.Fit(fitf, "")
+        x.fitf = fitf
+        return x
+
+
 class OutputDecorator(TransformerBase):
 
     def __init__(self, histname, title=None, label=None, plot=False):

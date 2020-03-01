@@ -2,52 +2,32 @@ import pytest
 import json
 import six
 
-import spectrum.broot as br
-from spectrum.pipeline import TransformerBase
-from spectrum.pipeline import ParallelPipeline
+from spectrum.spectra import DataExtractor
+from spectrum.pipeline import ParallelPipeline, FunctionTransformer
+from spectrum.pipeline import DataFitter, Pipeline
 from spectrum.output import open_loggs
-from spectrum.spectra import spectrum
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
-class HepdataInput(TransformerBase):
-    def __init__(self, table_name="Table 1",
-                 histname="Graph1D_y1", plot=False):
-        super(HepdataInput, self).__init__(plot)
-        self.histname = histname
-
-    def transform(self, item, loggs):
-        filename = ".hepdata-cachedir/{}".format(item["file"])
-        br.io.hepdata(item["hepdata"], filename, item["table"])
-        graph = br.io.read(filename, item["table"], self.histname)
-        hist = br.graph2hist(graph)
-        hist.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
-        hist.SetTitle(item["title"])
-        hist.Scale(item["scale"])
-        hist.energy = item["energy"]
-        return hist
+def fitted(fitf):
+    return Pipeline([
+        ("cyield", DataExtractor()),
+        ("fit", DataFitter(fitf)),
+        ("show", FunctionTransformer(lambda x, **kwargs: plot([x, x.fitf]))),
+    ])
 
 
 @pytest.fixture
-def data(particle, tsallis, tcm, stop):
+def data(particle, tcm):
     with open("config/predictions/hepdata.json") as f:
         data = json.load(f)[particle]
+        data["pp 13 TeV"] = particle
     labels, links = zip(*six.iteritems(data))
-    steps = [(l, HepdataInput()) for l in labels]
     with open_loggs() as loggs:
+        steps = [(l, fitted(tcm)) for l in labels]
         histograms = ParallelPipeline(steps).transform(links, loggs)
-    spectra = sorted(histograms, key=lambda x: x.energy)
-    measured = spectrum(particle)
-    measured.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
-    measured.energy = 13
-    spectra.append(measured)
-    for data in spectra:
-        tsallis.SetRange(0, 40)
-        tcm.SetRange(0, 40)
-        data.Fit(tsallis, "QR", "", 0, 40)
-        data.Fit(tcm, "QR", "", 0, 40)
-        plot([data, tsallis, tcm], stop=stop)
+    spectra = sorted(histograms, key=lambda x: -x.energy)
     return spectra
 
 

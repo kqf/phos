@@ -10,27 +10,14 @@ import itertools
 import spectrum.broot as br
 from multimethod import multimethod
 
-from spectrum.pipeline import TransformerBase, Pipeline
+from spectrum.pipeline import TransformerBase, Pipeline, DataFitter
 from spectrum.pipeline import ParallelPipeline
 from spectrum.output import open_loggs
-from spectrum.spectra import spectrum
+from spectrum.spectra import DataExtractor
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 NOISY_COMBINATIONS = {(8000, 13000), (7000, 8000), (7000, 13000)}
-
-
-class DataExtractor(TransformerBase):
-    @multimethod
-    def transform(self, info, loggs):
-        return br.from_hepdata(info)
-
-    @transform.register(TransformerBase, str)
-    def _(self, particle, loggs):
-        hist = spectrum(particle)
-        hist.energy = 13000
-        hist.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
-        return hist
 
 
 class XTtransformer(TransformerBase):
@@ -56,20 +43,6 @@ class XTtransformer(TransformerBase):
             br.bins(hist).errors,
             edges
         )
-
-
-class DataFitter(TransformerBase):
-    def __init__(self, fitf):
-        self.fitf = fitf
-
-    def transform(self, x, loggs):
-        if self.fitf is None:
-            x.fitf = None
-            return x
-        fitf = self.fitf.Clone()
-        x.Fit(fitf, "Q")
-        x.fitf = fitf
-        return x
 
 
 def xt(fitf):

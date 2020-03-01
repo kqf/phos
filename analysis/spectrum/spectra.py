@@ -1,5 +1,6 @@
 import joblib
 from collections import namedtuple
+from multimethod import multimethod
 
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
@@ -8,7 +9,6 @@ from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import RebinTransformer
 from spectrum.output import open_loggs
 from spectrum.constants import cross_section
-from spectrum.comparator import Comparator
 
 from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.options import CompositeCorrectedYieldOptions
@@ -82,3 +82,16 @@ def ratio(stop=False):
     ratio = br.ratio(eta, pion)
     ratio.SetTitle("#eta / #pi^{0}; #it{p}_T (GeV/#it{c}); #eta / #pi^{0}")
     return ratio
+
+
+class DataExtractor(TransformerBase):
+    @multimethod
+    def transform(self, info, loggs):
+        return br.from_hepdata(info)
+
+    @transform.register(TransformerBase, str)
+    def _(self, particle, loggs):
+        hist = spectrum(particle)
+        hist.energy = 13000
+        hist.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
+        return hist
