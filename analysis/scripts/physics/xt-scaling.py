@@ -63,6 +63,9 @@ class DataFitter(TransformerBase):
         self.fitf = fitf
 
     def transform(self, x, loggs):
+        if self.fitf is None:
+            x.fitf = None
+            return x
         fitf = self.fitf.Clone()
         x.Fit(fitf, "Q")
         x.fitf = fitf
@@ -121,7 +124,7 @@ def multispectra(spectra):
     return multigraph
 
 
-def xt_dataf(particle, tcm):
+def _xt_data(particle, tcm):
     with open("config/predictions/hepdata.json") as f:
         data = json.load(f)[particle]
         data["pp 13 TeV"] = particle
@@ -135,7 +138,7 @@ def xt_dataf(particle, tcm):
 
 @pytest.fixture
 def xt_data(particle, tcm):
-    return xt_dataf(particle, tcm)
+    return _xt_data(particle, tcm)
 
 
 @pytest.fixture
@@ -202,7 +205,7 @@ def test_calculate_combined_n(particle, n_factors, xtrange):
 
 
 @pytest.fixture
-def combined_n(n_factors, xtrange):
+def combined_n(xtrange):
     return 5.04, 0.00919
 
 
@@ -250,8 +253,7 @@ def xt_sdata(xt_data, combined_n):
     return scaled
 
 
-@pytest.fixture
-def xt_asymptotic(particle, xt_sdata, combined_n):
+def _xt_asymptotic(particle, xt_sdata, combined_n):
     multigraph = multispectra(xt_sdata)
     xmax = multigraph.GetXaxis().GetXmax()
 
@@ -263,8 +265,13 @@ def xt_asymptotic(particle, xt_sdata, combined_n):
     title = "#it{{C}}_{{{p}}} #it{{x_{{T}}}}^{{-#it{{n}} - 1}}"
     nom.SetTitle(title.format(p=particle))
     multigraph.Fit(nom, "R")
-    br.report(nom, particle)
+    # br.report(nom, particle)
     return nom
+
+
+@pytest.fixture
+def xt_asymptotic(particle, xt_sdata, combined_n):
+    return _xt_asymptotic(particle, xt_sdata, combined_n)
 
 
 @pytest.mark.thesis
@@ -308,21 +315,18 @@ def test_scaled_ratios(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
         ltitle=ltitle,
         more_logs=False,
         legend_pos=(0.24, 0.15, 0.5, 0.35),
-        oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
+        oname=oname.format("xt_scaling/xt_normalized_ratios_"),
     )
 
 
 def critical(hist, nsigma=1):
     y, dy, x, dx = br.bins(hist)
     close = np.abs(y - 1) < nsigma * dy
-    if not any(close):
-        print(hist.energy)
     return x[close], y[close], dx[close], dy[close]
 
 
 def critical_min(hist, nsigma):
     x, y, dx, dy = critical(hist, nsigma)
-    print(critical(hist, nsigma))
     return x[0], dx[0]
 
 
@@ -347,9 +351,42 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     plot(
         [graphs],
         ytitle="#it{x}_{T}^{critical}",
-        xtitle="#it{x}_{T}",
+        xtitle="#sqrt{#it{s}} (GeV)",
         ltitle=ltitle,
         more_logs=False,
         legend_pos=(0.24, 0.15, 0.5, 0.35),
-        oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
+        oname=oname.format("xt_scaling/xt_critical_"),
+    )
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_xt_double(combined_n):
+    def graph(particle):
+        xt_sdata = []
+        for h in _xt_data(particle, None):
+            s = h.Clone("{}_scaled".format(h.GetName()))
+            s.Scale(h.energy ** combined_n[0])
+            xt_sdata.append(s)
+
+        multigraph = multispectra(xt_sdata)
+        xt_asymptotic = _xt_asymptotic(particle, xt_sdata, combined_n)
+        xt_asymptotic.SetRange(
+            multigraph.GetXaxis().GetXmin(),
+            multigraph.GetXaxis().GetXmax(),
+        )
+        ratios = [br.ratio(h, xt_asymptotic) for h in xt_sdata]
+        # graphs = [br.graph("test_{}".format(h.energy), *critical(h, 2))
+        #           for h in ratios]
+        y, dy = zip(*[critical_min(h, 1) for h in ratios])
+        graphs = br.graph(particle, [h.energy for h in ratios], y, dy=dy)
+        return graphs
+
+    plot(
+        [graph("#pi^{0}"), graph("#eta")],
+        ytitle="#it{x}_{T}^{critical}",
+        xtitle="#sqrt{#it{s}} (GeV)",
+        more_logs=False,
+        legend_pos=(0.24, 0.15, 0.5, 0.35),
     )
