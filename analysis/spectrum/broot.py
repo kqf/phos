@@ -217,12 +217,6 @@ def tfile(filename, option=""):
     rfile.Close()
 
 
-def BH(THnT, *args, **kwargs):
-    hist = THnT(*args)
-    setp(hist, _prop(**kwargs))
-    return hist
-
-
 def setp(dest, source=None, force=False):
     if not source:
         source = _prop()
