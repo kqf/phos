@@ -327,7 +327,7 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("target", ["xt_scaling/xt_critial"])
+@pytest.mark.parametrize("target", ["xt_scaling/xt_critical"])
 def test_xt_double(combined_n, coname):
     def graph(particle):
         xt_sdata = []
@@ -349,6 +349,7 @@ def test_xt_double(combined_n, coname):
         graphs = br.graph(particle, [h.energy for h in ratios], y, dy=dy)
         return graphs
 
+    print(coname)
     plot(
         [graph("#pi^{0}"), graph("#eta")],
         ytitle="#it{x}_{T}^{critical}",
@@ -357,5 +358,5 @@ def test_xt_double(combined_n, coname):
         more_logs=False,
         legend_pos=(0.7, 0.7, 0.9, 0.85),
         csize=(110, 128),
-        oname=coname,
+        oname=coname.format(""),
     )
