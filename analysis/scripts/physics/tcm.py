@@ -14,11 +14,15 @@ from spectrum.pipeline import DataFitter, Pipeline
 
 def fitted(fitf):
     def p(x, loggs):
+        # plot([x, x.fitf])
+        res = br.fit_results(x.fitf)
+        print(res["Te"], res["T"], res["T"] / res["Te"], x.energy)
+        br.report(x.fitf, limits=True)
         return x
 
     def fit_results(x, loggs):
         res = br.fit_results(x.fitf)
-        res["energy"] = x.energy
+        res["energy"] = x.energy / 1000
         return res
 
     return Pipeline([
@@ -34,13 +38,14 @@ def rawdata(particle, tcm):
     return energies(particle, fitted(tcm))
 
 
+# @pytest.mark.skip
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
     "#eta",
 ])
-def test_updates_rawdata(particle, rawdata, ltitle):
+def test_updates_parameters(particle, rawdata, ltitle):
     with open("config/predictions/tcm.json") as f:
         final = json.load(f)
     final[particle] = rawdata
@@ -128,8 +133,8 @@ def test_corr(data, charge_particles_t2, stop, coname):
         pars["dTe2"] = unp.std_devs(ux)
         pars["dT2"] = unp.std_devs(uy)
         print()
-        print(pars[["energy", "Te2", "dTe2", "T2", "dT2"]])
-        print(pars[["energy", "Te", "dTe", "T", "dT"]])
+        # print(pars[["energy", "Te2", "dTe2", "T2", "dT2"]])
+        # print(pars[["energy", "Te", "dTe", "T", "dT"]])
         graph = br.graph(
             "test",
             pars["Te2"],
@@ -154,8 +159,8 @@ def test_corr(data, charge_particles_t2, stop, coname):
         logx=False,
         ytitle="#it{T}^{ 2} (GeV^{2})",
         xtitle="#it{T}_{#it{e}}^{ 2} (GeV^{2})",
-        ylimits=(0.01, 2.6),
-        xlimits=(0., 0.1),
+        # ylimits=(0.01, 2.6),
+        # xlimits=(0., 0.1),
         # csize=(96, 128),
         legend_pos=(0.65, 0.7, 0.8, 0.80),
         options="qp",

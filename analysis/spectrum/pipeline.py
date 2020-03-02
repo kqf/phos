@@ -151,7 +151,11 @@ class DataFitter(TransformerBase):
             x.fitf = None
             return x
         fitf = self.fitf.Clone()
-        x.Fit(fitf, "")
+        fitf.SetRange(
+            x.GetXaxis().GetXmin(),
+            x.GetXaxis().GetXmax(),
+        )
+        x.Fit(fitf, "Q")
         x.fitf = fitf
         return x
 

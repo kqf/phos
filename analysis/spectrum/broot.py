@@ -841,6 +841,9 @@ class PhysicsHistogram:
     def GetTitle(self):
         return self.tot.GetTitle()
 
+    def GetXaxis(self):
+        return self.tot.GetXaxis()
+
     def GetName(self):
         return self.tot.GetName()
 
