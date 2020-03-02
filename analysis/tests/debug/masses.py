@@ -1,5 +1,4 @@
 from __future__ import print_function
-import ROOT
 import pytest
 
 from spectrum.pipeline import TransformerBase
@@ -91,12 +90,12 @@ class ReadInvariantMassDistribution(TransformerBase):
         self.pattern = pattern
 
     def transform(self, filename, loggs):
-        infile = ROOT.TFile(filename)
-        histograms = [k.ReadObj() for k in infile.GetListOfKeys()
-                      if self.pattern in k.GetName()]
-        histograms = sorted(histograms, key=lambda x: x.GetName())
-        names = [h.GetName() for h in histograms]
-        print(names)
+        with br.tfile(filename) as infile:
+            histograms = [k.ReadObj() for k in infile.GetListOfKeys()
+                          if self.pattern in k.GetName()]
+            histograms = sorted(histograms, key=lambda x: x.GetName())
+            names = [h.GetName() for h in histograms]
+            print(names)
         return histograms
 
 

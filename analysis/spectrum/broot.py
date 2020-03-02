@@ -250,8 +250,8 @@ def projection(hist, a, b, axis="x"):
 
 
 def project_range(hist, xa, xb, axis="x"):
-    bin = bincenterf(hist, "x" not in axis)
-    return projection(hist, bin(xa), bin(xb), axis)
+    binc = _bincenterf(hist, "x" not in axis)
+    return projection(hist, binc(xa), binc(xb), axis)
 
 
 @multimethod
@@ -318,7 +318,7 @@ def scalew(hist, factor=None):
     return hist
 
 
-def bincenterf(hist, isxaxis=True):
+def _bincenterf(hist, isxaxis=True):
     axis = hist.GetXaxis() if isxaxis else hist.GetYaxis()
     return lambda x: axis.FindBin(x)
 
@@ -327,7 +327,7 @@ def area_and_error(hist, a, b):
     if a == b:
         return 0, 0
     area, areae = ROOT.Double(), ROOT.Double()
-    bin = bincenterf(hist)
+    bin = _bincenterf(hist)
     area = hist.IntegralAndError(bin(a), bin(b), areae)
     return area, areae
 
