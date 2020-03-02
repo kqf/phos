@@ -54,14 +54,14 @@ def tcm(particle):
     if particle == "#pi^{0}":
         tcm.SetRange(0.7, 22)
         tcm.SetParameter(0, 3e5)
-        tcm.SetParLimits(0, 0, 1e6)
+        # tcm.SetParLimits(0, 0, 1e6)
 
-        temin, temax = 0.1, 0.2
+        temin, temax = 0.0, 0.2
         tcm.SetParameter(1, 0.142)
         tcm.SetParLimits(1, temin, temax)
 
         tcm.SetParameter(2, 3e4)
-        tcm.SetParLimits(2, 0, 1e6)
+        # tcm.SetParLimits(2, 0, 1e6)
 
         tcm.SetParameter(3, 0.597)
         tcm.SetParLimits(3, temin * 4.2, temax * 4.2)
@@ -72,7 +72,7 @@ def tcm(particle):
         tcm.SetParameter(0, 1e5)
         tcm.SetParLimits(0, 0, 1e6)
 
-        temin, temax = 0.0, 0.4
+        temin, temax = 0.0, 0.3
         tcm.SetParameter(1, 0.229)
         tcm.SetParLimits(1, temin, temax)
 
