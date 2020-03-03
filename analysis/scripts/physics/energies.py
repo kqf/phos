@@ -1,30 +1,13 @@
 import pytest
-import json
-import six
 
-import spectrum.broot as br
-from spectrum.pipeline import FunctionTransformer
-from spectrum.pipeline import ParallelPipeline
-from spectrum.output import open_loggs
-from spectrum.spectra import spectrum
+from spectrum.spectra import energies
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
-# TODO: Update me
 @pytest.fixture
 def data(particle):
-    with open("config/predictions/hepdata.json") as f:
-        data = json.load(f)[particle]
-    labels, links = zip(*six.iteritems(data))
-    steps = [(l, FunctionTransformer(br.from_hepdata, True)) for l in labels]
-    with open_loggs() as loggs:
-        histograms = ParallelPipeline(steps).transform(links, loggs)
-    spectra = sorted(histograms, key=lambda x: x.energy)
-    measured = spectrum(particle)
-    measured.SetTitle("pp, #sqrt{#it{s}} = 13 TeV")
-    spectra.append(measured)
-
+    spectra = sorted(energies(particle), key=lambda x: x.energy)
     for i, cs in enumerate(spectra):
         cs.Scale(10 ** i)
         cs.SetTitle(cs.GetTitle() + " #times 10^{{{}}}".format(i))
