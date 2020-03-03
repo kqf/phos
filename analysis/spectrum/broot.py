@@ -199,9 +199,7 @@ def tfile(filename, option=""):
 
 
 def setp(dest, source=None, force=False):
-    if not source:
-        source = _prop()
-    _prop.copy(dest, source, force)
+    _prop.init(dest)
 
 
 def clone(hist, name="_copied", replace=False):
