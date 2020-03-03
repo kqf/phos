@@ -9,7 +9,7 @@ import spectrum.broot as br
 from multimethod import multimethod
 
 from spectrum.pipeline import TransformerBase, Pipeline, DataFitter
-from spectrum.spectra import energies, DataExtractor
+from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
@@ -43,7 +43,7 @@ class XTtransformer(TransformerBase):
 
 def xt(fitf):
     return Pipeline([
-        ("cyield", DataExtractor()),
+        ("cyield", DataEnergiesExtractor()),
         ("fit", DataFitter(fitf)),
         ("xt", XTtransformer()),
     ])

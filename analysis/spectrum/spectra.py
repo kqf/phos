@@ -86,7 +86,7 @@ def ratio(stop=False):
     return ratio
 
 
-class DataExtractor(TransformerBase):
+class DataEnergiesExtractor(TransformerBase):
     @multimethod
     def transform(self, info, loggs):
         return br.from_hepdata(info)
@@ -99,7 +99,7 @@ class DataExtractor(TransformerBase):
         return hist
 
 
-def energies(particle, transformer):
+def energies(particle, transformer=DataEnergiesExtractor()):
     with open("config/predictions/hepdata.json") as f:
         data = json.load(f)[particle]
         data["pp 13 TeV"] = particle

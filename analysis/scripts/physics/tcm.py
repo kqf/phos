@@ -7,7 +7,7 @@ import uncertainties.unumpy as unp
 import spectrum.broot as br
 from spectrum.plotter import plot
 
-from spectrum.spectra import energies, DataExtractor
+from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import DataFitter, Pipeline
 
@@ -26,7 +26,7 @@ def fitted(fitf):
         return res
 
     return Pipeline([
-        ("cyield", DataExtractor()),
+        ("cyield", DataEnergiesExtractor()),
         ("fit", DataFitter(fitf)),
         ("show", FunctionTransformer(p)),
         ("res", FunctionTransformer(fit_results)),
