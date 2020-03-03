@@ -4,7 +4,7 @@ import numpy as np
 
 import spectrum.sutils as su
 import spectrum.broot as br
-from spectrum.style import style
+import spectrum.plotter as plt
 
 
 def info(hist):
@@ -55,7 +55,7 @@ class VisHub(object):
         su.gcanvas().Clear()
 
     def compare_visually(self, hists, loggs=None):
-        with style():
+        with plt.style():
             vis = Visualizer(*self.args, **self.kwargs)
             neglimits = any(i < 0 for i in vis.rrange)
             ignoreratio = neglimits and vis.rrange
