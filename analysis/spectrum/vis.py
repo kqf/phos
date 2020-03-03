@@ -2,20 +2,9 @@ from __future__ import print_function
 import ROOT
 import numpy as np
 
-import spectrum.sutils as su
 import spectrum.broot as br
+import spectrum.sutils as su
 import spectrum.plotter as plt
-
-
-def info(hist):
-    pave = ROOT.TPaveText(.3, .6, .4, .8, "NBNDC")
-    pave.AddText("ALICE, PHOS")
-    pave.AddText("pp at #sqrt{#it{s}}=13 TeV")
-    pave.SetFillStyle(0)
-    pave.SetLineColor(0)
-    # pave.SetTextSize(12)
-    pave.Draw()
-    return pave
 
 
 def calculate_x_limits(hists):

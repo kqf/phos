@@ -46,25 +46,12 @@ class _prop(object):
     def __init__(self, label="", logy=0, logx=0, priority=999, marker=0):
         super(_prop, self).__init__()
         self.__dict__.update(self._properties)
-        # Add self.set_properties
         self.marker = marker
         self.label = label
         self.logy = logy
         self.logx = logx
         self.priority = priority
         # self.fitfunc = fitfunc
-
-    def set_properties(self, source, force=False):
-        assert self.has_properties(source),\
-            "There is no properties in source histogram"
-        self.copy(self, source, force)
-
-    @classmethod
-    def same_as(klass, a, b):
-        assert klass.has_properties(b), \
-            "There is no properties in b histogram"
-        return all(a.__dict__[prop] == b.__dict__[prop]
-                   for prop in klass._properties)
 
     @classmethod
     def init(klass, hist, force=True):
@@ -80,12 +67,6 @@ class _prop(object):
                 if key not in dir(dest) or force)
         for key in keys:
             dest.__dict__[key] = deepcopy(source.__dict__[key])
-
-    @staticmethod
-    def copy_everything(dest, source):
-        keys = (key for key in dir(source) if key not in dir(dest))
-        for key in keys:
-            dest.__dict__[key] = source.__dict__[key]
 
     @classmethod
     def has_properties(klass, hist):
