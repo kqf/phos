@@ -324,6 +324,14 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     )
 
 
+def weighted_avg_and_std(x, errors):
+    values = np.array(x)
+    weights = (1. / np.array(errors)) ** 2
+    average = np.average(values, weights=weights)
+    variance = np.average((values - average)**2, weights=weights)
+    return average, np.sqrt(variance)
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -346,17 +354,37 @@ def test_xt_double(combined_n, coname):
         # graphs = [br.graph("test_{}".format(h.energy), *critical(h, 2))
         #           for h in ratios]
         y, dy = zip(*[critical_min(h, nsigma=1) for h in ratios])
-        graphs = br.graph(particle, [h.energy for h in ratios], y, dy=dy)
-        return graphs
+        dy = np.array(dy)
+        y = np.array(y)
+        x = np.array([h.energy for h in ratios])
+        graphs = br.graph(particle, x, y, dy=dy)
+        idx = np.argsort(x)
+        return graphs, x[idx], y[idx], dy[idx]
 
-    print(coname)
+    pion, px, py, pdy = graph("#pi^{0}")
+    eta, ex, ey, edy = graph("#eta")
+    ey_ = np.insert(ey, 0, py[0])
+    dey_ = np.insert(edy, 0, pdy[0])
+    mean, dmean = [], []
+    print(ey_, dey_, py, pdy)
+    for e, de, p, dp in zip(ey_, dey_, py, pdy):
+        m, dm = weighted_avg_and_std([e, p], [de, dp])
+        mean.append(m)
+        dmean.append(dm)
+    print(ex)
+    print(mean)
+    gmean = br.graph("weighted mean", px, mean, dy=dmean)
+    gmean.SetLineWidth(2)
+
     plot(
-        [graph("#pi^{0}"), graph("#eta")],
+        [pion, eta, gmean],
         ytitle="#it{x}_{T}^{critical}",
         xtitle="#sqrt{#it{s}} (GeV)",
+        xlimits=(800, 15000),
         logy=False,
         more_logs=False,
         legend_pos=(0.7, 0.7, 0.9, 0.85),
         csize=(110, 128),
+        options=["p", "p", "pl"],
         oname=coname.format(""),
     )
