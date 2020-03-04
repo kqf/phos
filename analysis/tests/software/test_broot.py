@@ -279,16 +279,15 @@ def test_initializes_properties_on_inputs(stop):
     for hist in inputs:
         hist.FillRandom('gaus')
 
-    # There is no porperties
     for hist in inputs:
-        assert not br._prop.has_properties(hist)
+        with pytest.raises(AttributeError):
+            hist.logy
 
     data = Empty()
     outputs = data.identity(inputs)
-
     # Decorated method takes alrady modified objects
-    for hist in outputs:
-        assert br._prop.has_properties(hist)
+    for hist in inputs:
+        hist.logy
 
     # It's the same objects
     for inp, out in zip(inputs, outputs):

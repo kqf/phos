@@ -45,13 +45,11 @@ class _prop(object):
 
     def __init__(self, label="", logy=0, logx=0, priority=999, marker=0):
         super(_prop, self).__init__()
-        self.__dict__.update(self._properties)
         self.marker = marker
         self.label = label
         self.logy = logy
         self.logx = logx
         self.priority = priority
-        # self.fitfunc = fitfunc
 
     @classmethod
     def init(klass, hist, force=True):
@@ -60,17 +58,10 @@ class _prop(object):
 
     @classmethod
     def copy(klass, dest, source, force=False):
-        if not klass.has_properties(source):
-            klass.init(dest)
-
         keys = (key for key in klass._properties
                 if key not in dir(dest) or force)
         for key in keys:
             dest.__dict__[key] = deepcopy(source.__dict__[key])
-
-    @classmethod
-    def has_properties(klass, hist):
-        return all(prop in dir(hist) for prop in klass._properties)
 
 
 class io(object):
@@ -272,9 +263,6 @@ def rebin_proba(hist, edges, name="_rebinned"):
     for i in range(1, len(edges)):
         delta = edges[i] - edges[i - 1]
         rebin.SetBinContent(i, rebin.GetBinContent(i) / delta)
-
-    if _prop.has_properties(hist):
-        setp(rebin, hist, force=True)
     return rebin
 
 
