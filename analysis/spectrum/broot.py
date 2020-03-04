@@ -12,7 +12,6 @@ from multimethod import multimethod
 from contextlib import contextmanager
 from repoze.lru import lru_cache
 from six.moves import urllib
-from copy import deepcopy
 
 ROOT.TH1.AddDirectory(False)
 
@@ -32,6 +31,14 @@ BR_COLORS = [
     ROOT.kViolet + 1,
     ROOT.kPink + 1,
 ]
+
+_PROPERTIES = {
+    "label": "",
+    "logy": 0,
+    "logx": 0,
+    "priority": 999,
+    "marker": 0
+}
 
 
 class _prop(object):
@@ -189,8 +196,11 @@ def tfile(filename, option=""):
     rfile.Close()
 
 
-def setp(dest, source=None, force=False):
-    _prop.init(dest)
+def setp(dest, source=_PROPERTIES):
+    for key in _PROPERTIES:
+        if key in dir(dest):
+            continue
+        dest.__dict__[key] = source[key]
 
 
 def clone(hist, name="_copied", replace=False):

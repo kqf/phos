@@ -282,6 +282,7 @@ def test_initializes_properties_on_inputs(stop):
     for hist in inputs:
         with pytest.raises(AttributeError):
             hist.logy
+            hist.logx
 
     data = Empty()
     outputs = data.identity(inputs)
