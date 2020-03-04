@@ -12,9 +12,8 @@ from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import DataFitter, Pipeline
 
 
-def fitted(fitf):
+def fitted(fitf, ptmax=15):
     def p(x, loggs):
-        # plot([x, x.fitf])
         res = br.fit_results(x.fitf)
         print(res["Te"], res["T"], res["T"] / res["Te"], x.energy)
         br.report(x.fitf, limits=True)
@@ -27,7 +26,7 @@ def fitted(fitf):
 
     return Pipeline([
         ("cyield", DataEnergiesExtractor()),
-        ("fit", DataFitter(fitf)),
+        ("fit", DataFitter(fitf, xmax=ptmax)),
         ("show", FunctionTransformer(p)),
         ("res", FunctionTransformer(fit_results)),
     ])

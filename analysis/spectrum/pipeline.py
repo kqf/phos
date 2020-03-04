@@ -143,8 +143,10 @@ class HistogramFitter(TransformerBase):
 
 
 class DataFitter(TransformerBase):
-    def __init__(self, fitf):
+    def __init__(self, fitf, xmin=None, xmax=None):
         self.fitf = fitf
+        self.xmin = xmin
+        self.xmax = xmax
 
     def transform(self, x, loggs):
         if self.fitf is None:
@@ -152,10 +154,10 @@ class DataFitter(TransformerBase):
             return x
         fitf = self.fitf.Clone()
         fitf.SetRange(
-            x.GetXaxis().GetXmin(),
-            x.GetXaxis().GetXmax(),
+            self.xmin or x.GetXaxis().GetXmin(),
+            self.xmax or x.GetXaxis().GetXmax(),
         )
-        x.Fit(fitf, "Q")
+        x.Fit(fitf, "QR")
         x.fitf = fitf
         return x
 
