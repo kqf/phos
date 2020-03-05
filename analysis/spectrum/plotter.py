@@ -231,6 +231,8 @@ def _(func, colors, option, i, nhists=1):
 def color_marker(hist, colors, i, nhists):
     if colors == 'auto':
         return br.auto_color_marker(i)
+    if colors == 'reverse':
+        return br.auto_color_marker(i, reverse=True)
     palette = sns.color_palette("coolwarm", nhists)
     color, _ = define_color(*palette[i])
     return color, 20

@@ -672,9 +672,11 @@ def _(title, lower, upper, fill_color=16, fill_style=1001):
     return shaded_region(title, xedges, yedges, fill_color, fill_style)
 
 
-def auto_color_marker(index=0):
-    color = BR_COLORS[index % len(BR_COLORS)]
-    marker = 20 + index // len(BR_COLORS)
+def auto_color_marker(index=0, reverse=False, palette=BR_COLORS):
+    color = palette[index % len(palette)]
+    if reverse:
+        color = palette[:3][::-1][index % 3]
+    marker = 20 + index // len(palette)
     return color, marker
 
 
