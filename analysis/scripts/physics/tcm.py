@@ -2,6 +2,7 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
+import ROOT
 
 import uncertainties.unumpy as unp
 import spectrum.broot as br
@@ -98,10 +99,28 @@ def test_r(data, stop, coname):
         graph = br.graph("test", x, y, np.zeros_like(x), dy)
         graph.SetMarkerStyle(21)
         graph.SetTitle(particle)
-        return graph
 
+        fitf = ROOT.TF1("{}R_tcm".format(br.spell(particle)), "[0]", 0.8, 1400)
+        fitf.SetParName(0, "T")
+        fitf.SetLineColor(ROOT.kRed + 1)
+        fitf.SetLineWidth(2)
+        # fitf.SetLineStyle(7)
+        fitf.SetParameter(0, 0)
+        graph.Fit(fitf, "0QN")
+        fitf.SetTitle("#it{{R }}_{{TCM}}^{{{}}}= {:4.3f} #pm {:4.3f}".format(
+            particle,
+            fitf.GetParameter(0),
+            fitf.GetParError(0)
+        ))
+        br.report(fitf)
+        return graph, fitf
+
+    pion, pionf = data2graph("#pi^{0}")
+    eta, etaf = data2graph("#eta")
+    pionf.SetLineColor(ROOT.kRed + 1)
+    etaf.SetLineColor(ROOT.kBlue + 1)
     plot(
-        [data2graph("#pi^{0}"), data2graph("#eta")],
+        [pion, eta, pionf, etaf],
         stop=stop,
         logy=False,
         ytitle="#it{R}_{_{TCM}}",
@@ -109,7 +128,7 @@ def test_r(data, stop, coname):
         ylimits=(0.01, 2.6),
         xlimits=(0.7, 15),
         csize=(96, 128),
-        legend_pos=(0.75, 0.7, 0.9, 0.80),
+        legend_pos=(0.55, 0.7, 0.75, 0.85),
         oname=coname.format("phenomenology/tcm_parameter_"),
     )
 
