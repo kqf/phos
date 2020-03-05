@@ -12,12 +12,16 @@ from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import DataFitter, Pipeline
 
+PT_MAX = 15
 
-def fitted(fitf, ptmax=15):
+print("\n\def \pionTcmMax {{{}}}".format(PT_MAX))
+
+
+def fitted(fitf, ptmax=PT_MAX):
     def p(x, loggs):
-        res = br.fit_results(x.fitf)
-        print(res["Te"], res["T"], res["T"] / res["Te"], x.energy)
-        br.report(x.fitf, limits=True)
+        # res = br.fit_results(x.fitf)
+        # print(res["Te"], res["T"], res["T"] / res["Te"], x.energy)
+        # br.report(x.fitf, limits=True)
         return x
 
     def fit_results(x, loggs):
@@ -100,7 +104,7 @@ def test_r(data, stop, coname):
         graph.SetMarkerStyle(21)
         graph.SetTitle(particle)
 
-        fitf = ROOT.TF1("{}R_tcm".format(br.spell(particle)), "[0]", 0.8, 1400)
+        fitf = ROOT.TF1("{}RTcm".format(br.spell(particle)), "[0]", 0.8, 1400)
         fitf.SetParName(0, "T")
         fitf.SetLineColor(ROOT.kRed + 1)
         fitf.SetLineWidth(2)
@@ -167,9 +171,9 @@ def test_corr(data, charge_particles_t2, stop, coname):
     # func = ROOT.TF1("f", "17.5 * x[0]", 0, 1)
     plot(
         [
-            data2graph("#pi^{0}"),
-            data2graph("#eta"),
             charge_particles_t2,
+            data2graph("#eta"),
+            data2graph("#pi^{0}"),
             # func,
         ],
         stop=stop,
@@ -177,10 +181,10 @@ def test_corr(data, charge_particles_t2, stop, coname):
         logx=False,
         ytitle="#it{T}^{ 2} (GeV^{2})",
         xtitle="#it{T}_{#it{e}}^{ 2} (GeV^{2})",
-        # ylimits=(0.01, 2.6),
-        # xlimits=(0., 0.1),
-        # csize=(96, 128),
-        legend_pos=(0.65, 0.7, 0.8, 0.80),
+        ylimits=(0., 8.),
+        xlimits=(0., 0.22),
+        legend_pos=(0.55, 0.7, 0.75, 0.80),
+        colors="reverse",
         options="qp",
         oname=coname.format("phenomenology/tcm_parameter_"),
     )
