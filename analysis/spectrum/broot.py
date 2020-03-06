@@ -430,16 +430,16 @@ def chi2(hist1, hist2, rrange=None):
     chi2 = sum(chi2)
     return chi2
 
-# Use multipledispatch
 
-
-def chi2ndff(func):
+@multimethod
+def chi2ndf(func):
     ndf = func.GetNDF()
     ndf = ndf if ndf > 0 else 1
     return func.GetChisquare() / ndf
 
 
-def chi2ndf(hist1, hist2):
+@chi2ndf.register(ROOT.TH1F)
+def _(hist1, hist2):
     assert hist1.GetNbinsX() > 0, \
         "Histograms should have more than 0 bins"
 

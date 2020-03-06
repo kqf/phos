@@ -645,4 +645,4 @@ def test_chi2ndf(nominal_hist):
 
 def test_chi2ndf_function():
     func = ROOT.TF1("high", "[0] * cos(x[0])", 0, 10)
-    assert br.chi2ndff(func) == 0.0
+    assert br.chi2ndf(func) == 0.0
