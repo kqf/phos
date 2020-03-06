@@ -41,36 +41,6 @@ _PROPERTIES = {
 }
 
 
-class _prop(object):
-    _properties = {
-        "label": "",
-        "logy": 0,
-        "logx": 0,
-        "priority": 999,
-        "marker": 0
-    }
-
-    def __init__(self, label="", logy=0, logx=0, priority=999, marker=0):
-        super(_prop, self).__init__()
-        self.marker = marker
-        self.label = label
-        self.logy = logy
-        self.logx = logx
-        self.priority = priority
-
-    @classmethod
-    def init(klass, hist, force=True):
-        self = klass()
-        klass.copy(hist, self, force)
-
-    @classmethod
-    def copy(klass, dest, source, force=False):
-        keys = (key for key in klass._properties
-                if key not in dir(dest) or force)
-        for key in keys:
-            dest.__dict__[key] = deepcopy(source.__dict__[key])
-
-
 class io(object):
     def __init__(self):
         super(io, self).__init__()
