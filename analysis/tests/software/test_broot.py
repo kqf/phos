@@ -538,22 +538,6 @@ def test_scales_with_rebins(stop):
     Comparator(stop=stop).compare([hist1, hist2, hist3])
 
 
-@pytest.mark.parametrize("scale", [0.001, 0.1, 1., 10, 100])
-def test_draws_chi2(scale):
-    hist = ROOT.TH1F("testchi2plot", "Testing #chi^{2} plot; x", 10, 0, 10)
-    for i in br.hrange(hist):
-        hist.SetBinContent(i, 1.)
-        hist.SetBinError(i, 0.1)
-    hist.SetBinContent(5, 2)
-
-    func = ROOT.TF1("func", "pol0", 0, 10)
-    func.SetParameter(0, 1)
-    hist.Fit(func, "RQ")
-    hist = br.chi2errors(hist, scale=scale)
-    calculated = sum(map(hist.GetBinError, br.hrange(hist)))
-    assert pytest.approx(calculated) == func.GetChisquare() * scale
-
-
 @pytest.fixture
 def exp_data():
     with open("config/pt.json") as f:

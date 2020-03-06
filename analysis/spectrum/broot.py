@@ -469,21 +469,6 @@ def average(histograms, label=None):
     return summed
 
 
-def chi2errors(histogram, scale=1):
-    functions = histogram.GetListOfFunctions()
-    if functions.GetSize() == 0:
-        raise ValueError("Histogram should be fitted")
-
-    function = functions.At(0)
-    for i in hrange(histogram):
-        x = histogram.GetBinCenter(i)
-        value = histogram.GetBinContent(i)
-        sigma = histogram.GetBinError(i)
-        chi2 = ((value - function.Eval(x)) / sigma) ** 2
-        histogram.SetBinError(i, chi2 * scale)
-    return histogram
-
-
 def hist2array(hist):
     data = bins(hist)
     return data.contents
