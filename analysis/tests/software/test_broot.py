@@ -634,3 +634,15 @@ def test_plots_shaded_area(stop):
 def test_modulenames(n_modules=4, max_combinations=7):
     assert len(br.module_names(same_module=True)) == n_modules
     assert len(br.module_names(same_module=False)) == max_combinations
+
+
+def test_chi2ndf(nominal_hist):
+    hist = nominal_hist.Clone("test_chi2ndf")
+    for i in br.hrange(hist):
+        hist.SetBinError(i, 1)
+    assert br.chi2ndf(hist, hist) == 0.0
+
+
+def test_chi2ndf_function():
+    func = ROOT.TF1("high", "[0] * cos(x[0])", 0, 10)
+    assert br.chi2ndff(func) == 0.0

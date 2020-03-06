@@ -430,19 +430,20 @@ def chi2(hist1, hist2, rrange=None):
     chi2 = sum(chi2)
     return chi2
 
+# Use multipledispatch
+
+
+def chi2ndff(func):
+    ndf = func.GetNDF()
+    ndf = ndf if ndf > 0 else 1
+    return func.GetChisquare() / ndf
+
 
 def chi2ndf(hist1, hist2):
     assert hist1.GetNbinsX() > 0, \
         "Histograms should have more than 0 bins"
 
     return chi2(hist1, hist2) / hist1.GetNbinsX()
-
-
-# Use multipledispatch
-def chi2ndff(func):
-    ndf = func.GetNDF()
-    ndf = ndf if ndf > 0 else 1
-    return func.GetChisquare() / ndf
 
 
 def hist_range(hist):
