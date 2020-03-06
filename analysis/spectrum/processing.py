@@ -214,7 +214,7 @@ class PtFitter(object):
             self.opt.pars[i] = fitquant.GetParameter(i)
 
         title = "{}, #chi^{{2}}/ndf = {:0.4g}"
-        hist.SetTitle(title.format(hist.GetTitle(), br.chi2ndff(fitquant)))
+        hist.SetTitle(title.format(hist.GetTitle(), br.chi2ndf(fitquant)))
         hist.SetLineColor(37)
         loggs.update({"output": hist})
         return fitquant

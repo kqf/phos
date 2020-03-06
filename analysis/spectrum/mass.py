@@ -97,7 +97,7 @@ class FitQualityExtractor(MassTransformer):
         self.in_cols = in_cols
 
     def apply(self, function):
-        return br.chi2ndff(function), 0
+        return br.chi2ndf(function), 0
 
 
 class MixingBackgroundEstimator(MassTransformer):
