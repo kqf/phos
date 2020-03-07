@@ -1,37 +1,21 @@
 import pytest
-import json
 import numpy as np
 
-import spectrum.broot as br
 import spectrum.constants as ct
-from spectrum.pipeline import FunctionTransformer
-from spectrum.pipeline import Pipeline
 from spectrum.vault import FVault
 from spectrum.plotter import plot
-from spectrum.output import open_loggs
+from spectrum.spectra import energies
 
 
 @pytest.fixture
-def hepdata(data):
-    estimator = Pipeline([
-        ("raw", FunctionTransformer(br.from_hepdata, True)),
-    ])
-    with open_loggs() as loggs:
-        output = estimator.transform(data, loggs)
-    return output
+def hepdata():
+    return energies("#pi^{0}")[0]
 
 
 @pytest.fixture
-def data(system):
-    with open("config/predictions/hepdata.json") as f:
-        data = json.load(f)["#pi^{0}"]
-    return data[system]
-
-
-@pytest.fixture
-def tcm(data, eta=0.12, particle="#pi^{0}"):
+def tcm(hepdata, eta=0.12, particle="#pi^{0}"):
     # The formulas are taken from arXiv:1501.05235v1
-    energy = data["energy"]
+    energy = hepdata.energy
     mass = ct.mass(particle)
     doublemass = 2 * 0.938
     func = FVault().tf1("tcm")
@@ -67,12 +51,6 @@ def tcm(data, eta=0.12, particle="#pi^{0}"):
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("system", [
-    "pp 7 TeV",
-    "pp 0.9 TeV",
-    "pp 2.76 TeV",
-    "pp 8 TeV"
-])
 def test_downloads_from_hepdata(hepdata, tcm):
     plot([
         hepdata,
