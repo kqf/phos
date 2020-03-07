@@ -15,9 +15,9 @@ def tsallis(parameters):
 
 
 @pytest.fixture
-def parameters():
+def parameters(particle):
     with open("config/predictions/tsallis.json") as f:
-        data = json.load(f)["#pi^{0}"]
+        data = json.load(f)[particle]
     pars = {
         label: [v["A"], v["C"], v["n"], v["M"]]
         for label, v in six.iteritems(data)
@@ -26,12 +26,16 @@ def parameters():
 
 
 @pytest.fixture
-def data():
-    return energies("#pi^{0}")
+def data(particle):
+    return energies(particle)
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
 def test_downloads_from_hepdata(data, parameters):
     for spectrum, pars in zip(data, parameters.values()):
         fitf = tsallis(pars)
