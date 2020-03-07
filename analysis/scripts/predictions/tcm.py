@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-
 import spectrum.constants as ct
 from spectrum.vault import FVault
 from spectrum.plotter import plot
@@ -9,13 +8,12 @@ from spectrum.spectra import energies
 
 @pytest.fixture
 def hepdata():
-    return energies("#pi^{0}")[0]
+    return energies("#pi^{0}")
 
 
-@pytest.fixture
-def tcm(hepdata, eta=0.12, particle="#pi^{0}"):
+def tcm(spectrum, eta=0.12, particle="#pi^{0}"):
     # The formulas are taken from arXiv:1501.05235v1
-    energy = hepdata.energy
+    energy = spectrum.energy
     mass = ct.mass(particle)
     doublemass = 2 * 0.938
     func = FVault().tf1("tcm")
@@ -51,8 +49,6 @@ def tcm(hepdata, eta=0.12, particle="#pi^{0}"):
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_downloads_from_hepdata(hepdata, tcm):
-    plot([
-        hepdata,
-        tcm,
-    ])
+def test_downloads_from_hepdata(hepdata):
+    for spectrum in hepdata:
+        plot([spectrum, tcm(spectrum)])
