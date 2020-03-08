@@ -7,8 +7,8 @@ from spectrum.spectra import energies
 
 
 @pytest.fixture
-def hepdata():
-    return energies("#pi^{0}")
+def hepdata(particle):
+    return energies(particle)
 
 
 def tcm(spectrum, eta=0.12, particle="#pi^{0}"):
@@ -49,6 +49,9 @@ def tcm(spectrum, eta=0.12, particle="#pi^{0}"):
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_downloads_from_hepdata(hepdata):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}", "#eta"
+])
+def test_downloads_from_hepdata(hepdata, particle):
     for spectrum in hepdata:
-        plot([spectrum, tcm(spectrum)])
+        plot([spectrum, tcm(spectrum, particle=particle)])
