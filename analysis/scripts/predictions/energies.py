@@ -27,6 +27,6 @@ def data(particle):
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle", ["#pi^{0}"])
+@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
 def test_downloads_from_hepdata(data, theory):
     plt.plot(data + [theory])
