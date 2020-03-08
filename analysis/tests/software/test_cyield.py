@@ -7,28 +7,36 @@ from spectrum.output import open_loggs
 
 
 @pytest.fixture
-def cdata():
-    return cyield_data(particle="#pi^{0}")
+def cdata(particle):
+    return cyield_data(particle=particle)
 
 
 @pytest.fixture
-def simple_cdata():
-    return simple_cyield_data(particle="#pi^{0}")
+def simple_cdata(particle):
+    return simple_cyield_data(particle=particle)
 
 
 @pytest.mark.onlylocal
-def test_corrected_yield(simple_cdata):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_corrected_yield(simple_cdata, particle):
     estimator = CorrectedYield(
-        CorrectedYieldOptions(particle="#pi^{0}")
+        CorrectedYieldOptions(particle=particle)
     )
     with open_loggs() as loggs:
         estimator.transform(simple_cdata, loggs)
 
 
 @pytest.mark.onlylocal
-def test_composite_yield(cdata):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_composite_yield(cdata, particle):
     estimator = CorrectedYield(
-        CompositeCorrectedYieldOptions(particle="#pi^{0}")
+        CompositeCorrectedYieldOptions(particle=particle)
     )
     with open_loggs() as loggs:
         estimator.transform(cdata, loggs)

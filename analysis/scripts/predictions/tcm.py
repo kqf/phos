@@ -50,7 +50,8 @@ def tcm(spectrum, eta=0.12, particle="#pi^{0}"):
 @pytest.mark.onlylocal
 @pytest.mark.interactive
 @pytest.mark.parametrize("particle", [
-    "#pi^{0}", "#eta"
+    "#pi^{0}",
+    "#eta",
 ])
 def test_downloads_from_hepdata(hepdata, particle):
     for spectrum in hepdata:
