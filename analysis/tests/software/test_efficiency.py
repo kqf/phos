@@ -5,26 +5,37 @@ from spectrum.efficiency import simple_efficiency_data, efficiency_data
 from spectrum.options import EfficiencyOptions
 from spectrum.options import CompositeEfficiencyOptions
 from spectrum.output import open_loggs
-from spectrum.comparator import Comparator
 
 
 @pytest.fixture
-def data(name):
-    if name == "simple":
-        return simple_efficiency_data()
+def sdata():
+    return simple_efficiency_data()
+
+
+@pytest.fixture
+def cdata():
     return efficiency_data()
 
 
 @pytest.mark.onlylocal
-@pytest.mark.interactive
-@pytest.mark.parametrize("name, options", [
-    ("simple", EfficiencyOptions()),
-    ("composite", CompositeEfficiencyOptions("#pi^{0}")),
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
 ])
-def test_efficiency(name, options, data):
-    estimator = Efficiency(options)
-    with open_loggs("test {} efficiency".format(name)) as loggs:
-        efficiency = estimator.transform(data, loggs)
+def test_efficiency(particle, sdata):
+    estimator = Efficiency(EfficiencyOptions(particle))
+    with open_loggs() as loggs:
+        efficiency = estimator.transform(sdata, loggs)
+    assert efficiency.GetEntries() > 0
 
-    Comparator().compare(efficiency)
+
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta",
+])
+def test_composite_efficiency(particle, cdata):
+    estimator = Efficiency(CompositeEfficiencyOptions(particle))
+    with open_loggs() as loggs:
+        efficiency = estimator.transform(cdata, loggs)
     assert efficiency.GetEntries() > 0
