@@ -4,7 +4,7 @@ import pytest
 import spectrum.comparator as cmpr
 
 
-@pytest.mark.fixture
+@pytest.fixture
 def fit_function():
     func_nonlin = ROOT.TF1("func_nonlin", "pol2(0) + pol1(3)", 0, 100)
     func_nonlin.SetParLimits(0, -10, 0)
@@ -48,7 +48,7 @@ def test_compare_nonlinear_plots(data, fit_function, stop):
     diff = cmpr.Comparator(stop=stop)
     # diff.compare(data[2], data[1])
     data[0].SetTitle("Comparing nonlinear fit function")
-    data[0].fitfunc = fit_function()
+    data[0].fitfunc = fit_function
     diff.compare(data[0], data[1])
 
 
