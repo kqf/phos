@@ -23,12 +23,20 @@ class GeneratedPlots:
             "etaphi", ";#phi (rad); #it{y}",
             100, 0, 2 * pi,
             100, -1, 1)
+        self.phi = ROOT.TH1F(
+            "etaphi", ";#Delta #phi (rad); counts",
+            100, 0, 2 * pi)
+        self.rawphi = ROOT.TH1F(
+            "retaphi", ";#Delta #phi (rad); counts",
+            100, 0, 2 * pi)
 
     def update(self, p1, p2):
         p = p1 - p2
+        self.rawphi.Fill(p.Phi())
         if abs(p.Phi()) > self.phi_cut or abs(p.Eta()) > self.y_cut:
             return
         self.etaphi.Fill(p.Phi(), p.Eta())
+        self.phi.Fill(p.Phi())
 
 
 class DecayGenerator():
@@ -63,3 +71,5 @@ def test_distributions(particle, stop):
     generator.transform(plots)
     with plt.canvas(stop=stop):
         plots.etaphi.Draw("colz")
+
+    plt.hplot([plots.phi, plots.rawphi], logy=False, logx=False)
