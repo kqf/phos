@@ -324,14 +324,6 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     )
 
 
-def weighted_avg_and_std(x, errors):
-    values = np.array(x)
-    weights = (1. / np.array(errors)) ** 2
-    average = np.average(values, weights=weights)
-    variance = np.average((values - average)**2, weights=weights)
-    return average, np.sqrt(variance)
-
-
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.interactive
@@ -368,7 +360,7 @@ def test_xt_double(combined_n, coname):
     mean, dmean = [], []
     print(ey_, dey_, py, pdy)
     for e, de, p, dp in zip(ey_, dey_, py, pdy):
-        m, dm = weighted_avg_and_std([e, p], [de, dp])
+        m, dm = br.weighted_avg_and_std([e, p], [de, dp])
         mean.append(m)
         dmean.append(dm)
     print(ex)

@@ -851,3 +851,11 @@ def _(a, b, option="", loggs=None):
 @bins.register(PhysicsHistogram)
 def _(hist):
     return bins(hist.tot)
+
+
+def weighted_avg_and_std(x, errors):
+    values = np.array(x)
+    weights = (1. / np.array(errors)) ** 2
+    average = np.average(values, weights=weights)
+    variance = np.average((values - average)**2, weights=weights)
+    return average, np.sqrt(variance)
