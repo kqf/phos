@@ -2,7 +2,8 @@ ipdb
 pandas
 repoze.lru
 # root_numpy switch it back when py38 is released
-pytest
+# Fix all tests according to their new functionality
+pytest<5.4.0
 tqdm
 flatten_dict
 humanize
