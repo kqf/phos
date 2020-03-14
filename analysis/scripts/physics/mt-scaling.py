@@ -99,20 +99,28 @@ def asymptotic_value_eta_pion_ratio(eta_pion_ratio_fitf):
     return etapion
 
 
-@pytest.mark.thesis
-@pytest.mark.onlylocal
-@pytest.mark.parametrize("target", ["mt_scaling/eta_pion_ratio"])
-def test_ratio(asymptotic_value_eta_pion_ratio, coname, target):
+@pytest.fixture
+def upper(asymptotic_value_eta_pion_ratio):
     upper = ROOT.TF1("upper", eta_pion_ratio, 0, 20, 3)
     upper.SetParameter(0, asymptotic_value_eta_pion_ratio)
     upper.SetParameter(1, 1.2)
     upper.SetParameter(2, 10)
+    return upper
 
+
+@pytest.fixture
+def lower():
     lower = ROOT.TF1("lower", eta_pion_ratio, 0, 20, 3)
     lower.SetParameter(0, 0.436)
     lower.SetParameter(1, 1.2)
     lower.SetParameter(2, 14)
+    return lower
 
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.parametrize("target", ["mt_scaling/eta_pion_ratio"])
+def test_ratio(upper, lower, coname, target):
     plot([
         ratio(stop=False),
         br.shaded_region("#it{m}_{T} scaling", lower, upper),
@@ -130,3 +138,18 @@ def test_ratio(asymptotic_value_eta_pion_ratio, coname, target):
         options=["p", "f"],
         oname=coname.format(""),
     )
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+def test_mt_deviation(upper, lower, pt_cut=5):
+    etapion = br.bins(ratio(stop=False))
+    idx = etapion.centers > pt_cut
+    values, errors = etapion.contents[idx], etapion.errors[idx]
+    exp, sigma = br.weighted_avg_and_std(values, errors)
+
+    theory_upper = upper.Eval(etapion.centers[idx].mean())
+    assert exp - sigma < theory_upper < exp + sigma
+
+    theory_lower = lower.Eval(etapion.centers[idx].mean())
+    assert exp - sigma < theory_lower < exp + sigma
