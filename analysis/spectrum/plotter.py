@@ -262,7 +262,7 @@ def plot(
     oname=None,
     legend_pos=(0.6, 0.7, 0.8, 0.85),
     ltitle=None,
-    more_logs=True,
+    more_logs=False,
     yoffset=1.8,
     colors='auto',
     ltext_size=0.035,
