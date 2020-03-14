@@ -50,7 +50,7 @@ def tcmratio(func, hist, title):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("target", [""])
-def test_spectrum(pion, eta, pionf, eta_mtf, coname):
+def test_spectrum(pion, eta, pionf, eta_mtf, coname, target):
     eta.Fit(eta_mtf, "R0Q")
     plot([
         pion,
@@ -102,19 +102,20 @@ def asymptotic_value_eta_pion_ratio(eta_pion_ratio_fitf):
 @pytest.mark.thesis
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("target", ["mt_scaling/eta_pion_ratio"])
-def test_ratio(asymptotic_value_eta_pion_ratio, coname):
-    lower = ROOT.TF1("lower", eta_pion_ratio, 0, 20, 3)
-    lower.SetParameter(0, asymptotic_value_eta_pion_ratio)
-    lower.SetParameter(1, 1.2)
-    lower.SetParameter(2, 10)
-
+def test_ratio(asymptotic_value_eta_pion_ratio, coname, target):
     upper = ROOT.TF1("upper", eta_pion_ratio, 0, 20, 3)
-    upper.SetParameter(0, 0.436)
+    upper.SetParameter(0, asymptotic_value_eta_pion_ratio)
     upper.SetParameter(1, 1.2)
-    upper.SetParameter(2, 14)
+    upper.SetParameter(2, 10)
+
+    lower = ROOT.TF1("lower", eta_pion_ratio, 0, 20, 3)
+    lower.SetParameter(0, 0.436)
+    lower.SetParameter(1, 1.2)
+    lower.SetParameter(2, 14)
+
     plot([
         ratio(stop=False),
-        br.shaded_region("#it{m}_{T} scaling", upper, lower),
+        br.shaded_region("#it{m}_{T} scaling", lower, upper),
     ],
         logy=False,
         logx=False,
