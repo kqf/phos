@@ -1,5 +1,7 @@
 import pytest
 
+import numpy as np
+import spectrum.broot as br
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
@@ -40,6 +42,16 @@ def test_nonlinearity_uncertainty(particle, nbins, stop):
             loggs
         )
         Comparator(stop=stop).compare(uncert)
+        nonlin = br.bins(uncert)
+
+        maxerror = np.max(nonlin.contents)
+        print("\def \nonlinearityMaxError {{{}}}".format(maxerror))
+
+        maxpT = nonlin.centers[np.argmax(nonlin.contents)]
+        print("\def \nonlinearityMaxErrorPt {{{}}}".format(maxpT))
+
+        average = nonlin.contents.mean()
+        print("\def \nonlinearityAverageError {{{}}}".format(average))
 
 
 @pytest.fixture
