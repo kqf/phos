@@ -3,6 +3,7 @@ import pytest
 from spectrum.spectra import energies
 from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
+import spectrum.broot as br
 
 
 @pytest.fixture
@@ -20,7 +21,14 @@ def data(particle):
     "#pi^{0}",
     "#eta",
 ])
-def test_downloads_from_hepdata(data, ltitle, oname):
+def test_downloads_from_hepdata(particle, data, ltitle, oname):
+    tot = br.bins(data[0].tot)
+    print()
+    print(
+        "\def \\{}AverageTotalError{{{:.0f}}}".format(
+            br.spell(particle),
+            (tot.errors / tot.contents).mean() * 100)
+    )
     plot(
         data,
         ytitle=invariant_cross_section_code(),
