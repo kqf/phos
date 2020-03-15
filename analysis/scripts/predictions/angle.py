@@ -16,7 +16,7 @@ def mometum(pt, mass=0, eta=0, phi=5.1):
 
 
 class GeneratedPlots:
-    def __init__(self, phi_cut=2, y_cut=0.13):
+    def __init__(self, phi_cut=2, y_cut=0.13, offset=3 * pi / 2):
         self.phi_cut = phi_cut
         self.y_cut = y_cut
         self.etaphi = ROOT.TH2F(
@@ -29,14 +29,15 @@ class GeneratedPlots:
         self.rawphi = ROOT.TH1F(
             "retaphi", ";#Delta #phi (rad); counts",
             100, 0, 2 * pi)
+        self.offset = offset
 
     def update(self, p1, p2):
         p = p1 - p2
-        self.rawphi.Fill(p.Phi())
+        self.rawphi.Fill(p.Phi() + self.offset)
         if abs(p.Phi()) > self.phi_cut or abs(p.Eta()) > self.y_cut:
             return
-        self.etaphi.Fill(p.Phi(), p.Eta())
-        self.phi.Fill(p.Phi())
+        self.etaphi.Fill(p.Phi() + self.offset, p.Eta())
+        self.phi.Fill(p.Phi() + self.offset)
 
 
 class DecayGenerator():
@@ -63,8 +64,8 @@ class DecayGenerator():
 
 @pytest.mark.parametrize("particle", [
     "#pi^{0}",
-    "#eta"]
-)
+    "#eta"
+])
 def test_distributions(particle, stop):
     generator = DecayGenerator(particle)
     plots = GeneratedPlots()
