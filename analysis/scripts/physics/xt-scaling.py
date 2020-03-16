@@ -375,8 +375,7 @@ def test_xt_double(combined_n, coname):
         xlimits=(800, 15000),
         logy=False,
         more_logs=False,
-        legend_pos=(0.7, 0.7, 0.9, 0.85),
-        csize=(110, 128),
+        legend_pos=(0.65, 0.7, 0.85, 0.85),
         options=["p", "p", "pl"],
         oname=coname.format(""),
     )
