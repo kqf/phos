@@ -198,7 +198,7 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
         ylimits=(2, 8),
         ytitle="#it{n} (#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
         xtitle="#it{x}_{T}",
-        csize=(96, 96 * 0.64),
+        csize=(128, 96),
         tmargin=0.01,
         rmargin=0.01,
         lmargin=0.1,
