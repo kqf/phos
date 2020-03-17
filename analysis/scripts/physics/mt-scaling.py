@@ -1,7 +1,8 @@
 import ROOT
 import pytest
+import spectrum.plotter as plt
+
 from spectrum.spectra import spectrum, ratio
-from spectrum.plotter import plot
 from spectrum.constants import mass
 from spectrum.constants import invariant_cross_section_code
 from spectrum.vault import FVault
@@ -52,7 +53,7 @@ def tcmratio(func, hist, title):
 @pytest.mark.parametrize("target", [""])
 def test_spectrum(pion, eta, pionf, eta_mtf, coname, target):
     eta.Fit(eta_mtf, "R0Q")
-    plot([
+    plt.plot([
         pion,
         eta,
         pionf,
@@ -63,7 +64,7 @@ def test_spectrum(pion, eta, pionf, eta_mtf, coname, target):
         oname=coname.format("mt_scaling/fits")
     )
 
-    plot([
+    plt.plot([
         tcmratio(pionf, pion, "TCM-fit"),
         tcmratio(eta_mtf, eta, "#it{m}_{T} scaled TCM-fit"),
     ],
@@ -121,7 +122,7 @@ def lower():
 @pytest.mark.onlylocal
 @pytest.mark.parametrize("target", ["mt_scaling/eta_pion_ratio"])
 def test_ratio(upper, lower, coname, target):
-    plot([
+    plt.plot([
         ratio(stop=False),
         br.shaded_region("#it{m}_{T} scaling", lower, upper),
     ],

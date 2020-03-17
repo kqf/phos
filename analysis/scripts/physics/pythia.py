@@ -1,7 +1,7 @@
 import pytest
 
+import spectrum.plotter as plt
 from spectrum.spectra import spectrum
-from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
@@ -15,7 +15,7 @@ def test_compare_with_pythia(pythia6, particle, tcm, oname):
     cs = spectrum(particle)
     cs.SetTitle("Data")
     cs.Fit(tcm, "RQ")
-    plot(
+    plt.plot(
         [cs, pythia6, tcm],
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",

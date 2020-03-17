@@ -2,8 +2,8 @@ import ROOT
 import pytest
 
 import spectrum.broot as br
+import spectrum.plotter as plt
 from spectrum.spectra import ratio
-from spectrum.plotter import plot
 
 
 @pytest.mark.thesis
@@ -23,7 +23,7 @@ def test_ratio(pythia6_eta_pion_ratio, eta_pion_ratio_fitf, coname):
 
     pythia6 = br.hist2graph(pythia6_eta_pion_ratio)
     pythia6.SetTitle("PYTHIA 6")
-    plot(
+    plt.plot(
         [data, pythia6, eta_pion_ratio_fitf],
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",

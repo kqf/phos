@@ -1,11 +1,11 @@
 import pytest
 
+import spectrum.broot as br
+import spectrum.plotter as plt
 from spectrum.spectra import spectrum
 from spectrum.output import open_loggs
 from spectrum.pipeline import ParallelPipeline
 from spectrum.pipeline import SingleHistReader
-from spectrum.plotter import plot
-import spectrum.broot as br
 from spectrum.vault import DataVault
 
 
@@ -36,7 +36,7 @@ def test_pion_spectrum(data, tcm, oname):
     ratios = [br.ratio(h, tcm) for h in histograms]
     confidence = br.shaded_region("pQCD", *ratios[1:])
     confidence.SetTitle("NLO, PDF: CTEQ5")
-    plot(
+    plt.plot(
         [ratios[0], confidence],
         ytitle="#frac{Data, NLO}{TCM fit}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
