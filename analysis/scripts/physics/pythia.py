@@ -21,7 +21,6 @@ def test_compare_with_pythia(pythia6, particle, tcm, oname):
         xtitle="#it{p}_{T} (GeV/#it{c})",
         xlimits=(2, 22),
         ylimits=(0.0002, 400),
-        csize=(96, 128),
         ltitle="{} #rightarrow #gamma#gamma".format(particle),
         legend_pos=(0.65, 0.7, 0.8, 0.88),
         # yoffset=1.4,

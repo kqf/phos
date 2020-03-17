@@ -10,7 +10,7 @@ import spectrum.broot as br
 import spectrum.sutils as su
 from repoze.lru import lru_cache
 
-wide_csize = 128, 96
+wide_csize = 96, 96 * 0.64
 
 
 @contextmanager
