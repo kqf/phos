@@ -31,7 +31,7 @@ def test_ratio(pythia6_eta_pion_ratio, eta_pion_ratio_fitf, coname):
         logx=True,
         xlimits=(1.9, 22),
         ylimits=(0, 1.4),
-        csize=(129, 96),
+        csize=plt.wide_csize,
         tmargin=0.01,
         rmargin=0.01,
         lmargin=0.1,

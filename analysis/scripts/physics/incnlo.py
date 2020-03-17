@@ -42,7 +42,7 @@ def test_pion_spectrum(data, tcm, oname):
         xtitle="#it{p}_{T} (GeV/#it{c})",
         logy=False,
         ylimits=(0, 10.),
-        csize=(128, 96),
+        csize=plt.wide_csize,
         tmargin=0.01,
         rmargin=0.01,
         lmargin=0.1,

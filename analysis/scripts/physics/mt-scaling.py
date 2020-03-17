@@ -130,7 +130,7 @@ def test_ratio(upper, lower, coname, target):
         logx=False,
         ytitle="#eta / #pi^{0}",
         xtitle="#it{p}_{T} (GeV/#it{c})",
-        csize=(128, 96),
+        csize=plt.wide_csize,
         tmargin=0.01,
         rmargin=0.01,
         lmargin=0.1,
