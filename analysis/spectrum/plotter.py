@@ -10,6 +10,8 @@ import spectrum.broot as br
 import spectrum.sutils as su
 from repoze.lru import lru_cache
 
+wide_csize = 128, 96
+
 
 @contextmanager
 def canvas(name="cn", size=(96, 128), stop=True, scale=6, oname=None):

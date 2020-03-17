@@ -6,11 +6,11 @@ import uncertainties.unumpy as unp
 import itertools
 
 import spectrum.broot as br
+import spectrum.plotter as plt
 from multimethod import multimethod
 
 from spectrum.pipeline import TransformerBase, Pipeline, DataFitter
 from spectrum.spectra import energies, DataEnergiesExtractor
-from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 NOISY_COMBINATIONS = {(8000, 13000), (7000, 8000), (7000, 13000)}
@@ -123,7 +123,7 @@ def n_factors(xt_data):
     "#eta",
 ])
 def test_plot_xt_distribution(xt_data, ltitle, oname):
-    plot(
+    plt.plot(
         xt_data,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{x}_{T}",
@@ -148,7 +148,7 @@ def test_separate_fits(n_factors, xtrange):
         fitf.SetLineColor(ROOT.kBlack)
         n.Fit(fitf, "FQ", "", *xtrange)
         # br.print_fit_results(fitf)
-        plot([n, fitf], logy=False)
+        plt.plot([n, fitf], logy=False)
 
 
 @pytest.mark.onlylocal
@@ -165,7 +165,7 @@ def test_calculate_combined_n(particle, n_factors, xtrange):
     fitf.SetLineColor(ROOT.kBlack)
     multigraph.Fit(fitf, "RF", "", *xtrange)
     br.report(fitf)
-    # plot(n_factors + [fitf], logy=False)
+    # plt.plot(n_factors + [fitf], logy=False)
     return fitf.GetParameter(0), fitf.GetParError(0)
 
 
@@ -190,7 +190,7 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
     fitf.SetLineColor(ROOT.kBlack)
     fitf.SetLineStyle(9)
     fitf.SetTitle("const = {:.3f} #pm {:.3f}".format(*combined_n))
-    plot(
+    plt.plot(
         n_factors + [fitf],
         logx=False,
         logy=False,
@@ -198,7 +198,7 @@ def test_n_scaling_scaling(n_factors, xtrange, combined_n, coname):
         ylimits=(2, 8),
         ytitle="#it{n} (#it{x}_{T}, #sqrt{#it{s}_{1}}, #sqrt{#it{s}_{2}})",
         xtitle="#it{x}_{T}",
-        csize=(128, 96),
+        csize=plt.wide_csize,
         tmargin=0.01,
         rmargin=0.01,
         lmargin=0.1,
@@ -248,7 +248,7 @@ def xt_asymptotic(particle, xt_sdata, combined_n):
 ], scope="module")
 def test_scaled_spectra(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     title = "(#sqrt{{#it{{s}}}})^{{{n:.3f}}} (GeV)^{{{n:.3g}}} #times {t}"
-    plot(
+    plt.plot(
         xt_sdata + [xt_asymptotic],
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         xtitle="#it{x}_{T}",
@@ -273,7 +273,7 @@ def test_scaled_ratios(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
         multigraph.GetXaxis().GetXmax(),
     )
     ratios = [br.ratio(h, xt_asymptotic) for h in xt_sdata]
-    plot(
+    plt.plot(
         ratios,
         ytitle=title.format(n=combined_n[0], t=invariant_cross_section_code()),
         xtitle="#it{x}_{T}",
@@ -313,7 +313,7 @@ def test_xt_critical(xt_sdata, xt_asymptotic, combined_n, ltitle, oname):
     y, dy = zip(*[critical_min(h, nsigma=1) for h in ratios])
     graphs = br.graph("critical", [h.energy for h in ratios], y, dy=dy)
 
-    plot(
+    plt.plot(
         [graphs],
         ytitle="#it{x}_{T}^{critical}",
         xtitle="#sqrt{#it{s}} (GeV)",
@@ -368,7 +368,7 @@ def test_xt_double(combined_n, coname):
     gmean = br.graph("weighted mean", px, mean, dy=dmean)
     gmean.SetLineWidth(2)
 
-    plot(
+    plt.plot(
         [pion, eta, gmean],
         ytitle="#it{x}_{T}^{critical}",
         xtitle="#sqrt{#it{s}} (GeV)",
