@@ -1,9 +1,10 @@
 import pytest
 
-from spectrum.spectra import energies
-from spectrum.plotter import plot
-from spectrum.constants import invariant_cross_section_code
 import spectrum.broot as br
+import spectrum.plotter as plt
+
+from spectrum.spectra import energies
+from spectrum.constants import invariant_cross_section_code
 
 
 @pytest.fixture
@@ -29,7 +30,7 @@ def test_downloads_from_hepdata(particle, data, ltitle, oname):
             br.spell(particle),
             (tot.errors / tot.contents).mean() * 100)
     )
-    plot(
+    plt.plot(
         data,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",

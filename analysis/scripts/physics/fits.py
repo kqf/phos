@@ -1,8 +1,8 @@
 import pytest  # noqa
 
 import spectrum.broot as br
+import spectrum.plotter as plt
 from spectrum.spectra import spectrum
-from spectrum.plotter import plot
 from spectrum.constants import invariant_cross_section_code
 
 
@@ -27,7 +27,7 @@ def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     if particle == "#eta":
         tsallis.SetRange(tsallis.GetXmin(), tcm.GetXmax())
 
-    plot(
+    plt.plot(
         [cs, tcm, tsallis],
         stop=stop,
         ytitle=invariant_cross_section_code(),

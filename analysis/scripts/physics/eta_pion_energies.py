@@ -2,7 +2,7 @@ import ROOT
 import pytest
 import pandas as pd
 import spectrum.broot as br
-from spectrum.plotter import plot
+import spectrum.plotter as plt
 
 
 @pytest.fixture
@@ -37,7 +37,7 @@ def oname():
     "all",
 ])
 def test_reports_energies(data, delimeter, oname):
-    plot(
+    plt.plot(
         [data, delimeter],
         logy=False,
         legend_pos=None,
