@@ -31,8 +31,8 @@ def parameters():
     }
 
 
-@pytest.mark.interactive
 @pytest.mark.onlylocal
+@pytest.mark.interactive
 def test_nonlin_function(parameters):
     fv = FVault()
     functions = [
