@@ -1,8 +1,9 @@
 import ROOT
 import pytest
 
+import spectrum.broot as br
+import spectrum.plotter as plt
 from spectrum.vault import FVault
-from spectrum.comparator import Comparator
 
 
 @pytest.fixture
@@ -31,20 +32,20 @@ def parameters():
     }
 
 
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-def test_nonlin_function(parameters):
-    fv = FVault()
+@pytest.fixture
+def functions(parameters):
     functions = [
-        ROOT.TF1('f' + str(i), fv.func("nonlinearity"), 0, 20)
+        ROOT.TF1('f{}'.format(i), FVault().func("nonlinearity"), 0, 20)
         for i in parameters
     ]
-
-    histograms = []
-    for f, p in zip(functions, parameters):
+    for i, (f, p) in enumerate(zip(functions, parameters)):
+        f.SetTitle(p)
         f.SetParameters(*parameters[p])
-        histograms.append(f.GetHistogram())
-        histograms[-1].SetTitle(p)
-        histograms[-1].label = p
-        histograms[-1]
-    Comparator().compare(*histograms)
+        f.SetLineColor(br.auto_color_marker(i)[0])
+    return functions
+
+
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+def test_nonlin_function(functions):
+    plt.plot(functions, logx=False, logy=False, xtitle="#it{E}_{#gamma} (GeV)")
