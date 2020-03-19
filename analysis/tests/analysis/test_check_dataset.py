@@ -1,6 +1,6 @@
 import pytest
 
-import spectrum.comparator as cmpr
+import spectrum.plotter as plt
 from spectrum.analysis import Analysis
 from spectrum.options import Options
 from spectrum.output import open_loggs
@@ -15,9 +15,12 @@ def data():
     return DataVault().input('data', histname="MassPtSM0")
 
 
-@pytest.mark.interactive
 @pytest.mark.onlylocal
-@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"
+])
 def test_dataset(particle, data):
     # Configure the analysis
     options = Options(particle=particle)
@@ -25,8 +28,7 @@ def test_dataset(particle, data):
     estimator = Analysis(options)
 
     # Analyze the data
-    with open_loggs("ALICE, #sqrt{#it{s}} = 13 TeV", "#pi^{0}") as loggs:
+    with open_loggs() as loggs:
         observables = estimator.transform(data, loggs)
-        diff = cmpr.Comparator()
         for obs in observables:
-            diff.compare(obs)
+            plt.plot([obs], logy=False)
