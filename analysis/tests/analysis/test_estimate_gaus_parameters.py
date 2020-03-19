@@ -9,10 +9,10 @@ from spectrum.vault import DataVault
 
 @pytest.fixture
 def data():
-    return [
+    return (
         DataVault().input("data", histname="MassPtSM0"),
         DataVault().input("data", histname="MassPtSM0"),
-    ]
+    )
 
 
 @pytest.fixture
@@ -50,5 +50,5 @@ def test_simple(particle, data, options):
         (name, spectrum_pipeline(options[name]))
         for name in options
     ])
-    with open_loggs("estimate gaus parameters") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(data, loggs=loggs)
