@@ -21,21 +21,30 @@ class CompareAnalysis(TransformerBase):
 
 
 @pytest.fixture
-def data():
+def labels():
+    return "2017", "total"
+
+
+@pytest.fixture
+def data(labels):
     return (
-        DataVault().input("data", "LHC17 qa1", label="2017"),
-        DataVault().input("data", label="2016", histname="MassPtSM0"),
+        DataVault().input("data", "LHC17 qa1"),
+        DataVault().input("data", histname="MassPtSM0"),
     )
 
 
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-@pytest.mark.parametrize("particle", ["#pi^{0}", "#eta"])
-def test_gives_similar_results(particle, data):
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    "#eta"
+])
+def test_gives_similar_results(particle, data, labels):
+    assert len(labels) == len(data)
+
     estimator = CompareAnalysis(
-        steps=[d.label for d in data],
+        steps=labels,
         particle=particle
     )
-
-    with open_loggs("compare different datasets") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(data, loggs)
