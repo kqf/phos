@@ -53,5 +53,5 @@ def test_efficiency_ratio(data):
     opt_pi0 = CompositeOptions("#pi^{0}", pt=pt)
     estimator = MassComparator(opt_eta, opt_pi0, plot=False)
 
-    with open_loggs("mass ratio") as loggs:
+    with open_loggs() as loggs:
         estimator.transform(data, loggs)

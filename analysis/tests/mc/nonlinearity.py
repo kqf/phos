@@ -49,12 +49,12 @@ def test_spmc_nonlinearity(data, nonlinearity_function):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinearity_function
 
-    with open_loggs("spmc nonlinearity parametrization") as loggs:
+    with open_loggs() as loggs:
         nonlinearity = Nonlinearity(options, plot=True).transform(data, loggs)
         print("Fit parameters:", br.pars(options.fitf))
         Comparator().compare(nonlinearity)
 
-    with open_loggs("spmc width parametrization") as loggs:
+    with open_loggs() as loggs:
         width = Decalibration(options, plot=True).transform(data, loggs)
         Comparator().compare(width)
 

@@ -37,5 +37,5 @@ def yieldf():
 def test_corrected_yield_for_pi0(data, yieldf):
     options = CompositeCorrectedYieldOptions(particle="#pi^{0}")
     options.fitfunc = yieldf
-    with open_loggs("corrected yield #pi^{0}") as loggs:
+    with open_loggs() as loggs:
         CorrectedYield(options).transform(data, loggs)
