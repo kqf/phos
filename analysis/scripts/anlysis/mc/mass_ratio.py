@@ -22,36 +22,36 @@ class MassComparator(TransformerBase):
                 ("analysis", Analysis(options_pion, plot)),
                 ("spectrum", HistogramSelector("mass"))
             ])),
-        ])
+        ], plot=plot)
 
 
 @pytest.fixture
 def pion_data():
     return (
-        DataVault().input("single #pi^{0}", "low", "PhysEff", label="#pi^{0}"),
-        DataVault().input("single #pi^{0}", "high", "PhysEff", label="#pi^{0}")
+        DataVault().input("single #pi^{0}", "low", "PhysEff"),
+        DataVault().input("single #pi^{0}", "high", "PhysEff")
     )
 
 
 @pytest.fixture
 def eta_data():
     return (
-        DataVault().input("single #eta", "low", "PhysEff", label="#eta"),
-        DataVault().input("single #eta", "high", "PhysEff", label="#eta")
+        DataVault().input("single #eta", "low", "PhysEff"),
+        DataVault().input("single #eta", "high", "PhysEff")
     )
 
 
 @pytest.fixture
 def data(pion_data, eta_data):
-    return eta_data, pion_data
+    return pion_data, eta_data
 
 
 @pytest.mark.onlylocal
-def test_efficiency_ratio(data):
-    pt = "config/pt-same.json"
-    opt_eta = CompositeOptions("#eta", pt=pt)
-    opt_pi0 = CompositeOptions("#pi^{0}", pt=pt)
-    estimator = MassComparator(opt_eta, opt_pi0, plot=False)
-
+def test_efficiency_ratio(data, pt="config/pt-same.json"):
+    estimator = MassComparator(
+        CompositeOptions("#pi^{0}", pt=pt),
+        CompositeOptions("#eta", pt=pt),
+        plot=True
+    )
     with open_loggs() as loggs:
         estimator.transform(data, loggs)
