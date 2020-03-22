@@ -2,19 +2,18 @@ from __future__ import print_function
 import ROOT
 import pytest
 
+import spectrum.broot as br
 from spectrum.vault import DataVault
 from spectrum.options import CompositeNonlinearityOptions
-from spectrum.output import open_loggs  # noqa
+from spectrum.output import open_loggs
 from spectrum.tools.mc import Nonlinearity
 from spectrum.tools.mc import Decalibration
-import spectrum.broot as br
-from spectrum.comparator import Comparator  # noqa
+from spectrum.comparator import Comparator
 from spectrum.vault import FVault
 
 
 @pytest.fixture
-def data():
-    prod = "single #pi^{0} debug 2"
+def data(prod="single #pi^{0}"):
     return (
         DataVault().input("data", "latest", histname="MassPtSM0"),
         (

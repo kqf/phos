@@ -8,7 +8,6 @@ from spectrum.pipeline import SingleHistReader
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import TransformerBase
 from spectrum.output import open_loggs
-# from spectrum.comparator import Comparator
 
 from spectrum.vault import DataVault
 from spectrum.vault import FVault
