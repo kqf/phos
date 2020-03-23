@@ -129,7 +129,7 @@ def test_r(data, stop, coname):
         logy=False,
         ytitle="#it{R}_{_{TCM}}",
         xtitle="#sqrt{#it{s}} (GeV)",
-        ylimits=(0.01, 2.6),
+        ylimits=(-0.4, 2.6),
         xlimits=(0.7, 15),
         csize=(96, 128),
         legend_pos=(0.55, 0.7, 0.75, 0.85),
