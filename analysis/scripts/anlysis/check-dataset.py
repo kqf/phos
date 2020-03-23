@@ -21,7 +21,7 @@ def data():
     "#pi^{0}",
     "#eta"
 ])
-def test_dataset(particle, data):
+def test_dataset(particle, data, stop):
     # Configure the analysis
     options = Options(particle=particle)
     options.output.scalew_spectrum = True
@@ -31,4 +31,4 @@ def test_dataset(particle, data):
     with open_loggs() as loggs:
         observables = estimator.transform(data, loggs)
         for obs in observables:
-            plt.plot([obs], logy=False)
+            plt.plot([obs], logy=False, stop=stop)

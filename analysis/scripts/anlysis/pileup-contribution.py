@@ -33,9 +33,10 @@ class PileupEstimator(TransformerBase):
         ], plot)
 
 
+@pytest.mark.skip("Find the suitable dataset")
 @pytest.mark.onlylocal
 @pytest.mark.interactive
-def test_pileup(data):
-    estimator = PileupEstimator(plot=True)
+def test_pileup(data, stop):
+    estimator = PileupEstimator(plot=stop)
     with open_loggs() as loggs:
         estimator.transform(data, loggs)
