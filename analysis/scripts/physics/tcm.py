@@ -132,7 +132,7 @@ def test_r(data, stop, coname):
         ylimits=(-0.4, 2.6),
         xlimits=(0.7, 15),
         csize=(96, 128),
-        legend_pos=(0.55, 0.7, 0.75, 0.85),
+        legend_pos=(0.25, 0.7, 0.45, 0.85),
         oname=coname.format("phenomenology/tcm_parameter_"),
     )
 
@@ -182,8 +182,8 @@ def test_corr(data, charge_particles_t2, stop, coname):
         ytitle="#it{T}^{ 2} (GeV^{2})",
         xtitle="#it{T}_{#it{e}}^{ 2} (GeV^{2})",
         ylimits=(0., 8.),
-        xlimits=(0., 0.22),
-        legend_pos=(0.55, 0.7, 0.75, 0.80),
+        xlimits=(0., 0.25),
+        legend_pos=(0.25, 0.75, 0.45, 0.85),
         colors="reverse",
         options="qp",
         oname=coname.format("phenomenology/tcm_parameter_"),
