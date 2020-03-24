@@ -1,3 +1,4 @@
+import ROOT
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeCorrectedYieldOptions, Options
@@ -7,7 +8,7 @@ from spectrum.pipeline import Pipeline
 from spectrum.pipeline import RebinTransformer
 from spectrum.cyield import CorrectedYield, cyield_data
 from spectrum.comparator import Comparator
-from spectrum.tools.unityfit import UnityFitTransformer
+from spectrum.tools.unityfit import unityfit
 from spectrum.plotter import plot
 
 
@@ -53,6 +54,37 @@ class RemoveErrors(object):
         return hist
 
 
+class UnityFitTransformer(TransformerBase):
+    def __init__(self, title, fit_range, plot):
+        self.title = title
+        self.fit_range = fit_range
+        self.plot = plot
+
+    def transform(self, hists, loggs):
+        unitifits = [unityfit(h, self.title, self.fit_range) for h in hists]
+        funcs = [h.GetListOfFunctions()[0] for h in unitifits]
+
+        for i, ff in enumerate(funcs):
+            ff.SetLineColor(br.auto_color_marker(i)[0])
+            ff.SetLineWidth(2)
+
+        plot(
+            hists + funcs,
+            logy=False,
+            xtitle="#it{p}_{T} (GeV/#it{c})",
+            # ytitle=,
+            ylimits=(0.85, 1.2),
+            csize=(96, 128),
+            legend_pos=(0.5, 0.7, 0.7, 0.85),
+            oname="images/systematics/acceptance/ratios.pdf",
+            stop=self.plot,
+            more_logs=False,
+            yoffset=1.8,
+            ltitle="#pi^{0} #rightarrow #gamma #gamma",
+        )
+        return unitifits
+
+
 class Acceptance(TransformerBase):
     def __init__(self, options, plot=False):
         super(Acceptance, self).__init__(plot)
@@ -68,7 +100,8 @@ class Acceptance(TransformerBase):
 
         self.pipeline = Pipeline([
             ("unities", unities),
-            ("fit", UnityFitTransformer(options.title, options.fit_range)),
+            ("fit", UnityFitTransformer(
+                options.title, options.fit_range, plot)),
             ("max", MaxUnityHistogram()),
             ("final", RemoveErrors()),
             ("rebin", RebinTransformer(True, options.edges)),
@@ -92,22 +125,11 @@ class Acceptance(TransformerBase):
         average = br.average(spectrums, "averaged yield")
         average.SetTitle("average")
         ratios = [br.ratio(s, average) for s in spectrums]
+        for ratio, s in zip(ratios, spectrums):
+            ratio.GetYaxis().SetTitle(
+                "{} / {}".format(s.GetYaxis().GetTitle(), average.GetTitle())
+            )
         for ratio in ratios:
             for i in br.hrange(ratio):
                 ratio.SetBinError(i, ratio.GetBinError(i))
-
-        plot(
-            ratios,
-            logy=False,
-            xtitle="#it{p}_{T} (GeV/#it{c})",
-            ytitle="{} / average".format(spectrums[0].GetYaxis().GetTitle()),
-            ylimits=(0.85, 1.2),
-            csize=(96, 128),
-            legend_pos=(0.5, 0.7, 0.7, 0.85),
-            oname="images/systematics/acceptance/ratios.pdf",
-            stop=self.plot,
-            more_logs=False,
-            yoffset=1.8,
-            ltitle="#pi^{0} #rightarrow #gamma #gamma",
-        )
         return ratios
