@@ -6,12 +6,12 @@ def unityfit(ratio, title, fit_range=(0, 100)):
     fitf = ROOT.TF1("ratio", "1. - pol0(0)", *fit_range)
     fitf.SetParameter(0, 0.0)
     ratio.Fit(fitf, "Rq")
-    fitf.SetTitle("1 + #delta = 1 {} {:.4f} #pm {:.4f}".format(
+    fitf.SetTitle("1 + #delta_{{{}}} = 1 {} {:.4f} #pm {:.4f}".format(
+        ratio.GetName(),
         "+" if fitf.GetParameter(0) > 0 else "-",
-        fitf.GetParameter(0),
+        abs(fitf.GetParameter(0)),
         fitf.GetParError(0)
     ))
-    # Comparator().compare(ratio)
 
     sys_error = abs(fitf.GetParameter(0))
     sys_error_conf = fitf.GetParError(0)
