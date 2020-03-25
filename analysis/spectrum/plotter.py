@@ -143,17 +143,18 @@ def separate(data):
 
 @lru_cache(maxsize=1024)
 def adjust_canvas(canvas, data, xlimits, ylimits, xtitle,
-                  ytitle, yoffset, more_logs):
+                  ytitle, yoffset, more_logs,
+                  min_offset=0.95, max_offset=1.05):
     x = xlimits or np.concatenate([br.edges(h) for h in data])
     y = ylimits or np.concatenate([br.bins(h).contents for h in data])
     frame = canvas.DrawFrame(
-        min(x) * 0.95,
-        min(y) * 0.95,
-        max(x) * 1.05,
-        max(y) * 1.05,
+        min(x) * min_offset,
+        min(y) * min_offset,
+        max(x) * max_offset,
+        max(y) * max_offset,
     )
-    frame.SetAxisRange(min(x) * 0.95, max(x) * 1.05, "X")
-    frame.SetAxisRange(min(y) * 0.95, max(y) * 1.05, "Y")
+    frame.SetAxisRange(min(x) * min_offset, max(x) * max_offset, "X")
+    frame.SetAxisRange(min(y) * min_offset, max(y) * max_offset, "Y")
     frame.GetXaxis().SetTitle(xtitle or data[0].GetXaxis().GetTitle())
     frame.GetYaxis().SetTitle(ytitle or data[0].GetYaxis().GetTitle())
     frame.GetXaxis().SetMoreLogLabels(more_logs)
@@ -346,7 +347,9 @@ def hplot(
             xtitle,
             ytitle,
             yoffset,
-            more_logs
+            more_logs,
+            min_offset=1.,
+            max_offset=1.,
         )
         plotted, option = [], ""
         for i, hist in enumerate(data):
