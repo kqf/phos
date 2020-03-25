@@ -75,7 +75,7 @@ class UnityFitTransformer(TransformerBase):
             # ytitle=,
             ylimits=(0.85, 1.2),
             csize=(96, 128),
-            legend_pos=(0.5, 0.7, 0.7, 0.85),
+            legend_pos=(0.45, 0.7, 0.7, 0.85),
             oname="images/systematics/acceptance/ratios.pdf",
             stop=self.plot,
             more_logs=False,
@@ -125,11 +125,13 @@ class Acceptance(TransformerBase):
         average = br.average(spectrums, "averaged yield")
         average.SetTitle("average")
         ratios = [br.ratio(s, average) for s in spectrums]
-        for ratio, s in zip(ratios, spectrums):
+
+        for i, (ratio, s) in enumerate(zip(ratios, spectrums)):
+            ratio.SetName(str(i + 1))
             ratio.GetYaxis().SetTitle(
                 "{} / {}".format(s.GetYaxis().GetTitle(), average.GetTitle())
             )
-        for ratio in ratios:
             for i in br.hrange(ratio):
                 ratio.SetBinError(i, ratio.GetBinError(i))
+
         return ratios
