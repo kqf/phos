@@ -2,7 +2,7 @@ import pytest
 
 import spectrum.broot as br
 from spectrum.output import open_loggs
-from spectrum.pipeline import ComparePipeline,
+from spectrum.pipeline import ComparePipeline
 from spectrum.pipeline import ParallelPipeline, HistogramSelector, Pipeline
 from spectrum.options import Options
 from spectrum.analysis import Analysis
