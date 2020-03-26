@@ -56,7 +56,7 @@ def tcm(particle):
         tcm.SetParameter(0, 3e5)
         # tcm.SetParLimits(0, 0, 1e6)
 
-        temin, temax = 0.0, 0.2
+        # temin, temax = 0.0, 0.2
         tcm.SetParameter(1, 0.142)
         # tcm.SetParLimits(1, temin, temax)
 
@@ -72,7 +72,7 @@ def tcm(particle):
         tcm.SetParameter(0, 1e5)
         tcm.SetParLimits(0, 0, 1e6)
 
-        temin, temax = 0.0, 0.3
+        # temin, temax = 0.0, 0.3
         tcm.SetParameter(1, 0.229)
         # tcm.SetParLimits(1, temin, temax)
 
