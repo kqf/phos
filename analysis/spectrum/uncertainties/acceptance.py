@@ -1,4 +1,3 @@
-import ROOT
 import spectrum.broot as br
 from spectrum.pipeline import TransformerBase
 from spectrum.options import CompositeCorrectedYieldOptions, Options

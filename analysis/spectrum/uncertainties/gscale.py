@@ -13,7 +13,6 @@ from spectrum.plotter import plot
 from spectrum.vault import FVault
 
 from spectrum.vault import DataVault
-from spectrum.tools.feeddown import data_feeddown
 
 
 def ep_data(prod="data", version="latest"):
