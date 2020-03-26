@@ -29,7 +29,7 @@ def test_calculates_total_uncertainty(particle, dataset, stop):
         tot = estimator.transform(dataset, loggs)
         print()
         print(
-            "\def \{}MeanTotalUncertainty {{{:.2f}}}".format(
+            "\\def \\{}MeanTotalUncertainty {{{:.2f}}}".format(
                 br.spell(particle),
                 br.bins(tot).contents.mean() * 100
             )

@@ -46,13 +46,13 @@ def test_nonlinearity_uncertainty(particle, nbins, stop):
 
         print()
         maxerror = np.max(nonlin.contents)
-        print("\def \\nonlinearityMaxError {{{}}}".format(maxerror))
+        print("\\def \\nonlinearityMaxError {{{}}}".format(maxerror))
 
         maxpT = nonlin.centers[np.argmax(nonlin.contents)]
-        print("\def \\nonlinearityMaxErrorPt {{{}}}".format(maxpT))
+        print("\\def \\nonlinearityMaxErrorPt {{{}}}".format(maxpT))
 
         average = nonlin.contents.mean()
-        print("\def \\nonlinearityAverageError {{{}}}".format(average))
+        print("\\def \\nonlinearityAverageError {{{}}}".format(average))
 
 
 @pytest.fixture

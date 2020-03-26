@@ -14,7 +14,7 @@ from spectrum.pipeline import DataFitter, Pipeline
 
 PT_MAX = 15
 
-print("\n\def \pionTcmMax {{{}}}".format(PT_MAX))
+print("\n\\def \\pionTcmMax {{{}}}".format(PT_MAX))
 
 
 def fitted(fitf, ptmax=PT_MAX):

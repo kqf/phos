@@ -28,7 +28,7 @@ def test_acceptance(particle, stop):
         uncertanity = estimator.transform(acceptance_data(particle), loggs)
 
         print(
-            "\def \{}AcceptanceUncertainty {{{:.2f}}}".format(
+            "\n\\def \\{}AcceptanceUncertainty {{{:.2f}}}".format(
                 br.spell(particle),
                 br.bins(uncertanity).contents.mean() * 100
             )
