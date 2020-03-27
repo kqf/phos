@@ -19,10 +19,11 @@ def data():
 def _spectrum(name, par):
     function = ROOT.TF1(name, FVault().func("tsallis"), 0.3, 15, 3)
     function.SetParameters(*par)
-    title = '%s #it{p}_{T} spectrum; #it{p}_{T} (GeV/#it{c}); #frac{d#it{N}}{d#it{p}_{T}}' % name
     histogram = function.GetHistogram().Clone()
     histogram.SetName(name + "_spectrum")
-    histogram.SetTitle(title)
+    histogram.SetTitle('{} #it{{p}}_{{T}} spectrum'.format(name))
+    histogram.GetXaxis().SetTitle("#it{p}_{T} (GeV/#it{c})")
+    histogram.GetYaxis().SetTitle("#frac{d#it{N}}{d#it{p}_{T}}")
     histogram.Scale(100000000)
     histogram.label = name
     for i in range(histogram.GetNbinsX()):
