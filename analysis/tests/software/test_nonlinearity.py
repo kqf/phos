@@ -53,8 +53,7 @@ def spmc(data):
 def test_simple(pythia8, nonlinf):
     options = NonlinearityOptions()
     options.fitf = nonlinf
-
-    estimator = Nonlinearity(options)
+    estimator = Nonlinearity(options, plot=False)
     with open_loggs() as loggs:
         nonlinearity = estimator.transform(pythia8, loggs)
     assert nonlinearity.GetEntries() > 0
@@ -65,8 +64,7 @@ def test_simple(pythia8, nonlinf):
 def test_composite(spmc, nonlinf):
     options = CompositeNonlinearityOptions()
     options.fitf = nonlinf
-
-    estimator = Nonlinearity(options)
+    estimator = Nonlinearity(options, plot=False)
     with open_loggs() as loggs:
         nonlinearity = estimator.transform(spmc, loggs)
     assert nonlinearity.GetEntries() > 0
