@@ -4,8 +4,8 @@ import tqdm
 
 from spectrum.vault import AnalysisInput
 from spectrum.pipeline import AnalysisDataReader
-from tests.software.test_broot import write_histograms
 from spectrum.vault import DataVault
+from tests.test_broot import write_histograms
 
 
 @pytest.fixture(scope="module")
