@@ -1,19 +1,13 @@
 import pytest
 
-from spectrum.tools.probe import TagAndProbe
-from spectrum.vault import DataVault
+from spectrum.tools.probe import TagAndProbe, tof_data
 from spectrum.options import ProbeTofOptions
 from spectrum.output import open_loggs
 
 
 @pytest.fixture
 def data():
-    return (
-        DataVault().input("data", listname="TagAndProbleTOF",
-                          histname="MassEnergyTOF_SM0"),
-        DataVault().input("data", listname="TagAndProbleTOF",
-                          histname="MassEnergyAll_SM0"),
-    )
+    return tof_data()
 
 
 @pytest.mark.onlylocal
