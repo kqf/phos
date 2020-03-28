@@ -19,8 +19,10 @@ import spectrum.sutils as su
 #
 
 @pytest.fixture
-def edges(settings):
-    return settings["test_broot"]["edges"]
+def edges():
+    with open("config/pt.json") as f:
+        data = json.load(f)["#pi^{0}"]
+    return data["ptedges"]
 
 
 def write_histogram(filename, selection, histname):
