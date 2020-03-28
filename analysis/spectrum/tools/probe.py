@@ -3,6 +3,40 @@ from spectrum.pipeline import TransformerBase
 from spectrum.pipeline import ComparePipeline, Pipeline
 from spectrum.pipeline import HistogramSelector, HistogramScaler
 from spectrum.pipeline import FunctionTransformer
+from spectrum.vault import DataVault
+
+
+def tof_data():
+    return (
+        DataVault().input(
+            "data",
+            "staging tof",
+            listname="TagAndProbleTOF",
+            histname="MassEnergyTOF_SM0"
+        ),
+        DataVault().input(
+            "data",
+            "staging tof",
+            listname="TagAndProbleTOF",
+            histname="MassEnergyAll_SM0"
+        ),
+    )
+
+
+def tof_data_old():
+    return (
+        DataVault().input(
+            "data",
+            "uncorrected",
+            listname="TagAndProbleTOFOnlyTender",
+            histname="MassEnergyTOF_SM0"),
+        DataVault().input(
+            "data",
+            "uncorrected",
+            listname="TagAndProbleTOFOnlyTender",
+            histname="MassEnergyAll_SM0"
+        ),
+    )
 
 
 class TagAndProbe(TransformerBase):

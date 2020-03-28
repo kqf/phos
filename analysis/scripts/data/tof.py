@@ -3,11 +3,11 @@ import pytest
 
 import ROOT
 import spectrum.broot as br
+from spectrum.plotter import plot
 from spectrum.options import ProbeTofOptions
 from spectrum.output import open_loggs
 from spectrum.tools.probe import TagAndProbe
 from spectrum.tools.validate import validate  # noqa
-from spectrum.plotter import plot
 
 
 @pytest.fixture

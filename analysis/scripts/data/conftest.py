@@ -1,5 +1,6 @@
 import pytest
 import spectrum.broot as br
+from spectrum.tools.probe import tof_data as tdata
 from spectrum.vault import DataVault
 
 
@@ -22,34 +23,4 @@ def oname(particle, target):
 
 @pytest.fixture
 def tof_data():
-    return (
-        DataVault().input(
-            "data",
-            "staging tof",
-            listname="TagAndProbleTOF",
-            histname="MassEnergyTOF_SM0"
-        ),
-        DataVault().input(
-            "data",
-            "staging tof",
-            listname="TagAndProbleTOF",
-            histname="MassEnergyAll_SM0"
-        ),
-    )
-
-
-@pytest.fixture
-def tof_data_old():
-    return (
-        DataVault().input(
-            "data",
-            "uncorrected",
-            listname="TagAndProbleTOFOnlyTender",
-            histname="MassEnergyTOF_SM0"),
-        DataVault().input(
-            "data",
-            "uncorrected",
-            listname="TagAndProbleTOFOnlyTender",
-            histname="MassEnergyAll_SM0"
-        ),
-    )
+    return tdata()
