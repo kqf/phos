@@ -25,15 +25,17 @@ def edges():
     return data["ptedges"]
 
 
-def write_histogram(filename, selection, histname):
-    hist = ROOT.TH1F(histname, 'reading histograms from a rootfile', 10, -3, 3)
+@pytest.fixture
+def write_histogram(wfilename, wselection, whistname):
+    hist = ROOT.TH1F(whistname, 'reading from a rootfile', 10, -3, 3)
     hist.FillRandom('gaus')
     tlist = ROOT.TList()
     tlist.SetOwner(True)
     tlist.Add(hist)
-    with br.tfile(filename, "recreate"):
-        tlist.Write(selection, ROOT.TObject.kSingleKey)
-    return br.clone(hist)
+    with br.tfile(wfilename, "recreate"):
+        tlist.Write(wselection, ROOT.TObject.kSingleKey)
+    yield br.clone(hist)
+    os.remove(wfilename)
 
 
 def write_histograms(filename, selection, histnames):
@@ -102,20 +104,20 @@ def test_projection_saves_area(stop):
     assert total == hist.Integral()
 
 
-def test_read(stop):
-    data = 'test_read.root', 'testSelection', 'testHistogram'
-    write_histogram(*data)
-    assert br.io.read(*data) is not None
+@pytest.mark.parametrize("wfilename, wselection, whistname", [
+    ('test_read.root', 'testSelection', 'testHistogram')
+])
+def test_read(wfilename, wselection, whistname, write_histogram, stop):
+    assert br.io.read(wfilename, wselection, whistname) is not None
 
     # Now raise exceptions when reading
     # the root file with wrong names
     with pytest.raises(IOError):
-        br.io.read('junk' + data[0], data[1], data[2])
+        br.io.read('junk' + wfilename, wselection, whistname)
     with pytest.raises(IOError):
-        br.io.read(data[0], 'junk' + data[1], data[2])
+        br.io.read(wfilename, 'junk' + wselection, whistname)
     with pytest.raises(IOError):
-        br.io.read(data[0], data[1], 'junk' + data[2])
-    os.remove(data[0])
+        br.io.read(wfilename, wselection, 'junk' + whistname)
 
 
 def test_read_multiple(stop):
