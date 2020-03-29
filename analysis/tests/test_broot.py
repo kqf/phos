@@ -52,6 +52,12 @@ def write_histograms(filename, selection, histnames):
     return list(map(br.clone, hists))
 
 
+@pytest.fixture
+def written_histograms(wfilename, wselection, whistnames):
+    yield write_histograms(wfilename, wselection, whistnames)
+    os.remove(wfilename)
+
+
 @pytest.fixture(scope="module")
 def nominal_hist():
     nominal_hist = ROOT.TH1F("nominal_hist", "Testing", 100, -10, 10)
@@ -120,23 +126,21 @@ def test_read(wfilename, wselection, whistname, write_histogram, stop):
         br.io.read(wfilename, wselection, 'junk' + whistname)
 
 
-def test_read_multiple(stop):
-    ofilename = 'test_read.root'
-    selection = 'testSelection'
-    histnames = ['testHistogram_{0}'.format(i) for i in range(10)]
+@pytest.mark.parametrize("wfilename, wselection, whistnames", [
+    ('test_read.root', 'testSelection',
+        ['testHistogram_{0}'.format(i) for i in range(10)])
+])
+def test_readmult(written_histograms, wfilename, wselection, whistnames, stop):
+    histograms = br.io.read_multiple(wfilename, wselection, whistnames)
 
-    write_histograms(ofilename, selection, histnames)
-
-    histograms = br.io.read_multiple(ofilename, selection, histnames)
     assert histograms is not None
-    assert len(histograms) == len(histnames)
+    assert len(histograms) == len(whistnames)
     assert histograms[0] is not None
 
     # Now feed it with wrong name
-    histnames.append('junk')
+    whistnames.append('junk')
     with pytest.raises(IOError):
-        br.io.read_multiple(ofilename, selection, histnames)
-    os.remove(ofilename)
+        br.io.read_multiple(wfilename, wselection, whistnames)
 
 
 def test_ratio(stop):
