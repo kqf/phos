@@ -1,10 +1,9 @@
 import os
 import pytest
-import tqdm
 
 from spectrum.vault import AnalysisInput
 from spectrum.pipeline import AnalysisDataReader
-from spectrum.vault import DataVault
+# TODO: Fix me
 from tests.test_broot import write_histograms
 
 
@@ -58,32 +57,3 @@ def test_reads_nomixing_input(nomixing):
     assert real[0] is not None
     assert real[0].GetEntries() == oreal.GetEntries()
     assert real[0].nevents == ocntr.GetBinContent(2)
-
-
-@pytest.fixture()
-def multihist_input():
-    return lambda i, j: DataVault().input(
-        "single #pi^{0}", "high",
-        listname="PhysNonlinScan",
-        histname="MassPt_{}_{}".format(i, j))
-
-
-@pytest.mark.onlylocal
-@pytest.mark.skip("These tests are only needed to check memory consumption")
-def test_sequence(multihist_input, sbins=(11, 11)):
-    x, y = sbins
-    for i in range(x):
-        for j in range(y):
-            hists = multihist_input(i, j)
-            assert hists is not None
-
-
-@pytest.mark.onlylocal
-@pytest.mark.skip("These tests are only needed to check memory consumption")
-def test_copy(multihist_input):
-    raw, mixed = multihist_input(0, 0).read()
-    cache = []
-    msize = 11 * 11
-    for i in tqdm.tqdm(range(msize)):
-        hists = raw.Clone(), mixed.Clone()
-        cache.append(hists)
