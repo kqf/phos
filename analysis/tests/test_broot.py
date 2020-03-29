@@ -1,41 +1,25 @@
 from __future__ import print_function
-import array
 import os
-import random
 import json
+import array
+import random
 
 import numpy as np
 import pytest
 import ROOT
 
 import spectrum.broot as br
-from spectrum.comparator import Comparator
-from spectrum.options import Options
 import spectrum.sutils as su
 
+from spectrum.comparator import Comparator
+from spectrum.options import Options
 
-# NB: Don't use broot in write functions
-#     as it's important to test without broot
-#
 
 @pytest.fixture
 def edges():
     with open("config/pt.json") as f:
         data = json.load(f)["#pi^{0}"]
     return data["ptedges"]
-
-
-@pytest.fixture
-def write_histogram(wfilename, wselection, whistname):
-    hist = ROOT.TH1F(whistname, 'reading from a rootfile', 10, -3, 3)
-    hist.FillRandom('gaus')
-    tlist = ROOT.TList()
-    tlist.SetOwner(True)
-    tlist.Add(hist)
-    with br.tfile(wfilename, "recreate"):
-        tlist.Write(wselection, ROOT.TObject.kSingleKey)
-    yield br.clone(hist)
-    os.remove(wfilename)
 
 
 @pytest.fixture(scope="module")
@@ -90,20 +74,20 @@ def test_projection_saves_area(stop):
     assert total == hist.Integral()
 
 
-@pytest.mark.parametrize("wfilename, wselection, whistname", [
-    ('test_read.root', 'testSelection', 'testHistogram')
+@pytest.mark.parametrize("wfilename, wselection, whistnames", [
+    ('test_read.root', 'testSelection', ['testHistogram'])
 ])
-def test_read(wfilename, wselection, whistname, write_histogram, stop):
-    assert br.io.read(wfilename, wselection, whistname) is not None
+def test_read(wfilename, wselection, whistnames, written_histograms, stop):
+    assert br.io.read(wfilename, wselection, whistnames[0]) is not None
 
     # Now raise exceptions when reading
     # the root file with wrong names
     with pytest.raises(IOError):
-        br.io.read('junk' + wfilename, wselection, whistname)
+        br.io.read('junk' + wfilename, wselection, whistnames[0])
     with pytest.raises(IOError):
-        br.io.read(wfilename, 'junk' + wselection, whistname)
+        br.io.read(wfilename, 'junk' + wselection, whistnames[0])
     with pytest.raises(IOError):
-        br.io.read(wfilename, wselection, 'junk' + whistname)
+        br.io.read(wfilename, wselection, 'junk' + whistnames[0])
 
 
 @pytest.mark.parametrize("wfilename, wselection, whistnames", [
