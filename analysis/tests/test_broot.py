@@ -38,26 +38,6 @@ def write_histogram(wfilename, wselection, whistname):
     os.remove(wfilename)
 
 
-def write_histograms(filename, selection, histnames):
-    hists = [ROOT.TH1F(histname, '', 10, -3, 3) for histname in histnames]
-
-    tlist = ROOT.TList()
-    tlist.SetOwner(True)
-    for hist in hists:
-        hist.FillRandom('gaus')
-        tlist.Add(hist)
-
-    with br.tfile(filename, "recreate"):
-        tlist.Write(selection, ROOT.TObject.kSingleKey)
-    return list(map(br.clone, hists))
-
-
-@pytest.fixture
-def written_histograms(wfilename, wselection, whistnames):
-    yield write_histograms(wfilename, wselection, whistnames)
-    os.remove(wfilename)
-
-
 @pytest.fixture(scope="module")
 def nominal_hist():
     nominal_hist = ROOT.TH1F("nominal_hist", "Testing", 100, -10, 10)
