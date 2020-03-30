@@ -29,10 +29,10 @@ def pytest_configure(config):
     )
 
 
-# TODO: Fix wfilename ... etc.
+# TODO: Fix filename ... etc.
 @pytest.fixture
-def written_histograms(wfilename, wselection, whistnames):
-    hists = [ROOT.TH1F(histname, '', 10, -3, 3) for histname in whistnames]
+def written_histograms(filename, selection, histnames):
+    hists = [ROOT.TH1F(histname, '', 10, -3, 3) for histname in histnames]
 
     tlist = ROOT.TList()
     tlist.SetOwner(True)
@@ -40,7 +40,7 @@ def written_histograms(wfilename, wselection, whistnames):
         hist.FillRandom('gaus')
         tlist.Add(hist)
 
-    with br.tfile(wfilename, "recreate"):
-        tlist.Write(wselection, ROOT.TObject.kSingleKey)
+    with br.tfile(filename, "recreate"):
+        tlist.Write(selection, ROOT.TObject.kSingleKey)
     yield list(map(br.clone, hists))
-    os.remove(wfilename)
+    os.remove(filename)

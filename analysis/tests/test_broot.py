@@ -74,37 +74,37 @@ def test_projection_saves_area(stop):
     assert total == hist.Integral()
 
 
-@pytest.mark.parametrize("wfilename, wselection, whistnames", [
+@pytest.mark.parametrize("filename, selection, histnames", [
     ('test_read.root', 'testSelection', ['testHistogram'])
 ])
-def test_read(wfilename, wselection, whistnames, written_histograms, stop):
-    assert br.io.read(wfilename, wselection, whistnames[0]) is not None
+def test_read(filename, selection, histnames, written_histograms, stop):
+    assert br.io.read(filename, selection, histnames[0]) is not None
 
     # Now raise exceptions when reading
     # the root file with wrong names
     with pytest.raises(IOError):
-        br.io.read('junk' + wfilename, wselection, whistnames[0])
+        br.io.read('junk' + filename, selection, histnames[0])
     with pytest.raises(IOError):
-        br.io.read(wfilename, 'junk' + wselection, whistnames[0])
+        br.io.read(filename, 'junk' + selection, histnames[0])
     with pytest.raises(IOError):
-        br.io.read(wfilename, wselection, 'junk' + whistnames[0])
+        br.io.read(filename, selection, 'junk' + histnames[0])
 
 
-@pytest.mark.parametrize("wfilename, wselection, whistnames", [
+@pytest.mark.parametrize("filename, selection, histnames", [
     ('test_read.root', 'testSelection',
         ['testHistogram_{0}'.format(i) for i in range(10)])
 ])
-def test_readmult(written_histograms, wfilename, wselection, whistnames, stop):
-    histograms = br.io.read_multiple(wfilename, wselection, whistnames)
+def test_readmult(written_histograms, filename, selection, histnames, stop):
+    histograms = br.io.read_multiple(filename, selection, histnames)
 
     assert histograms is not None
-    assert len(histograms) == len(whistnames)
+    assert len(histograms) == len(histnames)
     assert histograms[0] is not None
 
     # Now feed it with wrong name
-    whistnames.append('junk')
+    histnames.append('junk')
     with pytest.raises(IOError):
-        br.io.read_multiple(wfilename, wselection, whistnames)
+        br.io.read_multiple(filename, selection, histnames)
 
 
 def test_ratio(stop):
