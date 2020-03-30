@@ -13,7 +13,7 @@ def dump_dict(dictionary):
 
 
 def validate(output, path,
-             outfile="config/test_values.json"):
+             outfile="config/tests/values.json"):
     with open(outfile) as f:
         nominal = json.load(f)[sys.platform]
 
