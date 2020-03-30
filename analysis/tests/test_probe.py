@@ -12,9 +12,7 @@ def data():
 
 @pytest.mark.onlylocal
 def test_interface(data):
-    probe = TagAndProbe(ProbeTofOptions())
-
     with open_loggs() as loggs:
+        probe = TagAndProbe(ProbeTofOptions())
         eff = probe.transform(data, loggs)
-
     assert eff.GetEntries() > 0
