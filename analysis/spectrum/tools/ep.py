@@ -1,7 +1,9 @@
 import ROOT
+
 import spectrum.broot as br
-from spectrum.processing import DataExtractor
-from spectrum.processing import DataPreparator, InvariantMassExtractor
+import spectrum.plotter as plt
+
+from spectrum.mass import MassTransformer
 from spectrum.mass import SignalFitExtractor, FitQualityExtractor
 from spectrum.pipeline import Pipeline
 from spectrum.pipeline import ReducePipeline
@@ -11,9 +13,9 @@ from spectrum.pipeline import HistogramSelector
 from spectrum.pipeline import FitfunctionAssigner
 from spectrum.pipeline import AnalysisDataReader
 from spectrum.processing import PeakPropertiesEstimator
+from spectrum.processing import DataExtractor
+from spectrum.processing import DataPreparator, InvariantMassExtractor
 from spectrum.comparator import Comparator
-from spectrum.mass import MassTransformer
-from spectrum.plotter import plot
 
 
 class IdentityExtractor(MassTransformer):
@@ -25,8 +27,7 @@ class IdentityExtractor(MassTransformer):
         super(IdentityExtractor, self).__init__()
         self.options = options
 
-    # TODO: Add logging support for the base class
-    def apply(self, imass, mass, loggs={}):
+    def apply(self, imass, mass):
         ROOT.gStyle.SetOptFit()
         signal = mass.Clone()
         formula = "gaus(0) + {}(3)".format(self.options.background)
@@ -46,8 +47,6 @@ class IdentityExtractor(MassTransformer):
         signal.SetTitle(signal.GetTitle() + title)
         a, b = self.options.fit_range
         signal.GetXaxis().SetRangeUser(a, b)
-        # signal.Scale(1. / signal.Integral())
-        loggs.update({signal.GetName(): signal})
         return func, bkgrnd, signal
 
 
@@ -73,7 +72,7 @@ def double_ratio(histograms, loggs, fitf, labels, stop):
     for h, l in zip(histograms, labels):
         h.SetTitle(l)
 
-    plot(
+    plt.plot(
         histograms,
         stop=stop,
         logy=False,
@@ -95,7 +94,7 @@ def double_ratio(histograms, loggs, fitf, labels, stop):
     fitf.SetParName(0, "")
     br.report(fitf, limits=True)
 
-    plot(
+    plt.plot(
         [ratio, fitf],
         stop=stop,
         logy=False,
