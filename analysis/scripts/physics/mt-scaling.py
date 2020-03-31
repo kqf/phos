@@ -7,6 +7,7 @@ from spectrum.constants import mass
 from spectrum.constants import invariant_cross_section_code
 from spectrum.vault import FVault
 import spectrum.broot as br
+import pandas as pd
 
 
 @pytest.fixture
@@ -148,9 +149,20 @@ def test_mt_deviation(upper, lower, pt_cut=5):
     idx = etapion.centers > pt_cut
     values, errors = etapion.contents[idx], etapion.errors[idx]
     exp, sigma = br.weighted_avg_and_std(values, errors)
+    print("Eta/pion weighted mean {:.3g} #pm {:.3g}".format(exp, sigma))
+
+    print(
+        pd.DataFrame({
+            "pT": etapion.centers[idx],
+            "eta/pion": values,
+            "eta/pion errors": errors
+        }).to_string(index=False)
+    )
 
     theory_upper = upper.Eval(etapion.centers[idx].mean())
+    print("Theory upper", theory_upper)
     assert exp - sigma < theory_upper < exp + sigma
 
     theory_lower = lower.Eval(etapion.centers[idx].mean())
+    print("Theory lower", theory_lower)
     assert exp - sigma < theory_lower < exp + sigma
