@@ -7,7 +7,7 @@ from spectrum.vault import FVault
 
 @pytest.fixture()
 def data():
-    with open('config/test_particles.json') as f:
+    with open('config/tests/particles.json') as f:
         particles = json.load(f)
     data = [_spectrum(i, particles[i]) for i in particles]
 
