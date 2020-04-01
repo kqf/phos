@@ -47,7 +47,7 @@ class DataPreprocessor(object):
         self.particle = self.opt.particle
 
     def transform(self, inputs, loggs):
-        histograms, pt_range = inputs
+        histograms, pt_range, nevents = inputs
         if len(histograms) == 1:
             histograms = histograms + [None]
         same, mixed = histograms
@@ -70,17 +70,16 @@ class DataPreprocessor(object):
             "pt_range": intervals,
             "pt_edges": [self.opt.ptedges] * len(intervals),
             "pt_label": pt_labels,
+            "nevents": [nevents] * len(intervals),
         })
-        df["nevents"] = same.nevents
         args = list(zip(intervals, self.opt.rebins, pt_labels))
-        df["measured"] = [self.mass(same, *a) for a in args]
+        df["measured"] = [self.mass(same, nevents, *a) for a in args]
         if mixed is not None:
-            df["background"] = [self.mass(mixed, *a) for a in args]
+            df["background"] = [self.mass(mixed, nevents, *a) for a in args]
         return df
 
-    def mass(self, hist, pt_range, nrebin, pt_label):
+    def mass(self, hist, nevents, pt_range, nrebin, pt_label):
         mass = br.project_range(hist, *pt_range)
-        mass.nevents = hist.nevents
         title = (
             "{prefix} "
             "| {reaction} "
@@ -90,7 +89,7 @@ class DataPreprocessor(object):
             prefix=PAVE_PREFIX,
             reaction=self.reactions[self.particle],
             pt=pt_label,
-            events=humanize.intword(mass.nevents)
+            events=humanize.intword(nevents)
         )
         mass.SetTitle(title)
         mass.GetXaxis().SetTitle(self.xaxis[self.particle])
