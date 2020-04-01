@@ -117,19 +117,6 @@ def test_ratio(stop):
     assert br.same_binning(ratio, hist2)
 
 
-def test_sets_events(stop, nominal_hist):
-    nominal_hist.FillRandom("gaus")
-    events, integral = 1000, nominal_hist.Integral()
-
-    # No normalization
-    br.set_nevents(nominal_hist, events)
-
-    # Check if .nevents attribute is OK
-    assert nominal_hist.nevents == events
-    # Check if we don't mess with area
-    assert nominal_hist.Integral() != integral / events
-
-
 def test_rebins_proba(stop, edges):
     hist1 = ROOT.TH1F("test", "rebins proba", 200, 0, 20)
     hist1.Sumw2()

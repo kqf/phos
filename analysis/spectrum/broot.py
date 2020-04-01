@@ -228,11 +228,6 @@ def _(a, b, option="B", loggs=None):
     return ratio
 
 
-def set_nevents(hist, nevents):
-    # TODO: Add a separate class for that
-    hist.nevents = nevents
-
-
 def rebin_proba(hist, edges, name="_rebinned"):
     edges = array.array("d", edges)
     rebin = hist.Rebin(len(edges) - 1, hist.GetName() + name, edges)
