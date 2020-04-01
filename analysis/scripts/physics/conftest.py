@@ -102,8 +102,6 @@ def coname(target):
 def ltitle(particle):
     return "{} #rightarrow #gamma#gamma".format(particle)
 
-# TODO: Fix me later
-
 
 def read_pythia6(particle):
     histnames = {

@@ -29,7 +29,6 @@ def pytest_configure(config):
     )
 
 
-# TODO: Fix filename ... etc.
 @pytest.fixture
 def written_histograms(filename, selection, histnames):
     hists = [ROOT.TH1F(histname, '', 10, -3, 3) for histname in histnames]
