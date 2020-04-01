@@ -10,13 +10,12 @@ from spectrum.pipeline import AnalysisDataReader
 def test_reads_standard(written_histograms, filename, selection, histnames):
     oreal, omixed, ocntr = written_histograms
     data = AnalysisInput(filename, selection)
-    (real, mixed), pt_range = AnalysisDataReader().transform(data, None)
+    (real, mixed), pt_range, nev = AnalysisDataReader().transform(data, None)
     assert real is not None
     assert mixed is not None
     assert real.GetEntries() == oreal.GetEntries()
     assert mixed.GetEntries() == omixed.GetEntries()
-    assert real.nevents == ocntr.GetBinContent(2)
-    assert real.nevents == mixed.nevents
+    assert nev == ocntr.GetBinContent(2)
 
 
 @pytest.mark.parametrize("filename, selection, histnames", [
@@ -28,4 +27,3 @@ def test_reads_nomixing_input(written_histograms, filename, selection):
     real = next(iter(AnalysisDataReader().transform(data, None)))
     assert real[0] is not None
     assert real[0].GetEntries() == oreal.GetEntries()
-    assert real[0].nevents == ocntr.GetBinContent(2)
