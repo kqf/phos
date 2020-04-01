@@ -241,7 +241,7 @@ def test_recreates_the_same_shape(data):
     gen_file_name = "LHC16-fake.root"
     generator = InclusiveGenerator(
         data,
-        "config/test_algorithm.json",
+        "config/tests/algorithm.json",
         gen_file_name=gen_file_name,
         flat=True
     )
@@ -261,7 +261,7 @@ def test_recreates_the_same_shape(data):
 def test_generate_mc(data_spmc):
     generator = InclusiveGenerator(
         data_spmc,
-        "config/test_algorithm.json",
+        "config/tests/algorithm.json",
         selname="PhysEff",
         gen_file_name="LHC16-single.root",
         flat=True
