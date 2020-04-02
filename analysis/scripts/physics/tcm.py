@@ -13,11 +13,12 @@ from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import DataFitter, Pipeline
 
 PT_MAX = 15
+PT_MIN = 2
 
 print("\n\\def \\pionTcmMax {{{}}}".format(PT_MAX))
 
 
-def fitted(fitf, ptmax=PT_MAX):
+def fitted(particle, fitf, ptmax=PT_MAX):
     def p(x, loggs):
         # res = br.fit_results(x.fitf)
         # print(res["Te"], res["T"], res["T"] / res["Te"], x.energy)
@@ -29,9 +30,10 @@ def fitted(fitf, ptmax=PT_MAX):
         res["energy"] = x.energy / 1000
         return res
 
+    ptmin = PT_MIN if particle in "#eta" else 0.8
     return Pipeline([
         ("cyield", DataEnergiesExtractor()),
-        ("fit", DataFitter(fitf, xmax=ptmax)),
+        ("fit", DataFitter(fitf, xmin=ptmin, xmax=ptmax)),
         ("show", FunctionTransformer(p)),
         ("res", FunctionTransformer(fit_results)),
     ])
@@ -39,7 +41,7 @@ def fitted(fitf, ptmax=PT_MAX):
 
 @pytest.fixture
 def rawdata(particle, tcm):
-    return energies(particle, fitted(tcm))
+    return energies(particle, fitted(particle, tcm))
 
 
 # @pytest.mark.skip
@@ -155,8 +157,9 @@ def test_corr(data, charge_particles_t2, stop, coname):
         pars["dTe2"] = unp.std_devs(ux)
         pars["dT2"] = unp.std_devs(uy)
         print()
-        # print(pars[["energy", "Te2", "dTe2", "T2", "dT2"]])
-        # print(pars[["energy", "Te", "dTe", "T", "dT"]])
+        print(particle)
+        print(pars[["energy", "Te2", "dTe2", "T2", "dT2"]])
+        print(pars[["energy", "Te", "dTe", "T", "dT"]])
         graph = br.graph(
             "test",
             pars["Te2"],
