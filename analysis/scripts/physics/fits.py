@@ -14,12 +14,10 @@ from spectrum.constants import invariant_cross_section_code
     "#pi^{0}",
     "#eta",
 ])
-def test_tsallis_tcm_fit(particle, tcm, tcm2, tsallis, ltitle, stop, oname):
-    tcm2.SetLineColor(ROOT.kGreen + 1)
+def test_tsallis_tcm_fit(particle, tcm, tsallis, ltitle, stop, oname):
     cs = spectrum(particle)
     cs.Fit(tcm, "RQ")
     cs.Fit(tsallis, "QR")
-    cs.Fit(tcm2, "QR")
     br.report(tcm, particle, limits=True)
     br.report(tsallis, particle, limits=True)
 
@@ -31,16 +29,10 @@ def test_tsallis_tcm_fit(particle, tcm, tcm2, tsallis, ltitle, stop, oname):
         tsallis.SetRange(tsallis.GetXmin(), tcm.GetXmax())
 
     plt.plot(
-        [cs, tcm, tsallis, tcm2],
+        [cs, tcm, tsallis],
         stop=stop,
         ytitle=invariant_cross_section_code(),
         xtitle="#it{p}_{T} (GeV/#it{c})",
         ltitle=ltitle,
         oname=oname.format("phenomenology/fits_"),
-    )
-
-    plt.plot(
-        [br.ratio(tcm.GetHistogram(), tcm2.GetHistogram())],
-        logy=False,
-        logx=False,
     )
