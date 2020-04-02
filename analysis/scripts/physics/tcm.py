@@ -30,7 +30,10 @@ def fitted(particle, fitf, ptmax=PT_MAX):
         res["energy"] = x.energy / 1000
         return res
 
-    ptmin = PT_MIN if particle in "#eta" else 0.8
+    ptmin = PT_MIN if particle == "#eta" else 0
+    if particle == "#pi^{0}":
+        fitf.SetParLimits(0, -1e8, 1e8)
+
     return Pipeline([
         ("cyield", DataEnergiesExtractor()),
         ("fit", DataFitter(fitf, xmin=ptmin, xmax=ptmax)),

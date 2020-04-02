@@ -1,4 +1,3 @@
-import ROOT
 import pytest  # noqa
 
 import spectrum.broot as br
