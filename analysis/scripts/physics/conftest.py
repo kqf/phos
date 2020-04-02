@@ -89,6 +89,52 @@ def tcm(particle):
 
 
 @pytest.fixture
+def tcm2(particle):
+    tcm = FVault().tf1("tcm", "{} 13 TeV".format(particle))
+    tcm.SetName("TCM")
+    tcm.SetTitle("TCM fit")
+    tcm.SetNpx(100)
+    tcm.SetLineColor(ROOT.kBlack)
+    tcm.SetLineWidth(2)
+
+    if particle == "#pi^{0}":
+        tcm.SetRange(0.7, 22)
+        tcm.SetParameter(0, 3e5)
+        tcm.SetParLimits(0, 0, 1e6)
+
+        # temin, temax = 0.0, 0.2
+        tcm.SetParameter(1, 0.142)
+        # tcm.SetParLimits(1, temin, temax)
+
+        tcm.SetParameter(2, 3e4)
+        # tcm.SetParLimits(2, 0, 1e6)
+
+        tcm.SetParameter(3, 0.597)
+        # tcm.SetParLimits(3, temin * 4.2, temax * 4.2)
+        tcm.SetParameter(4, 3.028)
+
+    if particle == "#eta":
+        # pass
+        tcm.SetParameter(0, 1e5)
+        tcm.SetParLimits(0, 0, 1e6)
+
+        # temin, temax = 0.0, 0.3
+        tcm.SetParameter(1, 0.229)
+        # tcm.SetParLimits(1, temin, temax)
+
+        tcm.SetParameter(2, 1e4)
+        tcm.SetParLimits(2, 0, 1e6)
+
+        tcm.SetParameter(3, 0.810)
+        # tcm.SetParLimits(3, temin * 4.2, temax * 4.2)
+
+        tcm.SetParameter(4, 3.043)
+
+    tcm.FixParameter(5, mass(particle))
+    return tcm
+
+
+@pytest.fixture
 def oname(particle):
     return "images/discussion/{{}}{}.pdf".format(br.spell(particle))
 
