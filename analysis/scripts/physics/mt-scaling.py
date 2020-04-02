@@ -144,7 +144,7 @@ def test_ratio(upper, lower, coname, target):
 
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-def test_mt_deviation(upper, lower, pt_cut=5):
+def test_mt_deviation(upper, lower, pt_cut=6.5):
     etapion = br.bins(ratio(stop=False))
     idx = etapion.centers > pt_cut
     values, errors = etapion.contents[idx], etapion.errors[idx]
@@ -161,8 +161,8 @@ def test_mt_deviation(upper, lower, pt_cut=5):
 
     theory_upper = upper.Eval(etapion.centers[idx].mean())
     print("Theory upper", theory_upper)
-    assert exp - sigma < theory_upper < exp + sigma
+    assert exp - 2 * sigma < theory_upper < exp + 2 * sigma
 
     theory_lower = lower.Eval(etapion.centers[idx].mean())
     print("Theory lower", theory_lower)
-    assert exp - sigma < theory_lower < exp + sigma
+    assert exp - 2 * sigma < theory_lower < exp + 2 * sigma
