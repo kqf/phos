@@ -15,8 +15,6 @@ from spectrum.pipeline import DataFitter, Pipeline
 PT_MAX = 15
 PT_MIN = 2
 
-print("\n\\def \\pionTcmMax {{{}}}".format(PT_MAX))
-
 
 def fitted(particle, fitf, ptmax=PT_MAX):
     def p(x, loggs):
@@ -34,6 +32,8 @@ def fitted(particle, fitf, ptmax=PT_MAX):
     if particle == "#pi^{0}":
         fitf.SetParLimits(0, -1e8, 1e8)
 
+    print("\n\\def \\{}TcmMin {{{}}}".format(br.spell(particle), ptmin))
+    print("\n\\def \\{}TcmMax {{{}}}".format(br.spell(particle), ptmax))
     return Pipeline([
         ("cyield", DataEnergiesExtractor()),
         ("fit", DataFitter(fitf, xmin=ptmin, xmax=ptmax)),
