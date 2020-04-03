@@ -27,7 +27,7 @@ def data():
 def test_analyze(particle, data):
     options = Options(
         particle=particle,
-        pt="config/test_different_modules.json"
+        pt="config/tests/different_modules.json"
     )
     estimator = ComparePipeline([
         ('module {0}'.format(i), Analysis(options))
