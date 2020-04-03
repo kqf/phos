@@ -65,11 +65,6 @@ def test_projection_saves_area(stop):
 
     projections = [br.projection(hist, *bin) for bin in bins]
 
-    # print
-    # for b, p in zip(bins, projections):
-    # print(b, p.Integral())
-    # print(sum(p.Integral() for p in projections), hist.Integral())
-
     total = sum(p.Integral() for p in projections)
     assert total == hist.Integral()
 

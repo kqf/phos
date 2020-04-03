@@ -12,11 +12,15 @@ from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.pipeline import FunctionTransformer
 from spectrum.pipeline import DataFitter, Pipeline
 
-PT_MAX = 15
-PT_MIN = 2
+
+@pytest.fixture
+def ptlimits(particle):
+    if particle == "#eta":
+        return 2, 15
+    return 0, 15
 
 
-def fitted(particle, fitf, ptmax=PT_MAX):
+def fitted(particle, fitf, ptmin, ptmax):
     def p(x, loggs):
         # res = br.fit_results(x.fitf)
         # print(res["Te"], res["T"], res["T"] / res["Te"], x.energy)
@@ -28,7 +32,6 @@ def fitted(particle, fitf, ptmax=PT_MAX):
         res["energy"] = x.energy / 1000
         return res
 
-    ptmin = PT_MIN if particle == "#eta" else 0
     if particle == "#pi^{0}":
         fitf.SetParLimits(0, -1e8, 1e8)
 
@@ -43,8 +46,8 @@ def fitted(particle, fitf, ptmax=PT_MAX):
 
 
 @pytest.fixture
-def rawdata(particle, tcm):
-    return energies(particle, fitted(particle, tcm))
+def rawdata(particle, tcm, ptlimits):
+    return energies(particle, fitted(particle, tcm, *ptlimits))
 
 
 # @pytest.mark.skip

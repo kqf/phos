@@ -102,7 +102,6 @@ class GScale(TransformerBase):
         lower = self.ratiofunc(fitf, "low", ep_ratio, 38)
         upper = self.ratiofunc(fitf, "up", -ep_ratio, 47)
 
-        # TODO: move all options constants to Options
         f, pt = "#it{f}", "#it{p}_{T}"
         upper.SetTitle("{f}({pt} + #delta {pt})/{f}({pt})".format(f=f, pt=pt))
         upper.SetLineColor(ROOT.kBlue + 1)
