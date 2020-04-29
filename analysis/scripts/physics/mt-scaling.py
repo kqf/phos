@@ -170,9 +170,14 @@ def test_mt_deviation(upper, lower, pt_cut=6.5):
     assert exp - 2 * sigma < theory_lower < exp + 2 * sigma
 
 
+@pytest.fixture
+def ndof():
+    return 3
+
+
 @pytest.mark.thesis
 @pytest.mark.onlylocal
-def test_chi2(upper, lower, pt_cut=6.5):
+def test_chi2(upper, lower, ndof):
     etapion = br.bins(ratio(stop=False))
     values, errors = etapion.contents, etapion.errors
     pT = etapion.centers
@@ -206,8 +211,8 @@ def test_chi2(upper, lower, pt_cut=6.5):
     ))
 
     print("chi^2/n (upper) {:.4g} chi^2 /n (bottom) {:.4g}".format(
-        chi2_upper / (len(df) - 3),
-        chi2_lower / (len(df) - 3),
+        chi2_upper / (len(df) - ndof),
+        chi2_lower / (len(df) - ndof),
     ))
 
     print(df.to_string(index=False))
