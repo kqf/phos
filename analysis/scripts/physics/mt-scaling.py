@@ -1,5 +1,7 @@
 import ROOT
 import pytest
+import numpy as np
+
 import spectrum.plotter as plt
 
 from spectrum.spectra import spectrum, ratio
@@ -166,3 +168,46 @@ def test_mt_deviation(upper, lower, pt_cut=6.5):
     theory_lower = lower.Eval(etapion.centers[idx].mean())
     print("Theory lower", theory_lower)
     assert exp - 2 * sigma < theory_lower < exp + 2 * sigma
+
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+def test_chi2(upper, lower, pt_cut=6.5):
+    etapion = br.bins(ratio(stop=False))
+    values, errors = etapion.contents, etapion.errors
+    pT = etapion.centers
+
+    theory_upper = np.vectorize(upper.Eval)(pT)
+    theory_lower = np.vectorize(lower.Eval)(pT)
+
+    df = pd.DataFrame({
+        "pT": etapion.centers,
+        "eta/pion": values,
+        "eta/pion errors": errors,
+        "upper": theory_upper,
+        "lower": theory_lower,
+    })
+
+    df["(D - E) / S (upper)"] = (
+        (df["eta/pion"] - df["upper"]) / df["eta/pion errors"])
+
+    df["(D - E) / S (lower)"] = (
+        (df["eta/pion"] - df["lower"]) / df["eta/pion errors"])
+
+    df["chi2 (upper)"] = df["(D - E) / S (upper)"] ** 2
+    df["chi2 (lower)"] = df["(D - E) / S (lower)"] ** 2
+
+    chi2_upper = (df["chi2 (upper)"].sum())
+    chi2_lower = (df["chi2 (lower)"].sum())
+
+    print("chi^2 (upper) {:.4g} chi^2 (bottom) {:.4g}".format(
+        chi2_upper,
+        chi2_lower,
+    ))
+
+    print("chi^2/n (upper) {:.4g} chi^2 /n (bottom) {:.4g}".format(
+        chi2_upper / (len(df) - 3),
+        chi2_lower / (len(df) - 3),
+    ))
+
+    print(df.to_string(index=False))
