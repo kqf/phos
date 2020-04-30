@@ -143,6 +143,7 @@ class TotalUncertainty(TransformerBase):
         for i in br.hrange(total_hist):
             total_hist.SetBinContent(i, total_uncert[i - 1])
 
+        canvas = ROOT.TCanvas("c1", "canvas", 100, 100)  # noqa
         hplot(
             list(data) + [total_hist],
             stop=self.plot,
@@ -150,6 +151,7 @@ class TotalUncertainty(TransformerBase):
             logy=False,
             xtitle="#it{p}_{T} (GeV/#it{c})",
             csize=(96, 128),
+            ylimits=(0, total_uncert.max() * 1.1),
             legend_pos=(0.2, 0.7, 0.4, 0.85),
             oname="images/systematics/total/{}.pdf".format(
                 br.spell(self.options.particle)

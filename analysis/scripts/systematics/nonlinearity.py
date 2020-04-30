@@ -3,6 +3,7 @@ import pytest
 import joblib
 import numpy as np
 import spectrum.broot as br
+import spectrum.plotter as plt
 from spectrum.output import open_loggs
 from spectrum.comparator import Comparator
 
@@ -29,7 +30,6 @@ memory = joblib.Memory(".joblib-cachedir", verbose=0)
 def nonlin_tests(particle, nbins, stop):
     prod = "single #pi^{0} nonlinearity scan"
     options = NonlinearityUncertaintyOptions(particle=particle, nbins=nbins)
-    options.factor = 1.
 
     with open_loggs() as loggs:
         uncert = NonlinearityUncertainty(options, plot=stop).transform(
@@ -54,8 +54,7 @@ def test_nonlinearity_uncertainty(particle, nbins, stop):
     uncert = nonlin_tests(particle, nbins, stop)
     nonlin = br.bins(uncert)
 
-    import IPython
-    IPython.embed()
+    Comparator(stop=stop).compare(uncert)
 
     print()
     maxerror = np.max(nonlin.contents)
