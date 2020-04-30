@@ -15,7 +15,7 @@ from spectrum.vault import DataVault
 
 class NonlinearityUncertaintyOptions(object):
 
-    def __init__(self, particle="#pi^{0}", nbins=9, n_ranges=2):
+    def __init__(self, particle="#pi^{0}", nbins=9, n_ranges=2, averaging=1):
         super(NonlinearityUncertaintyOptions, self).__init__()
         self.eff = CompositeEfficiencyOptions("#pi^{0}")
         self.nbins = nbins
@@ -23,6 +23,7 @@ class NonlinearityUncertaintyOptions(object):
         if particle != "#pi^{0}":
             self.edges = Options(particle=particle).pt.ptedges
         self.particle = particle
+        self.al = averaging
 
 
 memory = Memory(".joblib-cachedir", verbose=0)
@@ -61,7 +62,7 @@ def _masses(prod):
     return output
 
 
-def visualise(effs, loggs, stop=False):
+def visualise(effs, loggs, al, stop=False):
     # for i, eff in enumerate(effs):
     #     eff.Scale(1 + 0.001 * i)
     plot(
@@ -101,6 +102,7 @@ def visualise(effs, loggs, stop=False):
     loggs.update({"uncertainty": uncert})
     loggs.update({"rms": rms})
     loggs.update({"mean": mean})
+    uncert.Smooth(al)
     return uncert
 
 
@@ -111,7 +113,8 @@ class NonlinearityUncertainty(TransformerBase):
         self.options = options
         self.pipeline = Pipeline([
             ("effs", FunctionTransformer(_eff, no_loggs=True, plot=plot)),
-            ("visualise", FunctionTransformer(visualise, stop=plot)),
+            ("visualise", FunctionTransformer(visualise, stop=plot,
+                                              al=self.options.al)),
             ("rebin", RebinTransformer(True, options.edges)),
         ])
 
