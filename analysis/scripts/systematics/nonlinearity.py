@@ -1,5 +1,6 @@
 import pytest
 
+import joblib
 import numpy as np
 import spectrum.broot as br
 from spectrum.output import open_loggs
@@ -21,17 +22,11 @@ def nbins():
     return 9
 
 
-# Benchmark:
-# In the 5 TeV analysis U_nonlin ~ 0.01
+memory = joblib.Memory(".joblib-cachedir", verbose=0)
 
-@pytest.mark.thesis
-@pytest.mark.onlylocal
-@pytest.mark.interactive
-@pytest.mark.parametrize("particle", [
-    # "#pi^{0}",
-    "#eta",
-])
-def test_nonlinearity_uncertainty(particle, nbins, stop):
+
+@memory.cache()
+def nonlin_tests(particle, nbins, stop):
     prod = "single #pi^{0} nonlinearity scan"
     options = NonlinearityUncertaintyOptions(particle=particle, nbins=nbins)
     options.factor = 1.
@@ -41,18 +36,36 @@ def test_nonlinearity_uncertainty(particle, nbins, stop):
             nonlinearity_scan_data(nbins, prod),
             loggs
         )
-        Comparator(stop=stop).compare(uncert)
-        nonlin = br.bins(uncert)
 
-        print()
-        maxerror = np.max(nonlin.contents)
-        print("\\def \\nonlinearityMaxError {{{}}}".format(maxerror))
+    return uncert
 
-        maxpT = nonlin.centers[np.argmax(nonlin.contents)]
-        print("\\def \\nonlinearityMaxErrorPt {{{}}}".format(maxpT))
+# Benchmark:
+# In the 5 TeV analysis U_nonlin ~ 0.01
 
-        average = nonlin.contents.mean()
-        print("\\def \\nonlinearityAverageError {{{}}}".format(average))
+
+@pytest.mark.thesis
+@pytest.mark.onlylocal
+@pytest.mark.interactive
+@pytest.mark.parametrize("particle", [
+    "#pi^{0}",
+    # "#eta",
+])
+def test_nonlinearity_uncertainty(particle, nbins, stop):
+    uncert = nonlin_tests(particle, nbins, stop)
+    nonlin = br.bins(uncert)
+
+    import IPython
+    IPython.embed()
+
+    print()
+    maxerror = np.max(nonlin.contents)
+    print("\\def \\nonlinearityMaxError {{{}}}".format(maxerror))
+
+    maxpT = nonlin.centers[np.argmax(nonlin.contents)]
+    print("\\def \\nonlinearityMaxErrorPt {{{}}}".format(maxpT))
+
+    average = nonlin.contents.mean()
+    print("\\def \\nonlinearityAverageError {{{}}}".format(average))
 
 
 @pytest.fixture
