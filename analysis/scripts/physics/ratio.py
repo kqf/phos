@@ -21,7 +21,13 @@ def test_ratio(pythia6_eta_pion_ratio, eta_pion_ratio_fitf, coname):
     eta_pion_ratio_fitf.SetLineStyle(7)
     eta_pion_ratio_fitf.SetTitle("Constant fit")
 
+    pythia6_eta_pion_ratio.Smooth(30)
     pythia6 = br.hist2graph(pythia6_eta_pion_ratio)
+    plt.plot(
+        [pythia6_eta_pion_ratio],
+        logx=False,
+        logy=False,
+    )
     pythia6.SetTitle("PYTHIA 6")
     plt.plot(
         [data, pythia6, eta_pion_ratio_fitf],
