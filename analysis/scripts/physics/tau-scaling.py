@@ -8,7 +8,7 @@ from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.constants import invariant_cross_section_code
 
 
-def tau(pt, energy, lambda_=0.2, Q0=1, W0=1e-3):
+def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
     W = W0 * energy
     return (pt ** 2) / Q0 * (pt / W) ** lambda_
 
@@ -18,14 +18,14 @@ class TauTransformer(TransformerBase):
         edges = br.edges(x.tot)
         tau_edges = tau(edges, x.energy)
 
-        xt = br.PhysicsHistogram(
+        htau = br.PhysicsHistogram(
             self._transform(x.tot, tau_edges),
             self._transform(x.stat, tau_edges),
             self._transform(x.syst, tau_edges),
             energy=x.energy,
         )
-        xt.fitf = x.fitf
-        return xt
+        htau.fitf = x.fitf
+        return htau
 
     @staticmethod
     def _transform(hist, edges):
@@ -38,18 +38,18 @@ class TauTransformer(TransformerBase):
         )
 
 
-def xt(fitf):
+def tau_spectra(fitf):
     return Pipeline([
         ("cyield", DataEnergiesExtractor()),
         ("fit", DataFitter(fitf)),
-        ("xt", TauTransformer()),
+        ("tau", TauTransformer()),
     ])
 
 
 @pytest.fixture
 def tau_data(particle, tcm):
     spectra = sorted(
-        energies(particle, xt(tcm)),
+        energies(particle, tau_spectra(tcm)),
         key=lambda x: -x.energy
     )
     return spectra
@@ -70,5 +70,5 @@ def test_scaled_spectra(tau_data, ltitle, oname):
         ltitle=ltitle,
         more_logs=False,
         legend_pos=(0.24, 0.15, 0.5, 0.35),
-        oname=oname.format("xt_scaling/xt_normalized_cross_section_"),
+        oname=oname.format("tau_scaling/tau_normalized_cross_section_"),
     )
