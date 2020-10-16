@@ -14,9 +14,13 @@ def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
 
 
 class TauTransformer(TransformerBase):
+    def __init__(self, lambda_, plot=False):
+        super().__init__(plot)
+        self.lambda_ = lambda_
+
     def transform(self, x, loggs):
         edges = br.edges(x.tot)
-        tau_edges = tau(edges, x.energy)
+        tau_edges = tau(edges, x.energy, lambda_=self.lambda_)
 
         htau = br.PhysicsHistogram(
             self._transform(x.tot, tau_edges),
@@ -38,21 +42,26 @@ class TauTransformer(TransformerBase):
         )
 
 
-def tau_spectra(fitf):
+def tau_spectra(fitf, lambda_):
     return Pipeline([
         ("cyield", DataEnergiesExtractor()),
         ("fit", DataFitter(fitf)),
-        ("tau", TauTransformer()),
+        ("tau", TauTransformer(lambda_=lambda_)),
     ])
 
 
 @pytest.fixture
-def tau_data(particle, tcm):
+def tau_data(particle, lambda_, tcm):
     spectra = sorted(
-        energies(particle, tau_spectra(tcm)),
+        energies(particle, tau_spectra(tcm, lambda_)),
         key=lambda x: -x.energy
     )
     return spectra
+
+
+@pytest.fixture
+def lambda_():
+    return 0.27
 
 
 @pytest.mark.thesis
@@ -62,11 +71,11 @@ def tau_data(particle, tcm):
     "#pi^{0}",
     "#eta",
 ], scope="module")
-def test_scaled_spectra(tau_data, ltitle, oname):
+def test_scaled_spectra(tau_data, lambda_, ltitle, oname):
     plt.plot(
         tau_data,
         ytitle=invariant_cross_section_code(),
-        xtitle="#tau",
+        xtitle="#tau (#lambda = {})".format(lambda_),
         ltitle=ltitle,
         more_logs=False,
         legend_pos=(0.24, 0.15, 0.5, 0.35),
