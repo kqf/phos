@@ -8,20 +8,23 @@ from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.constants import invariant_cross_section_code
 
 
-def u_(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
-    W = W0 * energy
-    return (pt ** 2) / Q0 * (pt / W) ** lambda_
-
-
 # Empirical approximation of <pT(s)>
 def average_pt(energy, a=0.235, n=0.096):
     return a * energy ** n
 
 
+def b_(energy, a=-0.0397, b=0.08, n=-0.075):
+    return a + b * energy ** n
+
+
+def u_(pt, energy, mean_pt):
+    return pt / (mean_pt - b_(energy) * pt)
+
+
 class UTransformer(TransformerBase):
     def transform(self, x, loggs):
         edges = br.edges(x.tot)
-        u_edges = u_(edges, x.energy)
+        u_edges = u_(edges, x.energy, average_pt(x.energy))
 
         u = br.PhysicsHistogram(
             self._transform(x.tot, u_edges),
@@ -71,7 +74,7 @@ def test_scaled_spectra(u_data, ltitle, oname):
     plt.plot(
         u_data,
         ytitle=invariant_cross_section_code(),
-        xtitle="#it{u/u_{0}}",
+        xtitle="#it{u}",
         ltitle=ltitle,
         more_logs=False,
         legend_pos=(0.24, 0.15, 0.5, 0.35),
