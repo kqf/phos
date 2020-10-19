@@ -1,5 +1,6 @@
 import pytest
 
+import pandas as pd
 import spectrum.broot as br
 import spectrum.plotter as plt
 
@@ -10,6 +11,13 @@ from spectrum.constants import invariant_cross_section_code
 
 def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
     W = W0 * energy
+    print()
+    df = pd.DataFrame(pt, columns=["pT"])
+
+    df["tau"] = (pt ** 2) / Q0 * (pt / W) ** lambda_
+    df["sqrt(s)"] = energy
+    df["[pT / (1e+3 * sqrt(s))]^lambda"] = (pt / W) ** lambda_
+    print(df[:1])
     return (pt ** 2) / Q0 * (pt / W) ** lambda_
 
 
