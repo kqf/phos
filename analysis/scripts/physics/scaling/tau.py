@@ -9,8 +9,7 @@ from spectrum.spectra import energies, DataEnergiesExtractor
 from spectrum.constants import invariant_cross_section_code
 
 
-def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
-    W = W0 * energy
+def dump_as_table(pt, energy, lambda_, Q0, W):
     print()
     df = pd.DataFrame(pt, columns=["pT"])
 
@@ -18,6 +17,10 @@ def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
     df["sqrt(s)"] = energy
     df["[pT / (1e+3 * sqrt(s))]^lambda"] = (pt / W) ** lambda_
     print(df[:1])
+
+
+def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
+    W = W0 * energy
     return (pt ** 2) / Q0 * (pt / W) ** lambda_
 
 
