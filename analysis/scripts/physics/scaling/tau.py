@@ -19,7 +19,7 @@ def dump_as_table(pt, energy, lambda_, Q0, W):
     print(df[:1])
 
 
-def tau(pt, energy, lambda_=0.27, Q0=1, W0=1e-3):
+def tau(pt, energy, lambda_=0.27, Q0=1, W0=1):
     W = W0 * energy
     return (pt ** 2) / Q0 * (pt / W) ** lambda_
 
