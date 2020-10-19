@@ -154,7 +154,7 @@ def test_params(data, ytitle, ylimits, target, stop, coname):
         stop=stop,
         logy=False,
         ytitle=ytitle,
-        xtitle="#sqrt{#it{s}} (GeV)",
+        xtitle="#sqrt{#it{s}} (TeV)",
         ylimits=ylimits,
         xlimits=(0.7, 15),
         legend_pos=(0.6, 0.7, 0.75, 0.85),
