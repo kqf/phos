@@ -72,15 +72,8 @@ def u_data(particle, tcm):
     "#eta",
 ], scope="module")
 def test_scaled_spectra(u_data, ltitle, oname):
-    yval = u_data[0].tot.GetBinContent(1)
-    xval = u_data[0].tot.GetBinCenter(1)
-
-    prelim = ROOT.TF1("prelim", "{}".format(yval), xval * 0.9, xval * 1.01)
-    prelim.SetTitle("#bf{Preliminary}")
-    prelim.SetLineColor(0)
-
     plt.plot(
-        u_data + [prelim],
+        u_data + [plt.prelim(u_data)],
         ytitle=invariant_cross_section_code(),
         xtitle="#it{u}",
         ltitle=ltitle,

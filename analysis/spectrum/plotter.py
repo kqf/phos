@@ -355,3 +355,13 @@ def hplot(
         for i, hist in enumerate(data):
             plotted.append(draw(hist, colors, option, i, len(data)))
         legend(tuple(plotted), legend_pos, ltitle, ltext_size)
+
+
+def prelim(histograms):
+    yval = histograms[0].tot.GetBinContent(1)
+    xval = histograms[0].tot.GetBinCenter(1)
+
+    prelim = ROOT.TF1("prelim", "{}".format(yval), xval * 0.9, xval * 1.01)
+    prelim.SetTitle("#bf{Preliminary}")
+    prelim.SetLineColor(0)
+    return prelim
