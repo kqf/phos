@@ -84,15 +84,8 @@ def lambda_():
     "#eta",
 ], scope="module")
 def test_scaled_spectra(tau_data, lambda_, ltitle, oname):
-    yval = tau_data[0].tot.GetBinContent(1)
-    xval = tau_data[0].tot.GetBinCenter(1)
-
-    prelim = ROOT.TF1("prelim", "{}".format(yval), xval * 0.9, xval * 1.01)
-    prelim.SetTitle("#bf{Preliminary}")
-    prelim.SetLineColor(0)
-
     plt.plot(
-        tau_data + [prelim],
+        tau_data + [plt.prelim(tau_data)],
         ytitle=invariant_cross_section_code(),
         xtitle="#tau (#lambda = {})".format(lambda_),
         ltitle=ltitle,
