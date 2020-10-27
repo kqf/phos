@@ -1,6 +1,9 @@
-# Photon analysis using PHOS dectector [![Build Status](https://travis-ci.com/kqf/phos.svg?token=7bkqqhrPB19pD1YKrAZM&branch=master)](https://travis-ci.com/kqf/phos)
+# Neutral meson measurements with PHOS dectector [![Build Status](https://travis-ci.com/kqf/phos.svg?token=7bkqqhrPB19pD1YKrAZM&branch=master)](https://travis-ci.com/kqf/phos)
 
-Main repository consists of several scripts, analysis tasks and various utilities. The outputs from some scripts serve as an input (explicitly or not) to other scripts. Therefore all these tasks should be maintained simultaneously.
+This is the main repository that consists of analysis tasks (reduce operations) and scripts responsible for postprocessing.
+
+
+All analysis scripts are organized in the form of the test functions to solve the problem of automatic discovery.
 
 
 ## Roadmap
@@ -30,4 +33,4 @@ Main repository consists of several scripts, analysis tasks and various utilitie
   - [x] Phenomenological description
   - [x] Previous experiments
   - [x] Theory predictions
-  - [ ] Scaling laws
+  - [x] Scaling laws
